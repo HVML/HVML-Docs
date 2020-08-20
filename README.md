@@ -1,2 +1,3 @@
-# hvml-docs
-Articles and documents about HVML
+# HVML Docs
+
+Articles and documents about HVML.
