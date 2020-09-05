@@ -2540,7 +2540,7 @@ def on_battery_changed (on_value, root_in_scope, source, event, time_stamp, even
         </button>
 
         <observe on="$entries" for="selected-item-changed">
-            <update on="$fileInfo" key.selected_type=$?.type key.selected_name=$?.name />
+            <update on="$fileInfo" key.selected_type="$?.type" key.selected_name="$?.name" />
         </observe>
 
         <observe on="$open" for="click">
