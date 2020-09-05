@@ -2552,11 +2552,11 @@ def on_battery_changed (on_value, root_in_scope, source, event, time_stamp, even
 
                     <empty on="#entries" />
                     <call on="$fillDirEntries" with="$new_path" />
-                    <update on="$fileInfo" key.curr_path=$new_path />
+                    <update on="$fileInfo" key.curr_path="$new_path" />
                     <update on="#path" textContent="$new_path" />
                 </match>
                 <match for="file" exclusively>
-                    <back to="_caller" with="$fileInfo">
+                    <back to="_caller" with="$fileInfo" />
                 </match>
             </test>
         </observe>
