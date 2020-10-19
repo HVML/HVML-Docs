@@ -299,3 +299,39 @@
     </body>
 ```
 
+## 处理按钮事件
+
+接下来，我们使用 HVML 的 `observe` 标签处理按钮事件，并相应修改 `output` 的值。首先清除（C）按钮，是最容易处理的：
+
+```hvml
+        <observe on=".clear" for="click" to="update">
+            <update on="$output" value="0" />
+        </observe>
+```
+
+其次是 1、2、3 等数字按钮，我们先简化处理，每次在表达式之后追加按钮元素的文本内容：
+
+```hvml
+        <observe on=".letters" for="click" to="update">
+            <update on="$output" value="$output$?.textContent" />
+        </observe>
+```
+
+上述 HVML 代码，在 `letters` 类按钮收到 `click` 事件时执行，最终在原先的 `$output` 变量上追加了发生该事件的按钮（由内置变量 `$?` 指代）的 `textContent` 属性值。
+
+其他按钮功能，比如回退（backspace），要稍微麻烦一些，是因为 HVML 语言本身未定义字符串的操作方法。对字符串操作，我们通常使用由外部脚本实现的动态 JSON 对象，并通过 JSON 求值表达式来实现。
+
+假定我们有一个外部的 Python 模块，该模块定义了一个专门用于字符串操作的动态 JSON 对象，提供了常见的字符串操作方法。比如本文重要用到的方法：
+
+- `strip`：用于删除字符串尾部的一个或者多个字符。
+- `strcat`：用于在一个已有字符串中追加另一个字符串。
+
+```html
+        <observe on=".clear" for="click" to="update">
+            <update on="$output" value="$string.strip($output, 1)" />
+        </observe>
+```
+
+## 使用栈式结构处理输入数据
+
+
