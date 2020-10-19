@@ -170,3 +170,132 @@
 
 ![计算器渲染效果](calculator.png)
 
+## 一些说明
+
+上面的 HTML 代码，编写得算不上特别优美，比如大量使用了 `id` 属性，而其实使用 `class` 属性更为合适。
+
+我们不打算仔细改造这些细节之处，所以最终的 HVML 程序中，会保留在头部声明的 `style` 标签内容，但由于内容过多，我们会省略其中的样式信息。
+
+另外，HVML 的一个重要目标是内嵌的 JavaScript 代码，故而也不会在头部包含 JavaScript 代码。
+
+## 数据驱动生成 HTML 内容
+
+首先，我们看到原始 HTML 中有 12 个用来输入数字的按钮，以及八个用于表示四则运算、删除字符、清零的功能按钮。我们可以使用 HVML 的 `iterate` 动作标签完成这些重复性的 HTML 内容的生成。为此，我们首先准备一个全局的数据：
+
+```html
+<!DOCTYPE hvml>
+<hvml target="html" script="python" lang="en">
+    <head>
+        <title>计算器</title>
+        <style type="text/css">
+            ...
+        </style>
+
+        <init as="buttons">
+            [
+                { "letters": "7", "class": "number" },
+                { "letters": "8", "class": "number" },
+                { "letters": "9", "class": "number" },
+                { "letters": "←", "class": "c_blue backspace" },
+                { "letters": "C", "class": "c_blue clear" },
+                { "letters": "4", "class": "number" },
+                { "letters": "5", "class": "number" },
+                { "letters": "6", "class": "number" },
+                { "letters": "×", "class": "c_blue multiplication" },
+                { "letters": "÷", "class": "c_blue division" },
+                { "letters": "1", "class": "number" },
+                { "letters": "2", "class": "number" },
+                { "letters": "3", "class": "number" },
+                { "letters": "+", "class": "c_blue plus" },
+                { "letters": "-", "class": "c_blue subtraction" },
+                { "letters": "0", "class": "number" },
+                { "letters": "00", "class": "number" },
+                { "letters": ".", "class": "number" },
+                { "letters": "%", "class": "c_blue percent" },
+                { "letters": "=", "class": "c_yellow equal" },
+            ]
+        </init>
+    </head>
+
+    <body>
+        ...
+    </body>
+</hvml>
+```
+
+我们在全局的 `buttons` 这个 JSON 对象数组上执行迭代，即可生成所有的按钮。注意，为方便其后的编程，我们为不同种类的按钮新增了一个用于功能的类名，如 `number`、`plus` 等。
+
+对应的 HVML `body` 标签内容如下：
+
+```html
+    <body>
+        <div id="calculator">
+
+            <div id="c_title">
+                <h2>计算器</h2>
+            </div>
+
+            <div id="c_text">
+                <input type="text" id="text" value="0" readonly="readonly" />
+            </div>
+
+            <div id="c_value">
+                <archetype id="button">
+                    <li class="$?.class">$?.letters</li></li>
+                </archetype>
+
+                <ul>
+                    <iterate on="$buttons" with="#button" to="append">
+                        <error>
+                            <p>Bad data!</p>
+                        </error>
+                        <except>
+                            <p>Bad data!</p>
+                        </except>
+                    </iterate>
+                </ul>
+            </div>
+
+        </div>
+    </body>
+```
+
+注意，在上述代码中，除了使用了 HVML `iterate` 动作标签之外，我们还使用了 `archetype` 标签，用于定义一个 HTML 片段模板。
+
+## 响应式输出
+
+随着用户点击按钮，解释器输出框中的内容将随之改变。为此，我们设定一个全局的字符串变量，用于保存计算器输出框中的字符串，当用户点击按钮时，该字符串的值将发生变化，而计算器输出框中显示的内容也将相应发生变化。
+
+这一改变涉及两处：
+- 在头部新增一个全局的 `output` 变量。
+- 修改 `input` 标签。
+
+如下所示：
+
+```html
+    <head>
+
+        ...
+
+        <init as="output">
+            "0"
+        </init>
+    </head>
+
+    <body>
+        <div id="calculator">
+
+            <div id="c_title">
+                <h2>计算器</h2>
+            </div>
+
+            <div id="c_text">
+                <input type="text" id="text" value="{{ $output }}" readonly="readonly" />
+            </div>
+
+            ...
+
+        </div>
+    </body>
+```
+
