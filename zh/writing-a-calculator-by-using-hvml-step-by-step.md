@@ -324,11 +324,11 @@
 
 ```hvml
         <observe on=".letters" for="click" to="update">
-            <update on="$expression" value="$expression$?.textContent" />
+            <update on="$expression" value="$expression$@.textContent" />
         </observe>
 ```
 
-上述 HVML 代码，在 `letters` 类按钮收到 `click` 事件时执行，最终在原先的 `$expression` 变量上追加了发生该事件的按钮（由内置变量 `$?` 指代）的 `textContent` 属性值。
+上述 HVML 代码，在 `letters` 类按钮收到 `click` 事件时执行，最终在原先的 `$expression` 变量上追加了发生该事件的按钮（由内置变量 `$@` 指代）的 `textContent` 属性值。
 
 其他按钮功能，比如回退（backspace），要稍微麻烦一些，是因为 HVML 语言本身未定义字符串的操作方法。对字符串操作，我们通常使用由 HVML 解释器实现的内置动态 JSON 对象（如 `$string`），通过调用该对象提供的动态方法构件 JSON 求值表达式来实现。
 
@@ -377,20 +377,18 @@ class CEval (HVMLChooser):
         </observe>
 ```
 
-## 处理用户输入的几种方法
+## 交互过程的细节处理
 
 在上面的代码中，我们没有处理用户单击按钮时，对运算表达式正确性的基本判断，另外，我们也忽略了各种可能的错误情形，比如求值表达式错误，或者被零除等。在本节中，我们加上相关的代码。
-
-### 使用匹配标签
 
 ```html
         <observe on=".letters" for="click" to="test">
             <test on="$expression">
                 <match for="~err*" to="update" exclusively>
-                    <update on="$expression" value="$?.textContent" />
+                    <update on="$expression" value="$@.textContent" />
                 </match>
                 <match for="~*" to="update">
-                    <update on="$expression" value="$expression$?.textContent" />
+                    <update on="$expression" value="$expression$@.textContent" />
                 </match>
             </test>
         </observe>
@@ -425,7 +423,177 @@ class CEval (HVMLChooser):
         </observe>
 ```
 
-### 减少或消除过程式代码
-
 ## 完整的计算器程序源代码
 
+见下面的代码清单。
+
+```html
+<!DOCTYPE hvml>
+<hvml target="html" script="python" lang="en">
+    <head>
+        <title>计算器</title>
+        <style type="text/css">
+            body{
+                padding: 0;margin: 0;
+                background-color:#49C593 ;
+            }
+            #calculator{
+                position: absolute;
+                width: 1200px;height: 620px;
+                left: 50%;top: 50%;
+                margin-left: -600px;
+                margin-top: -310px;
+            }
+            #calculator #c_title {
+                margin: auto;
+                /*margin-left: 300px;*/
+                width: 800px;
+                height: 80px;
+            }
+            #calculator #c_title h2{
+                text-align: center;
+                font-size: 33px;font-family: "微软雅黑";color: #666;
+                line-height: 30px;
+            }
+            #c_text{
+                width: 1000px;
+                margin: auto;
+            }
+            #calculator #c_text #text{
+                /*margin-left: 200px;*/
+                padding-right: 10px;
+                width: 1000px;
+                height: 50px;
+                font-size: 25px;font-family: "微软雅黑";color: #666666;
+                text-align: right;border: 1px white;
+                border: double 1px;
+            }
+            #calculator #c_value{
+                width: 1080px;height: 408px;
+                /*margin-left: 160px;*/
+                margin: 20px auto;
+            }
+            #calculator #c_value ul{
+                margin: 0;
+            }
+            #calculator #c_value ul li{
+                margin: 10px;
+                list-style: none;float: left;
+                width: 180px;height: 80px;line-height: 80px;
+                text-align: center;background-color: chartreuse;
+                border: 1px solid black;
+                font-size: 30px;font-family: "微软雅黑";color: #666;
+                box-shadow: 5px 5px 30px rgba(0,0,0,0.4);           
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                -moz-user-select: none;
+            }
+            #calculator #c_value ul li:active{
+                background-color: white;
+            }
+            #calculator #c_value ul li:hover{
+                opacity:0.8;
+                cursor:pointer;
+            }
+            #calculator #c_value ul .c_blue{
+                background-color: cornflowerblue;color: #000000;
+            }
+            #calculator #c_value ul .c_yellow{
+                background-color: #f9f900;color: #000000;
+            }
+        </style>
+
+        <init as="buttons">
+            [
+                { "letters": "7", "class": "number" },
+                { "letters": "8", "class": "number" },
+                { "letters": "9", "class": "number" },
+                { "letters": "←", "class": "c_blue backspace" },
+                { "letters": "C", "class": "c_blue clear" },
+                { "letters": "4", "class": "number" },
+                { "letters": "5", "class": "number" },
+                { "letters": "6", "class": "number" },
+                { "letters": "×", "class": "c_blue multiplication" },
+                { "letters": "÷", "class": "c_blue division" },
+                { "letters": "1", "class": "number" },
+                { "letters": "2", "class": "number" },
+                { "letters": "3", "class": "number" },
+                { "letters": "+", "class": "c_blue plus" },
+                { "letters": "-", "class": "c_blue subtraction" },
+                { "letters": "0", "class": "number" },
+                { "letters": "00", "class": "number" },
+                { "letters": ".", "class": "number" },
+                { "letters": "%", "class": "c_blue percent" },
+                { "letters": "=", "class": "c_yellow equal" },
+            ]
+        </init>
+
+        <init as="expression">
+            "0"
+        </init>
+    </head>
+
+    <body>
+        <div id="calculator">
+
+            <div id="c_title">
+                <h2>计算器</h2>
+            </div>
+
+            <div id="c_text">
+                <input type="text" id="text" value="{{ $expression }}" readonly="readonly" />
+            </div>
+
+            <div id="c_value">
+                <archetype id="button">
+                    <li class="$?.class">$?.letters</li></li>
+                </archetype>
+
+                <ul>
+                    <iterate on="$buttons" with="#button" to="append">
+                        <error>
+                            <p>Bad data!</p>
+                        </error>
+                    </iterate>
+                </ul>
+            </div>
+
+        </div>
+
+        <observe on=".clear" for="click" to="update">
+            <update on="$expression" value="0" />
+        </observe>
+
+        <observe on=".letters" for="click" to="test">
+            <test on="$expression">
+                <match for="~err*" to="update" exclusively>
+                    <update on="$expression" value="$@.textContent" />
+                </match>
+                <match for="~*" to="update">
+                    <update on="$expression" value="$expression$@.textContent" />
+                </match>
+            </test>
+        </observe>
+
+        <observe on=".backspace" for="click" to="test">
+            <test on="$string.strlen($expression)">
+                <match for="1" to="update" exclusively>
+                    <update on="$expression" value="0" />
+                </match>
+                <match for="*" to="update">
+                    <update on="$expression" value="$string.strip($expression, 1)" />
+                </match>
+            </test>
+        </observe>
+
+        <observe on=".equal" for="click" to="update">
+            <update on="$expression" value="$_PY.eval($expression)">
+                <catch for="*" to="update">
+                    <update on="$expression" value="ERROR" />
+                </catch>
+            </update>
+        </observe>
+
+    </body>
+</hvml>
+```
