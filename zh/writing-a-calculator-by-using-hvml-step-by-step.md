@@ -278,7 +278,7 @@
 随着用户点击按钮，解释器输出框中的内容将随之改变。为此，我们设定一个全局的字符串变量，用于保存计算器输出框中的字符串，当用户点击按钮时，该字符串的值将发生变化，而计算器输出框中显示的内容也将相应发生变化。
 
 这一改变涉及两处：
-- 在头部新增一个全局的 `output` 变量。
+- 在头部新增一个全局的 `expression` 变量。
 - 修改 `input` 标签。
 
 如下所示：
@@ -288,7 +288,7 @@
 
         ...
 
-        <init as="output">
+        <init as="expression">
             "0"
         </init>
     </head>
@@ -301,7 +301,7 @@
             </div>
 
             <div id="c_text">
-                <input type="text" id="text" value="{{ $output }}" readonly="readonly" />
+                <input type="text" id="text" value="{{ $expression }}" readonly="readonly" />
             </div>
 
             ...
@@ -312,11 +312,11 @@
 
 ## 处理按钮事件
 
-接下来，我们使用 HVML 的 `observe` 标签处理按钮事件，并相应修改 `output` 的值。首先清除（C）按钮，是最容易处理的：
+接下来，我们使用 HVML 的 `observe` 标签处理按钮事件，并相应修改 `expression` 的值。首先清除（C）按钮，是最容易处理的：
 
 ```hvml
         <observe on=".clear" for="click" to="update">
-            <update on="$output" value="0" />
+            <update on="$expression" value="0" />
         </observe>
 ```
 
@@ -324,30 +324,106 @@
 
 ```hvml
         <observe on=".letters" for="click" to="update">
-            <update on="$output" value="$output$?.textContent" />
+            <update on="$expression" value="$expression$?.textContent" />
         </observe>
 ```
 
-上述 HVML 代码，在 `letters` 类按钮收到 `click` 事件时执行，最终在原先的 `$output` 变量上追加了发生该事件的按钮（由内置变量 `$?` 指代）的 `textContent` 属性值。
+上述 HVML 代码，在 `letters` 类按钮收到 `click` 事件时执行，最终在原先的 `$expression` 变量上追加了发生该事件的按钮（由内置变量 `$?` 指代）的 `textContent` 属性值。
 
-其他按钮功能，比如回退（backspace），要稍微麻烦一些，是因为 HVML 语言本身未定义字符串的操作方法。对字符串操作，我们通常使用由外部脚本实现的动态 JSON 对象，并通过 JSON 求值表达式来实现。
+其他按钮功能，比如回退（backspace），要稍微麻烦一些，是因为 HVML 语言本身未定义字符串的操作方法。对字符串操作，我们通常使用由 HVML 解释器实现的内置动态 JSON 对象（如 `$string`），通过调用该对象提供的动态方法构件 JSON 求值表达式来实现。
 
-假定我们有一个外部的 Python 模块，该模块定义了一个专门用于字符串操作的动态 JSON 对象，提供了常见的字符串操作方法。比如本文重要用到的方法：
+假定我们使用 HVML 解释器提供了一个内置的动态 JSON 对象 `$string`，该对象提供了常见的字符串操作方法。比如本文中要用到的方法：
 
 - `strip`：用于删除字符串尾部的一个或者多个字符。
 - `strcat`：用于在一个已有字符串中追加另一个字符串。
+- `strlen`：用于返回一个字符串的长度（字符个数）。
+
+那么，我们可以使用如下的代码来处理 `←`（回退）按钮上的单击事件：
 
 ```html
-        <observe on=".clear" for="click" to="update">
-            <update on="$output" value="$string.strip($output, 1)" />
+        <observe on=".backspace" for="click" to="update">
+            <update on="$expression" value="$string.strip($expression, 1)" />
+        </observe>
+```
+
+对 `=` 按钮的处理，我们可以使用外部脚本实现一个相当于 JavaScript `eval` 功能的外部执行器，提供给 `choose` 标签使用：
+
+```html
+        <observe on=".equal" for="click" to="choose">
+            <choose on="$expression" to="update" by="CLASS: CEval">
+                <update on="$expression" value="$?" />
+            </choose>
+        </observe>
+```
+
+本例中，我们使用 Python 脚本，因此，我们可以如下实现 `CEval` 这个外部选择器：
+
+```python
+class CEval (HVMLChooser):
+    def __init__ (self):
+        pass
+
+    def choose (self, on_value, in_value):
+        return eval (on_value)
+```
+
+和 Web 版本的实现类似，这里我们直接使用 Python 的 `eval` 函数来对运算表达式求值。
+
+我们也可以将 `eval` 这类函数的功能实现为内置的动态 JSON 对象，然后直接在 HVML 代码中调用。假如该动态 JSON 对象的名称为 `$_PY`，则相应的代码可简化为：
+
+```html
+        <observe on=".equal" for="click" to="update">
+            <update on="$expression" value="$_PY.eval($expression)" />
         </observe>
 ```
 
 ## 处理用户输入的几种方法
 
+在上面的代码中，我们没有处理用户单击按钮时，对运算表达式正确性的基本判断，另外，我们也忽略了各种可能的错误情形，比如求值表达式错误，或者被零除等。在本节中，我们加上相关的代码。
+
 ### 使用匹配标签
 
-### 使用外部脚本
+```html
+        <observe on=".letters" for="click" to="test">
+            <test on="$expression">
+                <match for="~err*" to="update" exclusively>
+                    <update on="$expression" value="$?.textContent" />
+                </match>
+                <match for="~*" to="update">
+                    <update on="$expression" value="$expression$?.textContent" />
+                </match>
+            </test>
+        </observe>
+```
+
+在上述代码中，当运算表达式求值错误的情况下，会显示 `ERROR`，此时将替换表达式字符串变量的值为按钮元素对应的文本内容。
+
+对回退按钮，我们增加一个当前表达式字符串长度的判断，并在当前长度为 1 时，始终重置为 `0`：
+
+```html
+        <observe on=".backspace" for="click" to="test">
+            <test on="$string.strlen($expression)">
+                <match for="1" to="update" exclusively>
+                    <update on="$expression" value="0" />
+                </match>
+                <match for="*" to="update">
+                    <update on="$expression" value="$string.strip($expression, 1)" />
+                </match>
+            </test>
+        </observe>
+```
+
+而在等号按钮的处理中，我们增加了对异常的捕获处理（注意，`catch` 是新增的用来捕获异常的动作标签）：
+
+```html
+        <observe on=".equal" for="click" to="update">
+            <update on="$expression" value="$_PY.eval($expression)">
+                <catch for="*" to="update">
+                    <update on="$expression" value="ERROR" />
+                </catch>
+            </update>
+        </observe>
+```
 
 ### 减少或消除过程式代码
 
