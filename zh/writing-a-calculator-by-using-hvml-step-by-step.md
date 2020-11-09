@@ -12,7 +12,7 @@
 
 ## Web 版本
 
-我们以 CSDN 上一个 [Web 版计算机示例](https://blog.csdn.net/qq_34231010/article/details/77431070)作为开头，以方便理解需求。
+我们以 CSDN 上一个 [Web 版计算器示例](https://blog.csdn.net/qq_34231010/article/details/77431070)作为开头，以方便理解需求。
 
 这一 Web 版本的计算器，其运行原理如下：
 
