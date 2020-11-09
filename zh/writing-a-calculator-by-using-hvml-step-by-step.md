@@ -495,7 +495,7 @@ class CEval (HVMLChooser):
             <update on="$expression" value="0" />
         </observe>
 
-        <observe on=".letters" for="click" to="test">
+        <observe on=".number" for="click" to="test">
             <test on="$expression">
                 <match for="~err*" to="update" exclusively>
                     <update on="$expression" value="$@.textContent" />
