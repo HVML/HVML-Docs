@@ -1,4 +1,4 @@
-# HVML 概览
+# HVML 规范草案
 
 HybridOS Specification No. 04  
 Topic: App Programming Language  
@@ -191,7 +191,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
             <span class="mobile-operator"></span>
             <img class="wifi-status" src="" />
             <span class="local-time">12:00</span>
-            <img class="battery-status" />>
+            <img class="battery-status" />
         </header>
 
         <ul class="user-list">
