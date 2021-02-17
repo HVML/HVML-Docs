@@ -10,7 +10,7 @@ Language: Chinese
 
 *Copyright Notice*
 
-Copyright (C) 2020 [FMSoft Technologies]  
+Copyright (C) 2020, 2021 [FMSoft Technologies]  
 All Rights Reserved.
 
 - [1) 背景](#1-背景)
@@ -49,6 +49,7 @@ All Rights Reserved.
       * [2.2.12) `load` 和 `back` 标签](#2212-load-和-back-标签)
       * [2.2.13) `define` 和 `include` 标签](#2213-define-和-include-标签)
       * [2.2.14) `call` 和 `return` 标签](#2214-call-和-return-标签)
+      * [2.2.15) `catch` 标签](#2215-catch-标签)
    + [2.3) 执行器](#23-执行器)
       * [2.3.1) 内建执行器](#231-内建执行器)
          - [2.3.1.1) `KEY` 执行器](#2311-key-执行器)
@@ -1044,15 +1045,15 @@ HVML 定义的上下文变量可罗列如下：
 
     <choose on="$locales" to="update" in="#the-footer" by="KEY: $global.locale">
         <update on="p > a" textContent="$?.se_name" attr.href="$?.se_url" attr.title="$?.se_title" />
-        <error on="nodata">
+        <catch for="error:nodata">
             <update on="p" textContent="You forget to define the \$locales/\$global variables!" />
-        </error>
-        <except on="KeyError">
+        </catch>
+        <catch for="KeyError">
             <update on="p > a" textContent="Google" attr.href="https://www.google.com" attr.title="Google" />
-        </except>
-        <except>
+        </catch>
+        <catch for="*">
             <update on="p" textContent="Bad \$locales/\$global data!" />
-        </except>
+        </catch>
     </choose>
 ```
 
@@ -1564,7 +1565,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 `define` 标签通过 `as` 属性定义操作组的名称，其中包含了一组动作标签定义的子元素。`include` 元素将切换上下文到 `on` 属性指定的操作组中，`with` 属性传入的参数将作为 `define` 的结果数据供子元素使用。如：
 
-```hvml
+```html
         <define as="fillDirEntries">
             <choose on="$?" to="iterate" by="CLASS: CDirEntries">
                 <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: 0">
@@ -1603,7 +1604,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 `include` 元素完成的工作本质上是复制指定的操作组到当前的位置，所以和传统编程语言中的函数调用并不相同。如果要获得和函数调用相同的效果，使用 `call` 和 `return` 标签：
 
-```hvml
+```html
         <define as="fillDirEntries">
             <choose on="$?" to="iterate" by="CLASS: CDirEntries">
                 <iterate on="$?" to="append" with="#dir-entry" by="RANGE: 0">
@@ -1648,7 +1649,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 另外，我们可以在 `call` 元素中使用副词属性 `asynchronously`，这样我们可以异步调用耗时的函数，然后使用 `observe` 观察其结果。如：
 
-```hvml
+```html
         <define as="collectAllDirEntriesRecursively">
             ...
         </define>
@@ -1665,6 +1666,36 @@ HVML 为不同的数据类型提供了如下操作：
 在上面的 HVML 代码中，我们异步调用了 `collectAllDirEntriesRecursively` 函数，该函数递归获取当前路径下的所有文件系统目录项（这是一个典型的耗时操作）。HVML 解释器会创建一个异步任务来执行该函数，`as` 属性指定了该任务的名称（`my_task`）。之后，代码使用 `observe` 元素来观察 `my_task` 任务的 `ready` 事件，并做后续的处理。需要注意的是，异步调用操作组时，一般不应该操作真实文档对应的元素。
 
 注意，不管是 `include` 还是 `call`，我们都可以递归使用。
+
+#### 2.2.15) `catch` 标签
+
+`catch` 作为任意动作元素的子元素，定义该动作出现错误或者异常时要执行的动作。`catch` 标签定义的元素作为 `error` 和 `except` 元素的补充，可定义错误或者异常情形下的动作。如：
+
+```html
+    <choose on="$locales" to="update" in="#the-footer" by="KEY: $global.locale">
+        <update on="p > a" textContent="$?.se_name" attr.href="$?.se_url" attr.title="$?.se_title" />
+        <catch for="error:nodata">
+            <update on="p" textContent="You forget to define the \$locales/\$global variables!" />
+        </catch>
+        <catch for="~error:*">
+            <update on="p" textContent="You forget to define the \$locales/\$global variables!" />
+        </catch>
+        <catch for="KeyError">
+            <update on="p > a" textContent="Google" attr.href="https://www.google.com" attr.title="Google" />
+        </catch>
+        <catch>
+            <update on="p" textContent="Bad \$locales/\$global data!" />
+        </catch>
+    </choose>
+```
+
+我们使用 `for` 介词属性来定义要捕获的错误或异常名称，或错误或异常名称的模式。错误名称始终具有 `error:` 前缀，而异常名称始终具有 `except` 前缀，但异常名称前的前缀可以忽略。
+
+`for` 属性值的取值有如下规则：
+
+- 若未定义 `for` 属性，则相当于匹配任意错误或异常。
+- 若 `for` 属性值为 `*` 或空字符串，则相当于匹配任意错误或异常。
+- 若 `for` 属性值中包含有 `*` 或者 `?` 字符，则表示通配符（wildcard）匹配，可支持通配符并忽略大小写；如 `error:*`，表示匹配所有错误。
 
 ### 2.3) 执行器
 
