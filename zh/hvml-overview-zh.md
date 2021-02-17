@@ -1677,7 +1677,7 @@ HVML 为不同的数据类型提供了如下操作：
         <catch for="error:nodata">
             <update on="p" textContent="You forget to define the \$locales/\$global variables!" />
         </catch>
-        <catch for="~error:*">
+        <catch for="error:*">
             <update on="p" textContent="You forget to define the \$locales/\$global variables!" />
         </catch>
         <catch for="KeyError">
