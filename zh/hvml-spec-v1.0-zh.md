@@ -2498,7 +2498,309 @@ def on_battery_changed (on_value, root_in_scope, source, event, time_stamp, even
 
 ## 3) HVML 语法
 
+### 3.1) 书写 HVML 文档
 
+HVML 本质上采用 XML 语法描述程序中的各个元素。HVML 文档的书写需满足如下要点：
+
+1. 始终使用 UTF-8 编码。
+1. 使用 XML 语法。
+1. 区分大小写。
+1. 使用 XHTML 语法书写 HTML 片段或模板。
+
+一个 HVML 程序由如下几个部分组成：
+
+1. Any number of comments and ASCII whitespace.
+1. A `DOCTYPE`.
+1. Any number of comments and ASCII whitespace.
+1. The document element, in the form of an `hvml` element.
+1. Any number of comments and ASCII whitespace.
+
+#### 3.1.1) DOCTYPE
+
+DOCTYPE 定义了文档格式以及 HVML 标签使用的前缀。
+
+```html
+<!DOCTYPE hvml>
+```
+
+A DOCTYPE must consist of the following components, in this order:
+
+1. A string that is an ASCII case-insensitive match for the string `"<!DOCTYPE"`.
+1. One or more ASCII whitespace.
+1. A string that is an ASCII case-insensitive match for the string `"hvml"`.
+1. Optionally, a DOCTYPE prefix string.
+1. Zero or more ASCII whitespace.
+1. A U+003E GREATER-THAN SIGN character (`>`).
+
+In other words, `<!DOCTYPE hvml>`, case-sensitively.
+
+在 HVML 文档中，当某个 HVML 标签可能和目标标记语言的标签冲突时，我们可以使用预定义前缀来标记 HVML 的标签，默认使用 `v:` 作为前缀，但我们也可以在 DOCTYPE 中自定义这个前缀。前缀字符串必须以字母打头，以冒号（`:`）结尾。
+
+1. One or more ASCII whitespace.
+1. A string that is an ASCII case-sensitive match for the string "PREFIX".
+1. One or more ASCII whitespace.
+1. A U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (the quote mark).
+1. A literal string specified the prefix, such as "v:", which must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK).
+1. A matching U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (i.e. the same character as in the earlier step labeled quote mark).
+
+For example, if you write the DOCTYPE element as `<!DOCTYPE hvml PREFIX "hvml:">`, you can add the specific prefix to some HVML tags:
+
+```html
+<!DOCTYPE hvml PREFIX "hvml:">
+<hvml target="html" script="python" lang="en">
+    <head>
+        <init as="global">
+            { "locale" : "zh_CN" }
+        </init>
+
+        <init as="users">
+            [
+                { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+                { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+            ]
+        </init>
+
+        <listen on="hibus://system/status" as="systemStatus" />
+    </head>
+
+    <body>
+        <header id="theStatusBar">
+            <img class="mobile-status" src="" />
+            <span class="mobile-operator"></span>
+            <img class="wifi-status" src="" />
+            <span class="local-time">12:00</span>
+            <img class="battery-status" />
+        </header>
+
+        <ul class="user-list">
+            <iterate on="$users" with="#user-item" to="append" by="CLASS: IUser">
+                <hvml:nodata>
+                    <img src="wait.png" />
+                </hvml:nodata>
+                <hvml:except on="StopIteration">
+                    <p>Bad user data!</p>
+                </hvml:except>
+            </iterate>
+        </ul>
+     </body>
+</hvml>
+```
+
+注意：我们通常在目标标记语言定义的标签和 HVML 标签冲突时才使用前缀。
+
+#### 3.1.2) 元素
+
+HVML 元素可划分为如下几类：
+
+1) 无内容的动作元素（action elements without contents）  
+`update`、`remove`、`test`、`match`、`choose`、`iterate`、`reduce`、`observe`、`fire`、`listen`、`close`、`load`、`back`、`define`、`include`、`call`、`return` 和 `catch` 元素。
+
+2) 有内容的动作元素（action elements with contents）  
+`init`、`set` 元素。
+
+3) 模板元素（template elements）  
+`archetype`、`rawpart` 元素。
+
+4) 裸文本元素（raw text elements）  
+`archedata` 元素。
+
+6) 普通元素（normal elements）  
+`hvml`、`head`、`body`、`error`、`except` 元素。
+
+7) 外部元素 （foreign elements） 
+所有不属于 HVML 标签定义的元素，被视为外部元素。
+
+无内容的动作元素用于定义对数据或文档的操作，可包含其他动作元素以及 `error` 或者 `except` 这两类普通元素，但不能包含其他类型的元素，也不能定义内容。
+
+有内容的动作元素用于定义 JSON 数据，不可包含其他子元素；其内容之限制同裸文本元素。
+
+一个模板元素的模板内容位于该模板元素的起始标签之后，终止标签之前，可包含任意的文本、字符引用、外部元素以及注释，但文本不能包含 U+003C LESS-THAN SIGN (`<`) 或者含糊的＆符号。
+
+> The markup for the template contents of a template element is placed just after the template element's start tag and just before template element's end tag (as with other elements), and may consist of any text, character references, foreign elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
+
+外部元素必须要么同时包含起始标签和终止标签，要么起始标签被标记为自终止。后者情形下，不能包含终止标签。
+
+> Foreign elements must either have a start tag and an end tag, or a start tag that is marked as self-closing, in which case they must not have an end tag. 
+
+比如，HTML 的 `<br>` 元素，在 HVML 中作为外部元素使用时，必须书写为：`<br />`。
+
+当一个外部元素的起始标签被标记为自终止时，该元素不能包含任何内容（显然，没有终止标签就无法在起始标签和终止标签之间放置任何内容）。当一个外部元素的起始标签没有被标记为自终止时，该元素中可包含文本、字符引用，CDATA 段、注释以及其他外部元素或动作元素，但文本中不可包含 U+003C LESS-THAN SIGN (`<`) 或含糊的 & 符号。
+
+> Foreign elements whose start tag is marked as self-closing can't have any contents (since, again, as there's no end tag, no content can be put between the start tag and the end tag). Foreign elements whose start tag is not marked as self-closing can have text, character references, CDATA sections, other foreign elements or action elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
+
+裸文本元素中可包含文本，但有如下所述之限制。
+
+> Raw text elements can have text, though it has restrictions described below.
+
+普通元素可包含文本、字符引用、其他普通元素或外部元素以及注释，但文本中不可包含 U+003C LESS-THAN SIGN (`<`) 或含糊的 & 符号。
+
+> Normal elements can have text, character references, other elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand. 
+
+普通元素及外部元素中可包含可转义裸文本，统称为为可转移文本元素（escapable raw text elements）。
+
+可转义裸文本元素中可包含文本和字符引用，但文本中不可包含任何含糊的 & 符号，另有如下所述之限制。
+
+> Escapable raw text elements can have text and character references, but the text must not contain an ambiguous ampersand. There are also further restrictions described below.
+
+标签包含标签名称，给定了元素的名称。HVML 元素允许使用指定的前缀来避免出现标签名称的冲突。除该前缀中包含的冒号（:）字符之外，标签名称中仅使用 ASCII 字母及数字，且仅使用字母开头。
+
+> Tags contain a tag name, giving the element's name. HVML allows use a prefix for the tag of a HVML-only element. Except for the colon character as the end of the prefix, HVML elements all have names that only use ASCII alphanumerics. 
+
+注意，HVML 标签名称区别大小写。对于外部元素的标签，将保留其大小写形式。
+
+##### 3.1.2.1) 起始标签/Start tags
+
+Start tags must have the following format:
+
+1. The first character of a start tag must be a U+003C LESS-THAN SIGN character (<).
+1. The next few characters of a start tag must be the element's tag name.
+1. If there are to be any attributes in the next step, there must first be one or more ASCII whitespace.
+1. Then, the start tag may have a number of attributes, the syntax for which is described below. Attributes must be separated from each other by one or more ASCII whitespace.
+1. After the attributes, or after the tag name if there are no attributes, there may be one or more ASCII whitespace. (Some attributes are required to be followed by a space. See the attributes section below.)
+1. Then, if the element is one of the void elements, or if the element is a foreign element, then there may be a single U+002F SOLIDUS character (/). This character has no effect on void elements, but on foreign elements it marks the start tag as self-closing.
+1. Finally, start tags must be closed by a U+003E GREATER-THAN SIGN character (>).
+
+##### 3.1.2.2) 终止标签/End tags
+
+End tags must have the following format:
+
+1. The first character of an end tag must be a U+003C LESS-THAN SIGN character (<).
+1. The second character of an end tag must be a U+002F SOLIDUS character (/).
+1. The next few characters of an end tag must be the element's tag name.
+1. After the tag name, there may be one or more ASCII whitespace.
+1. Finally, end tags must be closed by a U+003E GREATER-THAN SIGN character (>).
+
+##### 3.1.2.3) 属性/Attributes
+
+Attributes for an element are expressed inside the element's start tag.
+
+Attributes have a name and a value. Attribute names must consist of one or more characters other than controls, U+0020 SPACE, U+0022 ("), U+0027 ('), U+003E (>), U+002F (/), U+003D (=), and noncharacters. In the HVML syntax, attribute names, even those for foreign elements, may be written with any mix of ASCII lower and ASCII upper alphas.
+
+Attribute values are a mixture of text and character references, except with the additional restriction that the text cannot contain an ambiguous ampersand.
+
+Attributes can be specified in four different ways:
+
+1) Empty attribute syntax
+
+Just the attribute name. The value is implicitly the empty string.
+
+In the following example, the disabled attribute is given with the empty attribute syntax:
+
+```html
+    <init as="_TIMERS" uniquely by="id">
+```
+
+If an attribute using the empty attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
+
+2) Unquoted attribute value syntax
+
+The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal ASCII whitespace, any U+0022 QUOTATION MARK characters ("), U+0027 APOSTROPHE characters ('), U+003D EQUALS SIGN characters (=), U+003C LESS-THAN SIGN characters (<), U+003E GREATER-THAN SIGN characters (>), or U+0060 GRAVE ACCENT characters (`), and must not be the empty string.
+
+In the following example, the value attribute is given with the unquoted attribute value syntax:
+
+```html
+    <init as=_TIMERS uniquely by=id>
+```
+
+If an attribute using the unquoted attribute syntax is to be followed by another attribute or by the optional U+002F SOLIDUS character (/) allowed in step 6 of the start tag syntax above, then there must be ASCII whitespace separating the two.
+
+3) Single-quoted attribute value syntax
+
+The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by a single U+0027 APOSTROPHE character ('), followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal U+0027 APOSTROPHE characters ('), and finally followed by a second single U+0027 APOSTROPHE character (').
+
+In the following example, the type attribute is given with the single-quoted attribute value syntax:
+
+```html
+    <init as='_TIMERS' uniquely by='id'>
+```
+
+If an attribute using the single-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
+
+4) Double-quoted attribute value syntax
+
+The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by a single U+0022 QUOTATION MARK character ("), followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal U+0022 QUOTATION MARK characters ("), and finally followed by a second single U+0022 QUOTATION MARK character (").
+
+In the following example, the name attribute is given with the double-quoted attribute value syntax:
+
+```html
+    <choose on="$2.payload" to="append update" in="#the-user-list" with="#user-item">
+```
+
+If an attribute using the double-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
+
+There must never be two or more attributes on the same start tag whose names are an ASCII case-sensitive match for each other.
+
+##### 3.1.2.4) 属性值操作符
+
+在 `update` 元素中，我们还可以使用除 `=` 之外的属性值操作符来改变目标元素或者数据的属性或者内容：
+
+- `+=`：在当前的属性值中添加一个新的词法单元（token，指使用某种词法进行分割的最小单元字符串），若已有该词法单元，则不做修改。比如，原有的 `attr.class` 的属性值为 `foo`，使用 `attr.class += "text-warning"` 后，将修改为：`foo text-warning`；若原有属性值为 `foo text-warning`，则会保持不变。
+- `-=`：从当前属性值中移除一个词法单元，若没有该词法单元，则不做修改。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class -= "text-warning"` 后，将修改为 `foo`。
+- `%=`：从当前属性值中按指定的模式匹配一个词法单元，并使用第二个词法单元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class %= "text-* text-info"` 后，将修改为 `foo text-info`。
+- `/=`：从当前属性值中按正则表达式匹配一个词法单元，并使用第二个词法单元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class /= "/^text/ text-info"` 后，将修改为 `foo text-info`。
+- `^=`：在当前属性值的头部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value ^= "C"` 后，将修改为：`Cab`。
+- `$=`：在当前属性值的尾部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value $= "C"` 后，将修改为：`abC`。
+
+
+##### 3.1.2.5) 裸文本元素和可转义裸文本元素的内容限制
+
+裸文本元素和可转义裸文本元素中的文本不能包含任何以 `</`（U+003C LESS-THAN SIGN, U+002F SOLIDUS）打头，且跟随以 ASCII 字母打头的标签名称以及 U+0009 CHARACTER TABULATION (tab)、U+000A LINE FEED (LF)、U+000C FORM FEED (FF)、U+000D CARRIAGE RETURN (CR)、U+0020 SPACE、U+003E GREATER-THAN SIGN (`>`)，或者 U+002F SOLIDUS (`/`) 字符之一的字符串。
+
+> The text in raw text and escapable raw text elements must not contain any occurrences of the string `</` (U+003C LESS-THAN SIGN, U+002F SOLIDUS) followed by a tag name started with an ASCII alpha letter and followed by one of U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), U+0020 SPACE, U+003E GREATER-THAN SIGN (`>`), or U+002F SOLIDUS (`/`).
+
+#### 3.1.3) 文本/Text
+
+Text is allowed inside elements, attribute values, and comments. Extra constraints are placed on what is and what is not allowed in text based on where the text is to be put, as described in the other sections.
+
+##### 3.1.3.1) 新行/newlines
+
+Newlines in HVML may be represented either as U+000D CARRIAGE RETURN (CR) characters, U+000A LINE FEED (LF) characters, or pairs of U+000D CARRIAGE RETURN (CR), U+000A LINE FEED (LF) characters in that order.
+
+Where character references are allowed, a character reference of a U+000A LINE FEED (LF) character (but not a U+000D CARRIAGE RETURN (CR) character) also represents a newline.
+
+#### 3.1.4) 字符应用/Character references
+
+In certain cases described in other sections, text may be mixed with character references. These can be used to escape characters that couldn't otherwise legally be included in text.
+
+Character references must start with a U+0026 AMPERSAND character (&). Following this, there are three possible kinds of character references:
+
+Named character references
+The ampersand must be followed by one of the names given in the named character references section, using the same case. The name must be one that is terminated by a U+003B SEMICOLON character (;).
+Decimal numeric character reference
+The ampersand must be followed by a U+0023 NUMBER SIGN character (#), followed by one or more ASCII digits, representing a base-ten integer that corresponds to a code point that is allowed according to the definition below. The digits must then be followed by a U+003B SEMICOLON character (;).
+Hexadecimal numeric character reference
+The ampersand must be followed by a U+0023 NUMBER SIGN character (#), which must be followed by either a U+0078 LATIN SMALL LETTER X character (x) or a U+0058 LATIN CAPITAL LETTER X character (X), which must then be followed by one or more ASCII hex digits, representing a hexadecimal integer that corresponds to a code point that is allowed according to the definition below. The digits must then be followed by a U+003B SEMICOLON character (;).
+The numeric character reference forms described above are allowed to reference any code point excluding U+000D CR, noncharacters, and controls other than ASCII whitespace.
+
+An ambiguous ampersand is a U+0026 AMPERSAND character (&) that is followed by one or more ASCII alphanumerics, followed by a U+003B SEMICOLON character (;), where these characters do not match any of the names given in the named character references section.
+
+### 3.1.5) CDATA 段落/CDATA sections
+
+CDATA sections must consist of the following components, in this order:
+
+1. The string `<![CDATA[`.
+1. Optionally, text, with the additional restriction that the text must not contain the string `]]>`.
+1. The string `]]>`.
+1. CDATA sections can only be used in foreign content (MathML or SVG). In this example, a CDATA section is used to escape the contents of a MathML ms element:
+
+```html
+<p>You can add a string to a number, but this stringifies the number:</p>
+<math>
+ <ms><![CDATA[x<y]]></ms>
+ <mo>+</mo>
+ <mn>3</mn>
+ <mo>=</mo>
+ <ms><![CDATA[x<y3]]></ms>
+</math>
+```
+
+#### 3.1.6) 注释/Comments
+
+Comments must have the following format:
+
+1. The string `<!--`.
+1. Optionally, text, with the additional restriction that the text must not start with the string `>`, nor start with the string `->`, nor contain the strings `<!--`, `-->`, or `--!>`, nor end with the string `<!-`.
+1. The string `-->`.
 
 ## 4) 应用示例
 
