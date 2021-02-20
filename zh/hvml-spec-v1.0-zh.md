@@ -567,7 +567,7 @@ HVML 解释器按照固定的策略将 DOM 子树（文档片段）视作一个�
 HVML 定义了两种模板标签，用于定义可以插入 DOM 文档中的 XML/HTML 模板以及 JSON 数据模板：
 
 - `archedata`：该标签用于定义一个 JSON 格式的数据项模板。
-- `archetype`：该标签用于定义一个 XML/HTML 格式的文档片段模板。`archetype` 类似 HTML5 的 `template` 标签，用来定义一个 XML/HTML 模板，其中的内容可以是一个 XML 片段，也可以是一个 HTML 片段，前者可用于生成特定 GUI 系统的界面描述片段，后者可以生成 HTML 文档的片段。
+- `archetype` 和 `rawpart`：这两个标签可用于定义一个 XML/HTML 格式的文档片段模板。类似 HTML5 的 `template` 标签，这两个标签用来定义一个 XML/HTML 模板，其中的内容可以是一个 XML 片段，也可以是一个 HTML 片段，前者可用于生成特定 GUI 系统的界面描述片段，后者可以生成 HTML 文档的片段。`archetype` 和 `rawpart` 的不同之处在于，在克隆前者定义的文档片段时，将执行 JSON 表达式置换操作，后者则不做此项处理。
 
 在定义模板时，可直接定义文档片段和数据之间的映射关系。如：
 
@@ -585,11 +585,20 @@ HVML 定义了两种模板标签，用于定义可以插入 DOM 文档中的 XML
             "name": "$?.children[1].children[0].textContent", "region": "$?.attr.data-region"
         }
     </archedata>
+
+    <rawpart id="unknown-user-item">
+        <li class="user-item">
+            <img class="avatar" src="/def-avatar.png">
+            <span>Unknown</span>
+        </li>
+    </rawpart>
 ```
 
 在上面的例子中，`archetype` 标签定义了一个文档片段模板，可用于生成真实的文档片段并插入到合适的 DOM 树位置。HVML 解释器在将该模板克隆并插入到真实的文档 DOM 树时，会将当前上下文中的数据按照给定的映射关系进行替换。在 HVML 中，`$?` 是一个特殊的上下文变量，用来指代动作标签执行时的当前上下文数据。类似 `$?.id`、`$?.name` 这样的字符串将被视为 JSON 求值表达式进行求值，最终使用当前上下文的数据来替代。
 
 在上面的例子中，`archedata` 标签定义了一个数据模板，其处理类似 `archetype`，但主要执行相反的操作，通常用于将一个 DOM 子树映射为一个 JSON 数据项，或者将一个 JSON 数据项映射到另一个结构不同的 JSON 数据项。
+
+在上面的例子中，`rawpart` 标签定义了一个裸文本模板，其中包含一段 XML/HTML 文档片段，可克隆到目标位置，但不做任何 JSON 求值表达式的处理，即使包含合法的 JSON 求值表达式。
 
 注意，用于引用特定的 `archetype` 或 `archedata` 模板的标识符（由 `id` 属性定义），和 HTML/XML 不同，HVML 不要求该标识符是全局唯一的，而只要求在 HVML 的同一级兄弟元素中唯一，这带来了一定的便利。比如：
 
@@ -673,16 +682,16 @@ HVML 还定义有如下一些动作标签：
 注意：在 HVML 中，错误和异常标签必须包含在 HVML 动作标签中作为其直接子元素使用，在错误和异常标签中，可以使用目标标记语言的标签定义子元素。
 当出现错误或者异常时，错误或异常标签中定义的文档片段将被克隆到当前的文档操作位置，并中止当前的操作。
 
-为方便错误和异常的处理，我们可以使用 `archetype` 标签定义当前上下文中默认的错误或异常文档片段：
+为方便错误和异常的处理，我们可以使用 `archetype` 或 `rawpart` 标签定义当前上下文中默认的错误或异常文档片段：
 
 ```html
 
-    <archetype id="ERROR">
-        <p class="text-danger">There is an error: {$?.message}.</p>
-    </archetype>
+    <rawpart id="ERROR">
+        <p class="text-danger">There is an error.</p>
+    </rawpart>
     
     <archetype id="EXCEPT">
-        <p class="text-warning">There is an execption: {$?.message}.</p>
+        <p class="text-warning">There is an execption: {$_EXCEPT.messages}</p>
     </archetype>
 ```
 
@@ -2609,27 +2618,27 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml PREFIX "hvml:">
 
 HVML 元素可划分为如下几类：
 
-1) 无内容的动作元素（action elements without contents）  
+1) 无文本的动作元素（action elements without text）  
 `update`、`remove`、`test`、`match`、`choose`、`iterate`、`reduce`、`observe`、`fire`、`listen`、`close`、`load`、`back`、`define`、`include`、`call`、`return` 和 `catch` 元素。
 
-2) 有内容的动作元素（action elements with contents）  
-`init`、`set` 元素。
+2) 有文本的动作元素（action elements with text）  
+`init` 和 `set` 元素。
 
 3) 模板元素（template elements）  
-`archetype`、`rawpart` 元素。
+`archetype`、`rawpart`、`error` 和 `except` 元素。
 
 4) 裸文本元素（raw text elements）  
 `archedata` 元素。
 
 6) 普通元素（normal elements）  
-`hvml`、`head`、`body`、`error`、`except` 元素。
+`hvml`、`head` 和 `body` 元素。
 
 7) 外部元素 （foreign elements） 
 所有不属于 HVML 标签定义的元素，被视为外部元素。
 
-无内容的动作元素用于定义对数据或文档的操作，可包含其他动作元素以及 `error` 或者 `except` 这两类普通元素，但不能包含其他类型的元素，也不能定义内容。
+无文本的动作元素用于定义对数据或文档的操作，可包含其他动作元素以及 `error` 或者 `except` 这两类普通元素，但不能包含其他类型的元素，也不能定义内容。
 
-有内容的动作元素用于定义 JSON 数据，不可包含其他子元素；其内容之限制同裸文本元素。
+有文本的动作元素用于定义 JSON 数据，不可包含其他子元素；其内容之限制同裸文本元素。
 
 一个模板元素的模板内容位于该模板元素的起始标签之后，终止标签之前，可包含任意的文本、字符引用、外部元素以及注释，但文本不能包含 U+003C LESS-THAN SIGN (`<`) 或者含糊的＆符号。
 
