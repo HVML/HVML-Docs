@@ -43,7 +43,7 @@ All Rights Reserved.
       * [2.2.7) `reduce` 标签](#227-reduce-标签)
       * [2.2.8) `observe` 和 `fire` 标签](#228-observe-和-fire-标签)
       * [2.2.9) `request` 标签](#229-request-标签)
-      * [2.2.10) `set` 标签](#2210-set-标签)
+      * [2.2.10) `init` 和 `set` 标签](#2210-init-和-set-标签)
       * [2.2.11) `listen` 和 `close` 标签](#2211-listen-和-close-标签)
       * [2.2.12) `load` 和 `back` 标签](#2212-load-和-back-标签)
       * [2.2.13) `define` 和 `include` 标签](#2213-define-和-include-标签)
@@ -65,6 +65,19 @@ All Rights Reserved.
          - [2.3.2.4) 外部函数](#2324-外部函数)
    + [2.3.3) 响应式处理](#233-响应式处理)
 - [3) HVML 语法](#3-hvml-语法)
+   + [3.1) 书写 HVML 文档](#31-书写-hvml-文档)
+      * [3.1.1) DOCTYPE](#311-doctype)
+      * [3.1.2) 元素](#312-元素)
+         - [3.1.2.1) 起始标签/Start tags](#3121-起始标签start-tags)
+         - [3.1.2.2) 终止标签/End tags](#3122-终止标签end-tags)
+         - [3.1.2.3) 属性/Attributes](#3123-属性attributes)
+         - [3.1.2.4) 属性值操作符](#3124-属性值操作符)
+         - [3.1.2.5) 裸文本元素和可转义裸文本元素的内容限制](#3125-裸文本元素和可转义裸文本元素的内容限制)
+      * [3.1.3) 文本/Text](#313-文本text)
+         - [3.1.3.1) 新行/newlines](#3131-新行newlines)
+      * [3.1.4) 字符引用/Character references](#314-字符引用character-references)
+      * [3.1.5) CDATA 段落/CDATA sections](#315-cdata-段落cdata-sections)
+      * [3.1.6) 注释/Comments](#316-注释comments)
 - [4) 应用示例](#4-应用示例)
    + [4.1) 使用 HVML 开发传统 GUI 应用](#41-使用-hvml-开发传统-gui-应用)
    + [4.2) 云应用](#42-云应用)
@@ -1396,9 +1409,13 @@ HVML 定义的上下文变量可罗列如下：
 
 正常情况下，使用同步请求时，`request` 元素的执行结果数据就是请求的返回结果；如果使用异步请求，`request` 元素的操作结果数据为字符串 `ok`。异步请求时，一般应该在对应的 `observe` 元素中做后续处理。
 
-#### 2.2.10) `set` 标签
+#### 2.2.10) `init` 和 `set` 标签
 
-`set` 标签在 `on` 属性给定的变量上，使用 `with` 指定的数据来执行由 `to` 属性指定的操作，主要用于集合操作。常见用法如下：
+`init` 标签初始化一个变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `with` 属性定义该请求。
+
+`set` 标签在 `on` 属性给定的变量上，使用 `with` 指定的数据来执行由 `to` 属性指定的操作，主要用于集合操作。
+
+这两个标签的常见用法如下：
 
 ```html
     <init as="users" uniquely by="id">
@@ -2758,7 +2775,7 @@ Newlines in HVML may be represented either as U+000D CARRIAGE RETURN (CR) charac
 
 Where character references are allowed, a character reference of a U+000A LINE FEED (LF) character (but not a U+000D CARRIAGE RETURN (CR) character) also represents a newline.
 
-#### 3.1.4) 字符应用/Character references
+#### 3.1.4) 字符引用/Character references
 
 In certain cases described in other sections, text may be mixed with character references. These can be used to escape characters that couldn't otherwise legally be included in text.
 
@@ -2774,7 +2791,7 @@ The numeric character reference forms described above are allowed to reference a
 
 An ambiguous ampersand is a U+0026 AMPERSAND character (&) that is followed by one or more ASCII alphanumerics, followed by a U+003B SEMICOLON character (;), where these characters do not match any of the names given in the named character references section.
 
-### 3.1.5) CDATA 段落/CDATA sections
+#### 3.1.5) CDATA 段落/CDATA sections
 
 CDATA sections must consist of the following components, in this order:
 
