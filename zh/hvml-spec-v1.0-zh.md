@@ -284,10 +284,11 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
 如上例所示，HVML 采用了类似 HTML 的标签来定义文档的整体结构：
 
-- 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。
+- 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。另外可使用如下属性：
+   1. `PREFIX`：定义 HVML 标签的前缀。
+   1. `TARGET`：定义 HVML 文档的目标标记语言，取 `html`、`xml` 等指。
+   1. `SYSTEM`： 定义处理 HVML 文档的系统环境，取 `c`、`cpp`、`python`、`lua`、`javascript` 等多种可能的值之一。
 - `hvml` 标签用于定义整个 HVML 文档。
-   1. 我们使用 `hvml` 元素的 `target` 属性来定义 HVML 文档的目标标记语言类型，取 `html`、`xml` 等。
-   1. 我们使用 `hvml` 元素的 `script` 属性来定义 HVML 文档的外部脚本程序类型，取 `python`、`lua`、`javascript` 等多种可能的值之一。
 - `head` 标签用于定义头部信息，其中可包含：
    1. 可被原样保留到目标文档的标签，如 HTML 文档的 `<meta>`、`<link>` 标签。
    1. 全局数据的初始化；使用 `init` 和 `set` 标签定义。
@@ -299,7 +300,8 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
 需要注意的是，HVML 的标签、属性名称、变量名称是区分大小写的，这主要是为了和 XML 相关规范保持一致。
 
-__是否考虑：__在 HVML 文档中，可以定义多个 `body` 本地内容，使用 `id` 属性区别不同的本体内容。在执行过程中，可通过 `load` 元素装载不同的本地内容。
+__是否考虑：__  
+在 HVML 文档中，可以定义多个 `body` 本地内容，使用 `id` 属性区别不同的本体内容。在执行过程中，可通过 `load` 元素装载不同的本地内容。
 
 #### 2.1.2) 数据和变量
 
@@ -2804,7 +2806,8 @@ There must never be two or more attributes on the same start tag whose names are
     <init as "_TIMERS" uniquely by "id">
 ```
 
-__是否考虑：__当使用单引号时，将忽略整个属性值字符串中的所有 JSON 表达式，当做普通字符串处理。
+__是否考虑：__  
+当使用单引号时，将忽略整个属性值字符串中的所有 JSON 表达式，当做普通字符串处理。
 
 在某些动作元素（如 `update`）中，我们可以使用除 `=` 之外的属性值操作符来改变目标元素或者数据的属性或者内容：
 
