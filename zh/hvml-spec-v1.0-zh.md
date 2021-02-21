@@ -76,6 +76,7 @@ All Rights Reserved.
          - [3.1.2.6) 裸文本元素和可转义裸文本元素的内容限制](#3126-裸文本元素和可转义裸文本元素的内容限制)
       * [3.1.3) 文本/Text](#313-文本text)
          - [3.1.3.1) 新行/newlines](#3131-新行newlines)
+         - [3.1.3.2) JSON 求值表达式的语法](#3132-json-求值表达式的语法)         
       * [3.1.4) 字符引用/Character references](#314-字符引用character-references)
       * [3.1.5) CDATA 段落/CDATA sections](#315-cdata-段落cdata-sections)
       * [3.1.6) 注释/Comments](#316-注释comments)
@@ -373,7 +374,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 1. `$_L.NUMCMP(< '>' | '>=' | '==' | '<=' | '<' | '!=' >, <json_evaluation_expression>, <json_evaluation_expression>)`：用于比较两个数值；第一个参数用来表示比较运算符，其后的两个参数用来传递两个数值。
 1. `$_L.STRCMP(< 'case' | 'wildcard' | 'reg' >, <json_evaluation_expression>, <json_evaluation_expression>)`：用于对比两个字符串；第一个参数用来表示字符串的匹配方式（区分大小写、通配符、正则表达式），其后的两个参数用来传递两个字符串。
 
-比如 `$_L.NOT($_L.NUMCMP('>', 5, 3))` 的结果是假值（false）。
+比如 `$_L.NOT($_L.NUMCMP('>', 5, 3))` 的结果是假值（`false`）。
 
 ##### 2.1.2.5) `$_`
 
