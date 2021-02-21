@@ -71,13 +71,33 @@ All Rights Reserved.
          - [3.1.2.1) 起始标签/Start tags](#3121-起始标签start-tags)
          - [3.1.2.2) 终止标签/End tags](#3122-终止标签end-tags)
          - [3.1.2.3) 属性/Attributes](#3123-属性attributes)
-         - [3.1.2.4) 属性值操作符](#3124-属性值操作符)
-         - [3.1.2.5) 裸文本元素和可转义裸文本元素的内容限制](#3125-裸文本元素和可转义裸文本元素的内容限制)
+         - [3.1.2.4) 动作元素属性](#3124-动作元素属性)
+         - [3.1.2.5) 可选标签](#3125-可选标签)
+         - [3.1.2.6) 裸文本元素和可转义裸文本元素的内容限制](#3126-裸文本元素和可转义裸文本元素的内容限制)
       * [3.1.3) 文本/Text](#313-文本text)
          - [3.1.3.1) 新行/newlines](#3131-新行newlines)
       * [3.1.4) 字符引用/Character references](#314-字符引用character-references)
       * [3.1.5) CDATA 段落/CDATA sections](#315-cdata-段落cdata-sections)
       * [3.1.6) 注释/Comments](#316-注释comments)
+   + [3.2) 解析 HVML 文档](#32-解析-hvml-文档)
+      * [3.2.1) 解析模型概览](#321-解析模型概览)
+      * [3.2.2) 解析错误](#322-解析错误)
+      * [3.2.3) 输入字节流](#323-输入字节流)
+      * [3.2.4) 解析状态](#324-解析状态)
+         - [3.2.4.1) 插入模式](#3241-插入模式)
+         - [3.2.4.2) 开放元素栈](#3242-开放元素栈)
+      * [3.2.5) 断词/Tokenization](#325-断词tokenization)
+      * [3.2.6) 树的构造](#326-树的构造)
+         - [3.2.6.1) 创建和插入模式/Creating and inserting nodes](#3261-创建和插入模式creating-and-inserting-nodes)
+         - [3.2.6.2) 解析仅包含文本的元素/Parsing elements that contain only text](#3262-解析仅包含文本的元素parsing-elements-that-contain-only-text)
+         - [3.2.6.3) 自动关闭元素/Auto-closing elements](#3263-自动关闭元素auto_closing-elements)
+         - [3.2.6.4) HVML 内容的词法解析规则/The rules for parsing tokens in HVML content](#3264-hvml-内容的词法解析规则the-rules-for-parsing-tokens-in-hvml-content)
+         - [3.2.6.5) 外部内容的词法解析规则/The rules for parsing tokens in foreign content](#3265-外部内容的词法解析规则the-rules-for-parsing-tokens-in-foreign-content)
+      * [3.2.7) 结束](#327-结束)
+      * [3.2.8) 错误错误](#328-错误错误)
+   + [3.3 HVML 片段的串行化/Serializing HVML fragments](#33-hvml-片段的串行化serializing-hvml-fragments)
+   + [3.4 解析 HVML 片段/Parsing HVML fragments](#34-解析-hvml-片段parsing-hvml-fragments)
+   + [3.5 已命名字符引用/Named character references](#35-已命名字符引用named-character-references)
 - [4) 应用示例](#4-应用示例)
    + [4.1) 使用 HVML 开发传统 GUI 应用](#41-使用-hvml-开发传统-gui-应用)
    + [4.2) 云应用](#42-云应用)
@@ -2706,7 +2726,7 @@ Attribute values are a mixture of text and character references, except with the
 
 Attributes can be specified in four different ways:
 
-1) Empty attribute syntax
+1) 空属性语法/Empty attribute syntax
 
 Just the attribute name. The value is implicitly the empty string.
 
@@ -2718,7 +2738,7 @@ In the following example, the disabled attribute is given with the empty attribu
 
 If an attribute using the empty attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
 
-2) Unquoted attribute value syntax
+2) 无引号属性值语法/Unquoted attribute value syntax
 
 The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal ASCII whitespace, any U+0022 QUOTATION MARK characters ("), U+0027 APOSTROPHE characters ('), U+003D EQUALS SIGN characters (=), U+003C LESS-THAN SIGN characters (<), U+003E GREATER-THAN SIGN characters (>), or U+0060 GRAVE ACCENT characters (`), and must not be the empty string.
 
@@ -2730,7 +2750,7 @@ In the following example, the value attribute is given with the unquoted attribu
 
 If an attribute using the unquoted attribute syntax is to be followed by another attribute or by the optional U+002F SOLIDUS character (/) allowed in step 6 of the start tag syntax above, then there must be ASCII whitespace separating the two.
 
-3) Single-quoted attribute value syntax
+3) 单引号属性值语法/Single-quoted attribute value syntax
 
 The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by a single U+0027 APOSTROPHE character ('), followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal U+0027 APOSTROPHE characters ('), and finally followed by a second single U+0027 APOSTROPHE character (').
 
@@ -2742,7 +2762,7 @@ In the following example, the type attribute is given with the single-quoted att
 
 If an attribute using the single-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
 
-4) Double-quoted attribute value syntax
+4) 双引号属性值语法/Double-quoted attribute value syntax
 
 The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by a single U+0022 QUOTATION MARK character ("), followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal U+0022 QUOTATION MARK characters ("), and finally followed by a second single U+0022 QUOTATION MARK character (").
 
@@ -2756,9 +2776,32 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 
 There must never be two or more attributes on the same start tag whose names are an ASCII case-sensitive match for each other.
 
-##### 3.1.2.4) 属性值操作符
+##### 3.1.2.4) 动作元素属性
 
-在 `update` 元素中，我们还可以使用除 `=` 之外的属性值操作符来改变目标元素或者数据的属性或者内容：
+在 HVML 中，动作元素的属性值存在如下特殊之处：
+
+1. 动作元素的属性值可分为介词属性和副词属性，这些属性是固有属性。
+1. 所有介词属性均需定义对应的属性值，可省略其赋值操作符（U+003D EQUALS SIGN `=`）。
+1. 所有副词属性按上述（Empty attribute syntax/空属性语法）表述。
+1. 除固有的介词属性及副词属性之外，其他属性使用上述四种语法之一，且可使用额外的赋值运算符。
+
+所有介词属性（仅在动作元素中）的赋值操作符（`=`）可以被忽略：
+
+```html
+    <choose on "$2.payload" to "append update" in "#the-user-list" with "#user-item">
+        <update textContent = "foo" />
+    </choose>
+```
+
+尽管对符合条件的介词属性值，我们可以省略其周围的单引号（U+0027 APOSTROPHE `'`）或者双引号（U+0022 QUOTATION MARK `"`），但建议使用单引号或者双引号，以使得 HVML 代码的书写效果更为美观。
+
+```html
+    <init as "_TIMERS" uniquely by "id">
+```
+
+__是否考虑：__当使用单引号时，将忽略整个属性值字符串中的所有 JSON 表达式，当做普通字符串处理。
+
+在某些动作元素（如 `update`）中，我们可以使用除 `=` 之外的属性值操作符来改变目标元素或者数据的属性或者内容：
 
 - `+=`：在当前的属性值中添加一个新的词法单元（token，指使用某种词法进行分割的最小单元字符串），若已有该词法单元，则不做修改。比如，原有的 `attr.class` 的属性值为 `foo`，使用 `attr.class += "text-warning"` 后，将修改为：`foo text-warning`；若原有属性值为 `foo text-warning`，则会保持不变。
 - `-=`：从当前属性值中移除一个词法单元，若没有该词法单元，则不做修改。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class -= "text-warning"` 后，将修改为 `foo`。
@@ -2767,8 +2810,83 @@ There must never be two or more attributes on the same start tag whose names are
 - `^=`：在当前属性值的头部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value ^= "C"` 后，将修改为：`Cab`。
 - `$=`：在当前属性值的尾部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value $= "C"` 后，将修改为：`abC`。
 
+如，
 
-##### 3.1.2.5) 裸文本元素和可转义裸文本元素的内容限制
+```html
+    <choose on "$2.payload" to "append update" in "#the-user-list" with "#user-item">
+        <update attr.class %= "text-* text-info" />
+    </choose>
+```
+
+##### 3.1.2.5) 可选标签
+
+要求使用严格的 XML 语法，所以，原则上不能省略任何标签，但有如下所述的特殊情形。
+
+1) 整个省略 `head` 元素
+
+我们可以整个省略 `head` 元素。当我们整个省略 `head` 元素时，对应的 HVML DOM 树中将包含一个空的 `head` 元素节点。
+
+```html
+<!DOCTYPE hvml>
+<hvml>
+    <body>
+        ...
+    </body>
+</hvml>
+```
+
+2) 自动关闭外部元素
+
+如下所示由外部元素定义的 HVML 片段：
+
+```html
+    <div>
+        <p>asdf asdf wiup asdfi kjfdas <i>asdfasdf.
+    </div>
+```
+
+我们省略了 `</i>` 和 `</p>` 终止标签，上述片段将被解析为：
+
+
+```html
+    <div>
+        <p>asdf asdf wiup asdfi kjfdas <i>asdfasdf.</i></p>
+    </div>
+```
+
+注意，HVML 解析器不能处理 HTML 规范定义的可选标签处理规则。如：
+
+```html
+    <ul>
+        <li>asdf asdf.
+        <li>asdf asdf wiup asdfi kjfdas.
+        <li>asdf kjaskfdasdf askdf asdf fa jaksdfasdf.
+    </ul>
+```
+
+按照 HTML 规范，应被解析为：
+
+```html
+    <ul>
+        <li>asdf asdf.</li>
+        <li>asdf asdf wiup asdfi kjfdas.</li>
+        <li>asdf kjaskfdasdf askdf asdf fa jaksdfasdf.</li>
+    </ul>
+```
+
+但会被 HVML 解析器解析为：
+
+```html
+    <ul>
+        <li>asdf asdf.
+            <li>asdf asdf wiup asdfi kjfdas.
+                <li>asdf kjaskfdasdf askdf asdf fa jaksdfasdf.</li>
+            </li>
+        </li>
+    </ul>
+```
+
+##### 3.1.2.6) 裸文本元素和可转义裸文本元素的内容限制
 
 裸文本元素和可转义裸文本元素中的文本不能包含任何以 `</`（U+003C LESS-THAN SIGN, U+002F SOLIDUS）打头，且跟随以 ASCII 字母打头的标签名称以及 U+0009 CHARACTER TABULATION (tab)、U+000A LINE FEED (LF)、U+000C FORM FEED (FF)、U+000D CARRIAGE RETURN (CR)、U+0020 SPACE、U+003E GREATER-THAN SIGN (`>`)，或者 U+002F SOLIDUS (`/`) 字符之一的字符串。
 
@@ -2827,6 +2945,44 @@ Comments must have the following format:
 1. The string `<!--`.
 1. Optionally, text, with the additional restriction that the text must not start with the string `>`, nor start with the string `->`, nor contain the strings `<!--`, `-->`, or `--!>`, nor end with the string `<!-`.
 1. The string `-->`.
+
+### 3.2) 解析 HVML 文档
+
+#### 3.2.1) 解析模型概览
+
+#### 3.2.2) 解析错误
+
+#### 3.2.3) 输入字节流
+
+#### 3.2.4) 解析状态
+
+##### 3.2.4.1) 插入模式
+
+##### 3.2.4.2) 开放元素栈
+
+#### 3.2.5) 断词/Tokenization
+
+#### 3.2.6) 树的构造
+
+##### 3.2.6.1) 创建和插入模式/Creating and inserting nodes
+
+##### 3.2.6.2) 解析仅包含文本的元素/Parsing elements that contain only text
+
+##### 3.2.6.3) 自动关闭元素/Auto-closing elements
+
+##### 3.2.6.4) HVML 内容的词法解析规则/The rules for parsing tokens in HVML content
+
+##### 3.2.6.5) 外部内容的词法解析规则/The rules for parsing tokens in foreign content
+
+#### 3.2.7) 结束
+
+#### 3.2.8) 错误错误
+
+### 3.3 HVML 片段的串行化/Serializing HVML fragments
+
+### 3.4 解析 HVML 片段/Parsing HVML fragments
+
+### 3.5 已命名字符引用/Named character references
 
 ## 4) 应用示例
 
