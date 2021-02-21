@@ -292,8 +292,9 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 - `head` 标签用于定义头部信息，其中可包含：
    1. 可被原样保留到目标文档的标签，如 HTML 文档的 `<meta>`、`<link>` 标签。
    1. 全局数据的初始化；使用 `init` 和 `set` 标签定义。
-   1. 绑定外部模块；使用 `bind` 标签定义。
+   1. 全局动态 JSON 对象；使用 `bind` 标签定义。
    1. 需要监听的长连接数据源；使用 `listen` 标签定义。
+   1. 全局模板；使用 `archedata`、`archetype` 或 `rawpart` 标签定义。
 - `body` 标签用于定义文档的本体内容。
 
 注意，所有非 HVML 标签所定义的内容，在 HVML 解析完成时，将被完整保留。另外需要注意的是，为了避免和 HTML 标准定义的标签重复，HVML 的常用标签均为英语中的动词，而 HTML 标准通常使用名词或其简写作为标签名称，如 HTML 的常见标签 `p` 是 paragraph（段落）的简写。
@@ -825,20 +826,6 @@ HVML 定义的上下文变量可罗列如下：
 - 在可能有歧义的情况下，可使用一对 `{}` 包围整个 JSON 数据的求值表达式，比如：`user-$?.id` 和 `user-{$?.id}` 是一样的。
 - 除上下文变量之外，变量名须符合一般的编程语言所定义的变量名规则，若使用正则表达式，可表达为：`/^[A-Za-z_][A-Za-z0-9_]*$/`。
 - 使用 `\`（反斜杠）字符用于 `$` 、`{`、`}`、`<`、`>` 等字符的转义。
-
-一个合法的 JSON 表达式（`<json_evaluation_expression>`）需要符合如下的语法规则，且可递归使用：
-
-- `<json_evaluation_expression>`: `'$'<json_addressing_expression> | '{$'<json_addressing_expression>'}'`
-- `<json_addressing_expression>`：
-   - `<literal_variable_name>'.'<literal_key_name>'('<json_evaluation_expression>[, <json_evaluation_expression>, ...]')'` 用于在动态 JSON 对象上调用特定键名的 getter 方法。
-   - `<literal_variable_name>'.'<literal_key_name>'<'<json_evaluation_expression>[, <json_evaluation_expression>, ...]'>'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
-   - `<literal_variable_name>'.'<literal_key_name>` 用于引用一个 JSON 对象的键值。
-   - `<literal_variable_name>'['<json_evaluation_expression>']'` 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。当 JSON 表达式的返回值是数值时，强制转换为整数按索引值处理，当 JSON 表达式的返回值是字符串时，按键名处理。
-   - `<literal_variable_name>` 用于直接引用一个 JSON 数据。
-- `<literal_variable_name>`：`'?' | '@' | '#' | '%' | '@' | ':' | <literal_integer> | <literal_token>`。
-- `<literal_key_name>`：`<literal_token>`。
-- `<literal_integer>`：`/^[1-9][0-9]*$/`。
-- `<literal_token>`：`/^[A-Za-z_][A-Za-z0-9_]*$/`。
 
 ### 2.2) 动作标签详解
 
@@ -2909,6 +2896,25 @@ Text is allowed inside elements, attribute values, and comments. Extra constrain
 Newlines in HVML may be represented either as U+000D CARRIAGE RETURN (CR) characters, U+000A LINE FEED (LF) characters, or pairs of U+000D CARRIAGE RETURN (CR), U+000A LINE FEED (LF) characters in that order.
 
 Where character references are allowed, a character reference of a U+000A LINE FEED (LF) character (but not a U+000D CARRIAGE RETURN (CR) character) also represents a newline.
+
+##### 3.1.3.2) JSON 求值表达式的语法
+
+除 `rawpart` 元素之外，所有元素的属性值以及文本内容中，可嵌入 JSON 求值表达式。
+
+一个合法的 JSON 表达式（`<json_evaluation_expression>`）需要符合如下的语法规则，且可递归使用：
+
+- `<json_evaluation_expression>`: `'$'<json_addressing_expression> | '{$'<json_addressing_expression>'}'`
+- `<json_addressing_expression>`：
+   - `<literal_variable_name>'.'<literal_key_name>'('<json_evaluation_expression>[, <json_evaluation_expression>, ...]')'` 用于在动态 JSON 对象上调用特定键名的 getter 方法。
+   - `<literal_variable_name>'.'<literal_key_name>'<'<json_evaluation_expression>[, <json_evaluation_expression>, ...]'>'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
+   - `<literal_variable_name>'.'<literal_key_name>` 用于引用一个 JSON 对象的键值。
+   - `<literal_variable_name>'['<json_evaluation_expression> | <quoted_key_name> | <literal_integer>']'` 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。当 JSON 表达式的返回值是数值时，强制转换为整数按索引值处理，当 JSON 表达式的返回值是字符串时，按键名处理。
+   - `<literal_variable_name>` 用于直接引用一个 JSON 数据。
+- `<literal_variable_name>`：`'?' | '@' | '#' | '%' | '@' | ':' | <literal_integer> | <literal_token>`。
+- `<literal_key_name>`：`<literal_token>`。
+- `<literal_integer>`：`/^[1-9][0-9]*$/`。
+- `<literal_token>`：`/^[A-Za-z_][A-Za-z0-9_]*$/`。
+- `<quoted_key_name>`: `'<literal_string>'` | `"<literal_string>"`。
 
 #### 3.1.4) 字符引用/Character references
 
