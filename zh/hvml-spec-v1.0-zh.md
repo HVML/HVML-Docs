@@ -231,9 +231,9 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
         <ul class="user-list">
             <iterate on="$users" with="#user-item" to="append" by="CLASS: IUser">
-                <nodata>
+                <error on="nodata">
                     <img src="wait.png" />
-                </nodata>
+                </error>
                 <except on="StopIteration">
                     <p>Bad user data!</p>
                 </except>
@@ -287,9 +287,9 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
 - 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。另外可使用如下属性：
    1. `PREFIX`：定义 HVML 标签的前缀。
-   1. `TARGET`：定义 HVML 文档的目标标记语言，取 `html`、`xml` 等指。
-   1. `SYSTEM`： 定义处理 HVML 文档的系统环境，取 `c`、`cpp`、`python`、`lua`、`javascript` 等多种可能的值之一。
-- `hvml` 标签用于定义整个 HVML 文档。
+- `hvml` 标签用于定义整个 HVML 文档。可包含如下属性：
+   1. `target`：定义 HVML 文档的目标标记语言，取 `html`、`xml` 等值。
+   1. `system`： 定义处理 HVML 文档的系统环境，取 `c`、`cpp`、`python`、`lua`、`javascript` 等值。
 - `head` 标签用于定义头部信息，其中可包含：
    1. 可被原样保留到目标文档的标签，如 HTML 文档的 `<meta>`、`<link>` 标签。
    1. 全局数据的初始化；使用 `init` 和 `set` 标签定义。
@@ -2615,9 +2615,9 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml PREFIX "hvml:">
 
         <ul class="user-list">
             <iterate on="$users" with="#user-item" to="append" by="CLASS: IUser">
-                <hvml:nodata>
+                <hvml:error on="nodata">
                     <img src="wait.png" />
-                </hvml:nodata>
+                </hvml:error>
                 <hvml:except on="StopIteration">
                     <p>Bad user data!</p>
                 </hvml:except>
