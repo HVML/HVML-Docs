@@ -285,11 +285,10 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
 如上例所示，HVML 采用了类似 HTML 的标签来定义文档的整体结构：
 
-- 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。另外可使用如下属性：
-   1. `PREFIX`：定义 HVML 标签的前缀。
+- 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。
 - `hvml` 标签用于定义整个 HVML 文档。可包含如下属性：
    1. `target`：定义 HVML 文档的目标标记语言，取 `html`、`xml` 等值。
-   1. `system`： 定义处理 HVML 文档的系统环境，取 `c`、`cpp`、`python`、`lua`、`javascript` 等值。
+   1. `script`： 定义处理 HVML 文档的系统环境，取 `c`、`cpp`、`python`、`lua`、`javascript` 等值。
 - `head` 标签用于定义头部信息，其中可包含：
    1. 可被原样保留到目标文档的标签，如 HTML 文档的 `<meta>`、`<link>` 标签。
    1. 全局数据的初始化；使用 `init` 和 `set` 标签定义。
@@ -2578,16 +2577,16 @@ In other words, `<!DOCTYPE hvml>`, case-sensitively.
 在 HVML 文档中，当某个 HVML 标签可能和目标标记语言的标签冲突时，我们可以使用预定义前缀来标记 HVML 的标签，默认使用 `v:` 作为前缀，但我们也可以在 DOCTYPE 中自定义这个前缀。前缀字符串必须以字母打头，以冒号（`:`）结尾。
 
 1. One or more ASCII whitespace.
-1. A string that is an ASCII case-sensitive match for the string "PREFIX".
+1. A string that is an ASCII case-sensitive match for the string "SYSTEM".
 1. One or more ASCII whitespace.
 1. A U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (the quote mark).
-1. A literal string specified the prefix, such as "v:", which must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK).
+1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: html c". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The other tokens are reserved for future use.
 1. A matching U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (i.e. the same character as in the earlier step labeled quote mark).
 
-For example, if you write the DOCTYPE element as `<!DOCTYPE hvml PREFIX "hvml:">`, you can add the specific prefix to some HVML tags:
+For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml:">`, you can add the specific prefix to some HVML tags:
 
 ```html
-<!DOCTYPE hvml PREFIX "hvml:">
+<!DOCTYPE hvml SYSTEM "hvml:">
 <hvml target="html" script="python" lang="en">
     <head>
         <init as="global">
