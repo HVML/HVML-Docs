@@ -2986,52 +2986,167 @@ Comments must have the following format:
 
 ##### 3.2.6.4) HVML 内容的词法解析规则/The rules for parsing tokens in HVML content
 
-1) "initial" 插入模式
+###### 3.2.6.4.1) "initial" 插入模式
 
-- A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-Ignore the token.
+1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+   - Ignore the token.
 
-- A comment token  
-Insert a comment as the last child of the Document object.
+2) A comment token  
+   - Insert a comment as the last child of the Document object.
 
-- A DOCTYPE token  
+3) A DOCTYPE token  
    - If the DOCTYPE token's name is not "hvml", then there is a parse error; set the Document to quirks mode.
    - Append a DocumentType node to the Document node, with the `name` attribute set to the name given in the DOCTYPE token, or the empty string if the name was missing; the `systemId` attribute set to the system identifier given in the DOCTYPE token, or the empty string if the system identifier was missing; and the other attributes specific to DocumentType objects set to null and empty lists as appropriate. Associate the DocumentType node with the Document object so that it is returned as the value of the `doctype` attribute of the Document object.
    - If the value of `systemId` attribute of the DocumentType is not empty, then exact the attribute value for the prefix of HVML tag name and set the value of the `tagPrefix` attribute with the string. Otherwise, set the `tagPrefix` attribute to the default prefix string (`v:`).
    - Then, switch the insertion mode to "before hvml".
 
-- Anything else
+4) Anything else
    - There is a parse error; set the Document to quirks mode.
    - Ignore the token.
    - Append a DocumentType node to the Document node with the `name` attribute set the empty string; the `systemId` attribute set to empty string; the `tagPrefix` attribute set to `v:`.
    - Then, switch the insertion mode to "before hvml".
 
-2) 'before hvml' 插入模式
+###### 3.2.6.4.2) 'before hvml' 插入模式
 
-- A DOCTYPE token
-Parse error. Ignore the token.
+1) A DOCTYPE token
+   - Parse error. Ignore the token.
 
-A comment token
-Insert a comment as the last child of the Document object.
+2) A comment token
+   - Insert a comment as the last child of the Document object.
 
-A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-Ignore the token.
+3) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+   - Ignore the token.
 
-A start tag whose tag name is "html"
-Create an element for the token in the HTML namespace, with the Document as the intended parent. Append it to the Document object. Put this element in the stack of open elements.
+4) A start tag whose tag name is "hvml"
+   - Create an element for the token in the HTML namespace, with the Document as the intended parent. Append it to the Document object. Put this element in the stack of open elements.
+   - Switch the insertion mode to "before head".
 
-Switch the insertion mode to "before head".
+5) An end tag whose tag name is one of: "head", "body", "hvml"
+   - Act as described in the "anything else" entry below.
 
-An end tag whose tag name is one of: "head", "body", "html", "br"
-Act as described in the "anything else" entry below.
+6) Any other end tag
+   - Parse error. Ignore the token.
 
-Any other end tag
-Parse error. Ignore the token.
+7) Anything else
+   - Create an `hvml` element whose node document is the Document object. Append it to the Document object. Put this element in the stack of open elements.
+   - Switch the insertion mode to "before head", then reprocess the token.
 
-Anything else
-Create an html element whose node document is the Document object. Append it to the Document object. Put this element in the stack of open elements.
+###### 3.2.6.4.3) 'before head' 插入模式
 
-Switch the insertion mode to "before head", then reprocess the token.
+1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+   - Ignore the token.
+
+2) A comment token
+   - Insert a comment.
+
+3) A DOCTYPE token
+   - Parse error. Ignore the token.
+
+4) A start tag whose tag name is "hvml"
+   - Parse error. Ignore the token.
+
+> Process the token using the rules for the "in body" insertion mode.
+> -- From HTML spec.
+
+5) A start tag whose tag name is "head"
+   - Insert an HTML element for the token.
+   - Set the head element pointer to the newly created `head` element.
+   - Switch the insertion mode to "in head".
+
+6) An end tag whose tag name is one of: "head", "body", "hvml"
+   - Act as described in the "anything else" entry below.
+
+7) Any other end tag
+   - Parse error. Ignore the token.
+
+8) Anything else
+   - Insert an HTML element for a "head" start tag token with no attributes.
+   - Set the head element pointer to the newly created `head` element.
+   - Switch the insertion mode to "in head".
+   - Reprocess the current token.
+
+###### 3.2.6.4.4) 'in head' 插入模式
+
+1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+   - Insert the character.
+
+2) A comment token
+   - Insert a comment.
+
+3) A DOCTYPE token
+   - Parse error. Ignore the token.
+
+4) A start tag whose tag name is "hvml"
+   - Parse error. Ignore the token.
+
+> Process the token using the rules for the "in body" insertion mode.
+> -- From HTML spec.
+
+5) A start tag of a foreign element
+   - If the current node on the stack of open elements is not the `head` element, pop the node off the stack of open elements.
+   - Insert a foreign element for the token.
+   - Follow the generic raw text element parsing algorithm.
+   - Acknowledge the token's self-closing flag, if it is set.
+
+> A start tag whose tag name is "title"
+> Follow the generic RCDATA element parsing algorithm.
+> -- From HTML spec.
+
+6) An end tag whose tag name is "head"
+   - Pop the current node off the stack of open elements if it is not the `head` element. 
+   - Pop the current node (which will be the head element) off the stack of open elements.
+   - Switch the insertion mode to "after head".
+
+7) An end tag whose tag name is one of: "body", "html", "br"
+   - Act as described in the "anything else" entry below.
+
+8) A start tag whose tag name is "archedata"
+   - Insert an HVML element for the token.
+   - Follow the generic raw text element parsing algorithm.
+
+8) A start tag whose tag name is "archetype"
+   - Insert an HVML element for the token.
+   - Set stop pattern to `</archetype>` and JSONEE flag is on;
+   - Switch the insertion mode to "mandatory text".
+
+9) An end tag whose tag name is "archetype"
+   - If the current node is not a `archetype` element, then this is a parse error; ignore it.
+   - Pop the current node from the stack.
+   - Reset the insertion mode appropriately.
+
+10) A start tag whose tag name is "rawpart"
+   - Insert an HVML element for the token.
+   - Set stop pattern to `</rawpart>` and JSONEE flag is off;
+   - Switch the insertion mode to "mandatory text".
+
+11) An end tag whose tag name is "rawpart"
+   - If the current node is not a `rawpart` element, then this is a parse error; ignore it.
+   - Pop the current node from the stack.
+   - Reset the insertion mode appropriately.
+
+12) A start tag whose tag name is "head"
+13) Any other end tag
+   - Parse error. Ignore the token.
+
+14) A start tag whose tag name is "init", "set", "bind", or "listen"
+   - Insert an HVML element for the token.
+
+15) Anything else
+   - Pop the current node (which will be the head element) off the stack of open elements.
+   - Switch the insertion mode to "after head".
+   - Reprocess the token.
+
+###### 3.2.6.4.5) 'after head' 插入模式
+
+###### 3.2.6.4.6) 'in body' 插入模式
+
+###### 3.2.6.4.7) 'text' 插入模式
+
+###### 3.2.6.4.8) 'mandatory text' 插入模式
+
+###### 3.2.6.4.9) 'after body' 插入模式
+
+###### 3.2.6.4.10) 'after after body' 插入模式
 
 ##### 3.2.6.5) 外部内容的词法解析规则/The rules for parsing tokens in foreign content
 
