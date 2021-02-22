@@ -3106,8 +3106,10 @@ Comments must have the following format:
 
 8) A start tag whose tag name is "archetype"
    - Insert an HVML element for the token.
-   - Set stop pattern to `</archetype>` and JSONEE flag is on;
-   - Switch the insertion mode to "mandatory text".
+   - Push the element onto the stack of open elements so that it is the new current node.
+   - Switch the tokenizer to the template data state and set JSONEE flag is on.
+   - Let the original insertion mode be the current insertion mode.
+   - Switch the insertion mode to "text".
 
 9) An end tag whose tag name is "archetype"
    - If the current node is not a `archetype` element, then this is a parse error; ignore it.
@@ -3116,8 +3118,10 @@ Comments must have the following format:
 
 10) A start tag whose tag name is "rawpart"
    - Insert an HVML element for the token.
-   - Set stop pattern to `</rawpart>` and JSONEE flag is off;
-   - Switch the insertion mode to "mandatory text".
+   - Push the element onto the stack of open elements so that it is the new current node.
+   - Switch the tokenizer to the template data state and set JSONEE flag is off.
+   - Let the original insertion mode be the current insertion mode.
+   - Switch the insertion mode to "text".
 
 11) An end tag whose tag name is "rawpart"
    - If the current node is not a `rawpart` element, then this is a parse error; ignore it.
@@ -3142,11 +3146,9 @@ Comments must have the following format:
 
 ###### 3.2.6.4.7) 'text' 插入模式
 
-###### 3.2.6.4.8) 'mandatory text' 插入模式
+###### 3.2.6.4.8) 'after body' 插入模式
 
-###### 3.2.6.4.9) 'after body' 插入模式
-
-###### 3.2.6.4.10) 'after after body' 插入模式
+###### 3.2.6.4.9) 'after after body' 插入模式
 
 ##### 3.2.6.5) 外部内容的词法解析规则/The rules for parsing tokens in foreign content
 
