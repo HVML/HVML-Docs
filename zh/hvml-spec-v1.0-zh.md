@@ -2986,6 +2986,53 @@ Comments must have the following format:
 
 ##### 3.2.6.4) HVML 内容的词法解析规则/The rules for parsing tokens in HVML content
 
+1) "initial" 插入模式
+
+- A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+Ignore the token.
+
+- A comment token  
+Insert a comment as the last child of the Document object.
+
+- A DOCTYPE token  
+   - If the DOCTYPE token's name is not "hvml", then there is a parse error; set the Document to quirks mode.
+   - Append a DocumentType node to the Document node, with the `name` attribute set to the name given in the DOCTYPE token, or the empty string if the name was missing; the `systemId` attribute set to the system identifier given in the DOCTYPE token, or the empty string if the system identifier was missing; and the other attributes specific to DocumentType objects set to null and empty lists as appropriate. Associate the DocumentType node with the Document object so that it is returned as the value of the `doctype` attribute of the Document object.
+   - If the value of `systemId` attribute of the DocumentType is not empty, then exact the attribute value for the prefix of HVML tag name and set the value of the `tagPrefix` attribute with the string. Otherwise, set the `tagPrefix` attribute to the default prefix string (`v:`).
+   - Then, switch the insertion mode to "before hvml".
+
+- Anything else
+   - There is a parse error; set the Document to quirks mode.
+   - Ignore the token.
+   - Append a DocumentType node to the Document node with the `name` attribute set the empty string; the `systemId` attribute set to empty string; the `tagPrefix` attribute set to `v:`.
+   - Then, switch the insertion mode to "before hvml".
+
+2) 'before hvml' 插入模式
+
+- A DOCTYPE token
+Parse error. Ignore the token.
+
+A comment token
+Insert a comment as the last child of the Document object.
+
+A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+Ignore the token.
+
+A start tag whose tag name is "html"
+Create an element for the token in the HTML namespace, with the Document as the intended parent. Append it to the Document object. Put this element in the stack of open elements.
+
+Switch the insertion mode to "before head".
+
+An end tag whose tag name is one of: "head", "body", "html", "br"
+Act as described in the "anything else" entry below.
+
+Any other end tag
+Parse error. Ignore the token.
+
+Anything else
+Create an html element whose node document is the Document object. Append it to the Document object. Put this element in the stack of open elements.
+
+Switch the insertion mode to "before head", then reprocess the token.
+
 ##### 3.2.6.5) 外部内容的词法解析规则/The rules for parsing tokens in foreign content
 
 #### 3.2.7) 结束
