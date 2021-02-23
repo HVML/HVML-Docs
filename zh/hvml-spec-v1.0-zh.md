@@ -3105,25 +3105,25 @@ Comments must have the following format:
 ###### 3.2.6.4.4) 'in head' 插入模式
 
 1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-- Insert the character.
+ - Insert the character.
 
 2) A comment token
-- Insert a comment.
+  - Insert a comment.
 
 3) A DOCTYPE token
-- Parse error. Ignore the token.
+   - Parse error. Ignore the token.
 
 4) A start tag whose tag name is "hvml"
-- Parse error. Ignore the token.
+   - Parse error. Ignore the token.
 
 > Process the token using the rules for the "in body" insertion mode.  
 > -- From HTML spec.
 
 5) A start tag of a foreign element
-- If the current node on the stack of open elements is not the `head` element, pop the node off the stack of open elements.
-- Insert a foreign element for the token.
-- Follow the generic raw text element parsing algorithm.
-- Acknowledge the token's self-closing flag, if it is set.
+   - If the current node on the stack of open elements is not the `head` element, pop the node off the stack of open elements.
+   - Insert a foreign element for the token.
+   - Follow the generic raw text element parsing algorithm.
+   - Acknowledge the token's self-closing flag, if it is set.
 
 > A start tag whose tag name is "title"  
 > Follow the generic RCDATA element parsing algorithm.  
