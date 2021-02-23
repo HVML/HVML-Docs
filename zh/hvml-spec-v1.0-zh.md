@@ -3162,16 +3162,16 @@ Comments must have the following format:
    - Remove the node pointed to by the head element pointer from the stack of open elements. (It might not be the current node at this point.)
    - _NOTE_ The head element pointer cannot be null at this point.
 7) An end tag whose tag name is "archetype"
-  - Process the token using the rules for the "in head" insertion mode.
+   - Process the token using the rules for the "in head" insertion mode.
 8) An end tag whose tag name is one of: "body", "hvml"
-  - Act as described in the "anything else" entry below.
+   - Act as described in the "anything else" entry below.
 9) A start tag whose tag name is "head"
 10) Any other end tag
     - Parse error. Ignore the token.
 11) Anything else
-   - Insert an HTML element for a "body" start tag token with no attributes.
-   - Switch the insertion mode to "in body".
-   - Reprocess the current token.
+    - Insert an HTML element for a "body" start tag token with no attributes.
+    - Switch the insertion mode to "in body".
+    - Reprocess the current token.
 
 ###### 3.2.6.4.6) 'in body' 插入模式
 
