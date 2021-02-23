@@ -3177,7 +3177,6 @@ Comments must have the following format:
 
 1) A character token that is U+0000 NULL
    - Parse error. Ignore the token.
-
 2) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
    - Reconstruct the active formatting elements, if any.
    - Insert the token's character.
@@ -3195,7 +3194,6 @@ Comments must have the following format:
 > Otherwise, for each attribute on the token, check to see if the attribute is already present on the top element of the stack of open elements. If it is not, add the attribute and its corresponding value to that element.
 >
 > -- From HTML spec.
-
 7) A start tag whose tag name is "body"
    - Parse error. Ignore the token.
 > If the second element on the stack of open elements is not a body element, if the stack of open elements has only one node on it, or if there is a template element on the stack of open elements, then ignore the token. (fragment case)
@@ -3230,15 +3228,15 @@ Comments must have the following format:
       - Let the original insertion mode be the current insertion mode.
       - Switch the insertion mode to "text".
 13) A start tag whose tag name is "archedata"
-   - Insert an HVML element for the token.
-   - Follow the generic raw text element parsing algorithm.
+    - Insert an HVML element for the token.
+    - Follow the generic raw text element parsing algorithm.
 14) A start tag whose tag name is "archetype"
-   - Insert an HVML element for the token.
-   - Push the element onto the stack of open elements so that it is the new current node.
-   - Switch the tokenizer to the template data state;
-   - If the `archetype` element has `raw` flag, set JSONEE flag is off; otherwise on.
-   - Let the original insertion mode be the current insertion mode.
-   - Switch the insertion mode to "text".
+    - Insert an HVML element for the token.
+    - Push the element onto the stack of open elements so that it is the new current node.
+    - Switch the tokenizer to the template data state;
+    - If the `archetype` element has `raw` flag, set JSONEE flag is off; otherwise on.
+    - Let the original insertion mode be the current insertion mode.
+    - Switch the insertion mode to "text".
 15) An end tag whose tag name is "archetype"
     - If the current node is not a `archetype` element, then this is a parse error; ignore it.
     - Pop the current node from the stack.
