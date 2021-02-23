@@ -3105,66 +3105,66 @@ Comments must have the following format:
 ###### 3.2.6.4.4) 'in head' 插入模式
 
 1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-   - Insert the character.
+   * Insert the character.
 
 2) A comment token
-   - Insert a comment.
+   * Insert a comment.
 
 3) A DOCTYPE token
-   - Parse error. Ignore the token.
+   * Parse error. Ignore the token.
 
 4) A start tag whose tag name is "hvml"
-   - Parse error. Ignore the token.
+   * Parse error. Ignore the token.
 
 > Process the token using the rules for the "in body" insertion mode.
 > -- From HTML spec.
 
 5) A start tag of a foreign element
-   - If the current node on the stack of open elements is not the `head` element, pop the node off the stack of open elements.
-   - Insert a foreign element for the token.
-   - Follow the generic raw text element parsing algorithm.
-   - Acknowledge the token's self-closing flag, if it is set.
+   * If the current node on the stack of open elements is not the `head` element, pop the node off the stack of open elements.
+   * Insert a foreign element for the token.
+   * Follow the generic raw text element parsing algorithm.
+   * Acknowledge the token's self-closing flag, if it is set.
 
 > A start tag whose tag name is "title"
 > Follow the generic RCDATA element parsing algorithm.
 > -- From HTML spec.
 
 6) An end tag whose tag name is "head"
-   - Pop the current node off the stack of open elements if it is not the `head` element. 
-   - Pop the current node (which will be the head element) off the stack of open elements.
-   - Switch the insertion mode to "after head".
+   * Pop the current node off the stack of open elements if it is not the `head` element. 
+   * Pop the current node (which will be the head element) off the stack of open elements.
+   * Switch the insertion mode to "after head".
 
 7) An end tag whose tag name is one of: "body", "html", "br"
-   - Act as described in the "anything else" entry below.
+   * Act as described in the "anything else" entry below.
 
 8) A start tag whose tag name is "archedata"
-   - Insert an HVML element for the token.
-   - Follow the generic raw text element parsing algorithm.
+   * Insert an HVML element for the token.
+   * Follow the generic raw text element parsing algorithm.
 
 8) A start tag whose tag name is "archetype"
-   - Insert an HVML element for the token.
-   - Push the element onto the stack of open elements so that it is the new current node.
-   - Switch the tokenizer to the template data state;
-   - If the `archetype` element has `raw` flag, set JSONEE flag is off; otherwise on.
-   - Let the original insertion mode be the current insertion mode.
-   - Switch the insertion mode to "text".
+   * Insert an HVML element for the token.
+   * Push the element onto the stack of open elements so that it is the new current node.
+   * Switch the tokenizer to the template data state;
+   * If the `archetype` element has `raw` flag, set JSONEE flag is off; otherwise on.
+   * Let the original insertion mode be the current insertion mode.
+   * Switch the insertion mode to "text".
 
 9) An end tag whose tag name is "archetype"
-   - If the current node is not a `archetype` element, then this is a parse error; ignore it.
-   - Pop the current node from the stack.
-   - Reset the insertion mode appropriately.
+   * If the current node is not a `archetype` element, then this is a parse error; ignore it.
+   * Pop the current node from the stack.
+   * Reset the insertion mode appropriately.
 
 10) A start tag whose tag name is "head"
 11) Any other end tag
-   - Parse error. Ignore the token.
+   * Parse error. Ignore the token.
 
 12) A start tag whose tag name is "init", "set", "bind", or "listen"
-   - Insert an HVML element for the token.
+   * Insert an HVML element for the token.
 
 13) Anything else
-   - Pop the current node (which will be the head element) off the stack of open elements.
-   - Switch the insertion mode to "after head".
-   - Reprocess the token.
+   * Pop the current node (which will be the head element) off the stack of open elements.
+   * Switch the insertion mode to "after head".
+   * Reprocess the token.
 
 ###### 3.2.6.4.5) 'after head' 插入模式
 
