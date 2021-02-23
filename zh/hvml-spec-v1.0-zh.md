@@ -3119,25 +3119,18 @@ Comments must have the following format:
    - Insert a foreign element for the token.
    - Follow the generic raw text element parsing algorithm.
    - Acknowledge the token's self-closing flag, if it is set.
-5) A start tag of a foreign element
-   - If the current node on the stack of open elements is not the `head` element, pop the node off the stack of open elements.
-   - Insert a foreign element for the token.
-   - Follow the generic raw text element parsing algorithm.
-   - Acknowledge the token's self-closing flag, if it is set.
 > A start tag whose tag name is "title"  
 > Follow the generic RCDATA element parsing algorithm.  
 > -- From HTML spec.
 6) An end tag whose tag name is "head"
-    - Pop the current node off the stack of open elements if it is not the `head` element. 
-    - Pop the current node (which will be the head element) off the stack of open elements.
-    - Switch the insertion mode to "after head".
+   - Pop the current node off the stack of open elements if it is not the `head` element. 
+   - Pop the current node (which will be the head element) off the stack of open elements.
+   - Switch the insertion mode to "after head".
 7) An end tag whose tag name is one of: "body", "html", "br"
    - Act as described in the "anything else" entry below.
-
 8) A start tag whose tag name is "archedata"
    - Insert an HVML element for the token.
    - Follow the generic raw text element parsing algorithm.
-
 9) A start tag whose tag name is "archetype"
    - Insert an HVML element for the token.
    - Push the element onto the stack of open elements so that it is the new current node.
@@ -3145,19 +3138,15 @@ Comments must have the following format:
    - If the `archetype` element has `raw` flag, set JSONEE flag is off; otherwise on.
    - Let the original insertion mode be the current insertion mode.
    - Switch the insertion mode to "text".
-
 10) An end tag whose tag name is "archetype"
    - If the current node is not a `archetype` element, then this is a parse error; ignore it.
    - Pop the current node from the stack.
    - Reset the insertion mode appropriately.
-
 11) A start tag whose tag name is "head"
 12) Any other end tag
    - Parse error. Ignore the token.
-
 13) A start tag whose tag name is "init", "set", "bind", or "listen"
    - Insert an HVML element for the token.
-
 14) Anything else
    - Pop the current node (which will be the head element) off the stack of open elements.
    - Switch the insertion mode to "after head".
