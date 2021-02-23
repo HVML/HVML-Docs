@@ -3203,13 +3203,93 @@ Comments must have the following format:
 > Otherwise, set the frameset-ok flag to "not ok"; then, for each attribute on the token, check to see if the attribute is already present on the body element (the second element) on the stack of open elements, and if it is not, add the attribute and its corresponding value to that element.
 >
 > -- From HTML spec.
-
+8) An end-of-file token
+   - If there is a node in the stack of open elements, then this is a parse error.
+   - Stop parsing.
+9) An end tag whose tag name is "body"
+   - Pop elements from the stack of open elements until a `body` element has been popped from the stack.
+   - Switch the insertion mode to "after body".
+10) An end tag whose tag name is "hvml"
+    - Pop elements from the stack of open elements until a `body` element has been popped from the stack.
+    - Switch the insertion mode to "after body".
+    - Reprocess the token.
+11) A start tag of a foreign element.
+    - Insert an HVML element for the token.
+    - _NOTE_: This element will be an ordinary element.
+8) A start tag whose tag name is "archedata"
+   - Insert an HVML element for the token.
+   - Follow the generic raw text element parsing algorithm.
+9) A start tag whose tag name is "archetype"
+   - Insert an HVML element for the token.
+   - Push the element onto the stack of open elements so that it is the new current node.
+   - Switch the tokenizer to the template data state;
+   - If the `archetype` element has `raw` flag, set JSONEE flag is off; otherwise on.
+   - Let the original insertion mode be the current insertion mode.
+   - Switch the insertion mode to "text".
+10) An end tag whose tag name is "archetype"
+    - If the current node is not a `archetype` element, then this is a parse error; ignore it.
+    - Pop the current node from the stack.
+    - Reset the insertion mode appropriately.
+11) Any start tag of an action element
+    - Insert an HVML element for the token.
+12) Any other end tag of a foreign element
+    - Run these steps:
+      1. Initialize node to be the current node (the bottommost node of the stack).
+      2. Loop: If node is an HTML element with the same tag name as the token, then:
+      3. Generate implied end tags, except for HTML elements with the same tag name as the token.
+      4. If node is not the current node, then this is a parse error.
+      5. Pop all the nodes from the current node up to node, including node, then stop these steps.
+      6. Otherwise, if node is in the special category, then this is a parse error; ignore the token, and return.
+      7. Set node to the previous entry in the stack of open elements.
+      8. Return to the step labeled loop.
 
 ###### 3.2.6.4.7) 'text' 插入模式
 
+1) A character token
+   - Insert the token's character.
+   - _NOTE_: This can never be a U+0000 NULL character; the tokenizer converts those to U+FFFD REPLACEMENT CHARACTER characters.
+2) An end-of-file token
+   - Parse error.
+   - If the current node is an `archetype` element, mark the script element as "already started".
+   - Pop the current node off the stack of open elements.
+   - Switch the insertion mode to the original insertion mode and reprocess the token.
+3) An end tag whose tag name is "archetype"
+   - ...
+
+4) Any other end tag
+   - Pop the current node off the stack of open elements.
+   - Switch the insertion mode to the original insertion mode.
+
 ###### 3.2.6.4.8) 'after body' 插入模式
 
+1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+   - Process the token using the rules for the "in body" insertion mode.
+2) A comment token
+   - Insert a comment as the last child of the first element in the stack of open elements (the html element).
+3) A DOCTYPE token
+   - Parse error. Ignore the token.
+4) A start tag whose tag name is "hvml"
+   - Process the token using the rules for the "in body" insertion mode.
+5) An end tag whose tag name is "html"
+   - If the parser was created as part of the HTML fragment parsing algorithm, this is a parse error; ignore the token. (fragment case)
+   - Otherwise, switch the insertion mode to "after after body".
+6) An end-of-file token
+   - Stop parsing.
+7) Anything else
+   - Parse error. Switch the insertion mode to "in body" and reprocess the token.
+
 ###### 3.2.6.4.9) 'after after body' 插入模式
+
+1) A comment token
+   - Insert a comment as the last child of the Document object.
+2) A DOCTYPE token
+3) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+4) A start tag whose tag name is "hvml"
+   - Process the token using the rules for the "in body" insertion mode.
+5) An end-of-file token
+   - Stop parsing.
+6) Anything else
+   - Parse error. Switch the insertion mode to "in body" and reprocess the token.
 
 ##### 3.2.6.5) 外部内容的词法解析规则/The rules for parsing tokens in foreign content
 
