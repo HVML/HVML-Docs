@@ -3117,9 +3117,9 @@ Comments must have the following format:
 
 
 4) A start tag whose tag name is "hvml"
-   - Parse error. Ignore the token.
+   - Parse error. Ignore the `token`.
 
-> Process the token using the rules for the "in body" insertion mode.
+> Process the token using the rules for the "in body" insertion mode.  
 > -- From HTML spec.
 
 5) A start tag of a foreign element
@@ -3128,8 +3128,8 @@ Comments must have the following format:
    - Follow the generic raw text element parsing algorithm.
    - Acknowledge the token's self-closing flag, if it is set.
 
-> A start tag whose tag name is "title"
-> Follow the generic RCDATA element parsing algorithm.
+> A start tag whose tag name is "title"  
+> Follow the generic RCDATA element parsing algorithm.  
 > -- From HTML spec.
 
 6) An end tag whose tag name is "head"
