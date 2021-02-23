@@ -3070,6 +3070,7 @@ Comments must have the following format:
 4) A start tag whose tag name is "hvml"
    - Parse error. Ignore the token.
 > Process the token using the rules for the "in body" insertion mode.
+>
 > -- From HTML spec.
 5) A start tag whose tag name is "head"
    - Insert an HTML element for the token.
@@ -3088,28 +3089,31 @@ Comments must have the following format:
 ###### 3.2.6.4.4) 'in head' 插入模式
 
 1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-   - Insert the character.
+   - Insert the character.  
 2) A comment token
    - Insert a comment.
 3) A DOCTYPE token
    - Parse error. Ignore the token.
 4) A start tag whose tag name is "hvml"
     - Parse error. Ignore the token.
-> Process the token using the rules for the "in body" insertion mode.  
+> Process the token using the rules for the "in body" insertion mode.
+>
 > -- From HTML spec.
 5) A start tag of a foreign element
    - If the current node on the stack of open elements is not the `head` element, pop the node off the stack of open elements.
    - Insert a foreign element for the token.
    - Follow the generic raw text element parsing algorithm.
    - Acknowledge the token's self-closing flag, if it is set.
-> A start tag whose tag name is "title"  
-> Follow the generic RCDATA element parsing algorithm.  
+> A start tag whose tag name is "title"
+>
+> Follow the generic RCDATA element parsing algorithm.
+>
 > -- From HTML spec.
 6) An end tag whose tag name is "head"
    - Pop the current node off the stack of open elements if it is not the `head` element. 
    - Pop the current node (which will be the head element) off the stack of open elements.
    - Switch the insertion mode to "after head".
-7) An end tag whose tag name is one of: "body", "html", "br"
+7) An end tag whose tag name is one of: "body", "html"
    - Act as described in the "anything else" entry below.
 8) A start tag whose tag name is "archedata"
    - Insert an HVML element for the token.
@@ -3137,7 +3141,69 @@ Comments must have the following format:
 
 ###### 3.2.6.4.5) 'after head' 插入模式
 
+1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+   - Insert the character.  
+2) A comment token
+   - Insert a comment.
+3) A DOCTYPE token
+   - Parse error. Ignore the token.
+4) A start tag whose tag name is "hvml"
+   - Parse error.
+> Process the token using the rules for the "in body" insertion mode.
+>
+> -- From HTML spec.
+5) A start tag whose tag name is "body"
+   - Insert an HTML element for the token.
+   - Switch the insertion mode to "in body".
+6) A start tag of a foreign element or whos tag name is "archetype".
+   - Parse error.
+   - Push the node pointed to by the head element pointer onto the stack of open elements.
+   - Process the token using the rules for the "in head" insertion mode.
+   - Remove the node pointed to by the head element pointer from the stack of open elements. (It might not be the current node at this point.)
+   - _NOTE_ The head element pointer cannot be null at this point.
+7) An end tag whose tag name is "archetype"
+  - Process the token using the rules for the "in head" insertion mode.
+8) An end tag whose tag name is one of: "body", "hvml"
+  - Act as described in the "anything else" entry below.
+9) A start tag whose tag name is "head"
+10) Any other end tag
+    - Parse error. Ignore the token.
+11) Anything else
+   - Insert an HTML element for a "body" start tag token with no attributes.
+   - Switch the insertion mode to "in body".
+   - Reprocess the current token.
+
 ###### 3.2.6.4.6) 'in body' 插入模式
+
+1) A character token that is U+0000 NULL
+   - Parse error. Ignore the token.
+
+2) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
+   - Reconstruct the active formatting elements, if any.
+   - Insert the token's character.
+3) Any other character token
+   - Reconstruct the active formatting elements, if any.
+   - Insert the token's character.
+4) A comment token
+   - Insert a comment.
+5) A DOCTYPE token
+   - Parse error. Ignore the token.
+6) A start tag whose tag name is "hvml"
+   - Parse error. Ignore the token.
+> If there is a template element on the stack of open elements, then ignore the token.
+>
+> Otherwise, for each attribute on the token, check to see if the attribute is already present on the top element of the stack of open elements. If it is not, add the attribute and its corresponding value to that element.
+>
+> -- From HTML spec.
+
+7) A start tag whose tag name is "body"
+   - Parse error. Ignore the token.
+> If the second element on the stack of open elements is not a body element, if the stack of open elements has only one node on it, or if there is a template element on the stack of open elements, then ignore the token. (fragment case)
+>
+> Otherwise, set the frameset-ok flag to "not ok"; then, for each attribute on the token, check to see if the attribute is already present on the body element (the second element) on the stack of open elements, and if it is not, add the attribute and its corresponding value to that element.
+>
+> -- From HTML spec.
+
 
 ###### 3.2.6.4.7) 'text' 插入模式
 
