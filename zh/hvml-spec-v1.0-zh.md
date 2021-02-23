@@ -3214,25 +3214,38 @@ Comments must have the following format:
     - Switch the insertion mode to "after body".
     - Reprocess the token.
 11) A start tag of a foreign element.
-    - Insert an HVML element for the token.
+    - If the current node in the stack of open elements is not foreign element,
+      - This is a fatal parse error.
+    - Otherwise,
+      - Insert an HVML element for the token.
+      - Switch the insertion mode to "text".
     - _NOTE_: This element will be an ordinary element.
-8) A start tag whose tag name is "archedata"
+12) A start tag whose tag name is "error" or "except".
+    - If the current node in the stack of open elements is not an action element,
+      - This is a fatal parse error.
+    - Otherwise,
+      - Insert an HVML element for the token.
+      - Switch the tokenizer to the template data state.
+      - If the `error` element has `raw` flag, set JSONEE flag is off; otherwise on.
+      - Let the original insertion mode be the current insertion mode.
+      - Switch the insertion mode to "text".
+13) A start tag whose tag name is "archedata"
    - Insert an HVML element for the token.
    - Follow the generic raw text element parsing algorithm.
-9) A start tag whose tag name is "archetype"
+14) A start tag whose tag name is "archetype"
    - Insert an HVML element for the token.
    - Push the element onto the stack of open elements so that it is the new current node.
    - Switch the tokenizer to the template data state;
    - If the `archetype` element has `raw` flag, set JSONEE flag is off; otherwise on.
    - Let the original insertion mode be the current insertion mode.
    - Switch the insertion mode to "text".
-10) An end tag whose tag name is "archetype"
+15) An end tag whose tag name is "archetype"
     - If the current node is not a `archetype` element, then this is a parse error; ignore it.
     - Pop the current node from the stack.
     - Reset the insertion mode appropriately.
-11) Any start tag of an action element
+16) Any start tag of an action element
     - Insert an HVML element for the token.
-12) Any other end tag of a foreign element
+17) Any other end tag of a foreign element
     - Run these steps:
       1. Initialize node to be the current node (the bottommost node of the stack).
       2. Loop: If node is an HTML element with the same tag name as the token, then:
@@ -3265,14 +3278,16 @@ Comments must have the following format:
 1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
    - Process the token using the rules for the "in body" insertion mode.
 2) A comment token
-   - Insert a comment as the last child of the first element in the stack of open elements (the html element).
+   - Insert a comment as the last child of the first element in the stack of open elements (the `hvml` element).
 3) A DOCTYPE token
    - Parse error. Ignore the token.
 4) A start tag whose tag name is "hvml"
-   - Process the token using the rules for the "in body" insertion mode.
-5) An end tag whose tag name is "html"
-   - If the parser was created as part of the HTML fragment parsing algorithm, this is a parse error; ignore the token. (fragment case)
-   - Otherwise, switch the insertion mode to "after after body".
+   - Parse error. Ignore the token.
+4) A start tag whose tag name is "body"
+   - Insert an HVML element for the token.
+   - Switch the insertion mode to "in body".
+5) An end tag whose tag name is "hvml"
+   - Switch the insertion mode to "after after body".
 6) An end-of-file token
    - Stop parsing.
 7) Anything else
@@ -3282,14 +3297,10 @@ Comments must have the following format:
 
 1) A comment token
    - Insert a comment as the last child of the Document object.
-2) A DOCTYPE token
-3) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-4) A start tag whose tag name is "hvml"
-   - Process the token using the rules for the "in body" insertion mode.
-5) An end-of-file token
+2) An end-of-file token
    - Stop parsing.
-6) Anything else
-   - Parse error. Switch the insertion mode to "in body" and reprocess the token.
+3) Anything else
+   - Parse error. Ignore the token.
 
 ##### 3.2.6.5) 外部内容的词法解析规则/The rules for parsing tokens in foreign content
 
