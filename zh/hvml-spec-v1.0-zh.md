@@ -3266,7 +3266,6 @@ Comments must have the following format:
    - Switch the insertion mode to the original insertion mode and reprocess the token.
 3) An end tag whose tag name is "archetype"
    - ...
-
 4) Any other end tag
    - Pop the current node off the stack of open elements.
    - Switch the insertion mode to the original insertion mode.
