@@ -208,14 +208,14 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
     </head>
 
     <body>
-        <archetype id="user-item">
+        <archetype name="user_item">
             <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
                 <img class="avatar" src="$?.avatar" />
                 <span>$?.name</span>
             </li>
         </archetype>
 
-        <archedata id="item-user">
+        <archedata name="item_user">
             {
                 "id": "$?.attr.data-value", "avatar": "$?.content[0].attr.src",
                 "name": "$?.children[1].textContent", "region": "$?.attr.data-region"
@@ -231,7 +231,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
         </header>
 
         <ul class="user-list">
-            <iterate on="$users" with="#user-item" to="append" by="CLASS: IUser">
+            <iterate on="$users" with="$user_item" to="append" by="CLASS: IUser">
                 <error on="nodata">
                     <img src="wait.png" />
                 </error>
@@ -241,25 +241,25 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
             </iterate>
         </ul>
 
-        <archetype id="footer-cn">
+        <archetype name="footer_cn">
             <p><a href="http://www.baidu.com">Baidu</a></p>
         </archetype>
 
-        <archetype id="footer-tw">
+        <archetype name="footer_tw">
             <p><a href="http://www.bing.com">Bing</a></p>
         </archetype>
 
-        <archetype id="footer-def">
+        <archetype name="footer_def">
             <p><a href="http://www.google.com">Google</a></p>
         </archetype>
 
         <footer id="the-footer">
             <test on="$global.locale" in='the-footer'>
-                <match for="~zh_CN" to="displace" with="#footer-cn" exclusively>
+                <match for="~zh_CN" to="displace" with="$footer_cn" exclusively>
                 </match>
-                <match for="~zh_TW" to="displace" with="#footer-tw" exclusively>
+                <match for="~zh_TW" to="displace" with="$footer_tw" exclusively>
                 </match>
-                <match for="*" to="displace" with="#footer-def">
+                <match for="*" to="displace" with="$footer_def">
                 </match>
                 <error on="nodata">
                     <p>You forget to define the $global variable!</p>
@@ -295,7 +295,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
    1. 全局数据的初始化；使用 `init` 和 `set` 标签定义。
    1. 全局动态 JSON 对象；使用 `bind` 标签定义。
    1. 需要监听的长连接数据源；使用 `listen` 标签定义。
-   1. 全局模板；使用 `archedata`、`archetype` 或 `rawpart` 标签定义。
+   1. 全局模板；使用 `archedata` 或 `archetype` 标签定义。
 - `body` 标签用于定义文档的本体内容。
 
 注意，所有非 HVML 标签所定义的内容，在 HVML 解析完成时，将被完整保留。另外需要注意的是，为了避免和 HTML 标准定义的标签重复，HVML 的常用标签均为英语中的动词，而 HTML 标准通常使用名词或其简写作为标签名称，如 HTML 的常见标签 `p` 是 paragraph（段落）的简写。
@@ -611,49 +611,51 @@ HVML 解释器按照固定的策略将 DOM 子树（文档片段）视作一个�
 HVML 定义了两种模板标签，用于定义可以插入 DOM 文档中的 XML/HTML 模板以及 JSON 数据模板：
 
 - `archedata`：该标签用于定义一个 JSON 格式的数据项模板。
-- `archetype` 和 `rawpart`：这两个标签可用于定义一个 XML/HTML 格式的文档片段模板。类似 HTML5 的 `template` 标签，这两个标签用来定义一个 XML/HTML 模板，其中的内容可以是一个 XML 片段，也可以是一个 HTML 片段，前者可用于生成特定 GUI 系统的界面描述片段，后者可以生成 HTML 文档的片段。`archetype` 和 `rawpart` 的不同之处在于，在克隆前者定义的文档片段时，将执行 JSON 表达式置换操作，后者则不做此项处理。
+- `archetype`：这个标签可用于定义一个 XML/HTML 格式的文档片段模板。类似 HTML5 的 `template` 标签，其中的内容可以是一个 XML 片段，也可以是一个 HTML 片段，前者可用于生成特定 GUI 系统的界面描述片段，后者可以生成 HTML 文档的片段。当使用 `archetype` 定义的元素具有 `raw` 属性时，其定义的文档片段将不执行 JSON 表达式置换操作。
 
 在定义模板时，可直接定义文档片段和数据之间的映射关系。如：
 
 ```html
-    <archetype id="user-item">
+    <archetype name="user_item">
         <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
             <img class="avatar" src="$?.avatar" />
             <span>$?.name</span>
         </li>
     </archetype>
 
-    <archedata id="item-user">
+    <archedata name="item_user">
         {
             "id": "$?.attr.data-value", "avatar": "$?.children[0].attr.src",
             "name": "$?.children[1].children[0].textContent", "region": "$?.attr.data-region"
         }
     </archedata>
 
-    <rawpart id="unknown-user-item">
+    <archetype name="unknown_user_item" raw>
         <li class="user-item">
             <img class="avatar" src="/def-avatar.png">
             <span>Unknown</span>
         </li>
-    </rawpart>
+    </archetype>
 ```
 
 在上面的例子中，`archetype` 标签定义了一个文档片段模板，可用于生成真实的文档片段并插入到合适的 DOM 树位置。HVML 解释器在将该模板克隆并插入到真实的文档 DOM 树时，会将当前上下文中的数据按照给定的映射关系进行替换。在 HVML 中，`$?` 是一个特殊的上下文变量，用来指代动作标签执行时的当前上下文数据。类似 `$?.id`、`$?.name` 这样的字符串将被视为 JSON 求值表达式进行求值，最终使用当前上下文的数据来替代。
 
 在上面的例子中，`archedata` 标签定义了一个数据模板，其处理类似 `archetype`，但主要执行相反的操作，通常用于将一个 DOM 子树映射为一个 JSON 数据项，或者将一个 JSON 数据项映射到另一个结构不同的 JSON 数据项。
 
-在上面的例子中，`rawpart` 标签定义了一个裸文本模板，其中包含一段 XML/HTML 文档片段，可克隆到目标位置，但不做任何 JSON 求值表达式的处理，即使包含合法的 JSON 求值表达式。
+在上面的例子中，第二个 `archetype` 标签定义了一个裸文本模板，其中包含一段 XML/HTML 文档片段，可克隆到目标位置，但不做任何 JSON 求值表达式的处理，即使包含合法的 JSON 求值表达式。
 
-注意，用于引用特定的 `archetype` 或 `archedata` 模板的标识符（由 `id` 属性定义），和 HTML/XML 不同，HVML 不要求该标识符是全局唯一的，而只要求在 HVML 的同一级兄弟元素中唯一，这带来了一定的便利。比如：
+本质上，`archedata` 和 `archetype` 定义的模板内容是一个字符串数据，其变量名由 `name` 属性定义。
+
+注意，用于引用特定的 `archetype` 或 `archedata` 模板的变量名，和 HTML/XML 不同，HVML 不要求该标识符是全局唯一的，而只要求在 HVML 的同一级兄弟元素中唯一，这带来了一定的便利。比如：
 
 ```html
     <body>
-        <archetype id="user-item">
+        <archetype name="user_item">
             <p>$?</p>
         </archetype>
 
         <ul>
-            <archetype id="user-item">
+            <archetype name="user_item">
                 <li>$?</li>
             </archetype>
 
@@ -662,7 +664,7 @@ HVML 定义了两种模板标签，用于定义可以插入 DOM 文档中的 XML
     </body>
 ```
 
-在上述 HVML 代码中，当我们在 `ul` 元素中引用 `#user-item` 时，对应的文档模板是 `<li>$?</li>`，而在 `ul` 元素之外应用 `#user-item` 时，得到的文档模板是 `<p>$?</p>`。
+在上述 HVML 代码中，当我们在 `ul` 元素中引用 `$user_item` 时，对应的文档模板是 `<li>$?</li>`，而在 `ul` 元素之外应用 `$user_item` 时，得到的文档模板是 `<p>$?</p>`。
 
 #### 2.1.6) 用来操作数据或元素的动作标签
 
@@ -726,15 +728,15 @@ HVML 还定义有如下一些动作标签：
 注意：在 HVML 中，错误和异常标签必须包含在 HVML 动作标签中作为其直接子元素使用，在错误和异常标签中，可以使用目标标记语言的标签定义子元素。
 当出现错误或者异常时，错误或异常标签中定义的文档片段将被克隆到当前的文档操作位置，并中止当前的操作。
 
-为方便错误和异常的处理，我们可以使用 `archetype` 或 `rawpart` 标签定义当前上下文中默认的错误或异常文档片段：
+为方便错误和异常的处理，我们可以使用 `archetype` 标签定义当前上下文中默认的错误或异常文档片段：
 
 ```html
 
-    <rawpart id="ERROR">
+    <archetype name="ERROR" raw>
         <p class="text-danger">There is an error.</p>
-    </rawpart>
+    </archetype>
     
-    <archetype id="EXCEPT">
+    <archetype name="EXCEPT">
         <p class="text-warning">There is an execption: {$_EXCEPT.messages}</p>
     </archetype>
 ```
@@ -1132,7 +1134,7 @@ HVML 定义的上下文变量可罗列如下：
     </head>
 
     <body>
-        <archetype id="user-item">
+        <archetype name="user_item">
             <li class="user-item">
                 <img class="avatar" src="" />
                 <span></span>
@@ -1140,7 +1142,7 @@ HVML 定义的上下文变量可罗列如下：
         </archetype>
 
         <ul id="the-user-list" class="user-list">
-            <iterate on="$users" to="append" in="#the-user-list" with="#user-item" by="CLASS: IUser">
+            <iterate on="$users" to="append" in="#the-user-list" with="$user_item" by="CLASS: IUser">
                 <error on="notready">
                     <img src="wait.gif" />
                 </error>
@@ -1152,7 +1154,7 @@ HVML 定义的上下文变量可罗列如下：
     </body>
 ```
 
-上述 HVML 代码在 `head` 标签中定义了 `users` 数据，是一个由字典结构组成的数组。在 `body` 标签中，该 HVML 文件迭代 `$users` 数组，并克隆 `#user-item` 这一模板定义的 HTML 片段并追加（`append`）到 `#the-user-list` 所在的位置。在迭代过程中，该标签使用脚本程序定义的 `IUser` 类来实现排序、过滤和映射操作。
+上述 HVML 代码在 `head` 标签中定义了 `users` 数据，是一个由字典结构组成的数组。在 `body` 标签中，该 HVML 文件迭代 `$users` 数组，并克隆 `$user_item` 这一模板定义的 HTML 片段并追加（`append`）到 `#the-user-list` 所在的位置。在迭代过程中，该标签使用脚本程序定义的 `IUser` 类来实现排序、过滤和映射操作。
 
 使用脚本程序定义的类，可用于实现较为复杂的迭代逻辑和操作。但在一些简单的场合，我们也可以不使用类而使用其他动作标签完成动作，如使用 `update` 标签使用当前迭代数据更新特定的元素属性：
 
@@ -1344,7 +1346,7 @@ HVML 定义的上下文变量可罗列如下：
 
     <body>
         <observe on="$userChanges" for="new" to="iterate">
-            <iterate on="$?" to="append" in="#the-user-list" with="#user-item" by="CLASS: IUser">
+            <iterate on="$?" to="append" in="#the-user-list" with="$user_item" by="CLASS: IUser">
                 <error on="notready">
                     <img src="wait.gif" />
                 </error>
@@ -1373,7 +1375,7 @@ HVML 定义的上下文变量可罗列如下：
             </div>
         </archetype>
 
-        <archedata id="item-user">
+        <archedata name="item_user">
             {
                 "id": "$?.attr.data-value", "avatar": "$?.content[0].attr.src",
                 "name": "$?.content[1].textContent", "region": "$?.attr.data-region"
@@ -1386,7 +1388,7 @@ HVML 定义的上下文变量可罗列如下：
                 [ ]
             </init>
 
-            <iterate on="$@" to="append" in="$users" with="#item-user" by="TRAVEL: BREADTH">
+            <iterate on="$@" to="append" in="$users" with="$item_user" by="TRAVEL: BREADTH">
             </iterate>
 
             <reduce on="$users" to="choose empty iterate" in="#the-user-statistics" by="CLASS: RUserRegionStats">
@@ -1599,7 +1601,7 @@ HVML 为不同的数据类型提供了如下操作：
     <load with="new_user.hvml" as="_modal">
         <test on="$?.retcode">
             <match for="ok" exclusively>
-                <choose on="$2.payload" to="append" in="#the-user-list" with="#user-item">
+                <choose on="$2.payload" to="append" in="#the-user-list" with="$user_item">
                 </choose>
             </match>
             <match>
@@ -2138,7 +2140,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 当我们需要将 DOM 子树中的部分元素之属性或内容映射到目标数据或者目标元素时，我们使用这一内建执行器。如：
 
 ```html
-        <archedata id="item-user">
+        <archedata name="item_user">
             {
                 "id": "$?.attr.data-value", "avatar": "$?.content[0].attr.src",
                 "name": "$?.content[1].textContent", "region": "$?.attr.data-region"
@@ -2151,12 +2153,12 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
                 [ ]
             </init>
 
-            <iterate on="$@" to="append" in="$users" with="#item-user" by="TRAVEL: BREADTH">
+            <iterate on="$@" to="append" in="$users" with="$item_user" by="TRAVEL: BREADTH">
             </iterate>
         </observe>
 ```
 
-上述 HVML 代码在用户清单列表上遍历用户，使用 `item-user` 作为数据模板进行映射，然后将其追加到 `$users` 所在的数组中。
+上述 HVML 代码在用户清单列表上遍历用户，使用 `item_user` 作为数据模板进行映射，然后将其追加到 `$users` 所在的数组中。
 
 ##### 2.3.1.7) 内部执行器的使用
 
@@ -2301,7 +2303,7 @@ class HVMLIterator:
 比如对下面迭代并克隆模板插入到指定位置的操作：
 
 ```html
-    <archetype id="user-item">
+    <archetype name="user_item">
         <li class="user-item">
             <img class="avatar" />
             <span></span>
@@ -2311,7 +2313,7 @@ class HVMLIterator:
     ...
 
         <ul id="the-user-list" class="user-list">
-            <iterate on="$users" to="append" in="#the-user-list" with="#user-item" by="CLASS: IUser">
+            <iterate on="$users" to="append" in="#the-user-list" with="$user_item" by="CLASS: IUser">
                 <error on="notready">
                     <img src="wait.gif" />
                 </error>
@@ -2646,7 +2648,7 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml:">
         </header>
 
         <ul class="user-list">
-            <iterate on="$users" with="#user-item" to="append" by="CLASS: IUser">
+            <iterate on="$users" with="$user_item" to="append" by="CLASS: IUser">
                 <hvml:error on="nodata">
                     <img src="wait.png" />
                 </hvml:error>
@@ -2672,7 +2674,7 @@ HVML 元素可划分为如下几类：
 `init` 和 `set` 元素。
 
 3) 模板元素（template elements）  
-`archetype`、`rawpart`、`error` 和 `except` 元素。
+`archetype`、`error` 和 `except` 元素。
 
 4) 裸文本元素（raw text elements）  
 `archedata` 元素。
@@ -2796,7 +2798,7 @@ The attribute name, followed by zero or more ASCII whitespace, followed by a sin
 In the following example, the name attribute is given with the double-quoted attribute value syntax:
 
 ```html
-    <choose on="$2.payload" to="append update" in="#the-user-list" with="#user-item">
+    <choose on="$2.payload" to="append update" in="#the-user-list" with="$user_item">
 ```
 
 If an attribute using the double-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
@@ -2815,7 +2817,7 @@ There must never be two or more attributes on the same start tag whose names are
 所有介词属性（仅在动作元素中）的赋值操作符（`=`）可以被忽略：
 
 ```html
-    <choose on "$2.payload" to "append update" in "#the-user-list" with "#user-item">
+    <choose on "$2.payload" to "append update" in "#the-user-list" with "$user_item">
         <update textContent = "foo" />
     </choose>
 ```
@@ -2841,7 +2843,7 @@ __是否考虑：__
 如，
 
 ```html
-    <choose on "$2.payload" to "append update" in "#the-user-list" with "#user-item">
+    <choose on "$2.payload" to "append update" in "#the-user-list" with "$user_item">
         <update attr.class %= "text-* text-info" />
     </choose>
 ```
@@ -2932,7 +2934,7 @@ Where character references are allowed, a character reference of a U+000A LINE F
 
 ##### 3.1.3.2) JSON 求值表达式的语法
 
-除 `rawpart` 元素之外，所有元素的属性值以及文本内容中，可嵌入 JSON 求值表达式。
+几乎所有元素的属性值以及文本内容中，可嵌入 JSON 求值表达式。
 
 一个合法的 JSON 表达式（`<json_evaluation_expression>`）需要符合如下的语法规则，且可递归使用：
 
@@ -3142,7 +3144,8 @@ Comments must have the following format:
 8) A start tag whose tag name is "archetype"
    - Insert an HVML element for the token.
    - Push the element onto the stack of open elements so that it is the new current node.
-   - Switch the tokenizer to the template data state and set JSONEE flag is on.
+   - Switch the tokenizer to the template data state;
+   - If the `archetype` element has `raw` flag, set JSONEE flag is off; otherwise on.
    - Let the original insertion mode be the current insertion mode.
    - Switch the insertion mode to "text".
 
@@ -3151,26 +3154,14 @@ Comments must have the following format:
    - Pop the current node from the stack.
    - Reset the insertion mode appropriately.
 
-10) A start tag whose tag name is "rawpart"
-   - Insert an HVML element for the token.
-   - Push the element onto the stack of open elements so that it is the new current node.
-   - Switch the tokenizer to the template data state and set JSONEE flag is off.
-   - Let the original insertion mode be the current insertion mode.
-   - Switch the insertion mode to "text".
-
-11) An end tag whose tag name is "rawpart"
-   - If the current node is not a `rawpart` element, then this is a parse error; ignore it.
-   - Pop the current node from the stack.
-   - Reset the insertion mode appropriately.
-
-12) A start tag whose tag name is "head"
-13) Any other end tag
+10) A start tag whose tag name is "head"
+11) Any other end tag
    - Parse error. Ignore the token.
 
-14) A start tag whose tag name is "init", "set", "bind", or "listen"
+12) A start tag whose tag name is "init", "set", "bind", or "listen"
    - Insert an HVML element for the token.
 
-15) Anything else
+13) Anything else
    - Pop the current node (which will be the head element) off the stack of open elements.
    - Switch the insertion mode to "after head".
    - Reprocess the token.
