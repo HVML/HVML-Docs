@@ -338,7 +338,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 `$_DOCUMENT` 是一个动态 JSON 对象，该对象表述的是 HVML 生成的目标文档对象。我们可以使用该对象上的特定键名以及 getter 方法使用 CSS 选择器获取一个目标文档上的特定元素或者元素集合，如：
 
-1. `$_DOCUMENT.docType`：获取该目标文档对象的 `DOCTYPE` 元素。
+1. `$_DOCUMENT.doctype`：获取该目标文档对象的 `doctype` 节点。
 1. `$_DOCUMENT("#foo")`：获取该目标文档对象中 id 属性值为 `foo` 的元素。
 1. `$_DOCUMENT(".bar")`：获取该目标文档对象中 class 属性值为 `foo` 的元素或元素集合。
 
@@ -2601,7 +2601,7 @@ A DOCTYPE must consist of the following components, in this order:
 1. A string that is an ASCII case-insensitive match for the string `"<!DOCTYPE"`.
 1. One or more ASCII whitespace.
 1. A string that is an ASCII case-insensitive match for the string `"hvml"`.
-1. Optionally, a DOCTYPE prefix string.
+1. Optionally, a DOCTYPE system information string.
 1. Zero or more ASCII whitespace.
 1. A U+003E GREATER-THAN SIGN character (`>`).
 
@@ -3031,8 +3031,8 @@ Comments must have the following format:
 
 3) A DOCTYPE token  
    - If the DOCTYPE token's name is not "hvml", then there is a parse error; set the Document to quirks mode.
-   - Append a DocumentType node to the Document node, with the `name` attribute set to the name given in the DOCTYPE token, or the empty string if the name was missing; the `systemId` attribute set to the system identifier given in the DOCTYPE token, or the empty string if the system identifier was missing; and the other attributes specific to DocumentType objects set to null and empty lists as appropriate. Associate the DocumentType node with the Document object so that it is returned as the value of the `doctype` attribute of the Document object.
-   - If the value of `systemId` attribute of the DocumentType is not empty, then exact the attribute value for the prefix of HVML tag name and set the value of the `tagPrefix` attribute with the string. Otherwise, set the `tagPrefix` attribute to the default prefix string (`v:`).
+   - Append a DocumentType node to the Document node, with the `name` attribute set to the name given in the DOCTYPE token, or the empty string if the name was missing; the `systemInfo` attribute set to the system information given in the DOCTYPE token, or the empty string if the system information was missing; and the other attributes specific to DocumentType objects set to null and empty lists as appropriate. Associate the DocumentType node with the Document object so that it is returned as the value of the `doctype` attribute of the Document object.
+   - If the value of `systemInfo` attribute of the DocumentType is not empty, then exact the attribute value for the prefix of HVML tag name and set the value of the `tagPrefix` attribute with the string. Otherwise, set the `tagPrefix` attribute to the default prefix string (`v:`).
    - Then, switch the insertion mode to "before hvml".
 
 4) Anything else
