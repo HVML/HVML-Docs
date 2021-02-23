@@ -2685,11 +2685,11 @@ HVML 元素可划分为如下几类：
 7) 外部元素 （foreign elements） 
 所有不属于 HVML 标签定义的元素，被视为外部元素。
 
-无文本的动作元素用于定义对数据或文档的操作，可包含其他动作元素以及 `error` 或者 `except` 这两类普通元素，但不能包含其他类型的元素，也不能定义内容。
+无文本的动作元素用于定义对数据或文档的操作，可包含其他动作元素以及 `error` 或者 `except` 这两类元素，但不能包含其他类型的子元素，也不能定义其内容。
 
 有文本的动作元素用于定义 JSON 数据，不可包含其他子元素；其内容之限制同裸文本元素。
 
-一个模板元素的模板内容位于该模板元素的起始标签之后，终止标签之前，可包含任意的文本、字符引用、外部元素以及注释，但文本不能包含 U+003C LESS-THAN SIGN (`<`) 或者含糊的＆符号。
+一个模板元素的模板内容位于该模板元素的起始标签之后，终止标签之前，可包含任意的文本、字符引用、外部元素以及注释，但文本不能包含 U+003C LESS-THAN SIGN (`<`) 或者含糊的 `＆` 符号。
 
 > The markup for the template contents of a template element is placed just after the template element's start tag and just before template element's end tag (as with other elements), and may consist of any text, character references, foreign elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
 
@@ -3261,7 +3261,7 @@ Comments must have the following format:
    - _NOTE_: This can never be a U+0000 NULL character; the tokenizer converts those to U+FFFD REPLACEMENT CHARACTER characters.
 2) An end-of-file token
    - Parse error.
-   - If the current node is an `archetype` element, mark the script element as "already started".
+   - If the current node is an `archetype` element, mark the template element as "already started".
    - Pop the current node off the stack of open elements.
    - Switch the insertion mode to the original insertion mode and reprocess the token.
 3) An end tag whose tag name is "archetype"
