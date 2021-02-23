@@ -19,10 +19,11 @@ All Rights Reserved.
       * [2.1.2) 数据和变量](#212-数据和变量)
          - [2.1.2.1) `$_REQUEST`](#2121-_request)
          - [2.1.2.2) `$_SYSTEM`](#2122-_system)
-         - [2.1.2.3) `$_TIMERS`](#2123-_timers)
-         - [2.1.2.4) `$_L`](#2124-_l)
-         - [2.1.2.5) `$_`](#2125-_)
-         - [2.1.2.6) 集合](#2126-集合)
+         - [2.1.2.3) `$_DOCUMENT`](#2123-_document)
+         - [2.1.2.4) `$_TIMERS`](#2124-_timers)
+         - [2.1.2.5) `$_L`](#2125-_l)
+         - [2.1.2.6) `$_`](#2126-_)
+         - [2.1.2.7) 集合](#2127-集合)
       * [2.1.3) 动态 JSON 对象和 `bind` 标签](#213-动态-json-对象和-bind-标签)
       * [2.1.4) 文档片段的 JSON 数据表达](#214-文档片段的-json-数据表达)
       * [2.1.5) 数据模板和文档片段模板](#215-数据模板和文档片段模板)
@@ -76,7 +77,7 @@ All Rights Reserved.
          - [3.1.2.6) 裸文本元素和可转义裸文本元素的内容限制](#3126-裸文本元素和可转义裸文本元素的内容限制)
       * [3.1.3) 文本/Text](#313-文本text)
          - [3.1.3.1) 新行/newlines](#3131-新行newlines)
-         - [3.1.3.2) JSON 求值表达式的语法](#3132-json-求值表达式的语法)         
+         - [3.1.3.2) JSON 求值表达式的语法](#3132-json-求值表达式的语法)
       * [3.1.4) 字符引用/Character references](#314-字符引用character-references)
       * [3.1.5) CDATA 段落/CDATA sections](#315-cdata-段落cdata-sections)
       * [3.1.6) 注释/Comments](#316-注释comments)
@@ -333,7 +334,15 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 在 HVML 中，`_SYSTEM` 变量本质上是一个动态 JSON 对象，无须初始化即可使用。
 
-##### 2.1.2.3) `$_TIMERS`
+##### 2.1.2.3) `$_DOCUMENT`
+
+`$_DOCUMENT` 是一个动态 JSON 对象，该对象表述的是 HVML 生成的目标文档对象。我们可以使用该对象上的特定键名以及 getter 方法使用 CSS 选择器获取一个目标文档上的特定元素或者元素集合，如：
+
+1. `$_DOCUMENT.docType`：获取该目标文档对象的 `DOCTYPE` 元素。
+1. `$_DOCUMENT("#foo")`：获取该目标文档对象中 id 属性值为 `foo` 的元素。
+1. `$_DOCUMENT(".bar")`：获取该目标文档对象中 class 属性值为 `foo` 的元素或元素集合。
+
+##### 2.1.2.4) `$_TIMERS`
 
 `$_TIMERS`：主要用于在 `init` 标签中定义全局的定时器，具有固定的格式。如：
 
@@ -362,7 +371,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
     </observe>
 ```
 
-##### 2.1.2.4) `$_L`
+##### 2.1.2.5) `$_L`
 
 `$_L` 是一个动态 JSON 对象，该对象完成数值对比、字符串对比以及逻辑与、或、异或、取反等逻辑操作：
 
@@ -375,7 +384,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 比如 `$_L.NOT($_L.NUMCMP('>', 5, 3))` 的结果是假值（`false`）。
 
-##### 2.1.2.5) `$_`
+##### 2.1.2.6) `$_`
 
 该变量主要用于文本的本地化。常用用法如下：
 
@@ -419,7 +428,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 </html>
 ```
 
-##### 2.1.2.6) 集合
+##### 2.1.2.7) 集合
 
 在 HVML 中，我们可以使用 JSON 数组来定义一个集合。集合有如下特征：
 
@@ -507,6 +516,13 @@ HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并
 之后，当我们需要引用 `$users[0]` 时，可直接使用 `$me`。
 
 当我们引用一个动态 JSON 对象上并不存在的属性，或者不存在的虚拟子属性，或者无法在该属性上执行函数操作时，HVML 解释器或该对象的外部脚本实现将返回错误或抛出异常。
+
+我们甚至可以将某个目标文档元素的属性或者内容绑定为某个变量：
+
+```html
+    <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
+    <bind on="$_DOCUMENT('#the-user-name').attr.value" as="$user_name" />
+```
 
 #### 2.1.4) 文档片段的 JSON 数据表达
 
@@ -2477,7 +2493,7 @@ def on_battery_changed (on_value, root_in_scope, source, event, time_stamp, even
     </p>
 ```
 
-为支持响应式处理，HVML 使用 `{{ }}` 双大括号来标记某个 JSON 求值表达式是响应式的，如：
+为支持响应式处理，HVML 提供一个语法糖，我们可使用 `{{ }}` 双大括号来标记某个骨架元素的 `textContent` 包含的特定 JSON 求值表达式是响应式的，如：
 
 ```html
     <init as="user_name">
@@ -2489,7 +2505,7 @@ def on_battery_changed (on_value, root_in_scope, source, event, time_stamp, even
     </init>
 
     <p>
-        {{ $hello$user_name }}
+        {{$hello}}{{$user_name}}
     </p>
 
     <input type="text" name="user-name" placeholder="Your Name" value="$user_name" />
@@ -2527,10 +2543,27 @@ def on_battery_changed (on_value, root_in_scope, source, event, time_stamp, even
 
 如此，开发者不需要显式增加 `observe` 标签即可获得相同的响应式处理效果，只需要对相应的表达式增加响应式标记即可。但需要注意的是，HVML 会忽略在上下文变量上使用的响应式标记。
 
-另外，我们还可以使用 HybridOS 提出的数据绑定机制实现元素属性或内容到变量的响应式处理。比如，就上面的 HVML 代码，我们希望实现用户输入框中的内容和变量 `$user_name` 绑定。只要用户修改了输入框中的内容，将自动修改 `$user_name` 的值，而无需使用 `observe` 标签。为此，我们可以如下编写 HVML 代码：
+另外，我们可以使用`bind` 标签实现元素属性或内容到变量的响应式处理。
 
 ```html
-    <input type="text" name="user-name" placeholder="Your Name" value="$user_name"
+    <init as="user_name">
+        "Tom"
+    </init>
+
+    <p>
+        Hello, {{$user_name}}
+    </p>
+
+    <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="$user_name" />
+    <bind on="$_DOCUMENT('#the-user-name').attr.value" as="user_name" />
+```
+
+__是否考虑：__
+
+我们还可以考虑使用 `dababind` 属性实现元素属性或内容到变量的响应式处理，就上面的 HVML 代码，我们希望实现用户输入框中的内容和变量 `$user_name` 绑定。只要用户修改了输入框中的内容，将自动修改 `$user_name` 的值，而无需使用 `observe` 标签。为此，我们可以如下编写 HVML 代码：
+
+```html
+    <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="$user_name"
         databind="$user_name: attr.value" />
 ```
 
@@ -2903,13 +2936,15 @@ Where character references are allowed, a character reference of a U+000A LINE F
 
 一个合法的 JSON 表达式（`<json_evaluation_expression>`）需要符合如下的语法规则，且可递归使用：
 
-- `<json_evaluation_expression>`: `'$'<json_addressing_expression> | '{$'<json_addressing_expression>'}'`
+- `<json_evaluation_expression>`: `'$'<json_variable_addressing_expression> | '{$'<json_variable_addressing_expression>'}' | '{{$'<json_variable_addressing_expression>'}}'`
+- `<json_variable_addressing_expression>`：`<literal_variable_name>[<json_addressing_expression>, ...]`
+   - `<literal_variable_name>`：用于直接引用一个已命名的 JSON 数据。
+   - `<json_addressing_expression>`：用于引用一个 JSON 数据的子元素。
 - `<json_addressing_expression>`：
-   - `<literal_variable_name>'.'<literal_key_name>'('<json_evaluation_expression>[, <json_evaluation_expression>, ...]')'` 用于在动态 JSON 对象上调用特定键名的 getter 方法。
-   - `<literal_variable_name>'.'<literal_key_name>'<'<json_evaluation_expression>[, <json_evaluation_expression>, ...]'>'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
-   - `<literal_variable_name>'.'<literal_key_name>` 用于引用一个 JSON 对象的键值。
-   - `<literal_variable_name>'['<json_evaluation_expression> | <quoted_key_name> | <literal_integer>']'` 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。当 JSON 表达式的返回值是数值时，强制转换为整数按索引值处理，当 JSON 表达式的返回值是字符串时，按键名处理。
-   - `<literal_variable_name>` 用于直接引用一个 JSON 数据。
+   - `'.'<literal_key_name>'('<json_evaluation_expression>[, <json_evaluation_expression>, ...]')'` 用于在动态 JSON 对象上调用特定键名的 getter 方法。
+   - `'.'<literal_key_name>'<'<json_evaluation_expression>[, <json_evaluation_expression>, ...]'>'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
+   - `'.'<literal_key_name>` 用于引用一个 JSON 对象的键值。
+   - `'['<json_evaluation_expression> | <quoted_key_name> | <literal_integer>']'` 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。当 JSON 表达式的返回值是数值时，强制转换为整数按索引值处理，其他情况下将 JSON 表达式按字符串处理，作为键名引用 JSON 对象的键值。
 - `<literal_variable_name>`：`'?' | '@' | '#' | '%' | '@' | ':' | <literal_integer> | <literal_token>`。
 - `<literal_key_name>`：`<literal_token>`。
 - `<literal_integer>`：`/^[1-9][0-9]*$/`。
