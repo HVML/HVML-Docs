@@ -3027,16 +3027,13 @@ Comments must have the following format:
 
 1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
    - Ignore the token.
-
 2) A comment token  
    - Insert a comment as the last child of the Document object.
-
 3) A DOCTYPE token  
    - If the DOCTYPE token's name is not "hvml", then there is a parse error; set the Document to quirks mode.
    - Append a DocumentType node to the Document node, with the `name` attribute set to the name given in the DOCTYPE token, or the empty string if the name was missing; the `systemInfo` attribute set to the system information given in the DOCTYPE token, or the empty string if the system information was missing; and the other attributes specific to DocumentType objects set to null and empty lists as appropriate. Associate the DocumentType node with the Document object so that it is returned as the value of the `doctype` attribute of the Document object.
    - If the value of `systemInfo` attribute of the DocumentType is not empty, then exact the attribute value for the prefix of HVML tag name and set the value of the `tagPrefix` attribute with the string. Otherwise, set the `tagPrefix` attribute to the default prefix string (`v:`).
    - Then, switch the insertion mode to "before hvml".
-
 4) Anything else
    - There is a parse error; set the Document to quirks mode.
    - Ignore the token.
@@ -3047,23 +3044,17 @@ Comments must have the following format:
 
 1) A DOCTYPE token
    - Parse error. Ignore the token.
-
 2) A comment token
    - Insert a comment as the last child of the Document object.
-
 3) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
    - Ignore the token.
-
 4) A start tag whose tag name is "hvml"
    - Create an element for the token in the HTML namespace, with the Document as the intended parent. Append it to the Document object. Put this element in the stack of open elements.
    - Switch the insertion mode to "before head".
-
 5) An end tag whose tag name is one of: "head", "body", "hvml"
    - Act as described in the "anything else" entry below.
-
 6) Any other end tag
    - Parse error. Ignore the token.
-
 7) Anything else
    - Create an `hvml` element whose node document is the Document object. Append it to the Document object. Put this element in the stack of open elements.
    - Switch the insertion mode to "before head", then reprocess the token.
@@ -3072,30 +3063,22 @@ Comments must have the following format:
 
 1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
    - Ignore the token.
-
 2) A comment token
    - Insert a comment.
-
 3) A DOCTYPE token
    - Parse error. Ignore the token.
-
 4) A start tag whose tag name is "hvml"
    - Parse error. Ignore the token.
-
 > Process the token using the rules for the "in body" insertion mode.
 > -- From HTML spec.
-
 5) A start tag whose tag name is "head"
    - Insert an HTML element for the token.
    - Set the head element pointer to the newly created `head` element.
    - Switch the insertion mode to "in head".
-
 6) An end tag whose tag name is one of: "head", "body", "hvml"
    - Act as described in the "anything else" entry below.
-
 7) Any other end tag
    - Parse error. Ignore the token.
-
 8) Anything else
    - Insert an HTML element for a "head" start tag token with no attributes.
    - Set the head element pointer to the newly created `head` element.
