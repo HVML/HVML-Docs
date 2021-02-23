@@ -3105,16 +3105,16 @@ Comments must have the following format:
 ###### 3.2.6.4.4) 'in head' 插入模式
 
 1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
- - Insert the character.
+   - Insert the character.
 
 2) A comment token
-  - Insert a comment.
+   - Insert a comment.
 
 3) A DOCTYPE token
    - Parse error. Ignore the token.
 
 4) A start tag whose tag name is "hvml"
-   - Parse error. Ignore the token.
+    - Parse error. Ignore the token.
 
 > Process the token using the rules for the "in body" insertion mode.  
 > -- From HTML spec.
@@ -3130,9 +3130,9 @@ Comments must have the following format:
 > -- From HTML spec.
 
 6) An end tag whose tag name is "head"
-   - Pop the current node off the stack of open elements if it is not the `head` element. 
-   - Pop the current node (which will be the head element) off the stack of open elements.
-   - Switch the insertion mode to "after head".
+    - Pop the current node off the stack of open elements if it is not the `head` element. 
+    - Pop the current node (which will be the head element) off the stack of open elements.
+    - Switch the insertion mode to "after head".
 
 7) An end tag whose tag name is one of: "body", "html", "br"
    - Act as described in the "anything else" entry below.
