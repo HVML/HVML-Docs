@@ -2573,6 +2573,8 @@ __是否考虑：__
 
 ## 3) HVML 语法
 
+注：本小节内容参考了 HTML 规范：<https://html.spec.whatwg.org/#syntax>。
+
 ### 3.1) 书写 HVML 文档
 
 HVML 本质上采用 XML 语法描述程序中的各个元素。HVML 文档的书写需满足如下要点：
@@ -2676,8 +2678,8 @@ HVML 元素可划分为如下几类：
 3) 模板元素（template elements）  
 `archetype`、`error` 和 `except` 元素。
 
-4) 裸文本元素（raw text elements）  
-`archedata` 元素。
+4) JSON 文本元素（JSON text elements）  
+`init`、`set` 和 `archedata` 元素。
 
 6) 普通元素（normal elements）  
 `hvml`、`head` 和 `body` 元素。
@@ -2921,6 +2923,25 @@ __是否考虑：__
 裸文本元素和可转义裸文本元素中的文本不能包含任何以 `</`（U+003C LESS-THAN SIGN, U+002F SOLIDUS）打头，且跟随以 ASCII 字母打头的标签名称以及 U+0009 CHARACTER TABULATION (tab)、U+000A LINE FEED (LF)、U+000C FORM FEED (FF)、U+000D CARRIAGE RETURN (CR)、U+0020 SPACE、U+003E GREATER-THAN SIGN (`>`)，或者 U+002F SOLIDUS (`/`) 字符之一的字符串。
 
 > The text in raw text and escapable raw text elements must not contain any occurrences of the string `</` (U+003C LESS-THAN SIGN, U+002F SOLIDUS) followed by a tag name started with an ASCII alpha letter and followed by one of U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), U+0020 SPACE, U+003E GREATER-THAN SIGN (`>`), or U+002F SOLIDUS (`/`).
+
+##### 3.1.2.7) JSONEE 词法单元/JSONEE Token
+
+HVML 引入了一个特殊的词法单元（token）类型：JSONEE（JSON Evaluation Expression）。一个 JSONEE 词法单元是符合 JSON 求值表达式语法的最小字符串，通常由不符合该语法的字符，或者一个新的 JSON 求值表达式终止。
+
+##### 3.1.2.8) JSON 文本元素
+
+HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本元素必须为 JSON 格式，解析时，将解析出 JSONEE 词法单元。
+
+需要说明的是，和裸文本不同，JSON 文本中可包含 `</` 等字符，因为这些字符通常包含在双引号包裹的字符串中，如下所示：
+
+```html
+<init as="foo">
+    [
+        "<p>The error message: $_ERROR.messages</p>",
+        "<p>The exception message: $_EXCEPT.messages</p>"
+    ]
+</init>
+```
 
 #### 3.1.3) 文本/Text
 
