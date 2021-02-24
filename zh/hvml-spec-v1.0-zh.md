@@ -3088,7 +3088,7 @@ Before each step of the tokenizer, the user agent must first check the parser pa
 
 The tokenizer state machine consists of the states defined in the following subsections.
 
-##### 3.2.5.1 Data state
+##### 3.2.5.1) Data state
 
 Consume the next input character:
 
@@ -3102,6 +3102,184 @@ Consume the next input character:
   - Emit an end-of-file token.
 - Anything else
   - Emit the current input character as a character token.
+
+##### 3.2.5.2) RCDATA state
+
+Consume the next input character:
+
+- U+0026 AMPERSAND (&)
+  - Set the return state to the RCDATA state. Switch to the character reference state.
+- U+003C LESS-THAN SIGN (<)
+  - Switch to the RCDATA less-than sign state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
+- EOF
+  - Emit an end-of-file token.
+- Anything else
+  - Emit the current input character as a character token.
+
+##### 3.2.5.3) RAWTEXT state
+
+Consume the next input character:
+
+- U+003C LESS-THAN SIGN (<)
+  - Switch to the RAWTEXT less-than sign state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
+- EOF
+  - Emit an end-of-file token.
+- Anything else
+  - Emit the current input character as a character token.
+
+##### 3.2.5.4) Script data state
+
+Consume the next input character:
+
+- U+003C LESS-THAN SIGN (<)
+  - Switch to the script data less-than sign state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
+- EOF
+  - Emit an end-of-file token.
+- Anything else
+  - Emit the current input character as a character token.
+
+##### 3.2.5.5) PLAINTEXT state
+
+Consume the next input character:
+
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
+- EOF
+  - Emit an end-of-file token.
+- Anything else
+  - Emit the current input character as a character token.
+
+##### 3.2.5.6) Tag open state
+
+Consume the next input character:
+
+- U+0021 EXCLAMATION MARK (!)
+  - Switch to the markup declaration open state.
+- U+002F SOLIDUS (/)
+  - Switch to the end tag open state.
+- ASCII alpha
+  - Create a new start tag token, set its tag name to the empty string. Reconsume in the tag name state.
+- U+003F QUESTION MARK (?)
+  - This is an unexpected-question-mark-instead-of-tag-name parse error. Create a comment token whose data is the empty string. Reconsume in the bogus comment state.
+- EOF
+  - This is an eof-before-tag-name parse error. Emit a U+003C LESS-THAN SIGN character token and an end-of-file token.
+- Anything else
+  - This is an invalid-first-character-of-tag-name parse error. Emit a U+003C LESS-THAN SIGN character token. Reconsume in the data state.
+
+##### 3.2.5.7) End tag open state
+
+Consume the next input character:
+
+- ASCII alpha
+  - Create a new end tag token, set its tag name to the empty string. Reconsume in the tag name state.
+- U+003E GREATER-THAN SIGN (>)
+  - This is a missing-end-tag-name parse error. Switch to the data state.
+- EOF
+  - This is an eof-before-tag-name parse error. Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token and an end-of-file token.
+- Anything else
+  - This is an invalid-first-character-of-tag-name parse error. Create a comment token whose data is the empty string. Reconsume in the bogus comment state.
+
+##### 3.2.5.8) Tag name state
+
+Consume the next input character:
+
+U+0009 CHARACTER TABULATION (tab)
+U+000A LINE FEED (LF)
+U+000C FORM FEED (FF)
+U+0020 SPACE
+Switch to the before attribute name state.
+U+002F SOLIDUS (/)
+Switch to the self-closing start tag state.
+U+003E GREATER-THAN SIGN (>)
+Switch to the data state. Emit the current tag token.
+ASCII upper alpha
+Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current tag token's tag name.
+U+0000 NULL
+This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current tag token's tag name.
+EOF
+This is an eof-in-tag parse error. Emit an end-of-file token.
+Anything else
+Append the current input character to the current tag token's tag name.
+
+##### 3.2.5.9) RCDATA less-than sign state
+
+Consume the next input character:
+
+U+002F SOLIDUS (/)
+Set the temporary buffer to the empty string. Switch to the RCDATA end tag open state.
+Anything else
+Emit a U+003C LESS-THAN SIGN character token. Reconsume in the RCDATA state.
+13.2.5.10 RCDATA end tag open state
+Consume the next input character:
+
+ASCII alpha
+Create a new end tag token, set its tag name to the empty string. Reconsume in the RCDATA end tag name state.
+Anything else
+Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume in the RCDATA state.
+
+##### 3.2.5.11) RCDATA end tag name state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - If the current end tag token is an appropriate end tag token, then switch to the before attribute name state. Otherwise, treat it as per the "anything else" entry below.
+- U+002F SOLIDUS (/)
+  - If the current end tag token is an appropriate end tag token, then switch to the self-closing start tag state. Otherwise, treat it as per the "anything else" entry below.
+- U+003E GREATER-THAN SIGN (>)
+  - If the current end tag token is an appropriate end tag token, then switch to the data state and emit the current tag token. Otherwise, treat it as per the "anything else" entry below.
+- ASCII upper alpha
+  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current tag token's tag name. Append the current input character to the temporary buffer.
+- ASCII lower alpha
+  - Append the current input character to the current tag token's tag name. Append the current input character to the temporary buffer.
+- Anything else
+  - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the RCDATA state.
+
+##### 3.2.5.12) RAWTEXT less-than sign state
+
+Consume the next input character:
+
+- U+002F SOLIDUS (/)
+  - Set the temporary buffer to the empty string. Switch to the RAWTEXT end tag open state.
+- Anything else
+  - Emit a U+003C LESS-THAN SIGN character token. Reconsume in the RAWTEXT state.
+
+##### 3.2.5.13) RAWTEXT end tag open state
+
+Consume the next input character:
+
+- ASCII alpha
+  - Create a new end tag token, set its tag name to the empty string. Reconsume in the RAWTEXT end tag name state.
+- Anything else
+  - Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume in the RAWTEXT state.
+
+##### 3.2.5.14) RAWTEXT end tag name state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - If the current end tag token is an appropriate end tag token, then switch to the before attribute name state. Otherwise, treat it as per the "anything else" entry below.
+- U+002F SOLIDUS (/)
+  - If the current end tag token is an appropriate end tag token, then switch to the self-closing start tag state. Otherwise, treat it as per the "anything else" entry below.
+- U+003E GREATER-THAN SIGN (>)
+  - If the current end tag token is an appropriate end tag token, then switch to the data state and emit the current tag token. Otherwise, treat it as per the "anything else" entry below.
+- ASCII upper alpha
+  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current tag token's tag name. Append the current input character to the temporary buffer.
+- ASCII lower alpha
+  - Append the current input character to the current tag token's tag name. Append the current input character to the temporary buffer.
+- Anything else
+  - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the RAWTEXT state.
 
 #### 3.2.6) 树的构造
 
