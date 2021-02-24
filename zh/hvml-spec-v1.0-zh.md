@@ -3851,19 +3851,19 @@ Consume the next input character:
 - U+000A LINE FEED (LF)
 - U+000C FORM FEED (FF)
 - U+0020 SPACE
-  - Switch to the between DOCTYPE public and system identifiers state.
+  - Switch to the between DOCTYPE public identifier and system information state.
 - U+003E GREATER-THAN SIGN (>)
   - Switch to the data state. Emit the current DOCTYPE token.
 - U+0022 QUOTATION MARK (")
-  - This is a missing-whitespace-between-doctype-public-and-system-identifiers parse error. Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (double-quoted) state.
+  - This is a missing-whitespace-between-doctype-public-and-system-identifiers parse error. Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (double-quoted) state.
 - U+0027 APOSTROPHE (')
-  - This is a missing-whitespace-between-doctype-public-and-system-identifiers parse error. Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (single-quoted) state.
+  - This is a missing-whitespace-between-doctype-public-and-system-identifiers parse error. Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (single-quoted) state.
 - EOF
   - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
 - Anything else
   - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
 
-##### 3.2.5.62 Between DOCTYPE public and system identifiers state
+##### 3.2.5.62 Between DOCTYPE public identifier and system information state
 
 Consume the next input character:
 
@@ -3875,9 +3875,9 @@ Consume the next input character:
 - U+003E GREATER-THAN SIGN (>)
   - Switch to the data state. Emit the current DOCTYPE token.
 - U+0022 QUOTATION MARK (")
-  - Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (double-quoted) state.
+  - Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (double-quoted) state.
 - U+0027 APOSTROPHE (')
-  - Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (single-quoted) state.
+  - Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (single-quoted) state.
 - EOF
   - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
 - Anything else
@@ -3891,11 +3891,11 @@ Consume the next input character:
 - U+000A LINE FEED (LF)
 - U+000C FORM FEED (FF)
 - U+0020 SPACE
-  - Switch to the before DOCTYPE system identifier state.
+  - Switch to the before DOCTYPE system information state.
 - U+0022 QUOTATION MARK (")
-  - This is a missing-whitespace-after-doctype-system-keyword parse error. Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (double-quoted) state.
+  - This is a missing-whitespace-after-doctype-system-keyword parse error. Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (double-quoted) state.
 - U+0027 APOSTROPHE (')
-  - This is a missing-whitespace-after-doctype-system-keyword parse error. Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (single-quoted) state.
+  - This is a missing-whitespace-after-doctype-system-keyword parse error. Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (single-quoted) state.
 - U+003E GREATER-THAN SIGN (>)
   - This is a missing-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
 - EOF
@@ -3903,7 +3903,7 @@ Consume the next input character:
 - Anything else
   - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
 
-##### 3.2.5.64 Before DOCTYPE system identifier state
+##### 3.2.5.64 Before DOCTYPE system information state
 
 Consume the next input character:
 
@@ -3913,9 +3913,9 @@ Consume the next input character:
 - U+0020 SPACE
   - Ignore the character.
 - U+0022 QUOTATION MARK (")
-  - Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (double-quoted) state.
+  - Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (double-quoted) state.
 - U+0027 APOSTROPHE (')
-  - Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (single-quoted) state.
+  - Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (single-quoted) state.
 - U+003E GREATER-THAN SIGN (>)
   - This is a missing-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
 - EOF
@@ -3923,37 +3923,37 @@ Consume the next input character:
 - Anything else
   - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
 
-##### 3.2.5.65 DOCTYPE system identifier (double-quoted) state
+##### 3.2.5.65 DOCTYPE system information (double-quoted) state
 
 Consume the next input character:
 
 - U+0022 QUOTATION MARK (")
-  - Switch to the after DOCTYPE system identifier state.
+  - Switch to the after DOCTYPE system information state.
 - U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's system identifier.
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's system information.
 - U+003E GREATER-THAN SIGN (>)
   - This is an abrupt-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
 - EOF
   - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
 - Anything else
-  - Append the current input character to the current DOCTYPE token's system identifier.
+  - Append the current input character to the current DOCTYPE token's system information.
 
-##### 3.2.5.66 DOCTYPE system identifier (single-quoted) state
+##### 3.2.5.66 DOCTYPE system information (single-quoted) state
 
 Consume the next input character:
 
 - U+0027 APOSTROPHE (')
-  - Switch to the after DOCTYPE system identifier state.
+  - Switch to the after DOCTYPE system information state.
 - U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's system identifier.
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's system information.
 - U+003E GREATER-THAN SIGN (>)
   - This is an abrupt-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
 - EOF
   - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
 - Anything else
-  - Append the current input character to the current DOCTYPE token's system identifier.
+  - Append the current input character to the current DOCTYPE token's system information.
 
-##### 3.2.5.67 After DOCTYPE system identifier state
+##### 3.2.5.67 After DOCTYPE system information state
 
 Consume the next input character:
 
