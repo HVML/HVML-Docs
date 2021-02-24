@@ -937,7 +937,7 @@ HVML 定义的上下文变量可罗列如下：
 - `+=`：在当前的属性值中添加一个新的词法单元（token，指使用某种词法进行分割的最小单元字符串），若已有该词法单元，则不做修改。比如，原有的 `attr.class` 的属性值为 `foo`，使用 `attr.class += "text-warning"` 后，将修改为：`foo text-warning`；若原有属性值为 `foo text-warning`，则会保持不变。
 - `-=`：从当前属性值中移除一个词法单元，若没有该词法单元，则不做修改。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class -= "text-warning"` 后，将修改为 `foo`。
 - `%=`：从当前属性值中按指定的模式匹配一个词法单元，并使用第二个词法单元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class %= "text-* text-info"` 后，将修改为 `foo text-info`。
-- `/=`：从当前属性值中按正则表达式匹配一个词法单元，并使用第二个词法单元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class /= "/^text/ text-info"` 后，将修改为 `foo text-info`。
+- `~=`：从当前属性值中按正则表达式匹配一个词法单元，并使用第二个词法单元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class ~= "/^text/ text-info"` 后，将修改为 `foo text-info`。
 - `^=`：在当前属性值的头部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value ^= "C"` 后，将修改为：`Cab`。
 - `$=`：在当前属性值的尾部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value $= "C"` 后，将修改为：`abC`。
 
@@ -2696,7 +2696,7 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml:">
 
 #### 3.1.2) 元素
 
-HVML 元素可划分为如下几类：
+根据其功能及用途，HVML 元素可划分为如下几类：
 
 1) 框架元素（framework elements）  
 `hvml`、`head` 和 `body` 元素。此类元素用于定义 HVML 文档的框架结构。
@@ -2704,14 +2704,21 @@ HVML 元素可划分为如下几类：
 除框架元素之外的其他 HVML 元素，被称为普通元素。普通元素可进一步划分为如下子类：
    1. 一般动作元素（ordinary operation elements）  
       `update`、`remove`、`test`、`match`、`choose`、`iterate`、`reduce`、`observe`、`fire`、`listen`、`close`、`load`、`back`、`define`、`include`、`call`、`return` 和 `catch` 元素。
-   1. 数据动作元素（JSON operation elements）  
+   1. 数据操作元素（JSON operation elements）  
       `init`、`set`。其内容必须是符合 JSON 语法的文本，可包含 JSON 求值表达式。
-   1. 模板元素（template elements）  
-      `archetype`、`error` 和 `except` 元素。模板元素的内容通常是使用目标标记语言书写的文档片段。
+   1. 片段模板元素（fragement template elements）  
+      `archetype`、`error` 和 `except` 元素。片段模板元素的内容通常是使用目标标记语言书写的文档片段。简称模板元素（template elements）。
    1. 数据模板元素（JSON template elements）  
       `archedata` 元素。其内容必须是符合 JSON 语法的文本，可包含 JSON 求值表达式。
 3) 外部元素（foreign elements）  
 所有不属于 HVML 标签定义的元素，被视为外部元素。所有可合法插入到 HVML 文档树中的外部元素，可被视作空动作元素（noop element），亦可被称为骨架元素（skeleton element）。此类元素中可包含文本内容、其他外部元素以及其他 HVML 普通元素。
+
+根据其语法特点，HVML 元素可划分为如下两类：
+
+1) 名词元素（noun elements）  
+包括框架元素、外部元素、模板元素和数据模板元素。
+2) 动作元素（operation elements）  
+包括一般动作元素和数据操作元素。
 
 一般动作元素用于定义对数据或文档的操作，可包含其他普通元素，但不能包含外部元素，也不能定义其文本内容。
 
@@ -2835,34 +2842,37 @@ There must never be two or more attributes on the same start tag whose names are
 
 在 HVML 中，动作元素的属性值存在如下特殊之处：
 
-1. 动作元素的属性值可分为介词属性和副词属性，这些属性是固有属性。
+1. 动作元素的属性值可分为介词属性（preposition attribute）和副词属性（adverb attribute），这些属性是固有属性。
 1. 所有介词属性均需定义对应的属性值，可省略其赋值操作符（U+003D EQUALS SIGN `=`）。
 1. 所有副词属性按上述（Empty attribute syntax/空属性语法）表述。
 1. 除固有的介词属性及副词属性之外，其他属性使用上述四种语法之一，且可使用额外的赋值运算符。
 
 所有介词属性（仅在动作元素中）的赋值操作符（`=`）可以被忽略：
 
-```html
+```
     <choose on "$2.payload" to "append update" in "#the-user-list" with "$user_item">
         <update textContent = "foo" />
     </choose>
 ```
 
-尽管对符合条件的介词属性值，我们可以省略其周围的单引号（U+0027 APOSTROPHE `'`）或者双引号（U+0022 QUOTATION MARK `"`），但建议使用单引号或者双引号，以使得 HVML 代码的书写效果更为美观。
+尽管对符合条件的介词属性值，我们可以省略其周围的单引号（U+0027 APOSTROPHE `'`）或者双引号（U+0022 QUOTATION MARK `"`），如：
 
 ```html
-    <init as "_TIMERS" uniquely by "id">
+    <init as _TIMERS uniquely by id>
+    </init>
 ```
+
+但建议使用单引号或者双引号，以使得 HVML 代码的书写效果更为美观。
 
 __是否考虑：__  
 当使用单引号时，将忽略整个属性值字符串中的所有 JSON 表达式，当做普通字符串处理。
 
 在某些动作元素（如 `update`）中，我们可以使用除 `=` 之外的属性值操作符来改变目标元素或者数据的属性或者内容：
 
-- `+=`：在当前的属性值中添加一个新的词法单元（token，指使用某种词法进行分割的最小单元字符串），若已有该词法单元，则不做修改。比如，原有的 `attr.class` 的属性值为 `foo`，使用 `attr.class += "text-warning"` 后，将修改为：`foo text-warning`；若原有属性值为 `foo text-warning`，则会保持不变。
+- `+=`：在当前的属性值中添加一个新的词法单元（token），若已有该词法单元，则不做修改。比如，原有的 `attr.class` 的属性值为 `foo`，使用 `attr.class += "text-warning"` 后，将修改为：`foo text-warning`；若原有属性值为 `foo text-warning`，则会保持不变。
 - `-=`：从当前属性值中移除一个词法单元，若没有该词法单元，则不做修改。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class -= "text-warning"` 后，将修改为 `foo`。
 - `%=`：从当前属性值中按指定的模式匹配一个词法单元，并使用第二个词法单元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class %= "text-* text-info"` 后，将修改为 `foo text-info`。
-- `/=`：从当前属性值中按正则表达式匹配一个词法单元，并使用第二个词法单元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class /= "/^text/ text-info"` 后，将修改为 `foo text-info`。
+- `~=`：从当前属性值中按正则表达式匹配一个词法单元，并使用第二个词法单元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class ~= "/^text/ text-info"` 后，将修改为 `foo text-info`。
 - `^=`：在当前属性值的头部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value ^= "C"` 后，将修改为：`Cab`。
 - `$=`：在当前属性值的尾部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value $= "C"` 后，将修改为：`abC`。
 
@@ -3326,7 +3336,7 @@ Consume the next input character:
 - Anything else
   - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the template data state.
 
-##### 3.2.5.32) Before attribute name state
+##### 3.2.5.30) Before attribute name state
   
 Consume the next input character:
 
@@ -3344,7 +3354,7 @@ Consume the next input character:
 - Anything else
   - Start a new attribute in the current tag token. Set that attribute name and value to the empty string. Reconsume in the attribute name state.
 
-##### 3.2.5.33) Attribute name state
+##### 3.2.5.31) Attribute name state
   
 Consume the next input character:
 
@@ -3356,6 +3366,17 @@ Consume the next input character:
 - U+003E GREATER-THAN SIGN (>)
 - EOF
   - Reconsume in the after attribute name state.
+- U+0024 DOLLAR SIGN ($)
+- U+0025 PERCENT SIGN (%)
+- U+002B PLUS SIGN (+)
+- U+002D HYPHEN-MINUS (-)
+- U+005E CIRCUMFLEX ACCENT (^)
+- U+007E TILDE (~)
+  - If the current tag token is an operation tag token and the current attribute name is an ordinary attribute name:
+    - Set the temporary buffer to the empty string. Append the current input character to the temporary buffer.
+    - Switch to the speical attribute operator in attribute name state.
+  - Otherwise:
+    - Treat it as per the "anything else" entry below.
 - U+003D EQUALS SIGN (=)
   - Switch to the before attribute value state.
 - ASCII upper alpha
@@ -3373,7 +3394,18 @@ When the user agent leaves the attribute name state (and before emitting the tag
 
 _NOTE_ If an attribute is so removed from a token, it, and the value that gets associated with it, if any, are never subsequently used by the parser, and are therefore effectively discarded. Removing the attribute in this way does not change its status as the "current attribute" for the purposes of the tokenizer, however.
 
-##### 3.2.5.34) After attribute name state
+##### 3.2.5.32) Special attribute operator in attribute name state
+
+Consume the next input character:
+
+- U+003D EQUALS SIGN (=)
+  - Set the current attribute operator according to the character in the temporary buffer (only one).
+  - Switch to the before attribute value state.
+- Anything else
+  - Append each of the character in the temporary buffer to the current attribute's name.
+  - Reconsume in the attribute name state.
+
+##### 3.2.5.33) After attribute name state
 
 Consume the next input character:
 
@@ -3386,12 +3418,38 @@ Consume the next input character:
   - Switch to the self-closing start tag state.
 - U+003D EQUALS SIGN (=)
   - Switch to the before attribute value state.
+- U+0024 DOLLAR SIGN ($)
+- U+0025 PERCENT SIGN (%)
+- U+002B PLUS SIGN (+)
+- U+002D HYPHEN-MINUS (-)
+- U+005E CIRCUMFLEX ACCENT (^)
+- U+007E TILDE (~)
+  - If the current tag token is an operation tag token and the current attribute name is an ordinary attribute name:
+    - Set the temporary buffer to the empty string. Append the current input character to the temporary buffer.
+    - Switch to the speical attribute operator after attribute name state.
+  - Otherwise:
+    - Treat it as per the "anything else" entry below.
 - U+003E GREATER-THAN SIGN (>)
   - Switch to the data state. Emit the current tag token.
 - EOF
   - This is an eof-in-tag parse error. Emit an end-of-file token.
 - Anything else
-  - Start a new attribute in the current tag token. Set that attribute name and value to the empty string. Reconsume in the attribute name state.
+  - If the current tag token is an operation tag token and the current attribute name is a preposition attribute name:
+    - Swith to the before attribute value state.
+  - Otherwise:
+    - Start a new attribute in the current tag token. Set that attribute name and value to the empty string. Reconsume in the attribute name state.
+
+##### 3.2.5.34) Special attribute operator after attribute name state
+
+Consume the next input character:
+
+- U+003D EQUALS SIGN (=)
+  - Set the current attribute operator according to the character in the temporary buffer (only one).
+  - Switch to the before attribute name state.
+- Anything else
+  - Start a new attribute in the current tag token. Set that attribute name and value to the empty string.
+  - Append each of the character in the temporary buffer to the current attribute's name.
+  - Reconsume in the attribute name state.
 
 ##### 3.2.5.35) Before attribute value state
   
