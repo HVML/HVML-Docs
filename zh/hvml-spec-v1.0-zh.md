@@ -3076,7 +3076,8 @@ The exact behavior of certain states depends on the insertion mode and the stack
 
 The output of the tokenization step is a series of zero or more of the following tokens: DOCTYPE, start tag, end tag, comment, character, JSONEE, end-of-file. DOCTYPE tokens have a name, a public identifier, a system information string, and a force-quirks flag. When a DOCTYPE token is created, its name, public identifier, and system information must be marked as missing (which is a distinct state from the empty string), and the force-quirks flag must be set to off (its other state is on). Start and end tag tokens have a tag name, a self-closing flag, and a list of attributes, each of which has a name and a value. When a start or end tag token is created, its self-closing flag must be unset (its other state is that it be set), and its attributes list must be empty. Comment, character, and JSONEE tokens have data.
 
-_NOTE_, compared to HTML, HTML has a new JSONEE token. A JSONEE token is a string like `$users[0].a`.
+_NOTE_  
+Compared to HTML, HTML has a new JSONEE token. A JSONEE token is a string like `$users[0].a`.
 
 When a token is emitted, it must immediately be handled by the tree construction stage. The tree construction stage can affect the state of the tokenization stage, and can insert additional characters into the stream. (For example, the script element can result in scripts executing and using the dynamic markup insertion APIs to insert characters into the stream being tokenized.)
 
@@ -3392,7 +3393,8 @@ Consume the next input character:
 
 When the user agent leaves the attribute name state (and before emitting the tag token, if appropriate), the complete attribute's name must be compared to the other attributes on the same token; if there is already an attribute on the token with the exact same name, then this is a duplicate-attribute parse error and the new attribute must be removed from the token.
 
-_NOTE_ If an attribute is so removed from a token, it, and the value that gets associated with it, if any, are never subsequently used by the parser, and are therefore effectively discarded. Removing the attribute in this way does not change its status as the "current attribute" for the purposes of the tokenizer, however.
+_NOTE_  
+If an attribute is so removed from a token, it, and the value that gets associated with it, if any, are never subsequently used by the parser, and are therefore effectively discarded. Removing the attribute in this way does not change its status as the "current attribute" for the purposes of the tokenizer, however.
 
 ##### 3.2.5.32) Special attribute operator in attribute name state
 
@@ -3991,7 +3993,8 @@ Consume the next input character:
 - Anything else
   - Emit the current input character as a character token.
 
-_NOTE_ U+0000 NULL characters are handled in the tree construction stage, as part of the in foreign content insertion mode, which is the only place where CDATA sections can appear.
+_NOTE_  
+U+0000 NULL characters are handled in the tree construction stage, as part of the in foreign content insertion mode, which is the only place where CDATA sections can appear.
 
 ##### 3.2.5.70 CDATA section bracket state
 
@@ -4267,7 +4270,8 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
    - Push the node pointed to by the head element pointer onto the stack of open elements.
    - Process the token using the rules for the "in head" insertion mode.
    - Remove the node pointed to by the head element pointer from the stack of open elements. (It might not be the current node at this point.)
-   - _NOTE_ The head element pointer cannot be null at this point.
+   - _NOTE_  
+   The head element pointer cannot be null at this point.
 7) An end tag whose tag name is "archetype"
    - Process the token using the rules for the "in head" insertion mode.
 8) An end tag whose tag name is one of: "body", "hvml"
@@ -4324,7 +4328,8 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
     - Otherwise,
       - Insert an HVML element for the token.
       - Switch the insertion mode to "text".
-    - _NOTE_ This element will be an ordinary element.
+    - _NOTE_  
+    This element will be an ordinary element.
 12) A start tag whose tag name is "error" or "except".
     - If the current node in the stack of open elements is not an operation element,
       - This is a fatal parse error.
@@ -4365,7 +4370,8 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
 
 1) A character token
    - Insert the token's character.
-   - _NOTE_ This can never be a U+0000 NULL character; the tokenizer converts those to U+FFFD REPLACEMENT CHARACTER characters.
+   - _NOTE_  
+   This can never be a U+0000 NULL character; the tokenizer converts those to U+FFFD REPLACEMENT CHARACTER characters.
 2) An end-of-file token
    - Parse error.
    - If the current node is an `archetype` element, mark the template element as "already started".
