@@ -3058,6 +3058,51 @@ Comments must have the following format:
 
 #### 3.2.5) 断词/Tokenization
 
+Implementations must act as if they used the following state machine to tokenize HVML. The state machine must start in the data state. Most states consume a single character, which may have various side-effects, and either switches the state machine to a new state to reconsume the current input character, or switches it to a new state to consume the next character, or stays in the same state to consume the next character. Some states have more complicated behavior and can consume several characters before switching to another state. In some cases, the tokenizer state is also changed by the tree construction stage.
+
+When a state says to reconsume a matched character in a specified state, that means to switch to that state, but when it attempts to consume the next input character, provide it with the current input character instead.
+
+The exact behavior of certain states depends on the insertion mode and the stack of open elements. Certain states also use a temporary buffer to track progress, and the character reference state uses a return state to return to the state it was invoked from.
+
+The output of the tokenization step is a series of zero or more of the following tokens: DOCTYPE, start tag, end tag, comment, character, JSONEE, end-of-file. DOCTYPE tokens have a name, a public identifier, a system information string, and a force-quirks flag. When a DOCTYPE token is created, its name, public identifier, and system information must be marked as missing (which is a distinct state from the empty string), and the force-quirks flag must be set to off (its other state is on). Start and end tag tokens have a tag name, a self-closing flag, and a list of attributes, each of which has a name and a value. When a start or end tag token is created, its self-closing flag must be unset (its other state is that it be set), and its attributes list must be empty. Comment, character, and JSONEE tokens have data.
+
+_NOTE_, compared to HTML, HTML has a new JSONEE token. A JSONEE token is a string like `$users[0].a`.
+
+When a token is emitted, it must immediately be handled by the tree construction stage. The tree construction stage can affect the state of the tokenization stage, and can insert additional characters into the stream. (For example, the script element can result in scripts executing and using the dynamic markup insertion APIs to insert characters into the stream being tokenized.)
+
+Creating a token and emitting it are distinct actions. It is possible for a token to be created but implicitly abandoned (never emitted), e.g. if the file ends unexpectedly while processing the characters that are being parsed into a start tag token.
+
+When a start tag token is emitted with its self-closing flag set, if the flag is not acknowledged when it is processed by the tree construction stage, that is a non-void-html-element-start-tag-with-trailing-solidus parse error.
+
+When an end tag token is emitted with attributes, that is an end-tag-with-attributes parse error.
+
+When an end tag token is emitted with its self-closing flag set, that is an end-tag-with-trailing-solidus parse error.
+
+An appropriate end tag token is an end tag token whose tag name matches the tag name of the last start tag to have been emitted from this tokenizer, if any. If no start tag has been emitted from this tokenizer, then no end tag token is appropriate.
+
+A character reference is said to be consumed as part of an attribute if the return state is either attribute value (double-quoted) state, attribute value (single-quoted) state or attribute value (unquoted) state.
+
+When a state says to flush code points consumed as a character reference, it means that for each code point in the temporary buffer (in the order they were added to the buffer) user agent must append the code point from the buffer to the current attribute's value if the character reference was consumed as part of an attribute, or emit the code point as a character token otherwise.
+
+Before each step of the tokenizer, the user agent must first check the parser pause flag. If it is true, then the tokenizer must abort the processing of any nested invocations of the tokenizer, yielding control back to the caller.
+
+The tokenizer state machine consists of the states defined in the following subsections.
+
+##### 3.2.5.1 Data state
+
+Consume the next input character:
+
+- U+0026 AMPERSAND (&)
+  - Set the return state to the data state. Switch to the character reference state.
+- U+003C LESS-THAN SIGN (<)
+  - Switch to the tag open state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Emit the current input character as a character token.
+- EOF
+  - Emit an end-of-file token.
+- Anything else
+  - Emit the current input character as a character token.
+
 #### 3.2.6) 树的构造
 
 ##### 3.2.6.1) 创建和插入模式/Creating and inserting nodes
@@ -3262,7 +3307,7 @@ Comments must have the following format:
     - Otherwise,
       - Insert an HVML element for the token.
       - Switch the insertion mode to "text".
-    - _NOTE_: This element will be an ordinary element.
+    - _NOTE_ This element will be an ordinary element.
 12) A start tag whose tag name is "error" or "except".
     - If the current node in the stack of open elements is not an operation element,
       - This is a fatal parse error.
@@ -3303,7 +3348,7 @@ Comments must have the following format:
 
 1) A character token
    - Insert the token's character.
-   - _NOTE_: This can never be a U+0000 NULL character; the tokenizer converts those to U+FFFD REPLACEMENT CHARACTER characters.
+   - _NOTE_ This can never be a U+0000 NULL character; the tokenizer converts those to U+FFFD REPLACEMENT CHARACTER characters.
 2) An end-of-file token
    - Parse error.
    - If the current node is an `archetype` element, mark the template element as "already started".
