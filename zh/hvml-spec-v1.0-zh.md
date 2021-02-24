@@ -234,10 +234,10 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
         <ul class="user-list">
             <iterate on="$users" with="$user_item" to="append" by="CLASS: IUser">
-                <error on="nodata">
+                <error type="nodata">
                     <img src="wait.png" />
                 </error>
-                <except on="StopIteration">
+                <except type="StopIteration">
                     <p>Bad user data!</p>
                 </except>
             </iterate>
@@ -263,13 +263,13 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
                 </match>
                 <match for="*" to="displace" with="$footer_def">
                 </match>
-                <error on="nodata">
+                <error type="nodata">
                     <p>You forget to define the $global variable!</p>
                 </error>
-                <except on="KeyError">
+                <except type="KeyError">
                     <p>Bad global data!</p>
                 </except>
-                <except on="IdentifierError">
+                <except type="IdentifierError">
                     <p>Bad archetype data!</p>
                 </except>
             </test>
@@ -715,33 +715,60 @@ HVML 还定义有如下一些动作标签：
 
 为了方便处理错误和异常情形，HVML 还定义了如下错误或异常处理标签：
 
-- `error`：出现错误时，插入其中包含的内容到实际的 DOM 树中。`error` 标签支持 `on` 属性，用来指定错误类型。如：
+- `error`：出现错误时，插入其中包含的内容到目标 DOM 树的当前位置。`error` 标签支持 `type` 属性，用来指定错误类型。如：
    - `nodata` 表示不存在指定的数据。
    - `notready` 表示数据尚未就绪。
    - `unauthorized` 表示连接指定的数据源时出现身份验证错误。
    - `timeout` 表示从数据源获取数据时出现超时错误。
-- `except`：处理出现异常时，插入其中包含的内容到实际的 DOM 树中。`except` 标签支持 `on` 属性，用来指定脚本的异常类型。如：
+- `except`：处理出现异常时，插入其中包含的内容到目标 DOM 树的当前位置。`except` 标签支持 `type` 属性，用来指定脚本的异常类型。如：
    - `SyntaxError` 表示语法错误。
    - `NotIterable` 表示指定的元素或数据不是可迭代的。
    - `IndexError` 索引错误，通常指索引值超出了数组范围。
    - `KeyError` 字典中的键值错误，通常指引用了一个不存在的键值。
    - `ZeroDivisionError` 表示遇到被零除错误。
 
-注意：在 HVML 中，错误和异常标签必须包含在 HVML 动作标签中作为其直接子元素使用，在错误和异常标签中，可以使用目标标记语言的标签定义子元素。
-当出现错误或者异常时，错误或异常标签中定义的文档片段将被克隆到当前的文档操作位置，并中止当前的操作。
+另外，对可应对的错误或异常，HVML 提供了 `catch` 动作标签，可用来定义捕获特定的错误或者异常并进行处理。
 
-为方便错误和异常的处理，我们可以使用 `archetype` 标签定义当前上下文中默认的错误或异常文档片段：
+注意：
+
+1. 在 HVML 中，错误和异常标签必须包含在 HVML 动作元素或者骨架元素中作为其直接子元素使用，在错误和异常标签中，一般使用目标标记语言的标签定义文档片段。
+1. 当出现错误或者异常时，错误或异常标签中定义的文档片段将被克隆并插入到目标文档的当前位置，并中止当前的操作。
+1. 所有未被当前动作元素的 `error` 或 `except` 子元素捕获的错误或异常，将由执行路径上的父元素处理，直到根节点为止。根节点的错误或异常处理，定义在 `head` 元素中。
 
 ```html
+    <head>
+        ...
+        <error raw>
+            <p class="text-danger">There is an error.</p>
+        </error>
+        
+        <except>
+            <p class="text-warning">There is an execption: {$?.messages}</p>
+        </except>
+    </head>
 
-    <archetype name="ERROR" raw>
-        <p class="text-danger">There is an error.</p>
-    </archetype>
-    
-    <archetype name="EXCEPT">
-        <p class="text-warning">There is an execption: {$_EXCEPT.messages}</p>
-    </archetype>
+    <body>
+        <footer id="the-footer">
+            <test on="$global.locale" in='#the-footer'>
+                <match for="zh_CN" to="displace" with="#footer-cn" exclusively>
+                </match>
+                <match for="zh_TW" to="displace" with="#footer-tw" exclusively>
+                </match>
+                <match for="*" to="displace" with="#footer-others">
+                </match>
+
+                <error type="nodata">
+                    <p>You forget to define the $global variable!</p>
+                </error>
+                <except type="KeyError">
+                    <p>Bad global data!</p>
+                </except>
+            </test>
+        </footer>
+    </body>
 ```
+
+注意，引用由 `_ERROR` 或 `_EXCEPT` 命名的模板变量时，上下文变量 `$?` 是错误或者异常对象，其中的键值 `messages` 是错误信息。
 
 #### 2.1.9) 介词属性
 
@@ -1021,10 +1048,10 @@ HVML 定义的上下文变量可罗列如下：
             <match for="*" to="displace" with="#footer-others">
             </match>
 
-            <error on="nodata">
+            <error type="nodata">
                 <p>You forget to define the $global variable!</p>
             </error>
-            <except on="KeyError">
+            <except type="KeyError">
                 <p>Bad global data!</p>
             </except>
         </test>
@@ -1145,10 +1172,10 @@ HVML 定义的上下文变量可罗列如下：
 
         <ul id="the-user-list" class="user-list">
             <iterate on="$users" to="append" in="#the-user-list" with="$user_item" by="CLASS: IUser">
-                <error on="notready">
+                <error type="notready">
                     <img src="wait.gif" />
                 </error>
-                <except on="StopIteration">
+                <except type="StopIteration">
                     <p>Bad user data!</p>
                 </except>
             </iterate>
@@ -1349,7 +1376,7 @@ HVML 定义的上下文变量可罗列如下：
     <body>
         <observe on="$userChanges" for="new" to="iterate">
             <iterate on="$?" to="append" in="#the-user-list" with="$user_item" by="CLASS: IUser">
-                <error on="notready">
+                <error type="notready">
                     <img src="wait.gif" />
                 </error>
                 <except>
@@ -2316,10 +2343,10 @@ class HVMLIterator:
 
         <ul id="the-user-list" class="user-list">
             <iterate on="$users" to="append" in="#the-user-list" with="$user_item" by="CLASS: IUser">
-                <error on="notready">
+                <error type="notready">
                     <img src="wait.gif" />
                 </error>
-                <except on="StopIteration">
+                <except type="StopIteration">
                     <p>Bad user data!</p>
                 </except>
             </iterate>
@@ -2653,10 +2680,10 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml:">
 
         <ul class="user-list">
             <iterate on="$users" with="$user_item" to="append" by="CLASS: IUser">
-                <hvml:error on="nodata">
+                <hvml:error type="nodata">
                     <img src="wait.png" />
                 </hvml:error>
-                <hvml:except on="StopIteration">
+                <hvml:except type="StopIteration">
                     <p>Bad user data!</p>
                 </hvml:except>
             </iterate>
@@ -2671,31 +2698,30 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml:">
 
 HVML 元素可划分为如下几类：
 
-1) 无文本的动作元素（action elements without text）  
-`update`、`remove`、`test`、`match`、`choose`、`iterate`、`reduce`、`observe`、`fire`、`listen`、`close`、`load`、`back`、`define`、`include`、`call`、`return` 和 `catch` 元素。
+1) 框架元素（framework elements）  
+`hvml`、`head` 和 `body` 元素。此类元素用于定义 HVML 文档的框架结构。
+2) 普通元素（normal elements）  
+除框架元素之外的其他 HVML 元素，被称为普通元素。普通元素可进一步划分为如下子类：
+   1. 一般动作元素（ordinary operation elements）  
+      `update`、`remove`、`test`、`match`、`choose`、`iterate`、`reduce`、`observe`、`fire`、`listen`、`close`、`load`、`back`、`define`、`include`、`call`、`return` 和 `catch` 元素。
+   1. 数据动作元素（JSON operation elements）  
+      `init`、`set`。其内容必须是符合 JSON 语法的文本，可包含 JSON 求值表达式。
+   1. 模板元素（template elements）  
+      `archetype`、`error` 和 `except` 元素。模板元素的内容通常是使用目标标记语言书写的文档片段。
+   1. 数据模板元素（JSON template elements）  
+      `archedata` 元素。其内容必须是符合 JSON 语法的文本，可包含 JSON 求值表达式。
+3) 外部元素（foreign elements）  
+所有不属于 HVML 标签定义的元素，被视为外部元素。所有可合法插入到 HVML 文档树中的外部元素，可被视作空动作元素（noop element），亦可被称为骨架元素（skeleton element）。此类元素中可包含文本内容、其他外部元素以及其他 HVML 普通元素。
 
-2) 有文本的动作元素（action elements with text）  
-`init` 和 `set` 元素。
+一般动作元素用于定义对数据或文档的操作，可包含其他普通元素，但不能包含外部元素，也不能定义其文本内容。
 
-3) 模板元素（template elements）  
-`archetype`、`error` 和 `except` 元素。
+数据动作元素用于定义 JSON 数据以及其上的操作，可包含其他普通元素，但不能包含外部元素。
 
-4) JSON 文本元素（JSON text elements）  
-`init`、`set` 和 `archedata` 元素。
-
-6) 普通元素（normal elements）  
-`hvml`、`head` 和 `body` 元素。
-
-7) 外部元素 （foreign elements） 
-所有不属于 HVML 标签定义的元素，被视为外部元素。
-
-无文本的动作元素用于定义对数据或文档的操作，可包含其他动作元素以及 `error` 或者 `except` 这两类元素，但不能包含其他类型的子元素，也不能定义其内容。
-
-有文本的动作元素用于定义 JSON 数据，不可包含其他子元素；其内容之限制同裸文本元素。
-
-一个模板元素的模板内容位于该模板元素的起始标签之后，终止标签之前，可包含任意的文本、字符引用、外部元素以及注释，但文本不能包含 U+003C LESS-THAN SIGN (`<`) 或者含糊的 `＆` 符号。
+一个模板元素的内容位于该模板元素的起始标签之后，终止标签之前，可包含任意的文本、字符引用、外部元素以及注释，但文本不能包含 U+003C LESS-THAN SIGN (`<`) 或者含糊的 `＆` 符号。
 
 > The markup for the template contents of a template element is placed just after the template element's start tag and just before template element's end tag (as with other elements), and may consist of any text, character references, foreign elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
+
+数据模板元素用于定义一个 JSON 格式的数据模板，其内容定义在该元素的起始标签之后，终止标签之前。
 
 外部元素必须要么同时包含起始标签和终止标签，要么起始标签被标记为自终止。后者情形下，不能包含终止标签。
 
@@ -2705,21 +2731,17 @@ HVML 元素可划分为如下几类：
 
 当一个外部元素的起始标签被标记为自终止时，该元素不能包含任何内容（显然，没有终止标签就无法在起始标签和终止标签之间放置任何内容）。当一个外部元素的起始标签没有被标记为自终止时，该元素中可包含文本、字符引用，CDATA 段、注释以及其他外部元素或动作元素，但文本中不可包含 U+003C LESS-THAN SIGN (`<`) 或含糊的 & 符号。
 
-> Foreign elements whose start tag is marked as self-closing can't have any contents (since, again, as there's no end tag, no content can be put between the start tag and the end tag). Foreign elements whose start tag is not marked as self-closing can have text, character references, CDATA sections, other foreign elements or action elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
+> Foreign elements whose start tag is marked as self-closing can't have any contents (since, again, as there's no end tag, no content can be put between the start tag and the end tag). Foreign elements whose start tag is not marked as self-closing can have text, character references, CDATA sections, other foreign elements or operation elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
 
-裸文本元素中可包含文本，但有如下所述之限制。
+外部元素中可包含可转义裸文本，统称为为可转移文本元素（escapable raw text elements）。
 
-> Raw text elements can have text, though it has restrictions described below.
-
-普通元素可包含文本、字符引用、其他普通元素或外部元素以及注释，但文本中不可包含 U+003C LESS-THAN SIGN (`<`) 或含糊的 & 符号。
-
-> Normal elements can have text, character references, other elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand. 
-
-普通元素及外部元素中可包含可转义裸文本，统称为为可转移文本元素（escapable raw text elements）。
-
-可转义裸文本元素中可包含文本和字符引用，但文本中不可包含任何含糊的 & 符号，另有如下所述之限制。
+可转义裸文本元素中可包含文本和字符引用，但文本中不可包含任何含糊的 & 符号，另有后面所述之限制。
 
 > Escapable raw text elements can have text and character references, but the text must not contain an ambiguous ampersand. There are also further restrictions described below.
+
+框架和外部元素可包含文本、字符引用、其他普通元素或外部元素以及注释，但文本中不可包含 U+003C LESS-THAN SIGN (`<`) 或含糊的 & 符号。
+
+> Framework and foreign elements can have text, character references, other elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand. 
 
 标签包含标签名称，给定了元素的名称。HVML 元素允许使用指定的前缀来避免出现标签名称的冲突。除该前缀中包含的冒号（:）字符之外，标签名称中仅使用 ASCII 字母及数字，且仅使用字母开头。
 
@@ -3242,7 +3264,7 @@ Comments must have the following format:
       - Switch the insertion mode to "text".
     - _NOTE_: This element will be an ordinary element.
 12) A start tag whose tag name is "error" or "except".
-    - If the current node in the stack of open elements is not an action element,
+    - If the current node in the stack of open elements is not an operation element,
       - This is a fatal parse error.
     - Otherwise,
       - Insert an HVML element for the token.
@@ -3264,7 +3286,7 @@ Comments must have the following format:
     - If the current node is not a `archetype` element, then this is a parse error; ignore it.
     - Pop the current node from the stack.
     - Reset the insertion mode appropriately.
-16) Any start tag of an action element
+16) Any start tag of an operation element
     - Insert an HVML element for the token.
 17) Any other end tag of a foreign element
     - Run these steps:
