@@ -3337,6 +3337,68 @@ Consume the next input character:
 - Anything else
   - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the template data state.
 
+##### 3.2.5.18) JSONTEXT start state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- ASCII lower alpha
+- ASCII digit
+- U+002D HYPHEN-MINUS (-)
+- U+0022 QUOTATION MARK (")
+- U+0024 DOLLAR SIGN ($)
+  - Set the temporary buffer to the empty string.
+  - Reconsume in JSONTEXT single value state.
+  - Reconsume in the JSONEE start state.
+- U+005B LEFT SQUARE BRACKET ([)
+  - Switch to JSONTEXT arrary start state
+- U+007B LEFT CURLY BRACKET ({)
+  - Switch to JSONTEXT object start state
+- U+005D RIGHT SQUARE BRACKET (])
+- U+007D LEFT CURLY BRACKET (})
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
+- EOF
+  - Emit an end-of-file token.
+- Anything else
+  - This is a bad-json parse error.
+
+- U+005C BACKSLASH (\\)
+  - Set the return state to the JSONTEXT start state.
+  - Switch to JSONTEXT escape state
+
+##### 3.2.5.19) JSONTEXT keyword state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+  - If the temporary buffer is the string "true", "false", or "null", then emit the characters in the temporary buffer as a character tokens (in the order they were added to the buffer). Otherwise this is an unexpected-json-keyword parse error.
+- ASCII lower alpha
+  - Append the current input character to the temporary buffer.
+- Anything else
+  - This is an unexpected-json-keyword parse error.
+
+##### 3.2.5.19) JSONTEXT escape state
+
+Consume the next input character:
+
+- U+007B LEFT CURLY BRACKET ({)
+- U+0024 DOLLAR SIGN ($)
+- U+005C BACKSLASH (\\)
+  - Emit the current input character as a character token.
+  - Switch to return state.
+- Anything else
+  - Emit a U+005C BACKSLASH (\\) character token and emit the current input character as a character token.
+  - Switch to return state.
+
 ##### 3.2.5.30) Before attribute name state
   
 Consume the next input character:
