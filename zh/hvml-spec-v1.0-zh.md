@@ -3445,7 +3445,7 @@ Consume the next input character:
 
 - U+003D EQUALS SIGN (=)
   - Set the current attribute operator according to the character in the temporary buffer (only one).
-  - Switch to the before attribute name state.
+  - Switch to the before attribute value state.
 - Anything else
   - Start a new attribute in the current tag token. Set that attribute name and value to the empty string.
   - Append each of the character in the temporary buffer to the current attribute's name.
