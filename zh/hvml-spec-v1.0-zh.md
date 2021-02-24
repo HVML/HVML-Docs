@@ -3131,12 +3131,12 @@ Consume the next input character:
 - Anything else
   - Emit the current input character as a character token.
 
-##### 3.2.5.4) Script data state
+##### 3.2.5.4) Template data state
 
 Consume the next input character:
 
 - U+003C LESS-THAN SIGN (<)
-  - Switch to the script data less-than sign state.
+  - Switch to the template data less-than sign state.
 - U+0000 NULL
   - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
 - EOF
@@ -3280,6 +3280,979 @@ Consume the next input character:
   - Append the current input character to the current tag token's tag name. Append the current input character to the temporary buffer.
 - Anything else
   - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the RAWTEXT state.
+
+##### 3.2.5.15) Template data less-than sign state
+  
+Consume the next input character:
+
+- U+002F SOLIDUS (/)
+  - Set the temporary buffer to the empty string. Switch to the template data end tag open state.
+- U+0021 EXCLAMATION MARK (!)
+  - Switch to the template data escape start state. Emit a U+003C LESS-THAN SIGN character token and a U+0021 EXCLAMATION MARK character token.
+- Anything else
+  - Emit a U+003C LESS-THAN SIGN character token. Reconsume in the template data state.
+
+##### 3.2.5.16) Template data end tag open state
+  
+Consume the next input character:
+
+- ASCII alpha
+  - Create a new end tag token, set its tag name to the empty string. Reconsume in the template data end tag name state.
+- Anything else
+  - Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume in the template data state.
+
+##### 3.2.5.17) Template data end tag name state
+  
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - If the current end tag token is an appropriate end tag token, then switch to the before attribute name state. Otherwise, treat it as per the "anything else" entry below.
+- U+002F SOLIDUS (/)
+  - If the current end tag token is an appropriate end tag token, then switch to the self-closing start tag state. Otherwise, treat it as per the "anything else" entry below.
+- U+003E GREATER-THAN SIGN (>)
+  - If the current end tag token is an appropriate end tag token, then switch to the data state and emit the current tag token. Otherwise, treat it as per the "anything else" entry below.
+- ASCII upper alpha
+  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current tag token's tag name. Append the current input character to the temporary buffer.
+- ASCII lower alpha
+  - Append the current input character to the current tag token's tag name. Append the current input character to the temporary buffer.
+- Anything else
+  - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the template data state.
+
+##### 3.2.5.18) Template data escape start state
+  
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Switch to the template data escape start dash state. Emit a U+002D HYPHEN-MINUS character token.
+- Anything else
+  - Reconsume in the template data state.
+
+##### 3.2.5.19) Template data escape start dash state
+  
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Switch to the template data escaped dash dash state. Emit a U+002D HYPHEN-MINUS character token.
+- Anything else
+  - Reconsume in the template data state.
+
+##### 3.2.5.20) Template data escaped state
+  
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Switch to the template data escaped dash state. Emit a U+002D HYPHEN-MINUS character token.
+- U+003C LESS-THAN SIGN (<)
+  - Switch to the template data escaped less-than sign state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
+- EOF
+  - This is an eof-in-script-html-comment-like-text parse error. Emit an end-of-file token.
+- Anything else
+  - Emit the current input character as a character token.
+
+##### 3.2.5.21) Template data escaped dash state
+  
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Switch to the template data escaped dash dash state. Emit a U+002D HYPHEN-MINUS character token.
+- U+003C LESS-THAN SIGN (<)
+  - Switch to the template data escaped less-than sign state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Switch to the template data escaped state. Emit a U+FFFD REPLACEMENT CHARACTER character token.
+- EOF
+  - This is an eof-in-script-html-comment-like-text parse error. Emit an end-of-file token.
+- Anything else
+  - Switch to the template data escaped state. Emit the current input character as a character token.
+
+##### 3.2.5.22) Template data escaped dash dash state
+  
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Emit a U+002D HYPHEN-MINUS character token.
+- U+003C LESS-THAN SIGN (<)
+  - Switch to the template data escaped less-than sign state.
+- U+003E GREATER-THAN SIGN (>)
+  - Switch to the template data state. Emit a U+003E GREATER-THAN SIGN character token.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Switch to the template data escaped state. Emit a U+FFFD REPLACEMENT CHARACTER character token.
+- EOF
+  - This is an eof-in-script-html-comment-like-text parse error. Emit an end-of-file token.
+- Anything else
+  - Switch to the template data escaped state. Emit the current input character as a character token.
+
+##### 3.2.5.23) Template data escaped less-than sign state
+  
+Consume the next input character:
+
+- U+002F SOLIDUS (/)
+  - Set the temporary buffer to the empty string. Switch to the template data escaped end tag open state.
+- ASCII alpha
+  - Set the temporary buffer to the empty string. Emit a U+003C LESS-THAN SIGN character token. Reconsume in the template data double escape start state.
+- Anything else
+  - Emit a U+003C LESS-THAN SIGN character token. Reconsume in the template data escaped state.
+
+##### 3.2.5.24) Template data escaped end tag open state
+  
+Consume the next input character:
+
+- ASCII alpha
+  - Create a new end tag token, set its tag name to the empty string. Reconsume in the template data escaped end tag name state.
+- Anything else
+  - Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume in the template data escaped state.
+
+##### 3.2.5.25) Template data escaped end tag name state
+  
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - If the current end tag token is an appropriate end tag token, then switch to the before attribute name state. Otherwise, treat it as per the "anything else" entry below.
+- U+002F SOLIDUS (/)
+  - If the current end tag token is an appropriate end tag token, then switch to the self-closing start tag state. Otherwise, treat it as per the "anything else" entry below.
+- U+003E GREATER-THAN SIGN (>)
+  - If the current end tag token is an appropriate end tag token, then switch to the data state and emit the current tag token. Otherwise, treat it as per the "anything else" entry below.
+- ASCII upper alpha
+  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current tag token's tag name. Append the current input character to the temporary buffer.
+- ASCII lower alpha
+  - Append the current input character to the current tag token's tag name. Append the current input character to the temporary buffer.
+- Anything else
+  - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the template data escaped state.
+
+##### 3.2.5.26) Template data double escape start state
+  
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+- U+002F SOLIDUS (/)
+- U+003E GREATER-THAN SIGN (>)
+  - If the temporary buffer is the string "script", then switch to the template data double escaped state. Otherwise, switch to the template data escaped state. Emit the current input character as a character token.
+- ASCII upper alpha
+  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the temporary buffer. Emit the current input character as a character token.
+- ASCII lower alpha
+  - Append the current input character to the temporary buffer. Emit the current input character as a character token.
+- Anything else
+  - Reconsume in the template data escaped state.
+
+##### 3.2.5.27) Template data double escaped state
+  
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Switch to the template data double escaped dash state. Emit a U+002D HYPHEN-MINUS character token.
+- U+003C LESS-THAN SIGN (<)
+  - Switch to the template data double escaped less-than sign state. Emit a U+003C LESS-THAN SIGN character token.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
+- EOF
+  - This is an eof-in-script-html-comment-like-text parse error. Emit an end-of-file token.
+- Anything else
+  - Emit the current input character as a character token.
+
+##### 3.2.5.28) Template data double escaped dash state
+  
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Switch to the template data double escaped dash dash state. Emit a U+002D HYPHEN-MINUS character token.
+- U+003C LESS-THAN SIGN (<)
+  - Switch to the template data double escaped less-than sign state. Emit a U+003C LESS-THAN SIGN character token.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Switch to the template data double escaped state. Emit a U+FFFD REPLACEMENT CHARACTER character token.
+- EOF
+  - This is an eof-in-script-html-comment-like-text parse error. Emit an end-of-file token.
+- Anything else
+  - Switch to the template data double escaped state. Emit the current input character as a character token.
+
+##### 3.2.5.29) Template data double escaped dash dash state
+  
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Emit a U+002D HYPHEN-MINUS character token.
+- U+003C LESS-THAN SIGN (<)
+  - Switch to the template data double escaped less-than sign state. Emit a U+003C LESS-THAN SIGN character token.
+- U+003E GREATER-THAN SIGN (>)
+  - Switch to the template data state. Emit a U+003E GREATER-THAN SIGN character token.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Switch to the template data double escaped state. Emit a U+FFFD REPLACEMENT CHARACTER character token.
+- EOF
+  - This is an eof-in-script-html-comment-like-text parse error. Emit an end-of-file token.
+- Anything else
+  - Switch to the template data double escaped state. Emit the current input character as a character token.
+
+##### 3.2.5.30) Template data double escaped less-than sign state
+  
+Consume the next input character:
+
+- U+002F SOLIDUS (/)
+  - Set the temporary buffer to the empty string. Switch to the template data double escape end state. Emit a U+002F SOLIDUS character token.
+- Anything else
+  - Reconsume in the template data double escaped state.
+
+##### 3.2.5.31) Template data double escape end state
+  
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+- U+002F SOLIDUS (/)
+- U+003E GREATER-THAN SIGN (>)
+  - If the temporary buffer is the string "script", then switch to the template data escaped state. Otherwise, switch to the template data double escaped state. Emit the current input character as a character token.
+- ASCII upper alpha
+  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the temporary buffer. Emit the current input character as a character token.
+- ASCII lower alpha
+  - Append the current input character to the temporary buffer. Emit the current input character as a character token.
+- Anything else
+  - Reconsume in the template data double escaped state.
+
+##### 3.2.5.32) Before attribute name state
+  
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- U+002F SOLIDUS (/)
+- U+003E GREATER-THAN SIGN (>)
+- EOF
+  - Reconsume in the after attribute name state.
+- U+003D EQUALS SIGN (=)
+  - This is an unexpected-equals-sign-before-attribute-name parse error. Start a new attribute in the current tag token. Set that attribute's name to the current input character, and its value to the empty string. Switch to the attribute name state.
+- Anything else
+  - Start a new attribute in the current tag token. Set that attribute name and value to the empty string. Reconsume in the attribute name state.
+
+##### 3.2.5.33) Attribute name state
+  
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+- U+002F SOLIDUS (/)
+- U+003E GREATER-THAN SIGN (>)
+- EOF
+  - Reconsume in the after attribute name state.
+- U+003D EQUALS SIGN (=)
+  - Switch to the before attribute value state.
+- ASCII upper alpha
+  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current attribute's name.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute's name.
+- U+0022 QUOTATION MARK (")
+- U+0027 APOSTROPHE (')
+- U+003C LESS-THAN SIGN (<)
+  - This is an unexpected-character-in-attribute-name parse error. Treat it as per the "anything else" entry below.
+- Anything else
+  - Append the current input character to the current attribute's name.
+
+When the user agent leaves the attribute name state (and before emitting the tag token, if appropriate), the complete attribute's name must be compared to the other attributes on the same token; if there is already an attribute on the token with the exact same name, then this is a duplicate-attribute parse error and the new attribute must be removed from the token.
+
+_NOTE_ If an attribute is so removed from a token, it, and the value that gets associated with it, if any, are never subsequently used by the parser, and are therefore effectively discarded. Removing the attribute in this way does not change its status as the "current attribute" for the purposes of the tokenizer, however.
+
+##### 3.2.5.34) After attribute name state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- U+002F SOLIDUS (/)
+  - Switch to the self-closing start tag state.
+- U+003D EQUALS SIGN (=)
+  - Switch to the before attribute value state.
+- U+003E GREATER-THAN SIGN (>)
+  - Switch to the data state. Emit the current tag token.
+- EOF
+  - This is an eof-in-tag parse error. Emit an end-of-file token.
+- Anything else
+  - Start a new attribute in the current tag token. Set that attribute name and value to the empty string. Reconsume in the attribute name state.
+
+##### 3.2.5.35) Before attribute value state
+  
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- U+0022 QUOTATION MARK (")
+  - Switch to the attribute value (double-quoted) state.
+- U+0027 APOSTROPHE (')
+  - Switch to the attribute value (single-quoted) state.
+- U+003E GREATER-THAN SIGN (>)
+  - This is a missing-attribute-value parse error. Switch to the data state. Emit the current tag token.
+- Anything else
+  - Reconsume in the attribute value (unquoted) state.
+
+##### 3.2.5.36) Attribute value (double-quoted) state
+  
+Consume the next input character:
+
+- U+0022 QUOTATION MARK (")
+  - Switch to the after attribute value (quoted) state.
+- U+0026 AMPERSAND (&)
+  - Set the return state to the attribute value (double-quoted) state. Switch to the character reference state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute's value.
+- EOF
+  - This is an eof-in-tag parse error. Emit an end-of-file token.
+- Anything else
+  - Append the current input character to the current attribute's value.
+
+##### 3.2.5.37) Attribute value (single-quoted) state
+  
+Consume the next input character:
+
+- U+0027 APOSTROPHE (')
+  - Switch to the after attribute value (quoted) state.
+- U+0026 AMPERSAND (&)
+  - Set the return state to the attribute value (single-quoted) state. Switch to the character reference state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute's value.
+- EOF
+  - This is an eof-in-tag parse error. Emit an end-of-file token.
+- Anything else
+  - Append the current input character to the current attribute's value.
+
+##### 3.2.5.38) Attribute value (unquoted) state
+  
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Switch to the before attribute name state.
+- U+0026 AMPERSAND (&)
+  - Set the return state to the attribute value (unquoted) state. Switch to the character reference state.
+- U+003E GREATER-THAN SIGN (>)
+  - Switch to the data state. Emit the current tag token.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute's value.
+- U+0022 QUOTATION MARK (")
+- U+0027 APOSTROPHE (')
+- U+003C LESS-THAN SIGN (<)
+- U+003D EQUALS SIGN (=)
+- U+0060 GRAVE ACCENT (`)
+  - This is an unexpected-character-in-unquoted-attribute-value parse error. Treat it as per the "anything else" entry below.
+- EOF
+  - This is an eof-in-tag parse error. Emit an end-of-file token.
+- Anything else
+  - Append the current input character to the current attribute's value.
+
+##### 3.2.5.39) After attribute value (quoted) state
+  
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Switch to the before attribute name state.
+- U+002F SOLIDUS (/)
+  - Switch to the self-closing start tag state.
+- U+003E GREATER-THAN SIGN (>)
+  - Switch to the data state. Emit the current tag token.
+- EOF
+  - This is an eof-in-tag parse error. Emit an end-of-file token.
+- Anything else
+  - This is a missing-whitespace-between-attributes parse error. Reconsume in the before attribute name state.
+
+##### 3.2.5.40) Self-closing start tag state
+  
+Consume the next input character:
+
+- U+003E GREATER-THAN SIGN (>)
+  - Set the self-closing flag of the current tag token. Switch to the data state. Emit the current tag token.
+- EOF
+  - This is an eof-in-tag parse error. Emit an end-of-file token.
+- Anything else
+  - This is an unexpected-solidus-in-tag parse error. Reconsume in the before attribute name state.
+
+##### 3.2.5.41) Bogus comment state
+  
+Consume the next input character:
+
+- U+003E GREATER-THAN SIGN (>)
+  - Switch to the data state. Emit the comment token.
+- EOF
+  - Emit the comment. Emit an end-of-file token.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the comment token's data.
+- Anything else
+  - Append the current input character to the comment token's data.
+
+##### 3.2.5.42) Markup declaration open state
+  
+If the next few characters are:
+
+- Two U+002D HYPHEN-MINUS characters (-)
+Consume those two characters, create a comment token whose data is the empty string, and switch to the comment start state.
+- ASCII case-insensitive match for the word "DOCTYPE"
+Consume those characters and switch to the DOCTYPE state.
+The string "[CDATA[" (the five uppercase letters "CDATA" with a U+005B LEFT SQUARE BRACKET character before and after)
+Consume those characters. If there is an adjusted current node and it is not an element in the HTML namespace, then switch to the CDATA section state. Otherwise, this is a cdata-in-html-content parse error. Create a comment token whose data is the "[CDATA[" string. Switch to the bogus comment state.
+- Anything else
+This is an incorrectly-opened-comment parse error. Create a comment token whose data is the empty string. Switch to the bogus comment state (don't consume anything in the current state).
+
+##### 3.2.5.43) Comment start state
+
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Switch to the comment start dash state.
+- U+003E GREATER-THAN SIGN (>)
+  - This is an abrupt-closing-of-empty-comment parse error. Switch to the data state. Emit the comment token.
+- Anything else
+  - Reconsume in the comment state.
+
+##### 3.2.5.44) Comment start dash state
+  
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Switch to the comment end state
+- U+003E GREATER-THAN SIGN (>)
+  - This is an abrupt-closing-of-empty-comment parse error. Switch to the data state. Emit the comment token.
+- EOF
+  - This is an eof-in-comment parse error. Emit the comment token. Emit an end-of-file token.
+- Anything else
+  - Append a U+002D HYPHEN-MINUS character (-) to the comment token's data. Reconsume in the comment state.
+
+##### 3.2.5.45) Comment state
+  
+Consume the next input character:
+
+- U+003C LESS-THAN SIGN (<)
+  - Append the current input character to the comment token's data. Switch to the comment less-than sign state.
+- U+002D HYPHEN-MINUS (-)
+  - Switch to the comment end dash state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the comment token's data.
+- EOF
+  - This is an eof-in-comment parse error. Emit the comment token. Emit an end-of-file token.
+- Anything else
+  - Append the current input character to the comment token's data.
+
+##### 3.2.5.46) Comment less-than sign state
+  
+Consume the next input character:
+
+- U+0021 EXCLAMATION MARK (!)
+  - Append the current input character to the comment token's data. Switch to the comment less-than sign bang state.
+- U+003C LESS-THAN SIGN (<)
+  - Append the current input character to the comment token's data.
+- Anything else
+  - Reconsume in the comment state.
+
+##### 3.2.5.47) Comment less-than sign bang state
+  
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Switch to the comment less-than sign bang dash state.
+- Anything else
+  - Reconsume in the comment state.
+
+##### 3.2.5.48) Comment less-than sign bang dash state
+  
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Switch to the comment less-than sign bang dash dash state.
+- Anything else
+  - Reconsume in the comment end dash state.
+
+##### 3.2.5.49) Comment less-than sign bang dash dash state
+  
+Consume the next input character:
+
+- U+003E GREATER-THAN SIGN (>)
+- EOF
+  - Reconsume in the comment end state.
+- Anything else
+  - This is a nested-comment parse error. Reconsume in the comment end state.
+
+##### 3.2.5.50) Comment end dash state
+  
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Switch to the comment end state
+- EOF
+  - This is an eof-in-comment parse error. Emit the comment token. Emit an end-of-file token.
+- Anything else
+  - Append a U+002D HYPHEN-MINUS character (-) to the comment token's data. Reconsume in the comment state.
+
+##### 3.2.5.51) Comment end state
+  
+Consume the next input character:
+
+- U+003E GREATER-THAN SIGN (>)
+  - Switch to the data state. Emit the comment token.
+- U+0021 EXCLAMATION MARK (!)
+  - Switch to the comment end bang state.
+- U+002D HYPHEN-MINUS (-)
+  - Append a U+002D HYPHEN-MINUS character (-) to the comment token's data.
+- EOF
+  - This is an eof-in-comment parse error. Emit the comment token. Emit an end-of-file token.
+- Anything else
+  - Append two U+002D HYPHEN-MINUS characters (-) to the comment token's data. Reconsume in the comment state.
+
+##### 3.2.5.52) Comment end bang state
+  
+Consume the next input character:
+
+- U+002D HYPHEN-MINUS (-)
+  - Append two U+002D HYPHEN-MINUS characters (-) and a U+0021 EXCLAMATION MARK character (!) to the comment token's data. Switch to the comment end dash state.
+- U+003E GREATER-THAN SIGN (>)
+  - This is an incorrectly-closed-comment parse error. Switch to the data state. Emit the comment token.
+- EOF
+  - This is an eof-in-comment parse error. Emit the comment token. Emit an end-of-file token.
+- Anything else
+  - Append two U+002D HYPHEN-MINUS characters (-) and a U+0021 EXCLAMATION MARK character (!) to the comment token's data. Reconsume in the comment state.
+
+##### 3.2.5.53) DOCTYPE state
+  
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Switch to the before DOCTYPE name state.
+- U+003E GREATER-THAN SIGN (>)
+  - Reconsume in the before DOCTYPE name state.
+- EOF
+  - This is an eof-in-doctype parse error. Create a new DOCTYPE token. Set its force-quirks flag to on. Emit the token. Emit an end-of-file token.
+- Anything else
+  - This is a missing-whitespace-before-doctype-name parse error. Reconsume in the before DOCTYPE name state.
+
+##### 3.2.5.54) Before DOCTYPE name state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- ASCII upper alpha
+  - Create a new DOCTYPE token. Set the token's name to the lowercase version of the current input character (add 0x0020 to the character's code point). Switch to the DOCTYPE name state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Create a new DOCTYPE token. Set the token's name to a U+FFFD REPLACEMENT CHARACTER character. Switch to the DOCTYPE name state.
+- U+003E GREATER-THAN SIGN (>)
+  - This is a missing-doctype-name parse error. Create a new DOCTYPE token. Set its force-quirks flag to on. Switch to the data state. Emit the token.
+- EOF
+  - This is an eof-in-doctype parse error. Create a new DOCTYPE token. Set its force-quirks flag to on. Emit the token. Emit an end-of-file token.
+- Anything else
+  - Create a new DOCTYPE token. Set the token's name to the current input character. Switch to the DOCTYPE name state.
+
+##### 3.2.5.55) DOCTYPE name state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Switch to the after DOCTYPE name state.
+- U+003E GREATER-THAN SIGN (>)
+  - Switch to the data state. Emit the current DOCTYPE token.
+- ASCII upper alpha
+  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current DOCTYPE token's name.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's name.
+- EOF
+  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - Append the current input character to the current DOCTYPE token's name.
+
+##### 3.2.5.56 After DOCTYPE name state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- U+003E GREATER-THAN SIGN (>)
+  - Switch to the data state. Emit the current DOCTYPE token.
+- EOF
+  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - If the six characters starting from the current input character are an ASCII case-insensitive match for the word "PUBLIC", then consume those characters and switch to the after DOCTYPE public keyword state.
+  - Otherwise, if the six characters starting from the current input character are an ASCII case-insensitive match for the word "SYSTEM", then consume those characters and switch to the after DOCTYPE system keyword state.
+  - Otherwise, this is an invalid-character-sequence-after-doctype-name parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
+
+##### 3.2.5.57 After DOCTYPE public keyword state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Switch to the before DOCTYPE public identifier state.
+- U+0022 QUOTATION MARK (")
+  - This is a missing-whitespace-after-doctype-public-keyword parse error. Set the DOCTYPE token's public identifier to the empty string (not missing), then switch to the DOCTYPE public identifier (double-quoted) state.
+- U+0027 APOSTROPHE (')
+  - This is a missing-whitespace-after-doctype-public-keyword parse error. Set the DOCTYPE token's public identifier to the empty string (not missing), then switch to the DOCTYPE public identifier (single-quoted) state.
+- U+003E GREATER-THAN SIGN (>)
+  - This is a missing-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
+- EOF
+  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - This is a missing-quote-before-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
+
+##### 3.2.5.58 Before DOCTYPE public identifier state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- U+0022 QUOTATION MARK (")
+  - Set the DOCTYPE token's public identifier to the empty string (not missing), then switch to the DOCTYPE public identifier (double-quoted) state.
+- U+0027 APOSTROPHE (')
+  - Set the DOCTYPE token's public identifier to the empty string (not missing), then switch to the DOCTYPE public identifier (single-quoted) state.
+- U+003E GREATER-THAN SIGN (>)
+  - This is a missing-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
+- EOF
+  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - This is a missing-quote-before-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
+
+##### 3.2.5.59 DOCTYPE public identifier (double-quoted) state
+
+Consume the next input character:
+
+- U+0022 QUOTATION MARK (")
+  - Switch to the after DOCTYPE public identifier state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's public identifier.
+- U+003E GREATER-THAN SIGN (>)
+  - This is an abrupt-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
+- EOF
+  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - Append the current input character to the current DOCTYPE token's public identifier.
+
+##### 3.2.5.60 DOCTYPE public identifier (single-quoted) state
+
+Consume the next input character:
+
+- U+0027 APOSTROPHE (')
+  - Switch to the after DOCTYPE public identifier state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's public identifier.
+- U+003E GREATER-THAN SIGN (>)
+  - This is an abrupt-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
+- EOF
+  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - Append the current input character to the current DOCTYPE token's public identifier.
+
+##### 3.2.5.61 After DOCTYPE public identifier state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Switch to the between DOCTYPE public and system identifiers state.
+- U+003E GREATER-THAN SIGN (>)
+  - Switch to the data state. Emit the current DOCTYPE token.
+- U+0022 QUOTATION MARK (")
+  - This is a missing-whitespace-between-doctype-public-and-system-identifiers parse error. Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (double-quoted) state.
+- U+0027 APOSTROPHE (')
+  - This is a missing-whitespace-between-doctype-public-and-system-identifiers parse error. Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (single-quoted) state.
+- EOF
+  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
+
+##### 3.2.5.62 Between DOCTYPE public and system identifiers state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- U+003E GREATER-THAN SIGN (>)
+  - Switch to the data state. Emit the current DOCTYPE token.
+- U+0022 QUOTATION MARK (")
+  - Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (double-quoted) state.
+- U+0027 APOSTROPHE (')
+  - Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (single-quoted) state.
+- EOF
+  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
+
+##### 3.2.5.63 After DOCTYPE system keyword state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Switch to the before DOCTYPE system identifier state.
+- U+0022 QUOTATION MARK (")
+  - This is a missing-whitespace-after-doctype-system-keyword parse error. Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (double-quoted) state.
+- U+0027 APOSTROPHE (')
+  - This is a missing-whitespace-after-doctype-system-keyword parse error. Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (single-quoted) state.
+- U+003E GREATER-THAN SIGN (>)
+  - This is a missing-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
+- EOF
+  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
+
+##### 3.2.5.64 Before DOCTYPE system identifier state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- U+0022 QUOTATION MARK (")
+  - Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (double-quoted) state.
+- U+0027 APOSTROPHE (')
+  - Set the DOCTYPE token's system identifier to the empty string (not missing), then switch to the DOCTYPE system identifier (single-quoted) state.
+- U+003E GREATER-THAN SIGN (>)
+  - This is a missing-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
+- EOF
+  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
+
+##### 3.2.5.65 DOCTYPE system identifier (double-quoted) state
+
+Consume the next input character:
+
+- U+0022 QUOTATION MARK (")
+  - Switch to the after DOCTYPE system identifier state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's system identifier.
+- U+003E GREATER-THAN SIGN (>)
+  - This is an abrupt-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
+- EOF
+  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - Append the current input character to the current DOCTYPE token's system identifier.
+
+##### 3.2.5.66 DOCTYPE system identifier (single-quoted) state
+
+Consume the next input character:
+
+- U+0027 APOSTROPHE (')
+  - Switch to the after DOCTYPE system identifier state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's system identifier.
+- U+003E GREATER-THAN SIGN (>)
+  - This is an abrupt-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
+- EOF
+  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - Append the current input character to the current DOCTYPE token's system identifier.
+
+##### 3.2.5.67 After DOCTYPE system identifier state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- U+003E GREATER-THAN SIGN (>)
+  - Switch to the data state. Emit the current DOCTYPE token.
+- EOF
+  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - This is an unexpected-character-after-doctype-system-identifier parse error. Reconsume in the bogus DOCTYPE state. (This does not set the DOCTYPE token's force-quirks flag to on.)
+
+##### 3.2.5.68 Bogus DOCTYPE state
+
+Consume the next input character:
+
+- U+003E GREATER-THAN SIGN (>)
+  - Switch to the data state. Emit the DOCTYPE token.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Ignore the character.
+- EOF
+  - Emit the DOCTYPE token. Emit an end-of-file token.
+- Anything else
+  - Ignore the character.
+
+##### 3.2.5.69 CDATA section state
+
+Consume the next input character:
+
+- U+005D RIGHT SQUARE BRACKET (])
+  - Switch to the CDATA section bracket state.
+- EOF
+  - This is an eof-in-cdata parse error. Emit an end-of-file token.
+- Anything else
+  - Emit the current input character as a character token.
+
+_NOTE_ U+0000 NULL characters are handled in the tree construction stage, as part of the in foreign content insertion mode, which is the only place where CDATA sections can appear.
+
+##### 3.2.5.70 CDATA section bracket state
+
+Consume the next input character:
+
+- U+005D RIGHT SQUARE BRACKET (])
+  - Switch to the CDATA section end state.
+- Anything else
+  - Emit a U+005D RIGHT SQUARE BRACKET character token. Reconsume in the CDATA section state.
+
+##### 3.2.5.71 CDATA section end state
+
+Consume the next input character:
+
+- U+005D RIGHT SQUARE BRACKET (])
+  - Emit a U+005D RIGHT SQUARE BRACKET character token.
+- U+003E GREATER-THAN SIGN character
+  - Switch to the data state.
+- Anything else
+  - Emit two U+005D RIGHT SQUARE BRACKET character tokens. Reconsume in the CDATA section state.
+
+##### 3.2.5.72 Character reference state
+
+Set the temporary buffer to the empty string. Append a U+0026 AMPERSAND (&) character to the temporary buffer. Consume the next input character:
+
+- ASCII alphanumeric
+  - Reconsume in the named character reference state.
+- U+0023 NUMBER SIGN (#)
+  - Append the current input character to the temporary buffer. Switch to the numeric character reference state.
+- Anything else
+  - Flush code points consumed as a character reference. Reconsume in the return state.
+
+##### 3.2.5.73 Named character reference state
+
+Consume the maximum number of characters possible, where the consumed characters are one of the identifiers in the first column of the named character references table. Append each character to the temporary buffer when it's consumed.
+
+- If there is a match
+  - If the character reference was consumed as part of an attribute, and the last character matched is not a U+003B SEMICOLON character (;), and the next input character is either a U+003D EQUALS SIGN character (=) or an ASCII alphanumeric, then, for historical reasons, flush code points consumed as a character reference and switch to the return state.
+  - Otherwise:
+    1. If the last character matched is not a U+003B SEMICOLON character (;), then this is a missing-semicolon-after-character-reference parse error.
+    2. Set the temporary buffer to the empty string. Append one or two characters corresponding to the character reference name (as given by the second column of the named character references table) to the temporary buffer.
+    3. Flush code points consumed as a character reference. Switch to the return state.
+  - Otherwise
+    1. Flush code points consumed as a character reference. Switch to the ambiguous ampersand state.
+
+_EXAMPLE_ If the markup contains (not in an attribute) the string I'm &notit; I tell you, the character reference is parsed as "not", as in, I'm ¬it; I tell you (and this is a parse error). But if the markup was I'm &notin; I tell you, the character reference would be parsed as "notin;", resulting in I'm ∉ I tell you (and no parse error).
+
+However, if the markup contains the string I'm &notit; I tell you in an attribute, no character reference is parsed and string remains intact (and there is no parse error).
+
+##### 3.2.5.74 Ambiguous ampersand stat
+
+Consume the next input character:
+
+- ASCII alphanumeric
+  - If the character reference was consumed as part of an attribute, then append the current input character to the current attribute's value. Otherwise, emit the current input character as a character token.
+- U+003B SEMICOLON (;)
+  - This is an unknown-named-character-reference parse error. Reconsume in the return state.
+- Anything else
+  - Reconsume in the return state.
+
+##### 3.2.5.75 Numeric character reference state
+
+Set the character reference code to zero (0).
+
+Consume the next input character:
+
+- U+0078 LATIN SMALL LETTER X
+- U+0058 LATIN CAPITAL LETTER X
+  - Append the current input character to the temporary buffer. Switch to the hexadecimal character reference start state.
+- Anything else
+  - Reconsume in the decimal character reference start state.
+
+##### 3.2.5.76 Hexadecimal character reference start state
+
+Consume the next input character:
+
+- ASCII hex digit
+  - Reconsume in the hexadecimal character reference state.
+- Anything else
+  - This is an absence-of-digits-in-numeric-character-reference parse error. Flush code points consumed as a character reference. Reconsume in the return state.
+
+##### 3.2.5.77 Decimal character reference start state
+
+Consume the next input character:
+
+- ASCII digit
+  - Reconsume in the decimal character reference state.
+- Anything else
+  - This is an absence-of-digits-in-numeric-character-reference parse error. Flush code points consumed as a character reference. Reconsume in the return state.
+
+##### 3.2.5.78 Hexadecimal character reference state
+
+Consume the next input character:
+
+- ASCII digit
+  - Multiply the character reference code by 16. Add a numeric version of the current input character (subtract 0x0030 from the character's code point) to the character reference code.
+- ASCII upper hex digit
+  - Multiply the character reference code by 16. Add a numeric version of the current input character as a hexadecimal digit (subtract 0x0037 from the character's code point) to the character reference code.
+- ASCII lower hex digit
+  - Multiply the character reference code by 16. Add a numeric version of the current input character as a hexadecimal digit (subtract 0x0057 from the character's code point) to the character reference code.
+- U+003B SEMICOLON
+  - Switch to the numeric character reference end state.
+- Anything else
+  - This is a missing-semicolon-after-character-reference parse error. Reconsume in the numeric character reference end state.
+
+##### 3.2.5.79 Decimal character reference state
+
+Consume the next input character:
+
+- ASCII digit
+  - Multiply the character reference code by 10. Add a numeric version of the current input character (subtract 0x0030 from the character's code point) to the character reference code.
+- U+003B SEMICOLON
+  - Switch to the numeric character reference end state.
+- Anything else
+  - This is a missing-semicolon-after-character-reference parse error. Reconsume in the numeric character reference end state.
+
+##### 3.2.5.80 Numeric character reference end state
+
+Check the character reference code:
+
+- If the number is 0x00, then this is a null-character-reference parse error. Set the character reference code to 0xFFFD.
+- If the number is greater than 0x10FFFF, then this is a character-reference-outside-unicode-range parse error. Set the character reference code to 0xFFFD.
+- If the number is a surrogate, then this is a surrogate-character-reference parse error. Set the character reference code to 0xFFFD.
+- If the number is a noncharacter, then this is a noncharacter-character-reference parse error.
+- If the number is 0x0D, or a control that's not ASCII whitespace, then this is a control-character-reference parse error. If the number is one of the numbers in the first column of the following table, then find the row with that number in the first column, and set the character reference code to the number in the second column of that row.
+
+Set the temporary buffer to the empty string. Append a code point equal to the character reference code to the temporary buffer. Flush code points consumed as a character reference. Switch to the return state.
 
 #### 3.2.6) 树的构造
 
