@@ -3212,8 +3212,8 @@ Consume the next input character:
   - Switch to the self-closing start tag state.
 - U+003E GREATER-THAN SIGN (>)
   - Switch to the data state. Emit the current tag token.
-- ASCII upper alpha
-  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current tag token's tag name.
+- ASCII alpha
+  - Append the current input character (add 0x0020 to the character's code point) to the current tag token's tag name.
 - U+0000 NULL
   - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current tag token's tag name.
 - EOF
@@ -3337,23 +3337,30 @@ Consume the next input character:
 - Anything else
   - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the template data state.
 
-##### 3.2.5.18) JSONTEXT start state
+##### 3.2.5.18) JSONTEXT state
 
 Consume the next input character:
 
+- U+003C LESS-THAN SIGN (<)
+  - Switch to the JSONTEXT less-than sign state.
 - U+0009 CHARACTER TABULATION (tab)
 - U+000A LINE FEED (LF)
 - U+000C FORM FEED (FF)
 - U+0020 SPACE
   - Ignore the character.
 - ASCII lower alpha
+  - Set the temporary buffer to the empty string.
+  - Reconsume in the JSONTEXT keyword state.
 - ASCII digit
 - U+002D HYPHEN-MINUS (-)
+  - Set the temporary buffer to the empty string.
+  - Reconsume in the JSONTEXT number state.
 - U+0022 QUOTATION MARK (")
+  - Set the temporary buffer to the empty string.
+  - Reconsume in the JSONTEXT string state.
 - U+0024 DOLLAR SIGN ($)
   - Set the temporary buffer to the empty string.
-  - Reconsume in JSONTEXT single value state.
-  - Reconsume in the JSONEE start state.
+  - Reconsume in the JSONEE state.
 - U+005B LEFT SQUARE BRACKET ([)
   - Switch to JSONTEXT arrary start state
 - U+007B LEFT CURLY BRACKET ({)
@@ -3371,7 +3378,51 @@ Consume the next input character:
   - Set the return state to the JSONTEXT start state.
   - Switch to JSONTEXT escape state
 
-##### 3.2.5.19) JSONTEXT keyword state
+##### 3.2.5.19) JSONTEXT less-than sign state
+
+Consume the next input character:
+
+- U+002F SOLIDUS (/)
+  - Set the temporary buffer to the empty string. Switch to the JSONTEXT end tag open state.
+- ASCII alpha
+  - Create a new start tag token if the current start tag token is an operation tag token. Otherwise, treat it as per the "anything else" entry below.
+- Anything else
+  - This is a bad-syntax parse error.
+
+##### 3.2.5.20) JSONTEXT end tag open state
+
+Consume the next input character:
+
+- ASCII alpha
+  - Create a new end tag token, set its tag name to the empty string. Reconsume in the JSONTEXT end tag name state.
+- Anything else
+  - This is a bad-syntax parse error.
+
+##### 3.2.5.21) JSONTEXT end tag name state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - If the current end tag token is an appropriate end tag token, then switch to the before attribute name state. Otherwise, treat it as per the "anything else" entry below.
+- U+002F SOLIDUS (/)
+  - If the current end tag token is an appropriate end tag token, then switch to the self-closing start tag state. Otherwise, treat it as per the "anything else" entry below.
+- U+003E GREATER-THAN SIGN (>)
+  - If the current end tag token is an appropriate end tag token, then switch to the data state and emit the current tag token. Otherwise, treat it as per the "anything else" entry below.
+- ASCII alpha
+  - Append the current input character to the current tag token's tag name.
+  - Append the current input character to the temporary buffer.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error.
+  - Append a U+FFFD REPLACEMENT CHARACTER character to the current tag token's tag name.
+- EOF
+  - This is an eof-in-tag parse error. Emit an end-of-file token.
+- Anything else
+  - Append the current input character to the current tag token's tag name.
+
+##### 3.2.5.22) JSONTEXT keyword state
 
 Consume the next input character:
 
@@ -3380,11 +3431,90 @@ Consume the next input character:
 - U+000C FORM FEED (FF)
 - U+0020 SPACE
   - Ignore the character.
-  - If the temporary buffer is the string "true", "false", or "null", then emit the characters in the temporary buffer as a character tokens (in the order they were added to the buffer). Otherwise this is an unexpected-json-keyword parse error.
+  - If the temporary buffer is the string "true", "false", or "null", then emit the characters in the temporary buffer as a character tokens (in the order they were added to the buffer). Otherwise, treat it as per the "anything else" entry below.
+  - Switch to the return state.
 - ASCII lower alpha
   - Append the current input character to the temporary buffer.
 - Anything else
   - This is an unexpected-json-keyword parse error.
+
+##### 3.2.5.23) JSONTEXT number state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+  - Emit the characters in the temporary buffer as character tokens (in the order they were added to the buffer).
+  - Switch to the return state.
+- U+002D HYPHEN-MINUS (-)
+  - Append the current input character to the temporary buffer.
+  - Switch to the JSONTEXT number integer state.
+- ASCII digit
+  - Reconsume in the JSONTEXT number integer state.
+- Anything else
+  - This is an unexpected-json-number parse error.
+  - Ignore the character.
+
+##### 3.2.5.24) JSONTEXT number integer state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+  - Recosume in the JSONTEXT number state.
+- ASCII digit
+  - Append the current input character to the temporary buffer.
+- U+0045 LATIN CAPITAL LETTER E (E)
+- U+0065 LATIN SMALL LETTER E (e)
+  - Append the current U+0045 LATIN CAPITAL LETTER E (E) to the temporary buffer.
+  - Switch to the JSONTEXT number exponent state.
+- U+002E FULL STOP (.)
+  - Append the current input character to the temporary buffer.
+  - Switch to the JSONTEXT number fraction state.
+- Anything else
+  - This is an unexpected-json-number-integer parse error.
+  - Ignore the character.
+
+##### 3.2.5.25) JSONTEXT number fraction state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Recosume in the JSONTEXT number state.
+- ASCII digit
+  - Append the current input character to the temporary buffer.
+- U+0045 LATIN CAPITAL LETTER E (E)
+- U+0065 LATIN SMALL LETTER E (e)
+  - If last character in the temporary buffer is U+002E FULL STOP (.), treat it as per the "anything else" entry below.
+  - Otherwise:
+    - Append the current U+0045 LATIN CAPITAL LETTER E (E) to the temporary buffer.
+    - Switch to the JSONTEXT number exponent state.
+- Anything else
+  - This is an unexpected-json-number-fraction parse error.
+  - Ignore the character.
+
+##### 3.2.5.26) JSONTEXT number exponent state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Recosume in the JSONTEXT number state.
+- ASCII digit
+  - Append the current input character to the temporary buffer.
+- Anything else
+  - This is an unexpected-json-number-exponent parse error.
 
 ##### 3.2.5.19) JSONTEXT escape state
 
