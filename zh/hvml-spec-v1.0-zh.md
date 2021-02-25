@@ -3512,6 +3512,24 @@ Consume the next input character:
 - U+0020 SPACE
   - Recosume in the JSONTEXT number state.
 - ASCII digit
+  - Reconsume in the JSONTEXT number exponent integer state.
+- U+002B PLUS SIGN (+)
+- U+002D HYPHEN-MINUS (-)
+  - Append the current input character to the temporary buffer.
+  - Switch to the JSONTEXT number exponent integer state.
+- Anything else
+  - This is an unexpected-json-number-exponent parse error.
+
+##### 3.2.5.27) JSONTEXT number exponent integer state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Recosume in the JSONTEXT number state.
+- ASCII digit
   - Append the current input character to the temporary buffer.
 - Anything else
   - This is an unexpected-json-number-exponent parse error.
