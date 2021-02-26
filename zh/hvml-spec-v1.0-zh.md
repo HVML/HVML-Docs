@@ -3062,9 +3062,118 @@ Comments must have the following format:
 
 #### 3.2.4) 解析状态
 
-##### 3.2.4.1) 插入模式
+##### 3.2.4.1) 插入模式/Insertion mode
 
-##### 3.2.4.2) 开放元素栈
+The insertion mode is a state variable that controls the primary operation of the tree construction stage.
+
+Initially, the insertion mode is "initial". It can change to "before hvml", "before head", "in head", "after head", "in body", "text", "in json text", "after body", "after after body" during the course of the parsing, as described in the tree construction stage. The insertion mode affects how tokens are processed and whether CDATA sections are supported.
+
+Several of these modes, namely "in head", "in body" are special, in that the other modes defer to them at various times. When the algorithm below says that the parser is to do something "using the rules for the m insertion mode", where m is one of these modes, the parser must use the rules described under the m insertion mode's section, but must leave the insertion mode unchanged unless the rules in m themselves switch the insertion mode to a new value.
+
+When the insertion mode is switched to "text" or "in json text", the original insertion mode is also set. This is the insertion mode to which the tree construction stage will return.
+
+##### 3.2.4.2) 开放元素栈/The stack of open elements
+
+Initially, the stack of open elements is empty. The stack grows downwards; the topmost node on the stack is the first one added to the stack, and the bottommost node of the stack is the most recently added node in the stack.
+
+__NOTE__  
+The "before hvml" insertion mode creates the hvml document element, which is then added to the stack.
+
+The `hvml` node, however it is created, is the topmost node of the stack. It only gets popped off the stack when the parser finishes.
+
+The current node is the bottommost node in this stack of open elements.
+
+##### 3.2.4.3) JSON 嵌套栈/The JSON nesting stack
+
+JSON 嵌套栈用来记录解析 JSON 文本时的对象、数组等的嵌套情形，用于在完成 JSON 元数据解析后返回上一级解析状态。
+
+When switching to the json text insertion mode, the stack of the JSON nesting stack is empty. We store `{`, `[`, `"`, and `:` characters in this stack; These characters stand for the nesting level of the JSON text:
+
+- U+0022 QUOTATION MARK (")
+  - In the JSONTEXT string state.
+  - Pop this character when got next un-parsed U+0022 QUOTATION MARK (").
+- U+005B LEFT SQUARE BRACKET ([)
+  - In the JSONTEXT arrary state
+  - Pop this character when got next un-parsed U+005D RIGHT SQUARE BRACKET (]).
+- U+007B LEFT CURLY BRACKET ({)
+  - In the JSONTEXT object key name state.
+  - Pop this character when got next un-parsed U+007D RIGHT CURLY BRACKET (]).
+- U+003A COLON (:)
+  - In the JSONTEXT object value state.
+  - Pop this character after the object value parsed.
+
+The stack grows downwards; the topmost character on the stack is the first one added to the stack, and the bottommost character of the stack is the most recently added node in the stack.
+
+下面的 JSON 片段为例：
+
+```json
+01)    {
+02)        "tag"
+03)            :
+04)            "li",
+05)        "children"
+06)            :
+07)            [
+08)                {
+09)                "tag"
+10)                    :
+11)                    "img",
+12)                "children":
+13)                    null
+14)                }
+15)            ]
+16)    }
+```
+
+解析完每一行之后的 JSON 嵌套栈的内容变化情况如下所示：
+
+1. `{`
+2. `{"` -> `{`
+3. `{:`
+4. `{:"` -> `{`
+5. `{"` -> `{`
+6. `{:`
+7. `{:[`
+8. `{:[{`
+9. `{:[{"` -> `{:[{`
+10. `{:[{:`
+11. `{:[{:"` -> `{:[{`
+12. `{:[{"` -> `{:[{:`
+13. `{:[{"`
+14. `{:["`
+15. `{:"`
+16. `"`
+
+##### 3.2.4.4) JSONEE 嵌套栈/The JSONEE nesting stack
+
+JSONEE 嵌套栈用来记录解析 JSON 求值表达式（JSONEE, JSON evaluation expression）时的寻址运算符嵌套情况。
+
+In the JSONEE state, the stack of the JSONEE nesting stack is empty. We store `(`, `<`, and `"` characters in this stack; These characters stand for the nesting level of the JSONEE text:
+
+- U+0022 QUOTATION MARK (")
+  - In the JSONEE string state.
+  - Pop this character when got next un-escaped U+0022 QUOTATION MARK (").
+- U+0027 APOSTROPHE (')
+  - In the JSONEE string state.
+  - Pop this character when got next un-escaped U+0027 APOSTROPHE (').
+- U+0028 LEFT PARENTHESIS (()
+  - In the JSONEE getter state
+  - Pop this character when got next un-escaped U+0029 RIGHT PARENTHESIS ()).
+- U+003C LESS-THAN SIGN (<)
+  - In the JSONEE setter state.
+  - Pop this character when got next un-escaped U+003C GREATER-THAN SIGN (>).
+
+The stack grows downwards; the topmost character on the stack is the first one added to the stack, and the bottommost character of the stack is the most recently added node in the stack.
+
+如这个 JSON 求值表达式：`$_L.NOT ($_L.STRCMP ('case', $_SYSTEM.time ('%H:%m'), '00:00'))`，JSONEE 嵌套栈最长时包含如下字符：`((('`。
+
+一个合法的 JSONEE 表达式，将被解析为一个 JSONEE 词法单元保存在 JSONTEXT 或者 RAWTEXT 文本中。
+
+##### 3.2.4.5) 元素指针
+
+Initially, the head element pointer is null.
+
+Once a head element has been parsed (whether implicitly or explicitly) the head element pointer gets set to point to this node.
 
 #### 3.2.5) 断词/Tokenization
 
@@ -3076,7 +3185,7 @@ The exact behavior of certain states depends on the insertion mode and the stack
 
 The output of the tokenization step is a series of zero or more of the following tokens: DOCTYPE, start tag, end tag, comment, character, JSONEE, end-of-file. DOCTYPE tokens have a name, a public identifier, a system information string, and a force-quirks flag. When a DOCTYPE token is created, its name, public identifier, and system information must be marked as missing (which is a distinct state from the empty string), and the force-quirks flag must be set to off (its other state is on). Start and end tag tokens have a tag name, a self-closing flag, and a list of attributes, each of which has a name and a value. When a start or end tag token is created, its self-closing flag must be unset (its other state is that it be set), and its attributes list must be empty. Comment, character, and JSONEE tokens have data.
 
-_NOTE_  
+__NOTE__  
 Compared to HTML, HTML has a new JSONEE token. A JSONEE token is a string like `$users[0].a`.
 
 When a token is emitted, it must immediately be handled by the tree construction stage. The tree construction stage can affect the state of the tokenization stage, and can insert additional characters into the stream. (For example, the script element can result in scripts executing and using the dynamic markup insertion APIs to insert characters into the stream being tokenized.)
@@ -3093,9 +3202,9 @@ An appropriate end tag token is an end tag token whose tag name matches the tag 
 
 A character reference is said to be consumed as part of an attribute if the return state is either attribute value (double-quoted) state, attribute value (single-quoted) state or attribute value (unquoted) state.
 
-When a state says to flush code points consumed as a character reference, it means that for each code point in the temporary buffer (in the order they were added to the buffer) user agent must append the code point from the buffer to the current attribute's value if the character reference was consumed as part of an attribute, or emit the code point as a character token otherwise.
+When a state says to flush code points consumed as a character reference, it means that for each code point in the temporary buffer (in the order they were added to the buffer) the parser  must append the code point from the buffer to the current attribute's value if the character reference was consumed as part of an attribute, or emit the code point as a character token otherwise.
 
-Before each step of the tokenizer, the user agent must first check the parser pause flag. If it is true, then the tokenizer must abort the processing of any nested invocations of the tokenizer, yielding control back to the caller.
+Before each step of the tokenizer, the parser must first check the parser pause flag. If it is true, then the tokenizer must abort the processing of any nested invocations of the tokenizer, yielding control back to the caller.
 
 The tokenizer state machine consists of the states defined in the following subsections.
 
@@ -3155,7 +3264,7 @@ Consume the next input character:
 - Anything else
   - Emit the current input character as a character token.
 
-_NOTE_  
+__NOTE__  
 The template data states of HVML are similar to script data states of HTML (<https://html.spec.whatwg.org/#script-data-state>). However, we do not handle the comments in the script data. So there is no template data escape start state and subsequent states.
 
 ##### 3.2.5.5) PLAINTEXT state
@@ -3601,9 +3710,9 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current attribute's name.
 
-When the user agent leaves the attribute name state (and before emitting the tag token, if appropriate), the complete attribute's name must be compared to the other attributes on the same token; if there is already an attribute on the token with the exact same name, then this is a duplicate-attribute parse error and the new attribute must be removed from the token.
+When the parser leaves the attribute name state (and before emitting the tag token, if appropriate), the complete attribute's name must be compared to the other attributes on the same token; if there is already an attribute on the token with the exact same name, then this is a duplicate-attribute parse error and the new attribute must be removed from the token.
 
-_NOTE_  
+__NOTE__  
 If an attribute is so removed from a token, it, and the value that gets associated with it, if any, are never subsequently used by the parser, and are therefore effectively discarded. Removing the attribute in this way does not change its status as the "current attribute" for the purposes of the tokenizer, however.
 
 ##### 3.2.5.32) Special attribute operator in attribute name state
@@ -4203,7 +4312,7 @@ Consume the next input character:
 - Anything else
   - Emit the current input character as a character token.
 
-_NOTE_  
+__NOTE__  
 U+0000 NULL characters are handled in the tree construction stage, as part of the in foreign content insertion mode, which is the only place where CDATA sections can appear.
 
 ##### 3.2.5.70 CDATA section bracket state
@@ -4480,7 +4589,7 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
    - Push the node pointed to by the head element pointer onto the stack of open elements.
    - Process the token using the rules for the "in head" insertion mode.
    - Remove the node pointed to by the head element pointer from the stack of open elements. (It might not be the current node at this point.)
-   - _NOTE_  
+   - __NOTE__  
    The head element pointer cannot be null at this point.
 7) An end tag whose tag name is "archetype"
    - Process the token using the rules for the "in head" insertion mode.
@@ -4538,7 +4647,7 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
     - Otherwise,
       - Insert an HVML element for the token.
       - Switch the insertion mode to "text".
-    - _NOTE_  
+    - __NOTE__  
     This element will be an ordinary element.
 12) A start tag whose tag name is "error" or "except".
     - If the current node in the stack of open elements is not an operation element,
@@ -4580,7 +4689,7 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
 
 1) A character token
    - Insert the token's character.
-   - _NOTE_  
+   - __NOTE__  
    This can never be a U+0000 NULL character; the tokenizer converts those to U+FFFD REPLACEMENT CHARACTER characters.
 2) An end-of-file token
    - Parse error.
