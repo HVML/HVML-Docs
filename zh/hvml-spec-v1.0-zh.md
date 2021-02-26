@@ -3080,15 +3080,16 @@ Where character references are allowed, a character reference of a U+000A LINE F
    - `<literal_variable_name>`：用于直接引用一个已命名的 JSON 数据。
    - `<json_addressing_expression>`：用于引用一个 JSON 数据的子元素。
 - `<json_addressing_expression>`：
-   - `'.'<literal_key_name>'('<json_evaluation_expression>[, <json_evaluation_expression>, ...]')'` 用于在动态 JSON 对象上调用特定键名的 getter 方法。
-   - `'.'<literal_key_name>'<'<json_evaluation_expression>[, <json_evaluation_expression>, ...]'>'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
+   - `'.'<literal_key_name> <white_space> '('<json_evaluation_expression>[, <json_evaluation_expression>, ...]')'` 用于在动态 JSON 对象上调用特定键名的 getter 方法。
+   - `'.'<literal_key_name> <white_space> '<'<json_evaluation_expression>[, <json_evaluation_expression>, ...]'>'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
    - `'.'<literal_key_name>` 用于引用一个 JSON 对象的键值。
-   - `'['<json_evaluation_expression> | <quoted_key_name> | <literal_integer>']'` 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。当 JSON 表达式的返回值是数值时，强制转换为整数按索引值处理，其他情况下将 JSON 表达式按字符串处理，作为键名引用 JSON 对象的键值。
+   - `<white_space> '['<json_evaluation_expression> | <quoted_key_name> | <literal_integer>']'` 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。当 JSON 表达式的返回值是数值时，强制转换为整数按索引值处理，其他情况下将 JSON 表达式按字符串处理，作为键名引用 JSON 对象的键值。
 - `<literal_variable_name>`：`'?' | '@' | '#' | '%' | '@' | ':' | <literal_integer> | <literal_token>`。
 - `<literal_key_name>`：`<literal_token>`。
 - `<literal_integer>`：`/^[1-9][0-9]*$/`。
 - `<literal_token>`：`/^[A-Za-z_][A-Za-z0-9_]*$/`。
 - `<quoted_key_name>`: `'<literal_string>'` | `"<literal_string>"`。
+- `<white_space>`: `\u0020 | \u000A | \u000D | \u0009 `
 
 #### 3.1.4) 字符引用/Character references
 
@@ -3188,7 +3189,7 @@ The stack grows downwards; the topmost character on the stack is the first one a
 
 下面的 JSON 片段为例：
 
-```json
+```
 01)    {
 02)        "tag"
 03)            :
@@ -3238,6 +3239,9 @@ In the JSONEE state, the stack of the JSONEE nesting stack is empty. We store `(
 - U+0027 APOSTROPHE (')
   - In the JSONEE string state.
   - Pop this character when got next un-escaped U+0027 APOSTROPHE (').
+- U+005B LEFT SQUARE BRACKET ([)
+  - In the JSONTEXT arrary state
+  - Pop this character when got next un-escaped U+005D RIGHT SQUARE BRACKET (]).
 - U+0028 LEFT PARENTHESIS (()
   - In the JSONEE getter state
   - Pop this character when got next un-escaped U+0029 RIGHT PARENTHESIS ()).
