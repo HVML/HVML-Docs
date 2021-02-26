@@ -112,18 +112,25 @@ All Rights Reserved.
          - [3.2.5.16) Template data end tag open state](#32516-template-data-end-tag-open-state)
          - [3.2.5.17) Template data end tag name state](#32517-template-data-end-tag-name-state)
          - [3.2.5.18) JSONTEXT state](#32518-jsontext-state)
-         - [3.2.5.19) JSONTEXT less-than sign state](#32519-jsontext-less_than-sign-state)
-         - [3.2.5.20) JSONTEXT end tag open state](#32520-jsontext-end-tag-open-state)
-         - [3.2.5.21) JSONTEXT end tag name state](#32521-jsontext-end-tag-name-state)
+         - [3.2.5.19) JSONTEXT JSON finished state](#32519-jsontext-json-finished-state)
+         - [3.2.5.20) JSONTEXT less-than sign state](#32520-jsontext-less_than-sign-state)
+         - [3.2.5.21) JSONTEXT end tag open state](#32521-jsontext-end-tag-open-state)
+         - [3.2.5.22) JSONTEXT end tag name state](#32522-jsontext-end-tag-name-state)
+         - [3.2.5.23) JSONTEXT value state](#32523-jsontext-value-state)
+         - [3.2.5.24) JSONTEXT after value state](#32524-jsontext-after-value-state)
          - [3.2.5.22) JSONTEXT keyword state](#32522-jsontext-keyword-state)
          - [3.2.5.23) JSONTEXT number state](#32523-jsontext-number-state)
          - [3.2.5.24) JSONTEXT number integer state](#32524-jsontext-number-integer-state)
          - [3.2.5.25) JSONTEXT number fraction state](#32525-jsontext-number-fraction-state)
-         - [3.2.5.26) JSONTEXT number exponent state](#32526-jsontext-number-exponent-state)
-         - [3.2.5.27) JSONTEXT number exponent integer state](#32527-jsontext-number-exponent-integer-state)
-         - [3.2.5.19) JSONTEXT escape state](#32519-jsontext-escape-state)
-         - [3.2.5.30) Before attribute name state](#32530-before-attribute-name-state)
-         - [3.2.5.31) Attribute name state](#32531-attribute-name-state)
+         - [3.2.5.27) JSONTEXT number exponent state](#32527-jsontext-number-exponent-state)
+         - [3.2.5.28) JSONTEXT number exponent integer state](#32528-jsontext-number-exponent-integer-state)
+         - [3.2.5.29) JSONTEXT object key name state](#32529-jsontext-object-key-name-state)
+         - [3.2.5.30) JSONTEXT after object key name state](#32530-jsontext-after-object-key-name-state)
+         - [3.2.5.31) JSONTEXT string state](#32531-jsontext-string-state)
+         - [3.2.5.32) JSONTEXT string escape state](#32532-jsontext-string-escape-state)
+         - [3.2.5.33) JSONTEXT string escape four hexadecimal digits state](#32533-jsontext-string-escape-four-hexadecimal-digits-state)
+         - [3.2.5.34) Before attribute name state](#32534-before-attribute-name-state)
+         - [3.2.5.35) Attribute name state](#32535-attribute-name-state)
          - [3.2.5.32) Special attribute operator in attribute name state](#32532-special-attribute-operator-in-attribute-name-state)
          - [3.2.5.33) After attribute name state](#32533-after-attribute-name-state)
          - [3.2.5.34) Special attribute operator after attribute name state](#32534-special-attribute-operator-after-attribute-name-state)
@@ -3170,19 +3177,15 @@ The current node is the bottommost node in this stack of open elements.
 
 JSON 嵌套栈用来记录解析 JSON 文本时的对象、数组等的嵌套情形，用于在完成 JSON 元数据解析后返回上一级解析状态。
 
-When switching to the json text insertion mode, the stack of the JSON nesting stack is empty. We store `{`, `[`, `"`, and `:` characters in this stack; These characters stand for the nesting level of the JSON text:
+When switching to the json text insertion mode, the stack of the JSON nesting stack is empty. We only store `{`, `[`, and `:` characters in this stack; These characters stand for the nesting level of the JSON text and a special flag for parse states:
 
-- U+0022 QUOTATION MARK (")
-  - In the JSONTEXT string state.
-  - Pop this character when got next un-parsed U+0022 QUOTATION MARK (").
 - U+005B LEFT SQUARE BRACKET ([)
-  - In the JSONTEXT arrary state
   - Pop this character when got next un-parsed U+005D RIGHT SQUARE BRACKET (]).
 - U+007B LEFT CURLY BRACKET ({)
   - In the JSONTEXT object key name state.
-  - Pop this character when got next un-parsed U+007D RIGHT CURLY BRACKET (]).
+  - Pop this character when got next un-parsed U+007D RIGHT CURLY BRACKET (}).
 - U+003A COLON (:)
-  - In the JSONTEXT object value state.
+  - In the JSONTEXT after object key name state.
   - Pop this character after the object value parsed.
 
 The stack grows downwards; the topmost character on the stack is the first one added to the stack, and the bottommost character of the stack is the most recently added node in the stack.
@@ -3536,19 +3539,14 @@ Consume the next input character:
 
 Consume the next input character:
 
-- U+003C LESS-THAN SIGN (<)
-  - If the current tag token's tag name is `init` or `set`
-    - If the JSON nesting stack is not empty, this is a bad-json parse error; Stop parsing. Otherwise, switch to the JSONTEXT less-than sign state.
-  - Othwise (the current tag token's tag name must be `archedata`)
-      - This is a tag-not-allow parse erorr; Stop parsing.
-
 - U+0009 CHARACTER TABULATION (tab)
 - U+000A LINE FEED (LF)
 - U+000C FORM FEED (FF)
 - U+0020 SPACE
   - Ignore the character.
 - U+003C LESS-THAN SIGN (<)
-  - If the JSON nesting stack is not empty, this is a bad-json parse error; Stop parsing. Otherwise, switch to the JSONTEXT less-than sign state.
+  - If the JSON nesting stack is not empty, this is a bad-json parse error; Stop parsing.
+  - Otherwise, switch to the JSONTEXT less-than sign state.
 - ASCII lower alpha
 - ASCII digit
 - U+002D HYPHEN-MINUS (-)
@@ -3564,7 +3562,26 @@ Consume the next input character:
 - Anything else
   - This is a bad-json parse error; Stop parsing.
 
-##### 3.2.5.19) JSONTEXT less-than sign state
+##### 3.2.5.19) JSONTEXT JSON finished state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- U+003C LESS-THAN SIGN (<)
+  - If the JSON nesting stack is not empty, this is a bad-json parse error; Stop parsing.
+  - Otherwise, switch to the JSONTEXT less-than sign state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error.
+- EOF
+  - Emit an end-of-file token.
+- Anything else
+  - This is a unexpected-character parse error; Stop parsing.
+
+##### 3.2.5.20) JSONTEXT less-than sign state
 
 Consume the next input character:
 
@@ -3573,18 +3590,18 @@ Consume the next input character:
 - ASCII alpha
   - Create a new start tag token if the current start tag token is an operation tag token. Otherwise, treat it as per the "anything else" entry below.
 - Anything else
-  - This is a bad-syntax parse error.
+  - This is a bad-tag-name parse error.
 
-##### 3.2.5.20) JSONTEXT end tag open state
+##### 3.2.5.21) JSONTEXT end tag open state
 
 Consume the next input character:
 
 - ASCII alpha
   - Create a new end tag token, set its tag name to the empty string. Reconsume in the JSONTEXT end tag name state.
 - Anything else
-  - This is a bad-syntax parse error.
+  - This is a bad-stag-name parse error.
 
-##### 3.2.5.21) JSONTEXT end tag name state
+##### 3.2.5.22) JSONTEXT end tag name state
 
 Consume the next input character:
 
@@ -3608,10 +3625,15 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current tag token's tag name.
 
-##### 3.2.5.22) JSONTEXT value state
+##### 3.2.5.23) JSONTEXT value state
 
 Consume the next input character:
 
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
 - ASCII lower alpha
   - Set the temporary buffer to the empty string.
   - Reconsume in the JSONTEXT keyword state.
@@ -3621,33 +3643,70 @@ Consume the next input character:
   - Reconsume in the JSONTEXT number state.
 - U+0022 QUOTATION MARK (")
   - Emit the current input character as a character token.
-  - Push the character onto the JSON nesting stack.
   - Switch to the JSONTEXT string state.
 - U+0024 DOLLAR SIGN ($)
   - Set the temporary buffer to the empty string.
   - Reconsume in the JSONEE state.
 - U+007B LEFT CURLY BRACKET ({)
-  - Push the character onto the JSON nesting stack.
-  - Switch to JSONTEXT object key name state
-- U+003A COLON (:)
-  - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({)
-    - Push the character onto the JSON nesting stack.
-    - Switch to JSONTEXT value state.
-  - Otherwise
-    - It is a bad-json parse error; Stop parsing.
-- U+007D LEFT CURLY BRACKET (})
-  - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({), pop the character off the JSON nesting stack. Otherwise it is a bad-json parse error; Stop parsing.
+  - Emit the current input character as a character token.
+  - Push the current input character onto the JSON nesting stack.
+  - Switch to the JSONTEXT object key name state.
 - U+005B LEFT SQUARE BRACKET ([)
   - Push the character onto the JSON nesting stack.
-  - Switch to JSONTEXT value state
+  - Emit the current input character as a character token.
+- U+002C COMMA (,)
+  - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({)
+    - Emit the current input character as a character token.
+    - Switch to JSONTEXT object key name state
+  - Otherwise, if the bottommost character on the JSON nesting stack is U+005B LEFT SQUARE BRACKET ([)
+    - Emit the current input character as a character token.
+  - Otherwise
+    - This is a bad-json parse error. Stop parsing.
+- U+007D LEFT CURLY BRACKET (})
+  - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({)
+    - Emit the current input character as a character token.
+    - Pop the character off the JSON nesting stack.
+  - Otherwise it is a bad-json parse error; Stop parsing.
 - U+005D RIGHT SQUARE BRACKET (])
-  - If the bottommost character on the JSON nesting stack is U+005B LEFT SQUARE BRACKET ([), pop the character off the JSON nesting stack. Otherwise it is a bad-json parse error; Stop parsing.
+  - If the bottommost character on the JSON nesting stack is U+005B LEFT SQUARE BRACKET ([)
+    - Emit the current input character as a character token.
+    - Pop the character off the JSON nesting stack.
+  - Otherwise it is a bad-json parse error; Stop parsing.
 - Anything else
   - This is a bad-json parse error.
 
-- U+005C BACKSLASH (\\)
-  - Set the return state to the JSONTEXT start state.
-  - Switch to JSONTEXT escape state
+##### 3.2.5.24) JSONTEXT after value state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- U+002C COMMA (,)
+  - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({)
+    - Emit the current input character as a character token.
+    - Switch to JSONTEXT object key name state.
+  - Otherwise, if the bottommost character on the JSON nesting stack is U+005B LEFT SQUARE BRACKET ([)
+    - Emit the current input character as a character token.
+    - Switch to JSONTEXT value state.
+  - Otherwise
+    - This is a bad-json parse error. Stop parsing.
+- U+007D LEFT CURLY BRACKET (})
+  - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({)
+    - Emit the current input character as a character token.
+    - Pop the character off the JSON nesting stack.
+    - If the JSON nesting stack is empty, switch to JSONTEXT JSON finished state.
+  - Otherwise it is a bad-json parse error; Stop parsing.
+- U+005D RIGHT SQUARE BRACKET (])
+  - If the bottommost character on the JSON nesting stack is U+005B LEFT SQUARE BRACKET ([)
+    - Emit the current input character as a character token.
+    - Pop the character off the JSON nesting stack.
+    - If the JSON nesting stack is empty, switch to JSONTEXT JSON finished state.
+  - Otherwise it is a bad-json parse error; Stop parsing.
+- Anything else
+  - This is a bad-json parse error.
 
 ##### 3.2.5.22) JSONTEXT keyword state
 
@@ -3660,7 +3719,7 @@ Consume the next input character:
   - Ignore the character.
   - If the temporary buffer is the string "true", "false", or "null"
      - Emit the characters in the temporary buffer as a character tokens (in the order they were added to the buffer). 
-     - If the JSON nesting stack is empty, switch to the JSONTEXT state. Otherwise, pop the bottommost character off the JSON nesting statck and switch to the state corresponding to the popped character. 
+     - If the JSON nesting stack is empty, switch to the JSONTEXT JSON finished state. Otherwise, switch to the JSONTEXT after value state. 
   - Otherwise, treat it as per the "anything else" entry below.
 - ASCII lower alpha
   - Append the current input character to the temporary buffer.
@@ -3680,7 +3739,7 @@ Consume the next input character:
     - It is a bad-json-number parse error; Stop parsing.
   - Otherwise:
     - Emit the characters in the temporary buffer as character tokens (in the order they were added to the buffer).
-    - If the JSON nesting stack is empty, switch to the JSONTEXT state. Otherwise, pop the bottommost character off the JSON nesting statck and switch to the state corresponding to the popped character. 
+    - If the JSON nesting stack is empty, switch to the JSONTEXT JSON finished state. Otherwise, switch to the JSONTEXT after value state.
 - U+002D HYPHEN-MINUS (-)
   - Append the current input character to the temporary buffer.
   - Switch to the JSONTEXT number integer state.
@@ -3734,7 +3793,7 @@ Consume the next input character:
   - This is an unexpected-json-number-fraction parse error.
   - Ignore the character.
 
-##### 3.2.5.26) JSONTEXT number exponent state
+##### 3.2.5.27) JSONTEXT number exponent state
 
 Consume the next input character:
 
@@ -3752,7 +3811,7 @@ Consume the next input character:
 - Anything else
   - This is an unexpected-json-number-exponent parse error.
 
-##### 3.2.5.27) JSONTEXT number exponent integer state
+##### 3.2.5.28) JSONTEXT number exponent integer state
 
 Consume the next input character:
 
@@ -3766,7 +3825,37 @@ Consume the next input character:
 - Anything else
   - This is an unexpected-json-number-exponent parse error.
 
-##### 3.2.5.28) JSONTEXT string state
+##### 3.2.5.29) JSONTEXT object key name state
+
+Consume the next input character:
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- U+0022 QUOTATION MARK (")
+  - Emit the current input character as a character token.
+  - Push U+003A COLON (:) character onto the JSON nesting stack.
+  - Switch to the JSONTEXT string state.
+- Anything else
+  - This is an unexpected-json-key-name parse error. Stop parsing.
+
+##### 3.2.5.30) JSONTEXT after object key name state
+
+- U+0009 CHARACTER TABULATION (tab)
+- U+000A LINE FEED (LF)
+- U+000C FORM FEED (FF)
+- U+0020 SPACE
+  - Ignore the character.
+- U+003A COLON (:)
+  - Pop the bottommost character (it must be U+003A COLON (:)) off the JSON nesting stack.
+  - Emit the current input character as a character token.
+  - Switch to the JSONTEXT value state.
+- Anything else
+    - It is a bad-json-a-colon-expected parse error; Stop parsing.
+
+##### 3.2.5.31) JSONTEXT string state
 
 Consume the next input character:
 
@@ -3778,7 +3867,9 @@ Consume the next input character:
   - Switch to JSONTEXT string escape state.
 - U+0022 QUOTATION MARK (")
   - Emit the current input character as a character token.
-  - If the JSON nesting stack is empty, switch to the JSONTEXT state. Otherwise, pop the bottommost character off the JSON nesting statck and switch to the state corresponding to the popped character. 
+  - If the JSON nesting stack is empty, switch to the JSONTEXT JSON finished state. Otherwise,
+    - If the bottommost character on the JSON nesting statck is U+003A COLON (:), then pop the bottomost character off the JSON nesting stack and switch to the JSONTEXT after object key name state.
+    - Otherwise, switch to JSONTEXT after value state.
 - U+0000 NULL
   - This is an unexpected-null-character parse error; Stop parsing.
 - EOF
@@ -3786,7 +3877,7 @@ Consume the next input character:
 - Anything else
   - Emit the current input character as a character token.
 
-##### 3.2.5.29) JSONTEXT string escape state
+##### 3.2.5.32) JSONTEXT string escape state
 
 Consume the next input character:
 
@@ -3809,7 +3900,7 @@ Consume the next input character:
 - Anything else
   - It is a bad-json-string-escape-entity parse error; Stop parsing.
 
-##### 3.2.5.30) JSONTEXT string escape four hexadecimal digits state
+##### 3.2.5.33) JSONTEXT string escape four hexadecimal digits state
 
 Consume the next input character:
 
@@ -3822,20 +3913,7 @@ Consume the next input character:
 - Anything else
   - It is a bad-json-string-escape-entity parse error; Stop parsing.
 
-##### 3.2.5.19) JSONTEXT escape state
-
-Consume the next input character:
-
-- U+007B LEFT CURLY BRACKET ({)
-- U+0024 DOLLAR SIGN ($)
-- U+005C BACKSLASH (\\)
-  - Emit the current input character as a character token.
-  - Switch to return state.
-- Anything else
-  - Emit a U+005C BACKSLASH (\\) character token and emit the current input character as a character token.
-  - Switch to return state.
-
-##### 3.2.5.30) Before attribute name state
+##### 3.2.5.34) Before attribute name state
   
 Consume the next input character:
 
@@ -3853,7 +3931,7 @@ Consume the next input character:
 - Anything else
   - Start a new attribute in the current tag token. Set that attribute name and value to the empty string. Reconsume in the attribute name state.
 
-##### 3.2.5.31) Attribute name state
+##### 3.2.5.35) Attribute name state
   
 Consume the next input character:
 
