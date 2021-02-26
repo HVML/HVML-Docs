@@ -3537,41 +3537,32 @@ Consume the next input character:
 Consume the next input character:
 
 - U+003C LESS-THAN SIGN (<)
-  - Switch to the JSONTEXT less-than sign state.
+  - If the current tag token's tag name is `init` or `set`
+    - If the JSON nesting stack is not empty, this is a bad-json parse error; Stop parsing. Otherwise, switch to the JSONTEXT less-than sign state.
+  - Othwise (the current tag token's tag name must be `archedata`)
+      - This is a tag-not-allow parse erorr; Stop parsing.
+
 - U+0009 CHARACTER TABULATION (tab)
 - U+000A LINE FEED (LF)
 - U+000C FORM FEED (FF)
 - U+0020 SPACE
   - Ignore the character.
+- U+003C LESS-THAN SIGN (<)
+  - If the JSON nesting stack is not empty, this is a bad-json parse error; Stop parsing. Otherwise, switch to the JSONTEXT less-than sign state.
 - ASCII lower alpha
-  - Set the temporary buffer to the empty string.
-  - Reconsume in the JSONTEXT keyword state.
 - ASCII digit
 - U+002D HYPHEN-MINUS (-)
-  - Set the temporary buffer to the empty string.
-  - Reconsume in the JSONTEXT number state.
 - U+0022 QUOTATION MARK (")
-  - Set the temporary buffer to the empty string.
-  - Reconsume in the JSONTEXT string state.
 - U+0024 DOLLAR SIGN ($)
-  - Set the temporary buffer to the empty string.
-  - Reconsume in the JSONEE state.
-- U+005B LEFT SQUARE BRACKET ([)
-  - Switch to JSONTEXT arrary start state
 - U+007B LEFT CURLY BRACKET ({)
-  - Switch to JSONTEXT object start state
-- U+005D RIGHT SQUARE BRACKET (])
-- U+007D LEFT CURLY BRACKET (})
+- U+005B LEFT SQUARE BRACKET ([)
+  - Reconsume in the JSONTEXT value state.
 - U+0000 NULL
-  - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
+  - This is an unexpected-null-character parse error; Stop parsing.
 - EOF
   - Emit an end-of-file token.
 - Anything else
-  - This is a bad-json parse error.
-
-- U+005C BACKSLASH (\\)
-  - Set the return state to the JSONTEXT start state.
-  - Switch to JSONTEXT escape state
+  - This is a bad-json parse error; Stop parsing.
 
 ##### 3.2.5.19) JSONTEXT less-than sign state
 
@@ -3617,6 +3608,47 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current tag token's tag name.
 
+##### 3.2.5.22) JSONTEXT value state
+
+Consume the next input character:
+
+- ASCII lower alpha
+  - Set the temporary buffer to the empty string.
+  - Reconsume in the JSONTEXT keyword state.
+- ASCII digit
+- U+002D HYPHEN-MINUS (-)
+  - Set the temporary buffer to the empty string.
+  - Reconsume in the JSONTEXT number state.
+- U+0022 QUOTATION MARK (")
+  - Emit the current input character as a character token.
+  - Push the character onto the JSON nesting stack.
+  - Switch to the JSONTEXT string state.
+- U+0024 DOLLAR SIGN ($)
+  - Set the temporary buffer to the empty string.
+  - Reconsume in the JSONEE state.
+- U+007B LEFT CURLY BRACKET ({)
+  - Push the character onto the JSON nesting stack.
+  - Switch to JSONTEXT object key name state
+- U+003A COLON (:)
+  - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({)
+    - Push the character onto the JSON nesting stack.
+    - Switch to JSONTEXT value state.
+  - Otherwise
+    - It is a bad-json parse error; Stop parsing.
+- U+007D LEFT CURLY BRACKET (})
+  - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({), pop the character off the JSON nesting stack. Otherwise it is a bad-json parse error; Stop parsing.
+- U+005B LEFT SQUARE BRACKET ([)
+  - Push the character onto the JSON nesting stack.
+  - Switch to JSONTEXT value state
+- U+005D RIGHT SQUARE BRACKET (])
+  - If the bottommost character on the JSON nesting stack is U+005B LEFT SQUARE BRACKET ([), pop the character off the JSON nesting stack. Otherwise it is a bad-json parse error; Stop parsing.
+- Anything else
+  - This is a bad-json parse error.
+
+- U+005C BACKSLASH (\\)
+  - Set the return state to the JSONTEXT start state.
+  - Switch to JSONTEXT escape state
+
 ##### 3.2.5.22) JSONTEXT keyword state
 
 Consume the next input character:
@@ -3626,12 +3658,14 @@ Consume the next input character:
 - U+000C FORM FEED (FF)
 - U+0020 SPACE
   - Ignore the character.
-  - If the temporary buffer is the string "true", "false", or "null", then emit the characters in the temporary buffer as a character tokens (in the order they were added to the buffer). Otherwise, treat it as per the "anything else" entry below.
-  - Switch to the return state.
+  - If the temporary buffer is the string "true", "false", or "null"
+     - Emit the characters in the temporary buffer as a character tokens (in the order they were added to the buffer). 
+     - If the JSON nesting stack is empty, switch to the JSONTEXT state. Otherwise, pop the bottommost character off the JSON nesting statck and switch to the state corresponding to the popped character. 
+  - Otherwise, treat it as per the "anything else" entry below.
 - ASCII lower alpha
   - Append the current input character to the temporary buffer.
 - Anything else
-  - This is an unexpected-json-keyword parse error.
+  - This is an unexpected-json-keyword parse error; Stop parsing.
 
 ##### 3.2.5.23) JSONTEXT number state
 
@@ -3642,8 +3676,11 @@ Consume the next input character:
 - U+000C FORM FEED (FF)
 - U+0020 SPACE
   - Ignore the character.
-  - Emit the characters in the temporary buffer as character tokens (in the order they were added to the buffer).
-  - Switch to the return state.
+  - If the last character in the temporay buffer is U+002D HYPHEN-MINUS (-) or U+0045 LATIN CAPITAL LETTER E (E)
+    - It is a bad-json-number parse error; Stop parsing.
+  - Otherwise:
+    - Emit the characters in the temporary buffer as character tokens (in the order they were added to the buffer).
+    - If the JSON nesting stack is empty, switch to the JSONTEXT state. Otherwise, pop the bottommost character off the JSON nesting statck and switch to the state corresponding to the popped character. 
 - U+002D HYPHEN-MINUS (-)
   - Append the current input character to the temporary buffer.
   - Switch to the JSONTEXT number integer state.
@@ -3728,6 +3765,62 @@ Consume the next input character:
   - Append the current input character to the temporary buffer.
 - Anything else
   - This is an unexpected-json-number-exponent parse error.
+
+##### 3.2.5.28) JSONTEXT string state
+
+Consume the next input character:
+
+- U+0024 DOLLAR SIGN ($)
+  - Set the return state to the JSONTEXT string state.
+  - Recosume the character in the JSONEE state.
+- U+005C BACKSLASH (\\)
+  - Set the return state to the JSONTEXT string state.
+  - Switch to JSONTEXT string escape state.
+- U+0022 QUOTATION MARK (")
+  - Emit the current input character as a character token.
+  - If the JSON nesting stack is empty, switch to the JSONTEXT state. Otherwise, pop the bottommost character off the JSON nesting statck and switch to the state corresponding to the popped character. 
+- U+0000 NULL
+  - This is an unexpected-null-character parse error; Stop parsing.
+- EOF
+  - This is an eof-in-tag parse error. Emit an end-of-file token.
+- Anything else
+  - Emit the current input character as a character token.
+
+##### 3.2.5.29) JSONTEXT string escape state
+
+Consume the next input character:
+
+- U+0024 DOLLAR SIGN ($)
+  - Emit the current input character as a character token.
+  - Switch to JSONTEXT string state.
+- U+005C BACKSLASH (\\)
+- U+005C SOLIDUS (/)
+- U+0022 QUOTATION MARK (")
+- U+0062 LATIN SMALL LETTTER B (b)
+- U+0066 LATIN SMALL LETTTER F (f)
+- U+006E LATIN SMALL LETTTER N (n)
+- U+0072 LATIN SMALL LETTTER R (r)
+- U+0074 LATIN SMALL LETTTER R (t)
+  - Emit a U+005C BACKSLASH (\\) character token and emit the current input character as a character token.
+  - Switch to JSONTEXT string state.
+- U+0075 LATIN SMALL LETTTER U (u)
+  - Set the temporary buffer to the empty string.
+  - Switch to JSONTEXt string escape four hexadecimal digits state.
+- Anything else
+  - It is a bad-json-string-escape-entity parse error; Stop parsing.
+
+##### 3.2.5.30) JSONTEXT string escape four hexadecimal digits state
+
+Consume the next input character:
+
+- ASCII hex digit:
+  - Append the current input character to the temporary buffer.
+  - If there are four characters in the temporay buffer:
+    - Emit a U+005C BACKSLASH (\\) character token and a U+0075 LATIN SMALL LETTTER U (u) character token.
+    - Emit the characters in the temporary buffer as character tokens (in the order they were added to the buffer).
+    - Switch to JSONTEXT string state.
+- Anything else
+  - It is a bad-json-string-escape-entity parse error; Stop parsing.
 
 ##### 3.2.5.19) JSONTEXT escape state
 
@@ -4466,8 +4559,8 @@ Set the character reference code to zero (0).
 
 Consume the next input character:
 
-- U+0078 LATIN SMALL LETTER X
-- U+0058 LATIN CAPITAL LETTER X
+- U+0078 LATIN SMALL LETTER (x)
+- U+0058 LATIN CAPITAL LETTER (X)
   - Append the current input character to the temporary buffer. Switch to the hexadecimal character reference start state.
 - Anything else
   - Reconsume in the decimal character reference start state.
