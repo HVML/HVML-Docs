@@ -3059,15 +3059,11 @@ __是否考虑：__
 
 > The text in raw text and escapable raw text elements must not contain any occurrences of the string `</` (U+003C LESS-THAN SIGN, U+002F SOLIDUS) followed by a tag name started with an ASCII alpha letter and followed by one of U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), U+0020 SPACE, U+003E GREATER-THAN SIGN (`>`), or U+002F SOLIDUS (`/`).
 
-##### 3.1.2.7) JSONEE 词法单元/JSONEE Token
+##### 3.1.2.7) JSON 文本和 JSON 属性值
 
-HVML 引入了一个特殊的词法单元（token）类型：JSONEE（JSON Evaluation Expression）。一个 JSONEE 词法单元是符合 JSON 求值表达式语法的最小字符串，通常由不符合该语法的字符，或者一个新的 JSON 求值表达式终止。
+HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为一个完整的 JSON 数据，其中可使用 JSON 求值表达式。
 
-##### 3.1.2.8) JSON 文本元素
-
-HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本元素必须为 JSON 格式，解析时，将解析出 JSONEE 词法单元。
-
-需要说明的是，和裸文本不同，JSON 文本中可包含 `</` 等字符，因为这些字符通常包含在双引号包裹的字符串中，如下所示：
+需要说明的是，和裸文本不同，JSON 文本中可包含 `</` 字符，因为这些字符通常包含在双引号包裹的字符串中，如下所示：
 
 ```html
 <init as="foo">
@@ -3078,11 +3074,61 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本元素必须为 
 </init>
 ```
 
+另外，在动作元素的 `on` 属性值中指定操作数据时，我们亦可使用 JSON 数据，我们称之为 JSON 属性值：
+
+```html
+<choose on='[$foo, $bar, true, false, null]'>
+</choose>
+```
+
+在本文档中，JSON 文本简称为 `JSONTEXT`，JSON 属性值简称为 `JSONATTR`，JSON 求值表达式简称为 `JSONEE`。
+
+##### 3.1.2.8) JSON 求值树/JSON Evaluation Tree
+
+如果我们将 JSON 格式中使用的 `{}`、`[]`、`:` 等字符理解为一个内部的对象和数组构造方法，则包含着 JSONEE 的 JSONTEXT 或者 JSONATTR 可被统一处理为 JSONEE。如下面的 JSONTEXT：
+
+```json
+    {
+        "tag": "li",
+        "children": [
+            {
+                "tag": $foo,
+                "children": null,
+            },
+            {
+                "tag": $bar,
+                "children": null,
+            }
+        ]
+    }
+```
+
+对应的等价 JSON 求值表达式：
+
+```
+$_JSON.mk_object (
+        $_JSON.mk_object_element ("tag", "li"), 
+        $_JSON.mk_object_element ("children", $_JSON.mk_array (
+                $_JSON.mk_object (
+                    $_JSON.mk_object_element ("tag", $foo),
+                    $_JSON.mk_object_element ("children", null)),
+                $_JSON.mk_object (
+                    $_JSON.mk_object_element ("tag", $bar),
+                    $_JSON.mk_object_element ("children", null))
+                )
+            )
+        )
+```
+
+故而，HVML 中的 JSONTEXT、JSONATTR 以及 JSONEE 将被解析成一个 JSON 求值树。
+
+当一个 JSONEE 混杂在模板数据中时，或者一个属性值中时，这些字符串和求值表达式将构成一个字符串连接（concatenate）的求值方法，因此，本质上亦可构造为一个 JSON 求值树。
+
 #### 3.1.3) 文本/Text
 
 Text is allowed inside elements, attribute values, and comments. Extra constraints are placed on what is and what is not allowed in text based on where the text is to be put, as described in the other sections.
 
-##### 3.1.3.1) 新行/newlines
+##### 3.1.3.1) 新行/Newlines
 
 Newlines in HVML may be represented either as U+000D CARRIAGE RETURN (CR) characters, U+000A LINE FEED (LF) characters, or pairs of U+000D CARRIAGE RETURN (CR), U+000A LINE FEED (LF) characters in that order.
 
@@ -3095,12 +3141,14 @@ Where character references are allowed, a character reference of a U+000A LINE F
 一个合法的 JSON 表达式（`<json_evaluation_expression>`）需要符合如下的语法规则，且可递归使用：
 
 - `<json_evaluation_expression>`: `'$'<json_variable_addressing_expression> | '{$'<json_variable_addressing_expression>'}' | '{{$'<json_variable_addressing_expression>'}}'`
+- `<enhanced_json>`: 见 <https://www.json.org>；其中的 JSON value 可以是一个 JSON 求值表达式。
 - `<json_variable_addressing_expression>`：`<literal_variable_name>[<json_addressing_expression>, ...]`
    - `<literal_variable_name>`：用于直接引用一个已命名的 JSON 数据。
    - `<json_addressing_expression>`：用于引用一个 JSON 数据的子元素。
+- `<json_expression>`: `<json_evaluation_expression> | <enhanced_json>`
 - `<json_addressing_expression>`：
-   - `'.'<literal_key_name> <white_space> '('<json_evaluation_expression>[, <json_evaluation_expression>, ...]')'` 用于在动态 JSON 对象上调用特定键名的 getter 方法。
-   - `'.'<literal_key_name> <white_space> '<'<json_evaluation_expression>[, <json_evaluation_expression>, ...]'>'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
+   - `'.'<literal_key_name> <white_space> '('<json_expression>[, <json_expression>, ...]')'` 用于在动态 JSON 对象上调用特定键名的 getter 方法。
+   - `'.'<literal_key_name> <white_space> '<'<json_expression>[, <json_expression>, ...]'>'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
    - `'.'<literal_key_name>` 用于引用一个 JSON 对象的键值。
    - `<white_space> '['<json_evaluation_expression> | <quoted_key_name> | <literal_integer>']'` 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。当 JSON 表达式的返回值是数值时，强制转换为整数按索引值处理，其他情况下将 JSON 表达式按字符串处理，作为键名引用 JSON 对象的键值。
 - `<literal_variable_name>`：`'?' | '@' | '#' | '%' | '@' | ':' | <literal_integer> | <literal_token>`。
