@@ -261,7 +261,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 1. HVML 解释器（interpreter）。HVML 解释器用来解析 HVML 文档或者 HTML/XML 文档片段，执行动作标签指定的操作，监听文档或数据的变化，并在需要的情况下，按照固定的接口调用使用脚本语言或者其他编程语言开发的功能。由于解析（parse）HVML 标记仅仅是 HVML 解释器的一个功能，因此，我们不使用解析器（parser）来指代这个模块。
 1. XML/HTML 用户代理（user-agent）。XML/HTML 代理是指最终解析和/或渲染 XML/HTML 文档的计算机程序。对 HTML 文档来讲，就是我们常用的浏览器；对 XML 文档来讲，通常是一个可以由某个 GUI 支持系统解析并渲染为图形用户界面的文档。需要注意的是，一个 XML/HTML 用户代理也可以用来完成某种抽象的操作，并不一定是用来渲染图形用户界面的，比如，我们可以使用 XML 来描述日志、数据库等。
 
-为方便描述，HybridOS 文档中使用如下术语：
+为方便描述，本文档中使用如下术语：
 
 1. 数据（data）。指可通过 JSON 格式表述的各种数据，包括：
    - 可用单个或多个键值对（key-value pair）表示的对象，亦称字典、关联数组等；
@@ -296,7 +296,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
             ]
         </init>
 
-        <listen on="hibus://system/status" as="systemStatus" />
+        <listen at="hibus://system/status" as="systemStatus" />
     </head>
 
     <body>
@@ -756,7 +756,7 @@ HVML 定义了两种模板标签，用于定义可以插入 DOM 文档中的 XML
     </body>
 ```
 
-在上述 HVML 代码中，当我们在 `ul` 元素中引用 `$user_item` 时，对应的文档模板是 `<li>$?</li>`，而在 `ul` 元素之外应用 `$user_item` 时，得到的文档模板是 `<p>$?</p>`。
+在上述 HVML 代码中，当我们在 `ul` 元素中引用 `$user_item` 时，对应的文档模板是 `<li>$?</li>`，而在 `ul` 元素之外引用 `$user_item` 时，得到的文档模板是 `<p>$?</p>`。
 
 #### 2.1.6) 用来操作数据或元素的动作标签
 
@@ -858,14 +858,13 @@ HVML 还定义有如下一些动作标签：
     </body>
 ```
 
-注意，引用由 `_ERROR` 或 `_EXCEPT` 命名的模板变量时，上下文变量 `$?` 是错误或者异常对象，其中的键值 `messages` 是错误信息。
-
 #### 2.1.9) 介词属性
 
 针对动作标签，HVML 定义了如下几个介词（如 `on`、`in`、`to` 等）属性，用于定义执行动作时依赖的数据（或元素）及其集合。如：
 
-- `on`：用于定义执行动作所依赖的数据、元素或元素集合。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果，若父元素是骨架元素，则取骨架元素在真实文档中对应的 DOM 子树。
-- `in`：用于定义执行操作的文档位置或作用域（scope）。操作文档时，该属性通常定义 DOM 树的一个子树（sub tree），使用子树的根元素定义，之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在真实文档中对应的 DOM 子树。操作数据时，通常指使用 `init` 元素定义的一个数据或者其子数据项。注意，使用 `in` 介词属性指定数据作为操作范围时，不会改变文档的操作位置。
+- `at`：用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URI。
+- `on`：用于定义执行动作所依赖的数据、元素或元素集合。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`@?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
+- `in`：用于定义执行操作的文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。注意，使用 `in` 介词属性指定数据作为操作范围时，不会改变文档的操作位置。
 - `for`：在 `observe` 标签中，用于定义观察（observe）操作对应的事件名称；在 `match` 标签中，用于定义匹配条件。
 - `as`：用于定义 `init`、`bind`、`load` 等元素绑定的变量名称、页面名称等。
 - `with`：用于定义克隆数据项或者文档片段时模板（`archetype` 或 `archedata`）元素的标识符。需要模板但未定义的情形下，会产生 `nodata` 错误。
@@ -900,13 +899,25 @@ HVML 还定义有如下一些动作标签：
 
 #### 2.1.11) 引用元素或数据
 
-当我们需要在动作标签的 `on` 属性中引用某个或某个元素集合时，我们使用和 CSS 选择器一样的语法，如：
+当我们需要在动作标签的 `on` 属性中引用某个或某个元素集合时，我们使用 CSS 选择器。如：
 
 - `.avatar` 表示所有 `class` 属性包含 `avatar` 的元素（集合）。
 - `#the-user-list` 表示 `id` 属性为 `the-user-list` 的元素。
-- `[name='user']` 表示 `name` 属性为 `user` 的元素（集合）。
+- `:root` 表示文档的根元素。
+- `*` 表示 `id` 属性为 `the-user-list` 的元素。
 
-注意，如果要在 `on` 属性中引用一个数据，则必定使用 `$` 作为前导字符，该字符用来定义一个 JSON 求值表达式。
+当 CSS 选择器的起始字符不是上述 `.`、`#`、`:`、`>`、`*` 之一时，我们使用 `~` 前导字符做标记，以防混淆：
+
+- `~[name='user']` 表示 `name` 属性为 `user` 的元素（集合）。
+- `~div > p` 选择父元素为 `<div>` 元素的所有 `<p>` 元素。
+
+如果要在 `on` 属性中引用一个数据，则必定使用 `$`、`[`、`{` 或 `"` 作为前导字符，或者使用字面的数值（number）、`true`、`false`、`null` 等关键词：
+
+- `$` 用来定义一个 JSON 求值表达式，如 `$_TIMERS[0]`。
+- `[` 用来定义一个 JSON 数组，如 `[ $foo, $bar, true, false ]`。
+- `{` 用来定义一个 JSON 对象，如 `{ "$foo" : $bar, "foo": "bar" }`。
+- `"` 用来定义一个 JSON 字符串，如 `"$foo"`。
+- `12345` 用来定义一个 JSON 数值。
 
 在 HVML 中，`on` 或者 `in` 介词属性在引用文档中的元素时，若使用前导字符 `>`，则将被限定在父元素 `in` 介词指定的范围内。如下面例子中，
 
@@ -1217,15 +1228,15 @@ HVML 定义的上下文变量可罗列如下：
     </footer>
 
     <choose on="$locales" to="update" in="#the-footer" by="KEY: $global.locale">
-        <update on="p > a" textContent="$?.se_name" attr.href="$?.se_url" attr.title="$?.se_title" />
+        <update on="~ p > a" textContent="$?.se_name" attr.href="$?.se_url" attr.title="$?.se_title" />
         <catch for="error:nodata">
-            <update on="p" textContent="You forget to define the \$locales/\$global variables!" />
+            <update on="~ p" textContent="You forget to define the \$locales/\$global variables!" />
         </catch>
         <catch for="KeyError">
-            <update on="p > a" textContent="Google" attr.href="https://www.google.com" attr.title="Google" />
+            <update on="~p > a" textContent="Google" attr.href="https://www.google.com" attr.title="Google" />
         </catch>
         <catch for="*">
-            <update on="p" textContent="Bad \$locales/\$global data!" />
+            <update on="~p" textContent="Bad \$locales/\$global data!" />
         </catch>
     </choose>
 ```
@@ -1279,7 +1290,7 @@ HVML 定义的上下文变量可罗列如下：
 
 ```html
     <iterate on="$users" to="update" in="#the-user-list" by="RANGE: 0, $#, 2">
-        <update on="[id=user-$?.id] span" attr.class *= "text-* text-info" />
+        <update on="~[id=user-$?.id] span" attr.class *= "text-* text-info" />
     </iterate>
 ```
 
@@ -1351,7 +1362,7 @@ HVML 定义的上下文变量可罗列如下：
 ```html
 <hvml>
     <head>
-        <listen on="hibus://localhost/system/status" as="systemStatus" />
+        <listen at="hibus://localhost/system/status" as="systemStatus" />
     </head>
 
     <body>
@@ -1405,7 +1416,7 @@ HVML 定义的上下文变量可罗列如下：
 
 ```html
         <observe on="$systemStatus" for="mobile-operator" to="update" in="#the-header">
-            <update on="span.mobile-operator" textContent="$?.name" />
+            <update on="~span.mobile-operator" textContent="$?.name" />
 
             <error>
                 <p>Bad scope.</p>
@@ -1422,25 +1433,25 @@ HVML 定义的上下文变量可罗列如下：
     <observe on="$systemStatus" for="battery" to="test">
         <test on="$?.level" in="#the-header">
             <match for="100" to="update" exclusively>
-                <update on="img.mobile-status" attr.src="/battery-level-full.png" />
+                <update on="~img.mobile-status" attr.src="/battery-level-full.png" />
             </match>
             <match for=">90" to="update" exclusively>
-                <update on="img.mobile-status" attr.src="/battery-level-90.png" />
+                <update on="~img.mobile-status" attr.src="/battery-level-90.png" />
             </match>
             <match for=">70" to="update" exclusively>
-                <update on="img.mobile-status" attr.src="/battery-level-70.png" />
+                <update on="~img.mobile-status" attr.src="/battery-level-70.png" />
             </match>
             <match for=">50" to="update" exclusively>
-                <update on="img.mobile-status" attr.src="/battery-level-50.png" />
+                <update on="~img.mobile-status" attr.src="/battery-level-50.png" />
             </match>
             <match for=">30" to="update" exclusively>
-                <update on="img.mobile-status" attr.src="/battery-level-30.png" />
+                <update on="~img.mobile-status" attr.src="/battery-level-30.png" />
             </match>
             <match for=">10" to="update" exclusively>
-                <update on="img.mobile-status" attr.src="/battery-level-10.png" />
+                <update on="~img.mobile-status" attr.src="/battery-level-10.png" />
             </match>
             <match for="*" to="update">
-                <update on="img.mobile-status" attr.src="/battery-level-low.png" />
+                <update on="~img.mobile-status" attr.src="/battery-level-low.png" />
             </match>
         </test>
         <error>
@@ -1460,7 +1471,7 @@ HVML 定义的上下文变量可罗列如下：
 ```html
 <hvml lang="en">
     <head>
-        <listen on="mqtt://foo.bar.com/userchange" as="userChanges" />
+        <listen at="mqtt://foo.bar.com/userchange" as="userChanges" />
     </head>
 
     <body>
@@ -1550,7 +1561,7 @@ HVML 定义的上下文变量可罗列如下：
 ```html
 </hvml>
     <head>
-        <listen on="hibus://localhost/system/wifiManager" as="wifimanager" />
+        <listen at="hibus://localhost/system/wifiManager" as="wifimanager" />
     </head>
 
     <body>
@@ -1665,7 +1676,7 @@ HVML 为不同的数据类型提供了如下操作：
                 { "action" : "get_list" }
             </init>
 
-            <listen on="hibus://localhost/system/wifiManager" as="wifimanager" />
+            <listen at="hibus://localhost/system/wifiManager" as="wifimanager" />
 
             <request on="$wifimanager" to="observe" with="$paramWifiList" asynchronously>
                 <observe on="$wifimanager" for="ok">
@@ -1751,7 +1762,7 @@ HVML 为不同的数据类型提供了如下操作：
         </define>
 
         <listbox id="entries">
-            <include on="fillDirEntries" with="/home" />
+            <include on="$fillDirEntries" with="/home" />
         </listbox>
 
         <button id="goRoot>
@@ -1764,12 +1775,12 @@ HVML 为不同的数据类型提供了如下操作：
 
         <observe on="#goRoot" for="click">
             <empty on="#entries" />
-            <include on="fillDirEntries" with="/" />
+            <include on="$fillDirEntries" with="/" />
         </observe>
 
         <observe on="#goHome" for="click">
             <empty on="#entries" />
-            <include on="fillDirEntries" with="/home" />
+            <include on="$fillDirEntries" with="/home" />
         </observe>
 ```
 
@@ -1791,7 +1802,7 @@ HVML 为不同的数据类型提供了如下操作：
         </define>
 
         <listbox id="entries">
-            <call on="fillDirEntries" in="#entries" with="/home">
+            <call on="$fillDirEntries" in="#entries" with="/home">
             </call>
         </listbox>
 
@@ -1805,14 +1816,14 @@ HVML 为不同的数据类型提供了如下操作：
 
         <observe on="#goRoot" for="click">
             <empty on="#entries" />
-            <call on="fillDirEntries" in="#entries" with="/">
+            <call on="$fillDirEntries" in="#entries" with="/">
             </call>
 
         </observe>
 
         <observe on="#goHome" for="click">
             <empty on="#entries" />
-            <call on="fillDirEntries" in="#entries" with="/home" />
+            <call on="$fillDirEntries" in="#entries" with="/home" />
         </observe>
 ```
 
@@ -1850,18 +1861,18 @@ HVML 为不同的数据类型提供了如下操作：
 
 ```html
     <choose on="$locales" to="update" in="#the-footer" by="KEY: $global.locale">
-        <update on="p > a" textContent="$?.se_name" attr.href="$?.se_url" attr.title="$?.se_title" />
+        <update on="~ p > a" textContent="$?.se_name" attr.href="$?.se_url" attr.title="$?.se_title" />
         <catch for="error:nodata">
-            <update on="p" textContent="You forget to define the \$locales/\$global variables!" />
+            <update on="~ p" textContent="You forget to define the \$locales/\$global variables!" />
         </catch>
         <catch for="error:*">
-            <update on="p" textContent="You forget to define the \$locales/\$global variables!" />
+            <update on="~ p" textContent="You forget to define the \$locales/\$global variables!" />
         </catch>
         <catch for="KeyError">
-            <update on="p > a" textContent="Google" attr.href="https://www.google.com" attr.title="Google" />
+            <update on="~ p > a" textContent="Google" attr.href="https://www.google.com" attr.title="Google" />
         </catch>
         <catch>
-            <update on="p" textContent="Bad \$locales/\$global data!" />
+            <update on="~ p" textContent="Bad \$locales/\$global data!" />
         </catch>
     </choose>
 ```
@@ -2356,7 +2367,7 @@ class HVMLChooser (object):
     <body>
         ...
 
-        <choose on="foo" to="update" in="$_TIMERS" by="CLASS: CTimer">
+        <choose on='"foo"' to="update" in="$_TIMERS" by="CLASS: CTimer">
             <update on="$?" key.active="yes" />
         </choose>
 
@@ -2631,7 +2642,7 @@ def on_battery_changed (on_value, root_in_scope, source, event, time_stamp, even
 
     <input type="text" name="user-name" placeholder="Your Name" value="$user_name" />
 
-    <observe on="input[name='user-name']" for="change">
+    <observe on="~ input[name='user-name']" for="change">
         <update on="$user_name" value="$?" />
     </observe>
 ```
@@ -2657,7 +2668,7 @@ def on_battery_changed (on_value, root_in_scope, source, event, time_stamp, even
 
     <input type="text" name="user-name" placeholder="Your Name" value="$user_name" />
 
-    <observe on="input[name='user-name']" for="change">
+    <observe on="~ input[name='user-name']" for="change">
         <update on="$user_name" value="$?" />
     </observe>
 ```
@@ -2756,7 +2767,7 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml:">
             ]
         </init>
 
-        <listen on="hibus://system/status" as="systemStatus" />
+        <listen at="hibus://system/status" as="systemStatus" />
     </head>
 
     <body>
@@ -3061,8 +3072,8 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本元素必须为 
 ```html
 <init as="foo">
     [
-        "<p>The error message: $_ERROR.messages</p>",
-        "<p>The exception message: $_EXCEPT.messages</p>"
+        "<p>The error message: $?.messages</p>",
+        "<p>The exception message: $?.messages</p>"
     ]
 </init>
 ```
@@ -5166,7 +5177,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 <!DOCTYPE hvml>
 <hvml target="html" script="python">
     <head>
-        <listen on="mqtt://foo.bar/bracelet" as="braceletInfo">
+        <listen at="mqtt://foo.bar/bracelet" as="braceletInfo">
 
         <init as="_TIMERS" uniquely on="id">
             [
