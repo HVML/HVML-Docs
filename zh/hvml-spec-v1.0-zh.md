@@ -75,7 +75,7 @@ All Rights Reserved.
          - [3.1.2.4) 动作元素属性](#3124-动作元素属性)
          - [3.1.2.5) 可选标签](#3125-可选标签)
          - [3.1.2.6) 裸文本元素和可转义裸文本元素的内容限制](#3126-裸文本元素和可转义裸文本元素的内容限制)
-         - [3.1.2.7) JSON 文本和 JSON 属性值](#3127-json-文本和-json-属性值)
+         - [3.1.2.7) JSONTEXT、JSONATTR 和 JSONSTRING](#3127-jsontextjsonattr-和-jsonstring)
          - [3.1.2.8) JSONEE 的语法/Syntax of JSONEE](#3128-jsonee-的语法syntax-of-jsonee)
       * [3.1.3) 文本/Text](#313-文本text)
          - [3.1.3.1) 新行/Newlines](#3131-新行newlines)
@@ -98,89 +98,96 @@ All Rights Reserved.
          - [3.2.5.1) Data state](#3251-data-state)
          - [3.2.5.2) RCDATA state](#3252-rcdata-state)
          - [3.2.5.3) RAWTEXT state](#3253-rawtext-state)
-         - [3.2.5.4) Template data state](#3254-template-data-state)
-         - [3.2.5.5) PLAINTEXT state](#3255-plaintext-state)
-         - [3.2.5.6) Tag open state](#3256-tag-open-state)
-         - [3.2.5.7) End tag open state](#3257-end-tag-open-state)
-         - [3.2.5.8) Tag name state](#3258-tag-name-state)
-         - [3.2.5.9) RCDATA less-than sign state](#3259-rcdata-less_than-sign-state)
-         - [3.2.5.10 RCDATA end tag open state](#32510-rcdata-end-tag-open-state)
-         - [3.2.5.11) RCDATA end tag name state](#32511-rcdata-end-tag-name-state)
-         - [3.2.5.12) RAWTEXT less-than sign state](#32512-rawtext-less_than-sign-state)
-         - [3.2.5.13) RAWTEXT end tag open state](#32513-rawtext-end-tag-open-state)
-         - [3.2.5.14) RAWTEXT end tag name state](#32514-rawtext-end-tag-name-state)
-         - [3.2.5.15) Template data less-than sign state](#32515-template-data-less_than-sign-state)
-         - [3.2.5.16) Template data end tag open state](#32516-template-data-end-tag-open-state)
-         - [3.2.5.17) Template data end tag name state](#32517-template-data-end-tag-name-state)
-         - [3.2.5.18) JSONTEXT state](#32518-jsontext-state)
-         - [3.2.5.19) JSONTEXT JSON finished state](#32519-jsontext-json-finished-state)
-         - [3.2.5.20) JSONTEXT less-than sign state](#32520-jsontext-less_than-sign-state)
-         - [3.2.5.21) JSONTEXT end tag open state](#32521-jsontext-end-tag-open-state)
-         - [3.2.5.22) JSONTEXT end tag name state](#32522-jsontext-end-tag-name-state)
-         - [3.2.5.23) JSONTEXT value state](#32523-jsontext-value-state)
-         - [3.2.5.24) JSONTEXT after value state](#32524-jsontext-after-value-state)
-         - [3.2.5.25) JSONTEXT keyword state](#32525-jsontext-keyword-state)
-         - [3.2.5.26) JSONTEXT number state](#32526-jsontext-number-state)
-         - [3.2.5.27) JSONTEXT number integer state](#32527-jsontext-number-integer-state)
-         - [3.2.5.28) JSONTEXT number fraction state](#32528-jsontext-number-fraction-state)
-         - [3.2.5.29) JSONTEXT number exponent state](#32529-jsontext-number-exponent-state)
-         - [3.2.5.30) JSONTEXT number exponent integer state](#32530-jsontext-number-exponent-integer-state)
-         - [3.2.5.31) JSONTEXT object key name state](#32531-jsontext-object-key-name-state)
-         - [3.2.5.32) JSONTEXT after object key name state](#32532-jsontext-after-object-key-name-state)
-         - [3.2.5.33) JSONTEXT string state](#32533-jsontext-string-state)
-         - [3.2.5.34) JSONTEXT string escape state](#32534-jsontext-string-escape-state)
-         - [3.2.5.35) JSONTEXT string escape four hexadecimal digits state](#32535-jsontext-string-escape-four-hexadecimal-digits-state)
-         - [3.2.5.36) Before attribute name state](#32536-before-attribute-name-state)
-         - [3.2.5.37) Attribute name state](#32537-attribute-name-state)
-         - [3.2.5.38) Special attribute operator in attribute name state](#32538-special-attribute-operator-in-attribute-name-state)
-         - [3.2.5.39) After attribute name state](#32539-after-attribute-name-state)
-         - [3.2.5.40) Special attribute operator after attribute name state](#32540-special-attribute-operator-after-attribute-name-state)
-         - [3.2.5.41) Before attribute value state](#32541-before-attribute-value-state)
-         - [3.2.5.42) Attribute value (double-quoted) state](#32542-attribute-value-double_quoted-state)
-         - [3.2.5.43) Attribute value (single-quoted) state](#32543-attribute-value-single_quoted-state)
-         - [3.2.5.44) Attribute value (unquoted) state](#32544-attribute-value-unquoted-state)
-         - [3.2.5.46) After attribute value (quoted) state](#32546-after-attribute-value-quoted-state)
-         - [3.2.5.47) Self-closing start tag state](#32547-self_closing-start-tag-state)
-         - [3.2.5.48) Bogus comment state](#32548-bogus-comment-state)
-         - [3.2.5.49) Markup declaration open state](#32549-markup-declaration-open-state)
-         - [3.2.5.50) Comment start state](#32550-comment-start-state)
-         - [3.2.5.51) Comment start dash state](#32551-comment-start-dash-state)
-         - [3.2.5.52) Comment state](#32552-comment-state)
-         - [3.2.5.53) Comment less-than sign state](#32553-comment-less_than-sign-state)
-         - [3.2.5.54) Comment less-than sign bang state](#32554-comment-less_than-sign-bang-state)
-         - [3.2.5.55) Comment less-than sign bang dash state](#32555-comment-less_than-sign-bang-dash-state)
-         - [3.2.5.56) Comment less-than sign bang dash dash state](#32556-comment-less_than-sign-bang-dash-dash-state)
-         - [3.2.5.57) Comment end dash state](#32557-comment-end-dash-state)
-         - [3.2.5.58) Comment end state](#32558-comment-end-state)
-         - [3.2.5.59) Comment end bang state](#32559-comment-end-bang-state)
-         - [3.2.5.60) DOCTYPE state](#32560-doctype-state)
-         - [3.2.5.61) Before DOCTYPE name state](#32561-before-doctype-name-state)
-         - [3.2.5.62) DOCTYPE name state](#32562-doctype-name-state)
-         - [3.2.5.63) After DOCTYPE name state](#32563-after-doctype-name-state)
-         - [3.2.5.64) After DOCTYPE public keyword state](#32564-after-doctype-public-keyword-state)
-         - [3.2.5.65) Before DOCTYPE public identifier state](#32565-before-doctype-public-identifier-state)
-         - [3.2.5.66) DOCTYPE public identifier (double-quoted) state](#32566-doctype-public-identifier-double_quoted-state)
-         - [3.2.5.67) DOCTYPE public identifier (single-quoted) state](#32567-doctype-public-identifier-single_quoted-state)
-         - [3.2.5.68) After DOCTYPE public identifier state](#32568-after-doctype-public-identifier-state)
-         - [3.2.5.69) Between DOCTYPE public identifier and system information state](#32569-between-doctype-public-identifier-and-system-information-state)
-         - [3.2.5.70) After DOCTYPE system keyword state](#32570-after-doctype-system-keyword-state)
-         - [3.2.5.71) Before DOCTYPE system information state](#32571-before-doctype-system-information-state)
-         - [3.2.5.72) DOCTYPE system information (double-quoted) state](#32572-doctype-system-information-double_quoted-state)
-         - [3.2.5.73) DOCTYPE system information (single-quoted) state](#32573-doctype-system-information-single_quoted-state)
-         - [3.2.5.74) After DOCTYPE system information state](#32574-after-doctype-system-information-state)
-         - [3.2.5.75) Bogus DOCTYPE state](#32575-bogus-doctype-state)
-         - [3.2.5.76) CDATA section state](#32576-cdata-section-state)
-         - [3.2.5.77) CDATA section bracket state](#32577-cdata-section-bracket-state)
-         - [3.2.5.78) CDATA section end state](#32578-cdata-section-end-state)
-         - [3.2.5.79) Character reference state](#32579-character-reference-state)
-         - [3.2.5.80) Named character reference state](#32580-named-character-reference-state)
-         - [3.2.5.81) Ambiguous ampersand stat](#32581-ambiguous-ampersand-stat)
-         - [3.2.5.82) Numeric character reference state](#32582-numeric-character-reference-state)
-         - [3.2.5.83) Hexadecimal character reference start state](#32583-hexadecimal-character-reference-start-state)
-         - [3.2.5.84) Decimal character reference start state](#32584-decimal-character-reference-start-state)
-         - [3.2.5.85) Hexadecimal character reference state](#32585-hexadecimal-character-reference-state)
-         - [3.2.5.86) Decimal character reference state](#32586-decimal-character-reference-state)
-         - [3.2.5.87) Numeric character reference end state](#32587-numeric-character-reference-end-state)
+         - [3.2.5.4) Template raw data state](#3254-template-raw-data-state)
+         - [3.2.5.5) Template JSONEE data state](#3255-template-jsonee-data-state)
+         - [3.2.5.6) JSONEE escape state](#3256-jsonee-escape-state)
+         - [3.2.5.7) JSONEE variable state](#3257-jsonee-variable-state)
+         - [3.2.5.8) JSONEE keyword state](#3258-jsonee-keyword-state)
+         - [3.2.5.10) JSONEE getter state](#32510-jsonee-getter-state)
+         - [3.2.5.11) JSONEE setter state](#32511-jsonee-setter-state)
+         - [3.2.5.12) JSONEE after call state](#32512-jsonee-after-call-state)
+         - [3.2.5.13) PLAINTEXT state](#32513-plaintext-state)
+         - [3.2.5.14) Tag open state](#32514-tag-open-state)
+         - [3.2.5.15) End tag open state](#32515-end-tag-open-state)
+         - [3.2.5.16) Tag name state](#32516-tag-name-state)
+         - [3.2.5.17) RCDATA less-than sign state](#32517-rcdata-less_than-sign-state)
+         - [3.2.5.18) RCDATA end tag open state](#32518-rcdata-end-tag-open-state)
+         - [3.2.5.19) RCDATA end tag name state](#32519-rcdata-end-tag-name-state)
+         - [3.2.5.20) RAWTEXT less-than sign state](#32520-rawtext-less_than-sign-state)
+         - [3.2.5.21) RAWTEXT end tag open state](#32521-rawtext-end-tag-open-state)
+         - [3.2.5.22) RAWTEXT end tag name state](#32522-rawtext-end-tag-name-state)
+         - [3.2.5.23) Template data less-than sign state](#32523-template-data-less_than-sign-state)
+         - [3.2.5.24) Template data end tag open state](#32524-template-data-end-tag-open-state)
+         - [3.2.5.25) Template data end tag name state](#32525-template-data-end-tag-name-state)
+         - [3.2.5.26) JSONTEXT state](#32526-jsontext-state)
+         - [3.2.5.27) JSONTEXT JSON finished state](#32527-jsontext-json-finished-state)
+         - [3.2.5.28) JSONTEXT less-than sign state](#32528-jsontext-less_than-sign-state)
+         - [3.2.5.29) JSONTEXT end tag open state](#32529-jsontext-end-tag-open-state)
+         - [3.2.5.30) JSONTEXT end tag name state](#32530-jsontext-end-tag-name-state)
+         - [3.2.5.31) JSON value state](#32531-json-value-state)
+         - [3.2.5.32) JSON after value state](#32532-json-after-value-state)
+         - [3.2.5.33) JSON keyword state](#32533-json-keyword-state)
+         - [3.2.5.34) JSON number state](#32534-json-number-state)
+         - [3.2.5.35) JSON number integer state](#32535-json-number-integer-state)
+         - [3.2.5.36) JSON number fraction state](#32536-json-number-fraction-state)
+         - [3.2.5.37) JSON number exponent state](#32537-json-number-exponent-state)
+         - [3.2.5.38) JSON number exponent integer state](#32538-json-number-exponent-integer-state)
+         - [3.2.5.39) JSON object key name state](#32539-json-object-key-name-state)
+         - [3.2.5.40) JSON after object key name state](#32540-json-after-object-key-name-state)
+         - [3.2.5.41) JSON string state](#32541-json-string-state)
+         - [3.2.5.42) JSON string escape state](#32542-json-string-escape-state)
+         - [3.2.5.43) JSON string escape four hexadecimal digits state](#32543-json-string-escape-four-hexadecimal-digits-state)
+         - [3.2.5.44) Before attribute name state](#32544-before-attribute-name-state)
+         - [3.2.5.45) Attribute name state](#32545-attribute-name-state)
+         - [3.2.5.46) Special attribute operator in attribute name state](#32546-special-attribute-operator-in-attribute-name-state)
+         - [3.2.5.47) After attribute name state](#32547-after-attribute-name-state)
+         - [3.2.5.48) Special attribute operator after attribute name state](#32548-special-attribute-operator-after-attribute-name-state)
+         - [3.2.5.49) Before attribute value state](#32549-before-attribute-value-state)
+         - [3.2.5.50) Attribute value (double-quoted) state](#32550-attribute-value-double_quoted-state)
+         - [3.2.5.52) Attribute value (single-quoted) state](#32552-attribute-value-single_quoted-state)
+         - [3.2.5.53) Attribute value (unquoted) state](#32553-attribute-value-unquoted-state)
+         - [3.2.5.54) After attribute value (quoted) state](#32554-after-attribute-value-quoted-state)
+         - [3.2.5.55) Self-closing start tag state](#32555-self_closing-start-tag-state)
+         - [3.2.5.56) Bogus comment state](#32556-bogus-comment-state)
+         - [3.2.5.57) Markup declaration open state](#32557-markup-declaration-open-state)
+         - [3.2.5.58) Comment start state](#32558-comment-start-state)
+         - [3.2.5.59) Comment start dash state](#32559-comment-start-dash-state)
+         - [3.2.5.60) Comment state](#32560-comment-state)
+         - [3.2.5.61) Comment less-than sign state](#32561-comment-less_than-sign-state)
+         - [3.2.5.62) Comment less-than sign bang state](#32562-comment-less_than-sign-bang-state)
+         - [3.2.5.63) Comment less-than sign bang dash state](#32563-comment-less_than-sign-bang-dash-state)
+         - [3.2.5.64) Comment less-than sign bang dash dash state](#32564-comment-less_than-sign-bang-dash-dash-state)
+         - [3.2.5.65) Comment end dash state](#32565-comment-end-dash-state)
+         - [3.2.5.66) Comment end state](#32566-comment-end-state)
+         - [3.2.5.67) Comment end bang state](#32567-comment-end-bang-state)
+         - [3.2.5.68) DOCTYPE state](#32568-doctype-state)
+         - [3.2.5.69) Before DOCTYPE name state](#32569-before-doctype-name-state)
+         - [3.2.5.70) DOCTYPE name state](#32570-doctype-name-state)
+         - [3.2.5.71) After DOCTYPE name state](#32571-after-doctype-name-state)
+         - [3.2.5.72) After DOCTYPE public keyword state](#32572-after-doctype-public-keyword-state)
+         - [3.2.5.73) Before DOCTYPE public identifier state](#32573-before-doctype-public-identifier-state)
+         - [3.2.5.74) DOCTYPE public identifier (double-quoted) state](#32574-doctype-public-identifier-double_quoted-state)
+         - [3.2.5.75) DOCTYPE public identifier (single-quoted) state](#32575-doctype-public-identifier-single_quoted-state)
+         - [3.2.5.76) After DOCTYPE public identifier state](#32576-after-doctype-public-identifier-state)
+         - [3.2.5.77) Between DOCTYPE public identifier and system information state](#32577-between-doctype-public-identifier-and-system-information-state)
+         - [3.2.5.78) After DOCTYPE system keyword state](#32578-after-doctype-system-keyword-state)
+         - [3.2.5.79) Before DOCTYPE system information state](#32579-before-doctype-system-information-state)
+         - [3.2.5.80) DOCTYPE system information (double-quoted) state](#32580-doctype-system-information-double_quoted-state)
+         - [3.2.5.81) DOCTYPE system information (single-quoted) state](#32581-doctype-system-information-single_quoted-state)
+         - [3.2.5.82) After DOCTYPE system information state](#32582-after-doctype-system-information-state)
+         - [3.2.5.83) Bogus DOCTYPE state](#32583-bogus-doctype-state)
+         - [3.2.5.84) CDATA section state](#32584-cdata-section-state)
+         - [3.2.5.85) CDATA section bracket state](#32585-cdata-section-bracket-state)
+         - [3.2.5.86) CDATA section end state](#32586-cdata-section-end-state)
+         - [3.2.5.87) Character reference state](#32587-character-reference-state)
+         - [3.2.5.88) Named character reference state](#32588-named-character-reference-state)
+         - [3.2.5.89) Ambiguous ampersand stat](#32589-ambiguous-ampersand-stat)
+         - [3.2.5.90) Numeric character reference state](#32590-numeric-character-reference-state)
+         - [3.2.5.91) Hexadecimal character reference start state](#32591-hexadecimal-character-reference-start-state)
+         - [3.2.5.92) Decimal character reference start state](#32592-decimal-character-reference-start-state)
+         - [3.2.5.93) Hexadecimal character reference state](#32593-hexadecimal-character-reference-state)
+         - [3.2.5.94) Decimal character reference state](#32594-decimal-character-reference-state)
+         - [3.2.5.95) Numeric character reference end state](#32595-numeric-character-reference-end-state)
       * [3.2.6) 树的构造](#326-树的构造)
          - [3.2.6.1) 创建和插入模式/Creating and inserting nodes](#3261-创建和插入模式creating-and-inserting-nodes)
          - [3.2.6.2) 解析仅包含文本的元素/Parsing elements that contain only text](#3262-解析仅包含文本的元素parsing-elements-that-contain-only-text)
@@ -3060,7 +3067,7 @@ __是否考虑：__
 
 > The text in raw text and escapable raw text elements must not contain any occurrences of the string `</` (U+003C LESS-THAN SIGN, U+002F SOLIDUS) followed by a tag name started with an ASCII alpha letter and followed by one of U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), U+0020 SPACE, U+003E GREATER-THAN SIGN (`>`), or U+002F SOLIDUS (`/`).
 
-##### 3.1.2.7) JSON 文本和 JSON 属性值
+##### 3.1.2.7) JSONTEXT、JSONATTR 和 JSONSTRING
 
 HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为一个完整的 JSON 表述（其中可使用 JSON 求值表达式）。如：
 
@@ -3100,6 +3107,8 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
     </li>
 </archetype>
 ```
+
+对这类可嵌入式 JSONEE 的属性值或者可嵌入式 JSONEE 的模板数据，我们简称为 `JSONSTRING`。
 
 ##### 3.1.2.8) JSONEE 的语法/Syntax of JSONEE
 
@@ -3294,8 +3303,6 @@ The stack grows downwards; the topmost character on the stack is the first one a
 
 如这个 JSON 求值表达式：`{{$_L.NOT($_L.STRCMP('case', $_SYSTEM.time('%H:%m'), '00:00'))}}`，JSONEE 嵌套栈最长时包含如下字符：`{{((('`。
 
-一个合法的 JSONEE 表达式，将被解析为一个 JSONEE 词法单元保存在 JSONTEXT 或者 RAWTEXT 文本中。
-
 ##### 3.2.4.5) JSON 求值树/JSON Evaluation Tree
 
 如果我们将 JSON 格式中使用的 `{}`、`[]`、`:` 等字符理解为一个内部的对象和数组构造方法，则包含着 JSONEE 的 JSON 表达可被统一处理为 JSONEE。如下面的 JSON 表达：
@@ -3404,7 +3411,7 @@ $_JSON.mk_object(
     )
 ```
 
-有了这样的等价的单调 JSONEE 表达式，我们就可以构建求值树来处理所有的 JSON 相关文本。
+有了这样的等价的单调 JSONEE 表达方式，我们就可以构建求值树来处理所有的 JSONTEXT、JSONATTR 和 JSONSTRING。
 
 ##### 3.2.4.6) 元素指针
 
@@ -3491,7 +3498,20 @@ Consume the next input character:
 - Anything else
   - Emit the current input character as a character token.
 
-##### 3.2.5.4) Template data state
+##### 3.2.5.4) Template raw data state
+
+Consume the next input character:
+
+- U+003C LESS-THAN SIGN (<)
+  - Switch to the template data less-than sign state.
+- U+0000 NULL
+  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the currernt literal string node.
+- EOF
+  - Emit an end-of-file token.
+- Anything else
+  - Append the current input character to the current literal string node.
+
+##### 3.2.5.5) Template JSONEE data state
 
 Consume the next input character:
 
@@ -3501,13 +3521,187 @@ Consume the next input character:
   - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
 - EOF
   - Emit an end-of-file token.
+- U+005C BACKSLASH (\\)
+  - Set the return state to the template JSONEE data state.
+  - Switch to JSONEE escape state.
+- U+007B LEFT CURLY BRACKET ({)
+  - If the bottommost two characters on the JSONEE nesting stack are all U+007B LEFT CURLY BRACKET ({), this is a bad-jsonee parse error; Stop parsing.
+  - Push the current input character onto the JSONEE nesting stack.
+- U+0024 DOLLAR SIGN ($)
+  - Create a new JOSNEE get-variable function node, set this node as the current function node.
+  - Set the return state to the template JSONEE data state.
+  - Set the temporary buffer to the empty string.
+  - Reconsume in JSONEE variable state.
 - Anything else
-  - Emit the current input character as a character token.
+  - If the JSONEE nesting stack is not empty, this is a bad-jsonee parse error; Stop parsing.
+  - Otherwise, append the current input character to the current literal string node.
 
 __NOTE__  
 The template data states of HVML are similar to script data states of HTML (<https://html.spec.whatwg.org/#script-data-state>). However, we do not handle the comments in the script data. So there is no template data escape start state and subsequent states.
 
-##### 3.2.5.5) PLAINTEXT state
+##### 3.2.5.6) JSONEE escape state
+
+Consume the next input character:
+
+- U+005C BACKSLASH (\\)
+- U+0024 DOLLAR SIGN ($)
+- U+007B LEFT CURLY BRACKET ({)
+  - Append the current input character to the current literal string.
+  - Switch to the return state.
+- Anything else
+  - It is a bad-jsonee-escape-entity parse error; Stop parsing.
+
+##### 3.2.5.7) JSONEE variable state
+
+Consume the next input character:
+
+- U+003F QUESTION MARK (?)
+- U+0023 NUMBER SIGN (#)
+- U+0025 PERCENT SIGN (%)
+- U+003F QUESTION MARK (?)
+- U+0040 COMMERCIAL AT (@)
+  - If the temporary buffer is empty, append the current input character to the temporary buffer.
+  - Otherwise, this is a bad-jsonee-variable-name parse error, stop parsing.
+- U+005F LOW LINE (`_`)
+- ASCII digit
+  - If the temporary buffer is empty or the last character of the temporary buffer is a ASCII digit character, append the current input character to the temporary buffer.
+  - Othwise, this is a bad-jsonee-variable-name parse error. Stop parsing.
+- ASCII alpha
+  - Append the current input character to the temporary buffer.
+- U+002E FULL STOP (.)
+  - If the temporary buffer is empty, this is an empty-jsonee-name parse error; Stop parsing. Otherwise,
+    - Set the string in the temporary buffer as the first argument of the current function node.
+    - Set the temporary buffer to the empty string.
+    - Create a new JSONEE get-element-at function node, set the node as the parent node of the current function node, and set the node as the current function node.
+    - Switch to JSONEE keyword state.
+- U+005B LEFT SQUARE BRACKET ([)
+  - If the temporary buffer is empty, this is an empty-jsonee-name parse error; Stop parsing. Otherwise,
+    - Set the string in the temporary buffer as the first argument of the current function node.
+    - Push the current input character onto the JSONEE nesting stack.
+    - Set the temporary buffer to the empty string.
+    - Create a new JSONEE get-element-at function node, set the node as the parent node of the current function node, and set the node as the current function node.
+    - Switch to JSON value state.
+- U+007D RIGHT CURLY BRACKET (})
+  - If the bottommost character on the JSONE nesting stack is U+007B LEFT CURLY BRACKET ({), pop the character off the JSONEE nesting stack.
+  - Otherwise, it is a bad-jsonee-variable-name parse error; Stop parsing.
+- Anything else
+  - If the JSONEE nesting stack is not empty, this is an bad-jsonee-name parse error; Stop parsing.
+  - Otherwise, if the temporary buffer is empty, this is an empty-jsonee-name parse error; Stop parsing.
+  - Otherwise,
+    - Set the string in the temporary buffer as the first argument of the current function node.
+    - Switch to return state.
+
+##### 3.2.5.8) JSONEE keyword state
+
+Consume the next input character:
+
+- ASCII digit
+  - If the temporary buffer is empty, this is a bad-jsonee-keyword parse error; Stop parsing.
+  - Othwise, append the current input character to the temporary buffer.
+- U+005F LOW LINE (`_`)
+- ASCII alpha
+  - Append the current input character to the temporary buffer.
+- U+002E FULL STOP (`.`)
+  - If the temporary buffer is empty, this is an empty-jsonee-keyword parse error; Stop parsing. Otherwise,
+    - Set the string in the temporary buffer as the first argument of the current function node.
+    - Set the temporary buffer to the empty string.
+    - Create a new JSONEE get-element-at function node, set the node as the parent node of the current function node, and set the node as the current function node.
+    - Switch to JSONEE keyword state.
+- U+005B LEFT SQUARE BRACKET (`[`)
+  - If the temporary buffer is empty, this is an empty-jsonee-keyword parse error; Stop parsing. Otherwise,
+    - Set the string in the temporary buffer as the first argument of the current function node.
+    - Push the current input character onto the JSONEE nesting stack.
+    - Set the temporary buffer to the empty string.
+    - Set the return state to the JSONEE keyword state.
+    - Create a new JSONEE get-element-at function node, set the node as the parent node of the current function node, and set the node as the current function node.
+    - Switch to JSON value state.
+- U+0028 LEFT PARENTHESIS (`(`)
+  - If the temporary buffer is empty, this is an empty-jsonee-keyword parse error; Stop parsing. Otherwise,
+    - Set the string in the temporary buffer as the first argument of the current function node.
+    - Push the current input character onto the JSONEE nesting stack.
+    - Set the temporary buffer to the empty string.
+    - Set the return state to the JSONEE keyword state.
+    - Create a new JSONEE call-getter function node, set the node as the parent node of the current function node, and set the node as the current function node.
+    - Switch to JSONEE getter state.
+- U+003C LESS-THAN SIGN (`<`)
+  - If the temporary buffer is empty, this is an empty-jsonee-keyword parse error; Stop parsing. Otherwise,
+    - Set the string in the temporary buffer as the first argument of the current function node.
+    - Push the current input character onto the JSONEE nesting stack.
+    - Set the temporary buffer to the empty string.
+    - Set the return state to the JSONEE keyword state.
+    - Create a new JSONEE call-setter function node, set the node as the parent node of the current function node, and set the node as the current function node.
+    - Create a new empty argument node, set the node as the first child of the currernt function node, and set the node as the current argument node.
+    - Switch to JSONEE setter state.
+- U+007D RIGHT CURLY BRACKET (})
+  - If the bottommost character on the JSONE nesting stack is U+007B LEFT CURLY BRACKET ({), pop the character off the JSONEE nesting stack. Otherwise, it is a bad-jsonee-variable-name parse error; Stop parsing.
+  - If the JSONEE nesting stack is empty, treat it as per the "anything else" entry below.
+- Anything else
+  - If the JSONEE nesting stack is not empty, this is an bad-jsonee-name parse error; Stop parsing.
+  - Otherwise, if the temporary buffer is empty, this is an empty-jsonee-keyword parse error; Stop parsing.
+  - Otherwise,
+    - Set the string in the temporary buffer as the first argument of the current function node.
+    - Switch to return state.
+
+##### 3.2.5.10) JSONEE getter state
+
+Consume the next input character:
+
+- U+002C COMMA (,)
+  - If the current argument node is empty, this is a bad-jsonee-unexpected-comma parse error; Stop parsing.
+  - Otherwise, create a new empty argument node, set the node as the first child of the currernt function node, and set the node as the current argument node.
+- U+0029 RIGHT PARENTHESIS ())
+  - If the bottommost character on the JSONE nesting stack is U+0028 LEFT PARENTHESIS (`(`),
+    - Pop the character off the JSONEE nesting stack.
+    - Switch to JSONEE after call state.
+  - Otherwise, it is a bad-jsonee-unexpected-parenthesis parse error; Stop parsing.
+- U+007D RIGHT CURLY BRACKET (})
+  - If the bottommost character on the JSONE nesting stack is U+007B LEFT CURLY BRACKET ({), pop the character off the JSONEE nesting stack. Otherwise, it is a bad-jsonee-variable-name parse error; Stop parsing.
+  - If the JSONEE nesting stack is empty, switch to the return state.
+- Anything else
+  - Set the return state to the JSONEE getter state.
+  - Switch to JSON value state.
+
+##### 3.2.5.11) JSONEE setter state
+
+- U+002C COMMA (,)
+  - If the current argument node is empty, this is a bad-jsonee-unexpected-comma parse error; Stop parsing.
+  - Otherwise, create a new empty argument node, set the node as the first child of the currernt function node, and set the node as the current argument node.
+- U+003E GREATER-THAN SIGN (>)
+  - If the bottommost character on the JSONE nesting stack is U+003C LESS-THAN SIGN (<),
+    - Pop the character off the JSONEE nesting stack.
+    - Switch to JSONEE after call state.
+  - Otherwise, it is a bad-jsonee-unexpected-left-angle-bracket parse error; Stop parsing.
+- U+007D RIGHT CURLY BRACKET (})
+  - If the bottommost character on the JSONE nesting stack is U+007B LEFT CURLY BRACKET ({), pop the character off the JSONEE nesting stack. Otherwise, it is a bad-jsonee-variable-name parse error; Stop parsing.
+  - If the JSONEE nesting stack is empty, switch to the return state.
+- Anything else
+  - Set the return state to the JSONEE getter state.
+  - Switch to JSON value state.
+
+##### 3.2.5.12) JSONEE after call state
+
+Consume the next input character:
+
+- U+002E FULL STOP (.)
+  - Set the temporary buffer to the empty string.
+  - Create a new JSONEE get-element-at function node, set the node as the parent node of the current function node, and set the node as the current function node.
+  - Switch to JSONEE keyword state.
+- U+005B LEFT SQUARE BRACKET ([)
+  - Push the current input character onto the JSONEE nesting stack.
+  - Set the temporary buffer to the empty string.
+  - Create a new JSONEE get-element-at function node, set the node as the parent node of the current function node, and set the node as the current function node.
+  - Switch to JSON value state.
+- U+007D RIGHT CURLY BRACKET (})
+  - If the bottommost character on the JSONE nesting stack is U+007B LEFT CURLY BRACKET ({), pop the character off the JSONEE nesting stack.
+  - Otherwise, it is a bad-jsonee-variable-name parse error; Stop parsing.
+- Anything else
+  - If the JSONEE nesting stack is not empty, this is an bad-jsonee-name parse error; Stop parsing.
+  - Otherwise, if the temporary buffer is empty, this is an empty-jsonee-name parse error; Stop parsing.
+  - Otherwise,
+    - Set the string in the temporary buffer as the first argument of the current function node.
+    - Switch to return state.
+
+##### 3.2.5.13) PLAINTEXT state
 
 Consume the next input character:
 
@@ -3518,7 +3712,7 @@ Consume the next input character:
 - Anything else
   - Emit the current input character as a character token.
 
-##### 3.2.5.6) Tag open state
+##### 3.2.5.14) Tag open state
 
 Consume the next input character:
 
@@ -3535,7 +3729,7 @@ Consume the next input character:
 - Anything else
   - This is an invalid-first-character-of-tag-name parse error. Emit a U+003C LESS-THAN SIGN character token. Reconsume in the data state.
 
-##### 3.2.5.7) End tag open state
+##### 3.2.5.15) End tag open state
 
 Consume the next input character:
 
@@ -3548,7 +3742,7 @@ Consume the next input character:
 - Anything else
   - This is an invalid-first-character-of-tag-name parse error. Create a comment token whose data is the empty string. Reconsume in the bogus comment state.
 
-##### 3.2.5.8) Tag name state
+##### 3.2.5.16) Tag name state
 
 Consume the next input character:
 
@@ -3570,7 +3764,7 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current tag token's tag name.
 
-##### 3.2.5.9) RCDATA less-than sign state
+##### 3.2.5.17) RCDATA less-than sign state
 
 Consume the next input character:
 
@@ -3579,7 +3773,7 @@ Consume the next input character:
 - Anything else
   - Emit a U+003C LESS-THAN SIGN character token. Reconsume in the RCDATA state.
 
-##### 3.2.5.10 RCDATA end tag open state
+##### 3.2.5.18) RCDATA end tag open state
 
 Consume the next input character:
 
@@ -3588,7 +3782,7 @@ Consume the next input character:
 - Anything else
   - Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume in the RCDATA state.
 
-##### 3.2.5.11) RCDATA end tag name state
+##### 3.2.5.19) RCDATA end tag name state
 
 Consume the next input character:
 
@@ -3608,7 +3802,7 @@ Consume the next input character:
 - Anything else
   - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the RCDATA state.
 
-##### 3.2.5.12) RAWTEXT less-than sign state
+##### 3.2.5.20) RAWTEXT less-than sign state
 
 Consume the next input character:
 
@@ -3617,7 +3811,7 @@ Consume the next input character:
 - Anything else
   - Emit a U+003C LESS-THAN SIGN character token. Reconsume in the RAWTEXT state.
 
-##### 3.2.5.13) RAWTEXT end tag open state
+##### 3.2.5.21) RAWTEXT end tag open state
 
 Consume the next input character:
 
@@ -3626,7 +3820,7 @@ Consume the next input character:
 - Anything else
   - Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume in the RAWTEXT state.
 
-##### 3.2.5.14) RAWTEXT end tag name state
+##### 3.2.5.22) RAWTEXT end tag name state
 
 Consume the next input character:
 
@@ -3646,7 +3840,7 @@ Consume the next input character:
 - Anything else
   - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the RAWTEXT state.
 
-##### 3.2.5.15) Template data less-than sign state
+##### 3.2.5.23) Template data less-than sign state
   
 Consume the next input character:
 
@@ -3657,7 +3851,7 @@ Consume the next input character:
 
 Differ from HTML script data less-than sign state:
 
-##### 3.2.5.16) Template data end tag open state
+##### 3.2.5.24) Template data end tag open state
   
 Consume the next input character:
 
@@ -3666,7 +3860,7 @@ Consume the next input character:
 - Anything else
   - Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume in the template data state.
 
-##### 3.2.5.17) Template data end tag name state
+##### 3.2.5.25) Template data end tag name state
   
 Consume the next input character:
 
@@ -3686,7 +3880,7 @@ Consume the next input character:
 - Anything else
   - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the template data state.
 
-##### 3.2.5.18) JSONTEXT state
+##### 3.2.5.26) JSONTEXT state
 
 Consume the next input character:
 
@@ -3705,7 +3899,7 @@ Consume the next input character:
 - U+0024 DOLLAR SIGN ($)
 - U+007B LEFT CURLY BRACKET ({)
 - U+005B LEFT SQUARE BRACKET ([)
-  - Reconsume in the JSONTEXT value state.
+  - Reconsume in the JSON value state.
 - U+0000 NULL
   - This is an unexpected-null-character parse error; Stop parsing.
 - EOF
@@ -3713,7 +3907,7 @@ Consume the next input character:
 - Anything else
   - This is a bad-json parse error; Stop parsing.
 
-##### 3.2.5.19) JSONTEXT JSON finished state
+##### 3.2.5.27) JSONTEXT JSON finished state
 
 Consume the next input character:
 
@@ -3732,7 +3926,7 @@ Consume the next input character:
 - Anything else
   - This is a unexpected-character parse error; Stop parsing.
 
-##### 3.2.5.20) JSONTEXT less-than sign state
+##### 3.2.5.28) JSONTEXT less-than sign state
 
 Consume the next input character:
 
@@ -3743,7 +3937,7 @@ Consume the next input character:
 - Anything else
   - This is a bad-tag-name parse error.
 
-##### 3.2.5.21) JSONTEXT end tag open state
+##### 3.2.5.29) JSONTEXT end tag open state
 
 Consume the next input character:
 
@@ -3752,7 +3946,7 @@ Consume the next input character:
 - Anything else
   - This is a bad-stag-name parse error.
 
-##### 3.2.5.22) JSONTEXT end tag name state
+##### 3.2.5.30) JSONTEXT end tag name state
 
 Consume the next input character:
 
@@ -3776,7 +3970,7 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current tag token's tag name.
 
-##### 3.2.5.23) JSONTEXT value state
+##### 3.2.5.31) JSON value state
 
 Consume the next input character:
 
@@ -3787,28 +3981,28 @@ Consume the next input character:
   - Ignore the character.
 - ASCII lower alpha
   - Set the temporary buffer to the empty string.
-  - Reconsume in the JSONTEXT keyword state.
+  - Reconsume in the JSON keyword state.
 - ASCII digit
 - U+002D HYPHEN-MINUS (-)
   - Set the temporary buffer to the empty string.
-  - Reconsume in the JSONTEXT number state.
+  - Reconsume in the JSON number state.
 - U+0022 QUOTATION MARK (")
   - Emit the current input character as a character token.
-  - Switch to the JSONTEXT string state.
+  - Switch to the JSON string state.
 - U+0024 DOLLAR SIGN ($)
   - Set the temporary buffer to the empty string.
   - Reconsume in the JSONEE state.
 - U+007B LEFT CURLY BRACKET ({)
   - Emit the current input character as a character token.
   - Push the current input character onto the JSON nesting stack.
-  - Switch to the JSONTEXT object key name state.
+  - Switch to the JSON object key name state.
 - U+005B LEFT SQUARE BRACKET ([)
   - Push the character onto the JSON nesting stack.
   - Emit the current input character as a character token.
 - U+002C COMMA (,)
   - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({)
     - Emit the current input character as a character token.
-    - Switch to JSONTEXT object key name state
+    - Switch to JSON object key name state
   - Otherwise, if the bottommost character on the JSON nesting stack is U+005B LEFT SQUARE BRACKET ([)
     - Emit the current input character as a character token.
   - Otherwise
@@ -3826,7 +4020,7 @@ Consume the next input character:
 - Anything else
   - This is a bad-json parse error.
 
-##### 3.2.5.24) JSONTEXT after value state
+##### 3.2.5.32) JSON after value state
 
 Consume the next input character:
 
@@ -3838,28 +4032,28 @@ Consume the next input character:
 - U+002C COMMA (,)
   - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({)
     - Emit the current input character as a character token.
-    - Switch to JSONTEXT object key name state.
+    - Switch to JSON object key name state.
   - Otherwise, if the bottommost character on the JSON nesting stack is U+005B LEFT SQUARE BRACKET ([)
     - Emit the current input character as a character token.
-    - Switch to JSONTEXT value state.
+    - Switch to JSON value state.
   - Otherwise
     - This is a bad-json parse error. Stop parsing.
-- U+007D LEFT CURLY BRACKET (})
+- U+007D RIGHT CURLY BRACKET (})
   - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({)
     - Emit the current input character as a character token.
     - Pop the character off the JSON nesting stack.
-    - If the JSON nesting stack is empty, switch to JSONTEXT JSON finished state.
+    - If the JSON nesting stack is empty, switch to JSON JSON finished state.
   - Otherwise it is a bad-json parse error; Stop parsing.
 - U+005D RIGHT SQUARE BRACKET (])
   - If the bottommost character on the JSON nesting stack is U+005B LEFT SQUARE BRACKET ([)
     - Emit the current input character as a character token.
     - Pop the character off the JSON nesting stack.
-    - If the JSON nesting stack is empty, switch to JSONTEXT JSON finished state.
+    - If the JSON nesting stack is empty, switch to JSON JSON finished state.
   - Otherwise it is a bad-json parse error; Stop parsing.
 - Anything else
   - This is a bad-json parse error.
 
-##### 3.2.5.25) JSONTEXT keyword state
+##### 3.2.5.33) JSON keyword state
 
 Consume the next input character:
 
@@ -3870,14 +4064,14 @@ Consume the next input character:
   - Ignore the character.
   - If the temporary buffer is the string "true", "false", or "null"
      - Emit the characters in the temporary buffer as a character tokens (in the order they were added to the buffer). 
-     - If the JSON nesting stack is empty, switch to the JSONTEXT JSON finished state. Otherwise, switch to the JSONTEXT after value state. 
+     - If the JSON nesting stack is empty, switch to the JSON JSON finished state. Otherwise, switch to the JSON after value state. 
   - Otherwise, treat it as per the "anything else" entry below.
 - ASCII lower alpha
   - Append the current input character to the temporary buffer.
 - Anything else
   - This is an unexpected-json-keyword parse error; Stop parsing.
 
-##### 3.2.5.26) JSONTEXT number state
+##### 3.2.5.34) JSON number state
 
 Consume the next input character:
 
@@ -3890,17 +4084,17 @@ Consume the next input character:
     - It is a bad-json-number parse error; Stop parsing.
   - Otherwise:
     - Emit the characters in the temporary buffer as character tokens (in the order they were added to the buffer).
-    - If the JSON nesting stack is empty, switch to the JSONTEXT JSON finished state. Otherwise, switch to the JSONTEXT after value state.
+    - If the JSON nesting stack is empty, switch to the JSON JSON finished state. Otherwise, switch to the JSON after value state.
 - U+002D HYPHEN-MINUS (-)
   - Append the current input character to the temporary buffer.
-  - Switch to the JSONTEXT number integer state.
+  - Switch to the JSON number integer state.
 - ASCII digit
-  - Reconsume in the JSONTEXT number integer state.
+  - Reconsume in the JSON number integer state.
 - Anything else
   - This is an unexpected-json-number parse error.
   - Ignore the character.
 
-##### 3.2.5.27) JSONTEXT number integer state
+##### 3.2.5.35) JSON number integer state
 
 Consume the next input character:
 
@@ -3909,21 +4103,21 @@ Consume the next input character:
 - U+000C FORM FEED (FF)
 - U+0020 SPACE
   - Ignore the character.
-  - Recosume in the JSONTEXT number state.
+  - Recosume in the JSON number state.
 - ASCII digit
   - Append the current input character to the temporary buffer.
 - U+0045 LATIN CAPITAL LETTER E (E)
 - U+0065 LATIN SMALL LETTER E (e)
   - Append the current U+0045 LATIN CAPITAL LETTER E (E) to the temporary buffer.
-  - Switch to the JSONTEXT number exponent state.
+  - Switch to the JSON number exponent state.
 - U+002E FULL STOP (.)
   - Append the current input character to the temporary buffer.
-  - Switch to the JSONTEXT number fraction state.
+  - Switch to the JSON number fraction state.
 - Anything else
   - This is an unexpected-json-number-integer parse error.
   - Ignore the character.
 
-##### 3.2.5.28) JSONTEXT number fraction state
+##### 3.2.5.36) JSON number fraction state
 
 Consume the next input character:
 
@@ -3931,7 +4125,7 @@ Consume the next input character:
 - U+000A LINE FEED (LF)
 - U+000C FORM FEED (FF)
 - U+0020 SPACE
-  - Recosume in the JSONTEXT number state.
+  - Recosume in the JSON number state.
 - ASCII digit
   - Append the current input character to the temporary buffer.
 - U+0045 LATIN CAPITAL LETTER E (E)
@@ -3939,12 +4133,12 @@ Consume the next input character:
   - If last character in the temporary buffer is U+002E FULL STOP (.), treat it as per the "anything else" entry below.
   - Otherwise:
     - Append the current U+0045 LATIN CAPITAL LETTER E (E) to the temporary buffer.
-    - Switch to the JSONTEXT number exponent state.
+    - Switch to the JSON number exponent state.
 - Anything else
   - This is an unexpected-json-number-fraction parse error.
   - Ignore the character.
 
-##### 3.2.5.29) JSONTEXT number exponent state
+##### 3.2.5.37) JSON number exponent state
 
 Consume the next input character:
 
@@ -3952,17 +4146,17 @@ Consume the next input character:
 - U+000A LINE FEED (LF)
 - U+000C FORM FEED (FF)
 - U+0020 SPACE
-  - Recosume in the JSONTEXT number state.
+  - Recosume in the JSON number state.
 - ASCII digit
-  - Reconsume in the JSONTEXT number exponent integer state.
+  - Reconsume in the JSON number exponent integer state.
 - U+002B PLUS SIGN (+)
 - U+002D HYPHEN-MINUS (-)
   - Append the current input character to the temporary buffer.
-  - Switch to the JSONTEXT number exponent integer state.
+  - Switch to the JSON number exponent integer state.
 - Anything else
   - This is an unexpected-json-number-exponent parse error.
 
-##### 3.2.5.30) JSONTEXT number exponent integer state
+##### 3.2.5.38) JSON number exponent integer state
 
 Consume the next input character:
 
@@ -3970,13 +4164,13 @@ Consume the next input character:
 - U+000A LINE FEED (LF)
 - U+000C FORM FEED (FF)
 - U+0020 SPACE
-  - Recosume in the JSONTEXT number state.
+  - Recosume in the JSON number state.
 - ASCII digit
   - Append the current input character to the temporary buffer.
 - Anything else
   - This is an unexpected-json-number-exponent parse error.
 
-##### 3.2.5.31) JSONTEXT object key name state
+##### 3.2.5.39) JSON object key name state
 
 Consume the next input character:
 
@@ -3988,11 +4182,11 @@ Consume the next input character:
 - U+0022 QUOTATION MARK (")
   - Emit the current input character as a character token.
   - Push U+003A COLON (:) character onto the JSON nesting stack.
-  - Switch to the JSONTEXT string state.
+  - Switch to the JSON string state.
 - Anything else
   - This is an unexpected-json-key-name parse error. Stop parsing.
 
-##### 3.2.5.32) JSONTEXT after object key name state
+##### 3.2.5.40) JSON after object key name state
 
 - U+0009 CHARACTER TABULATION (tab)
 - U+000A LINE FEED (LF)
@@ -4002,25 +4196,25 @@ Consume the next input character:
 - U+003A COLON (:)
   - Pop the bottommost character (it must be U+003A COLON (:)) off the JSON nesting stack.
   - Emit the current input character as a character token.
-  - Switch to the JSONTEXT value state.
+  - Switch to the JSON value state.
 - Anything else
     - It is a bad-json-a-colon-expected parse error; Stop parsing.
 
-##### 3.2.5.33) JSONTEXT string state
+##### 3.2.5.41) JSON string state
 
 Consume the next input character:
 
 - U+0024 DOLLAR SIGN ($)
-  - Set the return state to the JSONTEXT string state.
+  - Set the return state to the JSON string state.
   - Recosume the character in the JSONEE state.
 - U+005C BACKSLASH (\\)
-  - Set the return state to the JSONTEXT string state.
-  - Switch to JSONTEXT string escape state.
+  - Set the return state to the JSON string state.
+  - Switch to JSON string escape state.
 - U+0022 QUOTATION MARK (")
   - Emit the current input character as a character token.
-  - If the JSON nesting stack is empty, switch to the JSONTEXT JSON finished state. Otherwise,
-    - If the bottommost character on the JSON nesting statck is U+003A COLON (:), then pop the bottomost character off the JSON nesting stack and switch to the JSONTEXT after object key name state.
-    - Otherwise, switch to JSONTEXT after value state.
+  - If the JSON nesting stack is empty, switch to the JSON JSON finished state. Otherwise,
+    - If the bottommost character on the JSON nesting statck is U+003A COLON (:), then pop the bottomost character off the JSON nesting stack and switch to the JSON after object key name state.
+    - Otherwise, switch to JSON after value state.
 - U+0000 NULL
   - This is an unexpected-null-character parse error; Stop parsing.
 - EOF
@@ -4028,13 +4222,13 @@ Consume the next input character:
 - Anything else
   - Emit the current input character as a character token.
 
-##### 3.2.5.34) JSONTEXT string escape state
+##### 3.2.5.42) JSON string escape state
 
 Consume the next input character:
 
 - U+0024 DOLLAR SIGN ($)
   - Emit the current input character as a character token.
-  - Switch to JSONTEXT string state.
+  - Switch to JSON string state.
 - U+005C BACKSLASH (\\)
 - U+005C SOLIDUS (/)
 - U+0022 QUOTATION MARK (")
@@ -4044,14 +4238,14 @@ Consume the next input character:
 - U+0072 LATIN SMALL LETTTER R (r)
 - U+0074 LATIN SMALL LETTTER R (t)
   - Emit a U+005C BACKSLASH (\\) character token and emit the current input character as a character token.
-  - Switch to JSONTEXT string state.
+  - Switch to JSON string state.
 - U+0075 LATIN SMALL LETTTER U (u)
   - Set the temporary buffer to the empty string.
   - Switch to JSONTEXt string escape four hexadecimal digits state.
 - Anything else
   - It is a bad-json-string-escape-entity parse error; Stop parsing.
 
-##### 3.2.5.35) JSONTEXT string escape four hexadecimal digits state
+##### 3.2.5.43) JSON string escape four hexadecimal digits state
 
 Consume the next input character:
 
@@ -4060,11 +4254,11 @@ Consume the next input character:
   - If there are four characters in the temporay buffer:
     - Emit a U+005C BACKSLASH (\\) character token and a U+0075 LATIN SMALL LETTTER U (u) character token.
     - Emit the characters in the temporary buffer as character tokens (in the order they were added to the buffer).
-    - Switch to JSONTEXT string state.
+    - Switch to JSON string state.
 - Anything else
   - It is a bad-json-string-escape-entity parse error; Stop parsing.
 
-##### 3.2.5.36) Before attribute name state
+##### 3.2.5.44) Before attribute name state
   
 Consume the next input character:
 
@@ -4082,7 +4276,7 @@ Consume the next input character:
 - Anything else
   - Start a new attribute in the current tag token. Set that attribute name and value to the empty string. Reconsume in the attribute name state.
 
-##### 3.2.5.37) Attribute name state
+##### 3.2.5.45) Attribute name state
   
 Consume the next input character:
 
@@ -4123,7 +4317,7 @@ When the parser leaves the attribute name state (and before emitting the tag tok
 __NOTE__  
 If an attribute is so removed from a token, it, and the value that gets associated with it, if any, are never subsequently used by the parser, and are therefore effectively discarded. Removing the attribute in this way does not change its status as the "current attribute" for the purposes of the tokenizer, however.
 
-##### 3.2.5.38) Special attribute operator in attribute name state
+##### 3.2.5.46) Special attribute operator in attribute name state
 
 Consume the next input character:
 
@@ -4134,7 +4328,7 @@ Consume the next input character:
   - Append each of the character in the temporary buffer to the current attribute's name.
   - Reconsume in the attribute name state.
 
-##### 3.2.5.39) After attribute name state
+##### 3.2.5.47) After attribute name state
 
 Consume the next input character:
 
@@ -4168,7 +4362,7 @@ Consume the next input character:
   - Otherwise:
     - Start a new attribute in the current tag token. Set that attribute name and value to the empty string. Reconsume in the attribute name state.
 
-##### 3.2.5.40) Special attribute operator after attribute name state
+##### 3.2.5.48) Special attribute operator after attribute name state
 
 Consume the next input character:
 
@@ -4180,7 +4374,7 @@ Consume the next input character:
   - Append each of the character in the temporary buffer to the current attribute's name.
   - Reconsume in the attribute name state.
 
-##### 3.2.5.41) Before attribute value state
+##### 3.2.5.49) Before attribute value state
   
 Consume the next input character:
 
@@ -4198,7 +4392,7 @@ Consume the next input character:
 - Anything else
   - Reconsume in the attribute value (unquoted) state.
 
-##### 3.2.5.42) Attribute value (double-quoted) state
+##### 3.2.5.50) Attribute value (double-quoted) state
   
 Consume the next input character:
 
@@ -4213,7 +4407,7 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current attribute's value.
 
-##### 3.2.5.43) Attribute value (single-quoted) state
+##### 3.2.5.52) Attribute value (single-quoted) state
   
 Consume the next input character:
 
@@ -4228,7 +4422,7 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current attribute's value.
 
-##### 3.2.5.44) Attribute value (unquoted) state
+##### 3.2.5.53) Attribute value (unquoted) state
   
 Consume the next input character:
 
@@ -4254,7 +4448,7 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current attribute's value.
 
-##### 3.2.5.46) After attribute value (quoted) state
+##### 3.2.5.54) After attribute value (quoted) state
   
 Consume the next input character:
 
@@ -4272,7 +4466,7 @@ Consume the next input character:
 - Anything else
   - This is a missing-whitespace-between-attributes parse error. Reconsume in the before attribute name state.
 
-##### 3.2.5.47) Self-closing start tag state
+##### 3.2.5.55) Self-closing start tag state
   
 Consume the next input character:
 
@@ -4283,7 +4477,7 @@ Consume the next input character:
 - Anything else
   - This is an unexpected-solidus-in-tag parse error. Reconsume in the before attribute name state.
 
-##### 3.2.5.48) Bogus comment state
+##### 3.2.5.56) Bogus comment state
   
 Consume the next input character:
 
@@ -4296,7 +4490,7 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the comment token's data.
 
-##### 3.2.5.49) Markup declaration open state
+##### 3.2.5.57) Markup declaration open state
   
 If the next few characters are:
 
@@ -4309,7 +4503,7 @@ If the next few characters are:
 - Anything else
   - This is an incorrectly-opened-comment parse error. Create a comment token whose data is the empty string. Switch to the bogus comment state (don't consume anything in the current state).
 
-##### 3.2.5.50) Comment start state
+##### 3.2.5.58) Comment start state
 
 Consume the next input character:
 
@@ -4320,7 +4514,7 @@ Consume the next input character:
 - Anything else
   - Reconsume in the comment state.
 
-##### 3.2.5.51) Comment start dash state
+##### 3.2.5.59) Comment start dash state
   
 Consume the next input character:
 
@@ -4333,7 +4527,7 @@ Consume the next input character:
 - Anything else
   - Append a U+002D HYPHEN-MINUS character (-) to the comment token's data. Reconsume in the comment state.
 
-##### 3.2.5.52) Comment state
+##### 3.2.5.60) Comment state
   
 Consume the next input character:
 
@@ -4348,7 +4542,7 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the comment token's data.
 
-##### 3.2.5.53) Comment less-than sign state
+##### 3.2.5.61) Comment less-than sign state
   
 Consume the next input character:
 
@@ -4359,7 +4553,7 @@ Consume the next input character:
 - Anything else
   - Reconsume in the comment state.
 
-##### 3.2.5.54) Comment less-than sign bang state
+##### 3.2.5.62) Comment less-than sign bang state
   
 Consume the next input character:
 
@@ -4368,7 +4562,7 @@ Consume the next input character:
 - Anything else
   - Reconsume in the comment state.
 
-##### 3.2.5.55) Comment less-than sign bang dash state
+##### 3.2.5.63) Comment less-than sign bang dash state
   
 Consume the next input character:
 
@@ -4377,7 +4571,7 @@ Consume the next input character:
 - Anything else
   - Reconsume in the comment end dash state.
 
-##### 3.2.5.56) Comment less-than sign bang dash dash state
+##### 3.2.5.64) Comment less-than sign bang dash dash state
   
 Consume the next input character:
 
@@ -4387,7 +4581,7 @@ Consume the next input character:
 - Anything else
   - This is a nested-comment parse error. Reconsume in the comment end state.
 
-##### 3.2.5.57) Comment end dash state
+##### 3.2.5.65) Comment end dash state
   
 Consume the next input character:
 
@@ -4398,7 +4592,7 @@ Consume the next input character:
 - Anything else
   - Append a U+002D HYPHEN-MINUS character (-) to the comment token's data. Reconsume in the comment state.
 
-##### 3.2.5.58) Comment end state
+##### 3.2.5.66) Comment end state
   
 Consume the next input character:
 
@@ -4413,7 +4607,7 @@ Consume the next input character:
 - Anything else
   - Append two U+002D HYPHEN-MINUS characters (-) to the comment token's data. Reconsume in the comment state.
 
-##### 3.2.5.59) Comment end bang state
+##### 3.2.5.67) Comment end bang state
   
 Consume the next input character:
 
@@ -4426,7 +4620,7 @@ Consume the next input character:
 - Anything else
   - Append two U+002D HYPHEN-MINUS characters (-) and a U+0021 EXCLAMATION MARK character (!) to the comment token's data. Reconsume in the comment state.
 
-##### 3.2.5.60) DOCTYPE state
+##### 3.2.5.68) DOCTYPE state
   
 Consume the next input character:
 
@@ -4442,7 +4636,7 @@ Consume the next input character:
 - Anything else
   - This is a missing-whitespace-before-doctype-name parse error. Reconsume in the before DOCTYPE name state.
 
-##### 3.2.5.61) Before DOCTYPE name state
+##### 3.2.5.69) Before DOCTYPE name state
 
 Consume the next input character:
 
@@ -4462,7 +4656,7 @@ Consume the next input character:
 - Anything else
   - Create a new DOCTYPE token. Set the token's name to the current input character. Switch to the DOCTYPE name state.
 
-##### 3.2.5.62) DOCTYPE name state
+##### 3.2.5.70) DOCTYPE name state
 
 Consume the next input character:
 
@@ -4482,7 +4676,7 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current DOCTYPE token's name.
 
-##### 3.2.5.63) After DOCTYPE name state
+##### 3.2.5.71) After DOCTYPE name state
 
 Consume the next input character:
 
@@ -4500,7 +4694,7 @@ Consume the next input character:
   - Otherwise, if the six characters starting from the current input character are an ASCII case-insensitive match for the word "SYSTEM", then consume those characters and switch to the after DOCTYPE system keyword state.
   - Otherwise, this is an invalid-character-sequence-after-doctype-name parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
 
-##### 3.2.5.64) After DOCTYPE public keyword state
+##### 3.2.5.72) After DOCTYPE public keyword state
 
 Consume the next input character:
 
@@ -4520,7 +4714,7 @@ Consume the next input character:
 - Anything else
   - This is a missing-quote-before-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
 
-##### 3.2.5.65) Before DOCTYPE public identifier state
+##### 3.2.5.73) Before DOCTYPE public identifier state
 
 Consume the next input character:
 
@@ -4540,7 +4734,7 @@ Consume the next input character:
 - Anything else
   - This is a missing-quote-before-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
 
-##### 3.2.5.66) DOCTYPE public identifier (double-quoted) state
+##### 3.2.5.74) DOCTYPE public identifier (double-quoted) state
 
 Consume the next input character:
 
@@ -4555,7 +4749,7 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current DOCTYPE token's public identifier.
 
-##### 3.2.5.67) DOCTYPE public identifier (single-quoted) state
+##### 3.2.5.75) DOCTYPE public identifier (single-quoted) state
 
 Consume the next input character:
 
@@ -4570,7 +4764,7 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current DOCTYPE token's public identifier.
 
-##### 3.2.5.68) After DOCTYPE public identifier state
+##### 3.2.5.76) After DOCTYPE public identifier state
 
 Consume the next input character:
 
@@ -4590,7 +4784,7 @@ Consume the next input character:
 - Anything else
   - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
 
-##### 3.2.5.69) Between DOCTYPE public identifier and system information state
+##### 3.2.5.77) Between DOCTYPE public identifier and system information state
 
 Consume the next input character:
 
@@ -4610,7 +4804,7 @@ Consume the next input character:
 - Anything else
   - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
 
-##### 3.2.5.70) After DOCTYPE system keyword state
+##### 3.2.5.78) After DOCTYPE system keyword state
 
 Consume the next input character:
 
@@ -4630,7 +4824,7 @@ Consume the next input character:
 - Anything else
   - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
 
-##### 3.2.5.71) Before DOCTYPE system information state
+##### 3.2.5.79) Before DOCTYPE system information state
 
 Consume the next input character:
 
@@ -4650,7 +4844,7 @@ Consume the next input character:
 - Anything else
   - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
 
-##### 3.2.5.72) DOCTYPE system information (double-quoted) state
+##### 3.2.5.80) DOCTYPE system information (double-quoted) state
 
 Consume the next input character:
 
@@ -4665,7 +4859,7 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current DOCTYPE token's system information.
 
-##### 3.2.5.73) DOCTYPE system information (single-quoted) state
+##### 3.2.5.81) DOCTYPE system information (single-quoted) state
 
 Consume the next input character:
 
@@ -4680,7 +4874,7 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current DOCTYPE token's system information.
 
-##### 3.2.5.74) After DOCTYPE system information state
+##### 3.2.5.82) After DOCTYPE system information state
 
 Consume the next input character:
 
@@ -4696,7 +4890,7 @@ Consume the next input character:
 - Anything else
   - This is an unexpected-character-after-doctype-system-identifier parse error. Reconsume in the bogus DOCTYPE state. (This does not set the DOCTYPE token's force-quirks flag to on.)
 
-##### 3.2.5.75) Bogus DOCTYPE state
+##### 3.2.5.83) Bogus DOCTYPE state
 
 Consume the next input character:
 
@@ -4709,7 +4903,7 @@ Consume the next input character:
 - Anything else
   - Ignore the character.
 
-##### 3.2.5.76) CDATA section state
+##### 3.2.5.84) CDATA section state
 
 Consume the next input character:
 
@@ -4723,7 +4917,7 @@ Consume the next input character:
 __NOTE__  
 U+0000 NULL characters are handled in the tree construction stage, as part of the in foreign content insertion mode, which is the only place where CDATA sections can appear.
 
-##### 3.2.5.77) CDATA section bracket state
+##### 3.2.5.85) CDATA section bracket state
 
 Consume the next input character:
 
@@ -4732,7 +4926,7 @@ Consume the next input character:
 - Anything else
   - Emit a U+005D RIGHT SQUARE BRACKET character token. Reconsume in the CDATA section state.
 
-##### 3.2.5.78) CDATA section end state
+##### 3.2.5.86) CDATA section end state
 
 Consume the next input character:
 
@@ -4743,7 +4937,7 @@ Consume the next input character:
 - Anything else
   - Emit two U+005D RIGHT SQUARE BRACKET character tokens. Reconsume in the CDATA section state.
 
-##### 3.2.5.79) Character reference state
+##### 3.2.5.87) Character reference state
 
 Set the temporary buffer to the empty string. Append a U+0026 AMPERSAND (&) character to the temporary buffer. Consume the next input character:
 
@@ -4754,7 +4948,7 @@ Set the temporary buffer to the empty string. Append a U+0026 AMPERSAND (&) char
 - Anything else
   - Flush code points consumed as a character reference. Reconsume in the return state.
 
-##### 3.2.5.80) Named character reference state
+##### 3.2.5.88) Named character reference state
 
 Consume the maximum number of characters possible, where the consumed characters are one of the identifiers in the first column of the named character references table. Append each character to the temporary buffer when it's consumed.
 
@@ -4771,7 +4965,7 @@ _EXAMPLE_ If the markup contains (not in an attribute) the string I'm &notit; I 
 
 However, if the markup contains the string I'm &notit; I tell you in an attribute, no character reference is parsed and string remains intact (and there is no parse error).
 
-##### 3.2.5.81) Ambiguous ampersand stat
+##### 3.2.5.89) Ambiguous ampersand stat
 
 Consume the next input character:
 
@@ -4782,7 +4976,7 @@ Consume the next input character:
 - Anything else
   - Reconsume in the return state.
 
-##### 3.2.5.82) Numeric character reference state
+##### 3.2.5.90) Numeric character reference state
 
 Set the character reference code to zero (0).
 
@@ -4794,7 +4988,7 @@ Consume the next input character:
 - Anything else
   - Reconsume in the decimal character reference start state.
 
-##### 3.2.5.83) Hexadecimal character reference start state
+##### 3.2.5.91) Hexadecimal character reference start state
 
 Consume the next input character:
 
@@ -4803,7 +4997,7 @@ Consume the next input character:
 - Anything else
   - This is an absence-of-digits-in-numeric-character-reference parse error. Flush code points consumed as a character reference. Reconsume in the return state.
 
-##### 3.2.5.84) Decimal character reference start state
+##### 3.2.5.92) Decimal character reference start state
 
 Consume the next input character:
 
@@ -4812,7 +5006,7 @@ Consume the next input character:
 - Anything else
   - This is an absence-of-digits-in-numeric-character-reference parse error. Flush code points consumed as a character reference. Reconsume in the return state.
 
-##### 3.2.5.85) Hexadecimal character reference state
+##### 3.2.5.93) Hexadecimal character reference state
 
 Consume the next input character:
 
@@ -4827,7 +5021,7 @@ Consume the next input character:
 - Anything else
   - This is a missing-semicolon-after-character-reference parse error. Reconsume in the numeric character reference end state.
 
-##### 3.2.5.86) Decimal character reference state
+##### 3.2.5.94) Decimal character reference state
 
 Consume the next input character:
 
@@ -4838,7 +5032,7 @@ Consume the next input character:
 - Anything else
   - This is a missing-semicolon-after-character-reference parse error. Reconsume in the numeric character reference end state.
 
-##### 3.2.5.87) Numeric character reference end state
+##### 3.2.5.95) Numeric character reference end state
 
 Check the character reference code:
 
