@@ -76,10 +76,9 @@ All Rights Reserved.
          - [3.1.2.5) 可选标签](#3125-可选标签)
          - [3.1.2.6) 裸文本元素和可转义裸文本元素的内容限制](#3126-裸文本元素和可转义裸文本元素的内容限制)
          - [3.1.2.7) JSON 文本和 JSON 属性值](#3127-json-文本和-json-属性值)
-         - [3.1.2.8) JSON 求值树/JSON Evaluation Tree](#3128-json-求值树json-evaluation-tree)
+         - [3.1.2.8) JSONEE 的语法/Syntax of JSONEE](#3128-jsonee-的语法syntax-of-jsonee)
       * [3.1.3) 文本/Text](#313-文本text)
          - [3.1.3.1) 新行/Newlines](#3131-新行newlines)
-         - [3.1.3.2) JSON 求值表达式的语法](#3132-json-求值表达式的语法)
       * [3.1.4) 字符引用/Character references](#314-字符引用character-references)
       * [3.1.5) CDATA 段落/CDATA sections](#315-cdata-段落cdata-sections)
       * [3.1.6) 注释/Comments](#316-注释comments)
@@ -92,8 +91,9 @@ All Rights Reserved.
          - [3.2.4.2) 开放元素栈/The stack of open elements](#3242-开放元素栈the-stack-of-open-elements)
          - [3.2.4.3) JSON 嵌套栈/The JSON nesting stack](#3243-json-嵌套栈the-json-nesting-stack)
          - [3.2.4.4) JSONEE 嵌套栈/The JSONEE nesting stack](#3244-jsonee-嵌套栈the-jsonee-nesting-stack)
-         - [3.2.4.5) 元素指针](#3245-元素指针)
-         - [3.2.4.6) 其他解析状态标志/Other parsing state flags](#3246-其他解析状态标志other-parsing-state-flags)
+         - [3.2.4.5) JSON 求值树/JSON Evaluation Tree](#3245-json-求值树json-evaluation-tree)
+         - [3.2.4.6) 元素指针](#3246-元素指针)
+         - [3.2.4.7) 其他解析状态标志/Other parsing state flags](#3247-其他解析状态标志other-parsing-state-flags)
       * [3.2.5) 断词/Tokenization](#325-断词tokenization)
          - [3.2.5.1) Data state](#3251-data-state)
          - [3.2.5.2) RCDATA state](#3252-rcdata-state)
@@ -196,7 +196,6 @@ All Rights Reserved.
    + [4.1) 使用 HVML 开发传统 GUI 应用](#41-使用-hvml-开发传统-gui-应用)
    + [4.2) 云应用](#42-云应用)
 - [5) 总结](#5-总结)
-
 
 ## 1) 背景
 
@@ -975,6 +974,8 @@ HVML 定义的上下文变量可罗列如下：
 - 除上下文变量之外，变量名须符合一般的编程语言所定义的变量名规则，若使用正则表达式，可表达为：`/^[A-Za-z_][A-Za-z0-9_]*$/`。
 - 使用 `\`（反斜杠）字符用于 `$` 、`{`、`}`、`<`、`>` 等字符的转义。
 
+在本文档中，JSON 求值表达式被简称为 `JSONEE`。
+
 ### 2.2) 动作标签详解
 
 #### 2.2.1) `update` 标签
@@ -1178,7 +1179,7 @@ HVML 定义的上下文变量可罗列如下：
 使用 `on` 介词属性时，我们可以使用全局动态对象 `$_L` 构建一 JSON 求值表达式求值来确定匹配条件；当求值表达式返回 0、null、false、长度为零的字符串时，视作不匹配，反之视作匹配。比如就上述 HVML 代码中的匹配 `zh_CN` 的 `match` 标签，可以如下书写：
 
 ```html
-        <match on="$_L.STRCMP ('case', 'zh_CN', $?)" to="displace" with="#footer-cn" exclusively />
+        <match on="$_L.STRCMP('case', 'zh_CN', $?)" to="displace" with="#footer-cn" exclusively />
 ```
 
 使用 `for` 介词属性时，可以避免使用繁琐的 JSON 求职表达式，但要求 `test` 动作的结果必须是字符串或数值。其规则如下：
@@ -3061,9 +3062,7 @@ __是否考虑：__
 
 ##### 3.1.2.7) JSON 文本和 JSON 属性值
 
-HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为一个完整的 JSON 数据，其中可使用 JSON 求值表达式。
-
-需要说明的是，和裸文本不同，JSON 文本中可包含 `</` 字符，因为这些字符通常包含在双引号包裹的字符串中，如下所示：
+HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为一个完整的 JSON 表述（其中可使用 JSON 求值表达式）。如：
 
 ```html
 <init as="foo">
@@ -3074,55 +3073,55 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
 </init>
 ```
 
-另外，在动作元素的 `on` 属性值中指定操作数据时，我们亦可使用 JSON 数据，我们称之为 JSON 属性值：
+对这类元素内容，我们称为 JSON 文本，或简称 `JSONTEXT`。需要说明的是，和裸文本不同，JSON 文本中可包含 `</` 字符，因为这些字符通常包含在双引号包裹的 JSON 字符串中。
+
+另外，在动作元素的 `on`、`with` 等属性值中指定操作数据时，我们可直接使用 JSON 表述（其中可嵌入 JSON 求值表达式），如：
 
 ```html
 <choose on='[$foo, $bar, true, false, null]'>
 </choose>
 ```
 
-在本文档中，JSON 文本简称为 `JSONTEXT`，JSON 属性值简称为 `JSONATTR`，JSON 求值表达式简称为 `JSONEE`。
+对这类属性值，我们统称为 JSON 属性值（简称 `JSONATTR`）。
 
-##### 3.1.2.8) JSON 求值树/JSON Evaluation Tree
+在其他属性值中，我们可嵌入 JSON 表达式，如：
 
-如果我们将 JSON 格式中使用的 `{}`、`[]`、`:` 等字符理解为一个内部的对象和数组构造方法，则包含着 JSONEE 的 JSONTEXT 或者 JSONATTR 可被统一处理为 JSONEE。如下面的 JSONTEXT：
-
-```json
-    {
-        "tag": "li",
-        "children": [
-            {
-                "tag": $foo,
-                "children": null,
-            },
-            {
-                "tag": $bar,
-                "children": null,
-            }
-        ]
-    }
+```html
+<update on='$foo' value="foo-$bar" />
 ```
 
-对应的等价 JSON 求值表达式：
+在模板数据中，我们可嵌入 JSON 表达式，如：
 
-```
-$_JSON.mk_object (
-        $_JSON.mk_object_element ("tag", "li"), 
-        $_JSON.mk_object_element ("children", $_JSON.mk_array (
-                $_JSON.mk_object (
-                    $_JSON.mk_object_element ("tag", $foo),
-                    $_JSON.mk_object_element ("children", null)),
-                $_JSON.mk_object (
-                    $_JSON.mk_object_element ("tag", $bar),
-                    $_JSON.mk_object_element ("children", null))
-                )
-            )
-        )
+```html
+<archetype>
+    <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
+        <img class="avatar" src="$?.avatar" />
+        <span>$?.name</span>
+    </li>
+</archetype>
 ```
 
-故而，HVML 中的 JSONTEXT、JSONATTR 以及 JSONEE 将被解析成一个 JSON 求值树。
+##### 3.1.2.8) JSONEE 的语法/Syntax of JSONEE
 
-当一个 JSONEE 混杂在模板数据中时，或者一个属性值中时，这些字符串和求值表达式将构成一个字符串连接（concatenate）的求值方法，因此，本质上亦可构造为一个 JSON 求值树。
+一个合法的 JSON 表达式（`json_evaluation_expression`）需要符合如下的语法规则，且可递归使用：
+
+- `json_evaluation_expression`: `'$'<json_variable_addressing_expression> | '{$'<json_variable_addressing_expression>'}' | '{{$'<json_variable_addressing_expression>'}}'`
+- `extended_json`: 见 <https://www.json.org>；其中的 JSON value 可以是一个 JSON 求值表达式。
+- `json_variable_addressing_expression`：`<literal_variable_name>[<json_addressing_expression>, ...]`
+   - `literal_variable_name`：用于直接引用一个已命名的 JSON 数据。
+   - `json_addressing_expression`：用于引用一个 JSON 数据的子元素。
+- `json_expression`: `<json_evaluation_expression> | <extended_json>`
+- `json_addressing_expression`：
+   - `'.'<literal_key_name>'(' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] ')'` 用于在动态 JSON 对象上调用特定键名的 getter 方法。
+   - `'.'<literal_key_name>'<' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] '>'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
+   - `'.'<literal_key_name>` 用于引用一个 JSON 对象的键值。
+   - `'[' [white_space] <json_evaluation_expression> | <quoted_key_name> | <literal_integer> [white_space] ']'` 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。
+- `literal_variable_name`：`'?' | '@' | '#' | '%' | '@' | ':' | <literal_integer> | <literal_token>`。
+- `literal_key_name`：`<literal_token>`。
+- `literal_integer`：`/^[1-9][0-9]*$/`。
+- `literal_token`：`/^[A-Za-z_][A-Za-z0-9_]*$/`。
+- `quoted_key_name`: `'<literal_string>'` | `"<literal_string>"`。
+- `white_space`: `\u0020 | \u000A | \u000D | \u0009 `
 
 #### 3.1.3) 文本/Text
 
@@ -3133,30 +3132,6 @@ Text is allowed inside elements, attribute values, and comments. Extra constrain
 Newlines in HVML may be represented either as U+000D CARRIAGE RETURN (CR) characters, U+000A LINE FEED (LF) characters, or pairs of U+000D CARRIAGE RETURN (CR), U+000A LINE FEED (LF) characters in that order.
 
 Where character references are allowed, a character reference of a U+000A LINE FEED (LF) character (but not a U+000D CARRIAGE RETURN (CR) character) also represents a newline.
-
-##### 3.1.3.2) JSON 求值表达式的语法
-
-几乎所有元素的属性值以及文本内容中，可嵌入 JSON 求值表达式。
-
-一个合法的 JSON 表达式（`<json_evaluation_expression>`）需要符合如下的语法规则，且可递归使用：
-
-- `<json_evaluation_expression>`: `'$'<json_variable_addressing_expression> | '{$'<json_variable_addressing_expression>'}' | '{{$'<json_variable_addressing_expression>'}}'`
-- `<enhanced_json>`: 见 <https://www.json.org>；其中的 JSON value 可以是一个 JSON 求值表达式。
-- `<json_variable_addressing_expression>`：`<literal_variable_name>[<json_addressing_expression>, ...]`
-   - `<literal_variable_name>`：用于直接引用一个已命名的 JSON 数据。
-   - `<json_addressing_expression>`：用于引用一个 JSON 数据的子元素。
-- `<json_expression>`: `<json_evaluation_expression> | <enhanced_json>`
-- `<json_addressing_expression>`：
-   - `'.'<literal_key_name> <white_space> '('<json_expression>[, <json_expression>, ...]')'` 用于在动态 JSON 对象上调用特定键名的 getter 方法。
-   - `'.'<literal_key_name> <white_space> '<'<json_expression>[, <json_expression>, ...]'>'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
-   - `'.'<literal_key_name>` 用于引用一个 JSON 对象的键值。
-   - `<white_space> '['<json_evaluation_expression> | <quoted_key_name> | <literal_integer>']'` 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。当 JSON 表达式的返回值是数值时，强制转换为整数按索引值处理，其他情况下将 JSON 表达式按字符串处理，作为键名引用 JSON 对象的键值。
-- `<literal_variable_name>`：`'?' | '@' | '#' | '%' | '@' | ':' | <literal_integer> | <literal_token>`。
-- `<literal_key_name>`：`<literal_token>`。
-- `<literal_integer>`：`/^[1-9][0-9]*$/`。
-- `<literal_token>`：`/^[A-Za-z_][A-Za-z0-9_]*$/`。
-- `<quoted_key_name>`: `'<literal_string>'` | `"<literal_string>"`。
-- `<white_space>`: `\u0020 | \u000A | \u000D | \u0009 `
 
 #### 3.1.4) 字符引用/Character references
 
@@ -3317,17 +3292,127 @@ In the JSONEE state, the stack of the JSONEE nesting stack is empty. We store `{
 
 The stack grows downwards; the topmost character on the stack is the first one added to the stack, and the bottommost character of the stack is the most recently added node in the stack.
 
-如这个 JSON 求值表达式：`{{$_L.NOT ($_L.STRCMP ('case', $_SYSTEM.time ('%H:%m'), '00:00'))}}`，JSONEE 嵌套栈最长时包含如下字符：`{{((('`。
+如这个 JSON 求值表达式：`{{$_L.NOT($_L.STRCMP('case', $_SYSTEM.time('%H:%m'), '00:00'))}}`，JSONEE 嵌套栈最长时包含如下字符：`{{((('`。
 
 一个合法的 JSONEE 表达式，将被解析为一个 JSONEE 词法单元保存在 JSONTEXT 或者 RAWTEXT 文本中。
 
-##### 3.2.4.5) 元素指针
+##### 3.2.4.5) JSON 求值树/JSON Evaluation Tree
+
+如果我们将 JSON 格式中使用的 `{}`、`[]`、`:` 等字符理解为一个内部的对象和数组构造方法，则包含着 JSONEE 的 JSON 表达可被统一处理为 JSONEE。如下面的 JSON 表达：
+
+```json
+    {
+        "tag": "li",
+        "children": [
+            {
+                "tag": $foo,
+                "children": null,
+            },
+            {
+                "tag": $bar,
+                "children": null,
+            }
+        ]
+    }
+```
+
+对应如下的等价 JSON 求值表达式：
+
+```
+$_JSON.mk_object(
+    $_JSON.mk_object_element("tag", "li"), 
+    $_JSON.mk_object_element("children",
+        $_JSON.mk_array(
+            $_JSON.mk_object(
+                $_JSON.mk_object_element("tag", $foo),
+                $_JSON.mk_object_element("children", null)),
+            $_JSON.mk_object(
+                $_JSON.mk_object_element("tag", $bar),
+                $_JSON.mk_object_element("children", null))
+            )
+        )
+    )
+```
+
+在上例中，`$_JSON` 是一个假象的内部动态对象，用来构造 JSON 值。
+
+更进一步，我们还可以将 JSON 表述中混杂有 JSONEE 的字符串，或者支持嵌入 JSONEE 的属性值字符串、模板数据，看成是字面子字符串和 JSONEE 构成的字符串连接（concatenate）方法。如 `foo-$bar`，对应如下的等价 JSONEE：
+
+```
+$_JSON.mk_string("foo-", $bar)
+```
+
+对 JSONEE 中的 JSON 值定位部分，如 `$_TIMERS[0].id`，亦可转换为如下的 JSON 求值表达式：
+
+```
+$_JSON.get_element_at(
+    $_JSON.get_element_at(
+        $_JSON.get_variable(
+            "_TIMERS"),
+        0),
+    "id")
+```
+
+故而，我们可以将 JSONTEXT、JSONATTR 或者内嵌有 JSONEE 的字符串、模板数据，统一为单一形式，其中只有嵌套的函数调用关系，称为单调 JSONEE。如下面的 JSON 表达：
+
+```json
+{
+    "foo" : [ true, false, null ],
+    "bar" : "There is an JSONEE: $_L.NOT($_L.STRCMP('case', $_SYSTEM.time('%H:%m'), '00:00'))!",
+    "koo" : $_TIMERS[0].id,
+}
+```
+
+其等价的单调 JSONEE 为：
+
+```
+$_JSON.mk_object(
+    $_JSON.mk_object_element("foo",
+        $_JSON.mk_array( true, false, null )),
+    $_JSON.mk_object_element("bar",
+        $_JSON.mk_string(
+            "There is an JSONEE: ",
+            $_JSON.call_method(
+                $_JSON.get_element_at(
+                    $_JSON.get_variable(
+                        "_L"),
+                    "NOT"),
+                    $_JSON.call_method(
+                        $_JSON.get_element_at(
+                            $_JSON.get_variable(
+                                "_L"),
+                            "STRCMP"),
+                        'case',
+                        $_JSON.call_method(
+                            $_JSON.get_element_at(
+                                $_JSON.get_variable(
+                                    "_SYSTEM"),
+                                "time"),
+                            '%H:%m'),
+                        '00:00')
+                ),
+            "!")
+            ),
+    $_JSON.mk_object_element("koo",
+        $_JSON.get_element_at(
+            $_JSON.get_element_at(
+                $_JSON.get_variable(
+                    "_TIMERS"),
+                0),
+            "id")
+        )
+    )
+```
+
+有了这样的等价的单调 JSONEE 表达式，我们就可以构建求值树来处理所有的 JSON 相关文本。
+
+##### 3.2.4.6) 元素指针
 
 Initially, the head element pointer is null.
 
 Once a head element has been parsed (whether implicitly or explicitly) the head element pointer gets set to point to this node.
 
-##### 3.2.4.6) 其他解析状态标志/Other parsing state flags
+##### 3.2.4.7) 其他解析状态标志/Other parsing state flags
 
 The jsonee flag is set to "enabled" if an attribute value is double-quoted, and "disabled" otherwise.
 
