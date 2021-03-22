@@ -75,7 +75,7 @@ All Rights Reserved.
          - [3.1.2.4) 动作元素属性](#3124-动作元素属性)
          - [3.1.2.5) 可选标签](#3125-可选标签)
          - [3.1.2.6) 裸文本元素和可转义裸文本元素的内容限制](#3126-裸文本元素和可转义裸文本元素的内容限制)
-         - [3.1.2.7) JSONTEXT、JSONATTR 和 JSONSTRING](#3127-jsontextjsonattr-和-jsonstring)
+         - [3.1.2.7) JSONTEXT 和 JSONSTR](#3127-jsontext-和-jsonstr)
          - [3.1.2.8) JSONEE 的语法/Syntax of JSONEE](#3128-jsonee-的语法syntax-of-jsonee)
       * [3.1.3) 文本/Text](#313-文本text)
          - [3.1.3.1) 新行/Newlines](#3131-新行newlines)
@@ -203,6 +203,7 @@ All Rights Reserved.
    + [4.1) 使用 HVML 开发传统 GUI 应用](#41-使用-hvml-开发传统-gui-应用)
    + [4.2) 云应用](#42-云应用)
 - [5) 总结](#5-总结)
+
 
 ## 1) 背景
 
@@ -3067,7 +3068,7 @@ __是否考虑：__
 
 > The text in raw text and escapable raw text elements must not contain any occurrences of the string `</` (U+003C LESS-THAN SIGN, U+002F SOLIDUS) followed by a tag name started with an ASCII alpha letter and followed by one of U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), U+0020 SPACE, U+003E GREATER-THAN SIGN (`>`), or U+002F SOLIDUS (`/`).
 
-##### 3.1.2.7) JSONTEXT、JSONATTR 和 JSONSTRING
+##### 3.1.2.7) JSONTEXT 和 JSONSTR
 
 HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为一个完整的 JSON 表述（其中可使用 JSON 求值表达式）。如：
 
@@ -3089,9 +3090,9 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
 </choose>
 ```
 
-对这类属性值，我们统称为 JSON 属性值（简称 `JSONATTR`）。
+对这类属性，我们称为 JSON 属性（JSON Attribute`），JSON 属性值使用 JSONTEXT 表述。
 
-在其他属性值中，我们可嵌入 JSON 表达式，如：
+在其他的属性值中，我们可嵌入 JSON 表达式，如：
 
 ```html
 <update on='$foo' value="foo-$bar" />
@@ -3108,7 +3109,7 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
 </archetype>
 ```
 
-对这类可嵌入式 JSONEE 的属性值或者可嵌入式 JSONEE 的模板数据，我们简称为 `JSONSTRING`。
+对这类可嵌入式 JSONEE 的属性值或者可嵌入式 JSONEE 的模板数据，我们简称为 `JSONSTR`。
 
 ##### 3.1.2.8) JSONEE 的语法/Syntax of JSONEE
 
@@ -3326,16 +3327,16 @@ The stack grows downwards; the topmost character on the stack is the first one a
 对应如下的等价 JSON 求值表达式：
 
 ```
-$_JSON.mk_object(
-    $_JSON.mk_object_element("tag", "li"), 
-    $_JSON.mk_object_element("children",
-        $_JSON.mk_array(
-            $_JSON.mk_object(
-                $_JSON.mk_object_element("tag", $foo),
-                $_JSON.mk_object_element("children", null)),
-            $_JSON.mk_object(
-                $_JSON.mk_object_element("tag", $bar),
-                $_JSON.mk_object_element("children", null))
+$_JSON.make_object(
+    $_JSON.make_object_element("tag", "li"), 
+    $_JSON.make_object_element("children",
+        $_JSON.make_array(
+            $_JSON.make_object(
+                $_JSON.make_object_element("tag", $foo),
+                $_JSON.make_object_element("children", null)),
+            $_JSON.make_object(
+                $_JSON.make_object_element("tag", $bar),
+                $_JSON.make_object_element("children", null))
             )
         )
     )
@@ -3346,7 +3347,7 @@ $_JSON.mk_object(
 更进一步，我们还可以将 JSON 表述中混杂有 JSONEE 的字符串，或者支持嵌入 JSONEE 的属性值字符串、模板数据，看成是字面子字符串和 JSONEE 构成的字符串连接（concatenate）方法。如 `foo-$bar`，对应如下的等价 JSONEE：
 
 ```
-$_JSON.mk_string("foo-", $bar)
+$_JSON.concat_string("foo-", $bar)
 ```
 
 对 JSONEE 中的 JSON 值定位部分，如 `$_TIMERS[0].id`，亦可转换为如下的 JSON 求值表达式：
@@ -3360,7 +3361,7 @@ $_JSON.get_element_at(
     "id")
 ```
 
-故而，我们可以将 JSONTEXT、JSONATTR 或者内嵌有 JSONEE 的字符串、模板数据，统一为单一形式，其中只有嵌套的函数调用关系，称为单调 JSONEE。如下面的 JSON 表达：
+故而，我们可以将 JSONTEXT 或 JSONSTR 统一为单一形式，其中只有嵌套的函数调用关系，称为单调 JSONEE。如下面的 JSON 表达：
 
 ```json
 {
@@ -3373,11 +3374,11 @@ $_JSON.get_element_at(
 其等价的单调 JSONEE 为：
 
 ```
-$_JSON.mk_object(
-    $_JSON.mk_object_element("foo",
-        $_JSON.mk_array( true, false, null )),
-    $_JSON.mk_object_element("bar",
-        $_JSON.mk_string(
+$_JSON.make_object(
+    $_JSON.make_object_element("foo",
+        $_JSON.make_array( true, false, null )),
+    $_JSON.make_object_element("bar",
+        $_JSON.concat_string(
             "There is an JSONEE: ",
             $_JSON.call_method(
                 $_JSON.get_element_at(
@@ -3400,7 +3401,7 @@ $_JSON.mk_object(
                 ),
             "!")
             ),
-    $_JSON.mk_object_element("koo",
+    $_JSON.make_object_element("koo",
         $_JSON.get_element_at(
             $_JSON.get_element_at(
                 $_JSON.get_variable(
@@ -3411,7 +3412,7 @@ $_JSON.mk_object(
     )
 ```
 
-有了这样的等价的单调 JSONEE 表达方式，我们就可以构建求值树来处理所有的 JSONTEXT、JSONATTR 和 JSONSTRING。
+有了这样的等价的、单调的（monotonous）JSONEE 表达方式，我们就可以构建求值树来处理所有的 JSONTEXT 和 JSONSTR。
 
 ##### 3.2.4.6) 元素指针
 
@@ -3450,6 +3451,18 @@ An appropriate end tag token is an end tag token whose tag name matches the tag 
 A character reference is said to be consumed as part of an attribute if the return state is either attribute value (double-quoted) state, attribute value (single-quoted) state or attribute value (unquoted) state.
 
 When a state says to flush code points consumed as a character reference, it means that for each code point in the temporary buffer (in the order they were added to the buffer) the parser  must append the code point from the buffer to the current attribute's value if the character reference was consumed as part of an attribute, or emit the code point as a character token otherwise.
+
+When the parser constructs a JSON evaluation tree for a JSONTEXT or JSONSTR, it will create function nodes. For each function node, it will have zero or more arguments as the children of the function node. We name them as argument nodes. One argument node may be another function node, a JSON keyword node, a literal string node, or a literal number node.
+
+A function node is named by the functionality of the node, such as `concat_string`, `make_object`, `make_object_element`, `make_array`, and `call_method`.
+
+When the parser assumes a JSON keyword or a literal number for the input characters, the parser will use the temporary buffer to hold the input characters.
+
+When the parser assumes a JSONSTR, it will create a `concat_string` function node first, and creates one or more literal string nodes for the input characters which is not a part of a JSONEE. The parser should create a new empty literal string node after finished parsing an embedded JSONEE, and always set the current literal string node as the newly created one.
+
+When a state says to flush the `concat_string` function node, it means to remove all empty literal string nodes from the argument node list of this function node.
+
+When a state says to append a character to the current literal string node, it means append the character to the buffer of the current literal string node.
 
 Before each step of the tokenizer, the parser must first check the parser pause flag. If it is true, then the tokenizer must abort the processing of any nested invocations of the tokenizer, yielding control back to the caller.
 
@@ -3546,7 +3559,7 @@ Consume the next input character:
 - U+005C BACKSLASH (\\)
 - U+0024 DOLLAR SIGN ($)
 - U+007B LEFT CURLY BRACKET ({)
-  - Append the current input character to the current literal string.
+  - Append the current input character to the current literal string node.
   - Switch to the return state.
 - Anything else
   - It is a bad-jsonee-escape-entity parse error; Stop parsing.
