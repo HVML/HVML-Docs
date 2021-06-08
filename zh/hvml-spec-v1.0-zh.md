@@ -289,8 +289,8 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 1. 在页面底部展示一个搜索引擎连接。具体的搜索引擎根据系统所在的语言地区（locale）信息确定。
 
 ```html
-<!DOCTYPE hvml>
-<hvml target="html" script="python" lang="en">
+<!DOCTYPE hvml SYSTEM "v: python">
+<hvml target="html">
     <head>
         <init as="global">
             { "locale" : "zh_CN" }
@@ -385,10 +385,10 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
 如上例所示，HVML 采用了类似 HTML 的标签来定义文档的整体结构：
 
-- 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。
+- 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。我们还可以使用 `SYSTEM` 属性来定义处理该 HVML 文档使用的标签前缀以及默认的系统语言环境等。
 - `hvml` 标签用于定义整个 HVML 文档。可包含如下属性：
    1. `target`：定义 HVML 文档的目标标记语言，取 `html`、`xml` 等值。
-   1. `script`： 定义处理 HVML 文档的系统环境，取 `c`、`cpp`、`python`、`lua`、`javascript` 等值。
+   1. `lang`： 定义语言或区域信息。
 - `head` 标签用于定义头部信息，其中可包含：
    1. 可被原样保留到目标文档的标签，如 HTML 文档的 `<meta>`、`<link>` 标签。
    1. 全局数据的初始化；使用 `init` 和 `set` 标签定义。
@@ -489,7 +489,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ```html
 <!DOCTYPE hvml>
-<hvml target="html" script="python">
+<hvml target="html">
     <head>
         <init as="_" with="https://foo.bar/messages/$_SYSTEM.locale">
         </init>
@@ -2341,7 +2341,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 - `CLASS: <ClassName>`：表示使用 `<ClassName>` 类作为执行器。
 - `FUNC: <FuncName>`：表示使用 `<FuncName>` 函数作为执行器。
 
-使用外部执行器时，要使用 HVML 的 `hvml` 元素之 `script` 属性所定义的脚本语言实现实现相应的类或者函数。本文档以 Python 语言为例，说明各个外部执行器的实现方法。对于不同于 Python 的脚本语言，比如 JavaScript、Lua 等，可参考 Python 的实现进行处理。
+使用外部执行器时，要使用 HVML 文档 `DOCTYPE` 所定义的系统语言实现相应的类或者函数。本文档以 Python 语言为例，说明各个外部执行器的实现方法。对于不同于 Python 的脚本语言，比如 JavaScript、Lua 等，可参考 Python 的实现进行处理。
 
 ##### 2.3.2.1) 外部选择器
 
@@ -2756,14 +2756,14 @@ In other words, `<!DOCTYPE hvml>`, case-sensitively.
 1. A string that is an ASCII case-sensitive match for the string "SYSTEM".
 1. One or more ASCII whitespace.
 1. A U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (the quote mark).
-1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: html c". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The other tokens are reserved for future use.
+1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: python". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The second token defines the default system language environment, such as Python, C, C++, JavaScript, and so on. If ommited, treat as C language. The other tokens are reserved for future use.
 1. A matching U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (i.e. the same character as in the earlier step labeled quote mark).
 
-For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml:">`, you can add the specific prefix to some HVML tags:
+For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: python">`, you can add the specific prefix to some HVML tags:
 
 ```html
-<!DOCTYPE hvml SYSTEM "hvml:">
-<hvml target="html" script="python" lang="en">
+<!DOCTYPE hvml SYSTEM "hvml: python">
+<hvml target="html" lang="en">
     <head>
         <init as="global">
             { "locale" : "zh_CN" }
@@ -2902,7 +2902,7 @@ Attributes can be specified in four different ways:
 
 Just the attribute name. The value is implicitly the empty string.
 
-In the following example, the disabled attribute is given with the empty attribute syntax:
+In the following example, the `uniquely` attribute is given with the empty attribute syntax:
 
 ```html
     <init as="_TIMERS" uniquely by="id">
@@ -5397,7 +5397,7 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
 
 ```html
 <!DOCTYPE hvml>
-<hvml target="xml" script="python">
+<hvml target="xml">
     <head>
         <init as="fileInfo">
             {
@@ -5512,7 +5512,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 ```html
 <!DOCTYPE hvml>
-<hvml target="html" script="python">
+<hvml target="html">
     <head>
         <listen at="mqtt://foo.bar/bracelet" as="braceletInfo">
 
