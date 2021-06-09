@@ -9,8 +9,14 @@ Language: Chinese
 
 *Copyright Notice*
 
-Copyright (C) 2020, 2021 [FMSoft Technologies]  
-All Rights Reserved.
+版权所有 &copy; 2020, 2021 北京飞漫软件技术有限公司  
+保留所有权利
+
+此文档不受 HVML 相关软件开源许可证的管辖。
+
+飞漫软件公开此文档的目标，用于向开发者解释 HVML 相关设计原理或者相关规范。在未获得飞漫软件书面许可之前，任何人不得复制或者分发本文档的全部或部分内容，或利用本文档描绘的技术思路申请专利、撰写学术论文等。
+
+本文提及的飞漫软件或其合作伙伴的注册商标或商标之详细列表，请查阅文档末尾。
 
 - [1) 背景](#1-背景)
 - [2) HVML 详解](#2-hvml-详解)
@@ -203,6 +209,7 @@ All Rights Reserved.
    + [4.1) 使用 HVML 开发传统 GUI 应用](#41-使用-hvml-开发传统-gui-应用)
    + [4.2) 云应用](#42-云应用)
 - [5) 总结](#5-总结)
+- [附：商标声明](#附：商标声明)
 
 
 ## 1) 背景
@@ -5617,6 +5624,58 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 1. 通过外部执行器，为复杂数据的处理提供了使用外部脚本或者模块实现相应功能的方法，提供了可扩展性。
 1. 通过绑定外部程序模块，提供了可扩展、灵活的动态 JSON 对象实现方法，结合本文定义的 JSON 求值表达式，可用于满足各种基于函数调用的计算需求。
 1. 解决了构建在现有 Web 技术之上的虚拟 DOM 技术存在的打补丁式解决方案引入的问题，比如代码的可读性降低，结构不清晰等问题。
+
+## 附：商标声明
+
+_注意：除本说明之外，原样复制，放到文档最后。_
+
+本文提到的产品、技术或者术语名称，涉及北京飞漫软件技术有限公司在中国或其他地区注册的如下商标：
+
+1) 飛漫
+
+![飛漫](https://www.fmsoft.cn/application/files/cache/thumbnails/87f47bb9aeef9d6ecd8e2ffa2f0e2cb6.jpg)
+
+2) FMSoft
+
+![FMSoft](https://www.fmsoft.cn/application/files/cache/thumbnails/44a50f4b2a07e2aef4140a23d33f164e.jpg)
+
+3) 合璧
+
+![合璧](https://www.fmsoft.cn/application/files/4716/1180/1904/256132.jpg)
+![合璧](https://www.fmsoft.cn/application/files/cache/thumbnails/9c57dee9df8a6d93de1c6f3abe784229.jpg)
+![合壁](https://www.fmsoft.cn/application/files/cache/thumbnails/f59f58830eccd57e931f3cb61c4330ed.jpg)
+
+4) HybridOS
+
+![HybridOS](https://www.fmsoft.cn/application/files/cache/thumbnails/5a85507f3d48cbfd0fad645b4a6622ad.jpg)
+
+5) HybridRun
+
+![HybridRun](https://www.fmsoft.cn/application/files/cache/thumbnails/84934542340ed662ef99963a14cf31c0.jpg)
+
+6) MiniGUI
+
+![MiniGUI](https://www.fmsoft.cn/application/files/cache/thumbnails/54e87b0c49d659be3380e207922fff63.jpg)
+
+6) xGUI
+
+![xGUI](https://www.fmsoft.cn/application/files/cache/thumbnails/7fbcb150d7d0747e702fd2d63f20017e.jpg)
+
+7) miniStudio
+
+![miniStudio](https://www.fmsoft.cn/application/files/cache/thumbnails/82c3be63f19c587c489deb928111bfe2.jpg)
+
+8) HVML
+
+![HVML](https://www.fmsoft.cn/application/files/8116/1931/8777/HVML256132.jpg)
+
+9) 呼噜猫
+
+![呼噜猫](https://www.fmsoft.cn/application/files/8416/1931/8781/256132.jpg)
+
+10) Purring Cat
+
+![Purring Cat](https://www.fmsoft.cn/application/files/2816/1931/9258/PurringCat256132.jpg)
 
 [data state]: #3251-data-state
 [RCDATA state]: #3252-rcdata-state
