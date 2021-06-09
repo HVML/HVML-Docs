@@ -710,7 +710,9 @@ HVML 解释器按照固定的策略将 DOM 子树（文档片段）视作一个�
 HVML 定义了两种模板标签，用于定义可以插入 DOM 文档中的 XML/HTML 模板以及 JSON 数据模板：
 
 - `archedata`：该标签用于定义一个 JSON 格式的数据项模板。
-- `archetype`：这个标签可用于定义一个 XML/HTML 格式的文档片段模板。类似 HTML5 的 `template` 标签，其中的内容可以是一个 XML 片段，也可以是一个 HTML 片段，前者可用于生成特定 GUI 系统的界面描述片段，后者可以生成 HTML 文档的片段。当使用 `archetype` 定义的元素具有 `raw` 属性时，其定义的文档片段将不执行 JSON 表达式置换操作。
+- `archetype`：这个标签可用于定义一个 XML/HTML 格式的文档片段模板。类似 HTML5 的 `template` 标签，其中的内容可以是一个 XML 片段，也可以是一个 HTML 片段，前者可用于生成特定 GUI 系统的界面描述片段，后者可以生成 HTML 文档的片段。
+
+当使用 `archedata` 和 `archetype` 定义的元素具有 `raw` 属性时，其定义的文档片段将不执行 JSON 表达式置换操作。
 
 在定义模板时，可直接定义文档片段和数据之间的映射关系。如：
 
@@ -2846,11 +2848,11 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: p
 
 比如，HTML 的 `<br>` 元素，在 HVML 中作为外部元素使用时，必须书写为：`<br />`。
 
-当一个外部元素的起始标签被标记为自终止时，该元素不能包含任何内容（显然，没有终止标签就无法在起始标签和终止标签之间放置任何内容）。当一个外部元素的起始标签没有被标记为自终止时，该元素中可包含文本、字符引用，CDATA 段、注释以及其他外部元素或动作元素，但文本中不可包含 U+003C LESS-THAN SIGN (`<`) 或含糊的 & 符号。
+当一个外部元素的起始标签被标记为自终止时，该元素不能包含任何内容（显然，没有终止标签就无法在起始标签和终止标签之间放置任何内容）。当一个外部元素的起始标签没有被标记为自终止时，该元素中可包含文本、字符引用、JSONEE、CDATA 段、注释以及其他外部元素或动作元素，但文本中不可包含 U+003C LESS-THAN SIGN (`<`) 或含糊的 & 符号。
 
 > Foreign elements whose start tag is marked as self-closing can't have any contents (since, again, as there's no end tag, no content can be put between the start tag and the end tag). Foreign elements whose start tag is not marked as self-closing can have text, character references, CDATA sections, other foreign elements or operation elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
 
-外部元素中可包含可转义裸文本，统称为为可转移文本元素（escapable raw text elements）。
+当一个外部元素包含 `hvml:raw` 属性时，该外部元素中只能包含可转义裸文本，此类元素统称为可转移文本元素（escapable raw text elements）。
 
 可转义裸文本元素中可包含文本和字符引用，但文本中不可包含任何含糊的 & 符号，另有后面所述之限制。
 
@@ -3004,7 +3006,7 @@ __是否考虑：__
 
 ```html
 <!DOCTYPE hvml>
-<hvml>
+<hvml target="html">
     <body>
         ...
     </body>
@@ -3081,7 +3083,7 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
 </init>
 ```
 
-对这类元素内容，我们称为 JSON 文本，或简称 `JSONTEXT`。需要说明的是，和裸文本不同，JSON 文本中可包含 `</` 字符，因为这些字符通常包含在双引号包裹的 JSON 字符串中。
+对这类元素内容，我们称为 JSON 文本，或简称 `JSONTEXT`。需要说明的是，和裸文本不同，JSON 文本中可包含 `</` 字符，因为这些字符通常包含在双引号包裹的 JSON 字符串中，而不会出现在其他位置。
 
 另外，在动作元素的 `on`、`with` 等属性值中指定操作数据时，我们可直接使用 JSON 表述（其中可嵌入 JSON 求值表达式），如：
 
@@ -3426,45 +3428,72 @@ The jsonee flag is set to "enabled" if an attribute value is double-quoted, and 
 
 The jsonee flag is set to "enabled" in the JSONTEXT state if the current tag's name is `archetype` or `archedata` and the tag token has no `raw` attribute, and "disabled" otherwise.
 
+The jsonee flag is set to "enabled" in the JSONTEXT state if the current tag is a name of a foreign element and the tag token has no `hvml:raw` attribute, and "disabled" otherwise.
+
 #### 3.2.5) 断词/Tokenization
 
-Implementations must act as if they used the following state machine to tokenize HVML. The state machine must start in the data state. Most states consume a single character, which may have various side-effects, and either switches the state machine to a new state to reconsume the current input character, or switches it to a new state to consume the next character, or stays in the same state to consume the next character. Some states have more complicated behavior and can consume several characters before switching to another state. In some cases, the tokenizer state is also changed by the tree construction stage.
+Implementations must act as if they used the following state machine to tokenize HVML. The state machine must start in the data state.
+Most states consume a single character, which may have various side-effects, and either switches the state machine to a new state to
+reconsume the current input character, or switches it to a new state to consume the next character, or stays in the same state to consume the next character.
+Some states have more complicated behavior and can consume several characters before switching to another state.
+In some cases, the tokenizer state is also changed by the tree construction stage.
 
-When a state says to reconsume a matched character in a specified state, that means to switch to that state, but when it attempts to consume the next input character, provide it with the current input character instead.
+When a state says to reconsume a matched character in a specified state, that means to switch to that state, but when it attempts
+to consume the next input character, provide it with the current input character instead.
 
-The exact behavior of certain states depends on the insertion mode and the stack of open elements. Certain states also use a temporary buffer to track progress, and the character reference state uses a return state to return to the state it was invoked from.
+The exact behavior of certain states depends on the insertion mode and the stack of open elements.
+Certain states also use a temporary buffer or a nesting stack to track progress, and
+the character reference state uses a return state to return to the state it was invoked from.
 
-The output of the tokenization step is a series of zero or more of the following tokens: DOCTYPE, start tag, end tag, comment, character, end-of-file. DOCTYPE tokens have a name, a public identifier, a system information string, and a force-quirks flag. When a DOCTYPE token is created, its name, public identifier, and system information must be marked as missing (which is a distinct state from the empty string), and the force-quirks flag must be set to off (its other state is on). Start and end tag tokens have a tag name, a self-closing flag, and a list of attributes, each of which has a name and a value. When a start or end tag token is created, its self-closing flag must be unset (its other state is that it be set), and its attributes list must be empty. Comment and character tokens have data.
+The output of the tokenization step is a series of zero or more of the following tokens: DOCTYPE, start tag, end tag, comment, character, JSON evaluation tree, end-of-file.
+DOCTYPE tokens have a name, a public identifier, a system information string, and a force-quirks flag.
+When a DOCTYPE token is created, its name, public identifier, and system information must be marked as missing
+(which is a distinct state from the empty string), and the force-quirks flag must be set to off (its other state is on).
+Start and end tag tokens have a tag name, a self-closing flag, and a list of attributes, each of which has a name and a value.
+When a start or end tag token is created, its self-closing flag must be unset (its other state is that it be set), and its attributes list must be empty.
+Comment and character tokens have data.
 
-When a token is emitted, it must immediately be handled by the tree construction stage. The tree construction stage can affect the state of the tokenization stage, and can insert additional characters into the stream. (For example, the script element can result in scripts executing and using the dynamic markup insertion APIs to insert characters into the stream being tokenized.)
+When a token is emitted, it must immediately be handled by the tree construction stage.
+The tree construction stage can affect the state of the tokenization stage, and can insert additional characters into the stream.
 
-Creating a token and emitting it are distinct actions. It is possible for a token to be created but implicitly abandoned (never emitted), e.g. if the file ends unexpectedly while processing the characters that are being parsed into a start tag token.
+Creating a token and emitting it are distinct actions. It is possible for a token to be created but implicitly abandoned (never emitted), e.g.
+if the file ends unexpectedly while processing the characters that are being parsed into a start tag token.
 
-When a start tag token is emitted with its self-closing flag set, if the flag is not acknowledged when it is processed by the tree construction stage, that is a non-void-html-element-start-tag-with-trailing-solidus parse error.
+When a start tag token is emitted with its self-closing flag set, if the flag is not acknowledged when it is processed
+by the tree construction stage, that is a non-void-hvml-element-start-tag-with-trailing-solidus parse error.
 
 When an end tag token is emitted with attributes, that is an end-tag-with-attributes parse error.
 
 When an end tag token is emitted with its self-closing flag set, that is an end-tag-with-trailing-solidus parse error.
 
-An appropriate end tag token is an end tag token whose tag name matches the tag name of the last start tag to have been emitted from this tokenizer, if any. If no start tag has been emitted from this tokenizer, then no end tag token is appropriate.
+An appropriate end tag token is an end tag token whose tag name matches the tag name of the last start tag to have been emitted from this tokenizer, if any.
+If no start tag has been emitted from this tokenizer, then no end tag token is appropriate.
 
-A character reference is said to be consumed as part of an attribute if the return state is either attribute value (double-quoted) state, attribute value (single-quoted) state or attribute value (unquoted) state.
+A character reference is said to be consumed as part of an attribute if the return state is either
+attribute value (double-quoted) state, attribute value (single-quoted) state or attribute value (unquoted) state.
 
-When a state says to flush code points consumed as a character reference, it means that for each code point in the temporary buffer (in the order they were added to the buffer) the parser  must append the code point from the buffer to the current attribute's value if the character reference was consumed as part of an attribute, or emit the code point as a character token otherwise.
+When a state says to flush code points consumed as a character reference, it means that for each code point in the temporary buffer
+(in the order they were added to the buffer) the parser  must append the code point from the buffer to the current attribute's value
+if the character reference was consumed as part of an attribute, or emit the code point as a character token otherwise.
 
-When the parser constructs a JSON evaluation tree for a JSONTEXT or JSONSTR, it will create function nodes. For each function node, it will have zero or more arguments as the children of the function node. We name them as argument nodes. One argument node may be another function node, a JSON keyword node, a literal string node, or a literal number node.
+When the parser constructs a JSON evaluation tree for a JSONTEXT or JSONSTR, it will create function nodes.
+For each function node, it will have zero or more arguments as the children of the function node. We name them as argument nodes.
+One argument node may be another function node, a JSON keyword node, a literal string node, or a literal number node.
 
 A function node is named by the functionality of the node, such as `concat_string`, `make_object`, `make_object_element`, `make_array`, and `call_method`.
 
 When the parser assumes a JSON keyword or a literal number for the input characters, the parser will use the temporary buffer to hold the input characters.
 
-When the parser assumes a JSONSTR, it will create a `concat_string` function node first, and creates one or more literal string nodes for the input characters which is not a part of a JSONEE. The parser should create a new empty literal string node after finished parsing an embedded JSONEE, and always set the current literal string node as the newly created one.
+When the parser assumes a JSONSTR, it will create a `concat_string` function node first, and creates one or more literal string nodes
+for the input characters which is not a part of a JSONEE.
+The parser should create a new empty literal string node after finished parsing an embedded JSONEE, and always set the current literal string node as the newly created one.
 
 When a state says to flush the `concat_string` function node, it means to remove all empty literal string nodes from the argument node list of this function node.
 
-When a state says to append a character to the current literal string node, it means append the character to the buffer of the current literal string node.
+When a state says to append a character to the current literal string node, it means to append the character to the buffer of the current literal string node.
 
-Before each step of the tokenizer, the parser must first check the parser pause flag. If it is true, then the tokenizer must abort the processing of any nested invocations of the tokenizer, yielding control back to the caller.
+Before each step of the tokenizer, the parser must first check the parser pause flag.
+If it is true, then the tokenizer must abort the processing of any nested invocations of the tokenizer, yielding control back to the caller.
 
 The tokenizer state machine consists of the states defined in the following subsections.
 
@@ -3473,9 +3502,9 @@ The tokenizer state machine consists of the states defined in the following subs
 Consume the next input character:
 
 - U+0026 AMPERSAND (&)
-  - Set the return state to the data state. Switch to the character reference state.
+  - Set the return state to the data state. Switch to the [character reference state].
 - U+003C LESS-THAN SIGN (<)
-  - Switch to the tag open state.
+  - Switch to the [tag open state].
 - U+0000 NULL
   - This is an unexpected-null-character parse error. Emit the current input character as a character token.
 - EOF
@@ -3488,9 +3517,9 @@ Consume the next input character:
 Consume the next input character:
 
 - U+0026 AMPERSAND (&)
-  - Set the return state to the RCDATA state. Switch to the character reference state.
+  - Set the return state to the RCDATA state. Switch to the [character reference state].
 - U+003C LESS-THAN SIGN (<)
-  - Switch to the RCDATA less-than sign state.
+  - Switch to the [RCDATA less-than sign state].
 - U+0000 NULL
   - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
 - EOF
@@ -3503,7 +3532,7 @@ Consume the next input character:
 Consume the next input character:
 
 - U+003C LESS-THAN SIGN (<)
-  - Switch to the RAWTEXT less-than sign state.
+  - Switch to the [RAWTEXT less-than sign state].
 - U+0000 NULL
   - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
 - EOF
@@ -3516,7 +3545,8 @@ Consume the next input character:
 Consume the next input character:
 
 - U+003C LESS-THAN SIGN (<)
-  - Switch to the template data less-than sign state.
+  - Set the return state to the [template raw data state].
+  - Switch to the [template data less-than sign state].
 - U+0000 NULL
   - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the currernt literal string node.
 - EOF
@@ -3524,33 +3554,38 @@ Consume the next input character:
 - Anything else
   - Append the current input character to the current literal string node.
 
+__NOTE__  
+The template raw data states of HVML are similar to script data states of HTML (<https://html.spec.whatwg.org/#script-data-state>).
+However, we do not handle the comments in the script data. So there is no template data escape start state and the subsequent states.
+
 ##### 3.2.5.5) Template JSONEE data state
 
 Consume the next input character:
 
 - U+003C LESS-THAN SIGN (<)
-  - Switch to the template data less-than sign state.
+  - Set the return state to the [template JSONEE data state].
+  - Switch to the [template data less-than sign state].
 - U+0000 NULL
   - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
 - EOF
   - Emit an end-of-file token.
 - U+005C BACKSLASH (\\)
-  - Set the return state to the template JSONEE data state.
-  - Switch to JSONEE escape state.
+  - Set the return state to the [template JSONEE data state].
+  - Switch to [JSONEE escape state].
 - U+007B LEFT CURLY BRACKET ({)
-  - If the bottommost two characters on the JSONEE nesting stack are all U+007B LEFT CURLY BRACKET ({), this is a bad-jsonee parse error; Stop parsing.
+  - If the bottommost two characters on the JSONEE nesting stack are both U+007B LEFT CURLY BRACKET ({), this is a bad-jsonee parse error; Stop parsing.
   - Push the current input character onto the JSONEE nesting stack.
 - U+0024 DOLLAR SIGN ($)
-  - Create a new JOSNEE get-variable function node, set this node as the current function node.
-  - Set the return state to the template JSONEE data state.
+  - Create a new JOSNEE `get-variable` function node, set this node as the current function node.
+  - Set the return state to the [template JSONEE data state].
   - Set the temporary buffer to the empty string.
-  - Reconsume in JSONEE variable state.
+  - Reconsume in [JSONEE variable state].
 - Anything else
   - If the JSONEE nesting stack is not empty, this is a bad-jsonee parse error; Stop parsing.
   - Otherwise, append the current input character to the current literal string node.
 
 __NOTE__  
-The template data states of HVML are similar to script data states of HTML (<https://html.spec.whatwg.org/#script-data-state>). However, we do not handle the comments in the script data. So there is no template data escape start state and subsequent states.
+The current literal string node should be reset as an empty string before switching to this state.
 
 ##### 3.2.5.6) JSONEE escape state
 
@@ -5582,6 +5617,100 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 1. 通过外部执行器，为复杂数据的处理提供了使用外部脚本或者模块实现相应功能的方法，提供了可扩展性。
 1. 通过绑定外部程序模块，提供了可扩展、灵活的动态 JSON 对象实现方法，结合本文定义的 JSON 求值表达式，可用于满足各种基于函数调用的计算需求。
 1. 解决了构建在现有 Web 技术之上的虚拟 DOM 技术存在的打补丁式解决方案引入的问题，比如代码的可读性降低，结构不清晰等问题。
+
+[data state]: #3251-data-state
+[RCDATA state]: #3252-rcdata-state
+[RAWTEXT state]: #3253-rawtext-state
+[template raw data state]: #3254-template-raw-data-state
+[template JSONEE data state]: #3255-template-jsonee-data-state
+[JSONEE escape state]: #3256-jsonee-escape-state
+[JSONEE variable state]: #3257-jsonee-variable-state
+[JSONEE keyword state]: #3258-jsonee-keyword-state
+[JSONEE getter state]: #32510-jsonee-getter-state
+[JSONEE setter state]: #32511-jsonee-setter-state
+[JSONEE after call state]: #32512-jsonee-after-call-state
+[pLAINTEXT state]: #32513-plaintext-state
+[tag open state]: #32514-tag-open-state
+[end tag open state]: #32515-end-tag-open-state
+[tag name state]: #32516-tag-name-state
+[RCDATA less-than sign state]: #32517-rcdata-less_than-sign-state
+[RCDATA end tag open state]: #32518-rcdata-end-tag-open-state
+[RCDATA end tag name state]: #32519-rcdata-end-tag-name-state
+[RAWTEXT less-than sign state]: #32520-rawtext-less_than-sign-state
+[RAWTEXT end tag open state]: #32521-rawtext-end-tag-open-state
+[RAWTEXT end tag name state]: #32522-rawtext-end-tag-name-state
+[Template data less-than sign state]: #32523-template-data-less_than-sign-state
+[Template data end tag open state]: #32524-template-data-end-tag-open-state
+[Template data end tag name state]: #32525-template-data-end-tag-name-state
+[JSONTEXT state]: #32526-jsontext-state
+[JSONTEXT JSON finished state]: #32527-jsontext-json-finished-state
+[JSONTEXT less-than sign state]: #32528-jsontext-less_than-sign-state
+[JSONTEXT end tag open state]: #32529-jsontext-end-tag-open-state
+[JSONTEXT end tag name state]: #32530-jsontext-end-tag-name-state
+[JSON value state]: #32531-json-value-state
+[JSON after value state]: #32532-json-after-value-state
+[JSON keyword state]: #32533-json-keyword-state
+[JSON number state]: #32534-json-number-state
+[JSON number integer state]: #32535-json-number-integer-state
+[JSON number fraction state]: #32536-json-number-fraction-state
+[JSON number exponent state]: #32537-json-number-exponent-state
+[JSON number exponent integer state]: #32538-json-number-exponent-integer-state
+[JSON object key name state]: #32539-json-object-key-name-state
+[JSON after object key name state]: #32540-json-after-object-key-name-state
+[JSON string state]: #32541-json-string-state
+[JSON string escape state]: #32542-json-string-escape-state
+[JSON string escape four hexadecimal digits state]: #32543-json-string-escape-four-hexadecimal-digits-state
+[before attribute name state]: #32544-before-attribute-name-state
+[attribute name state]: #32545-attribute-name-state
+[special attribute operator in attribute name state]: #32546-special-attribute-operator-in-attribute-name-state
+[after attribute name state]: #32547-after-attribute-name-state
+[special attribute operator after attribute name state]: #32548-special-attribute-operator-after-attribute-name-state
+[before attribute value state]: #32549-before-attribute-value-state
+[attribute value : double-quoted state]: #32550-attribute-value-double_quoted-state
+[attribute value : single-quoted state]: #32552-attribute-value-single_quoted-state
+[attribute value : unquoted state]: #32553-attribute-value-unquoted-state
+[after attribute value : quoted state]: #32554-after-attribute-value-quoted-state
+[self-closing start tag state]: #32555-self_closing-start-tag-state
+[bogus comment state]: #32556-bogus-comment-state
+[markup declaration open state]: #32557-markup-declaration-open-state
+[comment start state]: #32558-comment-start-state
+[comment start dash state]: #32559-comment-start-dash-state
+[comment state]: #32560-comment-state
+[comment less-than sign state]: #32561-comment-less_than-sign-state
+[comment less-than sign bang state]: #32562-comment-less_than-sign-bang-state
+[comment less-than sign bang dash state]: #32563-comment-less_than-sign-bang-dash-state
+[comment less-than sign bang dash dash state]: #32564-comment-less_than-sign-bang-dash-dash-state
+[comment end dash state]: #32565-comment-end-dash-state
+[comment end state]: #32566-comment-end-state
+[comment end bang state]: #32567-comment-end-bang-state
+[DOCTYPE state]: #32568-doctype-state
+[before DOCTYPE name state]: #32569-before-doctype-name-state
+[DOCTYPE name state]: #32570-doctype-name-state
+[after DOCTYPE name state]: #32571-after-doctype-name-state
+[after DOCTYPE public keyword state]: #32572-after-doctype-public-keyword-state
+[before DOCTYPE public identifier state]: #32573-before-doctype-public-identifier-state
+[DOCTYPE public identifier : double-quoted state]: #32574-doctype-public-identifier-double_quoted-state
+[DOCTYPE public identifier : single-quoted state]: #32575-doctype-public-identifier-single_quoted-state
+[after DOCTYPE public identifier state]: #32576-after-doctype-public-identifier-state
+[between DOCTYPE public identifier and system information state]: #32577-between-doctype-public-identifier-and-system-information-state
+[after DOCTYPE system keyword state]: #32578-after-doctype-system-keyword-state
+[before DOCTYPE system information state]: #32579-before-doctype-system-information-state
+[DOCTYPE system information : double-quoted state]: #32580-doctype-system-information-double_quoted-state
+[DOCTYPE system information : single-quoted state]: #32581-doctype-system-information-single_quoted-state
+[after DOCTYPE system information state]: #32582-after-doctype-system-information-state
+[bogus DOCTYPE state]: #32583-bogus-doctype-state
+[CDATA section state]: #32584-cdata-section-state
+[CDATA section bracket state]: #32585-cdata-section-bracket-state
+[CDATA section end state]: #32586-cdata-section-end-state
+[Character reference state]: #32587-character-reference-state
+[named character reference state]: #32588-named-character-reference-state
+[ambiguous ampersand stat]: #32589-ambiguous-ampersand-stat
+[numeric character reference state]: #32590-numeric-character-reference-state
+[hexadecimal character reference start state]: #32591-hexadecimal-character-reference-start-state
+[decimal character reference start state]: #32592-decimal-character-reference-start-state
+[hexadecimal character reference state]: #32593-hexadecimal-character-reference-state
+[decimal character reference state]: #32594-decimal-character-reference-state
+[numeric character reference end state]: #32595-numeric-character-reference-end-state
 
 [Beijing FMSoft Technologies Co., Ltd.]: https://www.fmsoft.cn
 [FMSoft Technologies]: https://www.fmsoft.cn
