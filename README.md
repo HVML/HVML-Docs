@@ -18,6 +18,6 @@ This repository contains some articles, guides, and documents about HVML.
 
 ### Designs
 
-- [HVML 解析器的设计：一种数据驱动的动态标记语言的解释器实现](interpreter/zh.md)
+- [HVML 解释器的设计：一种数据驱动的动态标记语言的解释器实现](interpreter/zh.md)
 - [基于 HVML 的远程应用：一种支持远程应用的方法及装置](cloudapp/zh.md)
 
