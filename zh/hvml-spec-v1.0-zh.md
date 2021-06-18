@@ -3157,17 +3157,17 @@ Where character references are allowed, a character reference of a U+000A LINE F
 
 当 HVML 元素的内容是 JSON 值时，我们使用扩展的 JSON 语法来书写，这个写法兼容原始的 [JSON] 的语法。
 
-1) 当元素内容不以空白字符（ASCII whitespace）开头，则按如普通 HTML 元素的文本内容那样解析为字符串，并支持 HTML 字符引用。如：
+1) 当内容不以换行字符（U+000A LF 或 U+000D CR 字符）开头时，则按普通 HTML 元素的文本内容进行解析，并支持 HTML 字符引用。如：
 
 ```html
-<foo id=text>123456&copy;</foo>
+<foo id=text> 123456&amp;</foo>
 
 <foo id=number>
 123456
 </foo>
 ```
 
-`id` 为 `text` 的 `foo` 元素，其内容为字符串 `123456`；另一个 `foo` 元素的内容为数值 `123456`。
+`id` 为 `text` 的 `foo` 元素，其内容为字符串 ` 123456&`；另一个 `foo` 元素的内容为数值 `123456`。
 
 2) 当对象（object）的键名由 ASCII 字母打头，且仅包含 ASCII 字母、数字、减号、下划线时，可省略键名两边的双引号，其他情形，必须使用双引号包围。如：
 
@@ -3226,7 +3226,6 @@ Where character references are allowed, a character reference of a U+000A LINE F
 }
 
 ```
-
 
 #### 3.1.4) 字符引用/Character references
 
