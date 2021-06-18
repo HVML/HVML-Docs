@@ -3211,7 +3211,7 @@ Where character references are allowed, a character reference of a U+000A LINE F
 
 5) 可使用 `"""` 定义多行文本字符串，且保留其中的空格、制表符（`\t`）、单引号（`'`）或者不连续出现三次的双引号（`"`）等，无需使用转义符号。如：
 
-```json
+```js
 {
     id:         1234567890UL,
     nickname:   "David",
