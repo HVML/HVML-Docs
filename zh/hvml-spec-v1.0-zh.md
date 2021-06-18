@@ -85,6 +85,7 @@ Language: Chinese
          - [3.1.2.8) JSONEE 的语法/Syntax of JSONEE](#3128-jsonee-的语法syntax-of-jsonee)
       * [3.1.3) 文本/Text](#313-文本text)
          - [3.1.3.1) 新行/Newlines](#3131-新行newlines)
+         - [3.1.3.2) 扩展 JSON 语法](#3132-扩展-json-语法)
       * [3.1.4) 字符引用/Character references](#314-字符引用character-references)
       * [3.1.5) CDATA 段落/CDATA sections](#315-cdata-段落cdata-sections)
       * [3.1.6) 注释/Comments](#316-注释comments)
@@ -3152,6 +3153,81 @@ Newlines in HVML may be represented either as U+000D CARRIAGE RETURN (CR) charac
 
 Where character references are allowed, a character reference of a U+000A LINE FEED (LF) character (but not a U+000D CARRIAGE RETURN (CR) character) also represents a newline.
 
+##### 3.1.3.2) 扩展 JSON 语法
+
+当 HVML 元素的内容是 JSON 值时，我们使用扩展的 JSON 语法来书写，这个写法兼容原始的 [JSON] 的语法。
+
+1) 当元素内容不以空白字符（ASCII whitespace）开头，则按如普通 HTML 元素的文本内容那样解析为字符串，并支持 HTML 字符引用。如：
+
+```html
+<foo id=text>123456&copy;</foo>
+
+<foo id=number>
+123456
+</foo>
+```
+
+`id` 为 `text` 的 `foo` 元素，其内容为字符串 `123456`；另一个 `foo` 元素的内容为数值 `123456`。
+
+2) 当对象（object）的键名由 ASCII 字母打头，且仅包含 ASCII 字母、数字、减号、下划线时，可省略键名两边的双引号，其他情形，必须使用双引号包围。如：
+
+```javascript
+{
+    width: "device-width",
+    initial-scale: 1.0,
+    minimum-scale: 0.5,
+    maximum-scale: 2.0,
+    user-scalable: true,
+    "地区": "zh-CN"
+}
+```
+
+3) 对象（object）中的最后一个键值对，数组（array）的最后一个单元之后，可包含逗号 (,)。如：
+
+```javascript
+{
+    age: 10,
+    weight: 30,
+    height: 150,
+}
+```
+
+或，
+
+```javascript
+[
+        { age: 10, weight: 30, height: 150, },
+        { age: 11, weight: 32, height: 145, },
+]
+```
+
+4) 使用如下后缀来明确表示数值（number）的类型：
+   - 有符号长整型（64 位）：1234567890L
+   - 无符号长整型（64 位）：1234567890UL
+   - 单精度浮点数：1234567890F
+   - 双精度浮点数：1234567890FL
+
+未显式指定类型的数值，全部视作双精度浮点数处理。
+
+5) 可使用 `"""` 定义多行文本字符串，且保留其中的空格、制表符（`\t`）、单引号（`'`）或者不连续出现三次的双引号（`"`）等，无需使用转义符号。如：
+
+```json
+{
+    id:         1234567890UL,
+    nickname:   "David",
+    signature:
+"""
+一个
+
+    被'程序'耽误的
+
+        "文艺"青年。
+""",
+}
+
+```
+
+
 #### 3.1.4) 字符引用/Character references
 
 In certain cases described in other sections, text may be mixed with character references. These can be used to escape characters that couldn't otherwise legally be included in text.
@@ -5782,6 +5858,7 @@ _注意：除本说明之外，原样复制，放到文档最后。_
 [WebIDL Specification]: https://heycam.github.io/webidl/
 [CSS 2.2]: https://www.w3.org/TR/CSS22/
 [CSS Box Model Module Level 3]: https://www.w3.org/TR/css-box-3/
+[JSON]: https://www.json.org
 
 [HybridOS Architecture]: HybridOS-Architecture
 [HybridOS Code and Development Convention]: HybridOS-Code-and-Development-Convention
