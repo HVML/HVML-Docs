@@ -2365,7 +2365,7 @@ class HVMLChooser (object):
     def choose (self, on_value, in_value):
         return None
 
-    def map (self, cloned_item, chosen_item):
+    def map (self, chosen_value, in_value):
         return None
 ```
 
