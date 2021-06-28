@@ -3538,7 +3538,7 @@ The exact behavior of certain states depends on the insertion mode and the stack
 Certain states also use a temporary buffer or a nesting stack to track progress, and
 the character reference state uses a return state to return to the state it was invoked from.
 
-The output of the tokenization step is a series of zero or more of the following tokens: DOCTYPE, start tag, end tag, comment, character, JSON evaluation tree, end-of-file.
+The output of the tokenization step is a series of zero or more of the following tokens: DOCTYPE, start tag, end tag, comment, character, variant model tree, end-of-file.
 DOCTYPE tokens have a name, a public identifier, a system information string, and a force-quirks flag.
 When a DOCTYPE token is created, its name, public identifier, and system information must be marked as missing
 (which is a distinct state from the empty string), and the force-quirks flag must be set to off (its other state is on).
@@ -3569,7 +3569,7 @@ When a state says to flush code points consumed as a character reference, it mea
 (in the order they were added to the buffer) the parser  must append the code point from the buffer to the current attribute's value
 if the character reference was consumed as part of an attribute, or emit the code point as a character token otherwise.
 
-When the parser constructs a JSON evaluation tree for a JSONTEXT or JSONSTR, it will create function nodes.
+When the parser constructs a variant model tree for a JSONTEXT or JSONSTR, it will create function nodes.
 For each function node, it will have zero or more arguments as the children of the function node. We name them as argument nodes.
 One argument node may be another function node, a JSON keyword node, a literal string node, or a literal number node.
 
