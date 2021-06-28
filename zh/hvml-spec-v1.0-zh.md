@@ -283,12 +283,16 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
    - 数组；
    - 字符串；
    - 数值；
+   - 字节序列；
    - 真值（true）；
    - 假值（false）；
    - 空值（null）。
 1. 数据项（data item）或数据元素（data element）。对数组而言，每个数组单元就是一个数据项；对字典数据而言，其中的某个键值对就是一个数据项。
 1. 文档元素（document element）。指文档对象模型中，使用某个标签（tag）定义的元素节点；一个文档元素可包含一个或多个属性（attribute）以及属性值，还可以包含内容（content）；一个元素可包含文本内容或者使用标签定义的单个或多个子元素。
 1. 文档片段（document fragement）。指 XML/HTML 文档中的一个片段，可作为模板被克隆（clone）到文档的其他位置。
+
+__注：__  
+字节序列是一个扩展的 JSON 数据类型。
 
 下面用一个简单的例子来说明 HVML 的基本用法。这个 HVML 文档生成的 HTML 页面，将在屏幕上展示三组信息：
 
@@ -338,7 +342,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
         </header>
 
         <ul class="user-list">
-            <iterate on="$users" with="$user_item" to="append" by="CLASS: IUser">
+            <iterate on="$users" to="append" with="$user_item" by="CLASS: IUser">
                 <error type="nodata">
                     <img src="wait.png" />
                 </error>
@@ -409,7 +413,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
 需要注意的是，HVML 的标签、属性名称、变量名称是区分大小写的，这主要是为了和 XML 相关规范保持一致。
 
-__是否考虑：__  
+__是否考虑：__   
 在 HVML 文档中，可以定义多个 `body` 本地内容，使用 `id` 属性区别不同的本体内容。在执行过程中，可通过 `load` 元素装载不同的本地内容。
 
 #### 2.1.2) 数据和变量
@@ -884,7 +888,7 @@ HVML 还定义有如下一些动作标签：
 - `in`：用于定义执行操作的文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。注意，使用 `in` 介词属性指定数据作为操作范围时，不会改变文档的操作位置。
 - `for`：在 `observe` 标签中，用于定义观察（observe）操作对应的事件名称；在 `match` 标签中，用于定义匹配条件。
 - `as`：用于定义 `init`、`bind`、`load` 等元素绑定的变量名称、页面名称等。
-- `with`：用于定义克隆数据项或者文档片段时模板（`archetype` 或 `archedata`）元素的标识符。需要模板但未定义的情形下，会产生 `nodata` 错误。
+- `with`：用于定义克隆数据项或者文档片段时模板（`archetype` 或 `archedata`）名称。需要模板但未定义的情形下，会产生 `nodata` 错误。
 - `to`：用于定义后续动作或者动作列表，多个动作使用空格分割。一个动作如果定义有相应的动作标签，则需要使用子元素描述，也可以是如下无需使用子元素描述的动作：
    - `noop`：空操作。
    - `append`：在当前范围追加（append）一个子元素或子对象项。
@@ -900,6 +904,7 @@ HVML 还定义有如下一些动作标签：
    - `TRAVEL: ` 表示使用指定的遍历方式遍历树状结构，是一种内建的迭代器或选择器。
    - `SQL: ` 表示在结构化数据上执行 SQL 查询，从而实现复杂的选择、迭代以及规约操作。
    - 其他针对字符串和数值的内建执行器，见本文档 3.1) 节。
+- `via`：主要用于定义执行选择、迭代、规约操作时的过滤参数。
 
 #### 2.1.10) 副词属性
 
@@ -2709,8 +2714,7 @@ def on_battery_changed (on_value, root_in_scope, source, event, time_stamp, even
     <bind on="$_DOCUMENT('#the-user-name').attr.value" as="user_name" />
 ```
 
-__是否考虑：__
-
+__是否考虑：__  
 我们还可以考虑使用 `dababind` 属性实现元素属性或内容到变量的响应式处理，就上面的 HVML 代码，我们希望实现用户输入框中的内容和变量 `$user_name` 绑定。只要用户修改了输入框中的内容，将自动修改 `$user_name` 的值，而无需使用 `observe` 标签。为此，我们可以如下编写 HVML 代码：
 
 ```html
@@ -2975,17 +2979,16 @@ There must never be two or more attributes on the same start tag whose names are
     </choose>
 ```
 
-尽管对符合条件的介词属性值，我们可以省略其周围的单引号（U+0027 APOSTROPHE `'`）或者双引号（U+0022 QUOTATION MARK `"`），如：
+除了上面所述无引号属性值语法之外，我们还可以在如下情形下省略介词属性值周围的单引号（U+0027 APOSTROPHE `'`）或者双引号（U+0022 QUOTATION MARK `"`）：
+
+1. 当使用 JSON 表述方法定义数组或对象作为介词属性值时。
 
 ```html
-    <init as _TIMERS uniquely by id>
-    </init>
+    <choose on ["zh_CN", "en_US"] to "append update" in #the-user-list with $user_item>
+    </choose>
 ```
 
-但建议使用单引号或者双引号，以使得 HVML 代码的书写效果更为美观。
-
-__是否考虑：__  
-当使用单引号时，将忽略整个属性值字符串中的所有 JSON 表达式，当做普通字符串处理。
+另外，当使用单引号时，将忽略整个属性值字符串中的所有 JSON 表达式以及 JSON 表述，当做普通字符串处理。
 
 在某些动作元素（如 `update`）中，我们可以使用除 `=` 之外的属性值操作符来改变目标元素或者数据的属性或者内容：
 
@@ -3224,7 +3227,15 @@ Where character references are allowed, a character reference of a U+000A LINE F
         "文艺"青年。
 """,
 }
+```
 
+6) 增加字节序列类型，使用 `bx`、`bb` 等前缀，分别表示十六进制表达或二进制表达。如：
+
+```js
+{
+    md5_hex:         bx00112233445566778899AABBCCDDEEFF,
+    binary:      bb0011.1100.0011.0011,
+}
 ```
 
 #### 3.1.4) 字符引用/Character references
