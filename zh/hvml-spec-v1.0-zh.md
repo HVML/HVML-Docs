@@ -304,6 +304,9 @@ __注：__
 <!DOCTYPE hvml SYSTEM "v: python">
 <hvml target="html">
     <head>
+    </head>
+
+    <body>
         <init as="global">
             { "locale" : "zh_CN" }
         </init>
@@ -316,9 +319,7 @@ __注：__
         </init>
 
         <listen at="dtbus://system/status" as="systemStatus" />
-    </head>
 
-    <body>
         <archetype name="user_item">
             <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
                 <img class="avatar" src="$?.avatar" />
@@ -1235,20 +1236,21 @@ HVML 定义的上下文变量可罗列如下：
 比如要实现 2.4) 小节中根据当前 `locale` 动态生成搜索链接的功能，我们也可以使用嵌套在 `choose` 标签中的 `update` 标签完成相关功能，如：
 
 ```html
-    <head>
-        <init as="global">
-            { "locale" : "zh_CN" }
-        </init>
+  <head>
+      ...
+  </head>
 
-        <init as="locales">
-            {
-              "zh_CN" : {"se_name" : "Baidu", "se_url": "https://www.baidu.com", "se_title": "百度" },
-              "zh_TW" : {"se_name" : "Bing", "se_url": "https://www.bing.com", "se_title": "必应" }
-            }
-        </init>
+  <body>
+    <init as="global">
+        { "locale" : "zh_CN" }
+    </init>
 
-        ...
-    </head>
+    <init as="locales">
+      {
+          "zh_CN" : {"se_name" : "Baidu", "se_url": "https://www.baidu.com", "se_title": "百度" },
+          "zh_TW" : {"se_name" : "Bing", "se_url": "https://www.bing.com", "se_title": "必应" }
+      }
+    </init>
 
     <footer id="the-footer">
         <p><a href="" title=""></a></p>
@@ -1266,6 +1268,7 @@ HVML 定义的上下文变量可罗列如下：
             <update on="~p" textContent="Bad \$locales/\$global data!" />
         </catch>
     </choose>
+  </body>
 ```
 
 在上面的例子中，我们在 `by` 介词属性中指定了一个内置的 KEY 执行器，该执行器将 `$global.locale` 的值作为键名，返回了 `on` 介词属性指定的 `$locales` 字典数组上对应的键值，使用该键值通过其后的 `update` 子元素实现了 `in` 介词属性指定的 HTML 文档片段中的元素更新操作。
@@ -1278,6 +1281,9 @@ HVML 定义的上下文变量可罗列如下：
 
 ```html
     <head>
+    </head>
+
+    <body>
         <init as="global">
             { "locale" : "zh_CN" }
         </init>
@@ -1288,9 +1294,7 @@ HVML 定义的上下文变量可罗列如下：
                 { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
             ]
         </init>
-    </head>
 
-    <body>
         <archetype name="user_item">
             <li class="user-item">
                 <img class="avatar" src="" />
@@ -2784,6 +2788,9 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: p
 <!DOCTYPE hvml SYSTEM "hvml: python">
 <hvml target="html" lang="en">
     <head>
+    </head>
+
+    <body>
         <init as="global">
             { "locale" : "zh_CN" }
         </init>
@@ -2796,9 +2803,7 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: p
         </init>
 
         <listen at="dtbus://system/status" as="systemStatus" />
-    </head>
 
-    <body>
         <header id="theStatusBar">
             <img class="mobile-status" src="" />
             <span class="mobile-operator"></span>
@@ -5534,6 +5539,9 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
 <!DOCTYPE hvml>
 <hvml target="xml">
     <head>
+    </head>
+
+    <body>
         <init as="fileInfo">
             {
                 "curr_path": "/home/", 
@@ -5541,9 +5549,7 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
                 "selected_name": "..",
             }
         </init>
-    </head>
 
-    <body>
         <label id="path">
             $fileInfo.curr_path
         </label>
