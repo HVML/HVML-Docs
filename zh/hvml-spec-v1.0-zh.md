@@ -505,8 +505,8 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
-        <init as="_" from="https://foo.bar/messages/$_SYSTEM.locale">
-        </init>
+        <set on="_" from="https://foo.bar/messages/$_SYSTEM.locale" to="merge">
+        </set>
 
         <title>$_['Hello, world!']</title>
     </head>
@@ -518,7 +518,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 </hvml>
 ```
 
-在上面的 HVML 代码中，我们在头部使用 `init` 标签初始化了 `$_` 变量，该变量的内容来自 `https://foo.bar/messages/$_SYSTEM.locale`。注意其中的 `$_SYSTEM.locale` 是一个 JSON 求值表达式，会返回当前系统的语言地区标识符（如 `zh_CN`），HVML 解释器求值并替代后的最终 URL 为：`https://foo.bar/messages/zh_CN`。从该 URL 获得的文件内容一般为：
+在上面的 HVML 代码中，我们在头部使用 `set` 标签设置了 `$_` 变量，该变量的内容来自 `https://foo.bar/messages/$_SYSTEM.locale`。注意其中的 `$_SYSTEM.locale` 是一个 JSON 求值表达式，会返回当前系统的语言地区标识符（如 `zh_CN`），HVML 解释器求值并替代后的最终 URL 为：`https://foo.bar/messages/zh_CN`。从该 URL 获得的文件内容一般为：
 
 ```json
 {
