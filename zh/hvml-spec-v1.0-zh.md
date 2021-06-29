@@ -315,7 +315,7 @@ __注：__
             ]
         </init>
 
-        <listen at="hibus://system/status" as="systemStatus" />
+        <listen at="dtbus://system/status" as="systemStatus" />
     </head>
 
     <body>
@@ -503,7 +503,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
-        <init as="_" with="https://foo.bar/messages/$_SYSTEM.locale">
+        <init as="_" from="https://foo.bar/messages/$_SYSTEM.locale">
         </init>
 
         <title>$_['Hello, world!']</title>
@@ -817,7 +817,7 @@ HVML 还定义有如下一些动作标签：
 - `listen` 标签用于定义一个对长链接数据源的监听，并绑定一个变量名。
 - `request` 标签用来在指定的被监听数据源上发出一个请求。
 - `close` 标签用于关闭一个先前建立的长连接数据源。
-- `load` 标签用来装载一个由 `with` 属性指定的新 HVML 文档，并可将 `by` 属性指定的对象数据作为参数传递到新的 HVML 文档。
+- `load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为请求参数传递到新的 HVML 文档。
 - `back` 标签用于返回到当前会话中的特定页面，或者终止当前的模态对话框。
 - `define` 和 `include` 标签用于实现操作组的复制。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作。
 - `call` 和 `return` 标签用于实现类似函数调用的功能。我们可以通过 `call` 同步或者异步调用一个操作组，并在操作组中使用 `return` 返回一个结果。
@@ -883,7 +883,8 @@ HVML 还定义有如下一些动作标签：
 
 针对动作标签，HVML 定义了如下几个介词（如 `on`、`in`、`to` 等）属性，用于定义执行动作时依赖的数据（或元素）及其集合。如：
 
-- `at`：用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URI。
+- `at`：在 `listen` 动作元素中，用于定义执行动作所依赖的外部长连接，其属性值通常是一个 URI。
+- `from`：在 `init`、`load` 等动作元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URI。
 - `on`：用于定义执行动作所依赖的数据、元素或元素集合。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`@?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
 - `in`：用于定义执行操作的文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。注意，使用 `in` 介词属性指定数据作为操作范围时，不会改变文档的操作位置。
 - `for`：在 `observe` 标签中，用于定义观察（observe）操作对应的事件名称；在 `match` 标签中，用于定义匹配条件。
@@ -1381,12 +1382,12 @@ HVML 定义的上下文变量可罗列如下：
 
 `observe` 标签用于观察特定数据源上获得数据或状态，或者文档元素节点上的事件，并完成指定的操作。
 
-假设文档通过本地总线机制（本例中是 `hibus`）监听来自系统的状态改变事件，如电池电量、WiFi 信号强度、移动网络信号强度等信息，并在文档使用相应的图标来表示这些状态的改变。为此，我们可以定义如下的 HVML 文档：
+假设文档通过本地总线机制（本例中是 `dtbus`）监听来自系统的状态改变事件，如电池电量、WiFi 信号强度、移动网络信号强度等信息，并在文档使用相应的图标来表示这些状态的改变。为此，我们可以定义如下的 HVML 文档：
 
 ```html
 <hvml>
     <head>
-        <listen at="hibus://localhost/system/status" as="systemStatus" />
+        <listen at="dtbus://localhost/system/status" as="systemStatus" />
     </head>
 
     <body>
@@ -1413,7 +1414,7 @@ HVML 定义的上下文变量可罗列如下：
 
 另外一个 `observe` 标签的使用例子描述如下。
 
-在 `head` 元素中，我们通过 `listen` 监听 `hibus://localhost/system/status`（`on` 属性）上来的通知事件，该监听被命名为 `systemStatus`（`as` 属性）。每当系统状态发生变化时，就会从这个数据源收到相应的数据包。为方便数据交换，所有的数据包都打包为 JSON 格式，并具有如下的格式：
+在 `head` 元素中，我们通过 `listen` 监听 `dtbus://localhost/system/status`（`on` 属性）上来的通知事件，该监听被命名为 `systemStatus`（`as` 属性）。每当系统状态发生变化时，就会从这个数据源收到相应的数据包。为方便数据交换，所有的数据包都打包为 JSON 格式，并具有如下的格式：
 
 ```json
     {
@@ -1580,12 +1581,12 @@ HVML 定义的上下文变量可罗列如下：
 
 #### 2.2.9) `request` 标签
 
-`request` 标签用于在一个被监听的数据源上发出一个同步或者异步的请求。比如在通过 MQTT 或者本地数据总线发送请求到外部模块或者远程计算机时，我们使用 `request` 标签，然后在另外一个 `observe` 标签定义的 HVML 元素中做相应的处理。比如，我们要通过 hiBus 协议向系统守护进程发出一个获得当前可用 WiFi 热点列表的请求：
+`request` 标签用于在一个被监听的数据源上发出一个同步或者异步的请求。比如在通过 MQTT 或者本地数据总线发送请求到外部模块或者远程计算机时，我们使用 `request` 标签，然后在另外一个 `observe` 标签定义的 HVML 元素中做相应的处理。比如，我们要通过 hiDataBus 协议向系统守护进程发出一个获得当前可用 WiFi 热点列表的请求：
 
 ```html
 </hvml>
     <head>
-        <listen at="hibus://localhost/system/wifiManager" as="wifimanager" />
+        <listen at="dtbus://localhost/system/wifiManager" as="wifimanager" />
     </head>
 
     <body>
@@ -1700,7 +1701,7 @@ HVML 为不同的数据类型提供了如下操作：
                 { "action" : "get_list" }
             </init>
 
-            <listen at="hibus://localhost/system/wifiManager" as="wifimanager" />
+            <listen at="dtbus://localhost/system/wifiManager" as="wifimanager" />
 
             <request on="$wifimanager" to="observe" with="$paramWifiList" asynchronously>
                 <observe on="$wifimanager" for="ok">
@@ -1721,20 +1722,20 @@ HVML 为不同的数据类型提供了如下操作：
 
 #### 2.2.12) `load` 和 `back` 标签
 
-`load` 标签用来装载一个由 `with` 属性指定的新 HVML 文档，并可将 `by` 属性指定的对象数据作为参数传递到新的 HVML 文档。如：
+`load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为参数传递到新的 HVML 文档。如：
 
 ```html
-    <load with="b.hvml" by="$user" as="_modal" />
+    <load from="b.hvml" with="$user" name="userProfile" type="modal" />
 ```
 
-`load` 元素将在当前会话中装载一个新的页面，我们使用 `as` 属性指定这个页面的名称；如下页面名称具有特殊含义：
+`load` 元素将装载一个新的页面，我们使用 `name` 属性指定这个页面的名称，使用 `type` 属性指定新页面是模态窗口还是非模态窗口：
 
-- `_modal`：用于表示创建一个模态对话框。模态对话框将获得输入焦点，直到返回为止。
-- `_blank`：用于表示创建一个全新的会话。
+- `self`：表示不创建会话，也不创建窗口，而在当前窗口中渲染新的内容。
+- `modal`：表示在当前会话中创建一个模态窗口。模态窗口将获得输入焦点，直到返回为止。
+- `modaless`：表示在当前会话中创建一个非模态的新窗口。
+- `session`：表示创建一个新会话，并在新会话中创建一个新窗口渲染新的内容。
 
-若指定的页面名称不同于以上的特殊名称，则会使用新页面内容覆盖当前的页面内容。
-
-`back` 标签用于返回到当前会话中的特定页面，或者终止当前的模态对话框。
+`back` 标签用于返回到当前会话中的上个页面，或者终止当前的模态窗口。
 
 ```html
     <init as="user_info">
@@ -1749,10 +1750,10 @@ HVML 为不同的数据类型提供了如下操作：
     <back to="_caller" with="$user_info" />
 ```
 
-使用 `back` 标签时，若当前活动是一个页面，我们可以使用 `to` 属性指定要返回的活动名称（`_caller` 是保留名称，用于指代调用该活动的活动）。此时，还可以使用 `with` 属性返回一个数据。当当前页面是一个模态对话框时，该数据将作为 `load` 元素的结果数据返回；如果当前页面不是一个模态对话框，则该数据将做为请求数据（对应 `$_REQUEST` 内置全局变量）提供给目标返回对应的页面，此时，该页面会执行一次重新装载操作（相当于浏览器刷新页面功能）。
+使用 `back` 标签时，我们可以使用 `to` 属性指定要返回的页面名称（`_caller` 是保留名称，用于指代调用该页面的页面名称）。此时，还可以使用 `with` 属性返回一个数据。当前页面是一个模态对话框时，该数据将作为 `load` 元素的结果数据返回；如果当前页面不是一个模态对话框，则该数据将做为请求数据（对应 `$_REQUEST` 内置全局变量）提供给目标返回对应的页面，此时，该页面会执行一次重新装载操作（相当于浏览器刷新页面功能）。
 
 ```html
-    <load with="new_user.hvml" as="_modal">
+    <load from="new_user.hvml" as="_modal">
         <test on="$?.retcode">
             <match for="ok" exclusively>
                 <choose on="$2.payload" to="append" in="#the-user-list" with="$user_item">
@@ -1811,6 +1812,8 @@ HVML 为不同的数据类型提供了如下操作：
 上面的 HVML 代码，在初始化 `listbox` 时，以及用户点击了 `#goRoot` 或者 `#goHome` 按钮时，使用了 `$fillDirEntries` 定义的操作组。注意，在三次使用 `include` 标签时，通过 `with` 属性传入了不同的参数。
 
 `include` 元素不产生任何结果数据，故而不能包含子动作元素。
+
+`define` 元素可使用 `from` 属性从指定的 URL 中装载 HVML 片段。
 
 #### 2.2.14) `call` 和 `return` 标签
 
@@ -2569,7 +2572,7 @@ class RUserRegionStats (HVMLReducer):
 
 ```json
     {
-        "source": "hibus://localhost/system/status",
+        "source": "dtbus://localhost/system/status",
         "event": "battery",
         "time": 20200616100207.567,
         "signature": "XXXXX",
@@ -2790,7 +2793,7 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: p
             ]
         </init>
 
-        <listen at="hibus://system/status" as="systemStatus" />
+        <listen at="dtbus://system/status" as="systemStatus" />
     </head>
 
     <body>
