@@ -455,18 +455,20 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ##### 2.1.2.4) `$_TIMERS`
 
-`$_TIMERS`：主要用于在 `init` 标签中定义全局的定时器，具有固定的格式。如：
+`$_TIMERS`：用于全局的定时器，具有固定的格式，默认为空数组。可使用 `set`、`update` 等元素修改它的值，如：
 
 ```html
-    <init as="_TIMERS" uniquely by="id">
+<head>
+    <set on="$_TIMERS" to="merge">
         [
             { "id" : "foo", "interval" : 1000, "active" : "no" },
             { "id" : "bar", "interval" : 2000, "active" : "no" },
         ]
-    </init>
+    </set>
+</head>
 ```
 
-上述 `init` 标签定义了两个定时器（标识符分别为 `foo` 和 `bar`），间隔分别为 1 秒和 2 秒（使用毫秒为单位定义定时器）。这两个定时器均未激活（`active` 为 `no`）。
+上述包含在 `head` 元素中的 `set` 元素定义了两个定时器（标识符分别为 `foo` 和 `bar`），间隔分别为 1 秒和 2 秒（使用毫秒为单位定义定时器）。这两个定时器均未激活（`active` 为 `no`）。
 
 只要在 HVML 中修改某个定时器的 `active` 参数即可激活这个定时器，然后使用后面介绍的 `observe` 即可监听定时器到期时间：
 
@@ -632,7 +634,7 @@ HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并
 
 ```html
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
-    <bind on="$_DOCUMENT('#the-user-name').attr.value" as="$user_name" />
+    <bind on="$_DOCUMENT('#the-user-name').attr.value" as="user_name" />
 ```
 
 #### 2.1.4) 文档片段的 JSON 数据表达
@@ -1725,10 +1727,10 @@ HVML 为不同的数据类型提供了如下操作：
 `load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为参数传递到新的 HVML 文档。如：
 
 ```html
-    <load from="b.hvml" with="$user" name="userProfile" type="modal" />
+    <load from="b.hvml" with="$user" as="userProfile" type="modal" />
 ```
 
-`load` 元素将装载一个新的页面，我们使用 `name` 属性指定这个页面的名称，使用 `type` 属性指定新页面是模态窗口还是非模态窗口：
+`load` 元素将装载一个新的页面，我们使用 `as` 属性指定这个页面的名称，使用 `type` 属性指定新页面是模态窗口还是非模态窗口：
 
 - `self`：表示不创建会话，也不创建窗口，而在当前窗口中渲染新的内容。
 - `modal`：表示在当前会话中创建一个模态窗口。模态窗口将获得输入焦点，直到返回为止。
@@ -1753,7 +1755,7 @@ HVML 为不同的数据类型提供了如下操作：
 使用 `back` 标签时，我们可以使用 `to` 属性指定要返回的页面名称（`_caller` 是保留名称，用于指代调用该页面的页面名称）。此时，还可以使用 `with` 属性返回一个数据。当前页面是一个模态对话框时，该数据将作为 `load` 元素的结果数据返回；如果当前页面不是一个模态对话框，则该数据将做为请求数据（对应 `$_REQUEST` 内置全局变量）提供给目标返回对应的页面，此时，该页面会执行一次重新装载操作（相当于浏览器刷新页面功能）。
 
 ```html
-    <load from="new_user.hvml" as="_modal">
+    <load from="new_user.hvml" type="_modal">
         <test on="$?.retcode">
             <match for="ok" exclusively>
                 <choose on="$2.payload" to="append" in="#the-user-list" with="$user_item">
@@ -2383,12 +2385,12 @@ class HVMLChooser (object):
 
 ```html
     <head>
-        <init as="_TIMERS" uniquely by="id">
+        <set on="$_TIMERS" to="merge">
             [
                 { "id" : "foo", "interval" : 1000, "active" : "no" },
                 { "id" : "bar", "interval" : 2000, "active" : "no" },
             ]
-        </init>
+        </set>
     </head>
 
     <body>
@@ -2922,7 +2924,7 @@ Just the attribute name. The value is implicitly the empty string.
 In the following example, the `uniquely` attribute is given with the empty attribute syntax:
 
 ```html
-    <init as="_TIMERS" uniquely by="id">
+    <init as="foo" uniquely by="id">
 ```
 
 If an attribute using the empty attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
@@ -2934,7 +2936,7 @@ The attribute name, followed by zero or more ASCII whitespace, followed by a sin
 In the following example, the value attribute is given with the unquoted attribute value syntax:
 
 ```html
-    <init as=_TIMERS uniquely by=id>
+    <init as=foo uniquely by=id>
 ```
 
 If an attribute using the unquoted attribute syntax is to be followed by another attribute or by the optional U+002F SOLIDUS character (/) allowed in step 6 of the start tag syntax above, then there must be ASCII whitespace separating the two.
@@ -2946,7 +2948,7 @@ The attribute name, followed by zero or more ASCII whitespace, followed by a sin
 In the following example, the type attribute is given with the single-quoted attribute value syntax:
 
 ```html
-    <init as='_TIMERS' uniquely by='id'>
+    <init as='foo' uniquely by='id'>
 ```
 
 If an attribute using the single-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
@@ -5649,11 +5651,11 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
     <head>
         <listen at="mqtt://foo.bar/bracelet" as="braceletInfo">
 
-        <init as="_TIMERS" uniquely on="id">
+        <set on="$_TIMERS" to="merge">
             [
                 { "id" : "clock", "interval" : 1000, "active" : "yes" },
             ]
-        </init>
+        </set>
 
         <link rel="stylesheet" type="text/css" href="/foo/bar/bracelet.css">
     </head>
