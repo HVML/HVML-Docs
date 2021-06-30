@@ -3217,8 +3217,7 @@ Where character references are allowed, a character reference of a U+000A LINE F
 4) 使用如下后缀来明确表示数值（number）的类型：
    - 有符号长整型（64 位）：1234567890L
    - 无符号长整型（64 位）：1234567890UL
-   - 单精度浮点数：1234567890F
-   - 双精度浮点数：1234567890FL
+   - 长双精度浮点数：1234567890FL
 
 未显式指定类型的数值，全部视作双精度浮点数处理。
 
@@ -3243,7 +3242,7 @@ Where character references are allowed, a character reference of a U+000A LINE F
 
 ```js
 {
-    md5_hex:         bx00112233445566778899AABBCCDDEEFF,
+    md5_hex:     bx00112233445566778899AABBCCDDEEFF,
     binary:      bb0011.1100.0011.0011,
 }
 ```
