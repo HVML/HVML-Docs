@@ -3238,12 +3238,13 @@ Where character references are allowed, a character reference of a U+000A LINE F
 }
 ```
 
-6) 增加字节序列类型，使用 `bx`、`bb` 等前缀，分别表示十六进制表达或二进制表达。如：
+6) 增加字节序列类型，使用 `bx`、`bb`、`b64` 等前缀，分别表示十六进制表达或二进制表达。如：
 
 ```js
 {
-    md5_hex:     bx00112233445566778899AABBCCDDEEFF,
-    binary:      bb0011.1100.0011.0011,
+    hex:     bx00112233445566778899AABBCCDDEEFF,
+    binary:  bb0011.1100.0011.0011,
+    base64:  b64UHVyQyBpcyBhbiBIVk1MIHBhcnNlciBhbmQgaW50ZXJwcmV0ZXIuCiA=,
 }
 ```
 
