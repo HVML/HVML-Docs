@@ -28,7 +28,7 @@ Language: Chinese
          - [2.1.2.3) `$_DOCUMENT`](#2123-_document)
          - [2.1.2.4) `$_TIMERS`](#2124-_timers)
          - [2.1.2.5) `$_L`](#2125-_l)
-         - [2.1.2.6) `$_`](#2126-_)
+         - [2.1.2.6) `$_T`](#2126-_t)
          - [2.1.2.7) 集合](#2127-集合)
       * [2.1.3) 动态 JSON 对象和 `bind` 标签](#213-动态-json-对象和-bind-标签)
       * [2.1.4) 文档片段的 JSON 数据表达](#214-文档片段的-json-数据表达)
@@ -498,7 +498,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 比如 `$_L.NOT($_L.NUMCMP('>', 5, 3))` 的结果是假值（`false`）。
 
-##### 2.1.2.6) `$_`
+##### 2.1.2.6) `$_T`
 
 该变量主要用于文本的本地化。常用用法如下：
 
@@ -506,19 +506,19 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
-        <set on="_" from="https://foo.bar/messages/$_SYSTEM.locale" to="merge" />
+        <set on="$_T.map" from="https://foo.bar/messages/$_SYSTEM.locale" to="merge" />
 
-        <title>$_['Hello, world!']</title>
+        <title>$_T.get('Hello, world!')</title>
     </head>
 
     <body>
-        <p>$_['Hello, HVML!']</p>
+        <p>$_t.get('Hello, HVML!')</p>
     </body>
 
 </hvml>
 ```
 
-在上面的 HVML 代码中，我们在头部使用 `set` 标签设置了 `$_` 变量，该变量的内容来自 `https://foo.bar/messages/$_SYSTEM.locale`。注意其中的 `$_SYSTEM.locale` 是一个 JSON 求值表达式，会返回当前系统的语言地区标识符（如 `zh_CN`），HVML 解释器求值并替代后的最终 URL 为：`https://foo.bar/messages/zh_CN`。从该 URL 获得的文件内容一般为：
+在上面的 HVML 代码中，我们在头部使用 `set` 标签设置了 `$_T.map`，该变量的内容来自 `https://foo.bar/messages/$_SYSTEM.locale`。注意其中的 `$_SYSTEM.locale` 是一个 JSON 求值表达式，会返回当前系统的语言地区标识符（如 `zh_CN`），HVML 解释器求值并替代后的最终 URL 为：`https://foo.bar/messages/zh_CN`。从该 URL 获得的文件内容一般为：
 
 ```json
 {
