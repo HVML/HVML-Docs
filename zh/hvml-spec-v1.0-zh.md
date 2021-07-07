@@ -3237,13 +3237,24 @@ Where character references are allowed, a character reference of a U+000A LINE F
 }
 ```
 
-6) 增加字节序列类型，使用 `bx`、`bb`、`b64` 等前缀，分别表示十六进制表达或二进制表达。如：
+6) 增加字节序列类型，使用 `bx`、`bb`、`b64` 等前缀，分别表示十六进制表达、二进制表达和 Base64 编码。如：
 
 ```js
 {
     hex:     bx00112233445566778899AABBCCDDEEFF,
     binary:  bb0011.1100.0011.0011,
     base64:  b64UHVyQyBpcyBhbiBIVk1MIHBhcnNlciBhbmQgaW50ZXJwcmV0ZXIuCiA=,
+}
+```
+
+使用二进制表达时，中间的句点只用于方便阅读，解析时忽略。
+
+7) 键名、字符串，可使用单引号（`'`）或者双引号（`"`）包围，使用单引号时，字符串中的双引号不需要转义处理。如：
+
+```js
+{
+    'Title': "David's Book",
+    "Description": 'Daivd says: "This is my book"',
 }
 ```
 
