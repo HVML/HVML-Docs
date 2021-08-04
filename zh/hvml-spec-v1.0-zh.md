@@ -318,7 +318,7 @@ __注：__
             ]
         </init>
 
-        <listen at="unix:///var/tmp/hibus.sock" as="systemStatus" protocol="hibus" />
+        <listen at="unix:///var/tmp/hibus.sock" as="systemStatus" for="hibus" />
 
         <archetype name="user_item">
             <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
@@ -889,8 +889,8 @@ HVML 还定义有如下一些动作标签：
 - `from`：在 `init`、`load` 等动作元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URI。
 - `on`：用于定义执行动作所依赖的数据、元素或元素集合。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`@?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
 - `in`：用于定义执行操作的文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。注意，使用 `in` 介词属性指定数据作为操作范围时，不会改变文档的操作位置。
-- `for`：在 `observe` 标签中，用于定义观察（observe）操作对应的事件名称；在 `match` 标签中，用于定义匹配条件。
-- `as`：用于定义 `init`、`bind`、`load` 等元素绑定的变量名称、页面名称等。
+- `for`：在 `observe` 标签中，用于定义观察（observe）操作对应的事件名称；在 `match` 标签中，用于定义匹配条件；在 `listen` 标签中，用于定义协议或用途。
+- `as`：用于定义 `init`、`listen`、`bind`、`load` 等元素绑定的变量名称、页面名称等。
 - `with`：用于定义克隆数据项或者文档片段时模板（`archetype` 或 `archedata`）名称。需要模板但未定义的情形下，会产生 `nodata` 错误。
 - `to`：用于定义后续动作或者动作列表，多个动作使用空格分割。一个动作如果定义有相应的动作标签，则需要使用子元素描述，也可以是如下无需使用子元素描述的动作：
    - `noop`：空操作。
@@ -1706,7 +1706,7 @@ HVML 为不同的数据类型提供了如下操作：
                 { "action" : "get_list" }
             </init>
 
-            <listen at="unix:///var/hibus.sock" as="wifimanager" protocol="hiBus" />
+            <listen at="unix:///var/hibus.sock" as="wifimanager" for="hiBus" />
 
             <request on="$wifimanager" to="observe" with="$paramWifiList" asynchronously>
                 <observe on="$wifimanager" for="ok">
@@ -5665,7 +5665,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
-        <listen at="tcp://foo.bar:1300" as="braceletInfo" protocol="mqtt">
+        <listen at="tcp://foo.bar:1300" as="braceletInfo" for="mqtt">
 
         <set on="$_TIMERS" to="merge">
             [
