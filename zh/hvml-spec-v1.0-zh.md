@@ -318,7 +318,7 @@ __注：__
             ]
         </init>
 
-        <listen at="dtbus://system/status" as="systemStatus" />
+        <listen at="unix:///var/tmp/hibus.sock" as="systemStatus" protocol="hibus" />
 
         <archetype name="user_item">
             <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
@@ -398,7 +398,7 @@ __注：__
 
 如上例所示，HVML 采用了类似 HTML 的标签来定义文档的整体结构：
 
-- 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。我们还可以使用 `SYSTEM` 属性来定义处理该 HVML 文档使用的标签前缀以及依赖的外部模块。
+- 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。我们还可以使用 `SYSTEM` 属性来定义该 HVML 文档使用的标签前缀以及依赖的外部模块。
 - `hvml` 标签用于定义整个 HVML 文档。可包含如下属性：
    1. `target`：定义 HVML 文档的目标标记语言，取 `html`、`xml` 等值。
    1. `lang`： 定义语言或区域信息。
@@ -415,7 +415,7 @@ __注：__
 需要注意的是，HVML 的标签、属性名称、变量名称是区分大小写的，这主要是为了和 XML 相关规范保持一致。
 
 __是否考虑：__   
-在 HVML 文档中，可以定义多个 `body` 本地内容，使用 `id` 属性区别不同的本体内容。在执行过程中，可通过 `load` 元素装载不同的本地内容。
+在 HVML 文档中，可以定义多个 `body` 本地内容，使用 `id` 属性区别不同的本体内容。在执行过程中，可通过 `load` 元素装载不同的本体内容。
 
 #### 2.1.2) 数据和变量
 
@@ -854,7 +854,7 @@ HVML 还定义有如下一些动作标签：
         <error raw>
             <p class="text-danger">There is an error.</p>
         </error>
-        
+
         <except>
             <p class="text-warning">There is an execption: {$?.messages}</p>
         </except>
@@ -1706,7 +1706,7 @@ HVML 为不同的数据类型提供了如下操作：
                 { "action" : "get_list" }
             </init>
 
-            <listen at="dtbus://localhost/system/wifiManager" as="wifimanager" />
+            <listen at="unix:///var/hibus.sock" as="wifimanager" protocol="hiBus" />
 
             <request on="$wifimanager" to="observe" with="$paramWifiList" asynchronously>
                 <observe on="$wifimanager" for="ok">
@@ -5665,7 +5665,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
-        <listen at="mqtt://foo.bar/bracelet" as="braceletInfo">
+        <listen at="tcp://foo.bar:1300" as="braceletInfo" protocol="mqtt">
 
         <set on="$_TIMERS" to="merge">
             [
