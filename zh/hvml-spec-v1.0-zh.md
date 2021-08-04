@@ -1795,11 +1795,11 @@ HVML 为不同的数据类型提供了如下操作：
             <include on="$fillDirEntries" with="/home" />
         </listbox>
 
-        <button id="goRoot>
+        <button id="goRoot">
             Root
         </button>
 
-        <button id="goHome>
+        <button id="goHome">
             Home
         </button>
 
