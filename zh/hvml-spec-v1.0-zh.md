@@ -2060,7 +2060,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 ```
     ADD: BY <number_expression>, NOT BEYOND <number_expression>
-    
+
     <number_expression>: <literal_number> | <number_evaluation_expression>
     <number_evaluation_expression>: <json_evaluation_expression>
 ```
@@ -2071,7 +2071,7 @@ HVML 为不同的数据类型提供了如下操作：
     [ 100, 97, 94, 91 ]
 ```
 
-对于数值数据，若不指定 `by` 属性时，默认使用 `ADD: MULTIPLY 2, NOT BEYOND $?` 执行器；该执行器将产生只包含一个数值的数列，这个数值就是初始上下文数据。
+对于数值数据，若不指定 `by` 属性时，默认使用 `ADD: BY 2, NOT BEYOND $?` 执行器；该执行器将产生只包含一个数值的数列，这个数值就是初始上下文数据。
 
 注：数值执行器可能导致死循环。
 
