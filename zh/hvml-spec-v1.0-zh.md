@@ -1895,16 +1895,16 @@ HVML 为不同的数据类型提供了如下操作：
     <choose on="$locales" to="update" in="#the-footer" by="KEY: $global.locale">
         <update on="~ p > a" textContent="$?.se_name" attr.href="$?.se_url" attr.title="$?.se_title" />
         <catch for="error:nodata">
-            <update on="~ p" textContent="You forget to define the \$locales/\$global variables!" />
+            <update on="~ p" textContent='You forget to define the $locales/$global variables!' />
         </catch>
         <catch for="error:*">
-            <update on="~ p" textContent="You forget to define the \$locales/\$global variables!" />
+            <update on="~ p" textContent='You forget to define the $locales/$global variables!' />
         </catch>
         <catch for="KeyError">
             <update on="~ p > a" textContent="Google" attr.href="https://www.google.com" attr.title="Google" />
         </catch>
         <catch>
-            <update on="~ p" textContent="Bad \$locales/\$global data!" />
+            <update on="~ p" textContent='Bad $locales/$global data!' />
         </catch>
     </choose>
 ```
