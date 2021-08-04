@@ -2990,10 +2990,17 @@ There must never be two or more attributes on the same start tag whose names are
 
 除了上面所述无引号属性值语法之外，我们还可以在如下情形下省略介词属性值周围的单引号（U+0027 APOSTROPHE `'`）或者双引号（U+0022 QUOTATION MARK `"`）：
 
-1. 当使用 JSON 表述方法定义数组或对象作为介词属性值时。
+1. 当使用 JSON 表述方法定义数组或对象作为介词属性值时。如，
 
-```html
+```
     <choose on ["zh_CN", "en_US"] to "append update" in #the-user-list with $user_item>
+    </choose>
+```
+
+或，
+
+```
+    <choose on {"zh_CN": 100, "en_US": 50} to "append update" in #the-user-list with $user_item>
     </choose>
 ```
 
