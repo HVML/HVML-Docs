@@ -3017,7 +3017,7 @@ There must never be two or more attributes on the same start tag whose names are
 
 如，
 
-```html
+```
     <choose on "$2.payload" to "append update" in "#the-user-list" with "$user_item">
         <update attr.class %= "text-* text-info" />
     </choose>
