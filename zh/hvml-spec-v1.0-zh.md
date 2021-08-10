@@ -1591,18 +1591,23 @@ HVML 定义的上下文变量可罗列如下：
 ```html
 </hvml>
     <head>
-        <listen at="dtbus://localhost/system/wifiManager" as="wifimanager" />
+        <listen at="unix:///var/run/hibus.sock" as="hibus" for="hiBus"/>
     </head>
 
     <body>
         ...
 
-        <request on="$wifimanager" to="observe" asynchronously>
-            <observe on="$wifimanager" for="wifilist" to="iterate">
+        <request on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiGetHotspots" as="wifilist" asynchronously>
+            <observe on="$hibus" for="result" via="$wifilist" to="iterate">
                 ...
             </observe>
         </request>
 
+        <request on="$hibus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED" as="networkchanged">
+            <observe on="$hibus" for="event" via="$networkchanged">
+                ...
+            </observe>
+        </request>
         ...
     </body>
 </hvml>
@@ -1706,11 +1711,11 @@ HVML 为不同的数据类型提供了如下操作：
                 { "action" : "get_list" }
             </init>
 
-            <listen at="unix:///var/hibus.sock" as="wifimanager" for="hiBus" />
+            <listen at="unix:///var/run/hibus.sock" as="hibus" for="hiBus" />
 
-            <request on="$wifimanager" to="observe" with="$paramWifiList" asynchronously>
-                <observe on="$wifimanager" for="ok">
-                    <close on="$wifimanager">
+            <request on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiScanHotspots" with="$paramWifiList" as="hotspots_list" asynchronously>
+                <observe on="$hibus" for="result" via="$hotspots_list">
+                    <close on="$hibus">
 
                     <!-- fill the Wifi list with the response data -->
                     <iterate on="$?" to="append" with="#wifi-item" in="#theWifiList">
@@ -5652,7 +5657,7 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
             { "cmdLine": "ls $fileInfo.curr_path" }
         <init>
 
-        <requset on="lcmd:///bin/ls" with="$lcmdParams">
+        <request on="lcmd:///bin/ls" with="$lcmdParams" via="GET">
             <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: 0">
             </iterate>
         </request>
