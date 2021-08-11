@@ -1,4 +1,4 @@
-# 魏永明访谈录：关于 HVML、开源、考鼑记和国产基础软件
+# 与魏森特长谈：关于 HVML、开源、国产基础软件和考鼑记
 
 - 原创作者：魏永明
 - 自媒体标题：（同标题）
@@ -7,22 +7,13 @@ __目录__
 
 - [引言](#引言)
 - [正文](#正文)
-   + [为什么要设计 HVML？](#为什么要设计-hvml)
-   + [使用 HVML 最重要的好处是什么？](#使用-hvml-最重要的好处是什么)
-   + [HVML 会开源吗？](#hvml-会开源吗)
-   + [围绕 HVML 编程语言有哪些软件需要开发？](#围绕-hvml-编程语言有哪些软件需要开发)
-   + [想过如何靠 HVML 赚钱吗？](#想过如何靠-hvml-赚钱吗)
-   + [HVML 的开发为何未遵循您所谓的“过程开源”原则？](#hvml-的开发为何未遵循您所谓的过程开源原则)
-   + [大概何时能看到 HVML 的初步成果？](#大概何时能看到-hvml-的初步成果)
-   + [如果 HVML 成功了，那会是什么样的一个场景？](#如果-hvml-成功了那会是什么样的一个场景)
-   + [能否谈谈您对开源的看法？](#能否谈谈您对开源的看法)
-   + [能否谈谈您对国产基础软件现状的看法？](#能否谈谈您对国产基础软件现状的看法)
-- [原文链接](#原文链接)
 
 
 ## 引言
 
-本文是根据近期魏永明和一些朋友们，就 HVML、开源以及国产基础软件的一些热点问题的交流和谈话内容整理而来。
+自《考鼑记》发表终章之后，除了因为华为的鸿蒙喧嚣了一阵子之外，业界并没有其他太多的热点事件。倒是前两天，魏森特发表了一篇文章叫《HVML 开发月报》，说是要向关心 HVML 的朋友们汇报一下开发进展。不过，魏森特并没有开放已经完成的源代码。这让七爷我感觉有点困惑——“过程开源”这个词，好像是魏森特提出来的啊！
+
+于是，我把魏森特请到良机酒家的阁楼上，聊了聊 HVML、开源、国产基础软件和考鼑记的那些事儿。本文就是这个访谈的实录。
 
 ## 正文
 
@@ -148,62 +139,4 @@ HVML 让几乎所有的编程语言，都可以轻松使用 Web 前端技术来�
 现在国内的基础软件有两大热点，一个是数据库，一个是操作系统，都有大厂参与。但这些基础软件，大多源自舶来的开源软件，技术上并没有多少突破，竞争主要看的就是谁的营销做得好，谁的牛皮吹得大。
 
 搞基础软件，还是要有对技术的敬畏之心，急功近利的做法是要不得的。
-
-## 附：商标声明
-
-本文提到的产品、技术或者术语名称，涉及北京飞漫软件技术有限公司在中国或其他地区注册的如下商标：
-
-1) 飛漫
-
-![飛漫](https://www.fmsoft.cn/application/files/cache/thumbnails/87f47bb9aeef9d6ecd8e2ffa2f0e2cb6.jpg)
-
-2) FMSoft
-
-![FMSoft](https://www.fmsoft.cn/application/files/cache/thumbnails/44a50f4b2a07e2aef4140a23d33f164e.jpg)
-
-3) 合璧
-
-![合璧](https://www.fmsoft.cn/application/files/4716/1180/1904/256132.jpg)
-![合璧](https://www.fmsoft.cn/application/files/cache/thumbnails/9c57dee9df8a6d93de1c6f3abe784229.jpg)
-![合壁](https://www.fmsoft.cn/application/files/cache/thumbnails/f59f58830eccd57e931f3cb61c4330ed.jpg)
-
-4) HybridOS
-
-![HybridOS](https://www.fmsoft.cn/application/files/cache/thumbnails/5a85507f3d48cbfd0fad645b4a6622ad.jpg)
-
-5) HybridRun
-
-![HybridRun](https://www.fmsoft.cn/application/files/cache/thumbnails/84934542340ed662ef99963a14cf31c0.jpg)
-
-6) MiniGUI
-
-![MiniGUI](https://www.fmsoft.cn/application/files/cache/thumbnails/54e87b0c49d659be3380e207922fff63.jpg)
-
-6) xGUI
-
-![xGUI](https://www.fmsoft.cn/application/files/cache/thumbnails/7fbcb150d7d0747e702fd2d63f20017e.jpg)
-
-7) miniStudio
-
-![miniStudio](https://www.fmsoft.cn/application/files/cache/thumbnails/82c3be63f19c587c489deb928111bfe2.jpg)
-
-8) HVML
-
-![HVML](https://www.fmsoft.cn/application/files/8116/1931/8777/HVML256132.jpg)
-
-9) 呼噜猫
-
-![呼噜猫](https://www.fmsoft.cn/application/files/8416/1931/8781/256132.jpg)
-
-10) Purring Cat
-
-![Purring Cat](https://www.fmsoft.cn/application/files/2816/1931/9258/PurringCat256132.jpg)
-
-11) PurC
-
-![PurC](https://www.fmsoft.cn/application/files/5716/2813/0470/PurC256132.jpg)
-
-## 原文链接
-
-<https://store.fmsoft.cn/campaign/denoteoss-lt>
 
