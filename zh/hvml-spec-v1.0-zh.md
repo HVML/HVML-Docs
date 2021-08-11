@@ -117,18 +117,18 @@ Language: Chinese
          - [3.2.5.14) Tag open state](#32514-tag-open-state)
          - [3.2.5.15) End tag open state](#32515-end-tag-open-state)
          - [3.2.5.16) Tag name state](#32516-tag-name-state)
-         - [3.2.5.17) RCDATA less-than sign state](#32517-rcdata-less_than-sign-state)
+         - [3.2.5.17) RCDATA less-than sign state](#32517-rcdata-less-than-sign-state)
          - [3.2.5.18) RCDATA end tag open state](#32518-rcdata-end-tag-open-state)
          - [3.2.5.19) RCDATA end tag name state](#32519-rcdata-end-tag-name-state)
-         - [3.2.5.20) RAWTEXT less-than sign state](#32520-rawtext-less_than-sign-state)
+         - [3.2.5.20) RAWTEXT less-than sign state](#32520-rawtext-less-than-sign-state)
          - [3.2.5.21) RAWTEXT end tag open state](#32521-rawtext-end-tag-open-state)
          - [3.2.5.22) RAWTEXT end tag name state](#32522-rawtext-end-tag-name-state)
-         - [3.2.5.23) Template data less-than sign state](#32523-template-data-less_than-sign-state)
+         - [3.2.5.23) Template data less-than sign state](#32523-template-data-less-than-sign-state)
          - [3.2.5.24) Template data end tag open state](#32524-template-data-end-tag-open-state)
          - [3.2.5.25) Template data end tag name state](#32525-template-data-end-tag-name-state)
          - [3.2.5.26) JSONTEXT state](#32526-jsontext-state)
          - [3.2.5.27) JSONTEXT JSON finished state](#32527-jsontext-json-finished-state)
-         - [3.2.5.28) JSONTEXT less-than sign state](#32528-jsontext-less_than-sign-state)
+         - [3.2.5.28) JSONTEXT less-than sign state](#32528-jsontext-less-than-sign-state)
          - [3.2.5.29) JSONTEXT end tag open state](#32529-jsontext-end-tag-open-state)
          - [3.2.5.30) JSONTEXT end tag name state](#32530-jsontext-end-tag-name-state)
          - [3.2.5.31) JSON value state](#32531-json-value-state)
@@ -150,20 +150,20 @@ Language: Chinese
          - [3.2.5.47) After attribute name state](#32547-after-attribute-name-state)
          - [3.2.5.48) Special attribute operator after attribute name state](#32548-special-attribute-operator-after-attribute-name-state)
          - [3.2.5.49) Before attribute value state](#32549-before-attribute-value-state)
-         - [3.2.5.50) Attribute value (double-quoted) state](#32550-attribute-value-double_quoted-state)
-         - [3.2.5.52) Attribute value (single-quoted) state](#32552-attribute-value-single_quoted-state)
+         - [3.2.5.50) Attribute value (double-quoted) state](#32550-attribute-value-double-quoted-state)
+         - [3.2.5.52) Attribute value (single-quoted) state](#32552-attribute-value-single-quoted-state)
          - [3.2.5.53) Attribute value (unquoted) state](#32553-attribute-value-unquoted-state)
          - [3.2.5.54) After attribute value (quoted) state](#32554-after-attribute-value-quoted-state)
-         - [3.2.5.55) Self-closing start tag state](#32555-self_closing-start-tag-state)
+         - [3.2.5.55) Self-closing start tag state](#32555-self-closing-start-tag-state)
          - [3.2.5.56) Bogus comment state](#32556-bogus-comment-state)
          - [3.2.5.57) Markup declaration open state](#32557-markup-declaration-open-state)
          - [3.2.5.58) Comment start state](#32558-comment-start-state)
          - [3.2.5.59) Comment start dash state](#32559-comment-start-dash-state)
          - [3.2.5.60) Comment state](#32560-comment-state)
-         - [3.2.5.61) Comment less-than sign state](#32561-comment-less_than-sign-state)
-         - [3.2.5.62) Comment less-than sign bang state](#32562-comment-less_than-sign-bang-state)
-         - [3.2.5.63) Comment less-than sign bang dash state](#32563-comment-less_than-sign-bang-dash-state)
-         - [3.2.5.64) Comment less-than sign bang dash dash state](#32564-comment-less_than-sign-bang-dash-dash-state)
+         - [3.2.5.61) Comment less-than sign state](#32561-comment-less-than-sign-state)
+         - [3.2.5.62) Comment less-than sign bang state](#32562-comment-less-than-sign-bang-state)
+         - [3.2.5.63) Comment less-than sign bang dash state](#32563-comment-less-than-sign-bang-dash-state)
+         - [3.2.5.64) Comment less-than sign bang dash dash state](#32564-comment-less-than-sign-bang-dash-dash-state)
          - [3.2.5.65) Comment end dash state](#32565-comment-end-dash-state)
          - [3.2.5.66) Comment end state](#32566-comment-end-state)
          - [3.2.5.67) Comment end bang state](#32567-comment-end-bang-state)
@@ -173,14 +173,14 @@ Language: Chinese
          - [3.2.5.71) After DOCTYPE name state](#32571-after-doctype-name-state)
          - [3.2.5.72) After DOCTYPE public keyword state](#32572-after-doctype-public-keyword-state)
          - [3.2.5.73) Before DOCTYPE public identifier state](#32573-before-doctype-public-identifier-state)
-         - [3.2.5.74) DOCTYPE public identifier (double-quoted) state](#32574-doctype-public-identifier-double_quoted-state)
-         - [3.2.5.75) DOCTYPE public identifier (single-quoted) state](#32575-doctype-public-identifier-single_quoted-state)
+         - [3.2.5.74) DOCTYPE public identifier (double-quoted) state](#32574-doctype-public-identifier-double-quoted-state)
+         - [3.2.5.75) DOCTYPE public identifier (single-quoted) state](#32575-doctype-public-identifier-single-quoted-state)
          - [3.2.5.76) After DOCTYPE public identifier state](#32576-after-doctype-public-identifier-state)
          - [3.2.5.77) Between DOCTYPE public identifier and system information state](#32577-between-doctype-public-identifier-and-system-information-state)
          - [3.2.5.78) After DOCTYPE system keyword state](#32578-after-doctype-system-keyword-state)
          - [3.2.5.79) Before DOCTYPE system information state](#32579-before-doctype-system-information-state)
-         - [3.2.5.80) DOCTYPE system information (double-quoted) state](#32580-doctype-system-information-double_quoted-state)
-         - [3.2.5.81) DOCTYPE system information (single-quoted) state](#32581-doctype-system-information-single_quoted-state)
+         - [3.2.5.80) DOCTYPE system information (double-quoted) state](#32580-doctype-system-information-double-quoted-state)
+         - [3.2.5.81) DOCTYPE system information (single-quoted) state](#32581-doctype-system-information-single-quoted-state)
          - [3.2.5.82) After DOCTYPE system information state](#32582-after-doctype-system-information-state)
          - [3.2.5.83) Bogus DOCTYPE state](#32583-bogus-doctype-state)
          - [3.2.5.84) CDATA section state](#32584-cdata-section-state)
@@ -198,7 +198,7 @@ Language: Chinese
       * [3.2.6) 树的构造](#326-树的构造)
          - [3.2.6.1) 创建和插入模式/Creating and inserting nodes](#3261-创建和插入模式creating-and-inserting-nodes)
          - [3.2.6.2) 解析仅包含文本的元素/Parsing elements that contain only text](#3262-解析仅包含文本的元素parsing-elements-that-contain-only-text)
-         - [3.2.6.3) 自动关闭元素/Auto-closing elements](#3263-自动关闭元素auto_closing-elements)
+         - [3.2.6.3) 自动关闭元素/Auto-closing elements](#3263-自动关闭元素auto-closing-elements)
          - [3.2.6.4) HVML 内容的词法解析规则/The rules for parsing tokens in HVML content](#3264-hvml-内容的词法解析规则the-rules-for-parsing-tokens-in-hvml-content)
          - [3.2.6.5) 外部内容的词法解析规则/The rules for parsing tokens in foreign content](#3265-外部内容的词法解析规则the-rules-for-parsing-tokens-in-foreign-content)
       * [3.2.7) 结束](#327-结束)
@@ -493,14 +493,28 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 `$_L` 是一个动态 JSON 对象，该对象完成数值对比、字符串对比以及逻辑与、或、异或、取反等逻辑操作：
 
-1. `$_L.NOT(<json_evaluation_expression>)`：用于逻辑取反操作。
-1. `$_L.AND(<json_evaluation_expression>, <json_evaluation_expression>, ...)`：用于逻辑与运算。
-1. `$_L.OR(<json_evaluation_expression>, <json_evaluation_expression>, ...)`：用于逻辑或运算。
-1. `$_L.XOR(<json_evaluation_expression>, <json_evaluation_expression>)`：用于逻辑异或运算。
-1. `$_L.NUMCMP(< '>' | '>=' | '==' | '<=' | '<' | '!=' >, <json_evaluation_expression>, <json_evaluation_expression>)`：用于比较两个数值；第一个参数用来表示比较运算符，其后的两个参数用来传递两个数值。
-1. `$_L.STRCMP(< 'case' | 'wildcard' | 'reg' >, <json_evaluation_expression>, <json_evaluation_expression>)`：用于对比两个字符串；第一个参数用来表示字符串的匹配方式（区分大小写、通配符、正则表达式），其后的两个参数用来传递两个字符串。
+1. `$_L.not(<json_evaluation_expression>)`：用于逻辑取反操作。
+1. `$_L.and(<json_evaluation_expression>, <json_evaluation_expression>, ...)`：用于逻辑与运算。
+1. `$_L.or(<json_evaluation_expression>, <json_evaluation_expression>, ...)`：用于逻辑或运算。
+1. `$_L.xor(<json_evaluation_expression>, <json_evaluation_expression>)`：用于逻辑异或运算。
+1. `$_L.eq(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较两个参数是否在数值上相等。
+1. `$_L.ne(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较两个参数是否在数值上不相等。
+1. `$_L.gt(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上大于第二个参数。
+1. `$_L.ge(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上大于或等于第二个参数。
+1. `$_L.lt(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上小于第二个参数。
+1. `$_L.le(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上小于或等于第二个参数。
+1. `$_L.streq(< 'caseless' | 'case' | 'wildcard' | 'reg' >, <json_evaluation_expression>, <json_evaluation_expression>)`：用于对比两个字符串是否相等；第一个参数用来表示字符串的匹配方式（区分大小写、通配符、正则表达式），其后的两个参数用来传递两个字符串。
 
-比如 `$_L.NOT($_L.NUMCMP('>', 5, 3))` 的结果是假值（`false`）。
+比如 `$_L.not($_L.gt(5, 3))` 的结果是假值（`false`）。
+
+注意：对非布尔型 JSON 值，符合如下条件时视作 `false`，其他情形视作 `true`：
+
+1. `null` 和 `undefined`。
+1. 数值0。
+1. 空字符串。
+1. 空数组。
+1. 空对象。
+1. 空集合。
 
 ##### 2.1.2.6) `$_T`
 
@@ -890,7 +904,7 @@ HVML 还定义有如下一些动作标签：
 针对动作标签，HVML 定义了如下几个介词（如 `on`、`in`、`to` 等）属性，用于定义执行动作时依赖的数据（或元素）及其集合。如：
 
 - `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URI，如 `tcp://foo.com:2345`、`unix:///var/run/hibus.sock`。
-- `from`：在 `init`、`load` 等动作元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URI。
+- `from`：在 `init`、`set`、`load` 等动作元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URI。
 - `on`：用于定义执行动作所依赖的数据、元素或元素集合。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`@?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
 - `in`：用于定义执行操作的文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。注意，使用 `in` 介词属性指定数据作为操作范围时，不会改变文档的操作位置。
 - `for`：在 `observe` 标签中，用于定义观察（observe）操作对应的事件名称；在 `match` 标签中，用于定义匹配条件；在 `connect` 标签中，用于定义协议或用途。
