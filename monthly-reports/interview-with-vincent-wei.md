@@ -47,7 +47,7 @@ __目录__
 
 ## 1 寒暄
 
-立秋过了三天后，京城早晚的气温已经有了回落的感觉。早上九点多，我到了酒家的阁楼，开了空调，沏好了茶等魏森特的到来。等老魏过来的这时间，我仔细读了读他写的那[第一篇《HVML 开发月报》]()，就算是为访谈做个准备吧。快十点时，我听到有人哐当几下从一楼爬到了阁楼。
+立秋过了三天后，京城早晚的气温已经有了回落的感觉。早上九点多，我到了酒家的阁楼，开了空调，沏好了茶等魏森特的到来。等老魏过来的这时间，我仔细读了读他写的那[第一篇《HVML 开发月报》](https://mp.weixin.qq.com/s?__biz=MzA5MTYwNTA3MA==&amp;mid=2651105415&amp;idx=1&amp;sn=66cc85eab52da24b051b6fbe3e5b12ea&amp;chksm=8b89d9a6bcfe50b04160f350249a67ad5e9360b93eec6ea191ccf65c99c0b53d21cad7c7f2e9&token=1063167363)，就算是为访谈做个准备吧。快十点时，我听到有人哐当几下从一楼爬到了阁楼。
 
 “哐哐哐，你这是一步三个台阶跳上来的？！看来你这胳膊腿儿还挺灵光！”
 
@@ -272,4 +272,74 @@ __目录__
 访谈到此，我没有再问其他问题。阁楼里顿时安静了下来。我和老魏不约而同地望向窗外，院子里那几棵大榆树上的知了声此起彼伏，连绵不绝。
 
 它们叫得正欢。
+
+## 声明
+
+本文人物源自中国第一部码农体长篇纪实小说[《考鼎记》](https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&__biz=MzA5MTYwNTA3MA==&scene=24&album_id=1420920902291947520)。
+
+《考鼎记》由几名亲历这段历史的码农利用业余时间协作撰写并在线发表。这部小说尝试展现三十年来人们围绕着芯片和操作系统的国产化所走过的道路和经历过的挫折。
+
+本文提到的产品、技术或者术语名称，涉及北京飞漫软件技术有限公司在中国或其他地区注册的如下商标：
+
+1) 飛漫
+
+![飛漫](https://www.fmsoft.cn/application/files/cache/thumbnails/87f47bb9aeef9d6ecd8e2ffa2f0e2cb6.jpg)
+
+2) FMSoft
+
+![FMSoft](https://www.fmsoft.cn/application/files/cache/thumbnails/44a50f4b2a07e2aef4140a23d33f164e.jpg)
+
+3) 合璧
+
+![合璧](https://www.fmsoft.cn/application/files/4716/1180/1904/256132.jpg)
+![合璧](https://www.fmsoft.cn/application/files/cache/thumbnails/9c57dee9df8a6d93de1c6f3abe784229.jpg)
+![合壁](https://www.fmsoft.cn/application/files/cache/thumbnails/f59f58830eccd57e931f3cb61c4330ed.jpg)
+
+4) HybridOS
+
+![HybridOS](https://www.fmsoft.cn/application/files/cache/thumbnails/5a85507f3d48cbfd0fad645b4a6622ad.jpg)
+
+5) HybridRun
+
+![HybridRun](https://www.fmsoft.cn/application/files/cache/thumbnails/84934542340ed662ef99963a14cf31c0.jpg)
+
+6) MiniGUI
+
+![MiniGUI](https://www.fmsoft.cn/application/files/cache/thumbnails/54e87b0c49d659be3380e207922fff63.jpg)
+
+7) xGUI
+
+![xGUI](https://www.fmsoft.cn/application/files/cache/thumbnails/7fbcb150d7d0747e702fd2d63f20017e.jpg)
+
+8) miniStudio
+
+![miniStudio](https://www.fmsoft.cn/application/files/cache/thumbnails/82c3be63f19c587c489deb928111bfe2.jpg)
+
+9) HVML
+
+![HVML](https://www.fmsoft.cn/application/files/8116/1931/8777/HVML256132.jpg)
+
+10) 呼噜猫
+
+![呼噜猫](https://www.fmsoft.cn/application/files/8416/1931/8781/256132.jpg)
+
+11) Purring Cat
+
+![Purring Cat](https://www.fmsoft.cn/application/files/2816/1931/9258/PurringCat256132.jpg)
+
+12) PurC
+
+![PurC](https://www.fmsoft.cn/application/files/5716/2813/0470/PurC256132.jpg)
+
+13) 考鼎
+
+![考鼎](https://www.fmsoft.cn/application/files/7516/1931/8787/256132.jpg)
+
+14) 良机
+
+![良机](https://www.fmsoft.cn/application/files/thumbnails/large/6616/1931/8800/256132.jpg)
+
+## 原文链接
+
+<https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&__biz=MzA5MTYwNTA3MA==&scene=24&album_id=1420920902291947520>
 
