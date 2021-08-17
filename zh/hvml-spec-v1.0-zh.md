@@ -988,16 +988,16 @@ HVML 定义的上下文变量可罗列如下：
 - `$#`：指当前上下文数据所包含的数据项数目：
    - 假如当前上下文数据是数组，该变量指数组单元数量。
    - 假如当前上下文数据是字典，该变量指键值对数量。
-   - 假如当前上下文数据是字符串、数值、真值（true）、假值（false），则该变量的值为 1。
-   - 假如当前上下文数据是空值（null），则该变量的值为 0。
+   - 假如当前上下文数据是字符串、数值、真值（true）、假值（false）或空值（null）时，该变量的值为 1。
+   - 假如当前上下文数据是 undefined，则该变量的值为 0。
 - `$%`：指当前数据的类型，用字符串表示，可能的取值有：`object`、`array`、`string`、`number`、`true`、`false`、`null`，分别表示对象、数组、字符串、数值、真值、假值以及空值。
 - `$@`：指当前的文档操作范围，即代表当前操作范围的 DOM 子树，也就是介词属性 `in` 定义的当前文档操作位置。
-- `$<N>`，如 `$0`、`$1` 等：指从当前上下文向上回溯 `<N>` 级的上下文数据；这里的 `<N>` 可以是零和正整数。这个上下文变量主要用于访问祖先动作元素的上下文数据。
+- `$<N>`，如 `$0`、`$1` 等：指从当前上下文向上回溯 `<N>` 级的上下文数据；这里的 `<N>` 可以是零和正整数。这个上下文变量主要用于访问执行栈上祖先动作元素的上下文数据。
 
 以下上下文变量专用于迭代时：
 
 - `$&`：当前迭代的索引值，比如第一次迭代，该变量的值为 0，第二次迭代，该变量的值为 1，以此类推。
-- `$:`：在当前结果来自键值对（key-value paire）时，该变量用来表示键名，其他情形下为空字符串。
+- `$<`：在当前结果来自键值对（key-value paire）时，该变量用来表示键名，其他情形下为空字符串。
 
 变量的引用规则如下：
 
@@ -1449,6 +1449,7 @@ HVML 定义的上下文变量可罗列如下：
 ```json
     {
         "packetType": "event",
+        "observeId": "IMPLEMENTATION-DEFINED-OBSERVING-IDENTIFIER",
         "source": "@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED",
         "time": 20200616100207.567,
         "signature": "XXXXX",
@@ -1468,11 +1469,11 @@ HVML 定义的上下文变量可罗列如下：
 
 注意：当 `observe` 观察到了来自特定数据源上的数据包时，其结果数据为该事件数据包中的 `payload` 数据；若没有通过 `for` 属性和 `via` 指定具体要观察的数据包类型以及过滤条件时，则结果数据为整个数据包。
 
-在简单情形下，我们也可以不使用脚本程序，直接使用 `update` 标签来定义更新操作。比如，我们我们要在状态栏上显示当前的 WiFi 名称或者移动网络的运营商名称：
+在简单情形下，我们也可以不使用脚本程序，直接使用 `update` 标签来定义更新操作。比如，我们要在状态栏上显示当前的 WiFi 名称或者移动网络的运营商名称：
 
 ```html
     <send on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED">
-        <observe on="$databus" for="event" via="$?" to="update" in="#the-header">
+        <observe on="$databus" for="$?" to="update" in="#the-header">
             <update on="~span.mobile-operator" textContent="$?.name">
                 <error>
                     <p>Bad scope.</p>
@@ -1488,7 +1489,7 @@ HVML 定义的上下文变量可罗列如下：
 对电池电量的更新，我们也可以不使用脚本程序，直接使用 `test`、`match` 和 `update` 标签来定义更新操作：
 
 ```html
-    <observe on="$databus" for="event" via="$?" to="test">
+    <observe on="$databus" for="$?" to="test">
         <test on="$?.level" in="#the-header">
             <match for="100" to="update" exclusively>
                 <update on="~img.mobile-status" attr.src="/battery-level-full.png" />
@@ -1536,7 +1537,7 @@ HVML 定义的上下文变量可罗列如下：
         <send on="$mqtt" to="subscribe" at="newUser" as="new_user" />
         <send on="$mqtt" to="subscribe" at="deleteUser" as="del_user" />
 
-        <observe on="$mqtt" for="event" via="$new_user" to="iterate">
+        <observe on="$mqtt" for="$new_user" to="iterate">
             <iterate on="$?" to="append" in="#the-user-list" with="$user_item" by="CLASS: IUser">
                 <error type="notready">
                     <img src="wait.gif" />
@@ -1547,7 +1548,7 @@ HVML 定义的上下文变量可罗列如下：
             </iterate>
         </observe>
 
-        <observe on="$mqtt" for="event" via="$del_user" to="iterate">
+        <observe on="$mqtt" for="$del_user" to="iterate">
             <iterate on="$?" to="remove" in="#the-user-list" by="RANGE: 0">
                 <remove on="#user-$?.id" />
             </iterate>
@@ -1721,13 +1722,13 @@ HVML 为不同的数据类型提供了如下操作：
         ...
 
         <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiGetHotspots" as="wifilist" asynchronously>
-            <observe on="$hibus" for="result" via="$wifilist" to="iterate">
+            <observe on="$hibus" for="$wifilist" to="iterate">
                 ...
             </observe>
         </send>
 
         <send on="$hibus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED" as="networkchanged">
-            <observe on="$hibus" for="event" via="$networkchanged">
+            <observe on="$hibus" for="$networkchanged">
                 ...
             </observe>
         </send>
@@ -1758,7 +1759,7 @@ HVML 为不同的数据类型提供了如下操作：
             <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus" />
 
             <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiScanHotspots" with="$paramWifiList" as="hotspots_list" asynchronously>
-                <observe on="$hibus" for="result" via="$hotspots_list">
+                <observe on="$hibus" for="$hotspots_list">
                     <disconnect on="$hibus" />
 
                     <!-- fill the Wifi list with the response data -->
@@ -1897,7 +1898,6 @@ HVML 为不同的数据类型提供了如下操作：
             <empty on="#entries" />
             <call on="$fillDirEntries" in="#entries" with="/">
             </call>
-
         </observe>
 
         <observe on="#goHome" for="click">
@@ -2634,53 +2634,32 @@ class RUserRegionStats (HVMLReducer):
 
 ##### 2.3.2.4) 外部函数
 
-外部函数主要用于 `observe` 标签，用于监听事件。在 HVML 中，所有事件均需要打包成如下的 JSON 格式：
-
-```json
-    {
-        "source": "dtbus://localhost/system/status",
-        "event": "battery",
-        "time": 20200616100207.567,
-        "signature": "XXXXX",
-        "payload": ...
-    }
-```
-
-其中的各键值对含义如下：
-
-- `source`：事件来源，字符串。
-- `event`：事件名称，字符串。
-- `time`：事件发生时间戳，数值。
-- `signature`：签名，用于验证事件来源的真伪。
-- `payload`：事件数据。具体格式因事件来源和类型的不同而不同。
-
-所有的事件处理函数之原型为：
+外部函数主要用于 `update` 标签以完成复杂的更新操作，所有的事件处理函数之原型为：
 
 ```python
-def event_handler (on_value, root_in_scope, source, event, time_stamp, event_payload):
+def event_handler (on_value, root_in_scope):
 ```
 
 其中，
 
-- `on_value` 是 `observe` 元素之 `on` 属性的值。
-- `root_in_scope` 是 `observe` 元素之 `in` 属性确定的当前操作范围。
-- `source`、`event`、`time_stamp` 和 `event_payload` 对应于事件源、事件名称、时间戳和事件数据。
+- `on_value` 是 `update` 元素之 `on` 属性的值。
+- `root_in_scope` 是 `update` 元素之 `in` 属性确定的当前操作范围。
 
 比如针对电池电量的改变事件，其 `payload` 如 2.8) 所示包含 `level` 和 `charging` 两个键值对，分别表示当前电量百分比以及是否在充电中。因此，其对应的执行器可实现为：
 
 ```python
-def on_battery_changed (on_value, root_in_scope, source, event, time_stamp, event_payload):
-    if event_payload.level == 100:
+def on_battery_changed (on_value, root_in_scope):
+    if on_value.level == 100:
         root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-full.png'
-    elif event_payload.level > 90:
+    elif on_value.level > 90:
         root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-90.png'
-    elif event_payload.level > 70:
+    elif on_value.level > 70:
         root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-70.png'
-    elif event_payload.level > 50:
+    elif on_value.level > 50:
         root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-50.png'
-    elif event_payload.level > 30:
+    elif on_value.level > 30:
         root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-30.png'
-    elif event_payload.level > 10:
+    elif on_value.level > 10:
         root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-10.png'
     else:
         root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-low.png'
