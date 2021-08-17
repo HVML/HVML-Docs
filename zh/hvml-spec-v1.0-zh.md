@@ -51,7 +51,7 @@ Language: Chinese
       * [2.2.8) `observe` 和 `fire` 标签](#228-observe-和-fire-标签)
       * [2.2.9) `request` 标签](#229-request-标签)
       * [2.2.10) `init` 和 `set` 标签](#2210-init-和-set-标签)
-      * [2.2.11) `connect` 和 `disconnect` 标签](#2211-connect-和-disconnect-标签)
+      * [2.2.11) `connect`、`send` 和 `disconnect` 标签](#2211-connectsend-和-disconnect-标签)
       * [2.2.12) `load` 和 `back` 标签](#2212-load-和-back-标签)
       * [2.2.13) `define` 和 `include` 标签](#2213-define-和-include-标签)
       * [2.2.14) `call` 和 `return` 标签](#2214-call-和-return-标签)
@@ -385,11 +385,11 @@ __注：__
             </test>
         </footer>
 
-        <request on="databus" to="subscribe" at="">
+        <send on="$databus" to="subscribe" at="">
             <observe on="$databus" for="event" via="$?" to="update" in="...">
                 <update by="FUNC: on_battery_changed" />
             </observe>
-        </request>
+        </send>
 
         <observe on=".avatar" for="event" via="clicked" to="update" in="...">
             <update by="FUNC: on_avatar_clicked" />
@@ -410,7 +410,7 @@ __注：__
    1. 可被原样保留到目标文档的标签，如 HTML 文档的 `<meta>`、`<link>` 标签。
    1. 全局数据的初始化；使用 `init` 和 `set` 标签定义。
    1. 全局动态 JSON 对象；使用 `bind` 标签定义。
-   1. 需要监听的长连接数据源；使用 `connect` 标签定义。
+   1. 长连接数据源；使用 `connect` 标签定义。
    1. 全局模板；使用 `archedata` 或 `archetype` 标签定义。
 - `body` 标签用于定义文档的本体内容。
 
@@ -425,7 +425,7 @@ __是否考虑：__
 
 除了上述用于定义文档整体结构的标签外，HVML 提供了如下用于定义数据的标签：
 
-- `init`：该标签初始化一个变量；我们将有名字的数据称为变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `with` 属性定义该请求。
+- `init`：该标签初始化一个变量；我们将有名字的数据称为变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义请求的 URL，`with` 属性定义请求的参数，`via` 属性定义请求的方法（如 `GET` 或 `POST`）。
 - `connect`：该标签定义对一个外部数据源的连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包。
 - `disconnect`：该标签关闭先前建立的外部数据源连接。
 - `bind`：该标签用于在头部定义一个动态的 JSON 对象，该对象由 HVML 解释器或外部脚本实现。
@@ -834,8 +834,9 @@ HVML 定义有如下几个基本的动作标签，用于操作数据或者元素
 
 HVML 还定义有如下一些动作标签：
 
+- `request` 标签用于向一个外部数据源发出一个请求以获得结果数据。
 - `connect` 标签用于连接到一个指定的外部数据源，并绑定一个变量名。
-- `request` 标签用来在指定的数据源连接上发出一个请求。
+- `send` 标签用来在指定的长连接上发出一个消息。
 - `disconnect` 标签用于显式关闭一个先前建立的外部数据源连接。
 - `load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为请求参数传递到新的 HVML 文档。
 - `back` 标签用于返回到当前会话中的特定页面，或者终止当前的模态对话框。
@@ -909,7 +910,7 @@ HVML 还定义有如下一些动作标签：
 - `in`：用于定义执行操作的文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。注意，使用 `in` 介词属性指定数据作为操作范围时，不会改变文档的操作位置。
 - `for`：在 `observe` 标签中，用于定义观察（observe）操作对应的事件名称；在 `match` 标签中，用于定义匹配条件；在 `connect` 标签中，用于定义协议或用途。
 - `as`：用于定义 `init`、`connect`、`bind`、`load` 等元素绑定的变量名称、页面名称等。
-- `with`：用于定义克隆数据项或者文档片段时模板（`archetype` 或 `archedata`）名称。需要模板但未定义的情形下，会产生 `nodata` 错误。
+- `with`：用于定义克隆数据项或者文档片段时模板（`archetype` 或 `archedata`）名称；亦用于在 `init`、`request`、`send` 元素中定义发送请求或消息时的参数。
 - `to`：用于定义后续动作或者动作列表，多个动作使用空格分割。一个动作如果定义有相应的动作标签，则需要使用子元素描述，也可以是如下无需使用子元素描述的动作：
    - `noop`：空操作。
    - `append`：在当前范围追加（append）一个子元素或子对象项。
@@ -933,8 +934,8 @@ HVML 还定义有如下一些动作标签：
 
 - `ascendingly`：在使用内置迭代器、选择器或者规约器时，用于指定数据项的排列顺序为升序；可简写为 `asc`。
 - `descendingly`：在使用内置迭代器、选择器或者规约器时，用于指定数据项的排列顺序为降序；可简写为 `desc`。
-- `synchronously`：在 `init`、`request`、`call` 标签中，用于定义从外部数据源（或操作组）获取数据时采用同步请求方式；默认值；可简写为 `sync`。
-- `asynchronously`：在 `init`、`request`、`call` 标签中，用于定义从外部数据源（或操作组）获取数据时采用异步请求方式；可简写为 `async`。
+- `synchronously`：在 `request`、`send`、`call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用同步请求方式；默认值；可简写为 `sync`。
+- `asynchronously`：在 `request`、`send`、`call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用异步请求方式；可简写为 `async`。
 - `exclusively`：在 `match` 动作标签中，用于定义排他性；具有这一属性时，匹配当前动作时，将不再处理同级其他 `match` 标签；可简写为 `excl`。
 - `uniquely`：在 `init` 动作标签中，用于定义集合；具有这一属性时，`init` 定义的变量将具有唯一性条件；可简写为 `uniq`。
 
@@ -1422,7 +1423,7 @@ HVML 定义的上下文变量可罗列如下：
             <img class="battery-status" src="/placeholder.png" />
         </header>
 
-        <request on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED">
+        <send on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED">
             <observe on="$databus" for="event" via="$?" to="update">
                 <update in="#the-header" by="FUNC: on_battery_changed">
                     <error>
@@ -1433,7 +1434,7 @@ HVML 定义的上下文变量可罗列如下：
                     </except>
                 </update>
             </observe>
-        </request>
+        </send>
     </body>
 ```
 
@@ -1443,7 +1444,7 @@ HVML 定义的上下文变量可罗列如下：
 
 在 `head` 元素中，我们通过 `connect` 连接到 `unix:///var/run/hibus.sock`（`at` 属性），该连接被命名为 `databus`（`as` 属性）。
 
-然后在 `body` 元素中，我们通过 `request` 元素订阅（`subscribe`）了指定的事件，然后用 `observe` 元素定义了在 `$databus` 上特定事件的观察。每当电池状态发生变化时，就会从这个数据源收到相应的数据包。为方便数据交换，所有的数据包都打包为 JSON 格式，并具有如下的格式：
+然后在 `body` 元素中，我们通过 `send` 元素订阅（`subscribe`）指定的事件，然后用 `observe` 元素定义了在 `$databus` 上特定事件的观察。每当电池状态发生变化时，就会从这个数据源收到相应的数据包。为方便数据交换，所有的数据包都打包为 JSON 格式，并具有如下的格式：
 
 ```json
     {
@@ -1462,7 +1463,7 @@ HVML 定义的上下文变量可罗列如下：
 
 当 HVML 代理观察到来自 `$databus` 上的电池变化事件数据包之后，将根据 `observe` 标签定义的观察动作执行相应的操作。在上面的例子中，`observe` 标签所定义的操作及条件解释如下：
 
-- 当来自`$databus`（`on` 属性值）上的数据包类型为 `event`（`for` 属性值），过滤条件（由 `via` 属性定义）符合 `request` 返回的唯一性标识结果时，执行 `to` 介词属性定义的 `update` 操作。
+- 当来自`$databus`（`on` 属性值）上的数据包类型为 `event`（`for` 属性值），过滤条件（由 `via` 属性定义）符合 `send` 返回的唯一性标识结果时，执行 `to` 介词属性定义的 `update` 操作。
 - `observe` 元素的子元素 `update` 元素定义了具体的更新操作：由 `by` 介词属性定义的脚本函数 `on_battery_changed` 完成，该更新操作限定在 `in` 介词属性定义的 `#the-header` 元素节点中。
 
 注意：当 `observe` 观察到了来自特定数据源上的数据包时，其结果数据为该事件数据包中的 `payload` 数据；若没有通过 `for` 属性和 `via` 指定具体要观察的数据包类型以及过滤条件时，则结果数据为整个数据包。
@@ -1470,7 +1471,7 @@ HVML 定义的上下文变量可罗列如下：
 在简单情形下，我们也可以不使用脚本程序，直接使用 `update` 标签来定义更新操作。比如，我们我们要在状态栏上显示当前的 WiFi 名称或者移动网络的运营商名称：
 
 ```html
-    <request on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED">
+    <send on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED">
         <observe on="$databus" for="event" via="$?" to="update" in="#the-header">
             <update on="~span.mobile-operator" textContent="$?.name">
                 <error>
@@ -1481,7 +1482,7 @@ HVML 定义的上下文变量可罗列如下：
                 </except>
             </update>
         </observe>
-    </request>
+    </send>
 ```
 
 对电池电量的更新，我们也可以不使用脚本程序，直接使用 `test`、`match` 和 `update` 标签来定义更新操作：
@@ -1532,8 +1533,8 @@ HVML 定义的上下文变量可罗列如下：
     </head>
 
     <body>
-        <request on="$mqtt" to="subscribe" at="newUser" as="new_user" />
-        <request on="$mqtt" to="subscribe" at="deleteUser" as="del_user" />
+        <send on="$mqtt" to="subscribe" at="newUser" as="new_user" />
+        <send on="$mqtt" to="subscribe" at="deleteUser" as="del_user" />
 
         <observe on="$mqtt" for="event" via="$new_user" to="iterate">
             <iterate on="$?" to="append" in="#the-user-list" with="$user_item" by="CLASS: IUser">
@@ -1616,40 +1617,21 @@ HVML 定义的上下文变量可罗列如下：
 
 #### 2.2.9) `request` 标签
 
-`request` 标签用于在一个被监听的数据源上发出一个同步或者异步的请求。比如在通过 MQTT 或者本地数据总线发送请求到外部模块或者远程计算机时，我们使用 `request` 标签，然后在另外一个 `observe` 标签定义的 HVML 元素中做相应的处理。比如，我们要通过 hiDataBus 协议向系统守护进程发出一个获得当前可用 WiFi 热点列表的请求：
+`request` 标签定义一个在指定 URL 上的同步或异步请求。使用 `request` 元素时，我们使用 `on` 属性指定 URL，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法（如 `GET`、`POST`、`DELETE` 等）。`init` 元素提供类似的功能，但区别在于，`request` 可支持异步请求，而 `request` 不支持内嵌 JSON 数据为内容。
 
 ```html
-</hvml>
-    <head>
-        <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus"/>
-    </head>
-
-    <body>
-        ...
-
-        <request on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiGetHotspots" as="wifilist" asynchronously>
-            <observe on="$hibus" for="result" via="$wifilist" to="iterate">
-                ...
-            </observe>
-        </request>
-
-        <request on="$hibus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED" as="networkchanged">
-            <observe on="$hibus" for="event" via="$networkchanged">
-                ...
-            </observe>
-        </request>
-        ...
-    </body>
-</hvml>
+    <request on="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
+        <observe on="$foo" for="result" via="">
+            ...
+        </observe>
+    </request>
 ```
-
-正常情况下，使用同步请求时，`request` 元素的执行结果数据就是请求的返回结果；如果使用异步请求，`request` 元素的操作结果数据为字符串 `ok`。异步请求时，一般应该在对应的 `observe` 元素中做后续处理。
 
 #### 2.2.10) `init` 和 `set` 标签
 
-`init` 标签初始化一个变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `with` 属性定义该请求。
+`init` 标签初始化一个变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义该请求的 URL，使用 `with` 参数定义请求参数，使用 `via` 定义请求方法（如 `GET`、`POST`、`DELETE` 等）。
 
-`set` 标签在 `on` 属性给定的变量上，使用 `with` 指定的数据来执行由 `to` 属性指定的操作，主要用于集合操作。
+`set` 标签在 `on` 属性给定的变量上，使用 `with` 指定的数据来执行由 `to` 属性指定的操作，主要用于集合操作。除了使用 `with` 属性指定数据之外，`set` 标签亦可从外部数据源获得数据，或者将 JSON 数据作为元素内容嵌入。
 
 这两个标签的常见用法如下：
 
@@ -1667,8 +1649,11 @@ HVML 定义的上下文变量可罗列如下：
         ]
     </init>
 
-    <set on="$users" to="merge" with="$new_users">
-    </set>
+    <init as="locales" from="http://foo.bar.com/locales" />
+
+    <set on="$users" to="merge" with="$new_users" />
+
+    <set on="$users" to="merge" from="http://foo.bar.com/new_users" />
 ```
 
 上述代码定义了一个 `$users` 变量作为集合（使用 `id` 作为唯一性键名），并定义了一个 `$new_users` 字典数组。在使用 `set` 标签指定的 `merge` 操作后，得到如下结果：
@@ -1720,9 +1705,38 @@ HVML 为不同的数据类型提供了如下操作：
 
 注意，当我们使用 `id` 作为键名时，该键名对应的值，在数组中将保持唯一。
 
-#### 2.2.11) `connect` 和 `disconnect` 标签
+#### 2.2.11) `connect`、`send` 和 `disconnect` 标签
 
 如前所述，`connect` 标签定义一个对外部数据源的长连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包；而 `disconnect` 标签关闭先前建立的一个长连接数据源。
+
+`send` 标签用于在一个已连接的长连接数据源上发出一个同步或者异步的消息。比如在通过 MQTT 或者本地数据总线发送请求到外部模块或者远程计算机时，我们使用 `send` 元素发出一个异步消息，然后在另外一个 `observe` 标签定义的 HVML 元素中做相应的处理。比如，我们要通过 hiDataBus 协议向系统守护进程发出一个获得当前可用 WiFi 热点列表的远程过程调用：
+
+```html
+</hvml>
+    <head>
+        <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus"/>
+    </head>
+
+    <body>
+        ...
+
+        <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiGetHotspots" as="wifilist" asynchronously>
+            <observe on="$hibus" for="result" via="$wifilist" to="iterate">
+                ...
+            </observe>
+        </send>
+
+        <send on="$hibus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED" as="networkchanged">
+            <observe on="$hibus" for="event" via="$networkchanged">
+                ...
+            </observe>
+        </send>
+        ...
+    </body>
+</hvml>
+```
+
+正常情况下，使用同步请求时，`send` 元素的执行结果数据就是请求的返回结果；如果使用异步请求，`send` 元素的操作结果数据为字符串 `ok`。异步请求时，一般应该在对应的 `observe` 元素中做后续处理。
 
 ```html
     <body>
@@ -1743,7 +1757,7 @@ HVML 为不同的数据类型提供了如下操作：
 
             <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus" />
 
-            <request on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiScanHotspots" with="$paramWifiList" as="hotspots_list" asynchronously>
+            <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiScanHotspots" with="$paramWifiList" as="hotspots_list" asynchronously>
                 <observe on="$hibus" for="result" via="$hotspots_list">
                     <disconnect on="$hibus" />
 
@@ -1752,7 +1766,7 @@ HVML 为不同的数据类型提供了如下操作：
                     </iterate>
 
                 </observe>
-            </request>
+            </send>
 
         </observe>
     </body>
@@ -1982,7 +1996,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 ```
     KEY: ALL | <key_name_list>
-    
+
     <key_name_list>: <key_list_expression>[, <key_list_expression>[, ...]]
     <key_list_expression>: LIKE <key_pattern_expression> | <key_name_expression>
     <key_pattern_expression>: '<literal_wildcard_string>' | '<regular_expression>' | <string_evaluation_expression>
@@ -5685,10 +5699,10 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
             { "cmdLine": "ls $fileInfo.curr_path" }
         <init>
 
-        <init from="lcmd:///bin/ls" with="$lcmdParams" via="GET">
+        <request on="lcmd:///bin/ls" with="$lcmdParams" via="GET">
             <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: 0">
             </iterate>
-        </init>
+        </request>
 ```
 
 如此，开发者不需要做编写任何程序，即可实现一个简单的文件浏览和打开对话框。
@@ -5724,27 +5738,27 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
         </div>
 
         <div class="temperature" id="temperature">
-            <request on="$braceletInfo" to="subscribe" at="temperature">
+            <send on="$braceletInfo" to="subscribe" at="temperature">
                 <observe on="$braceletInfo" for="event" via="">
                     <update on="#temperature" textContent="$?.value ℃" />
                 </observe>
-            </request>
+            </send>
         </div>
 
         <div class="heartbeat" id="heartbeat">
-            <request on="$braceletInfo" to="subscribe" at="heartbeat">
+            <send on="$braceletInfo" to="subscribe" at="heartbeat">
                 <observe on="$braceletInfo" for="event" via="$?">
                     <update on="#heartbeat" textContent="$?.value BPM" />
                 </observe>
-            </request>
+            </send>
         </div>
 
         <div class="steps" id="steps">
-            <request on="$braceletInfo" to="subscribe" at="steps">
+            <send on="$braceletInfo" to="subscribe" at="steps">
                 <observe on="$braceletInfo" for="event" via="$?">
                     <update on="#steps" textContent="$?.value" />
                 </observe>
-            </request>
+            </send>
         </div>
 
         <observe on="$braceletInfo">
