@@ -2110,7 +2110,8 @@ HVML 为不同的数据类型提供了如下操作：
     ADD: BY <number_expression>, NOT BEYOND <number_expression>
 
     <number_expression>: <literal_number> | <number_evaluation_expression>
-    <number_evaluation_expression>: <json_evaluation_expression>
+    <number_evaluation_expression>: <four_arithmetic_expressions>
+    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($_MATH.pi * $? * $?) / 5`
 ```
 
 比如，当我们使用 `ADD: BY -3, NOT BEYOND 90` 执行器作用于数值 `100` 时，返回的数列为：
@@ -2119,14 +2120,10 @@ HVML 为不同的数据类型提供了如下操作：
     [ 100, 97, 94, 91 ]
 ```
 
-`FORMULA` 执行器的语法如下：
+再如，`FORMULA` 执行器的语法如下：
 
 ```
-    ADD: <four_arithmetic_expressions>, NOT BEYOND <number_expression>
-
-    <four_arithmetic_expressions>: 包含 JSON 求值表达式的四则算数表达式，如 `($_MATH.pi * $r * $r) + 5`。
-    <number_expression>: <literal_number> | <number_evaluation_expression>
-    <number_evaluation_expression>: <json_evaluation_expression>
+    FORMULA: <number_expression>, NOT BEYOND <number_expression>
 ```
 
 比如，当我们使用 `ADD: BY -3, NOT BEYOND 90` 执行器作用于数值 `100` 时，返回的数列为：
@@ -2135,7 +2132,6 @@ HVML 为不同的数据类型提供了如下操作：
     [ 100, 97, 94, 91 ]
 ```
 
-对于数值数据，若不指定 `by` 属性时，默认使用 `ADD: BY 2, NOT BEYOND $?` 执行器；该执行器将产生只包含一个数值的数列，这个数值就是初始上下文数据。
 对于数值数据，若不指定 `by` 属性时，默认使用 `ADD: BY 2, NOT BEYOND $?` 执行器；该执行器将产生只包含一个数值的数列，这个数值就是初始上下文数据。
 
 注：数值执行器可能导致死循环。
@@ -2843,13 +2839,13 @@ In other words, `<!DOCTYPE hvml>`, case-sensitively.
 1. A string that is an ASCII case-sensitive match for the string "SYSTEM".
 1. One or more ASCII whitespace.
 1. A U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (the quote mark).
-1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: math". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The other tokens defines the external loadable modules on which the document depends, such as `math`, `string`, `filesystem`, `file`, and so on.
+1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: math". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The other tokens defines the variables should be bound for this document, such as `_MATH`, `_FS`, `_FILE`, and so on.
 1. A matching U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (i.e. the same character as in the earlier step labeled quote mark).
 
-For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: math">`, you can add the specific prefix to some HVML tags:
+For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: _MATH _FS _FILE">`, you can add the specific prefix to some HVML tags:
 
 ```html
-<!DOCTYPE hvml SYSTEM "hvml: python">
+<!DOCTYPE hvml SYSTEM "hvml: _MATH">
 <hvml target="html" lang="en">
     <head>
     </head>
