@@ -2102,6 +2102,7 @@ HVML 为不同的数据类型提供了如下操作：
 - `SUB`：在给定数值基础上执行减法操作，直到指定的数值为止。
 - `MUL`：在给定数值基础上执行乘法操作，直到指定的数值为止。
 - `DIV:`：在给定数值基础上执行除法操作，直到指定的数值为止。
+- `FORMULA:`：在给定的四则运算表达式上求值，直到指定的数值为止。
 
 `ADD` 执行器的语法如下：
 
@@ -2118,6 +2119,23 @@ HVML 为不同的数据类型提供了如下操作：
     [ 100, 97, 94, 91 ]
 ```
 
+`FORMULA` 执行器的语法如下：
+
+```
+    ADD: <four_arithmetic_expressions>, NOT BEYOND <number_expression>
+
+    <four_arithmetic_expressions>: 包含 JSON 求值表达式的四则算数表达式，如 `($_MATH.pi * $r * $r) + 5`。
+    <number_expression>: <literal_number> | <number_evaluation_expression>
+    <number_evaluation_expression>: <json_evaluation_expression>
+```
+
+比如，当我们使用 `ADD: BY -3, NOT BEYOND 90` 执行器作用于数值 `100` 时，返回的数列为：
+
+```json
+    [ 100, 97, 94, 91 ]
+```
+
+对于数值数据，若不指定 `by` 属性时，默认使用 `ADD: BY 2, NOT BEYOND $?` 执行器；该执行器将产生只包含一个数值的数列，这个数值就是初始上下文数据。
 对于数值数据，若不指定 `by` 属性时，默认使用 `ADD: BY 2, NOT BEYOND $?` 执行器；该执行器将产生只包含一个数值的数列，这个数值就是初始上下文数据。
 
 注：数值执行器可能导致死循环。
