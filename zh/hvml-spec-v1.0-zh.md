@@ -42,7 +42,7 @@ Language: Chinese
       * [2.1.12) JSON 求值表达式](#2112-json-求值表达式)
    + [2.2) 动作标签详解](#22-动作标签详解)
       * [2.2.1) `update` 标签](#221-update-标签)
-      * [2.2.2) `remove` 标签](#222-remove-标签)
+      * [2.2.2) `erase` 标签](#222-erase-标签)
       * [2.2.3) `clear` 标签](#223-clear-标签)
       * [2.2.4) `test` 标签和 `match` 标签](#224-test-标签和-match-标签)
       * [2.2.5) `choose` 标签](#225-choose-标签)
@@ -810,7 +810,7 @@ HVML 定义有如下几个基本的动作标签，用于操作数据或者元素
 - `observe` 标签用来定义针对被监听数据或者元素上的观察动作；`fire` 标签用来显式发起一个事件。
 - `update` 标签用来定义在指定元素或数据项上的更新操作，同时定义文档元素属性、内容和数据之间的映射关系。
 - `clear` 标签用来在指定元素或者数据项上执行清空操作，通常意味者删除当前元素或者数据的所有子元素或者数据项。
-- `remove` 标签用来删除指定的元素或数据项。
+- `erase` 标签用来清除指定的元素、元素属性或数据项。
 - `set` 标签用来在字典、数组或者集合上，依据另外一项数据执行特定的操作。
 
 在 HVML 中，动作元素具有如下的特点：
@@ -1088,9 +1088,9 @@ HVML 定义的上下文变量可罗列如下：
 - `^=`：在当前属性值的头部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value ^= "C"` 后，将修改为：`Cab`。
 - `$=`：在当前属性值的尾部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value $= "C"` 后，将修改为：`abC`。
 
-#### 2.2.2) `remove` 标签
+#### 2.2.2) `erase` 标签
 
-`remove` 标签用于移除一个指定的数据项、元素或元素集合，仅支持 `on` 介词属性，用于指定要修改的数据项、元素或元素集合。该元素不产生结果数据，故而不支持在其中包含子动作元素，但可以包含 `error` 或 `except` 子元素。
+`erase` 标签用于移除一个指定的数据项、元素或元素集合，仅支持 `on` 介词属性，用于指定要修改的数据项、元素或元素集合。该元素不产生结果数据，故而不支持在其中包含子动作元素，但可以包含 `error` 或 `except` 子元素。
 
 如针对如下的 HTML 代码片段：
 
@@ -1100,26 +1100,26 @@ HVML 定义的上下文变量可罗列如下：
     </div>
 ```
 
-我们通过下面的 `remove` 标签来删除 `h2` 元素：
+我们通过下面的 `erase` 标签来删除 `h2` 元素：
 
 ```html
-    <remove on="#the-user-stats > h2" />
+    <erase on="#the-user-stats > h2" />
 ```
 
-执行上述 `remove` 动作后，上面的 HTML 代码片段将变为：
+执行上述 `erase` 动作后，上面的 HTML 代码片段将变为：
 
 ```html
     <div id="the-user-statistics">
     </div>
 ```
 
-类似地，我们也可以在数据项上执行 `remove` 动作。比如删除 `$users` 的第二个用户：
+类似地，我们也可以在数据项上执行 `erase` 动作。比如删除 `$users` 的第二个用户：
 
 ```html
-    <remove on="$users[1]" />
+    <erase on="$users[1]" />
 ```
 
-注意，当 `on` 属性值指定的是一个元素集合时，`remove` 标签将移除该集合中所有的元素。
+注意，当 `on` 属性值指定的是一个元素集合时，`erase` 标签将移除该集合中所有的元素。
 
 #### 2.2.3) `clear` 标签
 
@@ -1549,8 +1549,8 @@ HVML 定义的上下文变量可罗列如下：
         </observe>
 
         <observe on="$mqtt" for="$del_user" to="iterate">
-            <iterate on="$?" to="remove" in="#the-user-list" by="RANGE: 0">
-                <remove on="#user-$?.id" />
+            <iterate on="$?" to="erase" in="#the-user-list" by="RANGE: 0">
+                <erase on="#user-$?.id" />
             </iterate>
         </observe>
 
@@ -2876,7 +2876,7 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: _
 2) 普通元素（normal elements）  
 除框架元素之外的其他 HVML 元素，被称为普通元素。普通元素可进一步划分为如下子类：
    1. 一般动作元素（ordinary operation elements）  
-      `update`、`remove`、`test`、`match`、`choose`、`iterate`、`reduce`、`observe`、`fire`、`connect`、`disconnect`、`load`、`back`、`define`、`include`、`call`、`return` 和 `catch` 元素。
+      `update`、`erase`、`test`、`match`、`choose`、`iterate`、`reduce`、`observe`、`fire`、`connect`、`disconnect`、`load`、`back`、`define`、`include`、`call`、`return` 和 `catch` 元素。
    1. 数据操作元素（JSON operation elements）  
       `init`、`set`。其内容必须是符合 JSON 语法的文本，可包含 JSON 求值表达式。
    1. 片段模板元素（fragement template elements）  
