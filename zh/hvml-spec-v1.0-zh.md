@@ -990,13 +990,14 @@ HVML 定义的上下文变量可罗列如下：
    - 假如当前上下文数据是字典，该变量指键值对数量。
    - 假如当前上下文数据是字符串、数值、真值（true）、假值（false）或空值（null）时，该变量的值为 1。
    - 假如当前上下文数据是 undefined，则该变量的值为 0。
-- `$%`：指当前数据的类型，用字符串表示，可能的取值有：`object`、`array`、`string`、`number`、`true`、`false`、`null`，分别表示对象、数组、字符串、数值、真值、假值以及空值。
+- `$^`：指当前数据的类型，用字符串表示，可能的取值有：`object`、`array`、`string`、`number`、`true`、`false`、`null`，分别表示对象、数组、字符串、数值、真值、假值以及空值。
 - `$@`：指当前的文档操作范围，即代表当前操作范围的 DOM 子树，也就是介词属性 `in` 定义的当前文档操作位置。
-- `$<N>`，如 `$0`、`$1` 等：指从当前上下文向上回溯 `<N>` 级的上下文数据；这里的 `<N>` 可以是零和正整数。这个上下文变量主要用于访问执行栈上祖先动作元素的上下文数据。
+- `$<N><SYMB>`，如 `$0?`、`$1?` 等：指从当前上下文向上回溯 `<N>` 级的上下文数据；这里的 `<N>` 可以是零和正整数。这个上下文变量主要用于访问执行栈上祖先动作元素的上下文数据。
 
 以下上下文变量专用于迭代时：
 
-- `$&`：当前迭代的索引值，比如第一次迭代，该变量的值为 0，第二次迭代，该变量的值为 1，以此类推。
+- `$&`：当前迭代的迭代子（iterator），可通过 `$&.value` 获得对应的值。
+- `$%`：当前迭代的索引值，比如第一次迭代，该变量的值为 0，第二次迭代，该变量的值为 1，以此类推。
 - `$<`：在当前结果来自键值对（key-value paire）时，该变量用来表示键名，其他情形下为空字符串。
 
 变量的引用规则如下：
@@ -1025,7 +1026,7 @@ HVML 定义的上下文变量可罗列如下：
 
 #### 2.2.1) `update` 标签
 
-`update` 标签用于修改一个指定的数据项、元素或元素集合，仅支持 `on` 介词属性，用于指定要修改的数据项、元素或元素集合。该元素不产生结果数据，故而不支持在其中包含子动作元素，但可以包含 `error` 或 `except` 子元素。
+`update` 标签用于修改一个指定的数据项、元素或元素集合，仅支持 `on` 和 `by` 介词属性。`on` 属性用于指定要修改的数据项、元素或元素集合；`by` 指定执行器。该元素产生 `true` 或 `false` 两种结果数据，分别表示成功或失败。
 
 比如对下面的文档片段：
 
@@ -1090,7 +1091,7 @@ HVML 定义的上下文变量可罗列如下：
 
 #### 2.2.2) `erase` 标签
 
-`erase` 标签用于移除一个指定的数据项、元素或元素集合，仅支持 `on` 介词属性，用于指定要修改的数据项、元素或元素集合。该元素不产生结果数据，故而不支持在其中包含子动作元素，但可以包含 `error` 或 `except` 子元素。
+`erase` 标签用于移除一个指定的数据项、元素或元素集合，支持 `on`、`at` 和 `by` 介词属性。`on` 属性用于指定要修改的数据项、元素或元素集合；当 `on` 指定的是容器（如数组、对象或集合）时，`at` 用于指定操作位置；`by` 属性指定执行器。该元素产生 `true` 或 `false` 两种结果数据，分别表示成功或失败。
 
 如针对如下的 HTML 代码片段：
 
@@ -1113,17 +1114,17 @@ HVML 定义的上下文变量可罗列如下：
     </div>
 ```
 
-类似地，我们也可以在数据项上执行 `erase` 动作。比如删除 `$users` 的第二个用户：
+类似地，我们也可以在数据项上执行 `erase` 动作。比如清除 `$users` 的第二个成员：
 
 ```html
-    <erase on="$users[1]" />
+    <erase on="$users" at="1" />
 ```
 
 注意，当 `on` 属性值指定的是一个元素集合时，`erase` 标签将移除该集合中所有的元素。
 
 #### 2.2.3) `clear` 标签
 
-`clear` 标签用于清空一个指定的数据项、元素或元素集合，仅支持 `on` 介词属性，用于指定要清空的数据项、元素或元素集合。该元素不产生结果数据，故而不支持在其中包含子动作元素，但可以包含 `error` 或 `except` 子元素。
+`clear` 标签用于清空一个指定的数据项、元素或元素集合，仅支持 `on` 介词属性，用于指定要清空的数据项、元素或元素集合。该元素产生 `true` 或 `false` 两种结果数据，分别表示成功或失败。
 
 如针对如下的 HTML 代码片段：
 
@@ -1224,7 +1225,7 @@ HVML 定义的上下文变量可罗列如下：
 使用 `on` 介词属性时，我们可以使用全局动态对象 `$_L` 构建一 JSON 求值表达式求值来确定匹配条件；当求值表达式返回 0、null、false、长度为零的字符串时，视作不匹配，反之视作匹配。比如就上述 HVML 代码中的匹配 `zh_CN` 的 `match` 标签，可以如下书写：
 
 ```html
-        <match on="$_L.STRCMP('case', 'zh_CN', $?)" to="displace" with="#footer-cn" exclusively />
+        <match on="$_L.streq('case', 'zh_CN', $?)" to="displace" with="#footer-cn" exclusively />
 ```
 
 使用 `for` 介词属性时，可以避免使用繁琐的 JSON 求职表达式，但要求 `test` 动作的结果必须是字符串或数值。其规则如下：
@@ -3464,7 +3465,7 @@ In the JSONEE state, the stack of the JSONEE nesting stack is empty. We store `{
 
 The stack grows downwards; the topmost character on the stack is the first one added to the stack, and the bottommost character of the stack is the most recently added node in the stack.
 
-如这个 JSON 求值表达式：`{{$_L.NOT($_L.STRCMP('case', $_SYSTEM.time('%H:%m'), '00:00'))}}`，JSONEE 嵌套栈最长时包含如下字符：`{{((('`。
+如这个 JSON 求值表达式：`{{$_L.not($_L.streq('case', $_SYSTEM.time('%H:%m'), '00:00'))}}`，JSONEE 嵌套栈最长时包含如下字符：`{{((('`。
 
 ##### 3.2.4.5) JSON 求值树/JSON Evaluation Tree
 
@@ -3528,7 +3529,7 @@ $_JSON.get_element_at(
 ```json
 {
     "foo" : [ true, false, null ],
-    "bar" : "There is an JSONEE: $_L.NOT($_L.STRCMP('case', $_SYSTEM.time('%H:%m'), '00:00'))!",
+    "bar" : "There is an JSONEE: $_L.not($_L.streq('case', $_SYSTEM.time('%H:%m'), '00:00'))!",
     "koo" : $_TIMERS[0].id,
 }
 ```
@@ -3546,12 +3547,12 @@ $_JSON.make_object(
                 $_JSON.get_element_at(
                     $_JSON.get_variable(
                         "_L"),
-                    "NOT"),
+                    "not"),
                     $_JSON.call_method(
                         $_JSON.get_element_at(
                             $_JSON.get_variable(
                                 "_L"),
-                            "STRCMP"),
+                            "streq"),
                         'case',
                         $_JSON.call_method(
                             $_JSON.get_element_at(
