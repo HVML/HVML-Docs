@@ -25,7 +25,7 @@ Language: Chinese
       * [2.1.2) 数据和变量](#212-数据和变量)
          - [2.1.2.1) `$_REQUEST`](#2121-_request)
          - [2.1.2.2) `$_SYSTEM`](#2122-_system)
-         - [2.1.2.3) `$_DOCUMENT`](#2123-_document)
+         - [2.1.2.3) `$_DOC`](#2123-_doc)
          - [2.1.2.4) `$_TIMERS`](#2124-_timers)
          - [2.1.2.5) `$_L`](#2125-_l)
          - [2.1.2.6) `$_T`](#2126-_t)
@@ -450,13 +450,13 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 在 HVML 中，`_SYSTEM` 变量本质上是一个动态 JSON 对象，无须初始化即可使用。
 
-##### 2.1.2.3) `$_DOCUMENT`
+##### 2.1.2.3) `$_DOC`
 
-`$_DOCUMENT` 是一个动态 JSON 对象，该对象表述的是 HVML 生成的目标文档对象。我们可以使用该对象上的特定键名以及 getter 方法使用 CSS 选择器获取一个目标文档上的特定元素或者元素集合，如：
+`$_DOC` 是一个动态 JSON 对象，该对象表述的是 HVML 生成的目标文档对象。我们可以使用该对象上的特定键名以及 `q` 方法使用 CSS 选择器获取目标文档上的特定元素或者元素集合，如：
 
-1. `$_DOCUMENT.doctype`：获取该目标文档对象的 `doctype` 节点。
-1. `$_DOCUMENT("#foo")`：获取该目标文档对象中 id 属性值为 `foo` 的元素。
-1. `$_DOCUMENT(".bar")`：获取该目标文档对象中 class 属性值为 `foo` 的元素或元素集合。
+1. `$_DOC.doctype`：获取该目标文档对象的 `doctype` 节点。
+1. `$_DOC.q("#foo")`：获取该目标文档对象中 id 属性值为 `foo` 的元素。
+1. `$_DOC.q(".bar")`：获取该目标文档对象中 class 属性值为 `foo` 的元素或元素集合。
 
 ##### 2.1.2.4) `$_TIMERS`
 
@@ -652,7 +652,7 @@ HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并
 
 ```html
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
-    <bind on="$_DOCUMENT('#the-user-name').attr.value" as="user_name" />
+    <bind on="$_DOC.q('#the-user-name').attr.value" as="user_name" />
 ```
 
 #### 2.1.4) 文档片段的 JSON 数据表达
@@ -2759,7 +2759,7 @@ def on_battery_changed (on_value, root_in_scope):
     </p>
 
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="$user_name" />
-    <bind on="$_DOCUMENT('#the-user-name').attr.value" as="user_name" />
+    <bind on="$_DOC.q('#the-user-name').attr.value" as="user_name" />
 ```
 
 __是否考虑：__  
