@@ -43,7 +43,7 @@ Language: Chinese
    + [2.2) 动作标签详解](#22-动作标签详解)
       * [2.2.1) `update` 标签](#221-update-标签)
       * [2.2.2) `remove` 标签](#222-remove-标签)
-      * [2.2.3) `empty` 标签](#223-empty-标签)
+      * [2.2.3) `clear` 标签](#223-clear-标签)
       * [2.2.4) `test` 标签和 `match` 标签](#224-test-标签和-match-标签)
       * [2.2.5) `choose` 标签](#225-choose-标签)
       * [2.2.6) `iterate` 标签](#226-iterate-标签)
@@ -809,7 +809,7 @@ HVML 定义有如下几个基本的动作标签，用于操作数据或者元素
 - `reduce` 标签用来定义在一个可迭代数据或者元素上执行规约（reduce）动作。
 - `observe` 标签用来定义针对被监听数据或者元素上的观察动作；`fire` 标签用来显式发起一个事件。
 - `update` 标签用来定义在指定元素或数据项上的更新操作，同时定义文档元素属性、内容和数据之间的映射关系。
-- `empty` 标签用来在指定元素或者数据项上执行清空操作，通常意味者删除当前元素或者数据的所有子元素或者数据项。
+- `clear` 标签用来在指定元素或者数据项上执行清空操作，通常意味者删除当前元素或者数据的所有子元素或者数据项。
 - `remove` 标签用来删除指定的元素或数据项。
 - `set` 标签用来在字典、数组或者集合上，依据另外一项数据执行特定的操作。
 
@@ -966,11 +966,11 @@ HVML 还定义有如下一些动作标签：
 在 HVML 中，`on` 或者 `in` 介词属性在引用文档中的元素时，若使用前导字符 `>`，则将被限定在父元素 `in` 介词指定的范围内。如下面例子中，
 
 ```html
-        <reduce on="$?" to="choose empty iterate" in="#the-user-statistics" by="class: RUserRegionStats">
+        <reduce on="$?" to="choose clear iterate" in="#the-user-statistics" by="class: RUserRegionStats">
             <choose on="$?.count" to="update" in="> h2 > span">
                 <update on="$@" textContent="$?" />
             </choose>
-            <empty in="#the-user-statistics > dl" />
+            <clear in="#the-user-statistics > dl" />
             <iterate on="$?.regions" to="append" in="> dl" with="#region-to-users" by="class: IUserRegions">
             </iterate>
         </reduce>
@@ -1121,9 +1121,9 @@ HVML 定义的上下文变量可罗列如下：
 
 注意，当 `on` 属性值指定的是一个元素集合时，`remove` 标签将移除该集合中所有的元素。
 
-#### 2.2.3) `empty` 标签
+#### 2.2.3) `clear` 标签
 
-`empty` 标签用于清空一个指定的数据项、元素或元素集合，仅支持 `on` 介词属性，用于指定要清空的数据项、元素或元素集合。该元素不产生结果数据，故而不支持在其中包含子动作元素，但可以包含 `error` 或 `except` 子元素。
+`clear` 标签用于清空一个指定的数据项、元素或元素集合，仅支持 `on` 介词属性，用于指定要清空的数据项、元素或元素集合。该元素不产生结果数据，故而不支持在其中包含子动作元素，但可以包含 `error` 或 `except` 子元素。
 
 如针对如下的 HTML 代码片段：
 
@@ -1139,13 +1139,13 @@ HVML 定义的上下文变量可罗列如下：
     </div>
 ```
 
-我们通过下面的 `empty` 标签来清空用来 `dl` 节点的所有子节点：
+我们通过下面的 `clear` 标签来清空用来 `dl` 节点的所有子节点：
 
 ```html
-    <empty on="#the-user-stats > dl" />
+    <clear on="#the-user-stats > dl" />
 ```
 
-执行上述 `empty` 动作后，上面的 HTML 代码片段将变为：
+执行上述 `clear` 动作后，上面的 HTML 代码片段将变为：
 
 ```html
     <div id="the-user-statistics">
@@ -1155,15 +1155,15 @@ HVML 定义的上下文变量可罗列如下：
     </div>
 ```
 
-类似地，我们也可以在数据项上执行 `empty` 动作。比如清空 `$users` 第二个用户信息：
+类似地，我们也可以在数据项上执行 `clear` 动作。比如清空 `$users` 第二个用户信息：
 
 ```html
-    <empty on="$users[1]" />
+    <clear on="$users[1]" />
 ```
 
 执行上述清空指令后，`$users` 的第二个用户数据项仍然存在，但其值将变为空值。
 
-注意，当 `on` 属性值指定的是一个元素集合时，`empty` 标签将对集合中的每个元素执行清空操作。
+注意，当 `on` 属性值指定的是一个元素集合时，`clear` 标签将对集合中的每个元素执行清空操作。
 
 #### 2.2.4) `test` 标签和 `match` 标签
 
@@ -1374,16 +1374,16 @@ HVML 定义的上下文变量可罗列如下：
 
     <reduce on="$users" to="update emtpy iterate" in="#the-user-statistics" by="CLASS: RUserRegionStats">
         <update on="> h2 > span" textContent="$?.count" />
-        <empty on="> dl" />
+        <clear on="> dl" />
         <iterate on="$?.regions" to="append" in="> dl" with="#region-to-users" by="KEY: ALL" descendingly>
         </iterate>
     </reduce>
 ```
 
-上述代码由脚本程序定义的类 `RUserRegionStats` 在 `$users` 上执行规约操作，之后形成一个如上面 JSON 格式描述的统计结果，其中包括整个用户的个数，以及所有区域的用户个数。然后使用了 `update` 标签、`empty` 标签以及 `iterate` 标签执行了三个后续动作：
+上述代码由脚本程序定义的类 `RUserRegionStats` 在 `$users` 上执行规约操作，之后形成一个如上面 JSON 格式描述的统计结果，其中包括整个用户的个数，以及所有区域的用户个数。然后使用了 `update` 标签、`clear` 标签以及 `iterate` 标签执行了三个后续动作：
 
 - `update` 标签：用于更新 `#the-user-statistics > h2 > span` 元素的内容为用户总数。
-- `empty` 标签：用于清除 `#the-user-statistics > dl` 元素的所有子元素。
+- `clear` 标签：用于清除 `#the-user-statistics > dl` 元素的所有子元素。
 - `iterate` 标签：用于在 `#the-user-statistics > dl` 元素中追加用户按区域统计的信息。
 
 假设执行规约操作后的结果同前述 JSON 格式给出的数据，则执行上述操作后获得的 HTML 片段为：
@@ -1583,11 +1583,11 @@ HVML 定义的上下文变量可罗列如下：
             <iterate on="$@" to="append" in="$users" with="$item_user" by="TRAVEL: BREADTH">
             </iterate>
 
-            <reduce on="$users" to="choose empty iterate" in="#the-user-statistics" by="CLASS: RUserRegionStats">
+            <reduce on="$users" to="choose clear iterate" in="#the-user-statistics" by="CLASS: RUserRegionStats">
                 <choose on="$?" to="update" in="> h2 > span" by="KEY: 'count'">
                     <update on="$@" textContent="$?" />
                 </choose>
-                <empty in="#the-user-statistics > dl" />
+                <clear in="#the-user-statistics > dl" />
                 <iterate on="$?.regions" to="append" in="> dl" with="#region-to-users" by="KEY: ALL" ascendingly>
                 </iterate>
             </reduce>
@@ -1852,12 +1852,12 @@ HVML 为不同的数据类型提供了如下操作：
         </button>
 
         <observe on="#goRoot" for="click">
-            <empty on="#entries" />
+            <clear on="#entries" />
             <include on="$fillDirEntries" with="/" />
         </observe>
 
         <observe on="#goHome" for="click">
-            <empty on="#entries" />
+            <clear on="#entries" />
             <include on="$fillDirEntries" with="/home" />
         </observe>
 ```
@@ -1895,13 +1895,13 @@ HVML 为不同的数据类型提供了如下操作：
         </button>
 
         <observe on="#goRoot" for="click">
-            <empty on="#entries" />
+            <clear on="#entries" />
             <call on="$fillDirEntries" in="#entries" with="/">
             </call>
         </observe>
 
         <observe on="#goHome" for="click">
-            <empty on="#entries" />
+            <clear on="#entries" />
             <call on="$fillDirEntries" in="#entries" with="/home" />
         </observe>
 ```
@@ -5636,12 +5636,12 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
 
         <observe on="$open" for="click">
             <test on="$fileInfo.selected_type">
-                <match for="dir" to="empty call update update" exclusively>
+                <match for="dir" to="clear call update update" exclusively>
                     <init as="new_path">
                         "$fileInfo.curr_path{$2.name}/"
                     </init>
 
-                    <empty on="#entries" />
+                    <clear on="#entries" />
                     <call on="$fillDirEntries" with="$new_path" />
                     <update on="$fileInfo" property.curr_path="$new_path" />
                     <update on="#path" textContent="$new_path" />
