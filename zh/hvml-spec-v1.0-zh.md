@@ -479,7 +479,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ```html
     <choose on="$_TIMERS" to="update" by="SQL: GET WHERE id = 'foo'">
-        <update on="$?" key.active="yes" />
+        <update on="$?" property.active="yes" />
     </choose>
 
     ...
@@ -1052,15 +1052,15 @@ HVML 定义的上下文变量可罗列如下：
 类似地，我们也可以在数据上执行 `update` 动作。比如更新 `$users` 的第二个用户的名称（`name`）：
 
 ```html
-    <update on="$users[1]" key.name="Richard" />
+    <update on="$users[1]" property.name="Richard" />
 ```
 
-在 `update` 标签中，除了介词属性之外，我们使用其他属性来完成数据项或元素的内容更新，如上面的 `textContent`、`attr.class` 以及 `key.name` 等。其规则如下：
+在 `update` 标签中，除了介词属性之外，我们使用其他属性来完成数据项或元素的内容更新，如上面的 `textContent`、`attr.class` 以及 `property.name` 等。其规则如下：
 
-- 对元素节点而言，我们使用 `attr.<attr_name>` 来表示元素的属性名称，如 `attr.value` 表示修改元素的 `value` 属性值。
-- 对元素节点而言，我们使用 `style.<style_name>` 来表示元素的样式名称，如 `style.width` 表示修改元素的 `width` 样式值。
-- 对数据项而言，如果数据项是字典结构，我们使用 `key.<key_name>` 来表示数据项的键值。
-- 对数据项而言，如果数据项是数组形式，我们使用 `array[<index_num>]` 来表示数组型数据项的第 `<index_num>` 个单元。
+- 对元素节点而言，我们使用 `attr.<attr_name>`、`attr[attr_name]` 来表示元素的属性名称，如 `attr.value` 或 `attr[value]` 表示修改元素的 `value` 属性值。
+- 对元素节点而言，我们使用 `style.<style_name>`、`style[style_name]` 来表示元素的样式名称，如 `style.width` 或 `style[width]` 表示修改元素的 `width` 样式值。
+- 对数据项而言，如果数据项是字典结构，我们使用 `property.<key_name>` 或 `property[<key_name>]` 来表示数据项的键值。
+- 对数据项而言，如果数据项是数组形式，我们使用 `member.<index_num>` 或 `member[<index_num>]` 来表示数组型数据项的第 `<index_num>` 个单元。
 - 对数据项而言，如果数据项是字符串、数值或者逻辑类型，我们使用 `value` 属性来改变它的值。比如，上面的 `update` 标签也可以写成：
 
 ```html
@@ -2461,7 +2461,7 @@ class HVMLChooser (object):
         ...
 
         <choose on='"foo"' to="update" in="$_TIMERS" by="CLASS: CTimer">
-            <update on="$?" key.active="yes" />
+            <update on="$?" property.active="yes" />
         </choose>
 
         ...
@@ -5631,7 +5631,7 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
         </button>
 
         <observe on="$entries" for="selected-item-changed">
-            <update on="$fileInfo" key.selected_type="$?.type" key.selected_name="$?.name" />
+            <update on="$fileInfo" property.selected_type="$?.type" property.selected_name="$?.name" />
         </observe>
 
         <observe on="$open" for="click">
@@ -5643,7 +5643,7 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
 
                     <empty on="#entries" />
                     <call on="$fillDirEntries" with="$new_path" />
-                    <update on="$fileInfo" key.curr_path="$new_path" />
+                    <update on="$fileInfo" property.curr_path="$new_path" />
                     <update on="#path" textContent="$new_path" />
                 </match>
                 <match for="file" exclusively>
