@@ -23,12 +23,12 @@ Language: Chinese
    + [2.1) 基本原理及术语](#21-基本原理及术语)
       * [2.1.1) 整体结构](#211-整体结构)
       * [2.1.2) 数据和变量](#212-数据和变量)
-         - [2.1.2.1) `$_REQUEST`](#2121-_request)
-         - [2.1.2.2) `$_SYSTEM`](#2122-_system)
-         - [2.1.2.3) `$_DOC`](#2123-_doc)
-         - [2.1.2.4) `$_TIMERS`](#2124-_timers)
-         - [2.1.2.5) `$_L`](#2125-_l)
-         - [2.1.2.6) `$_T`](#2126-_t)
+         - [2.1.2.1) `$REQUEST`](#2121-request)
+         - [2.1.2.2) `$SYSTEM`](#2122-system)
+         - [2.1.2.3) `$DOC`](#2123-doc)
+         - [2.1.2.4) `$TIMERS`](#2124-timers)
+         - [2.1.2.5) `$L`](#2125-l)
+         - [2.1.2.6) `$T`](#2126-t)
          - [2.1.2.7) 集合](#2127-集合)
       * [2.1.3) 动态 JSON 对象和 `bind` 标签](#213-动态-json-对象和-bind-标签)
       * [2.1.4) 文档片段的 JSON 数据表达](#214-文档片段的-json-数据表达)
@@ -434,37 +434,37 @@ __是否考虑：__
 
 在 HVML 中，我们通常使用 `as` 属性来给数据命名，但 HVML 保留如下几个变量名称用于特殊场合，我们称为内置全局变量，习惯上全部使用大写形式，并使用 `_` 作为前缀。
 
-##### 2.1.2.1) `$_REQUEST`
+##### 2.1.2.1) `$REQUEST`
 
-`$_REQUEST`：主要用来表述装载文档时，由其他模块提供的请求数据，一般由 HVML 解释器在装载 HVML 文档时生成。比如下面的 Python 脚本装载一个 HVML 文档，并传递了 `nrUsers` 参数：
+`$REQUEST`：主要用来表述装载文档时，由其他模块提供的请求数据，一般由 HVML 解释器在装载 HVML 文档时生成。比如下面的 Python 脚本装载一个 HVML 文档，并传递了 `nrUsers` 参数：
 
 ```python
 hvml.load ("a.hvml", { "nrUsers" : 10 })
 ```
 
-在 HVML 文档中，我们可使用 `$_REQUEST.nrUsers` 来引用上述脚本代码传入的值（`10`）。
+在 HVML 文档中，我们可使用 `$REQUEST.nrUsers` 来引用上述脚本代码传入的值（`10`）。
 
-##### 2.1.2.2) `$_SYSTEM`
+##### 2.1.2.2) `$SYSTEM`
 
-`$_SYSTEM`：一个用于访问系统基本功能的 JSON 对象，可用于提供系统时间、当前语言地区信息、随机数、机器名称等。比如，我们要获得当前的 Unix 时间戳，可直接使用 `$_SYSTEM.time`，如果要获得一个随机数，可直接使用 `$_SYSTEM.random`，如果我们要获得当前的机器名称，可使用 `$_SYSTEM.name`，如果要获取当前语言地区信息，可使用 `$_SYSTEM.locale`。
+`$SYSTEM`：一个用于访问系统基本功能的 JSON 对象，可用于提供系统时间、当前语言地区信息、随机数、机器名称等。比如，我们要获得当前的 Unix 时间戳，可直接使用 `$SYSTEM.time`，如果要获得一个随机数，可直接使用 `$SYSTEM.random`，如果我们要获得当前的机器名称，可使用 `$SYSTEM.name`，如果要获取当前语言地区信息，可使用 `$SYSTEM.locale`。
 
-在 HVML 中，`_SYSTEM` 变量本质上是一个动态 JSON 对象，无须初始化即可使用。
+在 HVML 中，`SYSTEM` 变量本质上是一个动态 JSON 对象，无须初始化即可使用。
 
-##### 2.1.2.3) `$_DOC`
+##### 2.1.2.3) `$DOC`
 
-`$_DOC` 是一个动态 JSON 对象，该对象表述的是 HVML 生成的目标文档对象。我们可以使用该对象上的特定键名以及 `q` 方法使用 CSS 选择器获取目标文档上的特定元素或者元素集合，如：
+`$DOC` 是一个动态 JSON 对象，该对象表述的是 HVML 生成的目标文档对象。我们可以使用该对象上的特定键名以及 `q` 方法使用 CSS 选择器获取目标文档上的特定元素或者元素集合，如：
 
-1. `$_DOC.doctype`：获取该目标文档对象的 `doctype` 节点。
-1. `$_DOC.query("#foo")`：获取该目标文档对象中 id 属性值为 `foo` 的元素。
-1. `$_DOC.query(".bar")`：获取该目标文档对象中 class 属性值为 `foo` 的元素或元素集合。
+1. `$DOC.doctype`：获取该目标文档对象的 `doctype` 节点。
+1. `$DOC.query("#foo")`：获取该目标文档对象中 id 属性值为 `foo` 的元素。
+1. `$DOC.query(".bar")`：获取该目标文档对象中 class 属性值为 `foo` 的元素或元素集合。
 
-##### 2.1.2.4) `$_TIMERS`
+##### 2.1.2.4) `$TIMERS`
 
-`$_TIMERS`：用于全局的定时器，具有固定的格式，默认为空数组。可使用 `set`、`update` 等元素修改它的值，如：
+`$TIMERS`：用于全局的定时器，具有固定的格式，默认为空数组。可使用 `set`、`update` 等元素修改它的值，如：
 
 ```html
 <head>
-    <set on="$_TIMERS" to="merge">
+    <set on="$TIMERS" to="merge">
         [
             { "id" : "foo", "interval" : 1000, "active" : "no" },
             { "id" : "bar", "interval" : 2000, "active" : "no" },
@@ -478,34 +478,34 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 只要在 HVML 中修改某个定时器的 `active` 参数即可激活这个定时器，然后使用后面介绍的 `observe` 即可监听定时器到期时间：
 
 ```html
-    <choose on="$_TIMERS" to="update" by="SQL: GET WHERE id = 'foo'">
+    <choose on="$TIMERS" to="update" by="SQL: GET WHERE id = 'foo'">
         <update on="$?" property.active="yes" />
     </choose>
 
     ...
 
-    <observe on="$_TIMERS" for="foo" to="update" in="#the-header" >
-        <update on="> span.local-time" textContent="$_SYSTEM.time('%H:%m')" />
+    <observe on="$TIMERS" for="foo" to="update" in="#the-header" >
+        <update on="> span.local-time" textContent="$SYSTEM.time('%H:%m')" />
     </observe>
 ```
 
-##### 2.1.2.5) `$_L`
+##### 2.1.2.5) `$L`
 
-`$_L` 是一个动态 JSON 对象，该对象完成数值对比、字符串对比以及逻辑与、或、异或、取反等逻辑操作：
+`$L` 是一个动态 JSON 对象，该对象完成数值对比、字符串对比以及逻辑与、或、异或、取反等逻辑操作：
 
-1. `$_L.not(<json_evaluation_expression>)`：用于逻辑取反操作。
-1. `$_L.and(<json_evaluation_expression>, <json_evaluation_expression>, ...)`：用于逻辑与运算。
-1. `$_L.or(<json_evaluation_expression>, <json_evaluation_expression>, ...)`：用于逻辑或运算。
-1. `$_L.xor(<json_evaluation_expression>, <json_evaluation_expression>)`：用于逻辑异或运算。
-1. `$_L.eq(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较两个参数是否在数值上相等。
-1. `$_L.ne(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较两个参数是否在数值上不相等。
-1. `$_L.gt(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上大于第二个参数。
-1. `$_L.ge(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上大于或等于第二个参数。
-1. `$_L.lt(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上小于第二个参数。
-1. `$_L.le(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上小于或等于第二个参数。
-1. `$_L.streq(< 'caseless' | 'case' | 'wildcard' | 'reg' >, <json_evaluation_expression>, <json_evaluation_expression>)`：用于对比两个字符串是否相等；第一个参数用来表示字符串的匹配方式（区分大小写、通配符、正则表达式），其后的两个参数用来传递两个字符串。
+1. `$L.not(<json_evaluation_expression>)`：用于逻辑取反操作。
+1. `$L.and(<json_evaluation_expression>, <json_evaluation_expression>, ...)`：用于逻辑与运算。
+1. `$L.or(<json_evaluation_expression>, <json_evaluation_expression>, ...)`：用于逻辑或运算。
+1. `$L.xor(<json_evaluation_expression>, <json_evaluation_expression>)`：用于逻辑异或运算。
+1. `$L.eq(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较两个参数是否在数值上相等。
+1. `$L.ne(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较两个参数是否在数值上不相等。
+1. `$L.gt(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上大于第二个参数。
+1. `$L.ge(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上大于或等于第二个参数。
+1. `$L.lt(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上小于第二个参数。
+1. `$L.le(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上小于或等于第二个参数。
+1. `$L.streq(< 'caseless' | 'case' | 'wildcard' | 'reg' >, <json_evaluation_expression>, <json_evaluation_expression>)`：用于对比两个字符串是否相等；第一个参数用来表示字符串的匹配方式（区分大小写、通配符、正则表达式），其后的两个参数用来传递两个字符串。
 
-比如 `$_L.not($_L.gt(5, 3))` 的结果是假值（`false`）。
+比如 `$L.not($L.gt(5, 3))` 的结果是假值（`false`）。
 
 注意：对非布尔型 JSON 值，符合如下条件时视作 `false`，其他情形视作 `true`：
 
@@ -516,7 +516,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 1. 空对象。
 1. 空集合。
 
-##### 2.1.2.6) `$_T`
+##### 2.1.2.6) `$T`
 
 该变量主要用于文本的本地化。常用用法如下：
 
@@ -524,19 +524,19 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
-        <set on="$_T.map" from="https://foo.bar/messages/$_SYSTEM.locale" to="merge" />
+        <set on="$T.map" from="https://foo.bar/messages/$SYSTEM.locale" to="merge" />
 
-        <title>$_T.get('Hello, world!')</title>
+        <title>$T.get('Hello, world!')</title>
     </head>
 
     <body>
-        <p>$_t.get('Hello, HVML!')</p>
+        <p>$T.get('Hello, HVML!')</p>
     </body>
 
 </hvml>
 ```
 
-在上面的 HVML 代码中，我们在头部使用 `set` 标签设置了 `$_T.map`，该变量的内容来自 `https://foo.bar/messages/$_SYSTEM.locale`。注意其中的 `$_SYSTEM.locale` 是一个 JSON 求值表达式，会返回当前系统的语言地区标识符（如 `zh_CN`），HVML 解释器求值并替代后的最终 URL 为：`https://foo.bar/messages/zh_CN`。从该 URL 获得的文件内容一般为：
+在上面的 HVML 代码中，我们在头部使用 `set` 标签设置了 `$T.map`，该变量的内容来自 `https://foo.bar/messages/$SYSTEM.locale`。注意其中的 `$SYSTEM.locale` 是一个 JSON 求值表达式，会返回当前系统的语言地区标识符（如 `zh_CN`），HVML 解释器求值并替代后的最终 URL 为：`https://foo.bar/messages/zh_CN`。从该 URL 获得的文件内容一般为：
 
 ```json
 {
@@ -614,21 +614,21 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 上述代码初始化后的 `$users` 中，`id` 为 `2` 的用户姓名将为 `David`。
 
-注意，内置全局变量 `$_TIMERS` 本质上就是一个使用键名 `id` 的键值作为唯一性判断条件的字典集合。
+注意，内置全局变量 `$TIMERS` 本质上就是一个使用键名 `id` 的键值作为唯一性判断条件的字典集合。
 
 HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并集、交集、差集、异或集等。详情见 `set` 标签的描述。
 
 #### 2.1.3) 动态 JSON 对象和 `bind` 标签
 
-在 HVML 中，我们扩展了 JSON 数据的表达方式，使之具有动态特性。一个动态的 JSON 对象，通常由 HVML 解释器或者外部脚本程序定义或实现。从 HVML 文档的角度看，访问一个动态 JSON 对象的方法和访问一个常规的 JSON 对象方法并无二致。比如，我们通过访问 `$_SYSTEM.time` 可获得当前的 UNIX 时间戳。但是，每次访问某个动态 JSON 对象的特定属性时，其返回值可能会不同。
+在 HVML 中，我们扩展了 JSON 数据的表达方式，使之具有动态特性。一个动态的 JSON 对象，通常由 HVML 解释器或者外部脚本程序定义或实现。从 HVML 文档的角度看，访问一个动态 JSON 对象的方法和访问一个常规的 JSON 对象方法并无二致。比如，我们通过访问 `$SYSTEM.time` 可获得当前的 UNIX 时间戳。但是，每次访问某个动态 JSON 对象的特定属性时，其返回值可能会不同。
 
-作为动态 JSON 对象的另一个特性，我们可以将某个特定的属性视作对象而在其上提供虚拟的属性，比如当我们访问 `$_SYSTEM.time.iso8601` 时，将获得当前时间的 ISO 8601 标准字符串（如 `2020-06-24T11:27:05+08:00`）。
+作为动态 JSON 对象的另一个特性，我们可以将某个特定的属性视作对象而在其上提供虚拟的属性，比如当我们访问 `$SYSTEM.time.iso8601` 时，将获得当前时间的 ISO 8601 标准字符串（如 `2020-06-24T11:27:05+08:00`）。
 
-更进一步，我们还可以将某个特定的属性当作函数使用，通过传递参数来获得不同的返回值，或者对该属性设置特定的值。比如在 `$_SYSTEM` 对象上，如果我们要获取对当前时间执行特定格式化的字符串，可以使用 `$_SYSTEM.time('%H:%m')`，这时，我们将获得类似 `11:27` 的时间字符串。如果我们要设置当前时间，则可以使用 `$_SYSTEM.time<123456>`。
+更进一步，我们还可以将某个特定的属性当作函数使用，通过传递参数来获得不同的返回值，或者对该属性设置特定的值。比如在 `$SYSTEM` 对象上，如果我们要获取对当前时间执行特定格式化的字符串，可以使用 `$SYSTEM.time('%H:%m')`，这时，我们将获得类似 `11:27` 的时间字符串。如果我们要设置当前时间，则可以使用 `$SYSTEM.time<123456>`。
 
 这里，我们引入了两种运算符：`()` 和 `<>`。本质上，前者对应于属性的获取方法（getter），后者对应于属性的设置方法（setter）。
 
-除了内置的 `$_SYSTEM` 动态对象之外，我们还可以通过外部脚本来实现自定义的动态 JSON 对象，并通过 `bind` 标签将这个动态的 JSON 对象和某个变量绑定在一起，如：
+除了内置的 `$SYSTEM` 动态对象之外，我们还可以通过外部脚本来实现自定义的动态 JSON 对象，并通过 `bind` 标签将这个动态的 JSON 对象和某个变量绑定在一起，如：
 
 ```html
     <bind on="math" in="libc" as="math" />
@@ -652,7 +652,7 @@ HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并
 
 ```html
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
-    <bind on="$_DOC.query('#the-user-name').attr.value" as="user_name" />
+    <bind on="$DOC.query('#the-user-name').attr.value" as="user_name" />
 ```
 
 #### 2.1.4) 文档片段的 JSON 数据表达
@@ -957,7 +957,7 @@ HVML 还定义有如下一些动作标签：
 
 如果要在 `on` 属性中引用一个数据，则必定使用 `$`、`[`、`{` 或 `"` 作为前导字符，或者使用字面的数值（number）、`true`、`false`、`null` 等关键词：
 
-- `$` 用来定义一个 JSON 求值表达式，如 `$_TIMERS[0]`。
+- `$` 用来定义一个 JSON 求值表达式，如 `$TIMERS[0]`。
 - `[` 用来定义一个 JSON 数组，如 `[ $foo, $bar, true, false ]`。
 - `{` 用来定义一个 JSON 对象，如 `{ "$foo" : $bar, "foo": "bar" }`。
 - `"` 用来定义一个 JSON 字符串，如 `"$foo"`。
@@ -1225,10 +1225,10 @@ HVML 定义的上下文变量可罗列如下：
 
 对于匹配条件，我们可以在 `match` 标签中使用 `on` 介词属性来定义一个基于动态 JSON 的逻辑表达式，也可以使用 `for` 介词属性定义基于 `test` 元素执行结果的匹配条件，两者选一，但 `for` 属性具有更高优先级。
 
-使用 `on` 介词属性时，我们可以使用全局动态对象 `$_L` 构建一 JSON 求值表达式求值来确定匹配条件；当求值表达式返回 0、null、false、长度为零的字符串时，视作不匹配，反之视作匹配。比如就上述 HVML 代码中的匹配 `zh_CN` 的 `match` 标签，可以如下书写：
+使用 `on` 介词属性时，我们可以使用全局动态对象 `$L` 构建一 JSON 求值表达式求值来确定匹配条件；当求值表达式返回 0、null、false、长度为零的字符串时，视作不匹配，反之视作匹配。比如就上述 HVML 代码中的匹配 `zh_CN` 的 `match` 标签，可以如下书写：
 
 ```html
-        <match on="$_L.streq('case', 'zh_CN', $?)" to="displace" with="#footer-cn" exclusively />
+        <match on="$L.streq('case', 'zh_CN', $?)" to="displace" with="#footer-cn" exclusively />
 ```
 
 使用 `for` 介词属性时，可以避免使用繁琐的 JSON 求职表达式，但要求 `test` 动作的结果必须是字符串或数值。其规则如下：
@@ -1685,7 +1685,7 @@ HVML 为不同的数据类型提供了如下操作：
 比如修改全局定时器的操作，我们可以使用 `set` 标签完成：
 
 ```html
-    <set on="$_TIMERS" to="update">
+    <set on="$TIMERS" to="update">
         { "id" : "foo", "active" : "yes" },
     </set>
 ```
@@ -1693,7 +1693,7 @@ HVML 为不同的数据类型提供了如下操作：
 类似地，我们要添加一个新的定时器时，使用如下的 `set` 标签：
 
 ```html
-    <set on="$_TIMERS" to="merge">
+    <set on="$TIMERS" to="merge">
         [
             { "id" : "foobar", "interval" : 3000, "active" : "yes" },
         ]
@@ -1703,7 +1703,7 @@ HVML 为不同的数据类型提供了如下操作：
 当我们要删除定时器 `foo` 时，使用如下的 `set` 标签：
 
 ```html
-    <set on="$_TIMERS" to="subtract">
+    <set on="$TIMERS" to="subtract">
         { "id" : "foo" }
     </set>
 ```
@@ -1807,7 +1807,7 @@ HVML 为不同的数据类型提供了如下操作：
     <back to="_caller" with="$user_info" />
 ```
 
-使用 `back` 标签时，我们可以使用 `to` 属性指定要返回的页面名称（`_caller` 是保留名称，用于指代调用该页面的页面名称）。此时，还可以使用 `with` 属性返回一个数据。当前页面是一个模态对话框时，该数据将作为 `load` 元素的结果数据返回；如果当前页面不是一个模态对话框，则该数据将做为请求数据（对应 `$_REQUEST` 内置全局变量）提供给目标返回对应的页面，此时，该页面会执行一次重新装载操作（相当于浏览器刷新页面功能）。
+使用 `back` 标签时，我们可以使用 `to` 属性指定要返回的页面名称（`_caller` 是保留名称，用于指代调用该页面的页面名称）。此时，还可以使用 `with` 属性返回一个数据。当前页面是一个模态对话框时，该数据将作为 `load` 元素的结果数据返回；如果当前页面不是一个模态对话框，则该数据将做为请求数据（对应 `$REQUEST` 内置全局变量）提供给目标返回对应的页面，此时，该页面会执行一次重新装载操作（相当于浏览器刷新页面功能）。
 
 ```html
     <load from="new_user.hvml" type="_modal">
@@ -2449,11 +2449,11 @@ class HVMLChooser (object):
 
 `HVMLChooser` 类仅包含两个主要的方法：`choose` 和 `map`。这两个方法在基类中不做任何工作，主要用于提供给子类重载。前者用于从 `on` 属性指定的数据项或元素（集合）中选择某个数据项或元素；后者建立被选中的元素在 `in` 属性指定的范围所执行的操作。如果后续执行使用的片段模板或者数据模板中已经定义有数据的映射关系，则无需实现 `map` 方法。
 
-比如我们要从全局 `$_TIMERS` 变量定义的数据中选择指定的定时器，我们可以使用内建的 SQL 执行器，也可以使用一个外部执行器 `CLASS: CTimer`。
+比如我们要从全局 `$TIMERS` 变量定义的数据中选择指定的定时器，我们可以使用内建的 SQL 执行器，也可以使用一个外部执行器 `CLASS: CTimer`。
 
 ```html
     <head>
-        <set on="$_TIMERS" to="merge">
+        <set on="$TIMERS" to="merge">
             [
                 { "id" : "foo", "interval" : 1000, "active" : "no" },
                 { "id" : "bar", "interval" : 2000, "active" : "no" },
@@ -2464,7 +2464,7 @@ class HVMLChooser (object):
     <body>
         ...
 
-        <choose on='"foo"' to="update" in="$_TIMERS" by="CLASS: CTimer">
+        <choose on='"foo"' to="update" in="$TIMERS" by="CLASS: CTimer">
             <update on="$?" property.active="yes" />
         </choose>
 
@@ -2763,7 +2763,7 @@ def on_battery_changed (on_value, root_in_scope):
     </p>
 
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="$user_name" />
-    <bind on="$_DOC.query('#the-user-name').attr.value" as="user_name" />
+    <bind on="$DOC.query('#the-user-name').attr.value" as="user_name" />
 ```
 
 __是否考虑：__  
@@ -3468,7 +3468,7 @@ In the JSONEE state, the stack of the JSONEE nesting stack is empty. We store `{
 
 The stack grows downwards; the topmost character on the stack is the first one added to the stack, and the bottommost character of the stack is the most recently added node in the stack.
 
-如这个 JSON 求值表达式：`{{$_L.not($_L.streq('case', $_SYSTEM.time('%H:%m'), '00:00'))}}`，JSONEE 嵌套栈最长时包含如下字符：`{{((('`。
+如这个 JSON 求值表达式：`{{$L.not($L.streq('case', $SYSTEM.time('%H:%m'), '00:00'))}}`，JSONEE 嵌套栈最长时包含如下字符：`{{((('`。
 
 ##### 3.2.4.5) JSON 求值树/JSON Evaluation Tree
 
@@ -3516,13 +3516,13 @@ $_JSON.make_object(
 $_JSON.concat_string("foo-", $bar)
 ```
 
-对 JSONEE 中的 JSON 值定位部分，如 `$_TIMERS[0].id`，亦可转换为如下的 JSON 求值表达式：
+对 JSONEE 中的 JSON 值定位部分，如 `$TIMERS[0].id`，亦可转换为如下的 JSON 求值表达式：
 
 ```
 $_JSON.get_element_at(
     $_JSON.get_element_at(
         $_JSON.get_variable(
-            "_TIMERS"),
+            "TIMERS"),
         0),
     "id")
 ```
@@ -3532,8 +3532,8 @@ $_JSON.get_element_at(
 ```json
 {
     "foo" : [ true, false, null ],
-    "bar" : "There is an JSONEE: $_L.not($_L.streq('case', $_SYSTEM.time('%H:%m'), '00:00'))!",
-    "koo" : $_TIMERS[0].id,
+    "bar" : "There is an JSONEE: $L.not($L.streq('case', $SYSTEM.time('%H:%m'), '00:00'))!",
+    "koo" : $TIMERS[0].id,
 }
 ```
 
@@ -3549,18 +3549,18 @@ $_JSON.make_object(
             $_JSON.call_method(
                 $_JSON.get_element_at(
                     $_JSON.get_variable(
-                        "_L"),
+                        "L"),
                     "not"),
                     $_JSON.call_method(
                         $_JSON.get_element_at(
                             $_JSON.get_variable(
-                                "_L"),
+                                "L"),
                             "streq"),
                         'case',
                         $_JSON.call_method(
                             $_JSON.get_element_at(
                                 $_JSON.get_variable(
-                                    "_SYSTEM"),
+                                    "SYSTEM"),
                                 "time"),
                             '%H:%m'),
                         '00:00')
@@ -3571,7 +3571,7 @@ $_JSON.make_object(
         $_JSON.get_element_at(
             $_JSON.get_element_at(
                 $_JSON.get_variable(
-                    "_TIMERS"),
+                    "TIMERS"),
                 0),
             "id")
         )
@@ -5718,7 +5718,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
     <head>
         <connect at="tcp://foo.bar:1300" as="braceletInfo" for="mqtt">
 
-        <set on="$_TIMERS" to="merge">
+        <set on="$TIMERS" to="merge">
             [
                 { "id" : "clock", "interval" : 1000, "active" : "yes" },
             ]
@@ -5729,8 +5729,8 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
     <body>
         <div class="clock" id="clock">
-            <observe on="$_TIMERS" for="clock">
-                <update on="#clock" textContent="$_SYSTEM.time('%H:%m')" />
+            <observe on="$TIMERS" for="clock">
+                <update on="#clock" textContent="$SYSTEM.time('%H:%m')" />
             </observe>
         </div>
 
