@@ -507,7 +507,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
     ...
 
-    <observe on="$TIMERS" for="foo" to="update" in="#the-header" >
+    <observe on="$TIMERS" for="expired:foo" to="update" in="#the-header" >
         <update on="> span.local-time" textContent="$SYSTEM.time('%H:%m')" />
     </observe>
 ```
@@ -1424,7 +1424,7 @@ HVML 还定义有如下一些动作标签：
         </header>
 
         <send on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED">
-            <observe on="$databus" for="event" via="$?" to="update">
+            <observe on="$databus" for="event:$?" to="update">
                 <update in="#the-header" by="FUNC: on_battery_changed">
                     <error>
                        <p>Bad scope.</p>
@@ -1448,8 +1448,9 @@ HVML 还定义有如下一些动作标签：
 
 ```json
     {
-        "packetType": "event",
-        "observeId": "IMPLEMENTATION-DEFINED-OBSERVING-IDENTIFIER",
+        "messageType": "event",
+        "messageSubType": "XXXXXX",
+        "observerId": "IMPLEMENTATION-DEFINED-OBSERVER-IDENTIFIER",
         "source": "@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED",
         "time": 20200616100207.567,
         "signature": "XXXXX",
@@ -1460,11 +1461,11 @@ HVML 还定义有如下一些动作标签：
     }
 ```
 
-其中，`packetType` 字段表示数据包类型；`source` 表示产生此事件来源；`time` 表示此事件产生的系统时间；`signature` 是此事件的内容的签名，可用来验证数据来源的合法性；`payload` 中包含事件关联的数据。在上面这个例子中，事件包含两个信息，一个信息用来表示当前电量百分比，另一个信息表示是否在充电状态。
+其中，`messageType` 字段表示数据包类型；`source` 表示产生此事件来源；`time` 表示此事件产生的系统时间；`signature` 是此事件的内容的签名，可用来验证数据来源的合法性；`payload` 中包含事件关联的数据。在上面这个例子中，事件包含两个信息，一个信息用来表示当前电量百分比，另一个信息表示是否在充电状态。
 
 当 HVML 代理观察到来自 `$databus` 上的电池变化事件数据包之后，将根据 `observe` 标签定义的观察动作执行相应的操作。在上面的例子中，`observe` 标签所定义的操作及条件解释如下：
 
-- 当来自`$databus`（`on` 属性值）上的数据包类型为 `event`（`for` 属性值），过滤条件（由 `via` 属性定义）符合 `send` 返回的唯一性标识结果时，执行 `to` 介词属性定义的 `update` 操作。
+- 当来自`$databus`（`on` 属性值）上的数据包类型为 `event:$?`（`for` 属性值），这里的 `$?` 是 `send` 返回的唯一性标识字符串（相当于事件标志符），执行 `to` 介词属性定义的 `update` 操作。
 - `observe` 元素的子元素 `update` 元素定义了具体的更新操作：由 `by` 介词属性定义的脚本函数 `on_battery_changed` 完成，该更新操作限定在 `in` 介词属性定义的 `#the-header` 元素节点中。
 
 注意：当 `observe` 观察到了来自特定数据源上的数据包时，其结果数据为该事件数据包中的 `payload` 数据；若没有通过 `for` 属性和 `via` 指定具体要观察的数据包类型以及过滤条件时，则结果数据为整个数据包。
@@ -1473,7 +1474,7 @@ HVML 还定义有如下一些动作标签：
 
 ```html
     <send on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED">
-        <observe on="$databus" for="$?" to="update" in="#the-header">
+        <observe on="$databus" for="event:$?" to="update" in="#the-header">
             <update on="~span.mobile-operator" textContent="$?.name">
                 <error>
                     <p>Bad scope.</p>
@@ -1489,7 +1490,7 @@ HVML 还定义有如下一些动作标签：
 对电池电量的更新，我们也可以不使用脚本程序，直接使用 `test`、`match` 和 `update` 标签来定义更新操作：
 
 ```html
-    <observe on="$databus" for="$?" to="test">
+    <observe on="$databus" for="event:$?" to="test">
         <test on="$?.level" in="#the-header">
             <match for="100" to="update" exclusively>
                 <update on="~img.mobile-status" attr.src="/battery-level-full.png" />
@@ -1537,7 +1538,7 @@ HVML 还定义有如下一些动作标签：
         <send on="$mqtt" to="subscribe" at="newUser" as="new_user" />
         <send on="$mqtt" to="subscribe" at="deleteUser" as="del_user" />
 
-        <observe on="$mqtt" for="$new_user" to="iterate">
+        <observe on="$mqtt" for="event:$new_user" to="iterate">
             <iterate on="$?" to="append" in="#the-user-list" with="$user_item" by="CLASS: IUser">
                 <error type="notready">
                     <img src="wait.gif" />
@@ -1548,7 +1549,7 @@ HVML 还定义有如下一些动作标签：
             </iterate>
         </observe>
 
-        <observe on="$mqtt" for="$del_user" to="iterate">
+        <observe on="$mqtt" for="event:$del_user" to="iterate">
             <iterate on="$?" to="erase" in="#the-user-list" by="RANGE: 0">
                 <erase on="#user-$?.id" />
             </iterate>
@@ -1574,7 +1575,7 @@ HVML 还定义有如下一些动作标签：
             },
         </archedata>
 
-        <observe on="#the-user-list" for="change" to="iterate">
+        <observe on="#the-user-list" for="change:content" to="iterate">
 
             <init as="users">
                 [ ]
@@ -1609,7 +1610,7 @@ HVML 还定义有如下一些动作标签：
 
     ...
 
-    <observe on="#user-list" for="new-user">
+    <observe on="#user-list" for="new-user:*">
         ...
     </observe>
 ```
@@ -1622,7 +1623,7 @@ HVML 还定义有如下一些动作标签：
 
 ```html
     <request on="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
-        <observe on="$foo" for="result" via="">
+        <observe on="$foo" for="result:*">
             ...
         </observe>
     </request>
@@ -1722,13 +1723,13 @@ HVML 为不同的数据类型提供了如下操作：
         ...
 
         <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiGetHotspots" as="wifilist" asynchronously>
-            <observe on="$hibus" for="$wifilist" to="iterate">
+            <observe on="$hibus" for="result:$wifilist" to="iterate">
                 ...
             </observe>
         </send>
 
         <send on="$hibus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED" as="networkchanged">
-            <observe on="$hibus" for="$networkchanged">
+            <observe on="$hibus" for="event:$networkchanged">
                 ...
             </observe>
         </send>
@@ -1759,7 +1760,7 @@ HVML 为不同的数据类型提供了如下操作：
             <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus" />
 
             <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiScanHotspots" with="$paramWifiList" as="hotspots_list" asynchronously>
-                <observe on="$hibus" for="$hotspots_list">
+                <observe on="$hibus" for="result:$hotspots_list">
                     <disconnect on="$hibus" />
 
                     <!-- fill the Wifi list with the response data -->
@@ -5631,11 +5632,11 @@ Set the temporary buffer to the empty string. Append a code point equal to the c
             Open
         </button>
 
-        <observe on="$entries" for="selected-item-changed">
+        <observe on="#entries" for="selected-item-changed">
             <update on="$fileInfo" property.selected_type="$?.type" property.selected_name="$?.name" />
         </observe>
 
-        <observe on="$open" for="click">
+        <observe on="#open" for="click">
             <test on="$fileInfo.selected_type">
                 <match for="dir" to="clear call update update" exclusively>
                     <init as="new_path">
@@ -5726,14 +5727,14 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
     <body>
         <div class="clock" id="clock">
-            <observe on="$TIMERS" for="clock">
+            <observe on="$TIMERS" for="expired:clock">
                 <update on="#clock" textContent="$SYSTEM.time('%H:%m')" />
             </observe>
         </div>
 
         <div class="temperature" id="temperature">
             <send on="$braceletInfo" to="subscribe" at="temperature">
-                <observe on="$braceletInfo" for="event" via="">
+                <observe on="$braceletInfo" for="event:$?">
                     <update on="#temperature" textContent="$?.value ℃" />
                 </observe>
             </send>
@@ -5741,7 +5742,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
         <div class="heartbeat" id="heartbeat">
             <send on="$braceletInfo" to="subscribe" at="heartbeat">
-                <observe on="$braceletInfo" for="event" via="$?">
+                <observe on="$braceletInfo" for="event:$?">
                     <update on="#heartbeat" textContent="$?.value BPM" />
                 </observe>
             </send>
@@ -5749,7 +5750,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
         <div class="steps" id="steps">
             <send on="$braceletInfo" to="subscribe" at="steps">
-                <observe on="$braceletInfo" for="event" via="$?">
+                <observe on="$braceletInfo" for="event:$?">
                     <update on="#steps" textContent="$?.value" />
                 </observe>
             </send>
