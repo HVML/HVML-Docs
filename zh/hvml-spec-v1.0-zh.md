@@ -984,20 +984,20 @@ HVML 还定义有如下一些动作标签：
 
 HVML 定义的上下文变量可罗列如下：
 
-- `$?`：指当前上下文数据。在迭代中，指一次迭代获得数组元素或键值对；其他情况下，指前置操作的结果。
+- `$?`：指父操作给出的结果数据，也称为当前上下文数据。
 - `$#`：指当前上下文数据所包含的数据项数目：
    - 假如当前上下文数据是数组，该变量指数组单元数量。
    - 假如当前上下文数据是字典，该变量指键值对数量。
    - 假如当前上下文数据是字符串、数值、真值（true）、假值（false）或空值（null）时，该变量的值为 1。
    - 假如当前上下文数据是 undefined，则该变量的值为 0。
-- `$^`：指当前数据的类型，用字符串表示，可能的取值有：`object`、`array`、`string`、`number`、`true`、`false`、`null`，分别表示对象、数组、字符串、数值、真值、假值以及空值。
+- `$*`：指当前上下文数据的类型，用字符串表示，可能的取值有：`object`、`array`、`string`、`number`、`true`、`false`、`null`，分别表示对象、数组、字符串、数值、真值、假值以及空值。
+- `$:`：若当前上下文数据来自键值对（key-value paire），该变量用来表示键名，其他情形下未定义。
 - `$@`：指当前的文档操作范围，即代表当前操作范围的 DOM 子树，也就是介词属性 `in` 定义的当前文档操作位置。
 
-以下上下文变量专用于迭代时：
+以下上下文变量专用于迭代时（其他情形下未定义）：
 
-- `$&`：当前迭代的迭代子（iterator），可通过 `$&.value` 获得对应的值。
+- `$&`：当前迭代的迭代子（iterator），可在操作容器（尤其是集合时）时指定位置。
 - `$%`：当前迭代的索引值，比如第一次迭代，该变量的值为 0，第二次迭代，该变量的值为 1，以此类推。
-- `$<`：在当前结果来自键值对（key-value paire）时，该变量用来表示键名，其他情形下为空字符串。
 
 我们还可以在上下文变量的符号之前添加一个正整数来引用从当前向上回溯 `<N>` 级的上下文数据：
 
@@ -3199,9 +3199,10 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
    - `'.'<literal_key_name>'<' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] '>'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
    - `'.'<literal_key_name>` 用于引用一个 JSON 对象的键值。
    - `'[' [white_space] <json_evaluation_expression> | <quoted_key_name> | <literal_integer> [white_space] ']'` 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。
-- `literal_variable_name`：`'?' | '@' | '#' | '%' | '@' | ':' | <literal_integer> | <literal_token>`。
+- `literal_variable_name`：`[literal_positive_integer]'?' | [literal_positive_integer]'@' | [literal_positive_integer]'#' | [literal_positive_integer]'*' | [literal_positive_integer]':' | '[literal_positive_integer]&' | '[literal_positive_integer]%' | <literal_token>`。
 - `literal_key_name`：`<literal_token>`。
-- `literal_integer`：`/^[1-9][0-9]*$/`。
+- `literal_integer`：`/^[0-9]*$/`。
+- `literal_positive_integer`：`/^[1-9][0-9]*$/`。
 - `literal_token`：`/^[A-Za-z_][A-Za-z0-9_]*$/`。
 - `quoted_key_name`: `'<literal_string>'` | `"<literal_string>"`。
 - `white_space`: `\u0020 | \u000A | \u000D | \u0009 `
