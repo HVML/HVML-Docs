@@ -30,7 +30,8 @@ Language: Chinese
          - [2.1.2.5) `$L`](#2125-l)
          - [2.1.2.6) `$T`](#2126-t)
          - [2.1.2.7) 集合](#2127-集合)
-      * [2.1.3) 动态 JSON 对象和 `bind` 标签](#213-动态-json-对象和-bind-标签)
+         - [2.1.2.8) 绑定变量](#2128-绑定变量)
+      * [2.1.3) 动态 JSON 对象](#213-动态-json-对象)
       * [2.1.4) 文档片段的 JSON 数据表达](#214-文档片段的-json-数据表达)
       * [2.1.5) 数据模板和文档片段模板](#215-数据模板和文档片段模板)
       * [2.1.6) 用来操作数据或元素的动作标签](#216-用来操作数据或元素的动作标签)
@@ -56,6 +57,7 @@ Language: Chinese
       * [2.2.13) `define` 和 `include` 标签](#2213-define-和-include-标签)
       * [2.2.14) `call` 和 `return` 标签](#2214-call-和-return-标签)
       * [2.2.15) `catch` 标签](#2215-catch-标签)
+      * [2.2.16) `bind` 标签](#2216-bind-标签)
    + [2.3) 执行器](#23-执行器)
       * [2.3.1) 内建执行器](#231-内建执行器)
          - [2.3.1.1) `KEY` 执行器](#2311-key-执行器)
@@ -386,12 +388,12 @@ __注：__
         </footer>
 
         <send on="$databus" to="subscribe" at="">
-            <observe on="$databus" for="event" via="$?" to="update" in="...">
+            <observe on="$databus" for="event:$?" to="update" in="...">
                 <update by="FUNC: on_battery_changed" />
             </observe>
         </send>
 
-        <observe on=".avatar" for="event" via="clicked" to="update" in="...">
+        <observe on=".avatar" for="click" to="update" in="...">
             <update by="FUNC: on_avatar_clicked" />
         </observe>
     </body>
@@ -428,7 +430,7 @@ __是否考虑：__
 - `init`：该标签初始化一个变量；我们将有名字的数据称为变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义请求的 URL，`with` 属性定义请求的参数，`via` 属性定义请求的方法（如 `GET` 或 `POST`）。
 - `connect`：该标签定义对一个外部数据源的连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包。
 - `disconnect`：该标签关闭先前建立的外部数据源连接。
-- `bind`：该标签用于在头部定义一个动态的 JSON 对象，该对象由 HVML 解释器或外部脚本实现。
+- `bind`：该标签用于定义一个绑定变量。
 
 在 HVML 中，当我们引用变量时，我们使用 `$` 前缀，比如 `$global`、`$users`、`$?` 等。当我们要指代普通的 `$` 字符时，我们使用 `\` 做转义字符。
 
@@ -641,7 +643,28 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并集、交集、差集、异或集等。详情见 `set` 标签的描述。
 
-#### 2.1.3) 动态 JSON 对象和 `bind` 标签
+##### 2.1.2.8) 绑定变量
+
+HVML 允许使用 `bind` 标签将一个已有数据绑定到一个变量：
+
+```html
+    <bind on="$users[0]" as="me" />
+```
+
+之后，当我们需要引用 `$users[0]` 时，可直接使用 `$me`。
+
+但绑定的变量值，将在 HVML 程序运行进入消息循环时被重新求值，若前后发生变化，则将产生一个可被 `observe` 动作捕获的消息，并做相应的处理。
+
+比如，我们可以将某个目标文档元素的属性或者内容绑定到某个变量上，然后使用 `observe` 元素处理其上的 `change` 事件：
+
+```html
+    <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
+    <bind on="$DOC.query('#the-user-name').attr.value" as="user_name" />
+    <observe on="$user_name" for="change">
+    </observe>
+```
+
+#### 2.1.3) 动态 JSON 对象
 
 在 HVML 中，我们扩展了 JSON 数据的表达方式，使之具有动态特性。一个动态的 JSON 对象，通常由 HVML 解释器或者外部脚本程序定义或实现。从 HVML 文档的角度看，访问一个动态 JSON 对象的方法和访问一个常规的 JSON 对象方法并无二致。比如，我们通过访问 `$SYSTEM.time` 可获得当前的 UNIX 时间戳。但是，每次访问某个动态 JSON 对象的特定属性时，其返回值可能会不同。
 
@@ -651,32 +674,17 @@ HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并
 
 这里，我们引入了两种运算符：`()` 和 `<>`。本质上，前者对应于属性的获取方法（getter），后者对应于属性的设置方法（setter）。
 
-除了内置的 `$SYSTEM` 动态对象之外，我们还可以通过外部脚本来实现自定义的动态 JSON 对象，并通过 `bind` 标签将这个动态的 JSON 对象和某个变量绑定在一起，如：
+除了内置的 `$SYSTEM` 动态对象之外，我们还可以通过外部脚本来实现自定义的动态 JSON 对象，并通过 `init` 标签将这个动态的 JSON 对象和某个变量绑定在一起，如：
 
 ```html
-    <bind on="math" in="libc" as="math" />
+    <init as="math" from="libc" with="math" via="LIB" />
 ```
 
 之后，当我们访问 `$math.pi` 时，将返回 PI 的值，如果访问 `$math.pi(3)` 将返回保留三位有效小数位数的 PI 值，即 `3.142`；而如果访问 `$math.sin($math.pi)` 将返回 `0.0`。
 
-通过这样的设计，我们可以方便有效地扩展 HVML 的功能，并通过动态 JSON 对象和外部模块交换数据，或者调用外部模块的功能。
-
-为方便处理复杂对象，我们还可以在已有的数据上绑定一个新的变量名：
-
-```html
-    <bind on="$users[0]" as="me" />
-```
-
-之后，当我们需要引用 `$users[0]` 时，可直接使用 `$me`。
-
 当我们引用一个动态 JSON 对象上并不存在的属性，或者不存在的虚拟子属性，或者无法在该属性上执行函数操作时，HVML 解释器或该对象的外部脚本实现将返回错误或抛出异常。
 
-我们甚至可以将某个目标文档元素的属性或者内容绑定为某个变量：
-
-```html
-    <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
-    <bind on="$DOC.query('#the-user-name').attr.value" as="user_name" />
-```
+通过这样的设计，我们可以方便有效地扩展 HVML 的功能，并通过动态 JSON 对象和外部模块交换数据，或者调用外部模块的功能。
 
 #### 2.1.4) 文档片段的 JSON 数据表达
 
@@ -961,6 +969,7 @@ HVML 还定义有如下一些动作标签：
 - `asynchronously`：在 `request`、`send`、`call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用异步请求方式；可简写为 `async`。
 - `exclusively`：在 `match` 动作标签中，用于定义排他性；具有这一属性时，匹配当前动作时，将不再处理同级其他 `match` 标签；可简写为 `excl`。
 - `uniquely`：在 `init` 动作标签中，用于定义集合；具有这一属性时，`init` 定义的变量将具有唯一性条件；可简写为 `uniq`。
+- `once`：在 `observe` 动作标签中，用于指定仅观察一次。
 
 注意：在 HVML 中，我们无需为副词属性赋值。
 
@@ -1406,7 +1415,7 @@ HVML 还定义有如下一些动作标签：
 
 `observe` 标签用于观察特定数据源上获得数据或状态，或者文档元素节点上的事件，并完成指定的操作。
 
-假设文档通过本地总线机制（本例中是 `dtbus`）监听来自系统的状态改变事件，如电池电量、WiFi 信号强度、移动网络信号强度等信息，并在文档使用相应的图标来表示这些状态的改变。为此，我们可以定义如下的 HVML 文档：
+假设文档通过本地总线机制（本例中是 `hiBus`）监听来自系统的状态改变事件，如电池电量、WiFi 信号强度、移动网络信号强度等信息，并在文档使用相应的图标来表示这些状态的改变。为此，我们可以定义如下的 HVML 文档：
 
 ```html
 <hvml>
@@ -1633,6 +1642,8 @@ HVML 还定义有如下一些动作标签：
 
 `init` 标签初始化一个变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义该请求的 URL，使用 `with` 参数定义请求参数，使用 `via` 定义请求方法（如 `GET`、`POST`、`DELETE` 等）。
 
+我们也可以使用 `init` 标签从共享库中初始化一个自定义的动态 JSON 对象，此时，使用 `from` 指定要装在的动态库名称，使用 `with` 指定要装载的动态对象名称，并给定 `via` 属性值为 `LIB`，表示装载共享库。
+
 `set` 标签在 `on` 属性给定的变量上，使用 `with` 指定的数据来执行由 `to` 属性指定的操作，主要用于集合操作。除了使用 `with` 属性指定数据之外，`set` 标签亦可从外部数据源获得数据，或者将 JSON 数据作为元素内容嵌入。
 
 这两个标签的常见用法如下：
@@ -1650,6 +1661,9 @@ HVML 还定义有如下一些动作标签：
             { "id": "3", "avatar": "/img/avatars/3.png", "name": "David", "region": "zh_CN" }
         ]
     </init>
+
+    <!-- init $math from a shared library -->
+    <init as="math" from="libc" with="math" via="LIB" />
 
     <init as="locales" from="http://foo.bar.com/locales" />
 
@@ -1964,6 +1978,51 @@ HVML 为不同的数据类型提供了如下操作：
 - 若未定义 `for` 属性，则相当于匹配任意错误或异常。
 - 若 `for` 属性值为 `*` 或空字符串，则相当于匹配任意错误或异常。
 - 若 `for` 属性值中包含有 `*` 或者 `?` 字符，则表示通配符（wildcard）匹配，可支持通配符并忽略大小写；如 `error:*`，表示匹配所有错误。
+
+#### 2.2.16) `bind` 标签
+
+`bind` 标签定义一个绑定的变量。我们可以使用 `on` 属性指定要绑定的数据，也可以使用内容来定义数据。如：
+
+```html
+    <bind on="$users[0]" as="me" />
+```
+
+或，
+
+```html
+    <bind as="me">
+        {
+            "id": "$currUser.id",
+            "avatar": "/img/avatars/{$currUser.id}.png",
+            "name": "$currUser.name",
+            "region": "$currUser.locale"
+        }
+    </bind>
+```
+
+但绑定的变量值，将在 HVML 程序运行进入消息循环时被重新求值，若前后发生变化，则将产生一个可被 `observe` 动作捕获的 `change` 消息，并做相应的处理。
+
+比如，
+
+```html
+    <bind on="$SYSTEM.time" as="sysClock" />
+    <observe on="$sysClock" for="change">
+       ...
+    </observe>
+```
+
+上述代码中 `observe` 元素定义的操作组，将每一秒钟执行一次。
+
+另外，我们可以将某个目标文档元素的属性或者内容绑定到某个变量上，然后使用 `observe` 元素处理其上的 `change` 事件：
+
+```html
+    <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
+    <bind on="$DOC.query('#the-user-name').attr.value" as="user_name" />
+    <observe on="$user_name" for="change">
+    </observe>
+```
+
+需要注意的是，被绑定的变量对应的求值表达式，不能引用上下文变量，或者任何不在 `bind` 所在范围内的变量。
 
 ### 2.3) 执行器
 
@@ -2748,7 +2807,7 @@ def on_battery_changed (on_value, root_in_scope):
 
 如此，开发者不需要显式增加 `observe` 标签即可获得相同的响应式处理效果，只需要对相应的表达式增加响应式标记即可。但需要注意的是，HVML 会忽略在上下文变量上使用的响应式标记。
 
-另外，我们可以使用`bind` 标签实现元素属性或内容到变量的响应式处理。
+另外，我们可以使用 `bind` 标签实现元素属性或内容到变量的响应式处理。
 
 ```html
     <init as="user_name">
@@ -2762,16 +2821,6 @@ def on_battery_changed (on_value, root_in_scope):
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="$user_name" />
     <bind on="$DOC.query('#the-user-name').attr.value" as="user_name" />
 ```
-
-__是否考虑：__  
-我们还可以考虑使用 `dababind` 属性实现元素属性或内容到变量的响应式处理，就上面的 HVML 代码，我们希望实现用户输入框中的内容和变量 `$user_name` 绑定。只要用户修改了输入框中的内容，将自动修改 `$user_name` 的值，而无需使用 `observe` 标签。为此，我们可以如下编写 HVML 代码：
-
-```html
-    <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="$user_name"
-        databind="$user_name: attr.value" />
-```
-
-上述代码，使用 `databind` 属性定义了元素属性 `value` 和变量 `$user_name` 的绑定关系。如此，我们不需要使用 `observe` 和 `update` 标签。
 
 ## 3) HVML 语法
 
