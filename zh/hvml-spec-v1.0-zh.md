@@ -1623,7 +1623,7 @@ HVML 还定义有如下一些动作标签：
 
 ```html
     <request on="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
-        <observe on="$foo" for="result:*">
+        <observe on="$foo" for="result">
             ...
         </observe>
     </request>
