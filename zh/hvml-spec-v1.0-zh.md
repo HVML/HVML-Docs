@@ -1938,14 +1938,14 @@ HVML 为不同的数据类型提供了如下操作：
 
         <listbox id="entries">
             <call as="my_task" on="$collectAllDirEntriesRecursively" with="/" asynchronously />
-            <observe on="$my_task" for="ready">
+            <observe on="$my_task" for="success">
                 <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: 0">
                 </iterate>
             </observe>
         </listbox>
 ```
 
-在上面的 HVML 代码中，我们异步调用了 `collectAllDirEntriesRecursively` 函数，该函数递归获取当前路径下的所有文件系统目录项（这是一个典型的耗时操作）。HVML 解释器会创建一个异步任务来执行该函数，`as` 属性指定了该任务的名称（`my_task`）。之后，代码使用 `observe` 元素来观察 `my_task` 任务的 `ready` 事件，并做后续的处理。需要注意的是，异步调用操作组时，一般不应该操作真实文档对应的元素。
+在上面的 HVML 代码中，我们异步调用了 `collectAllDirEntriesRecursively` 函数，该函数递归获取当前路径下的所有文件系统目录项（这是一个典型的耗时操作）。HVML 解释器会创建一个异步任务来执行该函数，`as` 属性指定了该任务的名称（`my_task`）。之后，代码使用 `observe` 元素来观察 `my_task` 任务的 `success` 事件，并做后续的处理。需要注意的是，异步调用操作组时，一般不应该操作真实文档对应的元素。
 
 注意，不管是 `include` 还是 `call`，我们都可以递归使用。
 
@@ -2000,13 +2000,31 @@ HVML 为不同的数据类型提供了如下操作：
     </bind>
 ```
 
-但绑定的变量值，将在 HVML 程序运行进入消息循环时被重新求值，若前后发生变化，则将产生一个可被 `observe` 动作捕获的 `change` 消息，并做相应的处理。
+本质上，被绑定的变量对应的是一个可求值的表达式，当我们使用这个变量时，我们调用其上的 `eval` 方法获得该表达式对应的具体数据。因此，下面的 `init` 和 `bind` 元素的执行效果是不一样的：
+
+```
+    <init as="sysClock">
+        $SYSTEM.time
+    </init>
+
+    ...
+
+    <bind on="$SYSTEM.time" as="rtClock" />
+
+    <p>the fixed system time: $sysClock</p>
+
+    ...
+
+    <p>Always the current system time: $rcClock.eval</p>
+```
+
+另外，若在该变量上执行 `observe` 动作，将在 HVML 程序运行进入消息循环时该变量对应的表达式将被重新求值，若前后发生变化，则将产生一个 `change` 消息，从而可以在 `observe` 动作元素定义的操作组中做相应的处理：
 
 比如，
 
 ```html
-    <bind on="$SYSTEM.time" as="sysClock" />
-    <observe on="$sysClock" for="change">
+    <bind on="$SYSTEM.time" as="rtClock" />
+    <observe on="$rtClock" for="change">
        ...
     </observe>
 ```
