@@ -674,14 +674,14 @@ HVML 允许使用 `bind` 标签将一个已有数据绑定到一个变量：
 
 作为动态 JSON 对象的另一个特性，我们可以将某个特定的属性视作对象而在其上提供虚拟的属性，比如当我们访问 `$SYSTEM.time.iso8601` 时，将获得当前时间的 ISO 8601 标准字符串（如 `2020-06-24T11:27:05+08:00`）。
 
-更进一步，我们还可以将某个特定的属性当作函数使用，通过传递参数来获得不同的返回值，或者对该属性设置特定的值。比如在 `$SYSTEM` 对象上，如果我们要获取对当前时间执行特定格式化的字符串，可以使用 `$SYSTEM.time('%H:%m')`，这时，我们将获得类似 `11:27` 的时间字符串。如果我们要设置当前时间，则可以使用 `$SYSTEM.time<123456>`。
+更进一步，我们还可以将某个特定的属性当作函数使用，通过传递参数来获得不同的返回值，或者对该属性设置特定的值。比如在 `$SYSTEM` 对象上，如果我们要获取对当前时间执行特定格式化的字符串，可以使用 `$SYSTEM.time('%H:%m')`，这时，我们将获得类似 `11:27` 的时间字符串。如果我们要设置当前时间，则可以使用 `$SYSTEM.time(! 123456 )`。
 
-这里，我们引入了两种运算符：`()` 和 `<>`。本质上，前者对应于属性的获取方法（getter），后者对应于属性的设置方法（setter）。
+这里，我们引入了两种运算符：`( )` 和 `(! )`。本质上，前者对应于属性的获取方法（getter），后者对应于属性的设置方法（setter）。
 
 除了内置的 `$SYSTEM` 动态对象之外，我们还可以通过外部脚本来实现自定义的动态 JSON 对象，并通过 `init` 标签将这个动态的 JSON 对象和某个变量绑定在一起，如：
 
 ```html
-    <init as="math" from="libc" with="math" via="LIB" />
+    <init as="math" from="libc" with="math" via="LOAD" />
 ```
 
 之后，当我们访问 `$math.pi` 时，将返回 PI 的值，如果访问 `$math.pi(3)` 将返回保留三位有效小数位数的 PI 值，即 `3.142`；而如果访问 `$math.sin($math.pi)` 将返回 `0.0`。
@@ -1651,7 +1651,7 @@ HVML 还定义有如下一些动作标签：
 
 `init` 标签初始化一个变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义该请求的 URL，使用 `with` 参数定义请求参数，使用 `via` 定义请求方法（如 `GET`、`POST`、`DELETE` 等）。
 
-我们也可以使用 `init` 标签从共享库中初始化一个自定义的动态 JSON 对象，此时，使用 `from` 指定要装在的动态库名称，使用 `with` 指定要装载的动态对象名称，并给定 `via` 属性值为 `LIB`，表示装载共享库。
+我们也可以使用 `init` 标签从共享库中初始化一个自定义的动态 JSON 对象，此时，使用 `from` 指定要装在的动态库名称，使用 `with` 指定要装载的动态对象名称，并给定 `via` 属性值为 `LOAD`，表示装载共享库。
 
 `set` 标签在 `on` 属性给定的变量上，使用 `with` 指定的数据来执行由 `to` 属性指定的操作，主要用于集合操作。除了使用 `with` 属性指定数据之外，`set` 标签亦可从外部数据源获得数据，或者将 JSON 数据作为元素内容嵌入。
 
@@ -1672,7 +1672,7 @@ HVML 还定义有如下一些动作标签：
     </init>
 
     <!-- init $math from a shared library -->
-    <init as="math" from="libc" with="math" via="LIB" />
+    <init as="math" from="libc" with="math" via="LOAD" />
 
     <init as="locales" from="http://foo.bar.com/locales" />
 
@@ -3269,7 +3269,7 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
 - `json_expression`: `<json_evaluation_expression> | <extended_json>`
 - `json_addressing_expression`：
    - `'.'<literal_key_name>'(' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] ')'` 用于在动态 JSON 对象上调用特定键名的 getter 方法。
-   - `'.'<literal_key_name>'<' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] '>'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
+   - `'.'<literal_key_name>'(!' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] ')'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
    - `'.'<literal_key_name>` 用于引用一个 JSON 对象的键值。
    - `'[' [white_space] <json_evaluation_expression> | <quoted_key_name> | <literal_integer> [white_space] ']'` 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。
 - `literal_variable_name`：`[literal_positive_integer]'?' | [literal_positive_integer]'@' | [literal_positive_integer]'#' | [literal_positive_integer]'*' | [literal_positive_integer]':' | '[literal_positive_integer]&' | '[literal_positive_integer]%' | <literal_token>`。
