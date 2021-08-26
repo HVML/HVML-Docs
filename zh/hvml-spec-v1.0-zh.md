@@ -49,7 +49,7 @@ Language: Chinese
       * [2.2.5) `choose` 标签](#225-choose-标签)
       * [2.2.6) `iterate` 标签](#226-iterate-标签)
       * [2.2.7) `reduce` 标签](#227-reduce-标签)
-      * [2.2.8) `observe` 和 `fire` 标签](#228-observe-和-fire-标签)
+      * [2.2.8) `observe`、`forget` 和 `fire` 标签](#228-observeforget-和-fire-标签)
       * [2.2.9) `request` 标签](#229-request-标签)
       * [2.2.10) `init` 和 `set` 标签](#2210-init-和-set-标签)
       * [2.2.11) `connect`、`send` 和 `disconnect` 标签](#2211-connectsend-和-disconnect-标签)
@@ -841,8 +841,8 @@ HVML 定义有如下几个基本的动作标签，用于操作数据或者元素
 - `match` 标签用来定义 `test` 元素的子元素，以定义一个匹配分支。
 - `iterate` 标签用来定义在一个可迭代数据或者元素上的迭代动作。
 - `reduce` 标签用来定义在一个可迭代数据或者元素上执行规约（reduce）动作。
-- `observe` 标签用来定义针对被监听数据或者元素上的观察动作；`fire` 标签用来显式发起一个事件。
-- `update` 标签用来定义在指定元素或数据项上的更新操作，同时定义文档元素属性、内容和数据之间的映射关系。
+- `observe` 标签用来定义针对特定变体或者元素上的观察动作；`fire` 标签用来显式发起一个事件；`forget` 标签用来撤销对某个变体或者元素上的观察动作。
+- `update` 标签用来定义在指定元素或数据项上的更新操作。
 - `clear` 标签用来在指定元素或者数据项上执行清空操作，通常意味者删除当前元素或者数据的所有子元素或者数据项。
 - `erase` 标签用来清除指定的元素、元素属性或数据项。
 - `set` 标签用来在字典、数组或者集合上，依据另外一项数据执行特定的操作。
@@ -942,7 +942,7 @@ HVML 还定义有如下一些动作标签：
 - `from`：在 `init`、`set`、`load` 等动作元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URI。
 - `on`：用于定义执行动作所依赖的数据、元素或元素集合。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`@?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
 - `in`：用于定义执行操作的文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。注意，使用 `in` 介词属性指定数据作为操作范围时，不会改变文档的操作位置。
-- `for`：在 `observe` 标签中，用于定义观察（observe）操作对应的事件名称；在 `match` 标签中，用于定义匹配条件；在 `connect` 标签中，用于定义协议或用途。
+- `for`：在 `observe`、`forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的消息类型；在 `match` 标签中，用于定义匹配条件；在 `connect` 标签中，用于定义协议或用途。
 - `as`：用于定义 `init`、`connect`、`bind`、`load` 等元素绑定的变量名称、页面名称等。
 - `with`：用于定义克隆数据项或者文档片段时模板（`archetype` 或 `archedata`）名称；亦用于在 `init`、`request`、`send` 元素中定义发送请求或消息时的参数。
 - `to`：用于定义后续动作或者动作列表，多个动作使用空格分割。一个动作如果定义有相应的动作标签，则需要使用子元素描述，也可以是如下无需使用子元素描述的动作：
@@ -972,7 +972,7 @@ HVML 还定义有如下一些动作标签：
 - `asynchronously`：在 `request`、`send`、`call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用异步请求方式；可简写为 `async`。
 - `exclusively`：在 `match` 动作标签中，用于定义排他性；具有这一属性时，匹配当前动作时，将不再处理同级其他 `match` 标签；可简写为 `excl`。
 - `uniquely`：在 `init` 动作标签中，用于定义集合；具有这一属性时，`init` 定义的变量将具有唯一性条件；可简写为 `uniq`。
-- `once`：在 `observe` 动作标签中，用于指定仅观察一次。
+- `once`：在 `observe` 动作标签中，用于指定仅观察一次，之后该观察将被自动解除。
 
 注意：在 HVML 中，我们无需为副词属性赋值。
 
@@ -1414,7 +1414,7 @@ HVML 还定义有如下一些动作标签：
     </div>
 ```
 
-#### 2.2.8) `observe` 和 `fire` 标签
+#### 2.2.8) `observe`、`forget` 和 `fire` 标签
 
 `observe` 标签用于观察特定数据源上获得数据或状态，或者文档元素节点上的事件，并完成指定的操作。
 
@@ -1462,7 +1462,6 @@ HVML 还定义有如下一些动作标签：
     {
         "messageType": "event",
         "messageSubType": "XXXXXX",
-        "observerId": "IMPLEMENTATION-DEFINED-OBSERVER-IDENTIFIER",
         "source": "@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED",
         "time": 20200616100207.567,
         "signature": "XXXXX",
@@ -1609,6 +1608,12 @@ HVML 还定义有如下一些动作标签：
 
     </body>
 </hvml>
+```
+
+当我们要解除在某个特定数据或者元素之上的观察时，使用 `forget` 标签。也就是说，`forget` 是 `observe` 的反操作。
+
+```html
+    <forget on="#the-user-list" for="change:content" />
 ```
 
 在 HVML 代码中，除了被动等待事件的发生之外，代码也可以直接使用 `fire` 标签主动地激发一个事件：
