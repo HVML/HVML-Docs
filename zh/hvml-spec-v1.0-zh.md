@@ -1990,7 +1990,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 #### 2.2.16) `bind` 标签
 
-`bind` 标签定义一个绑定的变量。我们可以使用 `on` 属性指定要绑定的数据，也可以使用内容来定义数据。如：
+`bind` 标签定义一个绑定的变量；通常，被绑定的变量对应的是一个可求值的表达式。我们可以使用 `on` 属性指定要绑定的数据，也可以使用内容来定义。如：
 
 ```html
     <bind on="$users[0]" as="me" />
@@ -2009,7 +2009,7 @@ HVML 为不同的数据类型提供了如下操作：
     </bind>
 ```
 
-本质上，被绑定的变量对应的是一个可求值的表达式，当我们使用这个变量时，我们调用其上的 `eval` 方法获得该表达式对应的具体数据。因此，下面的 `init` 和 `bind` 元素的执行效果是不一样的：
+当我们使用这个变量时，我们调用其上的 `eval` 方法获得该表达式对应的具体数据。因此，下面的 `init` 和 `bind` 元素的执行效果是不一样的：
 
 ```
     <init as="sysClock">
@@ -2020,11 +2020,11 @@ HVML 为不同的数据类型提供了如下操作：
 
     <bind on="$SYSTEM.time" as="rtClock" />
 
-    <p>the fixed system time: $sysClock</p>
+    <p>The initial system time: $sysClock</p>
 
     ...
 
-    <p>Always the current system time: $rcClock.eval</p>
+    <p>The current system time: $rcClock.eval</p>
 ```
 
 另外，若在该变量上执行 `observe` 动作，将在 HVML 程序运行进入消息循环时该变量对应的表达式将被重新求值，若前后发生变化，则将产生一个 `change` 消息，从而可以在 `observe` 动作元素定义的操作组中做相应的处理：
