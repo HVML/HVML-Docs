@@ -33,8 +33,9 @@ Language: Chinese
          - [2.1.6.4) `$TIMERS`](#2164-timers)
          - [2.1.6.5) `$L`](#2165-l)
          - [2.1.6.6) `$T`](#2166-t)
-         - [2.1.6.7) 集合](#2167-集合)
-         - [2.1.6.8) 绑定变量](#2168-绑定变量)
+         - [2.1.6.7) `$EJSON`](#2167-ejson)
+         - [2.1.6.8) 集合](#2168-集合)
+         - [2.1.6.0) 绑定变量](#2169-绑定变量)
       * [2.1.7) 文档片段的 JSON 数据表达](#217-文档片段的-json-数据表达)
       * [2.1.8) 数据模板和文档片段模板](#218-数据模板和文档片段模板)
       * [2.1.9) 用来操作数据或元素的动作标签](#219-用来操作数据或元素的动作标签)
@@ -180,7 +181,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 1. 在页面底部展示一个搜索引擎连接。具体的搜索引擎根据系统所在的语言地区（locale）信息确定。
 
 ```html
-<!DOCTYPE hvml SYSTEM "v: _MATH">
+<!DOCTYPE hvml SYSTEM "v: MATH">
 <hvml target="html">
     <head>
     </head>
@@ -549,7 +550,14 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 </html>
 ```
 
-##### 2.1.6.7) 集合
+##### 2.1.6.7) `$EJSON`
+
+该变量主要用于获得指定数据相关的信息，比如类型、数据项个数等。
+
+1. `$EJSON.type(<any>)`：获取数据的类型，如 `undefined`、`null` 等。
+1. `$EJSON.number(<any>)`：获取给定数据数据项个数。
+
+##### 2.1.6.8) 集合
 
 在 HVML 中，我们可以使用 JSON 数组来定义一个集合。集合有如下特征：
 
@@ -608,7 +616,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并集、交集、差集、异或集等。详情见 `set` 标签的描述。
 
-##### 2.1.6.8) 绑定变量
+##### 2.1.6.9) 绑定变量
 
 HVML 允许使用 `bind` 标签将一个已有数据绑定到一个变量：
 
@@ -782,9 +790,9 @@ HVML 定义有如下几个基本的动作标签，用于操作数据或者元素
 - `iterate` 标签用来定义在一个可迭代数据或者元素上的迭代动作。
 - `reduce` 标签用来定义在一个可迭代数据或者元素上执行规约（reduce）动作。
 - `observe` 标签用来定义针对特定数据或者元素上的观察动作；`fire` 标签用来显式发起一个事件；`forget` 标签用来撤销对某个数据或者元素上的观察动作。
-- `update` 标签用来定义在指定元素或数据项上的更新操作。
-- `clear` 标签用来在指定元素或者数据项上执行清空操作，通常意味者删除当前元素或者数据的所有子元素或者数据项。
-- `erase` 标签用来清除指定的元素、元素属性或数据项。
+- `update` 标签用来在指定的元素、元素集合或者容器数据上执行更新操作。
+- `clear` 标签用来在指定元素或者容器数据上执行清空操作，通常意味者删除当前元素或者数据的所有子元素或者数据项。
+- `erase` 标签用来清除指定的元素、元素属性或容器中的数据项。
 - `set` 标签用来在字典、数组或者集合上，依据另外一项数据执行特定的操作。
 
 在 HVML 中，动作元素具有如下的特点：
@@ -878,9 +886,9 @@ HVML 还定义有如下一些动作标签：
 
 针对动作标签，HVML 定义了如下几个介词（如 `on`、`in`、`to` 等）属性，用于定义执行动作时依赖的数据（或元素）及其集合。如：
 
-- `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URI，如 `tcp://foo.com:2345`、`unix:///var/run/hibus.sock`。
+- `at`：在 `set` 动作元素中，用来指定要操作的变量名称；在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URI，如 `tcp://foo.com:2345`、`unix:///var/run/hibus.sock`。
 - `from`：在 `init`、`set`、`load` 等动作元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URI。
-- `on`：用于定义执行动作所依赖的数据、元素或元素集合。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`@?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
+- `on`：用于定义执行动作所依赖的数据、元素或元素集合。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`$?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
 - `in`：用于定义执行操作的文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。注意，使用 `in` 介词属性指定数据作为操作范围时，不会改变文档的操作位置。
 - `for`：在 `observe`、`forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的消息类型；在 `match` 标签中，用于定义匹配条件；在 `connect` 标签中，用于定义协议或用途。
 - `as`：用于定义 `init`、`connect`、`bind`、`load` 等元素绑定的变量名称、页面名称等。
@@ -977,7 +985,7 @@ HVML 还定义有如下一些动作标签：
 
 #### 2.2.1) `update` 标签
 
-`update` 标签用于修改一个指定的数据项、元素或元素集合，仅支持 `on` 和 `by` 介词属性。`on` 属性用于指定要修改的数据项、元素或元素集合；`by` 指定执行器。该元素产生 `true` 或 `false` 两种结果数据，分别表示成功或失败。
+`update` 标签用于修改一个可变数据，比如一个数组或者对象的特定数据项，或者元素的属性或者内容，或者一个元素集合。该标签支持 `on` 和 `by` 介词属性。`on` 属性用于指定要修改的数组、对象、元素或元素集合；`by` 指定执行器。当执行成功时，该标签的结果数据为更新后的数据。
 
 比如对下面的文档片段：
 
@@ -1011,22 +1019,16 @@ HVML 还定义有如下一些动作标签：
 
 - 对元素节点而言，我们使用 `attr.<attr_name>`、`attr[attr_name]` 来表示元素的属性名称，如 `attr.value` 或 `attr[value]` 表示修改元素的 `value` 属性值。
 - 对元素节点而言，我们使用 `style.<style_name>`、`style[style_name]` 来表示元素的样式名称，如 `style.width` 或 `style[width]` 表示修改元素的 `width` 样式值。
-- 对数据项而言，如果数据项是字典结构，我们使用 `property.<key_name>` 或 `property[<key_name>]` 来表示数据项的键值。
-- 对数据项而言，如果数据项是数组形式，我们使用 `member.<index_num>` 或 `member[<index_num>]` 来表示数组型数据项的第 `<index_num>` 个单元。
-- 对数据项而言，如果数据项是字符串、数值或者逻辑类型，我们使用 `value` 属性来改变它的值。比如，上面的 `update` 标签也可以写成：
+- 如果数据项是对象，我们使用 `property.<key_name>` 或 `property[<key_name>]` 来表示数据项的键值。
+- 如果数据项是数组，我们使用 `member.<index_num>` 或 `member[<index_num>]` 来表示数组型数据项的第 `<index_num>` 个单元。
+- 如果数据项是不可变类型，如字符串、数值或者逻辑类型，将抛出异常。
 
-```html
-    <update on="$users[1].name" value="Richard" />
-```
-
-在改变数据项的值时，HVML 会保持数据类型不发生变化。比如用户的年龄是数值，则会将 `value` 属性设定的值转换成数值再进行赋值。
-
-在 HVML 中，根据目标标记语言的不同，我们可以引入一些虚拟的属性值来指代对特定内容的修改，比如针对 HTML 文档我们可使用 `textContent` 这一虚拟属性名来表示元素节点的纯文本内容，使用 `htmlContent` 来表示使用 HTML 标记片段来作为其内容（这可能改变 DOM 子树的结构）。类似地，我们可以使用 `xmlContent` 表示使用 XML 文档片段来设定其内容。这类虚拟属性，取决于 HVML 的目标标记语言。
+在 HVML 中，根据目标标记语言的不同，我们可以引入一些虚拟的属性值来指代对特定内容的修改，比如针对 HTML 文档我们可使用 `textContent` 这一虚拟属性名来表示元素节点的纯文本内容，使用 `innerHTML` 来表示使用 HTML 标记片段来作为其内容（这可能改变 DOM 子树的结构）。类似地，我们可以使用 `innerXML` 表示使用 XML 文档片段来设定其内容。这类虚拟属性，取决于 HVML 的目标标记语言。
 
 注意，在属性值的表达式中，我们可以应用当前上下文数据（即 `$?`）等上下文变量的值，比如：
 
 ```html
-    <update on="$users[1].locale" value="$?.locale" />
+    <update on="$users[1]" property.locale="$?.locale" />
 ```
 
 注意，当 `on` 属性值指定的是一个元素集合时，`update` 标签设定的属性或内容操作，将用于集合中所有的元素。
@@ -1042,13 +1044,13 @@ HVML 还定义有如下一些动作标签：
 
 #### 2.2.2) `erase` 标签
 
-`erase` 标签用于移除一个指定的数据项、元素或元素集合，支持 `on`、`at` 和 `by` 介词属性。`on` 属性用于指定要修改的数据项、元素或元素集合；当 `on` 指定的是容器（如数组、对象或集合）时，`at` 用于指定操作位置；`by` 属性指定执行器。该元素产生 `true` 或 `false` 两种结果数据，分别表示成功或失败。
+`erase` 标签用于从数组、对象、元素或元素集合中移除一个指定的数据项，支持 `on`、`at` 和 `by` 介词属性。`on` 属性用于指定数组、对象、元素或元素集合；`at` 用于要移除的数据子项，不指定时表示整个数据项；`by` 属性指定执行器。该元素的结果数据为数值，表示移除的数据项个数。
 
 如针对如下的 HTML 代码片段：
 
 ```html
     <div id="the-user-statistics">
-        <h2>User regions (totally <span class="none"></span> users):</h2>
+        <h2 class="text-info">User regions (totally <span class="none"></span> users):</h2>
     </div>
 ```
 
@@ -1065,17 +1067,45 @@ HVML 还定义有如下一些动作标签：
     </div>
 ```
 
-类似地，我们也可以在数据项上执行 `erase` 动作。比如清除 `$users` 的第二个成员：
+我们通过下面的 `erase` 标签来删除 `h2` 元素中的 `class` 属性：
 
 ```html
-    <erase on="$users" at="1" />
+    <erase on="#the-user-stats > h2" at="attr.class" />
 ```
 
-注意，当 `on` 属性值指定的是一个元素集合时，`erase` 标签将移除该集合中所有的元素。
+执行上述 `erase` 动作后，上面的 HTML 代码片段将变为：
+
+```html
+    <div id="the-user-statistics">
+        <h2>User regions (totally <span class="none"></span> users):</h2>
+    </div>
+```
+
+注意，当 `on` 属性值指定的是一个元素集合时，`erase` 标签将移除该集合中所有的元素，或者所有元素的指定属性或内容。
+
+类似地，我们也可以在数组上执行 `erase` 动作。比如清除 `$users` 的第二个成员：
+
+```html
+    <erase on="$users" at="member.1" />
+```
+
+我们也可以在对象上执行 `erase` 动作。比如清除 `$users[0]` 的 `name` 属性：
+
+```html
+    <erase on="$users[0]" at="property.name" />
+```
+
+`at` 属性值可以是数组的索引值或者对象的属性名称（可指定多个，用空格分割），也可以是 `iterate` 父元素提供的迭代子（iterator）来指定位置：
+
+```html
+    <iterate on="$users" to="erase" by="RANGE: FROM $EJSON($users) TO 0, ADVANCE -2">
+        <erase on="$users" at="$&" />
+    </iterate>
+```
 
 #### 2.2.3) `clear` 标签
 
-`clear` 标签用于清空一个指定的数据项、元素或元素集合，仅支持 `on` 介词属性，用于指定要清空的数据项、元素或元素集合。该元素产生 `true` 或 `false` 两种结果数据，分别表示成功或失败。
+`clear` 标签用于清空一个指定的数组、对象、元素或元素集合，仅支持 `on` 介词属性，用于指定要清空的数组、对象、元素或元素集合。该元素产生 `true` 或 `false` 两种结果数据，分别表示成功或失败。
 
 如针对如下的 HTML 代码片段：
 
@@ -1290,12 +1320,13 @@ HVML 还定义有如下一些动作标签：
 使用脚本程序定义的类，可用于实现较为复杂的迭代逻辑和操作。但在一些简单的场合，我们也可以不使用类而使用其他动作标签完成动作，如使用 `update` 标签使用当前迭代数据更新特定的元素属性：
 
 ```html
-    <iterate on="$users" to="update" in="#the-user-list" by="RANGE: 0, $#, 2">
+    <iterate on="$users" to="update" in="#the-user-list"
+            by="RANGE: FROM 0 TO $EJSON.number($users), ADVANCE 2">
         <update on="~[id=user-$?.id] span" attr.class *= "text-* text-info" />
     </iterate>
 ```
 
-上述 HVML 代码，在 `$users` 数据上执行迭代，但未使用脚本程序定义的类，而使用了 `RANGE` 关键词来定义迭代范围。`RANGE: 0, $#, 2` 表示取 `$users` 数组中索引下标为偶数的所有数组项，之后，针对这些数据项执行 `update` 标签定义的更新操作。在 `update` 标签中，首先使用 `on` 介词属性定义了目标元素：`[id=user-$?.id] span`。该表达式使用了 CSS 选择器在 `#the-user-list` 定义的 DOM 子树中查找子元素，其中 `$?` 表示的是当前的迭代数据项。若存在这个子元素，则将其 `class` 属性设置为 `text-info`。这样，所有索引值为偶数的用户条目将使用由 `text-info` 类定义的样式来展现。
+上述 HVML 代码，在 `$users` 数据上执行迭代，但未使用脚本程序定义的类，而使用了 `RANGE` 关键词来定义迭代范围。`RANGE: FROM 0 TO $EJSON.number($users), ADVANCE 2` 表示取 `$users` 数组中索引下标为偶数的所有数组项，之后，针对这些数据项执行 `update` 标签定义的更新操作。在 `update` 标签中，首先使用 `on` 介词属性定义了目标元素：`[id=user-$?.id] span`。该表达式使用了 CSS 选择器在 `#the-user-list` 定义的 DOM 子树中查找子元素，其中 `$?.id` 表示的是当前迭代得到的用户标志符。若存在这个子元素，则将其 `class` 属性设置为 `text-info`。这样，所有索引值为偶数的用户条目将使用由 `text-info` 类定义的样式来展现。
 
 #### 2.2.7) `reduce` 标签
 
@@ -2151,7 +2182,7 @@ HVML 为不同的数据类型提供了如下操作：
 
     <number_expression>: <literal_number> | <number_evaluation_expression>
     <number_evaluation_expression>: <four_arithmetic_expressions>
-    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($_MATH.pi * $? * $?) / 5`
+    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
 ```
 
 比如，当我们使用 `ADD: GT 90, BY -3` 执行器作用于数值 `100` 时，返回的数列为：
@@ -2848,13 +2879,13 @@ In other words, `<!DOCTYPE hvml>`, case-sensitively.
 1. A string that is an ASCII case-sensitive match for the string "SYSTEM".
 1. One or more ASCII whitespace.
 1. A U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (the quote mark).
-1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: math". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The other tokens defines the variables should be bound for this document, such as `_MATH`, `_FS`, `_FILE`, and so on.
+1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: math". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The other tokens defines the variables should be bound for this document, such as `MATH`, `FS`, `FILE`, and so on.
 1. A matching U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (i.e. the same character as in the earlier step labeled quote mark).
 
-For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: _MATH _FS _FILE">`, you can add the specific prefix to some HVML tags:
+For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: MATH FS FILE">`, you can add the specific prefix to some HVML tags:
 
 ```html
-<!DOCTYPE hvml SYSTEM "hvml: _MATH">
+<!DOCTYPE hvml SYSTEM "hvml: MATH">
 <hvml target="html" lang="en">
     <head>
     </head>
