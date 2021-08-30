@@ -21,26 +21,29 @@ Language: Chinese
 - [1) 背景](#1-背景)
 - [2) HVML 详解](#2-hvml-详解)
    + [2.1) 基本原理及术语](#21-基本原理及术语)
-      * [2.1.1) 整体结构](#211-整体结构)
-      * [2.1.2) 数据和变量](#212-数据和变量)
-         - [2.1.2.1) `$REQUEST`](#2121-request)
-         - [2.1.2.2) `$SYSTEM`](#2122-system)
-         - [2.1.2.3) `$DOC`](#2123-doc)
-         - [2.1.2.4) `$TIMERS`](#2124-timers)
-         - [2.1.2.5) `$L`](#2125-l)
-         - [2.1.2.6) `$T`](#2126-t)
-         - [2.1.2.7) 集合](#2127-集合)
-         - [2.1.2.8) 绑定变量](#2128-绑定变量)
-      * [2.1.3) 动态 JSON 对象](#213-动态-json-对象)
-      * [2.1.4) 文档片段的 JSON 数据表达](#214-文档片段的-json-数据表达)
-      * [2.1.5) 数据模板和文档片段模板](#215-数据模板和文档片段模板)
-      * [2.1.6) 用来操作数据或元素的动作标签](#216-用来操作数据或元素的动作标签)
-      * [2.1.7) 其他动作标签](#217-其他动作标签)
-      * [2.1.8) 错误和异常标签](#218-错误和异常标签)
-      * [2.1.9) 介词属性](#219-介词属性)
-      * [2.1.10) 副词属性](#2110-副词属性)
-      * [2.1.11) 引用元素或数据](#2111-引用元素或数据)
-      * [2.1.12) JSON 求值表达式](#2112-json-求值表达式)
+      * [2.1.1) 基本数据类型](#211-基本数据类型)
+      * [2.1.2) 扩展数据类型](#212-扩展数据类型)
+      * [2.1.3) 动态对象](#213-动态对象)
+      * [2.1.4) 可变数据和不可变数据](#214-可变数据和不可变数据)
+      * [2.1.5) 整体结构](#215-整体结构)
+      * [2.1.6) 变量](#216-变量)
+         - [2.1.6.1) `$REQUEST`](#2161-request)
+         - [2.1.6.2) `$SYSTEM`](#2162-system)
+         - [2.1.6.3) `$DOC`](#2163-doc)
+         - [2.1.6.4) `$TIMERS`](#2164-timers)
+         - [2.1.6.5) `$L`](#2165-l)
+         - [2.1.6.6) `$T`](#2166-t)
+         - [2.1.6.7) 集合](#2167-集合)
+         - [2.1.6.8) 绑定变量](#2168-绑定变量)
+      * [2.1.7) 文档片段的 JSON 数据表达](#217-文档片段的-json-数据表达)
+      * [2.1.8) 数据模板和文档片段模板](#218-数据模板和文档片段模板)
+      * [2.1.9) 用来操作数据或元素的动作标签](#219-用来操作数据或元素的动作标签)
+      * [2.1.10) 其他动作标签](#2110-其他动作标签)
+      * [2.1.11) 错误和异常标签](#2111-错误和异常标签)
+      * [2.1.12) 介词属性](#2112-介词属性)
+      * [2.1.13) 副词属性](#2113-副词属性)
+      * [2.1.14) 引用元素或数据](#2114-引用元素或数据)
+      * [2.1.15) JSON 求值表达式](#2115-json-求值表达式)
    + [2.2) 动作标签详解](#22-动作标签详解)
       * [2.2.1) `update` 标签](#221-update-标签)
       * [2.2.2) `erase` 标签](#222-erase-标签)
@@ -92,122 +95,6 @@ Language: Chinese
       * [3.1.5) CDATA 段落/CDATA sections](#315-cdata-段落cdata-sections)
       * [3.1.6) 注释/Comments](#316-注释comments)
    + [3.2) 解析 HVML 文档](#32-解析-hvml-文档)
-      * [3.2.1) 解析模型概览](#321-解析模型概览)
-      * [3.2.2) 解析错误](#322-解析错误)
-      * [3.2.3) 输入字节流](#323-输入字节流)
-      * [3.2.4) 解析状态](#324-解析状态)
-         - [3.2.4.1) 插入模式/Insertion mode](#3241-插入模式insertion-mode)
-         - [3.2.4.2) 开放元素栈/The stack of open elements](#3242-开放元素栈the-stack-of-open-elements)
-         - [3.2.4.3) JSON 嵌套栈/The JSON nesting stack](#3243-json-嵌套栈the-json-nesting-stack)
-         - [3.2.4.4) JSONEE 嵌套栈/The JSONEE nesting stack](#3244-jsonee-嵌套栈the-jsonee-nesting-stack)
-         - [3.2.4.5) JSON 求值树/JSON Evaluation Tree](#3245-json-求值树json-evaluation-tree)
-         - [3.2.4.6) 元素指针](#3246-元素指针)
-         - [3.2.4.7) 其他解析状态标志/Other parsing state flags](#3247-其他解析状态标志other-parsing-state-flags)
-      * [3.2.5) 断词/Tokenization](#325-断词tokenization)
-         - [3.2.5.1) Data state](#3251-data-state)
-         - [3.2.5.2) RCDATA state](#3252-rcdata-state)
-         - [3.2.5.3) RAWTEXT state](#3253-rawtext-state)
-         - [3.2.5.4) Template raw data state](#3254-template-raw-data-state)
-         - [3.2.5.5) Template JSONEE data state](#3255-template-jsonee-data-state)
-         - [3.2.5.6) JSONEE escape state](#3256-jsonee-escape-state)
-         - [3.2.5.7) JSONEE variable state](#3257-jsonee-variable-state)
-         - [3.2.5.8) JSONEE keyword state](#3258-jsonee-keyword-state)
-         - [3.2.5.10) JSONEE getter state](#32510-jsonee-getter-state)
-         - [3.2.5.11) JSONEE setter state](#32511-jsonee-setter-state)
-         - [3.2.5.12) JSONEE after call state](#32512-jsonee-after-call-state)
-         - [3.2.5.13) PLAINTEXT state](#32513-plaintext-state)
-         - [3.2.5.14) Tag open state](#32514-tag-open-state)
-         - [3.2.5.15) End tag open state](#32515-end-tag-open-state)
-         - [3.2.5.16) Tag name state](#32516-tag-name-state)
-         - [3.2.5.17) RCDATA less-than sign state](#32517-rcdata-less-than-sign-state)
-         - [3.2.5.18) RCDATA end tag open state](#32518-rcdata-end-tag-open-state)
-         - [3.2.5.19) RCDATA end tag name state](#32519-rcdata-end-tag-name-state)
-         - [3.2.5.20) RAWTEXT less-than sign state](#32520-rawtext-less-than-sign-state)
-         - [3.2.5.21) RAWTEXT end tag open state](#32521-rawtext-end-tag-open-state)
-         - [3.2.5.22) RAWTEXT end tag name state](#32522-rawtext-end-tag-name-state)
-         - [3.2.5.23) Template data less-than sign state](#32523-template-data-less-than-sign-state)
-         - [3.2.5.24) Template data end tag open state](#32524-template-data-end-tag-open-state)
-         - [3.2.5.25) Template data end tag name state](#32525-template-data-end-tag-name-state)
-         - [3.2.5.26) JSONTEXT state](#32526-jsontext-state)
-         - [3.2.5.27) JSONTEXT JSON finished state](#32527-jsontext-json-finished-state)
-         - [3.2.5.28) JSONTEXT less-than sign state](#32528-jsontext-less-than-sign-state)
-         - [3.2.5.29) JSONTEXT end tag open state](#32529-jsontext-end-tag-open-state)
-         - [3.2.5.30) JSONTEXT end tag name state](#32530-jsontext-end-tag-name-state)
-         - [3.2.5.31) JSON value state](#32531-json-value-state)
-         - [3.2.5.32) JSON after value state](#32532-json-after-value-state)
-         - [3.2.5.33) JSON keyword state](#32533-json-keyword-state)
-         - [3.2.5.34) JSON number state](#32534-json-number-state)
-         - [3.2.5.35) JSON number integer state](#32535-json-number-integer-state)
-         - [3.2.5.36) JSON number fraction state](#32536-json-number-fraction-state)
-         - [3.2.5.37) JSON number exponent state](#32537-json-number-exponent-state)
-         - [3.2.5.38) JSON number exponent integer state](#32538-json-number-exponent-integer-state)
-         - [3.2.5.39) JSON object key name state](#32539-json-object-key-name-state)
-         - [3.2.5.40) JSON after object key name state](#32540-json-after-object-key-name-state)
-         - [3.2.5.41) JSON string state](#32541-json-string-state)
-         - [3.2.5.42) JSON string escape state](#32542-json-string-escape-state)
-         - [3.2.5.43) JSON string escape four hexadecimal digits state](#32543-json-string-escape-four-hexadecimal-digits-state)
-         - [3.2.5.44) Before attribute name state](#32544-before-attribute-name-state)
-         - [3.2.5.45) Attribute name state](#32545-attribute-name-state)
-         - [3.2.5.46) Special attribute operator in attribute name state](#32546-special-attribute-operator-in-attribute-name-state)
-         - [3.2.5.47) After attribute name state](#32547-after-attribute-name-state)
-         - [3.2.5.48) Special attribute operator after attribute name state](#32548-special-attribute-operator-after-attribute-name-state)
-         - [3.2.5.49) Before attribute value state](#32549-before-attribute-value-state)
-         - [3.2.5.50) Attribute value (double-quoted) state](#32550-attribute-value-double-quoted-state)
-         - [3.2.5.52) Attribute value (single-quoted) state](#32552-attribute-value-single-quoted-state)
-         - [3.2.5.53) Attribute value (unquoted) state](#32553-attribute-value-unquoted-state)
-         - [3.2.5.54) After attribute value (quoted) state](#32554-after-attribute-value-quoted-state)
-         - [3.2.5.55) Self-closing start tag state](#32555-self-closing-start-tag-state)
-         - [3.2.5.56) Bogus comment state](#32556-bogus-comment-state)
-         - [3.2.5.57) Markup declaration open state](#32557-markup-declaration-open-state)
-         - [3.2.5.58) Comment start state](#32558-comment-start-state)
-         - [3.2.5.59) Comment start dash state](#32559-comment-start-dash-state)
-         - [3.2.5.60) Comment state](#32560-comment-state)
-         - [3.2.5.61) Comment less-than sign state](#32561-comment-less-than-sign-state)
-         - [3.2.5.62) Comment less-than sign bang state](#32562-comment-less-than-sign-bang-state)
-         - [3.2.5.63) Comment less-than sign bang dash state](#32563-comment-less-than-sign-bang-dash-state)
-         - [3.2.5.64) Comment less-than sign bang dash dash state](#32564-comment-less-than-sign-bang-dash-dash-state)
-         - [3.2.5.65) Comment end dash state](#32565-comment-end-dash-state)
-         - [3.2.5.66) Comment end state](#32566-comment-end-state)
-         - [3.2.5.67) Comment end bang state](#32567-comment-end-bang-state)
-         - [3.2.5.68) DOCTYPE state](#32568-doctype-state)
-         - [3.2.5.69) Before DOCTYPE name state](#32569-before-doctype-name-state)
-         - [3.2.5.70) DOCTYPE name state](#32570-doctype-name-state)
-         - [3.2.5.71) After DOCTYPE name state](#32571-after-doctype-name-state)
-         - [3.2.5.72) After DOCTYPE public keyword state](#32572-after-doctype-public-keyword-state)
-         - [3.2.5.73) Before DOCTYPE public identifier state](#32573-before-doctype-public-identifier-state)
-         - [3.2.5.74) DOCTYPE public identifier (double-quoted) state](#32574-doctype-public-identifier-double-quoted-state)
-         - [3.2.5.75) DOCTYPE public identifier (single-quoted) state](#32575-doctype-public-identifier-single-quoted-state)
-         - [3.2.5.76) After DOCTYPE public identifier state](#32576-after-doctype-public-identifier-state)
-         - [3.2.5.77) Between DOCTYPE public identifier and system information state](#32577-between-doctype-public-identifier-and-system-information-state)
-         - [3.2.5.78) After DOCTYPE system keyword state](#32578-after-doctype-system-keyword-state)
-         - [3.2.5.79) Before DOCTYPE system information state](#32579-before-doctype-system-information-state)
-         - [3.2.5.80) DOCTYPE system information (double-quoted) state](#32580-doctype-system-information-double-quoted-state)
-         - [3.2.5.81) DOCTYPE system information (single-quoted) state](#32581-doctype-system-information-single-quoted-state)
-         - [3.2.5.82) After DOCTYPE system information state](#32582-after-doctype-system-information-state)
-         - [3.2.5.83) Bogus DOCTYPE state](#32583-bogus-doctype-state)
-         - [3.2.5.84) CDATA section state](#32584-cdata-section-state)
-         - [3.2.5.85) CDATA section bracket state](#32585-cdata-section-bracket-state)
-         - [3.2.5.86) CDATA section end state](#32586-cdata-section-end-state)
-         - [3.2.5.87) Character reference state](#32587-character-reference-state)
-         - [3.2.5.88) Named character reference state](#32588-named-character-reference-state)
-         - [3.2.5.89) Ambiguous ampersand stat](#32589-ambiguous-ampersand-stat)
-         - [3.2.5.90) Numeric character reference state](#32590-numeric-character-reference-state)
-         - [3.2.5.91) Hexadecimal character reference start state](#32591-hexadecimal-character-reference-start-state)
-         - [3.2.5.92) Decimal character reference start state](#32592-decimal-character-reference-start-state)
-         - [3.2.5.93) Hexadecimal character reference state](#32593-hexadecimal-character-reference-state)
-         - [3.2.5.94) Decimal character reference state](#32594-decimal-character-reference-state)
-         - [3.2.5.95) Numeric character reference end state](#32595-numeric-character-reference-end-state)
-      * [3.2.6) 树的构造](#326-树的构造)
-         - [3.2.6.1) 创建和插入模式/Creating and inserting nodes](#3261-创建和插入模式creating-and-inserting-nodes)
-         - [3.2.6.2) 解析仅包含文本的元素/Parsing elements that contain only text](#3262-解析仅包含文本的元素parsing-elements-that-contain-only-text)
-         - [3.2.6.3) 自动关闭元素/Auto-closing elements](#3263-自动关闭元素auto-closing-elements)
-         - [3.2.6.4) HVML 内容的词法解析规则/The rules for parsing tokens in HVML content](#3264-hvml-内容的词法解析规则the-rules-for-parsing-tokens-in-hvml-content)
-         - [3.2.6.5) 外部内容的词法解析规则/The rules for parsing tokens in foreign content](#3265-外部内容的词法解析规则the-rules-for-parsing-tokens-in-foreign-content)
-      * [3.2.7) 结束](#327-结束)
-      * [3.2.8) 错误错误](#328-错误错误)
-   + [3.3 HVML 片段的串行化/Serializing HVML fragments](#33-hvml-片段的串行化serializing-hvml-fragments)
-   + [3.4 解析 HVML 片段/Parsing HVML fragments](#34-解析-hvml-片段parsing-hvml-fragments)
-   + [3.5 已命名字符引用/Named character references](#35-已命名字符引用named-character-references)
 - [4) 应用示例](#4-应用示例)
    + [4.1) 使用 HVML 开发传统 GUI 应用](#41-使用-hvml-开发传统-gui-应用)
    + [4.2) 云应用](#42-云应用)
@@ -280,21 +167,11 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
 为方便描述，本文档中使用如下术语：
 
-1. 数据（data）。指可通过 JSON 格式表述的各种数据，包括：
-   - 可用单个或多个键值对（key-value pair）表示的对象，亦称字典、关联数组等；
-   - 数组；
-   - 字符串；
-   - 数值；
-   - 字节序列；
-   - 真值（true）；
-   - 假值（false）；
-   - 空值（null）。
-1. 数据项（data item）或数据元素（data element）。对数组而言，每个数组单元就是一个数据项；对字典数据而言，其中的某个键值对就是一个数据项。
+1. 数据（data）。
+1. 变量（variable）。
+1. 数据项（data item）或数据元素（data element）。对数组而言，每个数组单元就是一个数据项；对对象数据而言，其中的某个键值对就是一个数据项。
 1. 文档元素（document element）。指文档对象模型中，使用某个标签（tag）定义的元素节点；一个文档元素可包含一个或多个属性（attribute）以及属性值，还可以包含内容（content）；一个元素可包含文本内容或者使用标签定义的单个或多个子元素。
 1. 文档片段（document fragement）。指 XML/HTML 文档中的一个片段，可作为模板被克隆（clone）到文档的其他位置。
-
-__注：__  
-字节序列是一个扩展的 JSON 数据类型。
 
 下面用一个简单的例子来说明 HVML 的基本用法。这个 HVML 文档生成的 HTML 页面，将在屏幕上展示三组信息：
 
@@ -400,7 +277,91 @@ __注：__
 </hvml>
 ```
 
-#### 2.1.1) 整体结构
+#### 2.1.1) 基本数据类型
+
+HVML 定义如下基本数据类型：
+
+- 空值（null）。
+- 真值（true）。
+- 假值（false）。
+- 数值。用于表达整数或浮点数。
+- 字符串。用于表达文本。
+- 数组。可使用索引引用的多个数据项。
+- 对象，用单个或多个键值对（key-value pair）表示，亦称字典、关联数组等；键值对也常被称作属性（property）。
+- 集合，特殊的数组，其中的成员可根据其值或者对象数组上的唯一性键值确保唯一性。
+
+以上基本数据类型的表达方式兼容 JSON。
+
+#### 2.1.2) 扩展数据类型
+
+本规范要求 HVML 解释器要实现如下扩展的数据类型以及两种特殊数据类型：
+
+- 未定义（undefined）。
+- 有符号长整数，至少 64 位。
+- 无符号长整数，至少 64 位。
+- 长浮点数，对应 C 语言 long double 类型。
+- 字节序列。
+
+HVML 还定义有如下两种特殊数据类型：
+
+- 动态值。动态值本质上由 getter 和 setter 方法构成，读取时，由 getter 返回对应的值，设置时，由 setter 完成对应的工作。
+- 原生实体。由底层实现的原生实体，通常用于代表一些可执行复杂操作的抽象数据，如读写流、长连接等。这些复杂操作包括实现虚拟属性上的 getter 和 setter 方法，实现对原生对象的观察（observe）等。
+
+#### 2.1.3) 动态对象
+
+动态值或者原生实体均可以作为对象的属性值存在，从而构成我们常说的动态对象。
+
+在 HVML 中，我们扩展了对象的属性使之具有动态特性。一个动态属性，通常由 HVML 解释器或者外部脚本程序定义或实现，要么是一个动态值，要么是一个原生实体。
+
+从 HVML 文档的角度看，访问一个动态属性的方法和访问一个常规属性的方法并无二致。比如，我们通过访问 `$SYSTEM.time` 可获得当前的 UNIX 时间戳。但是，在不同的时刻访问 `$SYSTEM.time`，获得的值将会不同。这是因为这里的 `time` 就是一个动态属性。
+
+作为动态属性的另一个特性，我们可以将某个特定的属性视作对象而在其上提供虚拟的属性，比如当我们访问 `$SYSTEM.time.iso8601` 时，将获得当前时间的 ISO 8601 标准字符串（如 `2020-06-24T11:27:05+08:00`）。
+
+更进一步，我们还可以将某个特定的属性当作函数使用，通过传递参数来获得不同的返回值，或者对该属性设置特定的值。比如在 `$SYSTEM` 对象上，如果我们要获取对当前时间执行特定格式化的字符串，可以使用 `$SYSTEM.time('%H:%m')`，这时，我们将获得类似 `11:27` 的时间字符串。如果我们要设置当前时间，则可以使用 `$SYSTEM.time(! 123456 )`。
+
+这里，我们引入了两种运算符：`( )` 和 `(! )`。本质上，前者对应于动态属性的获取方法（getter），后者对应于动态属性的设置方法（setter）。
+
+除了内置的 `$SYSTEM` 动态对象之外，我们还可以通过外部脚本来实现自定义的动态对象，并通过 `init` 标签将这个动态对象和某个变量绑定在一起，如：
+
+```html
+    <init as="math" from="libc" with="math" via="LOAD" />
+```
+
+之后，当我们访问 `$math.pi` 时，将返回 PI 的值，如果访问 `$math.sin($math.pi)` 将返回 `0.0`。
+
+当我们引用一个动态对象上并不存在的动态属性，或者不存在的虚拟子属性，或者无法在该属性上执行函数操作时，HVML 解释器或该对象的外部脚本实现将返回错误或抛出异常。
+
+通过这样的设计，我们可以方便有效地扩展 HVML 的功能，并通过动态对象和外部模块交换数据，或者调用外部模块的功能。
+
+#### 2.1.4) 可变数据和不可变数据
+
+在 HVML 中，我们将如下数据类型称为不可变数据（immutable data）：
+
+- 未定义（undefined）。
+- 空值（null）。
+- 真值（true）。
+- 假值（false）。
+- 数值。
+- 字符串。
+- 字节序列。
+- 动态值。
+- 原生实体。
+
+不可变数据的含义是，我们不能在运行时改变这个数据的值，而只能构造一个新的数据来表示新的值。
+
+我们将如下数据类型称为可变数据（mutable data）：
+
+- 数组。
+- 对象。
+- 集合。
+
+和不可变数据相反，可变数据的含义是，我们可以在运行时改变这个数据的值。本质上，可变数据都是容器类数据，也就是数组、对象和集合。我们改变这些数据的值，本质上改变的是这些数据所包含的内容，比如删除其中的一个数据项。
+
+在 HVML 中，我们可以在可变数据上执行执行 `update`、`erase`、`clear`、`set` 等操作，这些操作本质上修改的是其中的数据项。
+
+HVML 不提供任何操作可以用来改变不可变数据，但开发者可以使用 `set` 操作重置一个变量为其他数据。
+
+#### 2.1.5) 整体结构
 
 如上例所示，HVML 采用了类似 HTML 的标签来定义文档的整体结构：
 
@@ -411,8 +372,8 @@ __注：__
 - `head` 标签用于定义头部信息，其中可包含：
    1. 可被原样保留到目标文档的标签，如 HTML 文档的 `<meta>`、`<link>` 标签。
    1. 全局数据的初始化；使用 `init` 和 `set` 标签定义。
-   1. 全局动态 JSON 对象；使用 `bind` 标签定义。
-   1. 长连接数据源；使用 `connect` 标签定义。
+   1. 全局动态对象；使用 `init` 标签定义。
+   1. 全局长连接数据源；使用 `connect` 标签定义。
    1. 全局模板；使用 `archedata` 或 `archetype` 标签定义。
 - `body` 标签用于定义文档的本体内容。
 
@@ -423,7 +384,7 @@ __注：__
 __是否考虑：__   
 在 HVML 文档中，可以定义多个 `body` 本地内容，使用 `id` 属性区别不同的本体内容。在执行过程中，可通过 `load` 元素装载不同的本体内容。
 
-#### 2.1.2) 数据和变量
+#### 2.1.6) 变量
 
 除了上述用于定义文档整体结构的标签外，HVML 提供了如下用于定义数据的标签：
 
@@ -454,7 +415,7 @@ HVML 定义的上下文变量可罗列如下：
 - `$%`：当前迭代的索引值，比如第一次迭代，该变量的值为 0，第二次迭代，该变量的值为 1，以此类推。
 
 __讨论__  
-- `$#` 和 `$*` 有点多余了。因为我们可以通过定义一个 `JSON` 动态变量获得数据的类型和成员数量等信息。
+- `$#` 和 `$*` 有点多余了。因为我们可以通过定义一个 `EJSON` 动态对象获得数据的类型和成员数量等信息。
 - 用来表示键名的 `$:`，可通过迭代子（`$&`）上的 `key` 方法获得。
 
 我们还可以在上下文变量的符号之前添加一个正整数来引用从当前向上回溯 `<N>` 级的上下文数据：
@@ -463,7 +424,7 @@ __讨论__
 
 在 HVML 中，我们通常使用 `as` 属性来给数据命名，但 HVML 保留如下几个变量名称用于特殊场合，我们称为内置全局变量，习惯上全部使用大写形式。
 
-##### 2.1.2.1) `$REQUEST`
+##### 2.1.6.1) `$REQUEST`
 
 `$REQUEST`：主要用来表述装载文档时，由其他模块提供的请求数据，一般由 HVML 解释器在装载 HVML 文档时生成。比如下面的 Python 脚本装载一个 HVML 文档，并传递了 `nrUsers` 参数：
 
@@ -473,21 +434,21 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 在 HVML 文档中，我们可使用 `$REQUEST.nrUsers` 来引用上述脚本代码传入的值（`10`）。
 
-##### 2.1.2.2) `$SYSTEM`
+##### 2.1.6.2) `$SYSTEM`
 
 `$SYSTEM`：一个用于访问系统基本功能的 JSON 对象，可用于提供系统时间、当前语言地区信息、随机数、机器名称等。比如，我们要获得当前的 Unix 时间戳，可直接使用 `$SYSTEM.time`，如果要获得一个随机数，可直接使用 `$SYSTEM.random`，如果我们要获得当前的机器名称，可使用 `$SYSTEM.name`，如果要获取当前语言地区信息，可使用 `$SYSTEM.locale`。
 
-在 HVML 中，`SYSTEM` 变量本质上是一个动态 JSON 对象，无须初始化即可使用。
+在 HVML 中，`SYSTEM` 变量本质上是一个动态对象，无须初始化即可使用。
 
-##### 2.1.2.3) `$DOC`
+##### 2.1.6.3) `$DOC`
 
-`$DOC` 是一个动态 JSON 对象，该对象表述的是 HVML 生成的目标文档对象。我们可以使用该对象上的特定键名以及 `q` 方法使用 CSS 选择器获取目标文档上的特定元素或者元素集合，如：
+`$DOC` 是一个动态对象，该对象表述的是 HVML 生成的目标文档对象。我们可以使用该对象上的特定键名以及 `q` 方法使用 CSS 选择器获取目标文档上的特定元素或者元素集合，如：
 
 1. `$DOC.doctype`：获取该目标文档对象的 `doctype` 节点。
 1. `$DOC.query("#foo")`：获取该目标文档对象中 id 属性值为 `foo` 的元素。
 1. `$DOC.query(".bar")`：获取该目标文档对象中 class 属性值为 `foo` 的元素或元素集合。
 
-##### 2.1.2.4) `$TIMERS`
+##### 2.1.6.4) `$TIMERS`
 
 `$TIMERS`：用于全局的定时器，具有固定的格式，默认为空数组。可使用 `set`、`update` 等元素修改它的值，如：
 
@@ -518,9 +479,9 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
     </observe>
 ```
 
-##### 2.1.2.5) `$L`
+##### 2.1.6.5) `$L`
 
-`$L` 是一个动态 JSON 对象，该对象完成数值对比、字符串对比以及逻辑与、或、异或、取反等逻辑操作：
+`$L` 是一个动态对象，该对象完成数值对比、字符串对比以及逻辑与、或、异或、取反等逻辑操作：
 
 1. `$L.not(<json_evaluation_expression>)`：用于逻辑取反操作。
 1. `$L.and(<json_evaluation_expression>, <json_evaluation_expression>, ...)`：用于逻辑与运算。
@@ -545,7 +506,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 1. 空对象。
 1. 空集合。
 
-##### 2.1.2.6) `$T`
+##### 2.1.6.6) `$T`
 
 该变量主要用于文本的本地化。常用用法如下：
 
@@ -588,7 +549,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 </html>
 ```
 
-##### 2.1.2.7) 集合
+##### 2.1.6.7) 集合
 
 在 HVML 中，我们可以使用 JSON 数组来定义一个集合。集合有如下特征：
 
@@ -647,7 +608,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并集、交集、差集、异或集等。详情见 `set` 标签的描述。
 
-##### 2.1.2.8) 绑定变量
+##### 2.1.6.8) 绑定变量
 
 HVML 允许使用 `bind` 标签将一个已有数据绑定到一个变量：
 
@@ -668,29 +629,7 @@ HVML 允许使用 `bind` 标签将一个已有数据绑定到一个变量：
     </observe>
 ```
 
-#### 2.1.3) 动态 JSON 对象
-
-在 HVML 中，我们扩展了 JSON 数据的表达方式，使之具有动态特性。一个动态的 JSON 对象，通常由 HVML 解释器或者外部脚本程序定义或实现。从 HVML 文档的角度看，访问一个动态 JSON 对象的方法和访问一个常规的 JSON 对象方法并无二致。比如，我们通过访问 `$SYSTEM.time` 可获得当前的 UNIX 时间戳。但是，每次访问某个动态 JSON 对象的特定属性时，其返回值可能会不同。
-
-作为动态 JSON 对象的另一个特性，我们可以将某个特定的属性视作对象而在其上提供虚拟的属性，比如当我们访问 `$SYSTEM.time.iso8601` 时，将获得当前时间的 ISO 8601 标准字符串（如 `2020-06-24T11:27:05+08:00`）。
-
-更进一步，我们还可以将某个特定的属性当作函数使用，通过传递参数来获得不同的返回值，或者对该属性设置特定的值。比如在 `$SYSTEM` 对象上，如果我们要获取对当前时间执行特定格式化的字符串，可以使用 `$SYSTEM.time('%H:%m')`，这时，我们将获得类似 `11:27` 的时间字符串。如果我们要设置当前时间，则可以使用 `$SYSTEM.time(! 123456 )`。
-
-这里，我们引入了两种运算符：`( )` 和 `(! )`。本质上，前者对应于属性的获取方法（getter），后者对应于属性的设置方法（setter）。
-
-除了内置的 `$SYSTEM` 动态对象之外，我们还可以通过外部脚本来实现自定义的动态 JSON 对象，并通过 `init` 标签将这个动态的 JSON 对象和某个变量绑定在一起，如：
-
-```html
-    <init as="math" from="libc" with="math" via="LOAD" />
-```
-
-之后，当我们访问 `$math.pi` 时，将返回 PI 的值，如果访问 `$math.pi(3)` 将返回保留三位有效小数位数的 PI 值，即 `3.142`；而如果访问 `$math.sin($math.pi)` 将返回 `0.0`。
-
-当我们引用一个动态 JSON 对象上并不存在的属性，或者不存在的虚拟子属性，或者无法在该属性上执行函数操作时，HVML 解释器或该对象的外部脚本实现将返回错误或抛出异常。
-
-通过这样的设计，我们可以方便有效地扩展 HVML 的功能，并通过动态 JSON 对象和外部模块交换数据，或者调用外部模块的功能。
-
-#### 2.1.4) 文档片段的 JSON 数据表达
+#### 2.1.7) 文档片段的 JSON 数据表达
 
 HVML 解释器按照固定的策略将 DOM 子树（文档片段）视作一个可以用 JSON 表达的数据来访问。比如对下面的 HTML 片段：
 
@@ -772,7 +711,7 @@ HVML 解释器按照固定的策略将 DOM 子树（文档片段）视作一个�
 
 使用上述选择器之后，相当于对原有单个数据项做了一些过滤。比如 `<choose on="$users" ... />` 选择了整个 `$users` 数组内容做后续处理，但如果使用 `<choose on="$users:nth-child(2n)"` 则仅选择下标为偶数的数组单元。
 
-#### 2.1.5) 数据模板和文档片段模板
+#### 2.1.8) 数据模板和文档片段模板
 
 HVML 定义了两种模板标签，用于定义可以插入 DOM 文档中的 XML/HTML 模板以及 JSON 数据模板：
 
@@ -834,7 +773,7 @@ HVML 定义了两种模板标签，用于定义可以插入 DOM 文档中的 XML
 
 在上述 HVML 代码中，当我们在 `ul` 元素中引用 `$user_item` 时，对应的文档模板是 `<li>$?</li>`，而在 `ul` 元素之外引用 `$user_item` 时，得到的文档模板是 `<p>$?</p>`。
 
-#### 2.1.6) 用来操作数据或元素的动作标签
+#### 2.1.9) 用来操作数据或元素的动作标签
 
 HVML 定义有如下几个基本的动作标签，用于操作数据或者元素：
 
@@ -865,7 +804,7 @@ HVML 定义有如下几个基本的动作标签，用于操作数据或者元素
 
 通过动作标签，HVML 可完成对文档或数据的插入、删除、修改等操作，以及通过观察数据的变化而动态调整 DOM 树的行为。我们将在本文档第 2) 小节中详细讲述这些动作标签。
 
-#### 2.1.7) 其他动作标签
+#### 2.1.10) 其他动作标签
 
 HVML 还定义有如下一些动作标签：
 
@@ -878,7 +817,7 @@ HVML 还定义有如下一些动作标签：
 - `define` 和 `include` 标签用于实现操作组的复制。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作。
 - `call` 和 `return` 标签用于实现类似函数调用的功能。我们可以通过 `call` 同步或者异步调用一个操作组，并在操作组中使用 `return` 返回一个结果。
 
-#### 2.1.8) 错误和异常标签
+#### 2.1.11) 错误和异常标签
 
 为了方便处理错误和异常情形，HVML 还定义了如下错误或异常处理标签：
 
@@ -935,7 +874,7 @@ HVML 还定义有如下一些动作标签：
     </body>
 ```
 
-#### 2.1.9) 介词属性
+#### 2.1.12) 介词属性
 
 针对动作标签，HVML 定义了如下几个介词（如 `on`、`in`、`to` 等）属性，用于定义执行动作时依赖的数据（或元素）及其集合。如：
 
@@ -963,7 +902,7 @@ HVML 还定义有如下一些动作标签：
    - 其他针对字符串和数值的内建执行器，见本文档 3.1) 节。
 - `via`：主要用于定义执行选择、迭代、规约操作时的过滤参数。
 
-#### 2.1.10) 副词属性
+#### 2.1.13) 副词属性
 
 针对某些动作标签，HVML 定义了如下几个副词属性，用于修饰操作行为。如：
 
@@ -977,7 +916,7 @@ HVML 还定义有如下一些动作标签：
 
 注意：在 HVML 中，我们无需为副词属性赋值。
 
-#### 2.1.11) 引用元素或数据
+#### 2.1.14) 引用元素或数据
 
 当我们需要在动作标签的 `on` 属性中引用某个或某个元素集合时，我们使用 CSS 选择器。如：
 
@@ -1020,7 +959,7 @@ HVML 还定义有如下一些动作标签：
 - 在 HVML 动作标签中，我们可以就属性值、文本内容引用上下文变量以及全局命名变量用，此时，上下文变量由引用该模板的动作标签定义。
 - 在使用目标标签语言定义的元素中，可以使用命名变量定义其属性值以及文本内容。
 
-#### 2.1.12) JSON 求值表达式
+#### 2.1.15) JSON 求值表达式
 
 在上面的例子中，我们在文档片段模板或者数据模板中使用 `$` 前缀指定一个基于 JSON 数据的求值表达式。该求值表达式需要符合如下规则：
 
@@ -1653,7 +1592,11 @@ HVML 还定义有如下一些动作标签：
 
 我们也可以使用 `init` 标签从共享库中初始化一个自定义的动态 JSON 对象，此时，使用 `from` 指定要装在的动态库名称，使用 `with` 指定要装载的动态对象名称，并给定 `via` 属性值为 `LOAD`，表示装载共享库。
 
-`set` 标签在 `on` 属性给定的变量上，使用 `with` 指定的数据来执行由 `to` 属性指定的操作，主要用于集合操作。除了使用 `with` 属性指定数据之外，`set` 标签亦可从外部数据源获得数据，或者将 JSON 数据作为元素内容嵌入。
+`set` 标签有两种用法，一种是通过 `at` 属性指定一个变量名，整个置换该变量对应的数据。另外一种是使用 `on` 属性值给定一个可变数据（也就是字典、数组或集合），然后在其上执行一个操作。
+
+在 `set` 标签中使用 `at` 属性时，`at` 属性的值将被视作一个有效的命名变量的名称。我们也可以如 `init` 标签那样使用 `from`、`with` 和 `via` 属性。
+
+在 `set` 标签中使用 `on` 属性时，`on` 属性的值将被视作一个数据，`set` 动作将使用 `with` 指定的数据来执行由 `to` 属性指定的操作，用于对可变数据（数组、对象、集合）的操作。除了使用 `with` 属性指定数据之外，`set` 标签亦可从外部数据源获得数据，或者将 JSON 数据作为元素内容嵌入。若 `on` 属性指定的是一个不可变数据，则将产生异常。
 
 这两个标签的常见用法如下：
 
@@ -1676,7 +1619,17 @@ HVML 还定义有如下一些动作标签：
 
     <init as="locales" from="http://foo.bar.com/locales" />
 
+    <!-- merge $new_users to $users -->
     <set on="$users" to="merge" with="$new_users" />
+
+    <!-- reset $new_users -->
+    <set at="new_users">
+        [
+            { "id": "1", "avatar": "/img/avatars/101.png", "name": "Jerry", "region": "en_US" }
+            { "id": "2", "avatar": "/img/avatars/102.png", "name": "Tom", "region": "en_US" }
+            { "id": "3", "avatar": "/img/avatars/103.png", "name": "Mike", "region": "en_US" }
+        ]
+    </set>
 
     <set on="$users" to="merge" from="http://foo.bar.com/new_users" />
 ```
@@ -3429,2209 +3382,7 @@ Comments must have the following format:
 
 ### 3.2) 解析 HVML 文档
 
-#### 3.2.1) 解析模型概览
-
-#### 3.2.2) 解析错误
-
-#### 3.2.3) 输入字节流
-
-#### 3.2.4) 解析状态
-
-##### 3.2.4.1) 插入模式/Insertion mode
-
-The insertion mode is a state variable that controls the primary operation of the tree construction stage.
-
-Initially, the insertion mode is "initial". It can change to "before hvml", "before head", "in head", "after head", "in body", "text", "in json text", "after body", "after after body" during the course of the parsing, as described in the tree construction stage. The insertion mode affects how tokens are processed and whether CDATA sections are supported.
-
-Several of these modes, namely "in head", "in body" are special, in that the other modes defer to them at various times. When the algorithm below says that the parser is to do something "using the rules for the m insertion mode", where m is one of these modes, the parser must use the rules described under the m insertion mode's section, but must leave the insertion mode unchanged unless the rules in m themselves switch the insertion mode to a new value.
-
-When the insertion mode is switched to "text" or "in json text", the original insertion mode is also set. This is the insertion mode to which the tree construction stage will return.
-
-##### 3.2.4.2) 开放元素栈/The stack of open elements
-
-Initially, the stack of open elements is empty. The stack grows downwards; the topmost node on the stack is the first one added to the stack, and the bottommost node of the stack is the most recently added node in the stack.
-
-__NOTE__  
-The "before hvml" insertion mode creates the hvml document element, which is then added to the stack.
-
-The `hvml` node, however it is created, is the topmost node of the stack. It only gets popped off the stack when the parser finishes.
-
-The current node is the bottommost node in this stack of open elements.
-
-##### 3.2.4.3) JSON 嵌套栈/The JSON nesting stack
-
-JSON 嵌套栈用来记录解析 JSON 文本时的对象、数组等的嵌套情形，用于判断当前的 JSON 值类型。
-
-When switching to the json text insertion mode, the stack of the JSON nesting stack is empty. We only store `{`, `[`, and `:` characters in this stack; These characters stand for the nesting levels of the JSON text and a special flag for parse states:
-
-- U+005B LEFT SQUARE BRACKET ([)
-  - In a JSON array.
-- U+007B LEFT CURLY BRACKET ({)
-  - In a JSON object.
-- U+003A COLON (:)
-  - In a JSON key-value pair, an U+003A COLON (:) character expected.
-
-The stack grows downwards; the topmost character on the stack is the first one added to the stack, and the bottommost character of the stack is the most recently added node in the stack.
-
-下面的 JSON 片段为例：
-
-```
-01)    {
-02)        "tag"
-03)            :
-04)            "li",
-05)        "children"
-06)            :
-07)            [
-08)                {
-09)                "tag"
-10)                    :
-11)                    "img",
-12)                "children"
-13)                     :
-14)                     null
-15)                }
-16)            ]
-17)    }
-```
-
-解析完每一行之后的 JSON 嵌套栈的内容变化情况如下所示：
-
-1. `{`
-2. `{:`
-3. `{`
-4. `{`
-5. `{:`
-6. `{`
-7. `{[`
-8. `{[{`
-9. `{[{:`
-10. `{[{`
-11. `{[{"`
-12. `{[{:"`
-13. `{[{"`
-14. `{[{"`
-15. `{["`
-16. `{`
-17. ``
-
-##### 3.2.4.4) JSONEE 嵌套栈/The JSONEE nesting stack
-
-JSONEE 嵌套栈用来记录解析 JSON 求值表达式（JSONEE, JSON evaluation expression）时的寻址运算符嵌套情况。
-
-In the JSONEE state, the stack of the JSONEE nesting stack is empty. We store `{`, `(`, `<`, `"`,  and `'` characters in this stack; These characters stand for the nesting levels of the JSONEE text:
-
-- U+007B LEFT CURLY BRACKET ({)
-  - In the JSONEE state.
-  - Pop this character when got next un-escaped U+007D RIGHT CURLY BRACKET (}).
-- U+0022 QUOTATION MARK (")
-  - In the JSONEE string state.
-  - Pop this character when got next un-escaped U+0022 QUOTATION MARK (").
-- U+0027 APOSTROPHE (')
-  - In the JSONEE string state.
-  - Pop this character when got next un-escaped U+0027 APOSTROPHE (').
-- U+005B LEFT SQUARE BRACKET ([)
-  - In the JSONTEXT arrary state
-  - Pop this character when got next un-escaped U+005D RIGHT SQUARE BRACKET (]).
-- U+0028 LEFT PARENTHESIS (()
-  - In the JSONEE getter state
-  - Pop this character when got next un-escaped U+0029 RIGHT PARENTHESIS ()).
-- U+003C LESS-THAN SIGN (<)
-  - In the JSONEE setter state.
-  - Pop this character when got next un-escaped U+003C GREATER-THAN SIGN (>).
-
-The stack grows downwards; the topmost character on the stack is the first one added to the stack, and the bottommost character of the stack is the most recently added node in the stack.
-
-如这个 JSON 求值表达式：`{{$L.not($L.streq('case', $SYSTEM.time('%H:%m'), '00:00'))}}`，JSONEE 嵌套栈最长时包含如下字符：`{{((('`。
-
-##### 3.2.4.5) JSON 求值树/JSON Evaluation Tree
-
-如果我们将 JSON 格式中使用的 `{}`、`[]`、`:` 等字符理解为一个内部的对象和数组构造方法，则包含着 JSONEE 的 JSON 表达可被统一处理为 JSONEE。如下面的 JSON 表达：
-
-```json
-    {
-        "tag": "li",
-        "children": [
-            {
-                "tag": $foo,
-                "children": null,
-            },
-            {
-                "tag": $bar,
-                "children": null,
-            }
-        ]
-    }
-```
-
-对应如下的等价 JSON 求值表达式：
-
-```
-$_JSON.make_object(
-    $_JSON.make_object_element("tag", "li"), 
-    $_JSON.make_object_element("children",
-        $_JSON.make_array(
-            $_JSON.make_object(
-                $_JSON.make_object_element("tag", $foo),
-                $_JSON.make_object_element("children", null)),
-            $_JSON.make_object(
-                $_JSON.make_object_element("tag", $bar),
-                $_JSON.make_object_element("children", null))
-            )
-        )
-    )
-```
-
-在上例中，`$_JSON` 是一个假象的内部动态对象，用来构造 JSON 值。
-
-更进一步，我们还可以将 JSON 表述中混杂有 JSONEE 的字符串，或者支持嵌入 JSONEE 的属性值字符串、模板数据，看成是字面子字符串和 JSONEE 构成的字符串连接（concatenate）方法。如 `foo-$bar`，对应如下的等价 JSONEE：
-
-```
-$_JSON.concat_string("foo-", $bar)
-```
-
-对 JSONEE 中的 JSON 值定位部分，如 `$TIMERS[0].id`，亦可转换为如下的 JSON 求值表达式：
-
-```
-$_JSON.get_element_at(
-    $_JSON.get_element_at(
-        $_JSON.get_variable(
-            "TIMERS"),
-        0),
-    "id")
-```
-
-故而，我们可以将 JSONTEXT 或 JSONSTR 统一为单一形式，其中只有嵌套的函数调用关系，称为单调的（monotonous）JSONEE。如下面的 JSON 表达：
-
-```json
-{
-    "foo" : [ true, false, null ],
-    "bar" : "There is an JSONEE: $L.not($L.streq('case', $SYSTEM.time('%H:%m'), '00:00'))!",
-    "koo" : $TIMERS[0].id,
-}
-```
-
-其等价的单调 JSONEE 为：
-
-```
-$_JSON.make_object(
-    $_JSON.make_object_element("foo",
-        $_JSON.make_array( true, false, null )),
-    $_JSON.make_object_element("bar",
-        $_JSON.concat_string(
-            "There is an JSONEE: ",
-            $_JSON.call_method(
-                $_JSON.get_element_at(
-                    $_JSON.get_variable(
-                        "L"),
-                    "not"),
-                    $_JSON.call_method(
-                        $_JSON.get_element_at(
-                            $_JSON.get_variable(
-                                "L"),
-                            "streq"),
-                        'case',
-                        $_JSON.call_method(
-                            $_JSON.get_element_at(
-                                $_JSON.get_variable(
-                                    "SYSTEM"),
-                                "time"),
-                            '%H:%m'),
-                        '00:00')
-                ),
-            "!")
-            ),
-    $_JSON.make_object_element("koo",
-        $_JSON.get_element_at(
-            $_JSON.get_element_at(
-                $_JSON.get_variable(
-                    "TIMERS"),
-                0),
-            "id")
-        )
-    )
-```
-
-有了这样的等价的单调 JSONEE 表达方式，我们就可以构建求值树来处理所有的 JSONTEXT 和 JSONSTR。
-
-鉴于此，在 HVML 解析器中，我们将 JSONTEXT、JSONSTR 和 JSONEE 统一解析为变体创建模型（variant creation model，简称 VCM）树。
-
-##### 3.2.4.6) 元素指针
-
-Initially, the head element pointer is null.
-
-Once a head element has been parsed (whether implicitly or explicitly) the head element pointer gets set to point to this node.
-
-##### 3.2.4.7) 其他解析状态标志/Other parsing state flags
-
-The jsonee flag is set to "enabled" if an attribute value is double-quoted, and "disabled" otherwise.
-
-The jsonee flag is set to "enabled" in the JSONTEXT state if the current tag's name is `archetype` or `archedata` and the tag token has no `raw` attribute, and "disabled" otherwise.
-
-The jsonee flag is set to "enabled" in the JSONTEXT state if the current tag is a name of a foreign element and the tag token has no `hvml:raw` attribute, and "disabled" otherwise.
-
-#### 3.2.5) 断词/Tokenization
-
-Implementations must act as if they used the following state machine to tokenize HVML. The state machine must start in the data state.
-Most states consume a single character, which may have various side-effects, and either switches the state machine to a new state to
-reconsume the current input character, or switches it to a new state to consume the next character, or stays in the same state to consume the next character.
-Some states have more complicated behavior and can consume several characters before switching to another state.
-In some cases, the tokenizer state is also changed by the tree construction stage.
-
-When a state says to reconsume a matched character in a specified state, that means to switch to that state, but when it attempts
-to consume the next input character, provide it with the current input character instead.
-
-The exact behavior of certain states depends on the insertion mode and the stack of open elements.
-Certain states also use a temporary buffer or a nesting stack to track progress, and
-the character reference state uses a return state to return to the state it was invoked from.
-
-The output of the tokenization step is a series of zero or more of the following tokens: DOCTYPE, start tag, end tag, comment, character, variant creation model tree, end-of-file.
-DOCTYPE tokens have a name, a public identifier, a system information string, and a force-quirks flag.
-When a DOCTYPE token is created, its name, public identifier, and system information must be marked as missing
-(which is a distinct state from the empty string), and the force-quirks flag must be set to off (its other state is on).
-Start and end tag tokens have a tag name, a self-closing flag, and a list of attributes, each of which has a name and a value.
-When a start or end tag token is created, its self-closing flag must be unset (its other state is that it be set), and its attributes list must be empty.
-Comment and character tokens have data.
-
-When a token is emitted, it must immediately be handled by the tree construction stage.
-The tree construction stage can affect the state of the tokenization stage, and can insert additional characters into the stream.
-
-Creating a token and emitting it are distinct actions. It is possible for a token to be created but implicitly abandoned (never emitted), e.g.
-if the file ends unexpectedly while processing the characters that are being parsed into a start tag token.
-
-When a start tag token is emitted with its self-closing flag set, if the flag is not acknowledged when it is processed
-by the tree construction stage, that is a non-void-hvml-element-start-tag-with-trailing-solidus parse error.
-
-When an end tag token is emitted with attributes, that is an end-tag-with-attributes parse error.
-
-When an end tag token is emitted with its self-closing flag set, that is an end-tag-with-trailing-solidus parse error.
-
-An appropriate end tag token is an end tag token whose tag name matches the tag name of the last start tag to have been emitted from this tokenizer, if any.
-If no start tag has been emitted from this tokenizer, then no end tag token is appropriate.
-
-A character reference is said to be consumed as part of an attribute if the return state is either
-attribute value (double-quoted) state, attribute value (single-quoted) state or attribute value (unquoted) state.
-
-When a state says to flush code points consumed as a character reference, it means that for each code point in the temporary buffer
-(in the order they were added to the buffer) the parser  must append the code point from the buffer to the current attribute's value
-if the character reference was consumed as part of an attribute, or emit the code point as a character token otherwise.
-
-When the parser constructs a variant creation model tree for a JSONTEXT or JSONSTR, it will create function nodes.
-For each function node, it will have zero or more arguments as the children of the function node. We name them as argument nodes.
-One argument node may be another function node, a JSON keyword node, a literal string node, or a literal number node.
-
-A function node is named by the functionality of the node, such as `concat_string`, `make_object`, `make_object_element`, `make_array`, and `call_method`.
-
-When the parser assumes a JSON keyword or a literal number for the input characters, the parser will use the temporary buffer to hold the input characters.
-
-When the parser assumes a JSONSTR, it will create a `concat_string` function node first, and creates one or more literal string nodes
-for the input characters which is not a part of a JSONEE.
-The parser should create a new empty literal string node after finished parsing an embedded JSONEE, and always set the current literal string node as the newly created one.
-
-When a state says to flush the `concat_string` function node, it means to remove all empty literal string nodes from the argument node list of this function node.
-
-When a state says to append a character to the current literal string node, it means to append the character to the buffer of the current literal string node.
-
-Before each step of the tokenizer, the parser must first check the parser pause flag.
-If it is true, then the tokenizer must abort the processing of any nested invocations of the tokenizer, yielding control back to the caller.
-
-The tokenizer state machine consists of the states defined in the following subsections.
-
-##### 3.2.5.1) Data state
-
-Consume the next input character:
-
-- U+0026 AMPERSAND (&)
-  - Set the return state to the data state. Switch to the [character reference state].
-- U+003C LESS-THAN SIGN (<)
-  - Switch to the [tag open state].
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Emit the current input character as a character token.
-- EOF
-  - Emit an end-of-file token.
-- Anything else
-  - Emit the current input character as a character token.
-
-##### 3.2.5.2) RCDATA state
-
-Consume the next input character:
-
-- U+0026 AMPERSAND (&)
-  - Set the return state to the RCDATA state. Switch to the [character reference state].
-- U+003C LESS-THAN SIGN (<)
-  - Switch to the [RCDATA less-than sign state].
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
-- EOF
-  - Emit an end-of-file token.
-- Anything else
-  - Emit the current input character as a character token.
-
-##### 3.2.5.3) RAWTEXT state
-
-Consume the next input character:
-
-- U+003C LESS-THAN SIGN (<)
-  - Switch to the [RAWTEXT less-than sign state].
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
-- EOF
-  - Emit an end-of-file token.
-- Anything else
-  - Emit the current input character as a character token.
-
-##### 3.2.5.4) Template raw data state
-
-Consume the next input character:
-
-- U+003C LESS-THAN SIGN (<)
-  - Set the return state to the [template raw data state].
-  - Switch to the [template data less-than sign state].
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the currernt literal string node.
-- EOF
-  - Emit an end-of-file token.
-- Anything else
-  - Append the current input character to the current literal string node.
-
-__NOTE__  
-The template raw data states of HVML are similar to script data states of HTML (<https://html.spec.whatwg.org/#script-data-state>).
-However, we do not handle the comments in the script data. So there is no template data escape start state and the subsequent states.
-
-##### 3.2.5.5) Template JSONEE data state
-
-Consume the next input character:
-
-- U+003C LESS-THAN SIGN (<)
-  - Set the return state to the [template JSONEE data state].
-  - Switch to the [template data less-than sign state].
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
-- EOF
-  - Emit an end-of-file token.
-- U+005C BACKSLASH (\\)
-  - Set the return state to the [template JSONEE data state].
-  - Switch to [JSONEE escape state].
-- U+007B LEFT CURLY BRACKET ({)
-  - If the bottommost two characters on the JSONEE nesting stack are both U+007B LEFT CURLY BRACKET ({), this is a bad-jsonee parse error; Stop parsing.
-  - Push the current input character onto the JSONEE nesting stack.
-- U+0024 DOLLAR SIGN ($)
-  - Create a new JOSNEE `get-variable` function node, set this node as the current function node.
-  - Set the return state to the [template JSONEE data state].
-  - Set the temporary buffer to the empty string.
-  - Reconsume in [JSONEE variable state].
-- Anything else
-  - If the JSONEE nesting stack is not empty, this is a bad-jsonee parse error; Stop parsing.
-  - Otherwise, append the current input character to the current literal string node.
-
-__NOTE__  
-The current literal string node should be reset as an empty string before switching to this state.
-
-##### 3.2.5.6) JSONEE escape state
-
-Consume the next input character:
-
-- U+005C BACKSLASH (\\)
-- U+0024 DOLLAR SIGN ($)
-- U+007B LEFT CURLY BRACKET ({)
-  - Append the current input character to the current literal string node.
-  - Switch to the return state.
-- Anything else
-  - It is a bad-jsonee-escape-entity parse error; Stop parsing.
-
-##### 3.2.5.7) JSONEE variable state
-
-Consume the next input character:
-
-- U+003F QUESTION MARK (?)
-- U+0023 NUMBER SIGN (#)
-- U+0025 PERCENT SIGN (%)
-- U+003F QUESTION MARK (?)
-- U+0040 COMMERCIAL AT (@)
-  - If the temporary buffer is empty, append the current input character to the temporary buffer.
-  - Otherwise, this is a bad-jsonee-variable-name parse error, stop parsing.
-- U+005F LOW LINE (`_`)
-- ASCII digit
-  - If the temporary buffer is empty or the last character of the temporary buffer is a ASCII digit character, append the current input character to the temporary buffer.
-  - Othwise, this is a bad-jsonee-variable-name parse error. Stop parsing.
-- ASCII alpha
-  - Append the current input character to the temporary buffer.
-- U+002E FULL STOP (.)
-  - If the temporary buffer is empty, this is an empty-jsonee-name parse error; Stop parsing. Otherwise,
-    - Set the string in the temporary buffer as the first argument of the current function node.
-    - Set the temporary buffer to the empty string.
-    - Create a new JSONEE get-element-at function node, set the node as the parent node of the current function node, and set the node as the current function node.
-    - Switch to JSONEE keyword state.
-- U+005B LEFT SQUARE BRACKET ([)
-  - If the temporary buffer is empty, this is an empty-jsonee-name parse error; Stop parsing. Otherwise,
-    - Set the string in the temporary buffer as the first argument of the current function node.
-    - Push the current input character onto the JSONEE nesting stack.
-    - Set the temporary buffer to the empty string.
-    - Create a new JSONEE get-element-at function node, set the node as the parent node of the current function node, and set the node as the current function node.
-    - Switch to JSON value state.
-- U+007D RIGHT CURLY BRACKET (})
-  - If the bottommost character on the JSONE nesting stack is U+007B LEFT CURLY BRACKET ({), pop the character off the JSONEE nesting stack.
-  - Otherwise, it is a bad-jsonee-variable-name parse error; Stop parsing.
-- Anything else
-  - If the JSONEE nesting stack is not empty, this is an bad-jsonee-name parse error; Stop parsing.
-  - Otherwise, if the temporary buffer is empty, this is an empty-jsonee-name parse error; Stop parsing.
-  - Otherwise,
-    - Set the string in the temporary buffer as the first argument of the current function node.
-    - Switch to return state.
-
-##### 3.2.5.8) JSONEE keyword state
-
-Consume the next input character:
-
-- ASCII digit
-  - If the temporary buffer is empty, this is a bad-jsonee-keyword parse error; Stop parsing.
-  - Othwise, append the current input character to the temporary buffer.
-- U+005F LOW LINE (`_`)
-- ASCII alpha
-  - Append the current input character to the temporary buffer.
-- U+002E FULL STOP (`.`)
-  - If the temporary buffer is empty, this is an empty-jsonee-keyword parse error; Stop parsing. Otherwise,
-    - Set the string in the temporary buffer as the first argument of the current function node.
-    - Set the temporary buffer to the empty string.
-    - Create a new JSONEE get-element-at function node, set the node as the parent node of the current function node, and set the node as the current function node.
-    - Switch to JSONEE keyword state.
-- U+005B LEFT SQUARE BRACKET (`[`)
-  - If the temporary buffer is empty, this is an empty-jsonee-keyword parse error; Stop parsing. Otherwise,
-    - Set the string in the temporary buffer as the first argument of the current function node.
-    - Push the current input character onto the JSONEE nesting stack.
-    - Set the temporary buffer to the empty string.
-    - Set the return state to the JSONEE keyword state.
-    - Create a new JSONEE get-element-at function node, set the node as the parent node of the current function node, and set the node as the current function node.
-    - Switch to JSON value state.
-- U+0028 LEFT PARENTHESIS (`(`)
-  - If the temporary buffer is empty, this is an empty-jsonee-keyword parse error; Stop parsing. Otherwise,
-    - Set the string in the temporary buffer as the first argument of the current function node.
-    - Push the current input character onto the JSONEE nesting stack.
-    - Set the temporary buffer to the empty string.
-    - Set the return state to the JSONEE keyword state.
-    - Create a new JSONEE call-getter function node, set the node as the parent node of the current function node, and set the node as the current function node.
-    - Switch to JSONEE getter state.
-- U+003C LESS-THAN SIGN (`<`)
-  - If the temporary buffer is empty, this is an empty-jsonee-keyword parse error; Stop parsing. Otherwise,
-    - Set the string in the temporary buffer as the first argument of the current function node.
-    - Push the current input character onto the JSONEE nesting stack.
-    - Set the temporary buffer to the empty string.
-    - Set the return state to the JSONEE keyword state.
-    - Create a new JSONEE call-setter function node, set the node as the parent node of the current function node, and set the node as the current function node.
-    - Create a new empty argument node, set the node as the first child of the currernt function node, and set the node as the current argument node.
-    - Switch to JSONEE setter state.
-- U+007D RIGHT CURLY BRACKET (})
-  - If the bottommost character on the JSONE nesting stack is U+007B LEFT CURLY BRACKET ({), pop the character off the JSONEE nesting stack. Otherwise, it is a bad-jsonee-variable-name parse error; Stop parsing.
-  - If the JSONEE nesting stack is empty, treat it as per the "anything else" entry below.
-- Anything else
-  - If the JSONEE nesting stack is not empty, this is an bad-jsonee-name parse error; Stop parsing.
-  - Otherwise, if the temporary buffer is empty, this is an empty-jsonee-keyword parse error; Stop parsing.
-  - Otherwise,
-    - Set the string in the temporary buffer as the first argument of the current function node.
-    - Switch to return state.
-
-##### 3.2.5.10) JSONEE getter state
-
-Consume the next input character:
-
-- U+002C COMMA (,)
-  - If the current argument node is empty, this is a bad-jsonee-unexpected-comma parse error; Stop parsing.
-  - Otherwise, create a new empty argument node, set the node as the first child of the currernt function node, and set the node as the current argument node.
-- U+0029 RIGHT PARENTHESIS ())
-  - If the bottommost character on the JSONE nesting stack is U+0028 LEFT PARENTHESIS (`(`),
-    - Pop the character off the JSONEE nesting stack.
-    - Switch to JSONEE after call state.
-  - Otherwise, it is a bad-jsonee-unexpected-parenthesis parse error; Stop parsing.
-- U+007D RIGHT CURLY BRACKET (})
-  - If the bottommost character on the JSONE nesting stack is U+007B LEFT CURLY BRACKET ({), pop the character off the JSONEE nesting stack. Otherwise, it is a bad-jsonee-variable-name parse error; Stop parsing.
-  - If the JSONEE nesting stack is empty, switch to the return state.
-- Anything else
-  - Set the return state to the JSONEE getter state.
-  - Switch to JSON value state.
-
-##### 3.2.5.11) JSONEE setter state
-
-- U+002C COMMA (,)
-  - If the current argument node is empty, this is a bad-jsonee-unexpected-comma parse error; Stop parsing.
-  - Otherwise, create a new empty argument node, set the node as the first child of the currernt function node, and set the node as the current argument node.
-- U+003E GREATER-THAN SIGN (>)
-  - If the bottommost character on the JSONE nesting stack is U+003C LESS-THAN SIGN (<),
-    - Pop the character off the JSONEE nesting stack.
-    - Switch to JSONEE after call state.
-  - Otherwise, it is a bad-jsonee-unexpected-left-angle-bracket parse error; Stop parsing.
-- U+007D RIGHT CURLY BRACKET (})
-  - If the bottommost character on the JSONE nesting stack is U+007B LEFT CURLY BRACKET ({), pop the character off the JSONEE nesting stack. Otherwise, it is a bad-jsonee-variable-name parse error; Stop parsing.
-  - If the JSONEE nesting stack is empty, switch to the return state.
-- Anything else
-  - Set the return state to the JSONEE getter state.
-  - Switch to JSON value state.
-
-##### 3.2.5.12) JSONEE after call state
-
-Consume the next input character:
-
-- U+002E FULL STOP (.)
-  - Set the temporary buffer to the empty string.
-  - Create a new JSONEE get-element-at function node, set the node as the parent node of the current function node, and set the node as the current function node.
-  - Switch to JSONEE keyword state.
-- U+005B LEFT SQUARE BRACKET ([)
-  - Push the current input character onto the JSONEE nesting stack.
-  - Set the temporary buffer to the empty string.
-  - Create a new JSONEE get-element-at function node, set the node as the parent node of the current function node, and set the node as the current function node.
-  - Switch to JSON value state.
-- U+007D RIGHT CURLY BRACKET (})
-  - If the bottommost character on the JSONE nesting stack is U+007B LEFT CURLY BRACKET ({), pop the character off the JSONEE nesting stack.
-  - Otherwise, it is a bad-jsonee-variable-name parse error; Stop parsing.
-- Anything else
-  - If the JSONEE nesting stack is not empty, this is an bad-jsonee-name parse error; Stop parsing.
-  - Otherwise, if the temporary buffer is empty, this is an empty-jsonee-name parse error; Stop parsing.
-  - Otherwise,
-    - Set the string in the temporary buffer as the first argument of the current function node.
-    - Switch to return state.
-
-##### 3.2.5.13) PLAINTEXT state
-
-Consume the next input character:
-
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Emit a U+FFFD REPLACEMENT CHARACTER character token.
-- EOF
-  - Emit an end-of-file token.
-- Anything else
-  - Emit the current input character as a character token.
-
-##### 3.2.5.14) Tag open state
-
-Consume the next input character:
-
-- U+0021 EXCLAMATION MARK (!)
-  - Switch to the markup declaration open state.
-- U+002F SOLIDUS (/)
-  - Switch to the end tag open state.
-- ASCII alpha
-  - Create a new start tag token, set its tag name to the empty string. Reconsume in the tag name state.
-- U+003F QUESTION MARK (?)
-  - This is an unexpected-question-mark-instead-of-tag-name parse error. Create a comment token whose data is the empty string. Reconsume in the bogus comment state.
-- EOF
-  - This is an eof-before-tag-name parse error. Emit a U+003C LESS-THAN SIGN character token and an end-of-file token.
-- Anything else
-  - This is an invalid-first-character-of-tag-name parse error. Emit a U+003C LESS-THAN SIGN character token. Reconsume in the data state.
-
-##### 3.2.5.15) End tag open state
-
-Consume the next input character:
-
-- ASCII alpha
-  - Create a new end tag token, set its tag name to the empty string. Reconsume in the tag name state.
-- U+003E GREATER-THAN SIGN (>)
-  - This is a missing-end-tag-name parse error. Switch to the data state.
-- EOF
-  - This is an eof-before-tag-name parse error. Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token and an end-of-file token.
-- Anything else
-  - This is an invalid-first-character-of-tag-name parse error. Create a comment token whose data is the empty string. Reconsume in the bogus comment state.
-
-##### 3.2.5.16) Tag name state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Switch to the before attribute name state.
-- U+002F SOLIDUS (/)
-  - Switch to the self-closing start tag state.
-- U+003E GREATER-THAN SIGN (>)
-  - Switch to the data state. Emit the current tag token.
-- ASCII alpha
-  - Append the current input character (add 0x0020 to the character's code point) to the current tag token's tag name.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current tag token's tag name.
-- EOF
-  - This is an eof-in-tag parse error. Emit an end-of-file token.
-- Anything else
-  - Append the current input character to the current tag token's tag name.
-
-##### 3.2.5.17) RCDATA less-than sign state
-
-Consume the next input character:
-
-- U+002F SOLIDUS (/)
-  - Set the temporary buffer to the empty string. Switch to the RCDATA end tag open state.
-- Anything else
-  - Emit a U+003C LESS-THAN SIGN character token. Reconsume in the RCDATA state.
-
-##### 3.2.5.18) RCDATA end tag open state
-
-Consume the next input character:
-
-- ASCII alpha
-  - Create a new end tag token, set its tag name to the empty string. Reconsume in the RCDATA end tag name state.
-- Anything else
-  - Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume in the RCDATA state.
-
-##### 3.2.5.19) RCDATA end tag name state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - If the current end tag token is an appropriate end tag token, then switch to the before attribute name state. Otherwise, treat it as per the "anything else" entry below.
-- U+002F SOLIDUS (/)
-  - If the current end tag token is an appropriate end tag token, then switch to the self-closing start tag state. Otherwise, treat it as per the "anything else" entry below.
-- U+003E GREATER-THAN SIGN (>)
-  - If the current end tag token is an appropriate end tag token, then switch to the data state and emit the current tag token. Otherwise, treat it as per the "anything else" entry below.
-- ASCII upper alpha
-  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current tag token's tag name. Append the current input character to the temporary buffer.
-- ASCII lower alpha
-  - Append the current input character to the current tag token's tag name. Append the current input character to the temporary buffer.
-- Anything else
-  - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the RCDATA state.
-
-##### 3.2.5.20) RAWTEXT less-than sign state
-
-Consume the next input character:
-
-- U+002F SOLIDUS (/)
-  - Set the temporary buffer to the empty string. Switch to the RAWTEXT end tag open state.
-- Anything else
-  - Emit a U+003C LESS-THAN SIGN character token. Reconsume in the RAWTEXT state.
-
-##### 3.2.5.21) RAWTEXT end tag open state
-
-Consume the next input character:
-
-- ASCII alpha
-  - Create a new end tag token, set its tag name to the empty string. Reconsume in the RAWTEXT end tag name state.
-- Anything else
-  - Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume in the RAWTEXT state.
-
-##### 3.2.5.22) RAWTEXT end tag name state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - If the current end tag token is an appropriate end tag token, then switch to the before attribute name state. Otherwise, treat it as per the "anything else" entry below.
-- U+002F SOLIDUS (/)
-  - If the current end tag token is an appropriate end tag token, then switch to the self-closing start tag state. Otherwise, treat it as per the "anything else" entry below.
-- U+003E GREATER-THAN SIGN (>)
-  - If the current end tag token is an appropriate end tag token, then switch to the data state and emit the current tag token. Otherwise, treat it as per the "anything else" entry below.
-- ASCII upper alpha
-  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current tag token's tag name. Append the current input character to the temporary buffer.
-- ASCII lower alpha
-  - Append the current input character to the current tag token's tag name. Append the current input character to the temporary buffer.
-- Anything else
-  - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the RAWTEXT state.
-
-##### 3.2.5.23) Template data less-than sign state
-  
-Consume the next input character:
-
-- U+002F SOLIDUS (/)
-  - Set the temporary buffer to the empty string. Switch to the template data end tag open state.
-- Anything else
-  - Emit a U+003C LESS-THAN SIGN character token. Reconsume in the template data state.
-
-Differ from HTML script data less-than sign state:
-
-##### 3.2.5.24) Template data end tag open state
-  
-Consume the next input character:
-
-- ASCII alpha
-  - Create a new end tag token, set its tag name to the empty string. Reconsume in the template data end tag name state.
-- Anything else
-  - Emit a U+003C LESS-THAN SIGN character token and a U+002F SOLIDUS character token. Reconsume in the template data state.
-
-##### 3.2.5.25) Template data end tag name state
-  
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - If the current end tag token is an appropriate end tag token, then switch to the before attribute name state. Otherwise, treat it as per the "anything else" entry below.
-- U+002F SOLIDUS (/)
-  - If the current end tag token is an appropriate end tag token, then switch to the self-closing start tag state. Otherwise, treat it as per the "anything else" entry below.
-- U+003E GREATER-THAN SIGN (>)
-  - If the current end tag token is an appropriate end tag token, then switch to the data state and emit the current tag token. Otherwise, treat it as per the "anything else" entry below.
-- ASCII upper alpha
-  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current tag token's tag name. Append the current input character to the temporary buffer.
-- ASCII lower alpha
-  - Append the current input character to the current tag token's tag name. Append the current input character to the temporary buffer.
-- Anything else
-  - Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the characters in the temporary buffer (in the order they were added to the buffer). Reconsume in the template data state.
-
-##### 3.2.5.26) JSONTEXT state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- U+003C LESS-THAN SIGN (<)
-  - If the JSON nesting stack is not empty, this is a bad-json parse error; Stop parsing.
-  - Otherwise, switch to the JSONTEXT less-than sign state.
-- ASCII lower alpha
-- ASCII digit
-- U+002D HYPHEN-MINUS (-)
-- U+0022 QUOTATION MARK (")
-- U+0024 DOLLAR SIGN ($)
-- U+007B LEFT CURLY BRACKET ({)
-- U+005B LEFT SQUARE BRACKET ([)
-  - Reconsume in the JSON value state.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error; Stop parsing.
-- EOF
-  - Emit an end-of-file token.
-- Anything else
-  - This is a bad-json parse error; Stop parsing.
-
-##### 3.2.5.27) JSONTEXT JSON finished state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- U+003C LESS-THAN SIGN (<)
-  - If the JSON nesting stack is not empty, this is a bad-json parse error; Stop parsing.
-  - Otherwise, switch to the JSONTEXT less-than sign state.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error.
-- EOF
-  - Emit an end-of-file token.
-- Anything else
-  - This is a unexpected-character parse error; Stop parsing.
-
-##### 3.2.5.28) JSONTEXT less-than sign state
-
-Consume the next input character:
-
-- U+002F SOLIDUS (/)
-  - Set the temporary buffer to the empty string. Switch to the JSONTEXT end tag open state.
-- ASCII alpha
-  - Create a new start tag token if the current start tag token is an operation tag token. Otherwise, treat it as per the "anything else" entry below.
-- Anything else
-  - This is a bad-tag-name parse error.
-
-##### 3.2.5.29) JSONTEXT end tag open state
-
-Consume the next input character:
-
-- ASCII alpha
-  - Create a new end tag token, set its tag name to the empty string. Reconsume in the JSONTEXT end tag name state.
-- Anything else
-  - This is a bad-stag-name parse error.
-
-##### 3.2.5.30) JSONTEXT end tag name state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - If the current end tag token is an appropriate end tag token, then switch to the before attribute name state. Otherwise, treat it as per the "anything else" entry below.
-- U+002F SOLIDUS (/)
-  - If the current end tag token is an appropriate end tag token, then switch to the self-closing start tag state. Otherwise, treat it as per the "anything else" entry below.
-- U+003E GREATER-THAN SIGN (>)
-  - If the current end tag token is an appropriate end tag token, then switch to the data state and emit the current tag token. Otherwise, treat it as per the "anything else" entry below.
-- ASCII alpha
-  - Append the current input character to the current tag token's tag name.
-  - Append the current input character to the temporary buffer.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error.
-  - Append a U+FFFD REPLACEMENT CHARACTER character to the current tag token's tag name.
-- EOF
-  - This is an eof-in-tag parse error. Emit an end-of-file token.
-- Anything else
-  - Append the current input character to the current tag token's tag name.
-
-##### 3.2.5.31) JSON value state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- ASCII lower alpha
-  - Set the temporary buffer to the empty string.
-  - Reconsume in the JSON keyword state.
-- ASCII digit
-- U+002D HYPHEN-MINUS (-)
-  - Set the temporary buffer to the empty string.
-  - Reconsume in the JSON number state.
-- U+0022 QUOTATION MARK (")
-  - Emit the current input character as a character token.
-  - Switch to the JSON string state.
-- U+0024 DOLLAR SIGN ($)
-  - Set the temporary buffer to the empty string.
-  - Reconsume in the JSONEE state.
-- U+007B LEFT CURLY BRACKET ({)
-  - Emit the current input character as a character token.
-  - Push the current input character onto the JSON nesting stack.
-  - Switch to the JSON object key name state.
-- U+005B LEFT SQUARE BRACKET ([)
-  - Push the character onto the JSON nesting stack.
-  - Emit the current input character as a character token.
-- U+002C COMMA (,)
-  - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({)
-    - Emit the current input character as a character token.
-    - Switch to JSON object key name state
-  - Otherwise, if the bottommost character on the JSON nesting stack is U+005B LEFT SQUARE BRACKET ([)
-    - Emit the current input character as a character token.
-  - Otherwise
-    - This is a bad-json parse error. Stop parsing.
-- U+007D LEFT CURLY BRACKET (})
-  - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({)
-    - Emit the current input character as a character token.
-    - Pop the character off the JSON nesting stack.
-  - Otherwise it is a bad-json parse error; Stop parsing.
-- U+005D RIGHT SQUARE BRACKET (])
-  - If the bottommost character on the JSON nesting stack is U+005B LEFT SQUARE BRACKET ([)
-    - Emit the current input character as a character token.
-    - Pop the character off the JSON nesting stack.
-  - Otherwise it is a bad-json parse error; Stop parsing.
-- Anything else
-  - This is a bad-json parse error.
-
-##### 3.2.5.32) JSON after value state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- U+002C COMMA (,)
-  - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({)
-    - Emit the current input character as a character token.
-    - Switch to JSON object key name state.
-  - Otherwise, if the bottommost character on the JSON nesting stack is U+005B LEFT SQUARE BRACKET ([)
-    - Emit the current input character as a character token.
-    - Switch to JSON value state.
-  - Otherwise
-    - This is a bad-json parse error. Stop parsing.
-- U+007D RIGHT CURLY BRACKET (})
-  - If the bottommost character on the JSON nesting stack is U+007B LEFT CURLY BRACKET ({)
-    - Emit the current input character as a character token.
-    - Pop the character off the JSON nesting stack.
-    - If the JSON nesting stack is empty, switch to JSON JSON finished state.
-  - Otherwise it is a bad-json parse error; Stop parsing.
-- U+005D RIGHT SQUARE BRACKET (])
-  - If the bottommost character on the JSON nesting stack is U+005B LEFT SQUARE BRACKET ([)
-    - Emit the current input character as a character token.
-    - Pop the character off the JSON nesting stack.
-    - If the JSON nesting stack is empty, switch to JSON JSON finished state.
-  - Otherwise it is a bad-json parse error; Stop parsing.
-- Anything else
-  - This is a bad-json parse error.
-
-##### 3.2.5.33) JSON keyword state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-  - If the temporary buffer is the string "true", "false", or "null"
-     - Emit the characters in the temporary buffer as a character tokens (in the order they were added to the buffer). 
-     - If the JSON nesting stack is empty, switch to the JSON JSON finished state. Otherwise, switch to the JSON after value state. 
-  - Otherwise, treat it as per the "anything else" entry below.
-- ASCII lower alpha
-  - Append the current input character to the temporary buffer.
-- Anything else
-  - This is an unexpected-json-keyword parse error; Stop parsing.
-
-##### 3.2.5.34) JSON number state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-  - If the last character in the temporay buffer is U+002D HYPHEN-MINUS (-) or U+0045 LATIN CAPITAL LETTER E (E)
-    - It is a bad-json-number parse error; Stop parsing.
-  - Otherwise:
-    - Emit the characters in the temporary buffer as character tokens (in the order they were added to the buffer).
-    - If the JSON nesting stack is empty, switch to the JSON JSON finished state. Otherwise, switch to the JSON after value state.
-- U+002D HYPHEN-MINUS (-)
-  - Append the current input character to the temporary buffer.
-  - Switch to the JSON number integer state.
-- ASCII digit
-  - Reconsume in the JSON number integer state.
-- Anything else
-  - This is an unexpected-json-number parse error.
-  - Ignore the character.
-
-##### 3.2.5.35) JSON number integer state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-  - Recosume in the JSON number state.
-- ASCII digit
-  - Append the current input character to the temporary buffer.
-- U+0045 LATIN CAPITAL LETTER E (E)
-- U+0065 LATIN SMALL LETTER E (e)
-  - Append the current U+0045 LATIN CAPITAL LETTER E (E) to the temporary buffer.
-  - Switch to the JSON number exponent state.
-- U+002E FULL STOP (.)
-  - Append the current input character to the temporary buffer.
-  - Switch to the JSON number fraction state.
-- Anything else
-  - This is an unexpected-json-number-integer parse error.
-  - Ignore the character.
-
-##### 3.2.5.36) JSON number fraction state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Recosume in the JSON number state.
-- ASCII digit
-  - Append the current input character to the temporary buffer.
-- U+0045 LATIN CAPITAL LETTER E (E)
-- U+0065 LATIN SMALL LETTER E (e)
-  - If last character in the temporary buffer is U+002E FULL STOP (.), treat it as per the "anything else" entry below.
-  - Otherwise:
-    - Append the current U+0045 LATIN CAPITAL LETTER E (E) to the temporary buffer.
-    - Switch to the JSON number exponent state.
-- Anything else
-  - This is an unexpected-json-number-fraction parse error.
-  - Ignore the character.
-
-##### 3.2.5.37) JSON number exponent state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Recosume in the JSON number state.
-- ASCII digit
-  - Reconsume in the JSON number exponent integer state.
-- U+002B PLUS SIGN (+)
-- U+002D HYPHEN-MINUS (-)
-  - Append the current input character to the temporary buffer.
-  - Switch to the JSON number exponent integer state.
-- Anything else
-  - This is an unexpected-json-number-exponent parse error.
-
-##### 3.2.5.38) JSON number exponent integer state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Recosume in the JSON number state.
-- ASCII digit
-  - Append the current input character to the temporary buffer.
-- Anything else
-  - This is an unexpected-json-number-exponent parse error.
-
-##### 3.2.5.39) JSON object key name state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- U+0022 QUOTATION MARK (")
-  - Emit the current input character as a character token.
-  - Push U+003A COLON (:) character onto the JSON nesting stack.
-  - Switch to the JSON string state.
-- Anything else
-  - This is an unexpected-json-key-name parse error. Stop parsing.
-
-##### 3.2.5.40) JSON after object key name state
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- U+003A COLON (:)
-  - Pop the bottommost character (it must be U+003A COLON (:)) off the JSON nesting stack.
-  - Emit the current input character as a character token.
-  - Switch to the JSON value state.
-- Anything else
-    - It is a bad-json-a-colon-expected parse error; Stop parsing.
-
-##### 3.2.5.41) JSON string state
-
-Consume the next input character:
-
-- U+0024 DOLLAR SIGN ($)
-  - Set the return state to the JSON string state.
-  - Recosume the character in the JSONEE state.
-- U+005C BACKSLASH (\\)
-  - Set the return state to the JSON string state.
-  - Switch to JSON string escape state.
-- U+0022 QUOTATION MARK (")
-  - Emit the current input character as a character token.
-  - If the JSON nesting stack is empty, switch to the JSON JSON finished state. Otherwise,
-    - If the bottommost character on the JSON nesting statck is U+003A COLON (:), then pop the bottomost character off the JSON nesting stack and switch to the JSON after object key name state.
-    - Otherwise, switch to JSON after value state.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error; Stop parsing.
-- EOF
-  - This is an eof-in-tag parse error. Emit an end-of-file token.
-- Anything else
-  - Emit the current input character as a character token.
-
-##### 3.2.5.42) JSON string escape state
-
-Consume the next input character:
-
-- U+0024 DOLLAR SIGN ($)
-  - Emit the current input character as a character token.
-  - Switch to JSON string state.
-- U+005C BACKSLASH (\\)
-- U+005C SOLIDUS (/)
-- U+0022 QUOTATION MARK (")
-- U+0062 LATIN SMALL LETTTER B (b)
-- U+0066 LATIN SMALL LETTTER F (f)
-- U+006E LATIN SMALL LETTTER N (n)
-- U+0072 LATIN SMALL LETTTER R (r)
-- U+0074 LATIN SMALL LETTTER R (t)
-  - Emit a U+005C BACKSLASH (\\) character token and emit the current input character as a character token.
-  - Switch to JSON string state.
-- U+0075 LATIN SMALL LETTTER U (u)
-  - Set the temporary buffer to the empty string.
-  - Switch to JSONTEXt string escape four hexadecimal digits state.
-- Anything else
-  - It is a bad-json-string-escape-entity parse error; Stop parsing.
-
-##### 3.2.5.43) JSON string escape four hexadecimal digits state
-
-Consume the next input character:
-
-- ASCII hex digit:
-  - Append the current input character to the temporary buffer.
-  - If there are four characters in the temporay buffer:
-    - Emit a U+005C BACKSLASH (\\) character token and a U+0075 LATIN SMALL LETTTER U (u) character token.
-    - Emit the characters in the temporary buffer as character tokens (in the order they were added to the buffer).
-    - Switch to JSON string state.
-- Anything else
-  - It is a bad-json-string-escape-entity parse error; Stop parsing.
-
-##### 3.2.5.44) Before attribute name state
-  
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- U+002F SOLIDUS (/)
-- U+003E GREATER-THAN SIGN (>)
-- EOF
-  - Reconsume in the after attribute name state.
-- U+003D EQUALS SIGN (=)
-  - This is an unexpected-equals-sign-before-attribute-name parse error. Start a new attribute in the current tag token. Set that attribute's name to the current input character, and its value to the empty string. Switch to the attribute name state.
-- Anything else
-  - Start a new attribute in the current tag token. Set that attribute name and value to the empty string. Reconsume in the attribute name state.
-
-##### 3.2.5.45) Attribute name state
-  
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-- U+002F SOLIDUS (/)
-- U+003E GREATER-THAN SIGN (>)
-- EOF
-  - Reconsume in the after attribute name state.
-- U+0024 DOLLAR SIGN ($)
-- U+0025 PERCENT SIGN (%)
-- U+002B PLUS SIGN (+)
-- U+002D HYPHEN-MINUS (-)
-- U+005E CIRCUMFLEX ACCENT (^)
-- U+007E TILDE (~)
-  - If the current tag token is an operation tag token and the current attribute name is an ordinary attribute name:
-    - Set the temporary buffer to the empty string. Append the current input character to the temporary buffer.
-    - Switch to the speical attribute operator in attribute name state.
-  - Otherwise:
-    - Treat it as per the "anything else" entry below.
-- U+003D EQUALS SIGN (=)
-  - Switch to the before attribute value state.
-- ASCII upper alpha
-  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current attribute's name.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute's name.
-- U+0022 QUOTATION MARK (")
-- U+0027 APOSTROPHE (')
-- U+003C LESS-THAN SIGN (<)
-  - This is an unexpected-character-in-attribute-name parse error. Treat it as per the "anything else" entry below.
-- Anything else
-  - Append the current input character to the current attribute's name.
-
-When the parser leaves the attribute name state (and before emitting the tag token, if appropriate), the complete attribute's name must be compared to the other attributes on the same token; if there is already an attribute on the token with the exact same name, then this is a duplicate-attribute parse error and the new attribute must be removed from the token.
-
-__NOTE__  
-If an attribute is so removed from a token, it, and the value that gets associated with it, if any, are never subsequently used by the parser, and are therefore effectively discarded. Removing the attribute in this way does not change its status as the "current attribute" for the purposes of the tokenizer, however.
-
-##### 3.2.5.46) Special attribute operator in attribute name state
-
-Consume the next input character:
-
-- U+003D EQUALS SIGN (=)
-  - Set the current attribute operator according to the character in the temporary buffer (only one).
-  - Switch to the before attribute value state.
-- Anything else
-  - Append each of the character in the temporary buffer to the current attribute's name.
-  - Reconsume in the attribute name state.
-
-##### 3.2.5.47) After attribute name state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- U+002F SOLIDUS (/)
-  - Switch to the self-closing start tag state.
-- U+003D EQUALS SIGN (=)
-  - Switch to the before attribute value state.
-- U+0024 DOLLAR SIGN ($)
-- U+0025 PERCENT SIGN (%)
-- U+002B PLUS SIGN (+)
-- U+002D HYPHEN-MINUS (-)
-- U+005E CIRCUMFLEX ACCENT (^)
-- U+007E TILDE (~)
-  - If the current tag token is an operation tag token and the current attribute name is an ordinary attribute name:
-    - Set the temporary buffer to the empty string. Append the current input character to the temporary buffer.
-    - Switch to the speical attribute operator after attribute name state.
-  - Otherwise:
-    - Treat it as per the "anything else" entry below.
-- U+003E GREATER-THAN SIGN (>)
-  - Switch to the data state. Emit the current tag token.
-- EOF
-  - This is an eof-in-tag parse error. Emit an end-of-file token.
-- Anything else
-  - If the current tag token is an operation tag token and the current attribute name is a preposition attribute name:
-    - Swith to the before attribute value state.
-  - Otherwise:
-    - Start a new attribute in the current tag token. Set that attribute name and value to the empty string. Reconsume in the attribute name state.
-
-##### 3.2.5.48) Special attribute operator after attribute name state
-
-Consume the next input character:
-
-- U+003D EQUALS SIGN (=)
-  - Set the current attribute operator according to the character in the temporary buffer (only one).
-  - Switch to the before attribute value state.
-- Anything else
-  - Start a new attribute in the current tag token. Set that attribute name and value to the empty string.
-  - Append each of the character in the temporary buffer to the current attribute's name.
-  - Reconsume in the attribute name state.
-
-##### 3.2.5.49) Before attribute value state
-  
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- U+0022 QUOTATION MARK (")
-  - Switch to the attribute value (double-quoted) state.
-- U+0027 APOSTROPHE (')
-  - Switch to the attribute value (single-quoted) state.
-- U+003E GREATER-THAN SIGN (>)
-  - This is a missing-attribute-value parse error. Switch to the data state. Emit the current tag token.
-- Anything else
-  - Reconsume in the attribute value (unquoted) state.
-
-##### 3.2.5.50) Attribute value (double-quoted) state
-  
-Consume the next input character:
-
-- U+0022 QUOTATION MARK (")
-  - Switch to the after attribute value (quoted) state.
-- U+0026 AMPERSAND (&)
-  - Set the return state to the attribute value (double-quoted) state. Switch to the character reference state.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute's value.
-- EOF
-  - This is an eof-in-tag parse error. Emit an end-of-file token.
-- Anything else
-  - Append the current input character to the current attribute's value.
-
-##### 3.2.5.52) Attribute value (single-quoted) state
-  
-Consume the next input character:
-
-- U+0027 APOSTROPHE (')
-  - Switch to the after attribute value (quoted) state.
-- U+0026 AMPERSAND (&)
-  - Set the return state to the attribute value (single-quoted) state. Switch to the character reference state.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute's value.
-- EOF
-  - This is an eof-in-tag parse error. Emit an end-of-file token.
-- Anything else
-  - Append the current input character to the current attribute's value.
-
-##### 3.2.5.53) Attribute value (unquoted) state
-  
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Switch to the before attribute name state.
-- U+0026 AMPERSAND (&)
-  - Set the return state to the attribute value (unquoted) state. Switch to the character reference state.
-- U+003E GREATER-THAN SIGN (>)
-  - Switch to the data state. Emit the current tag token.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current attribute's value.
-- U+0022 QUOTATION MARK (")
-- U+0027 APOSTROPHE (')
-- U+003C LESS-THAN SIGN (<)
-- U+003D EQUALS SIGN (=)
-- U+0060 GRAVE ACCENT (`)
-  - This is an unexpected-character-in-unquoted-attribute-value parse error. Treat it as per the "anything else" entry below.
-- EOF
-  - This is an eof-in-tag parse error. Emit an end-of-file token.
-- Anything else
-  - Append the current input character to the current attribute's value.
-
-##### 3.2.5.54) After attribute value (quoted) state
-  
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Switch to the before attribute name state.
-- U+002F SOLIDUS (/)
-  - Switch to the self-closing start tag state.
-- U+003E GREATER-THAN SIGN (>)
-  - Switch to the data state. Emit the current tag token.
-- EOF
-  - This is an eof-in-tag parse error. Emit an end-of-file token.
-- Anything else
-  - This is a missing-whitespace-between-attributes parse error. Reconsume in the before attribute name state.
-
-##### 3.2.5.55) Self-closing start tag state
-  
-Consume the next input character:
-
-- U+003E GREATER-THAN SIGN (>)
-  - Set the self-closing flag of the current tag token. Switch to the data state. Emit the current tag token.
-- EOF
-  - This is an eof-in-tag parse error. Emit an end-of-file token.
-- Anything else
-  - This is an unexpected-solidus-in-tag parse error. Reconsume in the before attribute name state.
-
-##### 3.2.5.56) Bogus comment state
-  
-Consume the next input character:
-
-- U+003E GREATER-THAN SIGN (>)
-  - Switch to the data state. Emit the comment token.
-- EOF
-  - Emit the comment. Emit an end-of-file token.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the comment token's data.
-- Anything else
-  - Append the current input character to the comment token's data.
-
-##### 3.2.5.57) Markup declaration open state
-  
-If the next few characters are:
-
-- Two U+002D HYPHEN-MINUS characters (-)
-  - Consume those two characters, create a comment token whose data is the empty string, and switch to the comment start state.
-- ASCII case-insensitive match for the word "DOCTYPE"
-  - Consume those characters and switch to the DOCTYPE state.
-  - The string "[CDATA[" (the five uppercase letters "CDATA" with a U+005B LEFT SQUARE BRACKET character before and after)
-  - Consume those characters. If there is an adjusted current node and it is not an element in the HTML namespace, then switch to the CDATA section state. Otherwise, this is a cdata-in-html-content parse error. Create a comment token whose data is the "[CDATA[" string. Switch to the bogus comment state.
-- Anything else
-  - This is an incorrectly-opened-comment parse error. Create a comment token whose data is the empty string. Switch to the bogus comment state (don't consume anything in the current state).
-
-##### 3.2.5.58) Comment start state
-
-Consume the next input character:
-
-- U+002D HYPHEN-MINUS (-)
-  - Switch to the comment start dash state.
-- U+003E GREATER-THAN SIGN (>)
-  - This is an abrupt-closing-of-empty-comment parse error. Switch to the data state. Emit the comment token.
-- Anything else
-  - Reconsume in the comment state.
-
-##### 3.2.5.59) Comment start dash state
-  
-Consume the next input character:
-
-- U+002D HYPHEN-MINUS (-)
-  - Switch to the comment end state
-- U+003E GREATER-THAN SIGN (>)
-  - This is an abrupt-closing-of-empty-comment parse error. Switch to the data state. Emit the comment token.
-- EOF
-  - This is an eof-in-comment parse error. Emit the comment token. Emit an end-of-file token.
-- Anything else
-  - Append a U+002D HYPHEN-MINUS character (-) to the comment token's data. Reconsume in the comment state.
-
-##### 3.2.5.60) Comment state
-  
-Consume the next input character:
-
-- U+003C LESS-THAN SIGN (<)
-  - Append the current input character to the comment token's data. Switch to the comment less-than sign state.
-- U+002D HYPHEN-MINUS (-)
-  - Switch to the comment end dash state.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the comment token's data.
-- EOF
-  - This is an eof-in-comment parse error. Emit the comment token. Emit an end-of-file token.
-- Anything else
-  - Append the current input character to the comment token's data.
-
-##### 3.2.5.61) Comment less-than sign state
-  
-Consume the next input character:
-
-- U+0021 EXCLAMATION MARK (!)
-  - Append the current input character to the comment token's data. Switch to the comment less-than sign bang state.
-- U+003C LESS-THAN SIGN (<)
-  - Append the current input character to the comment token's data.
-- Anything else
-  - Reconsume in the comment state.
-
-##### 3.2.5.62) Comment less-than sign bang state
-  
-Consume the next input character:
-
-- U+002D HYPHEN-MINUS (-)
-  - Switch to the comment less-than sign bang dash state.
-- Anything else
-  - Reconsume in the comment state.
-
-##### 3.2.5.63) Comment less-than sign bang dash state
-  
-Consume the next input character:
-
-- U+002D HYPHEN-MINUS (-)
-  - Switch to the comment less-than sign bang dash dash state.
-- Anything else
-  - Reconsume in the comment end dash state.
-
-##### 3.2.5.64) Comment less-than sign bang dash dash state
-  
-Consume the next input character:
-
-- U+003E GREATER-THAN SIGN (>)
-- EOF
-  - Reconsume in the comment end state.
-- Anything else
-  - This is a nested-comment parse error. Reconsume in the comment end state.
-
-##### 3.2.5.65) Comment end dash state
-  
-Consume the next input character:
-
-- U+002D HYPHEN-MINUS (-)
-  - Switch to the comment end state
-- EOF
-  - This is an eof-in-comment parse error. Emit the comment token. Emit an end-of-file token.
-- Anything else
-  - Append a U+002D HYPHEN-MINUS character (-) to the comment token's data. Reconsume in the comment state.
-
-##### 3.2.5.66) Comment end state
-  
-Consume the next input character:
-
-- U+003E GREATER-THAN SIGN (>)
-  - Switch to the data state. Emit the comment token.
-- U+0021 EXCLAMATION MARK (!)
-  - Switch to the comment end bang state.
-- U+002D HYPHEN-MINUS (-)
-  - Append a U+002D HYPHEN-MINUS character (-) to the comment token's data.
-- EOF
-  - This is an eof-in-comment parse error. Emit the comment token. Emit an end-of-file token.
-- Anything else
-  - Append two U+002D HYPHEN-MINUS characters (-) to the comment token's data. Reconsume in the comment state.
-
-##### 3.2.5.67) Comment end bang state
-  
-Consume the next input character:
-
-- U+002D HYPHEN-MINUS (-)
-  - Append two U+002D HYPHEN-MINUS characters (-) and a U+0021 EXCLAMATION MARK character (!) to the comment token's data. Switch to the comment end dash state.
-- U+003E GREATER-THAN SIGN (>)
-  - This is an incorrectly-closed-comment parse error. Switch to the data state. Emit the comment token.
-- EOF
-  - This is an eof-in-comment parse error. Emit the comment token. Emit an end-of-file token.
-- Anything else
-  - Append two U+002D HYPHEN-MINUS characters (-) and a U+0021 EXCLAMATION MARK character (!) to the comment token's data. Reconsume in the comment state.
-
-##### 3.2.5.68) DOCTYPE state
-  
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Switch to the before DOCTYPE name state.
-- U+003E GREATER-THAN SIGN (>)
-  - Reconsume in the before DOCTYPE name state.
-- EOF
-  - This is an eof-in-doctype parse error. Create a new DOCTYPE token. Set its force-quirks flag to on. Emit the token. Emit an end-of-file token.
-- Anything else
-  - This is a missing-whitespace-before-doctype-name parse error. Reconsume in the before DOCTYPE name state.
-
-##### 3.2.5.69) Before DOCTYPE name state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- ASCII upper alpha
-  - Create a new DOCTYPE token. Set the token's name to the lowercase version of the current input character (add 0x0020 to the character's code point). Switch to the DOCTYPE name state.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Create a new DOCTYPE token. Set the token's name to a U+FFFD REPLACEMENT CHARACTER character. Switch to the DOCTYPE name state.
-- U+003E GREATER-THAN SIGN (>)
-  - This is a missing-doctype-name parse error. Create a new DOCTYPE token. Set its force-quirks flag to on. Switch to the data state. Emit the token.
-- EOF
-  - This is an eof-in-doctype parse error. Create a new DOCTYPE token. Set its force-quirks flag to on. Emit the token. Emit an end-of-file token.
-- Anything else
-  - Create a new DOCTYPE token. Set the token's name to the current input character. Switch to the DOCTYPE name state.
-
-##### 3.2.5.70) DOCTYPE name state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Switch to the after DOCTYPE name state.
-- U+003E GREATER-THAN SIGN (>)
-  - Switch to the data state. Emit the current DOCTYPE token.
-- ASCII upper alpha
-  - Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current DOCTYPE token's name.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's name.
-- EOF
-  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - Append the current input character to the current DOCTYPE token's name.
-
-##### 3.2.5.71) After DOCTYPE name state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- U+003E GREATER-THAN SIGN (>)
-  - Switch to the data state. Emit the current DOCTYPE token.
-- EOF
-  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - If the six characters starting from the current input character are an ASCII case-insensitive match for the word "PUBLIC", then consume those characters and switch to the after DOCTYPE public keyword state.
-  - Otherwise, if the six characters starting from the current input character are an ASCII case-insensitive match for the word "SYSTEM", then consume those characters and switch to the after DOCTYPE system keyword state.
-  - Otherwise, this is an invalid-character-sequence-after-doctype-name parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
-
-##### 3.2.5.72) After DOCTYPE public keyword state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Switch to the before DOCTYPE public identifier state.
-- U+0022 QUOTATION MARK (")
-  - This is a missing-whitespace-after-doctype-public-keyword parse error. Set the DOCTYPE token's public identifier to the empty string (not missing), then switch to the DOCTYPE public identifier (double-quoted) state.
-- U+0027 APOSTROPHE (')
-  - This is a missing-whitespace-after-doctype-public-keyword parse error. Set the DOCTYPE token's public identifier to the empty string (not missing), then switch to the DOCTYPE public identifier (single-quoted) state.
-- U+003E GREATER-THAN SIGN (>)
-  - This is a missing-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
-- EOF
-  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - This is a missing-quote-before-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
-
-##### 3.2.5.73) Before DOCTYPE public identifier state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- U+0022 QUOTATION MARK (")
-  - Set the DOCTYPE token's public identifier to the empty string (not missing), then switch to the DOCTYPE public identifier (double-quoted) state.
-- U+0027 APOSTROPHE (')
-  - Set the DOCTYPE token's public identifier to the empty string (not missing), then switch to the DOCTYPE public identifier (single-quoted) state.
-- U+003E GREATER-THAN SIGN (>)
-  - This is a missing-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
-- EOF
-  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - This is a missing-quote-before-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
-
-##### 3.2.5.74) DOCTYPE public identifier (double-quoted) state
-
-Consume the next input character:
-
-- U+0022 QUOTATION MARK (")
-  - Switch to the after DOCTYPE public identifier state.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's public identifier.
-- U+003E GREATER-THAN SIGN (>)
-  - This is an abrupt-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
-- EOF
-  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - Append the current input character to the current DOCTYPE token's public identifier.
-
-##### 3.2.5.75) DOCTYPE public identifier (single-quoted) state
-
-Consume the next input character:
-
-- U+0027 APOSTROPHE (')
-  - Switch to the after DOCTYPE public identifier state.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's public identifier.
-- U+003E GREATER-THAN SIGN (>)
-  - This is an abrupt-doctype-public-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
-- EOF
-  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - Append the current input character to the current DOCTYPE token's public identifier.
-
-##### 3.2.5.76) After DOCTYPE public identifier state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Switch to the between DOCTYPE public identifier and system information state.
-- U+003E GREATER-THAN SIGN (>)
-  - Switch to the data state. Emit the current DOCTYPE token.
-- U+0022 QUOTATION MARK (")
-  - This is a missing-whitespace-between-doctype-public-and-system-identifiers parse error. Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (double-quoted) state.
-- U+0027 APOSTROPHE (')
-  - This is a missing-whitespace-between-doctype-public-and-system-identifiers parse error. Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (single-quoted) state.
-- EOF
-  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
-
-##### 3.2.5.77) Between DOCTYPE public identifier and system information state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- U+003E GREATER-THAN SIGN (>)
-  - Switch to the data state. Emit the current DOCTYPE token.
-- U+0022 QUOTATION MARK (")
-  - Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (double-quoted) state.
-- U+0027 APOSTROPHE (')
-  - Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (single-quoted) state.
-- EOF
-  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
-
-##### 3.2.5.78) After DOCTYPE system keyword state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Switch to the before DOCTYPE system information state.
-- U+0022 QUOTATION MARK (")
-  - This is a missing-whitespace-after-doctype-system-keyword parse error. Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (double-quoted) state.
-- U+0027 APOSTROPHE (')
-  - This is a missing-whitespace-after-doctype-system-keyword parse error. Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (single-quoted) state.
-- U+003E GREATER-THAN SIGN (>)
-  - This is a missing-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
-- EOF
-  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
-
-##### 3.2.5.79) Before DOCTYPE system information state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- U+0022 QUOTATION MARK (")
-  - Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (double-quoted) state.
-- U+0027 APOSTROPHE (')
-  - Set the DOCTYPE token's system information to the empty string (not missing), then switch to the DOCTYPE system information (single-quoted) state.
-- U+003E GREATER-THAN SIGN (>)
-  - This is a missing-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
-- EOF
-  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - This is a missing-quote-before-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
-
-##### 3.2.5.80) DOCTYPE system information (double-quoted) state
-
-Consume the next input character:
-
-- U+0022 QUOTATION MARK (")
-  - Switch to the after DOCTYPE system information state.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's system information.
-- U+003E GREATER-THAN SIGN (>)
-  - This is an abrupt-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
-- EOF
-  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - Append the current input character to the current DOCTYPE token's system information.
-
-##### 3.2.5.81) DOCTYPE system information (single-quoted) state
-
-Consume the next input character:
-
-- U+0027 APOSTROPHE (')
-  - Switch to the after DOCTYPE system information state.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current DOCTYPE token's system information.
-- U+003E GREATER-THAN SIGN (>)
-  - This is an abrupt-doctype-system-identifier parse error. Set the DOCTYPE token's force-quirks flag to on. Switch to the data state. Emit that DOCTYPE token.
-- EOF
-  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - Append the current input character to the current DOCTYPE token's system information.
-
-##### 3.2.5.82) After DOCTYPE system information state
-
-Consume the next input character:
-
-- U+0009 CHARACTER TABULATION (tab)
-- U+000A LINE FEED (LF)
-- U+000C FORM FEED (FF)
-- U+0020 SPACE
-  - Ignore the character.
-- U+003E GREATER-THAN SIGN (>)
-  - Switch to the data state. Emit the current DOCTYPE token.
-- EOF
-  - This is an eof-in-doctype parse error. Set the DOCTYPE token's force-quirks flag to on. Emit that DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - This is an unexpected-character-after-doctype-system-identifier parse error. Reconsume in the bogus DOCTYPE state. (This does not set the DOCTYPE token's force-quirks flag to on.)
-
-##### 3.2.5.83) Bogus DOCTYPE state
-
-Consume the next input character:
-
-- U+003E GREATER-THAN SIGN (>)
-  - Switch to the data state. Emit the DOCTYPE token.
-- U+0000 NULL
-  - This is an unexpected-null-character parse error. Ignore the character.
-- EOF
-  - Emit the DOCTYPE token. Emit an end-of-file token.
-- Anything else
-  - Ignore the character.
-
-##### 3.2.5.84) CDATA section state
-
-Consume the next input character:
-
-- U+005D RIGHT SQUARE BRACKET (])
-  - Switch to the CDATA section bracket state.
-- EOF
-  - This is an eof-in-cdata parse error. Emit an end-of-file token.
-- Anything else
-  - Emit the current input character as a character token.
-
-__NOTE__  
-U+0000 NULL characters are handled in the tree construction stage, as part of the in foreign content insertion mode, which is the only place where CDATA sections can appear.
-
-##### 3.2.5.85) CDATA section bracket state
-
-Consume the next input character:
-
-- U+005D RIGHT SQUARE BRACKET (])
-  - Switch to the CDATA section end state.
-- Anything else
-  - Emit a U+005D RIGHT SQUARE BRACKET character token. Reconsume in the CDATA section state.
-
-##### 3.2.5.86) CDATA section end state
-
-Consume the next input character:
-
-- U+005D RIGHT SQUARE BRACKET (])
-  - Emit a U+005D RIGHT SQUARE BRACKET character token.
-- U+003E GREATER-THAN SIGN character
-  - Switch to the data state.
-- Anything else
-  - Emit two U+005D RIGHT SQUARE BRACKET character tokens. Reconsume in the CDATA section state.
-
-##### 3.2.5.87) Character reference state
-
-Set the temporary buffer to the empty string. Append a U+0026 AMPERSAND (&) character to the temporary buffer. Consume the next input character:
-
-- ASCII alphanumeric
-  - Reconsume in the named character reference state.
-- U+0023 NUMBER SIGN (#)
-  - Append the current input character to the temporary buffer. Switch to the numeric character reference state.
-- Anything else
-  - Flush code points consumed as a character reference. Reconsume in the return state.
-
-##### 3.2.5.88) Named character reference state
-
-Consume the maximum number of characters possible, where the consumed characters are one of the identifiers in the first column of the named character references table. Append each character to the temporary buffer when it's consumed.
-
-- If there is a match
-  - If the character reference was consumed as part of an attribute, and the last character matched is not a U+003B SEMICOLON character (;), and the next input character is either a U+003D EQUALS SIGN character (=) or an ASCII alphanumeric, then, for historical reasons, flush code points consumed as a character reference and switch to the return state.
-  - Otherwise:
-    1. If the last character matched is not a U+003B SEMICOLON character (;), then this is a missing-semicolon-after-character-reference parse error.
-    2. Set the temporary buffer to the empty string. Append one or two characters corresponding to the character reference name (as given by the second column of the named character references table) to the temporary buffer.
-    3. Flush code points consumed as a character reference. Switch to the return state.
-  - Otherwise
-    1. Flush code points consumed as a character reference. Switch to the ambiguous ampersand state.
-
-_EXAMPLE_ If the markup contains (not in an attribute) the string I'm &notit; I tell you, the character reference is parsed as "not", as in, I'm ¬it; I tell you (and this is a parse error). But if the markup was I'm &notin; I tell you, the character reference would be parsed as "notin;", resulting in I'm ∉ I tell you (and no parse error).
-
-However, if the markup contains the string I'm &notit; I tell you in an attribute, no character reference is parsed and string remains intact (and there is no parse error).
-
-##### 3.2.5.89) Ambiguous ampersand stat
-
-Consume the next input character:
-
-- ASCII alphanumeric
-  - If the character reference was consumed as part of an attribute, then append the current input character to the current attribute's value. Otherwise, emit the current input character as a character token.
-- U+003B SEMICOLON (;)
-  - This is an unknown-named-character-reference parse error. Reconsume in the return state.
-- Anything else
-  - Reconsume in the return state.
-
-##### 3.2.5.90) Numeric character reference state
-
-Set the character reference code to zero (0).
-
-Consume the next input character:
-
-- U+0078 LATIN SMALL LETTER (x)
-- U+0058 LATIN CAPITAL LETTER (X)
-  - Append the current input character to the temporary buffer. Switch to the hexadecimal character reference start state.
-- Anything else
-  - Reconsume in the decimal character reference start state.
-
-##### 3.2.5.91) Hexadecimal character reference start state
-
-Consume the next input character:
-
-- ASCII hex digit
-  - Reconsume in the hexadecimal character reference state.
-- Anything else
-  - This is an absence-of-digits-in-numeric-character-reference parse error. Flush code points consumed as a character reference. Reconsume in the return state.
-
-##### 3.2.5.92) Decimal character reference start state
-
-Consume the next input character:
-
-- ASCII digit
-  - Reconsume in the decimal character reference state.
-- Anything else
-  - This is an absence-of-digits-in-numeric-character-reference parse error. Flush code points consumed as a character reference. Reconsume in the return state.
-
-##### 3.2.5.93) Hexadecimal character reference state
-
-Consume the next input character:
-
-- ASCII digit
-  - Multiply the character reference code by 16. Add a numeric version of the current input character (subtract 0x0030 from the character's code point) to the character reference code.
-- ASCII upper hex digit
-  - Multiply the character reference code by 16. Add a numeric version of the current input character as a hexadecimal digit (subtract 0x0037 from the character's code point) to the character reference code.
-- ASCII lower hex digit
-  - Multiply the character reference code by 16. Add a numeric version of the current input character as a hexadecimal digit (subtract 0x0057 from the character's code point) to the character reference code.
-- U+003B SEMICOLON
-  - Switch to the numeric character reference end state.
-- Anything else
-  - This is a missing-semicolon-after-character-reference parse error. Reconsume in the numeric character reference end state.
-
-##### 3.2.5.94) Decimal character reference state
-
-Consume the next input character:
-
-- ASCII digit
-  - Multiply the character reference code by 10. Add a numeric version of the current input character (subtract 0x0030 from the character's code point) to the character reference code.
-- U+003B SEMICOLON
-  - Switch to the numeric character reference end state.
-- Anything else
-  - This is a missing-semicolon-after-character-reference parse error. Reconsume in the numeric character reference end state.
-
-##### 3.2.5.95) Numeric character reference end state
-
-Check the character reference code:
-
-- If the number is 0x00, then this is a null-character-reference parse error. Set the character reference code to 0xFFFD.
-- If the number is greater than 0x10FFFF, then this is a character-reference-outside-unicode-range parse error. Set the character reference code to 0xFFFD.
-- If the number is a surrogate, then this is a surrogate-character-reference parse error. Set the character reference code to 0xFFFD.
-- If the number is a noncharacter, then this is a noncharacter-character-reference parse error.
-- If the number is 0x0D, or a control that's not ASCII whitespace, then this is a control-character-reference parse error. If the number is one of the numbers in the first column of the following table, then find the row with that number in the first column, and set the character reference code to the number in the second column of that row.
-
-Set the temporary buffer to the empty string. Append a code point equal to the character reference code to the temporary buffer. Flush code points consumed as a character reference. Switch to the return state.
-
-#### 3.2.6) 树的构造
-
-##### 3.2.6.1) 创建和插入模式/Creating and inserting nodes
-
-##### 3.2.6.2) 解析仅包含文本的元素/Parsing elements that contain only text
-
-##### 3.2.6.3) 自动关闭元素/Auto-closing elements
-
-##### 3.2.6.4) HVML 内容的词法解析规则/The rules for parsing tokens in HVML content
-
-###### 3.2.6.4.1) "initial" 插入模式
-
-1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-   - Ignore the token.
-2) A comment token  
-   - Insert a comment as the last child of the Document object.
-3) A DOCTYPE token  
-   - If the DOCTYPE token's name is not "hvml", then there is a parse error; set the Document to quirks mode.
-   - Append a DocumentType node to the Document node, with the `name` attribute set to the name given in the DOCTYPE token, or the empty string if the name was missing; the `systemInfo` attribute set to the system information given in the DOCTYPE token, or the empty string if the system information was missing; and the other attributes specific to DocumentType objects set to null and empty lists as appropriate. Associate the DocumentType node with the Document object so that it is returned as the value of the `doctype` attribute of the Document object.
-   - If the value of `systemInfo` attribute of the DocumentType is not empty, then exact the attribute value for the prefix of HVML tag name and set the value of the `tagPrefix` attribute with the string. Otherwise, set the `tagPrefix` attribute to the default prefix string (`v:`).
-   - Then, switch the insertion mode to "before hvml".
-4) Anything else
-   - There is a parse error; set the Document to quirks mode.
-   - Ignore the token.
-   - Append a DocumentType node to the Document node with the `name` attribute set the empty string; the `systemId` attribute set to empty string; the `tagPrefix` attribute set to `v:`.
-   - Then, switch the insertion mode to "before hvml".
-
-###### 3.2.6.4.2) 'before hvml' 插入模式
-
-1) A DOCTYPE token
-   - Parse error. Ignore the token.
-2) A comment token
-   - Insert a comment as the last child of the Document object.
-3) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-   - Ignore the token.
-4) A start tag whose tag name is "hvml"
-   - Create an element for the token in the HTML namespace, with the Document as the intended parent. Append it to the Document object. Put this element in the stack of open elements.
-   - Switch the insertion mode to "before head".
-5) An end tag whose tag name is one of: "head", "body", "hvml"
-   - Act as described in the "anything else" entry below.
-6) Any other end tag
-   - Parse error. Ignore the token.
-7) Anything else
-   - Create an `hvml` element whose node document is the Document object. Append it to the Document object. Put this element in the stack of open elements.
-   - Switch the insertion mode to "before head", then reprocess the token.
-
-###### 3.2.6.4.3) 'before head' 插入模式
-
-1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-   - Ignore the token.
-2) A comment token
-   - Insert a comment.
-3) A DOCTYPE token
-   - Parse error. Ignore the token.
-4) A start tag whose tag name is "hvml"
-   - Parse error. Ignore the token.
-> Process the token using the rules for the "in body" insertion mode.
->
-> -- From HTML spec.
-5) A start tag whose tag name is "head"
-   - Insert an HTML element for the token.
-   - Set the head element pointer to the newly created `head` element.
-   - Switch the insertion mode to "in head".
-6) An end tag whose tag name is one of: "head", "body", "hvml"
-   - Act as described in the "anything else" entry below.
-7) Any other end tag
-   - Parse error. Ignore the token.
-8) Anything else
-   - Insert an HTML element for a "head" start tag token with no attributes.
-   - Set the head element pointer to the newly created `head` element.
-   - Switch the insertion mode to "in head".
-   - Reprocess the current token.
-
-###### 3.2.6.4.4) 'in head' 插入模式
-
-1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-   - Insert the character.  
-2) A comment token
-   - Insert a comment.
-3) A DOCTYPE token
-   - Parse error. Ignore the token.
-4) A start tag whose tag name is "hvml"
-    - Parse error. Ignore the token.
-> Process the token using the rules for the "in body" insertion mode.
->
-> -- From HTML spec.
-5) A start tag of a foreign element
-   - If the current node on the stack of open elements is not the `head` element, pop the node off the stack of open elements.
-   - Insert a foreign element for the token.
-   - Follow the generic raw text element parsing algorithm.
-   - Acknowledge the token's self-closing flag, if it is set.
-> A start tag whose tag name is "title"
->
-> Follow the generic RCDATA element parsing algorithm.
->
-> -- From HTML spec.
-6) An end tag whose tag name is "head"
-   - Pop the current node off the stack of open elements if it is not the `head` element. 
-   - Pop the current node (which will be the head element) off the stack of open elements.
-   - Switch the insertion mode to "after head".
-7) An end tag whose tag name is one of: "body", "html"
-   - Act as described in the "anything else" entry below.
-8) A start tag whose tag name is "archedata"
-   - Insert an HVML element for the token.
-   - Follow the generic raw text element parsing algorithm.
-9) A start tag whose tag name is "archetype"
-   - Insert an HVML element for the token.
-   - Push the element onto the stack of open elements so that it is the new current node.
-   - Switch the tokenizer to the template data state;
-   - If the `archetype` element has `raw` flag, set JSONEE flag is off; otherwise on.
-   - Let the original insertion mode be the current insertion mode.
-   - Switch the insertion mode to "text".
-10) An end tag whose tag name is "archetype"
-    - If the current node is not a `archetype` element, then this is a parse error; ignore it.
-    - Pop the current node from the stack.
-    - Reset the insertion mode appropriately.
-11) A start tag whose tag name is "head"
-12) Any other end tag
-    - Parse error. Ignore the token.
-13) A start tag whose tag name is "init", "set", "bind", or "connect"
-    - Insert an HVML element for the token.
-14) Anything else
-    - Pop the current node (which will be the head element) off the stack of open elements.
-    - Switch the insertion mode to "after head".
-    - Reprocess the token.
-
-###### 3.2.6.4.5) 'after head' 插入模式
-
-1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-   - Insert the character.  
-2) A comment token
-   - Insert a comment.
-3) A DOCTYPE token
-   - Parse error. Ignore the token.
-4) A start tag whose tag name is "hvml"
-   - Parse error.
-> Process the token using the rules for the "in body" insertion mode.
->
-> -- From HTML spec.
-5) A start tag whose tag name is "body"
-   - Insert an HTML element for the token.
-   - Switch the insertion mode to "in body".
-6) A start tag of a foreign element or whos tag name is "archetype".
-   - Parse error.
-   - Push the node pointed to by the head element pointer onto the stack of open elements.
-   - Process the token using the rules for the "in head" insertion mode.
-   - Remove the node pointed to by the head element pointer from the stack of open elements. (It might not be the current node at this point.)
-   - __NOTE__  
-   The head element pointer cannot be null at this point.
-7) An end tag whose tag name is "archetype"
-   - Process the token using the rules for the "in head" insertion mode.
-8) An end tag whose tag name is one of: "body", "hvml"
-   - Act as described in the "anything else" entry below.
-9) A start tag whose tag name is "head"
-10) Any other end tag
-    - Parse error. Ignore the token.
-11) Anything else
-    - Insert an HTML element for a "body" start tag token with no attributes.
-    - Switch the insertion mode to "in body".
-    - Reprocess the current token.
-
-###### 3.2.6.4.6) 'in body' 插入模式
-
-1) A character token that is U+0000 NULL
-   - Parse error. Ignore the token.
-2) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-   - Reconstruct the active formatting elements, if any.
-   - Insert the token's character.
-3) Any other character token
-   - Reconstruct the active formatting elements, if any.
-   - Insert the token's character.
-4) A comment token
-   - Insert a comment.
-5) A DOCTYPE token
-   - Parse error. Ignore the token.
-6) A start tag whose tag name is "hvml"
-   - Parse error. Ignore the token.
-> If there is a template element on the stack of open elements, then ignore the token.
->
-> Otherwise, for each attribute on the token, check to see if the attribute is already present on the top element of the stack of open elements. If it is not, add the attribute and its corresponding value to that element.
->
-> -- From HTML spec.
-7) A start tag whose tag name is "body"
-   - Parse error. Ignore the token.
-> If the second element on the stack of open elements is not a body element, if the stack of open elements has only one node on it, or if there is a template element on the stack of open elements, then ignore the token. (fragment case)
->
-> Otherwise, set the frameset-ok flag to "not ok"; then, for each attribute on the token, check to see if the attribute is already present on the body element (the second element) on the stack of open elements, and if it is not, add the attribute and its corresponding value to that element.
->
-> -- From HTML spec.
-8) An end-of-file token
-   - If there is a node in the stack of open elements, then this is a parse error.
-   - Stop parsing.
-9) An end tag whose tag name is "body"
-   - Pop elements from the stack of open elements until a `body` element has been popped from the stack.
-   - Switch the insertion mode to "after body".
-10) An end tag whose tag name is "hvml"
-    - Pop elements from the stack of open elements until a `body` element has been popped from the stack.
-    - Switch the insertion mode to "after body".
-    - Reprocess the token.
-11) A start tag of a foreign element.
-    - If the current node in the stack of open elements is not foreign element,
-      - This is a fatal parse error.
-    - Otherwise,
-      - Insert an HVML element for the token.
-      - Switch the insertion mode to "text".
-    - __NOTE__  
-    This element will be an ordinary element.
-12) A start tag whose tag name is "error" or "except".
-    - If the current node in the stack of open elements is not an operation element,
-      - This is a fatal parse error.
-    - Otherwise,
-      - Insert an HVML element for the token.
-      - Switch the tokenizer to the template data state.
-      - If the `error` element has `raw` flag, set JSONEE flag is off; otherwise on.
-      - Let the original insertion mode be the current insertion mode.
-      - Switch the insertion mode to "text".
-13) A start tag whose tag name is "archedata"
-    - Insert an HVML element for the token.
-    - Follow the generic raw text element parsing algorithm.
-14) A start tag whose tag name is "archetype"
-    - Insert an HVML element for the token.
-    - Push the element onto the stack of open elements so that it is the new current node.
-    - Switch the tokenizer to the template data state;
-    - If the `archetype` element has `raw` flag, set JSONEE flag is off; otherwise on.
-    - Let the original insertion mode be the current insertion mode.
-    - Switch the insertion mode to "text".
-15) An end tag whose tag name is "archetype"
-    - If the current node is not a `archetype` element, then this is a parse error; ignore it.
-    - Pop the current node from the stack.
-    - Reset the insertion mode appropriately.
-16) Any start tag of an operation element
-    - Insert an HVML element for the token.
-17) Any other end tag of a foreign element
-    - Run these steps:
-      1. Initialize node to be the current node (the bottommost node of the stack).
-      2. Loop: If node is an HTML element with the same tag name as the token, then:
-      3. Generate implied end tags, except for HTML elements with the same tag name as the token.
-      4. If node is not the current node, then this is a parse error.
-      5. Pop all the nodes from the current node up to node, including node, then stop these steps.
-      6. Otherwise, if node is in the special category, then this is a parse error; ignore the token, and return.
-      7. Set node to the previous entry in the stack of open elements.
-      8. Return to the step labeled loop.
-
-###### 3.2.6.4.7) 'text' 插入模式
-
-1) A character token
-   - Insert the token's character.
-   - __NOTE__  
-   This can never be a U+0000 NULL character; the tokenizer converts those to U+FFFD REPLACEMENT CHARACTER characters.
-2) An end-of-file token
-   - Parse error.
-   - If the current node is an `archetype` element, mark the template element as "already started".
-   - Pop the current node off the stack of open elements.
-   - Switch the insertion mode to the original insertion mode and reprocess the token.
-3) An end tag whose tag name is "archetype"
-   - ...
-4) Any other end tag
-   - Pop the current node off the stack of open elements.
-   - Switch the insertion mode to the original insertion mode.
-
-###### 3.2.6.4.8) 'after body' 插入模式
-
-1) A character token that is one of U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-   - Process the token using the rules for the "in body" insertion mode.
-2) A comment token
-   - Insert a comment as the last child of the first element in the stack of open elements (the `hvml` element).
-3) A DOCTYPE token
-   - Parse error. Ignore the token.
-4) A start tag whose tag name is "hvml"
-   - Parse error. Ignore the token.
-4) A start tag whose tag name is "body"
-   - Insert an HVML element for the token.
-   - Switch the insertion mode to "in body".
-5) An end tag whose tag name is "hvml"
-   - Switch the insertion mode to "after after body".
-6) An end-of-file token
-   - Stop parsing.
-7) Anything else
-   - Parse error. Switch the insertion mode to "in body" and reprocess the token.
-
-###### 3.2.6.4.9) 'after after body' 插入模式
-
-1) A comment token
-   - Insert a comment as the last child of the Document object.
-2) An end-of-file token
-   - Stop parsing.
-3) Anything else
-   - Parse error. Ignore the token.
-
-##### 3.2.6.5) 外部内容的词法解析规则/The rules for parsing tokens in foreign content
-
-#### 3.2.7) 结束
-
-#### 3.2.8) 错误错误
-
-### 3.3 HVML 片段的串行化/Serializing HVML fragments
-
-### 3.4 解析 HVML 片段/Parsing HVML fragments
-
-### 3.5 已命名字符引用/Named character references
+见 [解析 HVML 文档]。
 
 ## 4) 应用示例
 
