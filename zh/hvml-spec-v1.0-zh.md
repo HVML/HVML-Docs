@@ -35,7 +35,7 @@ Language: Chinese
          - [2.1.6.6) `$T`](#2166-t)
          - [2.1.6.7) `$EJSON`](#2167-ejson)
          - [2.1.6.8) 集合](#2168-集合)
-         - [2.1.6.9) 绑定变量](#2169-绑定变量)
+         - [2.1.6.9) 绑定表达式](#2169-绑定表达式)
       * [2.1.7) 文档片段的 JSON 数据表达](#217-文档片段的-json-数据表达)
       * [2.1.8) 数据模板和文档片段模板](#218-数据模板和文档片段模板)
       * [2.1.9) 用来操作数据或元素的动作标签](#219-用来操作数据或元素的动作标签)
@@ -392,7 +392,7 @@ __是否考虑：__
 - `init`：该标签初始化一个变量；我们将有名字的数据称为变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义请求的 URL，`with` 属性定义请求的参数，`via` 属性定义请求的方法（如 `GET` 或 `POST`）。
 - `connect`：该标签定义对一个外部数据源的连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包。
 - `disconnect`：该标签关闭先前建立的外部数据源连接。
-- `bind`：该标签用于定义一个绑定变量。
+- `bind`：该标签用于定义一个绑定表达式的变量。
 
 在 HVML 中，当我们引用变量时，我们使用 `$` 前缀，比如 `$global`、`$users`、`$?` 等。当我们要指代普通的 `$` 字符时，我们使用 `\` 做转义字符。
 
@@ -616,19 +616,22 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并集、交集、差集、异或集等。详情见 `set` 标签的描述。
 
-##### 2.1.6.9) 绑定变量
+##### 2.1.6.9) 绑定表达式
 
-HVML 允许使用 `bind` 标签将一个已有数据绑定到一个变量：
+HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
 ```html
-    <bind on="$users[0]" as="me" />
+    <bind on="$users[$MATH.random(10)]" as="me" />
 ```
 
-之后，当我们需要引用 `$users[0]` 时，可直接使用 `$me`。
+这个变量记录的并不是上述标签定义的元素被执行时 `$users[$MATH.random(10)]` 的值，而是 `$users[$MATH.random(10)]` 这个表达式。
 
-但绑定的变量值，将在 HVML 程序运行进入消息循环时被重新求值，若前后发生变化，则将产生一个可被 `observe` 动作捕获的消息，并做相应的处理。
+当我们需要对绑定的表达式求值时，使用 `$me.eval`。上面的示例表达式，使用了 `$MATH` 的 `random` 方法，所以每次求值将获得不同的结果。
+
+另外，我们可以使用 `observe` 标签观察一个绑定了表达式的变量，从而根据变量值的变化做出一些相应的处理。
 
 比如，我们可以将某个目标文档元素的属性或者内容绑定到某个变量上，然后使用 `observe` 元素处理其上的 `change` 事件：
+
 
 ```html
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
@@ -780,6 +783,23 @@ HVML 定义了两种模板标签，用于定义可以插入 DOM 文档中的 XML
 ```
 
 在上述 HVML 代码中，当我们在 `ul` 元素中引用 `$user_item` 时，对应的文档模板是 `<li>$?</li>`，而在 `ul` 元素之外引用 `$user_item` 时，得到的文档模板是 `<p>$?</p>`。
+
+另外，HVML 允许使用 `ERROR` 或 `EXCEPT` 两个保留名称定义当前范围内默认的错误和异常模板：
+
+```
+    <body>
+        <archetype name="ERROR">
+            <p>There is an untreated error.</p>
+        </archetype>
+
+        <archetype name="EXCEPT">
+            <p>There is an uncaught exception.</p>
+        </archetype>
+
+        ...
+
+    </body>
+```
 
 #### 2.1.9) 用来操作数据或元素的动作标签
 
@@ -2938,12 +2958,12 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: M
 除框架元素之外的其他 HVML 元素，被称为普通元素。普通元素可进一步划分为如下子类：
    1. 一般动作元素（ordinary operation elements）  
       `update`、`erase`、`test`、`match`、`choose`、`iterate`、`reduce`、`observe`、`fire`、`connect`、`disconnect`、`load`、`back`、`define`、`include`、`call`、`return` 和 `catch` 元素。
-   1. 数据操作元素（JSON operation elements）  
-      `init`、`set`。其内容必须是符合 JSON 语法的文本，可包含 JSON 求值表达式。
+   1. 数据操作元素（data operation elements）  
+      `init`、`set`。其内容必须是符合 eJSON 语法的文本，可包含 JSON 求值表达式。
    1. 片段模板元素（fragement template elements）  
       `archetype`、`error` 和 `except` 元素。片段模板元素的内容通常是使用目标标记语言书写的文档片段。简称模板元素（template elements）。
-   1. 数据模板元素（JSON template elements）  
-      `archedata` 元素。其内容必须是符合 JSON 语法的文本，可包含 JSON 求值表达式。
+   1. 数据模板元素（data template elements）  
+      `archedata` 元素。其内容必须是符合 eJSON 语法的文本，可包含 JSON 求值表达式。
 3) 外部元素（foreign elements）  
 所有不属于 HVML 标签定义的元素，被视为外部元素。所有可合法插入到 HVML 文档树中的外部元素，可被视作空动作元素（noop element），亦可被称为骨架元素（skeleton element）。此类元素中可包含文本内容、其他外部元素以及其他 HVML 普通元素。
 
