@@ -1831,7 +1831,7 @@ HVML 为不同的数据类型提供了如下操作：
 使用 `back` 标签时，我们可以使用 `to` 属性指定要返回的页面名称（`_caller` 是保留名称，用于指代调用该页面的页面名称）。此时，还可以使用 `with` 属性返回一个数据。当前页面是一个模态对话框时，该数据将作为 `load` 元素的结果数据返回；如果当前页面不是一个模态对话框，则该数据将做为请求数据（对应 `$REQUEST` 内置全局变量）提供给目标返回对应的页面，此时，该页面会执行一次重新装载操作（相当于浏览器刷新页面功能）。
 
 ```html
-    <load from="new_user.hvml" type="_modal">
+    <load from="new_user.hvml" type="modal">
         <test on="$?.retcode">
             <match for="ok" exclusively>
                 <choose on="$2.payload" to="append" in="#the-user-list" with="$user_item">
@@ -1849,6 +1849,24 @@ HVML 为不同的数据类型提供了如下操作：
 正常情况下，`load` 元素装载一个模态对话框时，其执行结果数据就是模态对话框中 `back` 元素的 `with` 属性值；如果是创建新会话，则 `load` 元素的操作结果数据为字符串 `ok`；如果是覆盖当前页面的内容，则不返回任何结果数据。
 
 `back` 元素不产生任何结果数据，故而不能包含子动作元素。
+
+当 `load` 元素的 `from` 属性值以 `#` 打头时，`load` 元素将尝试装载当前 HVML 文档中定义的另一个本体，即另一个 `body` 子树定义的内容。如：
+
+```html
+<hvml>
+    <body>
+        ...
+
+        <load from="#errorPage" />
+    </body>
+
+    <body id="errorPage">
+        <p>We encountered a fatal error!</p>
+    </body>
+</hvml>
+```
+
+装载另一个本地意味着需要清空当前的目标文档内容，并跳转到本文档的另一个本体中重新执行 HVML 程序。
 
 #### 2.2.13) `define` 和 `include` 标签
 
