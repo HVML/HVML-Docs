@@ -52,7 +52,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
 
 ```html
 <!DOCTYPE hvml>
-<hvml target="html" script="python" lang="en">
+<hvml target="html" lang="en">
     <head>
         <init as="users">
             [
@@ -61,25 +61,25 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
             ]
         </init>
 
-        <init as="_TIMERS" uniquely by="id">
+        <set on="$TIMERS" to="displace">
             [
                 { "id" : "foo", "interval" : 500,  "active" : "yes" },
                 { "id" : "bar", "interval" : 1000, "active" : "no" },
             ]
-        </init>
+        </set>
 
-        <listen on="hibus://system/status" as="systemStatus" />
+        <connect at="socket:///var/run/hibus.sock" as="systemStatus" for="hiBus" />
     </head>
 
     <body>
-        <archetype id="user-item">
+        <archetype name="user_item">
             <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
                 <img class="avatar" src="$?.avatar" data-value="$?.id" />
                 <span>$?.name</span>
             </li>
         </archetype>
 
-        <archedata id="item-user">
+        <archedata name="item_user">
             {
                 "id": "$?.attr.data-value", "avatar": "$?.content[0].attr.src",
                 "name": "$?.children[1].textContent", "region": "$?.attr.data-region"
@@ -95,7 +95,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
         </header>
 
         <ul class="user-list">
-            <iterate on="$users" with="#user-item" to="append" by="CLASS: IUser">
+            <iterate on="$users" with="$user_item" to="append" by="CLASS: IUser">
                 <error on="nodata">
                     <img src="wait.png" />
                 </error>
@@ -105,25 +105,25 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
             </iterate>
         </ul>
 
-        <archetype id="footer-cn">
+        <archetype name="footer_cn">
             <p><a href="http://www.baidu.com">Baidu</a></p>
         </archetype>
 
-        <archetype id="footer-tw">
+        <archetype name="footer_tw">
             <p><a href="http://www.bing.com">Bing</a></p>
         </archetype>
 
-        <archetype id="footer-def">
+        <archetype name="footer_def">
             <p><a href="http://www.google.com">Google</a></p>
         </archetype>
 
         <footer id="the-footer">
             <test on="$_SYSTEM.locale" in='the-footer'>
-                <match for="~zh_CN" to="displace" with="#footer-cn" exclusively>
+                <match for="~zh_CN" to="displace" with="$footer_cn" exclusively>
                 </match>
-                <match for="~zh_TW" to="displace" with="#footer-tw" exclusively>
+                <match for="~zh_TW" to="displace" with="$footer_tw" exclusively>
                 </match>
-                <match for="*" to="displace" with="#footer-def">
+                <match for="*" to="displace" with="$footer_def">
                 </match>
                 <error on="nodata">
                     <p>You forget to define the global variable!</p>
@@ -137,7 +137,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
             </test>
         </footer>
 
-        <observe on="$_TIMERS" for="foo" to="update" in="#the-header" >
+        <observe on="$TIMERS" for="foo:expired" in="#the-header" >
             <update on="> span.local-time" textContent="$_SYSTEM.time('%H:%m')" />
         </observe>
 
@@ -168,7 +168,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
         </observe>
 
         <observe on=".avatar" for="clicked" to="load">
-            <load on="user.hvml" with="{'id': $@.attr['data-value']}" as="_modal" />
+            <load on="user.hvml" with="{'id': $@.attr['data-value']}" as="modal" />
         </observe>
     </body>
 </hvml>
@@ -180,7 +180,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
 
 首先是数据驱动编程（data-driven programming）。通过基于数据的迭代、插入、更新、清除等操作，开发者不需要编写程序或者只要少量编写程序即可动态生成最终的 XML/HTML 文档。比如下面的上面示例代码中的 `iterate` 标签，就在`$users` 变量代表的数据（在 `header` 中使用 `init` 标签定义）上做迭代，然后在最终文档的 `ul` 元素中插入了若干 `li` 元素。而 `li` 元素的属性（包括子元素）由一个 `archetype` 标签定义，其中使用 `$？` 来指代被迭代的 `$users` 中的一个数据单元。
 
-在上面的示例代码中，我们使用了系统内置变量 `$_TIMERS` 来定义定时器，每个定时器有一个全局的标识符，间隔时间以及是否激活的标志。如果要激活一个定时器，我们只需要使用 HVML 的 `update` 或 `set` 标签来修改对应的键值，而不需要调用某个特定的编程接口。这是数据驱动编程的另一个用法——我们不需要为定时器或者其他的类似模块的操作提供额外的 API。
+在上面的示例代码中，我们使用了系统内置变量 `$TIMERS` 来定义定时器，每个定时器有一个全局的标识符，间隔时间以及是否激活的标志。如果要激活一个定时器，我们只需要使用 HVML 的 `update` 或 `set` 标签来修改对应的键值，而不需要调用某个特定的编程接口。这是数据驱动编程的另一个用法——我们不需要为定时器或者其他的类似模块的操作提供额外的 API。
 
 另外，在上面的示例代码中，我们通过 `observe` 标签观察新的数据或文档本身的变化以及用户交互事件，可实现 XML/HTML 文档或数据的动态更新。比如在最后一个 `observe` 标签中，通过监听用户头像上的点击事件来装载一个新的 `user.hvml` 文件，以模态对话框的形式展示对应用户的详细信息。
 
@@ -342,20 +342,20 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 <!DOCTYPE hvml>
 <hvml target="html" script="python">
     <head>
-        <listen on="mqtt://foo.bar/bracelet" as="braceletInfo">
+        <connect at="tcp://foo.bar/bracelet" as="braceletInfo" for="MQTT">
 
-        <init as="_TIMERS" uniquely on="id">
+        <set on="$TIMERS" to="displace">
             [
                 { "id" : "clock", "interval" : 1000, "active" : "yes" },
             ]
-        </init>
+        </set>
 
         <link rel="stylesheet" type="text/css" href="/foo/bar/bracelet.css">
     </head>
 
     <body>
         <div class="clock" id="clock">
-            <observe on="$_TIMERS" for="clock">
+            <observe on="$TIMERS" for="clock:expired">
                 <update on="#clock" textContent="$_SYSTEM.time('%H:%m')" />
             </observe>
         </div>
