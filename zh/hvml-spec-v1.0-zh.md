@@ -634,9 +634,10 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
 ```html
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
-    <bind on="$DOC.query('#the-user-name').attr.value" as="user_name" />
-    <observe on="$user_name" for="change">
-    </observe>
+    <bind on="$DOC.query('#the-user-name').attr.value" as="user_name">
+        <observe on="$user_name" for="change">
+        </observe>
+    </bind>
 ```
 
 #### 2.1.7) 文档片段的 JSON 数据表达
@@ -2011,7 +2012,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 #### 2.2.16) `bind` 标签
 
-`bind` 标签定义一个绑定的变量；通常，被绑定的变量对应的是一个可求值的表达式。我们可以使用 `on` 属性指定要绑定的数据，也可以使用内容来定义。如：
+`bind` 标签定义一个绑定的变量；通常，被绑定的变量对应的是一个可求值的表达式，该表达式可使用 `on` 属性指定，也可以使用 `bind` 元素的内容来定义。如：
 
 ```html
     <bind on="$users[0]" as="me" />
@@ -2054,6 +2055,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 ```html
     <bind on="$SYSTEM.time" as="rtClock" />
+
     <observe on="$rtClock" for="change">
        ...
     </observe>
@@ -2065,12 +2067,12 @@ HVML 为不同的数据类型提供了如下操作：
 
 ```html
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
-    <bind on="$DOC.query('#the-user-name').attr.value" as="user_name" />
-    <observe on="$user_name" for="change">
-    </observe>
+    <bind on="$DOC.query('#the-user-name').attr.value" as="user_name">
+        <observe on="$user_name" for="change">
+            ...
+        </observe>
+    </bind>
 ```
-
-需要注意的是，被绑定的变量对应的求值表达式，不能引用上下文变量，或者任何不在 `bind` 所在范围内的变量。
 
 ### 2.3) 执行器
 
