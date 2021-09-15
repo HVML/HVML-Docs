@@ -120,7 +120,7 @@
             }
             function goBack(){
                 var str = document.getElementById("text").value;
-                str = str.substring(0,str.length-1);
+                str = str.subSTR.0,str.length-1);
                 if(str=="") str="0";
                 document.getElementById("text").value = str;
             }
@@ -248,12 +248,12 @@
             </div>
 
             <div id="c_value">
-                <archetype id="button">
+                <archetype name="button">
                     <li class="$?.class">$?.letters</li></li>
                 </archetype>
 
                 <ul>
-                    <iterate on="$buttons" with="#button" to="append">
+                    <iterate on="$buttons" with="$button" to="append">
                         <error>
                             <p>Bad data!</p>
                         </error>
@@ -285,9 +285,7 @@
 
         ...
 
-        <init as="expression">
-            "0"
-        </init>
+        <init as="expression">0</init>
     </head>
 
     <body>
@@ -298,7 +296,12 @@
             </div>
 
             <div id="c_text">
-                <input type="text" id="text" value="{{ $expression }}" readonly="readonly" />
+                <input type="text" id="text" value="$expression" readonly="readonly" />
+                <bind on="$expression" as="listener_exp">
+                    <observe on="$listener_exp" for="change">
+                        <update on="#text" attr.value="$listener_exp.eval" />
+                    </observe>
+                </bind>
             </div>
 
             ...
@@ -309,11 +312,11 @@
 
 ## 处理按钮事件
 
-接下来，我们使用 HVML 的 `observe` 标签处理按钮事件，并相应修改 `expression` 的值。首先清除（C）按钮，是最容易处理的：
+接下来，我们使用 HVML 的 `observe` 标签处理按钮事件，并重置 `expression` 变量的值。首先清除（C）按钮，是最容易处理的：
 
 ```hvml
         <observe on=".clear" for="click" to="update">
-            <update on="$expression" value="0" />
+            <set at="expression">0</set>
         </observe>
 ```
 
@@ -321,15 +324,15 @@
 
 ```hvml
         <observe on=".letters" for="click" to="update">
-            <update on="$expression" value="$expression$@.textContent" />
+            <set at="expression" with="$expression$@.textContent">
         </observe>
 ```
 
 上述 HVML 代码，在 `letters` 类按钮收到 `click` 事件时执行，最终在原先的 `$expression` 变量上追加了发生该事件的按钮（由内置变量 `$@` 指代）的 `textContent` 属性值。
 
-其他按钮功能，比如回退（backspace），要稍微麻烦一些，是因为 HVML 语言本身未定义字符串的操作方法。对字符串操作，我们通常使用由 HVML 解释器实现的内置动态 JSON 对象（如 `$string`），通过调用该对象提供的动态方法构件 JSON 求值表达式来实现。
+其他按钮功能，比如回退（backspace），要稍微麻烦一些，是因为 HVML 语言本身未定义字符串的操作方法。对字符串操作，我们通常使用由 HVML 解释器实现的内置动态 JSON 对象（如 `$STR.），通过调用该对象提供的动态方法构件 JSON 求值表达式来实现。
 
-假定我们使用 HVML 解释器提供了一个内置的动态 JSON 对象 `$string`，该对象提供了常见的字符串操作方法。比如本文中要用到的方法：
+假定我们使用 HVML 解释器提供了一个内置的动态 JSON 对象 `$STR.，该对象提供了常见的字符串操作方法。比如本文中要用到的方法：
 
 - `strip`：用于删除字符串尾部的一个或者多个字符。
 - `strcat`：用于在一个已有字符串中追加另一个字符串。
@@ -339,7 +342,7 @@
 
 ```html
         <observe on=".backspace" for="click" to="update">
-            <update on="$expression" value="$string.strip($expression, 1)" />
+            <set at="expression" with="$STR.strip($expression, 1)" />
         </observe>
 ```
 
@@ -348,7 +351,7 @@
 ```html
         <observe on=".equal" for="click" to="choose">
             <choose on="$expression" to="update" by="CLASS: CEval">
-                <update on="$expression" value="$?" />
+                <set at="expression" with="$?" />
             </choose>
         </observe>
 ```
@@ -366,11 +369,11 @@ class CEval (HVMLChooser):
 
 和 Web 版本的实现类似，这里我们直接使用 Python 的 `eval` 函数来对运算表达式求值。
 
-我们也可以将 `eval` 这类函数的功能实现为内置的动态 JSON 对象，然后直接在 HVML 代码中调用。假如该动态 JSON 对象的名称为 `$_PY`，则相应的代码可简化为：
+如果我们将 `eval` 这类函数的功能实现为全局动态对象（`$MATH`）的一个方法，则相应的代码可简化为：
 
 ```html
         <observe on=".equal" for="click" to="update">
-            <update on="$expression" value="$_PY.eval($expression)" />
+            <set at="expression" value="$MATH.eval($expression)" />
         </observe>
 ```
 
@@ -382,10 +385,10 @@ class CEval (HVMLChooser):
         <observe on=".letters" for="click" to="test">
             <test on="$expression">
                 <match for="~err*" to="update" exclusively>
-                    <update on="$expression" value="$@.textContent" />
+                    <set at="expression" with="$@.textContent" />
                 </match>
                 <match for="~*" to="update">
-                    <update on="$expression" value="$expression$@.textContent" />
+                    <set at="expression" with="$expression$@.textContent" />
                 </match>
             </test>
         </observe>
@@ -397,12 +400,12 @@ class CEval (HVMLChooser):
 
 ```html
         <observe on=".backspace" for="click" to="test">
-            <test on="$string.strlen($expression)">
+            <test on="$STR.strlen($expression)">
                 <match for="1" to="update" exclusively>
-                    <update on="$expression" value="0" />
+                    <set at="expression" with="0" />
                 </match>
                 <match for="*" to="update">
-                    <update on="$expression" value="$string.strip($expression, 1)" />
+                    <set at="expression" with="$STR.strip($expression, 1)" />
                 </match>
             </test>
         </observe>
@@ -412,9 +415,9 @@ class CEval (HVMLChooser):
 
 ```html
         <observe on=".equal" for="click" to="update">
-            <update on="$expression" value="$_PY.eval($expression)">
+            <set at="expression" with="$MATH.eval($expression)">
                 <catch for="*" to="update">
-                    <update on="$expression" value="ERROR" />
+                    <set at="expression" with="ERROR" />
                 </catch>
             </update>
         </observe>
@@ -459,9 +462,7 @@ class CEval (HVMLChooser):
             ]
         </init>
 
-        <init as="expression">
-            "0"
-        </init>
+        <init as="expression">0</init>
     </head>
 
     <body>
@@ -472,16 +473,21 @@ class CEval (HVMLChooser):
             </div>
 
             <div id="c_text">
-                <input type="text" id="text" value="{{ $expression }}" readonly="readonly" />
+                <input type="text" id="text" value="$expression" readonly="readonly" />
+                <bind on="$expression" as="listener_exp">
+                    <observe on="$listener_exp" for="change">
+                        <update on="#text" attr.value="$listener_exp.eval" />
+                    </observe>
+                </bind>
             </div>
 
             <div id="c_value">
-                <archetype id="button">
+                <archetype name="button">
                     <li class="$?.class">$?.letters</li></li>
                 </archetype>
 
                 <ul>
-                    <iterate on="$buttons" with="#button" to="append">
+                    <iterate on="$buttons" with="$button" to="append">
                         <error>
                             <p>Bad data!</p>
                         </error>
@@ -492,35 +498,35 @@ class CEval (HVMLChooser):
         </div>
 
         <observe on=".clear" for="click" to="update">
-            <update on="$expression" value="0" />
+            <set at="expression" with="0" />
         </observe>
 
         <observe on=".number" for="click" to="test">
             <test on="$expression">
                 <match for="~err*" to="update" exclusively>
-                    <update on="$expression" value="$@.textContent" />
+                    <set at="expression" with="$@.textContent" />
                 </match>
                 <match for="~*" to="update">
-                    <update on="$expression" value="$expression$@.textContent" />
+                    <set at="expression" with="$expression$@.textContent" />
                 </match>
             </test>
         </observe>
 
         <observe on=".backspace" for="click" to="test">
-            <test on="$string.strlen($expression)">
+            <test on="$STR.strlen($expression)">
                 <match for="1" to="update" exclusively>
-                    <update on="$expression" value="0" />
+                    <set at="expression" with="0" />
                 </match>
                 <match for="*" to="update">
-                    <update on="$expression" value="$string.strip($expression, 1)" />
+                    <set at="expression" with="$STR.strip($expression, 1)" />
                 </match>
             </test>
         </observe>
 
         <observe on=".equal" for="click" to="update">
-            <update on="$expression" value="$_PY.eval($expression)">
+            <set at="expression" with="$MATH.eval($expression)">
                 <catch for="*" to="update">
-                    <update on="$expression" value="ERROR" />
+                    <set at="expression" value="ERROR" />
                 </catch>
             </update>
         </observe>
