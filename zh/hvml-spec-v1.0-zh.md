@@ -325,7 +325,7 @@ HVML 还定义有如下两种特殊数据类型：
 除了内置的 `$SYSTEM` 动态对象之外，我们还可以通过外部脚本来实现自定义的动态对象，并通过 `init` 标签将这个动态对象和某个变量绑定在一起，如：
 
 ```html
-    <init as="math" from="libc" with="math" via="LOAD" />
+    <init as="math" from="purc_dvobj_math" via="LOAD" />
 ```
 
 之后，当我们访问 `$math.pi` 时，将返回 PI 的值，如果访问 `$math.sin($math.pi)` 将返回 `0.0`。
@@ -928,9 +928,7 @@ HVML 还定义有如下一些动作标签：
    - `TRAVEL: ` 表示使用指定的遍历方式遍历树状结构，是一种内建的迭代器或选择器。
    - `SQL: ` 表示在结构化数据上执行 SQL 查询，从而实现复杂的选择、迭代以及规约操作。
    - 其他针对字符串和数值的内建执行器，见本文档 3.1) 节。
-- `via`：主要用于定义执行选择、迭代、规约操作时的过滤参数。
-
-注：除了 `on` 属性的值会被视作一个表达式之外，其他介词属性的值，均将被视作字符串，或被串行化为字符串使用。
+- `via`：主要用于定义执行自定义选择、迭代、规约执行器时的过滤参数；亦用于在 `request`、`send` 元素中指定请求方法（如 `GET`、`POST`、`DELETE` 等）。
 
 #### 2.1.13) 副词属性
 
@@ -1643,7 +1641,7 @@ HVML 还定义有如下一些动作标签：
 
 `init` 标签初始化一个变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义该请求的 URL，使用 `with` 参数定义请求参数，使用 `via` 定义请求方法（如 `GET`、`POST`、`DELETE` 等）。
 
-我们也可以使用 `init` 标签从共享库中初始化一个自定义的动态 JSON 对象，此时，使用 `from` 指定要装在的动态库名称，使用 `with` 指定要装载的动态对象名称，并给定 `via` 属性值为 `LOAD`，表示装载共享库。
+我们也可以使用 `init` 标签从共享库中初始化一个自定义的动态 JSON 对象，此时，使用 `from` 指定要装在的动态库名称，使用 `for` 指定要装载的动态对象名称，并给定 `via` 属性值为 `LOAD`，表示装载共享库。
 
 `set` 标签有两种用法，一种是通过 `at` 属性指定一个变量名，整个置换该变量对应的数据。另外一种是使用 `on` 属性值给定一个可变数据（也就是字典、数组或集合），然后在其上执行一个操作。
 
@@ -1668,7 +1666,7 @@ HVML 还定义有如下一些动作标签：
     </init>
 
     <!-- init $math from a shared library -->
-    <init as="math" from="libc" with="math" via="LOAD" />
+    <init as="math" from="purc_dvobj_math" via="LOAD" />
 
     <init as="locales" from="http://foo.bar.com/locales" />
 
@@ -2537,6 +2535,8 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 - `CLASS: <ClassName>`：表示使用 `<ClassName>` 类作为执行器。目前可用于 `choose`、`iterate`、`reduce` 三个动作元素。
 - `FUNC: <FuncName>`：表示使用 `<FuncName>` 函数作为执行器。目前仅用于 `update` 动作元素。
 
+在 `choose`、`iterate`、`reduce` 以及 `update` 四个动作元素中使用外部执行器时，可使用 `via` 属性指定一个过滤参数。
+
 使用外部执行器时，HVML 应用的主程序需要实现相应的类或者函数。本文档以 Python 语言为例，说明各个外部执行器的实现方法。对于不同于 Python 的脚本语言，比如 C/C++、JavaScript、Lua 等，可参考 Python 的实现进行处理。
 
 ##### 2.3.2.1) 外部选择器
@@ -2548,10 +2548,10 @@ class HVMLChooser (object):
     def __init__ (self):
         pass
 
-    def choose (self, on_value, in_value):
+    def choose (self, on_value, via_value):
         return None
 
-    def map (self, chosen_value, in_value):
+    def map (self, cloned_item, in_value):
         return None
 ```
 
@@ -2572,7 +2572,7 @@ class HVMLChooser (object):
     <body>
         ...
 
-        <choose on='"foo"' to="update" in="$TIMERS" by="CLASS: CTimer">
+        <choose on='$TIMERS' to="update" by="CLASS: CTimer" via="foo">
             <update on="$?" property.active="yes" />
         </choose>
 
@@ -2581,16 +2581,16 @@ class HVMLChooser (object):
     </body>
 ```
 
-则 `CTimer` 的实现非常简单——从 `in` 属性指定的数组中查找 `id` 为 `on` 属性值（这里是 `foo`）数组单元，若有，则返回这个数组单元，否则返回 `None`。
+则 `CTimer` 的实现非常简单——从 `on` 属性指定的数组中查找 `id` 为 `via` 属性值（这里是 `foo`）数组单元，若有，则返回这个数组单元，否则返回 `None`。
 
 ```python
 class CTimer (HVMLChooser):
     def __init__ (self):
         pass
 
-    def choose (self, on_value, in_value):
-        for t in in_value:
-            if on_value == t['id']
+    def choose (self, on_value, via_value):
+        for t in on_value:
+            if via_value == t['id']
                 return t
         return None
 
@@ -2607,7 +2607,7 @@ class CTimer (HVMLChooser):
 
 ```python
 class HVMLIterator:
-    def __init__ (self, on_value):
+    def __init__ (self, on_value, via_value):
         pass
 
     # implement this method to sort the data.
@@ -2665,7 +2665,7 @@ class HVMLIterator:
 
 ```python
 class IUser (HVMLIterator):
-    def __init__ (self, on_data):
+    def __init__ (self, on_data, via_value):
         self.on_data = on_data
         self.i = 0;
         self.n = len (on_data)
@@ -2705,7 +2705,7 @@ class IUser (HVMLIterator):
 
 ```python
 class HVMLReducer:
-    def __init__ (self, on_value):
+    def __init__ (self, on_value, via_value):
         pass
 
     # implement this method to reduce the data.
@@ -2722,8 +2722,8 @@ class HVMLReducer:
 
 ```python
 class RUserRegionStats (HVMLReducer):
-    def __init__ (self, archedata):
-        self.data = archedata
+    def __init__ (self, on_value, via_value):
+        self.data = on_value
         self.stats = {}
         self.stats.count = 0
         self.stats.regions = { '中国大陆': 0, '中国台湾': 0, '其他': 0 }
@@ -2731,7 +2731,7 @@ class RUserRegionStats (HVMLReducer):
 
     # implement this method to iterate the data.
     def reduce (self, item):
-        for item in self.archedata:
+        for item in self.data:
             if item.locale == 'zh_CN':
                 self.stats.regions ['中国大陆'] += 1
             elif item.locale == 'zh_TW':
@@ -2749,18 +2749,19 @@ class RUserRegionStats (HVMLReducer):
 外部函数主要用于 `update` 标签以完成复杂的更新操作，所有的事件处理函数之原型为：
 
 ```python
-def event_handler (on_value, root_in_scope):
+def event_handler (on_value, via_value, root_in_scope):
 ```
 
 其中，
 
 - `on_value` 是 `update` 元素之 `on` 属性的值。
+- `via_value` 是 `update` 元素之 `via` 属性的值。
 - `root_in_scope` 是 `update` 元素之 `in` 属性确定的当前操作范围。
 
 比如针对电池电量的改变事件，其 `payload` 如 2.8) 所示包含 `level` 和 `charging` 两个键值对，分别表示当前电量百分比以及是否在充电中。因此，其对应的执行器可实现为：
 
 ```python
-def on_battery_changed (on_value, root_in_scope):
+def on_battery_changed (on_value, via_value, root_in_scope):
     if on_value.level == 100:
         root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-full.png'
     elif on_value.level > 90:
@@ -3112,6 +3113,15 @@ In the following example, the name attribute is given with the double-quoted att
 If an attribute using the double-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
 
 There must never be two or more attributes on the same start tag whose names are an ASCII case-sensitive match for each other.
+
+__注意__  
+动作元素的介词属性，通常会被解释器视作字符串，或被串行化为字符串使用，但存在如下例外：
+
+- 所有动作元素的 `on` 和 `with` 属性，以 `[`、`{`、`$` 打头时，将被视作一个表达式处理；否则按字符串处理。
+- `choose`、`iterate` 和 `reduce` 的 `via` 属性，以 `[`、`{`、`$` 打头时，将被视作一个表达式处理；否则按字符串处理。
+
+__注意__  
+所有动作元素的一般属性（既非介词属性，也非副词属性），均被解释器视作字符串，或被串行化为字符串使用；所有名词元素和外部元素的属性，均被解释器视作字符串，或被串行化为字符串使用；
 
 ##### 3.1.2.4) 动作元素属性
 
