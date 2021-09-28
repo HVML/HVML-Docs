@@ -2921,13 +2921,13 @@ In other words, `<!DOCTYPE hvml>`, case-sensitively.
 1. A string that is an ASCII case-sensitive match for the string "SYSTEM".
 1. One or more ASCII whitespace.
 1. A U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (the quote mark).
-1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: math". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The other tokens defines the variables should be bound for this document, such as `MATH`, `FS`, `FILE`, and so on.
+1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: MATH". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The other tokens defines the variables should be bound for this document, such as `MATH`, `FILE.FS`, `FILE.FILE:F`, and so on.
 1. A matching U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (i.e. the same character as in the earlier step labeled quote mark).
 
-For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: MATH FS FILE">`, you can add the specific prefix to some HVML tags:
+For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: MATH FILE.FS FILE.FILE:F">`, you can add the specific prefix to some HVML tags:
 
 ```html
-<!DOCTYPE hvml SYSTEM "hvml: MATH">
+<!DOCTYPE hvml SYSTEM "hvml: MATH FILE:FS FILE:FILE">
 <hvml target="html" lang="en">
     <head>
     </head>
@@ -2969,6 +2969,20 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: M
 ```
 
 注意：我们通常在目标标记语言定义的标签和 HVML 标签冲突时才使用前缀。
+
+当我们使用 `DOCTYPE` 的 `SYSTEM` 标志符定义需要预先装载的全局动态对象时，使用 `<package-name>`、`<package-name>:<variable-name>`、`<package-name>.<dvobj-name>` 或者 `<package-name>.<dvobj-name>:<variable-name>` 这样的表示法。以上四种表示法的含义分别解释如下：
+
+1. 表示从 `<package-name>` 对应的共享库中装载名称同包名 `<package-name>` 的动态对象，并绑定为名称是 `<package-name>` 的变量。
+1. 表示从 `<package-name>` 对应的共享库中装载名称同包名 `<package-name>` 的动态对象，并绑定为名称是 `<variable-name>` 的变量。
+1. 表示从 `<package-name>` 对应的共享库中装载名称为 `<dvobj-name>` 的动态对象，并绑定为名称是 `<dvobj-name>` 的变量。
+1. 表示从 `<package-name>` 对应的共享库中装载名称为 `<dvobj-name>` 的动态对象，并绑定为变量 `<variable-name>`。
+
+如 `MATH MATH:M FILE.FS FILE.FILE:F`，表示从：
+
+- 从 `MATH` 库中装载动态对象 `MATH` 并绑定到全局 `MATH` 变量；
+- 从 `MATH` 库中装载动态对象 `MATH` 并绑定到全局 `M` 变量；
+- 从 `FILE` 库中装载动态对象 `FS` 并绑定到全局 `FS` 变量；
+- 从 `FILE` 库中装载动态对象 `FILE` 并绑定到全局 `F` 变量；
 
 #### 3.1.2) 元素
 
@@ -3512,7 +3526,7 @@ Comments must have the following format:
     <body>
         <init as="fileInfo">
             {
-                "curr_path": "/home/", 
+                "curr_path": "/home/",
                 "selected_type": "dir",
                 "selected_name": "..",
             }
