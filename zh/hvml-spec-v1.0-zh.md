@@ -76,7 +76,8 @@ Language: Chinese
          - [2.3.2.2) 外部迭代器](#2322-外部迭代器)
          - [2.3.2.3) 外部规约器](#2323-外部规约器)
          - [2.3.2.4) 外部函数](#2324-外部函数)
-   + [2.3.3) 响应式处理](#233-响应式处理)
+      * [2.3.3) 执行器规则表达式的处理](#233-执行器规则表达式的处理)
+   + [2.4) 响应式处理](#24-响应式处理)
 - [3) HVML 语法](#3-hvml-语法)
    + [3.1) 书写 HVML 文档](#31-书写-hvml-文档)
       * [3.1.1) DOCTYPE](#311-doctype)
@@ -1118,7 +1119,7 @@ HVML 还定义有如下一些动作标签：
 `at` 属性值可以是数组的索引值或者对象的属性名称（可指定多个，用空格分割），也可以是 `iterate` 父元素提供的迭代子（iterator）来指定位置：
 
 ```html
-    <iterate on="$users" to="erase" by="RANGE: FROM $EJSON($users) TO 0, ADVANCE -2">
+    <iterate on="$users" to="erase" by="RANGE: FROM $EJSON.number($users) TO 0, ADVANCE -2">
         <erase on="$users" at="$&" />
     </iterate>
 ```
@@ -1552,7 +1553,7 @@ HVML 还定义有如下一些动作标签：
         </observe>
 
         <observe on="$mqtt" for="event:$del_user" to="iterate">
-            <iterate on="$?" to="erase" in="#the-user-list" by="RANGE: 0">
+            <iterate on="$?" to="erase" in="#the-user-list" by="RANGE: FROM 0">
                 <erase on="#user-$?.id" />
             </iterate>
         </observe>
@@ -1880,7 +1881,7 @@ HVML 为不同的数据类型提供了如下操作：
 ```html
         <define as="fillDirEntries">
             <choose on="$?" to="iterate" by="CLASS: CDirEntries">
-                <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: 0">
+                <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: FROM 0">
                 </iterate>
             </choose>
         </define>
@@ -1921,7 +1922,7 @@ HVML 为不同的数据类型提供了如下操作：
 ```html
         <define as="fillDirEntries">
             <choose on="$?" to="iterate" by="CLASS: CDirEntries">
-                <iterate on="$?" to="append" with="#dir-entry" by="RANGE: 0">
+                <iterate on="$?" to="append" with="#dir-entry" by="RANGE: FROM 0">
                 </iterate>
                 <return with="$#" />
             </choose>
@@ -1970,7 +1971,7 @@ HVML 为不同的数据类型提供了如下操作：
         <listbox id="entries">
             <call as="my_task" on="$collectAllDirEntriesRecursively" with="/" asynchronously />
             <observe on="$my_task" for="success">
-                <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: 0">
+                <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: FROM 0">
                 </iterate>
             </observe>
         </listbox>
@@ -2152,9 +2153,10 @@ HVML 为不同的数据类型提供了如下操作：
 
 ```
     RANGE: FROM <integer_expression> [TO <integer_expression>][, ADVANCE <integer_expression>]
-    
+
     <integer_expression>: <literal_integer> | <integer_evaluation_expression>
-    <integer_evaluation_expression>: <json_evaluation_expression>
+    <integer_evaluation_expression>: <four_arithmetic_expressions>
+    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
 ```
 
 对于数组数据，不指定 `by` 属性时，默认使用 `RANGE: FROM 0` 执行器。
@@ -2170,10 +2172,11 @@ HVML 为不同的数据类型提供了如下操作：
 
 ```
     CHAR: FROM <integer_expression> [TO <integer_expression>][, ADVANCE <integer_expression>][, STOP ON <string_expression>]
-    
+
     <integer_expression>: <literal_integer> | <integer_evaluation_expression>
     <string_expression>: '<literal_string>' | <string_evaluation_expression>
-    <integer_evaluation_expression>: <json_evaluation_expression>
+    <integer_evaluation_expression>: <four_arithmetic_expressions>
+    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
     <string_evaluation_expression>: <json_evaluation_expression>
 ```
 
@@ -2186,11 +2189,12 @@ HVML 为不同的数据类型提供了如下操作：
 `TOKEN` 执行器的语法如下：
 
 ```
-    TOKEN: FROM <integer_expression> [TO <integer_expression>][, ADVANCE <integer_expression>][, DELIMETERS <string_expression>]
-    
+    TOKEN: FROM <integer_expression> [TO <integer_expression>][, ADVANCE <integer_expression>][, DELIMETERS <string_expression>][, STOP ON <string_expression>]
+
     <integer_expression>: <literal_integer> | <integer_evaluation_expression>
     <string_expression>: '<literal_string>' | <string_evaluation_expression>
-    <integer_evaluation_expression>: <json_evaluation_expression>
+    <integer_evaluation_expression>: <four_arithmetic_expressions>
+    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
     <string_evaluation_expression>: <json_evaluation_expression>
 ```
 
@@ -2233,10 +2237,15 @@ HVML 为不同的数据类型提供了如下操作：
 再如，`FORMULA` 执行器的语法如下：
 
 ```
-    FORMULA: [ LE | LT | GT | GE | NE | EQ ] <number_expression>, BY <number_expression>
+    FORMULA: [ LE | LT | GT | GE | NE | EQ ] <number_expression>, BY <iterative_formula_expression>
+
+    <number_expression>: <literal_number> | <number_evaluation_expression>
+    <number_evaluation_expression>: <four_arithmetic_expressions>
+    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
+    <iterative_formula_expression>: a four arithmetic expressions containing `X` as the iterative value with <json_evaluation_expression> in C syntax, such as `(X * $? * $?) / 5`
 ```
 
-比如，当我们使用 `FORMULA: LT 500, BY ($? * 2 - 50)` 执行器作用于数值 `100` 时，返回的数列为：
+比如，当我们使用 `FORMULA: LT 500, BY (X * 2 - 50)` 执行器作用于数值 `100` 时，返回的数列为：
 
 ```json
     [ 100, 150, 250, 450 ]
@@ -2780,7 +2789,45 @@ def on_battery_changed (on_value, via_value, root_in_scope):
 
 上面的脚本，针对不同的电量范围设置了不同的电池图标，从而向用户展示了当前电池的剩余电量信息。
 
-### 2.3.3) 响应式处理
+#### 2.3.3) 执行器规则表达式的处理
+
+根据以上描述，我们可以在执行器的规则表达式中使用变量，如下所示：
+
+```html
+        <init as="fibonacci">
+            [0, 1, ]
+        </init>
+
+        <iterate on="1" by="ADD: LT 20, BY $fibonacci[$%]">
+            <set on="$fibonacci" to="append" with="$?" />
+        </iterate>
+```
+
+以上的 `iterate` 将获得一个斐波那契（Fibonacci）数列：
+
+```
+[0, 1, 1, 2, 3, 5, 8, 13]
+```
+
+解释如下：
+
+1. 第一次迭代时，`$%` 的值为 0，`$fibonacci[0]` 的值为 `0`，所以 `ADD` 执行器的规则为：`LT 20, BY 0`。由于迭代结果的初始值为 1（`on` 属性指定），所以本次迭代的结果为 1。之后，该结果被追加到了 `$fibonacci` 数组中。
+1. 第二次迭代时，`$%` 的值为 1，`$fibonacci[1]` 的值为 `1`，所以 `ADD` 执行器的规则为：`LT 20, BY 1`，由于上次的结果是 1，所以求值后的结果为 2。之后，该结果被追加到了 `$fibonacci` 数组中。
+1. 第三次迭代时，`$%` 的值为 2，`$fibonacci[2]` 的值为第一次迭代时追加的 `1`，所以 `ADD` 执行器的规则为：`LT 20, BY 1`，由于上次的结果是 2，所以求值后的结果为 3。之后，该结果被追加到了 `$fibonacci` 数组中。
+1. 第四次迭代时，`$%` 的值为 3，`$fibonacci[3]` 的值为第二次迭代时追加的 `2`，所以 `ADD` 执行器的规则为：`LT 20, BY 2`，由于上次的结果是 3，所以求值后的结果为 5。之后，该结果被追加到了 `$fibonacci` 数组中。
+1. 第五次迭代时，`$%` 的值为 4，`$fibonacci[4]` 的值为第三次迭代时追加的 `3`，所以 `ADD` 执行器的规则为：`LT 20, BY 3`，由于上次的结果是 5，所以求值后的结果为 8。之后，该结果被追加到了 `$fibonacci` 数组中。
+1. 第六次迭代时，`$%` 的值为 5，`$fibonacci[5]` 的值为第四次迭代时追加的 `5`，所以 `ADD` 执行器的规则为：`LT 20, BY 5`，由于上次的结果是 8，所以求值后的结果为 13。之后，该结果被追加到了 `$fibonacci` 数组中。
+1. 第七次迭代时，`$%` 的值为 6，`$fibonacci[6]` 的值为第五次迭代时追加的 `8`，所以 `ADD` 执行器的规则为：`LT 20, BY 8`，由于上次的结果是 13，所以求值后的结果为 21。由于该结果不满足 `LT 20` 的条件，所以迭代终止。
+
+需要注意的是，对执行器规则字符串的处理，大致有如下两个阶段：
+
+1. 若规则字符串中包含有 JSON 求值表达式，则由 HVML 解释器在将规则字符串传递给执行器之前做处理。
+也就是说，规则字符串中不会包含任何变量信息，但仍然可能包含求值表达式，如四则运算表达式。
+1. 执行器要根据情况处理可能的规则变化情况，如上述例子中的规则字符串在不同的迭代中有不一样的值。
+
+另外要注意的是：某些执行器无法处理规则动态变化的情形，比如 SQL 和 TRAVEL 执行器。
+
+### 2.4) 响应式处理
 
 所谓响应式（responsive）处理，是指对如下的 HVML 代码：
 
