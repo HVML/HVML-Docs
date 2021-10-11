@@ -2798,7 +2798,7 @@ def on_battery_changed (on_value, via_value, root_in_scope):
             [0, 1, ]
         </init>
 
-        <iterate on="1" by="ADD: LT 20, BY $fibonacci[$%]">
+        <iterate on 1 by="ADD: LT 20, BY $fibonacci[$%]">
             <set on="$fibonacci" to="append" with="$?" />
         </iterate>
 ```
@@ -3175,15 +3175,6 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 
 There must never be two or more attributes on the same start tag whose names are an ASCII case-sensitive match for each other.
 
-__注意__  
-动作元素的介词属性，通常会被解释器视作字符串，或被串行化为字符串使用，但存在如下例外：
-
-- 所有动作元素的 `on` 和 `with` 属性，以 `[`、`{`、`$` 打头时，将被视作一个表达式处理；否则按字符串处理。
-- `choose`、`iterate`、`reduce` 和 `update` 元素的 `via` 属性，以 `[`、`{`、`$` 打头时，将被视作一个表达式处理；否则按字符串处理。
-
-__注意__  
-所有动作元素的一般属性（既非介词属性，也非副词属性），均被解释器视作字符串，或被串行化为字符串使用；所有名词元素和外部元素的属性，均被解释器视作字符串，或被串行化为字符串使用；
-
 ##### 3.1.2.4) 动作元素属性
 
 在 HVML 中，动作元素的属性值存在如下特殊之处：
@@ -3235,6 +3226,29 @@ __注意__
         <update attr.class %= "text-* text-info" />
     </choose>
 ```
+
+__注意__  
+动作元素的介词属性，通常会被解释器视作字符串，或被串行化为字符串使用，但存在如下例外：
+
+- 所有动作元素的 `on` 和 `with` 属性，若赋值操作符（=）被忽略，且使用无引号属性值语法，或者使用其他语法情形下，以 `[`、`{`、`$` 打头时，将被视作一个表达式处理；否则按字符串处理。
+- `choose`、`iterate`、`reduce` 和 `update` 元素的 `via` 属性，若赋值操作符（=）被忽略，且使用无引号属性值语法，或者使用其他语法情形下，以 `[`、`{`、`$` 打头时，将被视作一个表达式处理；否则按字符串处理。
+
+如：
+
+```
+        <init as var with 100 />
+```
+
+等价于：
+
+```
+        <init as="var">
+            100
+        </init>
+```
+
+__注意__  
+所有动作元素的一般属性（既非介词属性，也非副词属性），均被解释器视作字符串，或被串行化为字符串使用；所有名词元素和外部元素的属性，均被解释器视作字符串，或被串行化为字符串使用；
 
 ##### 3.1.2.5) 可选标签
 
