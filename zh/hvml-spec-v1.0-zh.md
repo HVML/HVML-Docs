@@ -588,7 +588,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 但针对字典，我们可以定义使用某个特定的键值作为唯一性判断条件。比如我们通常使用 `id` 来表示数据项的唯一标识符。这个定义类似关系数据库中的主键（primary key）。
 
-我们使用 `init` 标签的 `by` 属性值来定义字典的唯一性键名。当使用多个键名作为唯一性条件时，使用空格分隔。比如：
+我们使用 `init` 标签的 `via` 属性值来定义字典的唯一性键名。当使用多个键名作为唯一性条件时，使用空格分隔。比如：
 
 ```html
     <init as="users" uniquely via="id">
@@ -2280,6 +2280,8 @@ HVML 为不同的数据类型提供了如下操作：
     <string_expression>: '<literal_string>' | <string_evaluation_expression>
     <string_evaluation_expression>: <json_evaluation_expression>
 ```
+
+注意：当集合中的元素使用额外的唯一性键名来判断唯一性时，`SUBSET` 指定的匹配条件，仅和唯一性键名对应的值相关。
 
 对于集合数据，不指定 `by` 属性时，默认使用 `SUBSET: ALL` 执行器。
 
