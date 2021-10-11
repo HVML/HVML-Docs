@@ -3236,15 +3236,21 @@ __注意__
 如：
 
 ```
-        <init as var with 100 />
+        <init as i with 100 />
+
+        <set at i with [0, 1, true, false] />
 ```
 
 等价于：
 
 ```
-        <init as="var">
+        <init as="i">
             100
         </init>
+
+        <set at="i">
+            [0, 1, true, false]
+        </set>
 ```
 
 __注意__  
