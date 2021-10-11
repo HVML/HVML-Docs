@@ -67,7 +67,7 @@ Language: Chinese
       * [2.3.1) 内建执行器](#231-内建执行器)
          - [2.3.1.1) `KEY` 执行器](#2311-key-执行器)
          - [2.3.1.2) `RANGE` 执行器](#2312-range-执行器)
-         - [2.3.1.3) `SUBSET` 执行器](#2313-subset-执行器)
+         - [2.3.1.3) `FILTER` 执行器](#2313-filter-执行器)
          - [2.3.1.4) 用于字符串的内建执行器](#2314-用于字符串的内建执行器)
          - [2.3.1.5) 用于数值的内建执行器](#2315-用于数值的内建执行器)
          - [2.3.1.6) `SQL` 执行器](#2316-sql-执行器)
@@ -2237,9 +2237,9 @@ HVML 为不同的数据类型提供了如下操作：
 
 对于数组数据，不指定 `by` 属性时，默认使用 `RANGE: FROM 0` 执行器。
 
-##### 2.3.1.3) `SUBSET` 执行器
+##### 2.3.1.3) `FILTER` 执行器
 
-该执行器作用于集合上，使用特定的条件过滤集合中的元素。比如对下面的数据：
+该执行器作用于数组、对象和集合上，使用特定的条件过滤容器中的元素。比如对下面的数据：
 
 ```html
     <init as="myArray" uniquely>
@@ -2247,28 +2247,28 @@ HVML 为不同的数据类型提供了如下操作：
     </init>
 ```
 
-如果我们要获得所有的集合元素，则使用 `SUBSET: ALL`，返回的数据为：
+如果我们要获得所有的集合元素，则使用 `FILTER: ALL`，返回的数据为：
 
 ```json
     [ 100, 95, 80, 30, 55, 20 ]
 ```
 
-如果我们要获得数值大于 30 的元素，则使用 `SUBSET: GT 30`，返回的数据为：
+如果我们要获得数值大于 30 的元素，则使用 `FILTER: GT 30`，返回的数据为：
 
 ```json
     [ 100, 95, 80, 55 ]
 ```
 
-如果我们要获得以 0 结尾的元素，则使用 `SUBSET: LIKE '/0$/'`，返回的数据为：
+如果我们要获得以 0 结尾的元素，则使用 `FILTER: LIKE '/0$/'`，返回的数据为：
 
-```html
+```json
     [ 100, 80, 30, 20 ]
 ```
 
-`SUBSET` 执行器的语法如下：
+`FILTER` 执行器的语法如下：
 
 ```
-    SUBSET: ALL | <LE | LT | GT | GE | NE | EQ> <number_expression> | <string_matching_list>
+    FILTER: ALL | <LE | LT | GT | GE | NE | EQ> <number_expression> | <string_matching_list> [, FOR <VALUE | KEY | KV>]
 
     <number_expression>: <literal_number> | <number_evaluation_expression>
     <number_evaluation_expression>: <four_arithmetic_expressions>
@@ -2281,9 +2281,14 @@ HVML 为不同的数据类型提供了如下操作：
     <string_evaluation_expression>: <json_evaluation_expression>
 ```
 
-注意：当集合中的元素使用额外的唯一性键名来判断唯一性时，`SUBSET` 指定的匹配条件，仅和唯一性键名对应的值相关。
+注意：
 
-对于集合数据，不指定 `by` 属性时，默认使用 `SUBSET: ALL` 执行器。
+1. 当集合中的元素使用额外的唯一性键名来判断唯一性时，`FILTER` 指定的匹配条件，仅和唯一性键名对应的值相关。
+1. 当使用数值对比分句时，则数据将被强制转换为数值进行处理。
+1. 当使用字符串匹配分句时，则数据会首先被序列化字符串，然后进行匹配处理。
+1. 当该执行器用于集合时，使用键值做过滤条件，并可使用类似 `KEY` 执行器一样的 `FOR` 分句指定返回的数据形式。
+
+对于集合数据，不指定 `by` 属性时，默认使用 `FILTER: ALL` 执行器。
 
 ##### 2.3.1.4) 用于字符串的内建执行器
 
