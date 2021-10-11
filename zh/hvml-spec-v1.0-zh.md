@@ -18,7 +18,7 @@ Language: Chinese
 
 本文提及的飞漫软件或其合作伙伴的注册商标或商标之详细列表，请查阅文档末尾。
 
-- [1) 背景](#1-背景)
+ [1) 背景](#1-背景)
 - [2) HVML 详解](#2-hvml-详解)
    + [2.1) 基本原理及术语](#21-基本原理及术语)
       * [2.1.1) 基本数据类型](#211-基本数据类型)
@@ -53,23 +53,25 @@ Language: Chinese
       * [2.2.5) `choose` 标签](#225-choose-标签)
       * [2.2.6) `iterate` 标签](#226-iterate-标签)
       * [2.2.7) `reduce` 标签](#227-reduce-标签)
-      * [2.2.8) `observe`、`forget` 和 `fire` 标签](#228-observeforget-和-fire-标签)
-      * [2.2.9) `request` 标签](#229-request-标签)
-      * [2.2.10) `init` 和 `set` 标签](#2210-init-和-set-标签)
-      * [2.2.11) `connect`、`send` 和 `disconnect` 标签](#2211-connectsend-和-disconnect-标签)
-      * [2.2.12) `load` 和 `back` 标签](#2212-load-和-back-标签)
-      * [2.2.13) `define` 和 `include` 标签](#2213-define-和-include-标签)
-      * [2.2.14) `call` 和 `return` 标签](#2214-call-和-return-标签)
-      * [2.2.15) `catch` 标签](#2215-catch-标签)
-      * [2.2.16) `bind` 标签](#2216-bind-标签)
+      * [2.2.8) `sort` 标签](#228-sort-标签)
+      * [2.2.9) `observe`、`forget` 和 `fire` 标签](#229-observeforget-和-fire-标签)
+      * [2.2.10) `request` 标签](#2210-request-标签)
+      * [2.2.11) `init` 和 `set` 标签](#2211-init-和-set-标签)
+      * [2.2.12) `connect`、`send` 和 `disconnect` 标签](#2212-connectsend-和-disconnect-标签)
+      * [2.2.13) `load` 和 `back` 标签](#2213-load-和-back-标签)
+      * [2.2.14) `define` 和 `include` 标签](#2214-define-和-include-标签)
+      * [2.2.15) `call` 和 `return` 标签](#2215-call-和-return-标签)
+      * [2.2.16) `catch` 标签](#2216-catch-标签)
+      * [2.2.17) `bind` 标签](#2217-bind-标签)
    + [2.3) 执行器](#23-执行器)
       * [2.3.1) 内建执行器](#231-内建执行器)
          - [2.3.1.1) `KEY` 执行器](#2311-key-执行器)
          - [2.3.1.2) `RANGE` 执行器](#2312-range-执行器)
-         - [2.3.1.3) 用于字符串的内建执行器](#2313-用于字符串的内建执行器)
-         - [2.3.1.4) 用于数值的内建执行器](#2314-用于数值的内建执行器)
-         - [2.3.1.5) `SQL` 执行器](#2315-sql-执行器)
-         - [2.3.1.6) `TRAVEL` 执行器](#2316-travel-执行器)
+         - [2.3.1.3) `SUBSET` 执行器](#2313-subset-执行器)
+         - [2.3.1.4) 用于字符串的内建执行器](#2314-用于字符串的内建执行器)
+         - [2.3.1.5) 用于数值的内建执行器](#2315-用于数值的内建执行器)
+         - [2.3.1.6) `SQL` 执行器](#2316-sql-执行器)
+         - [2.3.1.7) `TRAVEL` 执行器](#2317-travel-执行器)
          - [2.3.1.7) 内部执行器的使用](#2317-内部执行器的使用)
       * [2.3.2) 外部执行器](#232-外部执行器)
          - [2.3.2.1) 外部选择器](#2321-外部选择器)
@@ -405,7 +407,6 @@ HVML 定义的上下文变量可罗列如下：
    - 假如当前上下文数据是字符串、数值、真值（true）、假值（false）或空值（null）时，该变量的值为 1。
    - 假如当前上下文数据是 undefined，则该变量的值为 0。
 - `$*`：指当前上下文数据的类型，用字符串表示，可能的取值有：`object`、`array`、`string`、`number`、`true`、`false`、`null`，分别表示对象、数组、字符串、数值、真值、假值以及空值。
-- `$:`：若当前上下文数据来自键值对（key-value paire），该变量用来表示键名，其他情形下为非法值。
 - `$@`：指当前的文档操作范围，即代表当前操作范围的 DOM 子树，也就是介词属性 `in` 定义的当前文档操作位置。
 
 以下上下文变量专用于迭代时（其他情形下为非法值）：
@@ -416,6 +417,9 @@ HVML 定义的上下文变量可罗列如下：
 __讨论__  
 - `$#` 和 `$*` 有点多余了。因为我们可以通过定义一个 `EJSON` 动态对象获得数据的类型和成员数量等信息。
 - 用来表示键名的 `$:`，可通过迭代子（`$&`）上的 `key` 方法获得。
+- 在 `KEY` 执行器中使用 `FOR` 分句之后，如下两个上下文变量不再有意义：
+   - `$:`：若当前上下文数据来自键值对（key-value pair），该变量用来表示键名，其他情形下为非法值。
+   - `$=`：若当前上下文数据来自键值对（key-value pair），该变量用来表示键值，其他情形下为非法值。
 
 我们还可以在上下文变量的符号之前添加一个正整数来引用从当前向上回溯 `<N>` 级的上下文数据：
 
@@ -562,7 +566,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 - 按照指定的数据项唯一性判断条件，具有唯一值的元素在集合中只能有一项。
 - 我们可以在集合上执行合并、相交、相减等集合特有的操作。
 
-当我们需要定义集合时，使用 `init` 标签的 `uniquely` 副词属性，必要时，通过 `by` 属性值指定唯一性判断条件。
+当我们需要定义集合时，使用 `init` 标签的 `uniquely` 副词属性，必要时，通过 `via` 属性值指定唯一性判断条件。
 
 默认情况下，我们使用数据项的值来判断两个数据项是否相等。判断规则如下：
 
@@ -587,7 +591,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 我们使用 `init` 标签的 `by` 属性值来定义字典的唯一性键名。当使用多个键名作为唯一性条件时，使用空格分隔。比如：
 
 ```html
-    <init as="users" uniquely by="id">
+    <init as="users" uniquely via="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
@@ -599,7 +603,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 
 ```html
-    <init as="users" uniquely by="id">
+    <init as="users" uniquely via="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
@@ -929,14 +933,14 @@ HVML 还定义有如下一些动作标签：
    - `TRAVEL: ` 表示使用指定的遍历方式遍历树状结构，是一种内建的迭代器或选择器。
    - `SQL: ` 表示在结构化数据上执行 SQL 查询，从而实现复杂的选择、迭代以及规约操作。
    - 其他针对字符串和数值的内建执行器，见本文档 3.1) 节。
-- `via`：主要用于定义执行自定义选择、迭代、规约执行器时的过滤参数；亦用于在 `request`、`send` 元素中指定请求方法（如 `GET`、`POST`、`DELETE` 等）。
+- `via`：主要用于定义执行自定义选择、迭代、规约执行器时的过滤参数；亦用于在 `request`、`send` 元素中指定请求方法（如 `GET`、`POST`、`DELETE` 等），或在 `init` 元素中用于指定集合的唯一性条件。
 
 #### 2.1.13) 副词属性
 
 针对某些动作标签，HVML 定义了如下几个副词属性，用于修饰操作行为。如：
 
-- `ascendingly`：在使用内置迭代器、选择器或者规约器时，用于指定数据项的排列顺序为升序；可简写为 `asc`。
-- `descendingly`：在使用内置迭代器、选择器或者规约器时，用于指定数据项的排列顺序为降序；可简写为 `desc`。
+- `ascendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为升序；可简写为 `asc`。
+- `descendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为降序；可简写为 `desc`。
 - `synchronously`：在 `request`、`send`、`call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用同步请求方式；默认值；可简写为 `sync`。
 - `asynchronously`：在 `request`、`send`、`call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用异步请求方式；可简写为 `async`。
 - `exclusively`：在 `match` 动作标签中，用于定义排他性；具有这一属性时，匹配当前动作时，将不再处理同级其他 `match` 标签；可简写为 `excl`。
@@ -1371,16 +1375,18 @@ HVML 还定义有如下一些动作标签：
 
     <archetype id="region-to-users">
         <div>
-            <dt>$:</dt>
-            <dd>$=</dd>
+            <dt>$?.k</dt>
+            <dd>$?.v</dd>
         </div>
     </archetype>
 
     <reduce on="$users" to="update emtpy iterate" in="#the-user-statistics" by="CLASS: RUserRegionStats">
         <update on="> h2 > span" textContent="$?.count" />
         <clear on="> dl" />
-        <iterate on="$?.regions" to="append" in="> dl" with="#region-to-users" by="KEY: ALL" descendingly>
-        </iterate>
+        <sort on="$?.regions" to="iterate" by="KEY: ALL, FOR KV" descendingly>
+            <iterate on="$?" to="append" in="> dl" with="#region-to-users" by="RANGE: ALL">
+            </iterate>
+        </sort>
     </reduce>
 ```
 
@@ -1388,6 +1394,7 @@ HVML 还定义有如下一些动作标签：
 
 - `update` 标签：用于更新 `#the-user-statistics > h2 > span` 元素的内容为用户总数。
 - `clear` 标签：用于清除 `#the-user-statistics > dl` 元素的所有子元素。
+- `sort` 标签：用于将 `$?.regions` 执行排序操作，按键值降序排列形成一个新的数组。
 - `iterate` 标签：用于在 `#the-user-statistics > dl` 元素中追加用户按区域统计的信息。
 
 假设执行规约操作后的结果同前述 JSON 格式给出的数据，则执行上述操作后获得的 HTML 片段为：
@@ -1406,7 +1413,64 @@ HVML 还定义有如下一些动作标签：
     </div>
 ```
 
-#### 2.2.8) `observe`、`forget` 和 `fire` 标签
+#### 2.2.8) `sort` 标签
+
+`sort` 标签用于对指定的数组或者由执行器产生的序列执行排序操作：
+
+- `on` 属性指定要操作的数据。
+- `by` 属性指定执行器；若指定了执行器，则对执行器产生的数据序列执行排序操作，若没有指定执行器，则对 `on` 属性指定的数据（必须为数组）执行排序操作。
+- `via` 属性指定排序的依据；当要排序的数组或者数据序列由对象组成时，该属性指定参与排序的单个或者多个键名。
+- 使用 `ascendingly` 和 `descendingly` 副词属性指定使用升序还是降序排列。
+
+如下代码对 `$users` 执行排序：
+
+```html
+        <init as="users">
+            [
+                { "id": 3, "avatar": "/img/avatars/3.png", "name": "David", "region": "en_US" }
+                { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+                { "id": 2, "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+            ]
+        </init>
+
+        <sort on="$users" ascendingly via="id" />
+```
+
+结果为：
+
+```json
+            [
+                { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+                { "id": 2, "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+                { "id": 3, "avatar": "/img/avatars/3.png", "name": "David", "region": "en_US" }
+            ]
+```
+
+`sort` 动作支持按照字符串或数值两种类型执行排序，这取决于从数组中获得的第一个排序数据的类型。
+
+当使用 `by` 属性指定了执行器之后，`sort` 标签定义的排序操作，可理解为一个 `choose` 动作外加一个 `sort` 操作。
+
+如
+
+```html
+        <sort on="$?.regions" by="KEY: ALL, FOR KV" descendingly>
+            ...
+        </sort>
+```
+
+相当于
+
+```html
+        <choose on="$?.regions" by="KEY: ALL, FOR KV">
+            <sort on="$?" descendingly via="v">
+                ...
+            </sort>
+        </choose>
+```
+
+注意，在第一种用法（即使用 `by` 属性指定执行器的情况）中，`via="v"` 的排序条件将被隐含指定，无需显式指定。
+
+#### 2.2.9) `observe`、`forget` 和 `fire` 标签
 
 `observe` 标签用于观察特定数据源上获得数据或状态，或者文档元素节点上的事件，并完成指定的操作。
 
@@ -1566,8 +1630,8 @@ HVML 还定义有如下一些动作标签：
 
         <archetype id="region-to-users">
             <div>
-                <dt>$:</dt>
-                <dd>$=</dd>
+                <dt>$?.k</dt>
+                <dd>$?.v</dd>
             </div>
         </archetype>
 
@@ -1592,8 +1656,10 @@ HVML 还定义有如下一些动作标签：
                     <update on="$@" textContent="$?" />
                 </choose>
                 <clear in="#the-user-statistics > dl" />
-                <iterate on="$?.regions" to="append" in="> dl" with="#region-to-users" by="KEY: ALL" ascendingly>
-                </iterate>
+                <sort on="$?.regions" to="iterate" by="KEY: ALL, FOR KV" ascendingly>
+                    <iterate on="$?" to="append" in="> dl" with="#region-to-users" by="RANGE: FROM 0">
+                    </iterate>
+                </sort>
             </reduce>
 
         </observe>
@@ -1626,7 +1692,7 @@ HVML 还定义有如下一些动作标签：
 
 `fire` 元素将把 `with` 属性指定的数据作为事件数据包的 `payload` 进行处理，并根据 `on` 属性指定的元素或者数据确定事件的源，`for` 属性值作为事件名称打包事件数据包，并将事件加入到事件队列中。 注意：`fire` 元素不产生结果数据，所以不能包含其他子动作元素。
 
-#### 2.2.9) `request` 标签
+#### 2.2.10) `request` 标签
 
 `request` 标签定义一个在指定 URL 上的同步或异步请求。使用 `request` 元素时，我们使用 `on` 属性指定 URL，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法（如 `GET`、`POST`、`DELETE` 等）。`init` 元素提供类似的功能，但区别在于，`request` 可支持异步请求，而 `request` 不支持内嵌 JSON 数据为内容。
 
@@ -1638,7 +1704,7 @@ HVML 还定义有如下一些动作标签：
     </request>
 ```
 
-#### 2.2.10) `init` 和 `set` 标签
+#### 2.2.11) `init` 和 `set` 标签
 
 `init` 标签初始化一个变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义该请求的 URL，使用 `with` 参数定义请求参数，使用 `via` 定义请求方法（如 `GET`、`POST`、`DELETE` 等）。
 
@@ -1653,7 +1719,7 @@ HVML 还定义有如下一些动作标签：
 这两个标签的常见用法如下：
 
 ```html
-    <init as="users" uniquely by="id">
+    <init as="users" uniquely via="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
@@ -1735,7 +1801,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 注意，当我们使用 `id` 作为键名时，该键名对应的值，在数组中将保持唯一。
 
-#### 2.2.11) `connect`、`send` 和 `disconnect` 标签
+#### 2.2.12) `connect`、`send` 和 `disconnect` 标签
 
 如前所述，`connect` 标签定义一个对外部数据源的长连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包；而 `disconnect` 标签关闭先前建立的一个长连接数据源。
 
@@ -1802,7 +1868,7 @@ HVML 为不同的数据类型提供了如下操作：
     </body>
 ```
 
-#### 2.2.12) `load` 和 `back` 标签
+#### 2.2.13) `load` 和 `back` 标签
 
 `load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为参数传递到新的 HVML 文档。如：
 
@@ -1872,7 +1938,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 装载另一个本地意味着需要清空当前的目标文档内容，并跳转到本文档的另一个本体中重新执行 HVML 程序。
 
-#### 2.2.13) `define` 和 `include` 标签
+#### 2.2.14) `define` 和 `include` 标签
 
 `define` 和 `include` 标签用于实现类似函数调用的功能。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作。在 HVML 中，我们将这组操作简称为操作组。
 
@@ -1915,7 +1981,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 `define` 元素可使用 `from` 属性从指定的 URL 中装载 HVML 片段。
 
-#### 2.2.14) `call` 和 `return` 标签
+#### 2.2.15) `call` 和 `return` 标签
 
 `include` 元素完成的工作本质上是复制指定的操作组到当前的位置，所以和传统编程语言中的函数调用并不相同。如果要获得和函数调用相同的效果，使用 `call` 和 `return` 标签：
 
@@ -1981,7 +2047,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 注意，不管是 `include` 还是 `call`，我们都可以递归使用。
 
-#### 2.2.15) `catch` 标签
+#### 2.2.16) `catch` 标签
 
 `catch` 作为任意动作元素的子元素，定义该动作出现错误或者异常时要执行的动作。`catch` 标签定义的元素作为 `error` 和 `except` 元素的补充，可定义错误或者异常情形下的动作。如：
 
@@ -2011,7 +2077,7 @@ HVML 为不同的数据类型提供了如下操作：
 - 若 `for` 属性值为 `*` 或空字符串，则相当于匹配任意错误或异常。
 - 若 `for` 属性值中包含有 `*` 或者 `?` 字符，则表示通配符（wildcard）匹配，可支持通配符并忽略大小写；如 `error:*`，表示匹配所有错误。
 
-#### 2.2.16) `bind` 标签
+#### 2.2.17) `bind` 标签
 
 `bind` 标签定义一个绑定的变量；通常，被绑定的变量对应的是一个可求值的表达式，该表达式可使用 `on` 属性指定，也可以使用 `bind` 元素的内容来定义。如：
 
@@ -2079,8 +2145,6 @@ HVML 为不同的数据类型提供了如下操作：
 
 在 `choose`、`iterate` 以及 `reduce` 等动作标签中，我们通常要使用 `by` 介词属性来定义如何执行选择、迭代或者规约操作，我们称之为规则，而实现相应的规则的代码或者功能模块被称为选择器、迭代器或规约器，统称为执行器（executor）。HVML 解释器可实现内置（built-in）执行器，通过简单的语法来指定在选择、迭代、规约数据时遵循什么样的规则。在复杂情形下，HVML 允许文档作者调用外部脚本或者程序来实现执行器。HVML 使用 `CLASS` 前缀来表示使用外部定义的执行器。
 
-注意，内建执行器在执行选择、迭代或者规约操作时，相应动作标签中的 `ascendingly` 和 `descendingly` 副词属性将产生作用。
-
 #### 2.3.1) 内建执行器
 
 ##### 2.3.1.1) `KEY` 执行器
@@ -2103,10 +2167,12 @@ HVML 为不同的数据类型提供了如下操作：
 
 如果我们要获得所有中国大陆地区和所有英语地区对应的键值对，可使用 `KEY: 'zh_CN', LIKE 'zh_*'`。
 
+当给定的键名不存在匹配项时，则结果中不包含对应的信息。
+
 `KEY` 执行器的语法如下：
 
 ```
-    KEY: ALL | <key_name_list>
+    KEY: ALL | <key_name_list>[, FOR <VALUE | KEY | KV>]
 
     <key_name_list>: <key_list_expression>[, <key_list_expression>[, ...]]
     <key_list_expression>: LIKE <key_pattern_expression> | <key_name_expression>
@@ -2115,13 +2181,23 @@ HVML 为不同的数据类型提供了如下操作：
     <string_evaluation_expression>: <json_evaluation_expression>
 ```
 
+`KEY 执行器中的 `FOR` 分句指定了数据的返回形式：
+
+- 取 `VALUE` 时，返回键值（默认行为）。
+- 取 `KEY` 时，返回键名。
+- 取 `KV` 时，会将键值对转换为一个含有两个属性的对象，其中属性 `k` 表示键名，属性 `v` 表示键值。如针对上面的数据，规则 `KEY: 'zh_CN', 'zh_HK', FOR BOTH` 对应的结果数据为：
+
+```json
+    [ { "k": "zh_CN": "v": 100 }, { "k": "zh_TW", "v": 90 } ]
+```
+
 对于字典数据，不指定 `by` 属性时，默认使用 `KEY: ALL` 执行器。
 
 注：JSON 求值表达式（JSON evaluation expression）的规则及语法，在本文档 4.5.5) 小节中统一描述（下同）。
 
 ##### 2.3.1.2) `RANGE` 执行器
 
-该执行器作用于数组数据上，使用下标范围来返回对应的数组单元列表。比如对下面的数据：
+该执行器作用于数组和集合数据上，使用下标范围来返回对应的数组单元列表（集合可视为不包含重复数据单元的数组）。比如对下面的数据：
 
 ```html
     <init as="regionStats">
@@ -2161,7 +2237,53 @@ HVML 为不同的数据类型提供了如下操作：
 
 对于数组数据，不指定 `by` 属性时，默认使用 `RANGE: FROM 0` 执行器。
 
-##### 2.3.1.3) 用于字符串的内建执行器
+##### 2.3.1.3) `SUBSET` 执行器
+
+该执行器作用于集合上，使用特定的条件过滤集合中的元素。比如对下面的数据：
+
+```html
+    <init as="myArray" uniquely>
+        [ 100, 95, 95, 95, 80, 30, 55, 20 ]
+    </init>
+```
+
+如果我们要获得所有的集合元素，则使用 `SUBSET: ALL`，返回的数据为：
+
+```json
+    [ 100, 95, 80, 30, 55, 20 ]
+```
+
+如果我们要获得数值大于 30 的元素，则使用 `SUBSET: GT 30`，返回的数据为：
+
+```json
+    [ 100, 95, 80, 55 ]
+```
+
+如果我们要获得以 0 结尾的元素，则使用 `SUBSET: LIKE '/0$/'`，返回的数据为：
+
+```html
+    [ 100, 80, 30, 20 ]
+```
+
+`SUBSET` 执行器的语法如下：
+
+```
+    SUBSET: ALL | <LE | LT | GT | GE | NE | EQ> <number_expression> | <string_matching_list>
+
+    <number_expression>: <literal_number> | <number_evaluation_expression>
+    <number_evaluation_expression>: <four_arithmetic_expressions>
+    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
+
+    <string_matching_list>: <string_matching_expression>[, <string_matching_expression>[, ...]]
+    <string_matching_expression>: LIKE <string_pattern_expression> | <string_expression>
+    <string_pattern_expression>: '<literal_wildcard_string>' | '<regular_expression>' | <string_evaluation_expression>
+    <string_expression>: '<literal_string>' | <string_evaluation_expression>
+    <string_evaluation_expression>: <json_evaluation_expression>
+```
+
+对于集合数据，不指定 `by` 属性时，默认使用 `SUBSET: ALL` 执行器。
+
+##### 2.3.1.4) 用于字符串的内建执行器
 
 针对字符串数据，HVML 提供如下内建执行器，可分别用于遍历字符串中的字符和词法单元（token）：
 
@@ -2208,7 +2330,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 更进一步，HVML 解释器可提供基于特定自然语言的单词和句子执行器：`WORD` 和 `SENTENCE`。
 
-##### 2.3.1.4) 用于数值的内建执行器
+##### 2.3.1.5) 用于数值的内建执行器
 
 针对数值数据，HVML 提供如下内建执行器，可用于产生数列：
 
@@ -2255,7 +2377,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 注：数值执行器可能导致死循环。
 
-##### 2.3.1.5) `SQL` 执行器
+##### 2.3.1.6) `SQL` 执行器
 
 SQL（structured query language）是关系型数据库管理系统用来查询结构化数据的语言。考虑到 HVML 中大部分数据使用字典数据形成的数组表达，所以，HVML 引入了内建的 SQL 执行器。通过 SQL 执行器，我们可以非常方便地从 `on` 属性指定的数据集中查询获得特定的数据子集，且能够很容易地指定查询的匹配条件。比如针对下面的数据：
 
@@ -2462,7 +2584,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 
 除了 `SELECT` 语句外，HVML 的 SQL 执行器支持 `GET` 语句，其语法和 `SELECT` 类似，唯一的不同在于 `GET` 语句返回给定条件的字典数据之引用，而不是字典数据值。通常，我们配合 `update` 操作使用 `GET` 语句，以便更新数据。如本文 1.1) 小节中修改激活定时器时使用的 SQL 语句。
 
-##### 2.3.1.6) `TRAVEL` 执行器
+##### 2.3.1.7) `TRAVEL` 执行器
 
 作为一种对 `SQL` 执行器的简单替代，我们可以在树状结构上使用 `TRAVEL` 执行器。
 
@@ -2619,10 +2741,6 @@ class HVMLIterator:
     def __init__ (self, on_value, via_value):
         pass
 
-    # implement this method to sort the data.
-    def sort (self):
-        pass
-
     # implement this method to iterate the data.
     def iterate (self):
         return None
@@ -2639,7 +2757,6 @@ class HVMLIterator:
 
 `HVMLIterator` 定义了三个方法：
 
-- `sort`：用于可迭代数据的排序。子类可不用实现该方法。
 - `iterate`：用于迭代数据，子类必须重载该方法。第一次调用时，该方法返回第一个数据项，之后每调用一次，该方法返回下一个数据项，直到返回 `None` 为止。
 - `filter`：用于过滤某些数据项。子类可不用实现该方法。
 - `map`：若后续操作要克隆模板，使用该方法将数据项映射到克隆后的元素上。
@@ -2678,10 +2795,6 @@ class IUser (HVMLIterator):
         self.on_data = on_data
         self.i = 0;
         self.n = len (on_data)
-        pass
-
-    # implement this method to sort the data.
-    def sort (self):
         pass
 
     # implement this method to return the next item.
@@ -2798,7 +2911,7 @@ def on_battery_changed (on_value, via_value, root_in_scope):
             [0, 1, ]
         </init>
 
-        <iterate on 1 by="ADD: LT 20, BY $fibonacci[$%]">
+        <iterate on="1" by="ADD: LT 20, BY $fibonacci[$%]">
             <set on="$fibonacci" to="append" with="$?" />
         </iterate>
 ```
@@ -3132,7 +3245,7 @@ Just the attribute name. The value is implicitly the empty string.
 In the following example, the `uniquely` attribute is given with the empty attribute syntax:
 
 ```html
-    <init as="foo" uniquely by="id">
+    <init as="foo" uniquely via="id">
 ```
 
 If an attribute using the empty attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
@@ -3144,7 +3257,7 @@ The attribute name, followed by zero or more ASCII whitespace, followed by a sin
 In the following example, the value attribute is given with the unquoted attribute value syntax:
 
 ```html
-    <init as=foo uniquely by=id>
+    <init as=foo uniquely via=id>
 ```
 
 If an attribute using the unquoted attribute syntax is to be followed by another attribute or by the optional U+002F SOLIDUS character (/) allowed in step 6 of the start tag syntax above, then there must be ASCII whitespace separating the two.
@@ -3156,7 +3269,7 @@ The attribute name, followed by zero or more ASCII whitespace, followed by a sin
 In the following example, the type attribute is given with the single-quoted attribute value syntax:
 
 ```html
-    <init as='foo' uniquely by='id'>
+    <init as='foo' uniquely via='id'>
 ```
 
 If an attribute using the single-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
