@@ -2180,7 +2180,8 @@ HVML 为不同的数据类型提供了如下操作：
     <string_evaluation_expression>: <json_evaluation_expression>
     <regexp_flags>: 'g' || 'i' || 'm' || 's' || 'u' || 'y'
     <matching_flags>: 'i' || 's' || 'c'
-    <max_matching_length>: <literal_integer>
+    <max_matching_length>: <literal_positive_integer>
+    <literal_positive_integer>: /^[0-9]*[1-9][0-9]*$/
 ```
 
 以上的语法描述包含如下信息：
@@ -2265,7 +2266,8 @@ HVML 为不同的数据类型提供了如下操作：
     <string_evaluation_expression>: <json_evaluation_expression>
     <regexp_flags>: 'g' || 'i' || 'm' || 's' || 'u' || 'y'
     <matching_flags>: 'i' || 's' || 'c'
-    <max_matching_length>: <literal_integer>
+    <max_matching_length>: <literal_positive_integer>
+    <literal_positive_integer>: /^[0-9]*[1-9][0-9]*$/
 ```
 
 `KEY` 执行器中的 `FOR` 分句指定了数据的返回形式：
@@ -2371,7 +2373,8 @@ HVML 为不同的数据类型提供了如下操作：
     <string_evaluation_expression>: <json_evaluation_expression>
     <regexp_flags>: 'g' || 'i' || 'm' || 's' || 'u' || 'y'
     <matching_flags>: 'i' || 's' || 'c'
-    <max_matching_length>: <literal_integer>
+    <max_matching_length>: <literal_positive_integer>
+    <literal_positive_integer>: /^[0-9]*[1-9][0-9]*$/
 ```
 
 注意：
