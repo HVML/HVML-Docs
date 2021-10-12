@@ -2268,7 +2268,7 @@ HVML 为不同的数据类型提供了如下操作：
     <max_matching_length>: <literal_integer>
 ```
 
-`KEY 执行器中的 `FOR` 分句指定了数据的返回形式：
+`KEY` 执行器中的 `FOR` 分句指定了数据的返回形式：
 
 - 取 `VALUE` 时，返回键值（默认行为）。
 - 取 `KEY` 时，返回键名。
