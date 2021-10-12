@@ -2149,7 +2149,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 ##### 2.3.1.1) `KEY` 执行器
 
-该执行器作用于字典数据上，使用给定的键名或键名列表返回键值对或键值对列表，或者使用匹配某个规则的键名列表，返回键值对列表。比如对下面的数据：
+该执行器作用于字典数据上，使用给定的键名或键名列表返回键名、键值或键值对象列表，或者使用匹配某个规则的键名列表，返回键名、键值或者键值对象列表。比如对下面的数据：
 
 ```html
     <init as="regionStats">
@@ -2159,11 +2159,11 @@ HVML 为不同的数据类型提供了如下操作：
 
 上面字典数据使用语言地区信息（locale）作为键名，一个整数作为对应的键值。
 
-如果我们要获得所有的键值对，则使用 `KEY: ALL`。
+如果我们要获得所有的键值，则使用 `KEY: ALL`。
 
-如果我们要获得其中几个键值对，则使用 `KEY: 'zh_CN', 'zh_HK'`。
+如果我们要获得其中几个键名对应的键值，则使用 `KEY: 'zh_CN', 'zh_HK'`。
 
-如果我们要获得所有汉语地区的键值对，则使用模式匹配 `KEY: LIKE 'zh_*'`，或使用正则表达式 `KEY: LIKE '/zh_[A-Z][A-Z]/i'`。
+如果我们要获得所有汉语地区的键值，则使用模式匹配 `KEY: LIKE 'zh_*'`，或使用正则表达式 `KEY: LIKE '/zh_[A-Z][A-Z]/i'`。
 
 如果我们要获得所有中国大陆地区和所有英语地区对应的键值对，可使用 `KEY: 'zh_CN', LIKE 'zh_*'`。
 
@@ -2175,17 +2175,23 @@ HVML 为不同的数据类型提供了如下操作：
     KEY: ALL | <key_name_list>[, FOR <VALUE | KEY | KV>]
 
     <key_name_list>: <key_list_expression>[, <key_list_expression>[, ...]]
-    <key_list_expression>: LIKE <key_pattern_expression> | <key_name_expression>
-    <key_pattern_expression>: '<literal_wildcard_string>' | '<regular_expression>' | <string_evaluation_expression>
-    <key_name_expression>: '<literal_string>' | <string_evaluation_expression>
+    <key_list_expression>: LIKE <key_pattern_expression> | <literal_key_name_expression>
+    <key_pattern_expression>: '<wildcard_expression>' | /<regular_expression>/[i]
+    <literal_key_name_expression>: '<string_expression>'
+    <wildcard_expression>: <literal_string> | <string_evaluation_expression>
+    <regular_expression>: <literal_string> | <string_evaluation_expression>
+    <string_expression>: <literal_string> | <string_evaluation_expression>
+
     <string_evaluation_expression>: <json_evaluation_expression>
 ```
+
+注：正则表达式语法应符合 POSIX.1-2001 标准。
 
 `KEY 执行器中的 `FOR` 分句指定了数据的返回形式：
 
 - 取 `VALUE` 时，返回键值（默认行为）。
 - 取 `KEY` 时，返回键名。
-- 取 `KV` 时，会将键值对转换为一个含有两个属性的对象，其中属性 `k` 表示键名，属性 `v` 表示键值。如针对上面的数据，规则 `KEY: 'zh_CN', 'zh_HK', FOR BOTH` 对应的结果数据为：
+- 取 `KV` 时，会将键值对转换为一个含有两个属性的对象，其中属性 `k` 表示键名，属性 `v` 表示键值，这种对象称为键值对象。如针对上面的数据，规则 `KEY: 'zh_CN', 'zh_HK', FOR KV` 对应的结果数据为：
 
 ```json
     [ { "k": "zh_CN": "v": 100 }, { "k": "zh_TW", "v": 90 } ]
@@ -2275,9 +2281,12 @@ HVML 为不同的数据类型提供了如下操作：
     <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
 
     <string_matching_list>: <string_matching_expression>[, <string_matching_expression>[, ...]]
-    <string_matching_expression>: LIKE <string_pattern_expression> | <string_expression>
-    <string_pattern_expression>: '<literal_wildcard_string>' | '<regular_expression>' | <string_evaluation_expression>
-    <string_expression>: '<literal_string>' | <string_evaluation_expression>
+    <string_matching_expression>: LIKE <string_pattern_expression> | '<string_expression>'
+    <string_pattern_expression>: '<wildcard_expression>' | /<regular_expression>/[i]
+    <string_expression>: <literal_string> | <string_evaluation_expression>
+    <wildcard_expression>: <literal_string> | <string_evaluation_expression>
+    <regular_expression>: <literal_string> | <string_evaluation_expression>
+
     <string_evaluation_expression>: <json_evaluation_expression>
 ```
 
