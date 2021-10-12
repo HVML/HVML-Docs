@@ -2170,13 +2170,15 @@ HVML 为不同的数据类型提供了如下操作：
 比如，在下面的规则语法描述中，我们经常会使用正则表达式，相关的语法描述为：
 
 ```
-    <pattern_expression>: '<wildcard_expression>' | /<regular_expression>/[regexp_flags]
+    <pattern_expression>: '<wildcard_expression>'/[<matching_flags>][<max_matching_length] | /<regular_expression>/[<regexp_flags>]
     <wildcard_expression>: <literal_string> | <string_evaluation_expression>
     <regular_expression>: <literal_string> | <string_evaluation_expression>
     <string_expression>: <literal_string> | <string_evaluation_expression>
 
     <string_evaluation_expression>: <json_evaluation_expression>
     <regexp_flags>: g || i || m || s || u || y
+    <matching_flags>: i || s || c
+    <max_matching_length>: <literal_integer>
 ```
 
 以上的语法描述包含如下信息：
@@ -2184,7 +2186,7 @@ HVML 为不同的数据类型提供了如下操作：
 - 使用 `//` 定义一个正则表达式，故而当正则表达式中包含有 `/` 字符时，需转义。
 - 其后可包含单个或者多个关键字符表示的匹配标志。
 
-包含在 `//` 中的正则表达式应符合 POSIX.1-2001 标准。`regexp_flags` 指定匹配标志（可选），可选如下标志字符中的单个或者多个：
+包含在 `//` 中的正则表达式应符合 POSIX.1-2001 标准。`<regexp_flags>` 指定匹配标志（可选），可选如下标志字符中的单个或者多个：
 
 - `g`：全局匹配。
 - `i`：不区分大小写搜索。
@@ -2212,6 +2214,16 @@ HVML 为不同的数据类型提供了如下操作：
 - `man regex` on Linux
 - Python 3 re module: <https://docs.python.org/3/library/re.html>
 - MDN: <https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions#%E9%80%9A%E8%BF%87%E6%A0%87%E5%BF%97%E8%BF%9B%E8%A1%8C%E9%AB%98%E7%BA%A7%E6%90%9C%E7%B4%A2>
+
+在字符串匹配的另外两种模式（一般匹配和通配符匹配下），亦可使用类似正则表达式的标志，并额外指定最大的匹配长度：
+
+- `<matching_flags>`: 表示一般匹配和通配符匹配模式下的标志，可取如下关键字符之一或多个：
+   - `i`：忽略大小写
+   - `s`：将所有空白字符（U+0009 TAB、U+000A LF、U+000C FF、U+000D CR 或 U+0020 SPACE 字符）视作空格（U+0020 SPACE 字符）。
+   - `c`：压缩连续相同空白字符为单个空白字符。
+- `<max_matching_length>`: 表示最大的匹配长度（字符为单位）。
+
+如 `LIKE 'zh_*'/i5` 表示仅匹配五个字符，不区分大小写。
 
 ##### 2.3.1.1) `KEY` 执行器
 
@@ -2242,14 +2254,16 @@ HVML 为不同的数据类型提供了如下操作：
 
     <key_name_list>: <key_list_expression>[, <key_list_expression>[, ...]]
     <key_list_expression>: LIKE <key_pattern_expression> | <literal_key_name_expression>
-    <key_pattern_expression>: '<wildcard_expression>' | /<regular_expression>/[regexp_flags]
-    <literal_key_name_expression>: '<string_expression>'
+    <key_pattern_expression>: '<wildcard_expression>'[<matching_flags>][<max_matching_length>] | /<regular_expression>/[<regexp_flags>]
+    <literal_key_name_expression>: '<string_expression>'[<matching_flags>][<max_matching_length>]
     <wildcard_expression>: <literal_string> | <string_evaluation_expression>
     <regular_expression>: <literal_string> | <string_evaluation_expression>
     <string_expression>: <literal_string> | <string_evaluation_expression>
 
     <string_evaluation_expression>: <json_evaluation_expression>
     <regexp_flags>: g || i || m || s || u || y
+    <matching_flags>: i || s || c
+    <max_matching_length>: <literal_integer>
 ```
 
 `KEY 执行器中的 `FOR` 分句指定了数据的返回形式：
@@ -2346,14 +2360,16 @@ HVML 为不同的数据类型提供了如下操作：
     <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
 
     <string_matching_list>: <string_matching_expression>[, <string_matching_expression>[, ...]]
-    <string_matching_expression>: LIKE <string_pattern_expression> | '<string_expression>'
-    <string_pattern_expression>: '<wildcard_expression>' | /<regular_expression>/[regexp_flags]
+    <string_matching_expression>: LIKE <string_pattern_expression> | '<string_expression>'[<matching_flags>][<max_matching_length>]
+    <string_pattern_expression>: '<wildcard_expression>'[<matching_flags>][<max_matching_length>] | /<regular_expression>/[<regexp_flags>]
     <string_expression>: <literal_string> | <string_evaluation_expression>
     <wildcard_expression>: <literal_string> | <string_evaluation_expression>
     <regular_expression>: <literal_string> | <string_evaluation_expression>
 
     <string_evaluation_expression>: <json_evaluation_expression>
     <regexp_flags>: g || i || m || s || u || y
+    <matching_flags>: i || s || c
+    <max_matching_length>: <literal_integer>
 ```
 
 注意：
