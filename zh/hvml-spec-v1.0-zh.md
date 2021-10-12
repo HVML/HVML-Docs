@@ -2145,7 +2145,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 #### 2.3.1) 内建执行器
 
-在 HVML 代码中，内置执行器的规则中可包含 JSON 求值表达式。在调用执行器之前，HVML 解释器会完成 JSON 表达式的求值，将最终的规则字符串传递给执行器。
+在 HVML 代码中，内置执行器的规则中可包含 JSON 求值表达式。但在调用执行器之前，HVML 解释器会完成 JSON 表达式的求值，将最终的规则字符串传递给执行器，因此，我们在描述内建执行器的规则时，不描述可能包含的 JSON 求值表达式。
 
 这里给出内置执行器规则的描述规则：
 
@@ -2171,11 +2171,10 @@ HVML 为不同的数据类型提供了如下操作：
 
 ```
     <pattern_expression>: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length] | '/'<regular_expression>'/'[<regexp_flags>]
-    <wildcard_expression>: <literal_string> | <string_evaluation_expression>
-    <regular_expression>: <literal_string> | <string_evaluation_expression>
-    <string_expression>: <literal_string> | <string_evaluation_expression>
+    <wildcard_expression>: <literal_string>
+    <regular_expression>: <literal_string>
+    <string_expression>: <literal_string>
 
-    <string_evaluation_expression>: <json_evaluation_expression>
     <regexp_flags>: 'g' || 'i' || 'm' || 's' || 'u' || 'y'
     <matching_flags>: 'i' || 's' || 'c'
     <max_matching_length>: <literal_positive_integer>
@@ -2259,11 +2258,10 @@ HVML 为不同的数据类型提供了如下操作：
     <key_list_expression>: "LIKE" <key_pattern_expression> | <literal_key_name_expression>
     <key_pattern_expression>: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
     <literal_key_name_expression>: '''<string_expression>'''[<matching_flags>][<max_matching_length>]
-    <wildcard_expression>: <literal_string> | <string_evaluation_expression>
-    <regular_expression>: <literal_string> | <string_evaluation_expression>
-    <string_expression>: <literal_string> | <string_evaluation_expression>
+    <wildcard_expression>: <literal_string>
+    <regular_expression>: <literal_string>
+    <string_expression>: <literal_string>
 
-    <string_evaluation_expression>: <json_evaluation_expression>
     <regexp_flags>: 'g' || 'i' || 'm' || 's' || 'u' || 'y'
     <matching_flags>: 'i' || 's' || 'c'
     <max_matching_length>: <literal_positive_integer>
@@ -2361,16 +2359,15 @@ HVML 为不同的数据类型提供了如下操作：
 
     <number_expression>: <literal_number> | <number_evaluation_expression>
     <number_evaluation_expression>: <four_arithmetic_expressions>
-    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
+    <four_arithmetic_expressions>: a four arithmetic expressions in C syntax, such as `(3.14 * 6 * 6) / 5`
 
     <string_matching_list>: <string_matching_expression>[, <string_matching_expression>[, ...]]
     <string_matching_expression>: "LIKE" <string_pattern_expression> | '''<string_expression>'''[<matching_flags>][<max_matching_length>]
     <string_pattern_expression>: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
-    <string_expression>: <literal_string> | <string_evaluation_expression>
-    <wildcard_expression>: <literal_string> | <string_evaluation_expression>
-    <regular_expression>: <literal_string> | <string_evaluation_expression>
+    <string_expression>: <literal_string>
+    <wildcard_expression>: <literal_string>
+    <regular_expression>: <literal_string>
 
-    <string_evaluation_expression>: <json_evaluation_expression>
     <regexp_flags>: 'g' || 'i' || 'm' || 's' || 'u' || 'y'
     <matching_flags>: 'i' || 's' || 'c'
     <max_matching_length>: <literal_positive_integer>
@@ -2402,8 +2399,7 @@ HVML 为不同的数据类型提供了如下操作：
     <integer_evaluation_expression>: <four_arithmetic_expressions>
     <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
 
-    <string_expression>: <literal_string> | <string_evaluation_expression>
-    <string_evaluation_expression>: <json_evaluation_expression>
+    <string_expression>: <literal_string>
 ```
 
 比如，当我们使用 `CAHR: FROM 0 TO 10, ADVANCE 2, STOP ON 'f'` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
@@ -2421,8 +2417,7 @@ HVML 为不同的数据类型提供了如下操作：
     <integer_evaluation_expression>: <four_arithmetic_expressions>
     <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
 
-    <string_expression>: <literal_string> | <string_evaluation_expression>
-    <string_evaluation_expression>: <json_evaluation_expression>
+    <string_expression>: <literal_string>
 ```
 
 比如，当我们使用 `TOKEN: FROM 0 TO 3, DELIMETERS ' '` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
@@ -2452,7 +2447,7 @@ HVML 为不同的数据类型提供了如下操作：
 
     <number_expression>: <literal_number> | <number_evaluation_expression>
     <number_evaluation_expression>: <four_arithmetic_expressions>
-    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
+    <four_arithmetic_expressions>: a four arithmetic expressions in C syntax, such as `(3.14 * 6 * 6) / 5`
 ```
 
 比如，当我们使用 `ADD: GT 90, BY -3` 执行器作用于数值 `100` 时，返回的数列为：
@@ -2468,8 +2463,8 @@ HVML 为不同的数据类型提供了如下操作：
 
     <number_expression>: <literal_number> | <number_evaluation_expression>
     <number_evaluation_expression>: <four_arithmetic_expressions>
-    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
-    <iterative_formula_expression>: a four arithmetic expressions containing `X` as the iterative value with <json_evaluation_expression> in C syntax, such as `(X * $? * $?) / 5`
+    <four_arithmetic_expressions>: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
+    <iterative_formula_expression>: a four arithmetic expressions containing `X` as the iterative value, such as `(3.14 * X * X) / 5`
 ```
 
 比如，当我们使用 `FORMULA: LT 500, BY (X * 2 - 50)` 执行器作用于数值 `100` 时，返回的数列为：
@@ -2481,6 +2476,9 @@ HVML 为不同的数据类型提供了如下操作：
 对于数值数据，若不指定 `by` 属性时，默认使用 `ADD: LE $?, BY 1` 执行器；该执行器将产生只包含一个数值的数列，这个数值就是初始上下文数据。
 
 注：数值执行器可能导致死循环。
+
+__备忘__  
+我们可以定义一组迭代公式，从而可以就多个数值进行迭代操作。这种情况下，迭代的数据变成 `{ x: 5; y: 6 }` 这样的对象，而迭代公式变更为这种形式：`x = x + y; y = x - y;` 这种形式。不过这个执行器的迭代进行条件不好指定。
 
 ##### 2.3.1.6) `SQL` 执行器
 
