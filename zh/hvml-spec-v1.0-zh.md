@@ -401,25 +401,23 @@ HVML 不提供任何操作可以用来改变不可变数据，但开发者可以
 HVML 定义的上下文变量可罗列如下：
 
 - `$?`：指父操作给出的结果数据，也称为当前上下文数据。
+- `$@`：指当前的文档操作范围，即代表当前操作范围的 DOM 子树，也就是介词属性 `in` 定义的当前文档操作位置。
 - `$#`：指当前上下文数据所包含的数据项数目：
-   - 假如当前上下文数据是数组，该变量指数组单元数量。
+   - 假如当前上下文数据是数组或集合，该变量指数组成员数量或集合元素数量。
    - 假如当前上下文数据是字典，该变量指键值对数量。
    - 假如当前上下文数据是字符串、数值、真值（true）、假值（false）或空值（null）时，该变量的值为 1。
    - 假如当前上下文数据是 undefined，则该变量的值为 0。
 - `$*`：指当前上下文数据的类型，用字符串表示，可能的取值有：`object`、`array`、`string`、`number`、`true`、`false`、`null`，分别表示对象、数组、字符串、数值、真值、假值以及空值。
-- `$@`：指当前的文档操作范围，即代表当前操作范围的 DOM 子树，也就是介词属性 `in` 定义的当前文档操作位置。
+- `$:`：若当前上下文数据是一个键值对象，则该变量表示键名，其他情形下为非法值。
+- `$=`：若当前上下文数据是一个键值对象，则该变量表示键值，其他情形下为非法值。
 
 以下上下文变量专用于迭代时（其他情形下为非法值）：
 
-- `$&`：当前迭代的迭代子（iterator），可在操作容器（尤其是集合时）时指定位置，获取键名等。
+- `$&`：当前迭代的迭代子（iterator），可在操作容器（尤其是集合时）时指代位置，获取键名等。
 - `$%`：当前迭代的索引值，比如第一次迭代，该变量的值为 0，第二次迭代，该变量的值为 1，以此类推。
 
 __讨论__  
-- `$#` 和 `$*` 有点多余了。因为我们可以通过定义一个 `EJSON` 动态对象获得数据的类型和成员数量等信息。
-- 用来表示键名的 `$:`，可通过迭代子（`$&`）上的 `key` 方法获得。
-- 在 `KEY` 执行器中使用 `FOR` 分句之后，如下两个上下文变量不再有意义：
-   - `$:`：若当前上下文数据来自键值对（key-value pair），该变量用来表示键名，其他情形下为非法值。
-   - `$=`：若当前上下文数据来自键值对（key-value pair），该变量用来表示键值，其他情形下为非法值。
+- 迭代子（`$&`）是否真有必要？其上可用的方法如何定义？
 
 我们还可以在上下文变量的符号之前添加一个正整数来引用从当前向上回溯 `<N>` 级的上下文数据：
 
@@ -3598,35 +3596,35 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
 一个合法的 JSON 表达式（`json_evaluation_expression`）需要符合如下的语法规则，且可递归使用：
 
 ```
-<json_evaluation_expression>: '$'<json_variable_addressing_expression> | '{$'<json_variable_addressing_expression>'}' | '{{$'<json_variable_addressing_expression>'}}'
+    <json_evaluation_expression>: '$'<json_variable_addressing_expression> | '{$'<json_variable_addressing_expression>'}' | '{{$'<json_variable_addressing_expression>'}}'
 
-<extended_json>: 见本文档“3.1.3.2) 扩展 JSON 语法”，其中的 JSON value 可以是一个 JSON 求值表达式。
+    <extended_json>: 见本文档“3.1.3.2) 扩展 JSON 语法”，其中的 JSON value 可以是一个 JSON 求值表达式。
 
-<json_variable_addressing_expression>: <literal_variable_name>[<json_addressing_expression>, ...]
-   <literal_variable_name>: 用于直接引用一个已命名的 JSON 数据。
-   <json_addressing_expression>：用于引用一个 JSON 数据的子元素。
+    <json_variable_addressing_expression>: <literal_variable_name>[<json_addressing_expression>, ...]
+       <literal_variable_name>: 用于直接引用一个已命名的 JSON 数据。
+       <json_addressing_expression>：用于引用一个 JSON 数据的子元素。
 
-<json_expression>: <json_evaluation_expression> | <extended_json>
+    <json_expression>: <json_evaluation_expression> | <extended_json>
 
-<json_addressing_expression>:
-   '.'<literal_key_name>'(' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] ')': 用于在动态 JSON 对象上调用特定键名的 getter 方法。
-   '.'<literal_key_name>'(!' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] ')': 用于在动态 JSON 对象上调用特定键名的 setter 方法。
-   '.'<literal_key_name>: 用于引用一个 JSON 对象的键值。
-   '[' [white_space] <json_evaluation_expression> | <quoted_key_name> | <literal_integer> [white_space] ']': 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。
+    <json_addressing_expression>:
+       '.'<literal_key_name>'(' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] ')': 用于在动态 JSON 对象上调用特定键名的 getter 方法。
+       '.'<literal_key_name>'(!' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] ')': 用于在动态 JSON 对象上调用特定键名的 setter 方法。
+       '.'<literal_key_name>: 用于引用一个 JSON 对象的键值。
+       '[' [white_space] <json_evaluation_expression> | <quoted_key_name> | <literal_integer> [white_space] ']': 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。
 
-<literal_variable_name>: [<literal_positive_integer>]< '?' | '@' | '#' | '*' | ':' | '&' | '%' > | <literal_token>
+    <literal_variable_name>: [<literal_positive_integer>]< '?' | '@' | '#' | '*' | ':' | '=' | '&' | '%' > | <literal_token>
 
-<literal_key_name>: <literal_token>
+    <literal_key_name>: <literal_token>
 
-<literal_integer>: /^-?\d+$/
+    <literal_integer>: /^-?\d+$/
 
-<literal_positive_integer>: /^[0-9]*[1-9][0-9]*$/
+    <literal_positive_integer>: /^[0-9]*[1-9][0-9]*$/
 
-<literal_token>: /^[A-Za-z_][A-Za-z0-9_]*$/
+    <literal_token>: /^[A-Za-z_][A-Za-z0-9_]*$/
 
-<quoted_key_name>: '''<literal_string>''' | '"'<literal_string>'"'
+    <quoted_key_name>: '''<literal_string>''' | '"'<literal_string>'"'
 
-<white_space>: /[ \f\n\r\t]/
+    <white_space>: /[ \f\n\r\t]/
 ```
 
 #### 3.1.3) 文本/Text
