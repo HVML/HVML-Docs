@@ -3592,24 +3592,37 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
 
 一个合法的 JSON 表达式（`json_evaluation_expression`）需要符合如下的语法规则，且可递归使用：
 
-- `json_evaluation_expression`: `'$'<json_variable_addressing_expression> | '{$'<json_variable_addressing_expression>'}' | '{{$'<json_variable_addressing_expression>'}}'`
-- `extended_json`: 见 <https://www.json.org>；其中的 JSON value 可以是一个 JSON 求值表达式。
-- `json_variable_addressing_expression`：`<literal_variable_name>[<json_addressing_expression>, ...]`
-   - `literal_variable_name`：用于直接引用一个已命名的 JSON 数据。
-   - `json_addressing_expression`：用于引用一个 JSON 数据的子元素。
-- `json_expression`: `<json_evaluation_expression> | <extended_json>`
-- `json_addressing_expression`：
-   - `'.'<literal_key_name>'(' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] ')'` 用于在动态 JSON 对象上调用特定键名的 getter 方法。
-   - `'.'<literal_key_name>'(!' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] ')'` 用于在动态 JSON 对象上调用特定键名的 setter 方法。
-   - `'.'<literal_key_name>` 用于引用一个 JSON 对象的键值。
-   - `'[' [white_space] <json_evaluation_expression> | <quoted_key_name> | <literal_integer> [white_space] ']'` 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。
-- `literal_variable_name`：`[literal_positive_integer]'?' | [literal_positive_integer]'@' | [literal_positive_integer]'#' | [literal_positive_integer]'*' | [literal_positive_integer]':' | '[literal_positive_integer]&' | [literal_positive_integer]'%' | <literal_token>`。
-- `literal_key_name`：`<literal_token>`。
-- `literal_integer`：`/^-?\d+$/`。
-- `literal_positive_integer`：`/^[0-9]*[1-9][0-9]*$/`。
-- `literal_token`：`/^[A-Za-z_][A-Za-z0-9_]*$/`。
-- `quoted_key_name`: `'''<literal_string>'''` | `'"'<literal_string>'"'`。
-- `white_space`: `/[ \f\n\r\t]/`
+```
+<json_evaluation_expression>: '$'<json_variable_addressing_expression> | '{$'<json_variable_addressing_expression>'}' | '{{$'<json_variable_addressing_expression>'}}'
+
+<extended_json>: 见本文档“3.1.3.2) 扩展 JSON 语法”，其中的 JSON value 可以是一个 JSON 求值表达式。
+
+<json_variable_addressing_expression>: <literal_variable_name>[<json_addressing_expression>, ...]
+   <literal_variable_name>: 用于直接引用一个已命名的 JSON 数据。
+   <json_addressing_expression>：用于引用一个 JSON 数据的子元素。
+
+<json_expression>: <json_evaluation_expression> | <extended_json>
+
+<json_addressing_expression>:
+   '.'<literal_key_name>'(' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] ')': 用于在动态 JSON 对象上调用特定键名的 getter 方法。
+   '.'<literal_key_name>'(!' [white_space] <json_expression>[<',' [white_space] <json_expression> [white_space]>, ...] [white_space] ')': 用于在动态 JSON 对象上调用特定键名的 setter 方法。
+   '.'<literal_key_name>: 用于引用一个 JSON 对象的键值。
+   '[' [white_space] <json_evaluation_expression> | <quoted_key_name> | <literal_integer> [white_space] ']': 用于引用一个 JSON 数组的特定单元或者用于引用一个 JSON 对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。
+
+<literal_variable_name>: [<literal_positive_integer>]< '?' | '@' | '#' | '*' | ':' | '&' | '%' > | <literal_token>
+
+<literal_key_name>: <literal_token>
+
+<literal_integer>: /^-?\d+$/
+
+<literal_positive_integer>: /^[0-9]*[1-9][0-9]*$/
+
+<literal_token>: /^[A-Za-z_][A-Za-z0-9_]*$/
+
+<quoted_key_name>: '''<literal_string>''' | '"'<literal_string>'"'
+
+<white_space>: /[ \f\n\r\t]/
+```
 
 #### 3.1.3) 文本/Text
 
