@@ -2229,7 +2229,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 如果我们要获得其中几个键名对应的键值，则使用 `KEY: 'zh_CN', 'zh_HK'`。
 
-如果我们要获得所有汉语地区的键值，则使用模式匹配 `KEY: LIKE 'zh_*'`，或使用正则表达式 `KEY: LIKE '/zh_[A-Z][A-Z]/i'`。
+如果我们要获得所有汉语地区的键值，则使用模式匹配 `KEY: LIKE 'zh_*'`，或使用正则表达式 `KEY: LIKE /zh_[A-Z][A-Z]/i`。
 
 如果我们要获得所有中国大陆地区和所有英语地区对应的键值对，可使用 `KEY: 'zh_CN', LIKE 'zh_*'`。
 
@@ -2330,7 +2330,7 @@ HVML 为不同的数据类型提供了如下操作：
     [ 100, 95, 80, 55 ]
 ```
 
-如果我们要获得以 0 结尾的元素，则使用 `FILTER: LIKE '/0$/'`，返回的数据为：
+如果我们要获得以 0 结尾的元素，则使用 `FILTER: LIKE /0$/`，返回的数据为：
 
 ```json
     [ 100, 80, 30, 20 ]
@@ -2347,12 +2347,13 @@ HVML 为不同的数据类型提供了如下操作：
 
     <string_matching_list>: <string_matching_expression>[, <string_matching_expression>[, ...]]
     <string_matching_expression>: LIKE <string_pattern_expression> | '<string_expression>'
-    <string_pattern_expression>: '<wildcard_expression>' | /<regular_expression>/[i]
+    <string_pattern_expression>: '<wildcard_expression>' | /<regular_expression>/[regexp_flags]
     <string_expression>: <literal_string> | <string_evaluation_expression>
     <wildcard_expression>: <literal_string> | <string_evaluation_expression>
     <regular_expression>: <literal_string> | <string_evaluation_expression>
 
     <string_evaluation_expression>: <json_evaluation_expression>
+    <regexp_flags>: g || i || m || s || u || y
 ```
 
 注意：
@@ -2480,8 +2481,8 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 
 - 如果我们要获得所有汉语地区的数据子集，则使用 `SQL: SELECT * WHERE locale LIKE 'zh_*'`。
 - 如果我们要获得其中几个特定地区的数据子集，则使用 `SQL: SELECT * WHERE locale IN ('zh_CN', 'zh_TW')`。
-- 如果我们要获得其中 `rank` 键值大于 70 的记录，则使用 `SQL: SELECT locale WHERE ranke > 70`。
-- 如果我们要获得其中 `rank` 键值大于 70 汉语地区记录，则使用 `SQL: SELECT locale WHERE locale LIKE 'zh_*' AND ranke > 70`。
+- 如果我们要获得其中 `rank` 键值大于 70 的记录，则使用 `SQL: SELECT locale WHERE rank > 70`。
+- 如果我们要获得其中 `rank` 键值大于 70 汉语地区记录，则使用 `SQL: SELECT locale WHERE locale LIKE 'zh_*' AND rank > 70`。
 
 和用于数据库的 SQL 语言不同，我们并没有使用标准 SQL 语句的 `FROM` 分句来指定数据库表，因为在 HVML 中我们已经使用了`on` 介词属性来指定了数据集。因此，可以说 HVML 的 SQL 执行器是一种简化的 SQL 实现，主要借助 SQL 的 `SELECT` 语句实现了选择、迭代和规约操作。具体而言，HVML 的 SQL 语句主要支持如下分句（不同的 HVML 解释器实现可以支持更多的 SQL 分句）。
 
