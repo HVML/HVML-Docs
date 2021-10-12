@@ -2147,6 +2147,71 @@ HVML 为不同的数据类型提供了如下操作：
 
 #### 2.3.1) 内建执行器
 
+首先，我们给出执行器规则的描述方法：
+
+1. 执行器的规则会始终被解析为包含有 JSON 求值表达式的字符串。
+1. 使用一个或多个空格表示规则中用来分隔不同词法单元的空白分隔符，实际编码中可使用一个或者多个 U+0009 TAB、U+000A LF、U+000C FF、U+000D CR 或 U+0020 SPACE 字符。
+1. 使用一对尖括号（`<>`）包围的字符串来表示必须包含在规则中的一个完整词法单元。
+1. 使用一对尖括号（`[]`）包围的字符串来表示可选地包含在规则中的一个完整词法单元。
+1. 在规则字符串出现的普通字符或者普通字符串（literal character or literal string），不做特别修饰，比如关键词或者表示分句的逗号（`,`）等。
+1. 当某个词法单元由单个或者多个关键字符、关键词表示时，或者可从多个词法单元（组）中选择时，我们使用 `||`、`&&`、`|` 等符号表示这些单元是否可以同时出现，其规则如下：
+   1. 并置的单元表示所有的关键字符（词、组）或词法单元（组）都要以给定的顺序传递。
+   1. `&&` 分隔的两个或多个关键字符（词、组）或词法单元（组），表示必须传递所有这些单元，顺序任意。
+   1. `||` 分隔的两个或多个关键字符（词、组）或词法单元（组），表示必须传递这些关键词中的一个或多个，顺序任意。
+   1. `|` 分隔两个或者多个关键字符（词、组）或词法单元（组），表示必须传递其中一个。
+   1. 使用一对中括号（`[ ]`）对多个单元进行分组。
+1. `<literal_number>` 和 `<literal_string>` 等，遵循 JSON 语法，不再赘述。
+1. `<literal_integer>` 本质上同 `<literal_number>`，只是在具体的实现当中，应强制转换为整数使用。
+1. 另外注意：
+   1. 当某个词法单元由单个或者多个关键字符表示时，实际编码时不使用空格分隔这些关键字符。
+   1. 当某个词法单元由单个或者多个关键词表示时，我们用空格分隔这些关键词，
+
+比如，在下面的规则语法描述中，我们经常会使用正则表达式，相关的语法描述为：
+
+```
+    <pattern_expression>: '<wildcard_expression>' | /<regular_expression>/[regexp_flags]
+    <wildcard_expression>: <literal_string> | <string_evaluation_expression>
+    <regular_expression>: <literal_string> | <string_evaluation_expression>
+    <string_expression>: <literal_string> | <string_evaluation_expression>
+
+    <string_evaluation_expression>: <json_evaluation_expression>
+    <regexp_flags>: g || i || m || s || u || y
+```
+
+以上的语法描述包含如下信息：
+
+- 使用 `//` 定义一个正则表达式，故而当正则表达式中包含有 `/` 字符时，需转义。
+- 其后可包含单个或者多个关键字符表示的匹配标志。
+
+包含在 `//` 中的正则表达式应符合 POSIX.1-2001 标准。`regexp_flags` 指定匹配标志（可选），可选如下标志字符中的单个或者多个：
+
+- `g`：全局匹配。
+- `i`：不区分大小写搜索。
+- `m`：多行搜索。
+- `s`：允许 `.` 匹配换行符。
+- `u`：使用 UNICODE。
+- `y`：执行粘性（sticky）搜索，匹配从目标字符串的当前位置开始。
+
+也就是说，如下的正则表达式表示法是正确的：
+
+```
+/^head/
+/tail$/im
+```
+
+而如下的正则表达式是错误的：
+
+```
+/^head/tail/
+/tail$/imasf
+```
+
+更多信息，可参阅：
+
+- `man regex` on Linux
+- Python 3 re module: <https://docs.python.org/3/library/re.html>
+- MDN: <https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions#%E9%80%9A%E8%BF%87%E6%A0%87%E5%BF%97%E8%BF%9B%E8%A1%8C%E9%AB%98%E7%BA%A7%E6%90%9C%E7%B4%A2>
+
 ##### 2.3.1.1) `KEY` 执行器
 
 该执行器作用于字典数据上，使用给定的键名或键名列表返回键名、键值或键值对象列表，或者使用匹配某个规则的键名列表，返回键名、键值或者键值对象列表。比如对下面的数据：
@@ -2176,16 +2241,15 @@ HVML 为不同的数据类型提供了如下操作：
 
     <key_name_list>: <key_list_expression>[, <key_list_expression>[, ...]]
     <key_list_expression>: LIKE <key_pattern_expression> | <literal_key_name_expression>
-    <key_pattern_expression>: '<wildcard_expression>' | /<regular_expression>/[i]
+    <key_pattern_expression>: '<wildcard_expression>' | /<regular_expression>/[regexp_flags]
     <literal_key_name_expression>: '<string_expression>'
     <wildcard_expression>: <literal_string> | <string_evaluation_expression>
     <regular_expression>: <literal_string> | <string_evaluation_expression>
     <string_expression>: <literal_string> | <string_evaluation_expression>
 
     <string_evaluation_expression>: <json_evaluation_expression>
+    <regexp_flags>: g || i || m || s || u || y
 ```
-
-注：正则表达式语法应符合 POSIX.1-2001 标准。
 
 `KEY 执行器中的 `FOR` 分句指定了数据的返回形式：
 
