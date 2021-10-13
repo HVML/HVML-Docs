@@ -909,7 +909,7 @@ HVML 还定义有如下一些动作标签：
 
 针对动作标签，HVML 定义了如下几个介词（如 `on`、`in`、`to` 等）属性，用于定义执行动作时依赖的数据（或元素）及其集合。如：
 
-- `at`：在 `set` 动作元素中，用来指定要操作的变量名称；在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URI，如 `tcp://foo.com:2345`、`unix:///var/run/hibus.sock`。
+- `at`：在 `set` 动作元素中，用来指定要操作的变量名称；在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URI，如 `tcp://foo.com:2345`、 `unix:///var/run/hibus.sock`。
 - `from`：在 `init`、`set`、`load` 等动作元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URI。
 - `on`：用于定义执行动作所依赖的数据、元素或元素集合。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`$?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
 - `in`：用于定义执行操作的文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。注意，使用 `in` 介词属性指定数据作为操作范围时，不会改变文档的操作位置。
@@ -3289,7 +3289,7 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: M
 
 注意：我们通常在目标标记语言定义的标签和 HVML 标签冲突时才使用前缀。
 
-当我们使用 `DOCTYPE` 的 `SYSTEM` 标志符定义需要预先装载的全局动态对象时，使用 `<package-name>`、`<package-name>:<variable-name>`、`<package-name>.<dvobj-name>` 或者 `<package-name>.<dvobj-name>:<variable-name>` 这样的表示法。以上四种表示法的含义分别解释如下：
+当我们使用 `DOCTYPE` 的 `SYSTEM` 标志符定义需要预先装载的全局动态对象时，使用 `<package-name>`、 `<package-name>:<variable-name>`、 `<package-name>.<dvobj-name>` 或者 `<package-name>.<dvobj-name>:<variable-name>` 这样的表示法。以上四种表示法的含义分别解释如下：
 
 1. 表示从 `<package-name>` 对应的共享库中装载名称同包名 `<package-name>` 的动态对象，并绑定为名称是 `<package-name>` 的变量。
 1. 表示从 `<package-name>` 对应的共享库中装载名称同包名 `<package-name>` 的动态对象，并绑定为名称是 `<variable-name>` 的变量。
