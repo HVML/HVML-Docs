@@ -719,7 +719,7 @@ HVML 解释器按照固定的策略将 DOM 子树（文档片段）视作一个�
     - `$users[locale *= 'abc']`：表示选择 `$users` 中所有 `locale` 键值包含 `abc` 子字符串的数据项。
     - `$users[locale ^= 'abc']`：表示选择 `$users` 中所有 `locale` 键值以 `abc` 打头的数据项。
     - `$users[locale $= 'abc']`：表示选择 `$users` 中所有 `locale` 键值以 `abc` 结尾的数据项。
-    - `$users[locale ~= 'abc']`：表示选择 `$users` 中所有 `locale` 键值中以 `abc` 作为一个而完整词法单元的数据项。
+    - `$users[locale ~= 'abc']`：表示选择 `$users` 中所有 `locale` 键值中以 `abc` 作为一个而完整词元的数据项。
 - 针对数组：
     - `$users:nth-child(3n+1)`：表示当前数组中所有索引下标匹配 4、7、10 等的数据项。
 
@@ -833,7 +833,7 @@ HVML 定义有如下几个基本的动作标签，用于操作数据或者元素
 - 骨架元素不需要输入数据，但隐含指定了可继承给后继动作元素的操作范围（对应上下文变量 `$@`），即该骨架元素在最终 DOM 树中对应的子树。
 - 骨架元素对应的文档操作范围作为其执行结果传给其子动作元素，也就是子动作元素的上下文变量 `$?`。
 
-通过动作标签，HVML 可完成对文档或数据的插入、删除、修改等操作，以及通过观察数据的变化而动态调整 DOM 树的行为。我们将在本文档第 2) 小节中详细讲述这些动作标签。
+通过动作标签，HVML 可完成对文档或数据的插入、删除、修改等操作，以及通过观察数据的变化而动态调整 DOM 树的行为。我们将在本文档 [2.2) 动作标签详解](#22-动作标签详解) 中详细讲述这些动作标签。
 
 #### 2.1.10) 其他动作标签
 
@@ -1056,14 +1056,7 @@ HVML 还定义有如下一些动作标签：
 
 注意，当 `on` 属性值指定的是一个元素集合时，`update` 标签设定的属性或内容操作，将用于集合中所有的元素。
 
-另外，我们还可以使用除 `=` 之外的如下属性修改操作符：
-
-- `+=`：在当前的属性值中添加一个新的词法单元（token，指使用某种词法进行分割的最小单元字符串），若已有该词法单元，则不做修改。比如，原有的 `attr.class` 的属性值为 `foo`，使用 `attr.class += "text-warning"` 后，将修改为：`foo text-warning`；若原有属性值为 `foo text-warning`，则会保持不变。
-- `-=`：从当前属性值中移除一个词法单元，若没有该词法单元，则不做修改。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class -= "text-warning"` 后，将修改为 `foo`。
-- `%=`：从当前属性值中按指定的模式匹配一个词法单元，并使用第二个词法单元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class %= "text-* text-info"` 后，将修改为 `foo text-info`。
-- `~=`：从当前属性值中按正则表达式匹配一个词法单元，并使用第二个词法单元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class ~= "/^text/ text-info"` 后，将修改为 `foo text-info`。
-- `^=`：在当前属性值的头部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value ^= "C"` 后，将修改为：`Cab`。
-- `$=`：在当前属性值的尾部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value $= "C"` 后，将修改为：`abC`。
+另外，我们还可以使用除 `=` 之外的属性修改操作符修改内容，详情见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性)。
 
 #### 2.2.2) `erase` 标签
 
@@ -1256,7 +1249,7 @@ HVML 还定义有如下一些动作标签：
 
 `choose` 标签可支持 `by` 属性，通过该属性指定的执行器来获得一个执行结果数据。如果没有定义 `by` 属性，其结果数据就是 `on` 属性值。
 
-比如要实现 2.4) 小节中根据当前 `locale` 动态生成搜索链接的功能，我们也可以使用嵌套在 `choose` 标签中的 `update` 标签完成相关功能，如：
+比如要实现根据当前 `locale` 动态生成搜索链接的功能，我们也可以使用嵌套在 `choose` 标签中的 `update` 标签完成相关功能，如：
 
 ```html
   <head>
@@ -2327,7 +2320,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 对于字典数据，不指定 `by` 属性时，默认使用 `KEY: ALL` 执行器。
 
-注：JSON 求值表达式（JSON evaluation expression）的规则及语法，在本文档 4.5.5) 小节中统一描述（下同）。
+注：JSON 求值表达式（JSON evaluation expression）的规则及语法，在本文档 [3.1.2.8) JSONEE 的语法/Syntax of JSONEE](#3128-jsonee-的语法syntax-of-jsonee) 小节中描述（下同）。
 
 ##### 2.3.1.2) `RANGE` 执行器
 
@@ -2427,10 +2420,10 @@ HVML 为不同的数据类型提供了如下操作：
 
 ##### 2.3.1.4) 用于字符串的内建执行器
 
-针对字符串数据，HVML 提供如下内建执行器，可分别用于遍历字符串中的字符和词法单元（token）：
+针对字符串数据，HVML 提供如下内建执行器，可分别用于遍历字符串中的字符和词元（token）：
 
 - `CHAR:`：将字符串分割为字符数组。语法和 `RANGE` 执行器类似。
-- `TOKEN:`：将字符串按照指定的分隔符分割为词法单元数组。
+- `TOKEN:`：将字符串按照指定的分隔符分割为词元数组。
 
 `CHAR` 执行器的语法如下：
 
@@ -2731,7 +2724,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 
 注意，在基于字典数据的数组或者树状结构上执行 SQL 语句时，可选的字段（如 `tag`、`attr.id` 等）为所有字典数据的键名之并集。对所有未定义的键值对，相应的键值为 null。
 
-除了 `SELECT` 语句外，HVML 的 SQL 执行器支持 `GET` 语句，其语法和 `SELECT` 类似，唯一的不同在于 `GET` 语句返回给定条件的字典数据之引用，而不是字典数据值。通常，我们配合 `update` 操作使用 `GET` 语句，以便更新数据。如本文 1.1) 小节中修改激活定时器时使用的 SQL 语句。
+除了 `SELECT` 语句外，HVML 的 SQL 执行器支持 `GET` 语句，其语法和 `SELECT` 类似，唯一的不同在于 `GET` 语句返回给定条件的字典数据之引用，而不是字典数据值。通常，我们配合 `update` 操作使用 `GET` 语句，以便更新数据。如本文档 [2.1.6.4) `$TIMERS`](#2164-timers) 小节中修改激活定时器时使用的 SQL 语句。
 
 ##### 2.3.1.7) `TRAVEL` 执行器
 
@@ -3484,12 +3477,15 @@ There must never be two or more attributes on the same start tag whose names are
 
 在某些动作元素（如 `update`）中，我们可以使用除 `=` 之外的属性值操作符来改变目标元素或者数据的属性或者内容：
 
-- `+=`：在当前的属性值中添加一个新的词法单元（token），若已有该词法单元，则不做修改。比如，原有的 `attr.class` 的属性值为 `foo`，使用 `attr.class += "text-warning"` 后，将修改为：`foo text-warning`；若原有属性值为 `foo text-warning`，则会保持不变。
-- `-=`：从当前属性值中移除一个词法单元，若没有该词法单元，则不做修改。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class -= "text-warning"` 后，将修改为 `foo`。
-- `%=`：从当前属性值中按指定的模式匹配一个词法单元，并使用第二个词法单元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class %= "text-* text-info"` 后，将修改为 `foo text-info`。
-- `~=`：从当前属性值中按正则表达式匹配一个词法单元，并使用第二个词法单元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class ~= "/^text/ text-info"` 后，将修改为 `foo text-info`。
+- `+=`：在当前的属性值中添加一个新的词元（token），若已有该词元，则不做修改。比如，原有的 `attr.class` 的属性值为 `foo`，使用 `attr.class += "text-warning"` 后，将修改为：`foo text-warning`；若原有属性值为 `foo text-warning`，则会保持不变。
+- `-=`：从当前属性值中移除一个词元，若没有该词元，则不做修改。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class -= "text-warning"` 后，将修改为 `foo`。
+- `%=`：从当前属性值中匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class /= "text-warning text-info"` 后，将修改为 `foo text-info`。
+- `%=`：从当前属性值中按指定的通配符模式匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class %= "text-* text-info"` 后，将修改为 `foo text-info`。
+- `~=`：从当前属性值中按正则表达式匹配一个词元，并使用第二个词元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class ~= "/^text/ text-info"` 后，将修改为 `foo text-info`。
 - `^=`：在当前属性值的头部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value ^= "C"` 后，将修改为：`Cab`。
 - `$=`：在当前属性值的尾部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value $= "C"` 后，将修改为：`abC`。
+
+上述说明中所指词元（token），通常指一个长度不为零的字符序列，其中的字符为 ASCII 字母、ASCII 数字、或者减号（`-`）、连字符（`_`），词元之间由一个或多个空白字符分隔。但在具体的实现中，不包含任何空白字符的可打印字符串视作一个完整的词元。
 
 如，
 
