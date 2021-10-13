@@ -2149,11 +2149,12 @@ HVML 为不同的数据类型提供了如下操作：
 
 这里给出内置执行器规则的描述规则：
 
+1. 使用冒号（`:`）描述一个词法单元的构成形式，对其的文字解释或者该词法单元的正则表达式；冒号后可换行，但第二行通常会缩进书写。
 1. 使用一个或多个空格表示规则中用来分隔不同词法单元的空白分隔符，实际编码中可使用一个或者多个 U+0009 TAB、U+000A LF、U+000C FF、U+000D CR 或 U+0020 SPACE 字符。
-1. 应原样出现的特殊字符、关键字符，使用单引号（`'`）包围。
-1. 应原样出现的关键词，使用双引号（`"`）包围。
-1. 使用一对尖括号（`< >`）包围的字符串来表示必须包含在规则中的词法单元。
-1. 使用一对尖括号（`[ ]`）包围的字符串来表示可选地包含在规则中的词法单元。
+1. 应原样出现的特殊字符（literal special characters）、关键字符（literal key characters），使用单引号（`'`）包围。
+1. 应原样出现的关键词（literal key words），使用双引号（`"`）包围。
+1. 使用一对尖括号（`< >`）包围的字符串表示使用英文短语描述的词法单元。
+1. 使用一对尖括号（`[ ]`）包围的词法单元表示可选。
 1. 当某个词法单元由单个或者多个关键字符、关键词表示时，或者可从多个词法单元（组）中选择时，我们使用 `||`、`&&`、`|` 等符号表示这些单元是否可以同时出现，其规则如下：
    1. 并置的单元表示所有的关键字符（词、组）或词法单元（组）都要以给定的顺序传递。
    1. `&&` 分隔的两个或多个关键字符（词、组）或词法单元（组），表示必须传递所有这些单元，顺序任意。
@@ -2318,7 +2319,7 @@ HVML 为不同的数据类型提供了如下操作：
 
     <integer_expression>: <literal_integer> | <integer_evaluation_expression>
     <integer_evaluation_expression>: <four_arithmetic_expressions>
-    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
+    <four_arithmetic_expressions>: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 ```
 
 对于数组数据，不指定 `by` 属性时，默认使用 `RANGE: FROM 0` 执行器。
@@ -2358,7 +2359,7 @@ HVML 为不同的数据类型提供了如下操作：
 
     <number_expression>: <literal_number> | <number_evaluation_expression>
     <number_evaluation_expression>: <four_arithmetic_expressions>
-    <four_arithmetic_expressions>: a four arithmetic expressions in C syntax, such as `(3.14 * 6 * 6) / 5`
+    <four_arithmetic_expressions>: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 
     <string_matching_list>: <string_matching_expression>[, <string_matching_expression>[, ...]]
     <string_matching_expression>: "LIKE" <string_pattern_expression> | '''<string_expression>'''[<matching_flags>][<max_matching_length>]
@@ -2396,7 +2397,7 @@ HVML 为不同的数据类型提供了如下操作：
 
     <integer_expression>: <literal_integer> | <integer_evaluation_expression>
     <integer_evaluation_expression>: <four_arithmetic_expressions>
-    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
+    <four_arithmetic_expressions>: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 
     <string_expression>: <literal_string>
 ```
@@ -2414,7 +2415,7 @@ HVML 为不同的数据类型提供了如下操作：
 
     <integer_expression>: <literal_integer> | <integer_evaluation_expression>
     <integer_evaluation_expression>: <four_arithmetic_expressions>
-    <four_arithmetic_expressions>: a four arithmetic expressions with <json_evaluation_expression> in C syntax, such as `($MATH.pi * $? * $?) / 5`
+    <four_arithmetic_expressions>: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 
     <string_expression>: <literal_string>
 ```
@@ -2446,7 +2447,7 @@ HVML 为不同的数据类型提供了如下操作：
 
     <number_expression>: <literal_number> | <number_evaluation_expression>
     <number_evaluation_expression>: <four_arithmetic_expressions>
-    <four_arithmetic_expressions>: a four arithmetic expressions in C syntax, such as `(3.14 * 6 * 6) / 5`
+    <four_arithmetic_expressions>: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 ```
 
 比如，当我们使用 `ADD: GT 90, BY -3` 执行器作用于数值 `100` 时，返回的数列为：
