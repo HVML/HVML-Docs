@@ -2151,6 +2151,8 @@ HVML 为不同的数据类型提供了如下操作：
    1. 不使用单引号、双引号或斜杠符包围的英文单词或者使用下划线相连的英文短语，如 `ws`、`literal_integer` 用来表示一个被指名的词法单元。
 1. 若一条规则中包含有被指名的词法单元，将另起一行定义该词法单元的语法，直到所有被指名的词法单元均被完整定义或说明为止。
 1. 定义被指名的词法单元之语法时，在该词法单元名称之后使用冒号（`:`），冒号后可换行，但第二行通常会缩进书写。
+1. 当某个被指名的词法单元之解释有多个缩进的行描述时，每一行表示一种并列的描述。
+1. 通常使用一行来描述一个词法单元，若太长，可使用反斜杠（`\`）表示续行。
 1. 使用一对尖括号（`< >`）表示一个必须存在的词法单元（组）。
 1. 使用一对中括号（`[ ]`）包围的词法单元（组）表示可选。
 1. 多个词法单元形成词法单元组。
@@ -2163,6 +2165,7 @@ HVML 为不同的数据类型提供了如下操作：
 1. `literal_number` 遵循 EJSON 语法，不再赘述。
 1. `literal_integer` 本质上同 `literal_number`，只是在具体的实现当中，应强制转换为整数使用。
 1. 额外说明：
+   1. 井号（`#`）后的文字被视作注释。
    1. 规则语法描述中的空格，不代表实际规则中应该包含空格，而仅仅为了分隔不同的词法单元，便于阅读。
    1. 若多个词法单元之间没有空格，表示这些词法单元形成一个不可分隔的词法单元组。
    1. 当某个词法单元由单个或者多个字面标志字符表示时，实际编码时不使用空格分隔这些字符。
@@ -2171,7 +2174,7 @@ HVML 为不同的数据类型提供了如下操作：
 比如，下面是一个假定的规则，其语法描述中，我们经常会使用正则表达式，相关的语法描述为：
 
 ```
-    "FOO"[ws]':' [ws] "ALL" | { "LIKE" [ws] <pattern_expression> }
+    "FOO" [hws] ':' [ws] "ALL" | { "LIKE" [ws] <pattern_expression> }
 
     pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length] | '/'<regular_expression>'/'[<regexp_flags>]
     wildcard_expression: A sequence of zero or more Unicode characters in UTF-8 encoding, using backslash escapes like C language and wildcard characters (`*` or `?`).
@@ -2180,6 +2183,12 @@ HVML 为不同的数据类型提供了如下操作：
     regexp_flags: 'g' || 'i' || 'm' || 's' || 'u' || 'y'
     matching_flags: 'i' || 's' || 'c'
     max_matching_length: <literal_positive_integer>
+
+    literal_integer: /^-?[0-9]*[1-9][0-9]*$/
+    literal_positive_integer: /^[0-9]*[1-9][0-9]*$/
+
+    ws: /[ \t\f\n\r]/   # white space
+    hws: /[ \t]/        # horizontal white space
 ```
 
 根据以上语法，如下的规则字符串是合法的：
@@ -2267,8 +2276,10 @@ HVML 为不同的数据类型提供了如下操作：
 
     literal_integer: /^-?[0-9]*[1-9][0-9]*$/
     literal_positive_integer: /^[0-9]*[1-9][0-9]*$/
+    literal_non_negative_integer: /^[0-9]+$/
 
-    ws: /[ \f\n\r\t]/
+    ws: /[ \t\f\n\r]/   # white space
+    hws: /[ \t]/        # horizontal white space
 ```
 
 ##### 2.3.1.1) `KEY` 执行器
@@ -2296,9 +2307,9 @@ HVML 为不同的数据类型提供了如下操作：
 `KEY` 执行器的语法如下：
 
 ```
-    "KEY" [ws] ':' [ws] { "ALL" | <key_name_list> } [ [ws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
+    "KEY" [hws] ':' [ws] { "ALL" | <key_name_list> } [ [hws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
 
-    key_name_list: <key_list_expression>[ [ws] ',' [ws] <key_list_expression>[ [ws] ',' ...]]
+    key_name_list: <key_list_expression>[ [hws] ',' [ws] <key_list_expression>[ [hws] ',' ...]]
     key_list_expression: "LIKE"<ws><key_pattern_expression> | <literal_key_name>
     key_pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
     literal_key_name: '''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
@@ -2355,7 +2366,7 @@ HVML 为不同的数据类型提供了如下操作：
 `RANGE` 执行器的语法如下：
 
 ```
-    "RANGE" [ws] ':' [ws] "FROM" <ws> <integer_expression> ["TO" <ws> <integer_expression>][ [ws] ',' [ws] "ADVANCE" <ws> <integer_expression>]
+    "RANGE" [hws] ':' [ws] "FROM" <ws> <integer_expression> ["TO" <ws> <integer_expression>][ [hws] ',' [ws] "ADVANCE" <ws> <integer_expression>]
 
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
@@ -2398,7 +2409,7 @@ HVML 为不同的数据类型提供了如下操作：
 `FILTER` 执行器的语法如下：
 
 ```
-    "FILTER" [ws] ':' [ws] "ALL" | { < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ"> <ws> <number_expression> } | { <string_matching_list> } [ [ws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
+    "FILTER" [hws] ':' [ws] "ALL" | { < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ"> <ws> <number_expression> } | { <string_matching_list> } [ [hws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
 
     number_expression: <literal_number> | <number_evaluation_expression>
     number_evaluation_expression: <four_arithmetic_expressions>
@@ -2428,7 +2439,7 @@ HVML 为不同的数据类型提供了如下操作：
 `CHAR` 执行器的语法如下：
 
 ```
-    "CHAR" [ws] ':' [ws] "FROM" <ws> <integer_expression> [ <ws> "TO" <ws> <integer_expression>] [ [ws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [ws] ',' [ws] "STOP" <ws> "ON" <ws> '''<literal_char>''']
+    "CHAR" [hws] ':' [ws] "FROM" <ws> <integer_expression> [ <ws> "TO" <ws> <integer_expression>] [ [hws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [hws] ',' [ws] "STOP" <ws> "ON" <ws> '''<literal_char>''']
 
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
@@ -2448,7 +2459,7 @@ HVML 为不同的数据类型提供了如下操作：
 `TOKEN` 执行器的语法如下：
 
 ```
-    "TOKEN" [ws] ':' [ws] "FROM" <ws> <integer_expression> [<ws> "TO" <ws> <integer_expression>] [ [ws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [ws] ',' [ws] "DELIMETERS" <ws> '''<literal_char_sequence>'''] [ [ws] ',' [ws] "STOP" <ws> "ON" <ws> '''<string_matching_list>''']
+    "TOKEN" [hws] ':' [ws] "FROM" <ws> <integer_expression> [<ws> "TO" <ws> <integer_expression>] [ [hws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [hws] ',' [ws] "DELIMETERS" <ws> '''<literal_char_sequence>'''] [ [hws] ',' [ws] "STOP" <ws> "ON" <ws> '''<string_matching_list>''']
 
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
@@ -2482,7 +2493,7 @@ HVML 为不同的数据类型提供了如下操作：
 `ADD`、`SUB`、`MUL`、`DIV` 执行器的语法如下：
 
 ```
-    < "ADD" | "SUB" | "MUL" | "DIV" > [ws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> [ws] ',' [ws] "BY" <ws> <number_expression>
+    < "ADD" | "SUB" | "MUL" | "DIV" > [hws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> [hws] ',' [ws] "BY" <ws> <number_expression>
 
     number_expression: <literal_number> | <number_evaluation_expression>
     number_evaluation_expression: <four_arithmetic_expressions>
@@ -2498,7 +2509,7 @@ HVML 为不同的数据类型提供了如下操作：
 `FORMULA` 执行器的语法如下：
 
 ```
-    "FORMULA" [ws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> [ws] ',' [ws] "BY" <ws> <iterative_formula_expression>
+    "FORMULA" [hws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> [hws] ',' [ws] "BY" <ws> <iterative_formula_expression>
 
     number_expression: <literal_number> | <number_evaluation_expression>
     number_evaluation_expression: <four_arithmetic_expressions>
@@ -2733,7 +2744,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 `TRAVEL` 执行器的语法如下：
 
 ```
-    "TRAVEL" [ws] ':' [ws] <"SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES">
+    "TRAVEL" [hws] ':' [ws] <"SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES">
 ```
 
 说明如下：
@@ -3674,7 +3685,8 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
 
     <quoted_key_name>: '''<literal_char_sequence>''' | '"'<literal_char_sequence>'"'
 
-    <ws>: /[ \f\n\r\t]/
+    <ws>: /[ \t\f\n\r]/     # white space
+    <hws>: /[ \t]/          # horinzontal white space
 ```
 
 #### 3.1.3) 文本/Text
