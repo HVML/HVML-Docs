@@ -2563,7 +2563,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 
 在 HVML 中，SQL 执行器也可以作用于 DOM 文档子树或者嵌套的 JSON 字典数据。为此，我们引入了一个新的 SQL SELECT 分句 `TRAVEL IN`，可选 `SLIBLINGS`、`DEPTH`、`BREADTH` 或者 `LEAVES`，分别表示使用兄弟节点遍历、深度优先（depth-first）遍历、广度优先（breadth-first）遍历和叶子节点遍历，其语法为：
 
-- `"TRAVEL" "IN" ["SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES"]`：用于指定在树形数据上的遍历方式。
+- `"TRAVEL" <ws> "IN" <ws> [ "SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES" ]`：用于指定在树形数据上的遍历方式。
 
 如针对下面的 DOM 树：
 
