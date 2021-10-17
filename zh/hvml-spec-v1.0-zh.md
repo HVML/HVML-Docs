@@ -3490,9 +3490,9 @@ There must never be two or more attributes on the same start tag whose names are
 
 - `+=`：在当前的属性值中添加一个新的词元（token），若已有该词元，则不做修改。比如，原有的 `attr.class` 的属性值为 `foo`，使用 `attr.class += "text-warning"` 后，将修改为：`foo text-warning`；若原有属性值为 `foo text-warning`，则会保持不变。
 - `-=`：从当前属性值中移除一个词元，若没有该词元，则不做修改。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class -= "text-warning"` 后，将修改为 `foo`。
-- `%=`：从当前属性值中匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class /= "text-warning text-info"` 后，将修改为 `foo text-info`。
-- `%=`：从当前属性值中按指定的通配符模式匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class %= "text-* text-info"` 后，将修改为 `foo text-info`。
-- `~=`：从当前属性值中按正则表达式匹配一个词元，并使用第二个词元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class ~= "/^text/ text-info"` 后，将修改为 `foo text-info`。
+- `%=`：从当前属性值中精确匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class %= "text-warning text-info"` 后，将修改为 `foo text-info`。
+- `~=`：从当前属性值中按指定的通配符模式匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class ~= "text-* text-info"` 后，将修改为 `foo text-info`。
+- `/=`：从当前属性值中按正则表达式匹配一个词元，并使用第二个词元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class /= "/^text/ text-info"` 后，将修改为 `foo text-info`。
 - `^=`：在当前属性值的头部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value ^= "C"` 后，将修改为：`Cab`。
 - `$=`：在当前属性值的尾部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value $= "C"` 后，将修改为：`abC`。
 
