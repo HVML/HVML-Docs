@@ -2458,10 +2458,6 @@ HVML 为不同的数据类型提供了如下操作：
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
     four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
-
-    string_matching_list: <string_matching_expression>[, <string_matching_expression>[, ...]]
-    string_matching_expression: "LIKE"<WS><string_pattern_expression> | '''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
-    string_pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
 ```
 
 比如，当我们使用 `CAHR: FROM 0 TO 10, ADVANCE 2, STOP ON 'f'` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
