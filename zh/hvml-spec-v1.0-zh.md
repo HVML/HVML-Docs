@@ -1286,7 +1286,7 @@ HVML 还定义有如下一些动作标签：
         <p><a href="" title=""></a></p>
     </footer>
 
-    <choose on="$locales" to="update" in="#the-footer" by="KEY: $global.locale">
+    <choose on="$locales" to="update" in="#the-footer" by="KEY: AS '$global.locale'">
         <update on="~ p > a" textContent="$?.se_name" attr.href="$?.se_url" attr.title="$?.se_title" />
         <catch for="error:nodata">
             <update on="~ p" textContent="You forget to define the \$locales/\$global variables!" />
@@ -1657,7 +1657,7 @@ HVML 还定义有如下一些动作标签：
             </iterate>
 
             <reduce on="$users" to="choose clear iterate" in="#the-user-statistics" by="CLASS: RUserRegionStats">
-                <choose on="$?" to="update" in="> h2 > span" by="KEY: 'count'">
+                <choose on="$?" to="update" in="> h2 > span" by="KEY: AS 'count'">
                     <update on="$@" textContent="$?" />
                 </choose>
                 <clear in="#the-user-statistics > dl" />
@@ -2057,7 +2057,7 @@ HVML 为不同的数据类型提供了如下操作：
 `catch` 作为任意动作元素的子元素，定义该动作出现错误或者异常时要执行的动作。`catch` 标签定义的元素作为 `error` 和 `except` 元素的补充，可定义错误或者异常情形下的动作。如：
 
 ```html
-    <choose on="$locales" to="update" in="#the-footer" by="KEY: $global.locale">
+    <choose on="$locales" to="update" in="#the-footer" by="KEY: AS '$global.locale'">
         <update on="~ p > a" textContent="$?.se_name" attr.href="$?.se_url" attr.title="$?.se_title" />
         <catch for="error:nodata">
             <update on="~ p" textContent='You forget to define the $locales/$global variables!' />
@@ -2189,7 +2189,7 @@ HVML 为不同的数据类型提供了如下操作：
 比如，下面是一个假定的规则，其语法描述中，我们经常会使用正则表达式，相关的语法描述为：
 
 ```
-    "FOO" [hws] ':' [ws] "ALL" | { "LIKE" [ws] <pattern_expression> }
+    "FOO" [ws] ':' [ws] "ALL" | { "LIKE" [ws] <pattern_expression> }
 
     pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length] | '/'<regular_expression>'/'[<regexp_flags>]
     wildcard_expression: A sequence of zero or more Unicode characters in UTF-8 encoding, using backslash escapes like C language and wildcard characters (`*` or `?`).
@@ -2202,8 +2202,8 @@ HVML 为不同的数据类型提供了如下操作：
     literal_integer: /^-?[0-9]*[1-9][0-9]*$/
     literal_positive_integer: /^[0-9]*[1-9][0-9]*$/
 
-    ws: /[ \t\f\n\r]/   # white space
-    hws: /[ \t]/        # horizontal white space
+    ws: /[ \t\f\n\r]+/  # white space
+    hws: /[ \t]+/       # horizontal white space
 ```
 
 根据以上语法，如下的规则字符串是合法的：
@@ -2317,23 +2317,22 @@ HVML 为不同的数据类型提供了如下操作：
 
 如果我们要获得所有的键值，则使用 `KEY: ALL`。
 
-如果我们要获得其中几个键名对应的键值，则使用 `KEY: 'zh_CN', 'zh_HK'`。
+如果我们要获得其中几个键名对应的键值，则使用 `KEY: AS 'zh_CN' AS 'zh_HK'`。
 
 如果我们要获得所有汉语地区的键值，则使用模式匹配 `KEY: LIKE 'zh_*'`，或使用正则表达式 `KEY: LIKE /zh_[A-Z][A-Z]/i`。
 
-如果我们要获得所有中国大陆地区和所有英语地区对应的键值对，可使用 `KEY: 'zh_CN', LIKE 'zh_*'`。
+如果我们要获得所有中国大陆地区和所有英语地区对应的键值对，可使用 `KEY: AS 'zh_CN' LIKE 'zh_*'`。
 
 当给定的键名不存在匹配项时，则结果中不包含对应的信息。
 
 `KEY` 执行器的语法如下：
 
 ```
-    "KEY" [hws] ':' [ws] { "ALL" | <key_name_list> } [ [hws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
+    "KEY" [ws] ':' [ws] { "ALL" | <key_matching_list> } [ [ws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
 
-    key_name_list: <key_list_expression>[ [hws] ',' [ws]<key_list_expression>[ [hws] ',' ...]]
-    key_list_expression: "LIKE"<ws><key_pattern_expression> | <literal_key_name>
-    key_pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
-    literal_key_name: '''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
+    key_matching_list: <string_matching_expression>[ <ws> <string_matching_expression>[ <ws> ...]]
+    string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws>'''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
+    string_pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
 
     regexp_flags: 'g' || 'i' || 'm' || 's' || 'u' || 'y'
     matching_flags: 'i' || 's' || 'c'
@@ -2344,7 +2343,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 - 取 `VALUE` 时，返回键值（默认行为）。
 - 取 `KEY` 时，返回键名。
-- 取 `KV` 时，会将键值对转换为一个含有两个属性的对象，其中属性 `k` 表示键名，属性 `v` 表示键值，这种对象称为键值对象。如针对上面的数据，规则 `KEY: 'zh_CN', 'zh_HK', FOR KV` 对应的结果数据为：
+- 取 `KV` 时，会将键值对转换为一个含有两个属性的对象，其中属性 `k` 表示键名，属性 `v` 表示键值，这种对象称为键值对象。如针对上面的数据，规则 `KEY: AS 'zh_CN' AS 'zh_HK', FOR KV` 对应的结果数据为：
 
 ```json
     [ { "k": "zh_CN", "v": 100 }, { "k": "zh_TW", "v": 90 } ]
@@ -2387,7 +2386,7 @@ HVML 为不同的数据类型提供了如下操作：
 `RANGE` 执行器的语法如下：
 
 ```
-    "RANGE" [hws] ':' [ws] "FROM" <ws> <integer_expression> ["TO" <ws> <integer_expression>][ [hws] ',' [ws] "ADVANCE" <ws> <integer_expression>]
+    "RANGE" [ws] ':' [ws] "FROM" <ws> <integer_expression> ["TO" <ws> <integer_expression>][ [ws] ',' [ws] "ADVANCE" <ws> <integer_expression>]
 
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
@@ -2430,15 +2429,15 @@ HVML 为不同的数据类型提供了如下操作：
 `FILTER` 执行器的语法如下：
 
 ```
-    "FILTER" [hws] ':' [ws] { "ALL" | <number_comparing_condition>  | <string_matching_list> } [ [hws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
+    "FILTER" [ws] ':' [ws] { "ALL" | <number_comparing_condition>  | <string_matching_list> } [ [ws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
 
     number_comparing_condition: < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression>
     number_expression: <literal_number> | <number_evaluation_expression>
     number_evaluation_expression: <four_arithmetic_expressions>
     four_arithmetic_expressions: a four arithmetic expressions composed of literal real numbers, such as `(3.14 * 6 * 6) / 5`
 
-    string_matching_list: <string_matching_expression>[ [hws] ',' [ws]<string_matching_expression>[ [hws] ',' ...]]
-    string_matching_expression: "LIKE"<ws><string_pattern_expression> | '''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
+    string_matching_list: <string_matching_expression>[ <ws> <string_matching_expression>[ <ws> ...]]
+    string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws>'''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
     string_pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
 ```
 
@@ -2461,14 +2460,14 @@ HVML 为不同的数据类型提供了如下操作：
 `CHAR` 执行器的语法如下：
 
 ```
-    "CHAR" [hws] ':' [ws] "FROM" <ws> <integer_expression> [ <ws> "TO" <ws> <integer_expression>] [ [hws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [hws] ',' [ws] "STOP" <ws> "ON" <ws> '''<literal_char>''']
+    "CHAR" [ws] ':' [ws] "FROM" <ws> <integer_expression> [ <ws> "TO" <ws> <integer_expression>] [ [ws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [ws] ',' [ws] "UNTIL"  <ws> '''<literal_char>''']
 
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
     four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 ```
 
-比如，当我们使用 `CAHR: FROM 0 TO 10, ADVANCE 2, STOP ON 'f'` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
+比如，当我们使用 `CAHR: FROM 0 TO 10, ADVANCE 2, UNTIL 'f'` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
 
 ```json
     [ "A", "b", "o" ]
@@ -2477,14 +2476,14 @@ HVML 为不同的数据类型提供了如下操作：
 `TOKEN` 执行器的语法如下：
 
 ```
-    "TOKEN" [hws] ':' [ws] "FROM" <ws> <integer_expression> [<ws> "TO" <ws> <integer_expression>] [ [hws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [hws] ',' [ws] "DELIMETERS" <ws> '''<literal_char_sequence>'''] [ [hws] ',' [ws] "STOP" <ws> "ON" <ws> '''<string_matching_list>''']
+    "TOKEN" [ws] ':' [ws] "FROM" <ws> <integer_expression> [<ws> "TO" <ws> <integer_expression>] [ [ws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [ws] ',' [ws] "DELIMETERS" <ws> '''<literal_char_sequence>'''] [ [ws] ',' [ws] "UNTIL" <ws> '''<string_matching_list>''']
 
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
     four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 
-    string_matching_list: <string_matching_expression>[ [hws] ',' [ws]<string_matching_expression>[ [hws] ',' ...]]
-    string_matching_expression: "LIKE"<WS><string_pattern_expression> | '''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
+    string_matching_list: <string_matching_expression>[ [ws] ',' [ws]<string_matching_expression>[ [ws] ',' ...]]
+    string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws>'''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
     string_pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
 ```
 
@@ -2511,7 +2510,7 @@ HVML 为不同的数据类型提供了如下操作：
 `ADD`、`SUB`、`MUL`、`DIV` 执行器的语法如下：
 
 ```
-    < "ADD" | "SUB" | "MUL" | "DIV" > [hws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> [hws] ',' [ws] "BY" <ws> <number_expression>
+    < "ADD" | "SUB" | "MUL" | "DIV" > [ws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> [ws] ',' [ws] "BY" <ws> <number_expression>
 
     number_expression: <literal_number> | <number_evaluation_expression>
     number_evaluation_expression: <four_arithmetic_expressions>
@@ -2527,7 +2526,7 @@ HVML 为不同的数据类型提供了如下操作：
 `FORMULA` 执行器的语法如下：
 
 ```
-    "FORMULA" [hws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> [hws] ',' [ws] "BY" <ws> <iterative_formula_expression>
+    "FORMULA" [ws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> [ws] ',' [ws] "BY" <ws> <iterative_formula_expression>
 
     number_expression: <literal_number> | <number_evaluation_expression>
     number_evaluation_expression: <four_arithmetic_expressions>
@@ -2762,7 +2761,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 `TRAVEL` 执行器的语法如下：
 
 ```
-    "TRAVEL" [hws] ':' [ws] <"SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES">
+    "TRAVEL" [ws] ':' [ws] <"SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES">
 ```
 
 说明如下：
@@ -3706,8 +3705,8 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
 
     <quoted_key_name>: '''<literal_char_sequence>''' | '"'<literal_char_sequence>'"'
 
-    <ws>: /[ \t\f\n\r]/     # white space
-    <hws>: /[ \t]/          # horinzontal white space
+    <ws>: /[ \t\f\n\r]+/    # white space
+    <hws>: /[ \t]+/         # horinzontal white space
 ```
 
 #### 3.1.3) 文本/Text
