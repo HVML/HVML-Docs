@@ -2163,6 +2163,7 @@ HVML 为不同的数据类型提供了如下操作：
    1. 应原样出现的字面关键词（literal key words），使用双引号（`"`）包围。
    1. 正则表达式，一般使用前后两个斜杠符（`/`）包围。
    1. 不使用单引号、双引号或斜杠符包围的英文单词或者使用下划线相连的英文短语，如 `ws`、`literal_integer` 用来表示一个被指名的词法单元。
+   1. `...` 表示重复前一个词法单元。
 1. 若一条规则中包含有被指名的词法单元，将另起一行定义该词法单元的语法，直到所有被指名的词法单元均被完整定义或说明为止。
 1. 定义被指名的词法单元之语法时，在该词法单元名称之后使用冒号（`:`），冒号后可换行，但第二行通常会缩进书写。
 1. 当某个被指名的词法单元之解释有多个缩进的行描述时，每一行表示一种并列的描述。
@@ -2329,7 +2330,7 @@ HVML 为不同的数据类型提供了如下操作：
 ```
     "KEY" [hws] ':' [ws] { "ALL" | <key_name_list> } [ [hws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
 
-    key_name_list: <key_list_expression>[ [hws] ',' [ws] <key_list_expression>[ [hws] ',' ...]]
+    key_name_list: <key_list_expression>[ [hws] ',' [ws]<key_list_expression>[ [hws] ',' ...]]
     key_list_expression: "LIKE"<ws><key_pattern_expression> | <literal_key_name>
     key_pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
     literal_key_name: '''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
@@ -2429,13 +2430,14 @@ HVML 为不同的数据类型提供了如下操作：
 `FILTER` 执行器的语法如下：
 
 ```
-    "FILTER" [hws] ':' [ws] { "ALL" | { < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ"> <ws> <number_expression> } | { <string_matching_list> } } [ [hws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
+    "FILTER" [hws] ':' [ws] { "ALL" | <number_comparing_condition>  | <string_matching_list> } [ [hws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
 
+    number_comparing_condition: < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression>
     number_expression: <literal_number> | <number_evaluation_expression>
     number_evaluation_expression: <four_arithmetic_expressions>
     four_arithmetic_expressions: a four arithmetic expressions composed of literal real numbers, such as `(3.14 * 6 * 6) / 5`
 
-    string_matching_list: <string_matching_expression>[, <string_matching_expression>[, ...]]
+    string_matching_list: <string_matching_expression>[ [hws] ',' [ws]<string_matching_expression>[ [hws] ',' ...]]
     string_matching_expression: "LIKE"<ws><string_pattern_expression> | '''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
     string_pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
 ```
@@ -2481,7 +2483,7 @@ HVML 为不同的数据类型提供了如下操作：
     integer_evaluation_expression: <four_arithmetic_expressions>
     four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 
-    string_matching_list: <string_matching_expression>[, <string_matching_expression>[, ...]]
+    string_matching_list: <string_matching_expression>[ [hws] ',' [ws]<string_matching_expression>[ [hws] ',' ...]]
     string_matching_expression: "LIKE"<WS><string_pattern_expression> | '''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
     string_pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
 ```
