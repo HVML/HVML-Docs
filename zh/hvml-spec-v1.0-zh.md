@@ -2296,6 +2296,12 @@ HVML 为不同的数据类型提供了如下操作：
     hws: /[ \t]/        # horizontal white space
 ```
 
+在 `literal_char` 和 `literal_char_sequence` 的使用需注意如下要点：
+
+1. 因 HVML 要求使用 UTF-8 编码，`literal_char` 本质上是字符串。当实际的 `literal_char` 中包含多个字符时，仅第一个字符生效。
+1. 支持的转义字符包括：`\\`、`\/`（非强制）、`\"`（非强制）、`\'`、`\b`、`\f`、`\n`、`\r`、`\t`、`\uHHHH`。
+1. `\uHHHH` 用四个十六进制数字表示一个 Unicode 字符，如 `\uA0A0`；不支持 C 语言十六进制或八进制（如 `\xA0\xA0`）这种写法。
+
 ##### 2.3.1.1) `KEY` 执行器
 
 该执行器作用于字典数据上，使用给定的键名或键名列表返回键名、键值或键值对象列表，或者使用匹配某个规则的键名列表，返回键名、键值或者键值对象列表。比如对下面的数据：
@@ -2423,7 +2429,7 @@ HVML 为不同的数据类型提供了如下操作：
 `FILTER` 执行器的语法如下：
 
 ```
-    "FILTER" [hws] ':' [ws] "ALL" | { < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ"> <ws> <number_expression> } | { <string_matching_list> } [ [hws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
+    "FILTER" [hws] ':' [ws] { "ALL" | { < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ"> <ws> <number_expression> } | { <string_matching_list> } } [ [hws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
 
     number_expression: <literal_number> | <number_evaluation_expression>
     number_evaluation_expression: <four_arithmetic_expressions>
