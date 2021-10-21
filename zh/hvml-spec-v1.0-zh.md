@@ -2457,7 +2457,8 @@ HVML 为不同的数据类型提供了如下操作：
 `FILTER` 执行器的语法如下：
 
 ```
-    "FILTER" [ws] ':' [ws] { "ALL" | <number_comparing_logical_expression>  | <string_matching_logical_expression> } [ <ws> "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
+    "FILTER" [ws] ':' [ws] { "ALL" | <number_comparing_logical_expression>  | <string_matching_logical_expression> } \
+        [ <ws> "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
 
     number_comparing_logical_expression: a logical expression using `NOT`, `AND`, `OR`, `XOR` as the logical operators, \
         `( )` as the precedence operators, and <number_comparing_condition> as the basic/minimal logical expression \
@@ -2503,7 +2504,9 @@ HVML 为不同的数据类型提供了如下操作：
 `CHAR` 执行器的语法如下：
 
 ```
-    "CHAR" [ws] ':' [ws] "FROM" <ws> <integer_expression> [ <ws> "TO" <ws> <integer_expression>] [ <ws> "ADVANCE" <ws> <integer_expression>] [ <ws> "UNTIL" <ws> <quoted_literal_char>]
+    "CHAR" [ws] ':' [ws] "FROM" <ws> <integer_expression> [ <ws> "TO" <ws> <integer_expression>] \
+        [ <ws> "ADVANCE" <ws> <integer_expression>] \
+        [ <ws> "UNTIL" <ws> <quoted_literal_char>]
 
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
@@ -2567,7 +2570,16 @@ HVML 为不同的数据类型提供了如下操作：
 `ADD`、`SUB`、`MUL`、`DIV` 执行器的语法如下：
 
 ```
-    < "ADD" | "SUB" | "MUL" | "DIV" > [ws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> <ws> "BY" <ws> <number_expression>
+    < "ADD" | "SUB" | "MUL" | "DIV" > [ws] ':' [ws] <number_comparing_logical_expression> <ws> "BY" <ws> <number_expression>
+
+    number_comparing_logical_expression: a logical expression using `NOT`, `AND`, `OR`, `XOR` as the logical operators, \
+        `( )` as the precedence operators, and <number_comparing_condition> as the basic/minimal logical expression \
+        which can be evaluated as `true` or `false`.
+
+    number_comparing_condition: < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression>
+    number_expression: <literal_number> | <number_evaluation_expression>
+    number_evaluation_expression: <four_arithmetic_expressions>
+    four_arithmetic_expressions: a four arithmetic expressions composed of literal real numbers, such as `(3.14 * 6 * 6) / 5`
 
     number_expression: <literal_number> | <number_evaluation_expression>
     number_evaluation_expression: <four_arithmetic_expressions>
@@ -2735,7 +2747,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
                             "tag": "txt",
                             "attr": null,
                             "content": "foo",
-                            "children": null 
+                            "children": null
                         },
                     ]
                 },
@@ -2887,12 +2899,12 @@ SQL 执行器通过 `GROUP BY` 分句，可用于归约。
 1. `null` 值、`undefined` 转换为 0。
 1. `true` 值转换为 1。
 1. `false` 值转换为 0。
-1. 字符串按照 EJSON 数值的规则进行转换，比如 `123.34` 将转换为实数，`abcd` 转换为 0。
+1. 空字符串按 0 处理；非空字符串按照 EJSON 数值的规则进行转换，比如 `123.34` 将转换为实数，`abcd` 转换为 0。
+1. 空字节序列按 0 处理；非空字节序列取第一个字节值（有符号，范围为：-128 ~ 127）。
+1. 动态值，不传递任何参数调用 `getter` 方法，若返回值为无效值则取 0，若返回值魏数值型，则取该返回值，若返回值为非数值型，按本规则递归处理。
+1. 原生实体，尝试获取 `__number` 键名的 `getter` 方法。若存在该方法，则不传递任何参数调用这个 `getter`，参考动态值处理；若不存在该方法，则取 0。
 1. 数组的数值，累加所有数组单元，若数组单元不是数值型，按本规则递归处理。
 1. 字典的数值，累加所有键值，若某键值不是数值型，按本规则递归处理。
-
-__TODO__  
-扩展数据类型和动态对象如何处理？
 
 此种情况下，归约操作的返回数据将形如：
 
