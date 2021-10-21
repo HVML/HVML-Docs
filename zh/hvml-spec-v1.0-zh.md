@@ -2336,21 +2336,30 @@ HVML 为不同的数据类型提供了如下操作：
 
 如果我们要获得所有的键值，则使用 `KEY: ALL`。
 
-如果我们要获得其中几个键名对应的键值，则使用 `KEY: AS 'zh_CN' AS 'zh_HK'`。
+如果我们要获得其中几个键名对应的键值，则使用 `KEY: AS 'zh_CN', 'zh_HK'`。
 
 如果我们要获得所有汉语地区的键值，则使用模式匹配 `KEY: LIKE 'zh_*'`，或使用正则表达式 `KEY: LIKE /zh_[A-Z][A-Z]/i`。
 
 如果我们要获得所有中国大陆地区和所有英语地区对应的键值对，可使用 `KEY: AS 'zh_CN' LIKE 'zh_*'`。
+
+我们还可以使用逻辑运算符描述更加复杂的键名匹配条件，如：`KEY: AS 'zh_CN', 'zh_TW' OR NOT LIKE 'en_*'`
 
 当给定的键名不存在匹配项时，则结果中不包含对应的信息。
 
 `KEY` 执行器的语法如下：
 
 ```
-    "KEY" [ws] ':' [ws] { "ALL" | <key_matching_list> } [ <ws> "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
+    "KEY" [ws] ':' [ws] { "ALL" | <string_matching_logical_expression> } [ <ws> "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
 
-    key_matching_list: <string_matching_expression>[ <ws> <string_matching_expression>[ <ws> ...]]
-    string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws><quoted_literal_char_sequence>[<matching_flags>][<max_matching_length>]
+    string_matching_logical_expression: a logical expression using `NOT`, `AND`, `OR`, `XOR` as the logical operators, \
+        `( )` as the precedence operators, <string_matching_condition> as the basic/minimal logical expression \
+        which can be evaluated as `true` or `false`.
+
+    string_matching_condition: "LIKE"<ws><string_pattern_list> | "AS"<ws><string_literal_list>
+    string_pattern_list: <string_pattern_expression>[ [ws] ',' [ws] <string_pattern_expression>[ [ws] ',' [ws] ...]]
+    string_literal_list: <string_literal_expression>[ [ws] ',' [ws] <string_literal_expression>[ [ws] ',' [ws] ...]]
+
+    string_literal_expression: <quoted_literal_char_sequence>[<matching_flags>][<max_matching_length>]
     string_pattern_expression: <quoted_wildcard_expression>[<matching_flags>][<max_matching_length>] | <quoted_regular_expression>[<regexp_flags>]
 
     regexp_flags: 'g' || 'i' || 'm' || 's' || 'u' || 'y'
@@ -2448,16 +2457,31 @@ HVML 为不同的数据类型提供了如下操作：
 `FILTER` 执行器的语法如下：
 
 ```
-    "FILTER" [ws] ':' [ws] { "ALL" | <number_comparing_condition>  | <string_matching_list> } [ <ws> "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
+    "FILTER" [ws] ':' [ws] { "ALL" | <number_comparing_logical_expression>  | <string_matching_logical_expression> } [ <ws> "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
+
+    number_comparing_logical_expression: a logical expression using `NOT`, `AND`, `OR`, `XOR` as the logical operators, \
+        `( )` as the precedence operators, and <number_comparing_condition> as the basic/minimal logical expression \
+        which can be evaluated as `true` or `false`.
 
     number_comparing_condition: < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression>
     number_expression: <literal_number> | <number_evaluation_expression>
     number_evaluation_expression: <four_arithmetic_expressions>
     four_arithmetic_expressions: a four arithmetic expressions composed of literal real numbers, such as `(3.14 * 6 * 6) / 5`
 
-    string_matching_list: <string_matching_expression>[ <ws> <string_matching_expression>[ <ws> ...]]
-    string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws><quoted_literal_char_sequence>[<matching_flags>][<max_matching_length>]
+    string_matching_logical_expression: a logical expression using `NOT`, `AND`, `OR`, `XOR` as the logical operators, \
+        `( )` as the precedence operators, <string_matching_condition> as the basic/minimal logical expression \
+        which can be evaluated as `true` or `false`.
+
+    string_matching_condition: "LIKE"<ws><string_pattern_list> | "AS"<ws><string_literal_list>
+    string_pattern_list: <string_pattern_expression>[ [ws] ',' [ws] <string_pattern_expression>[ [ws] ',' [ws] ...]]
+    string_literal_list: <string_literal_expression>[ [ws] ',' [ws] <string_literal_expression>[ [ws] ',' [ws] ...]]
+
+    string_literal_expression: <quoted_literal_char_sequence>[<matching_flags>][<max_matching_length>]
     string_pattern_expression: <quoted_wildcard_expression>[<matching_flags>][<max_matching_length>] | <quoted_regular_expression>[<regexp_flags>]
+
+    regexp_flags: 'g' || 'i' || 'm' || 's' || 'u' || 'y'
+    matching_flags: 'i' || 's' || 'c'
+    max_matching_length: <literal_positive_integer>
 ```
 
 注意：
@@ -2495,15 +2519,29 @@ HVML 为不同的数据类型提供了如下操作：
 `TOKEN` 执行器的语法如下：
 
 ```
-    "TOKEN" [ws] ':' [ws] "FROM" <ws> <integer_expression> [<ws> "TO" <ws> <integer_expression>] [ <ws> "ADVANCE" <ws> <integer_expression>] [ <ws> "DELIMETERS" <ws> <quoted_literal_char_sequence>] [ <ws> "UNTIL" <ws> '''<string_matching_list>''']
+    "TOKEN" [ws] ':' [ws] "FROM" <ws> <integer_expression> [<ws> "TO" <ws> <integer_expression>] \
+        [ <ws> "ADVANCE" <ws> <integer_expression>] \
+        [ <ws> "DELIMETERS" <ws> <quoted_literal_char_sequence>] \
+        [ <ws> "UNTIL" <ws> <string_matching_logical_expression>]
 
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
     four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 
-    string_matching_list: <string_matching_expression>[ <ws> <string_matching_expression>[ <ws> ...]]
-    string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws><quoted_literal_char_sequence>[<matching_flags>][<max_matching_length>]
+    string_matching_logical_expression: a logical expression using `NOT`, `AND`, `OR`, `XOR` as the logical operators, \
+        `( )` as the precedence operators, <string_matching_condition> as the basic/minimal logical expression \
+        which can be evaluated as `true` or `false`.
+
+    string_matching_condition: "LIKE"<ws><string_pattern_list> | "AS"<ws><string_literal_list>
+    string_pattern_list: <string_pattern_expression>[ [ws] ',' [ws] <string_pattern_expression>[ [ws] ',' [ws] ...]]
+    string_literal_list: <string_literal_expression>[ [ws] ',' [ws] <string_literal_expression>[ [ws] ',' [ws] ...]]
+
+    string_literal_expression: <quoted_literal_char_sequence>[<matching_flags>][<max_matching_length>]
     string_pattern_expression: <quoted_wildcard_expression>[<matching_flags>][<max_matching_length>] | <quoted_regular_expression>[<regexp_flags>]
+
+    regexp_flags: 'g' || 'i' || 'm' || 's' || 'u' || 'y'
+    matching_flags: 'i' || 's' || 'c'
+    max_matching_length: <literal_positive_integer>
 ```
 
 比如，当我们使用 `TOKEN: FROM 0 TO 3 DELIMETERS ' '` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
@@ -2545,7 +2583,16 @@ HVML 为不同的数据类型提供了如下操作：
 `FORMULA` 执行器的语法如下：
 
 ```
-    "FORMULA" [ws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> <ws> "BY" <ws> <iterative_formula_expression>
+    "FORMULA" [ws] ':' [ws] <number_comparing_logical_expression> <ws> "BY" <ws> <iterative_formula_expression>
+
+    number_comparing_logical_expression: a logical expression using `NOT`, `AND`, `OR`, `XOR` as the logical operators, \
+        `( )` as the precedence operators, and <number_comparing_condition> as the basic/minimal logical expression \
+        which can be evaluated as `true` or `false`.
+
+    number_comparing_condition: < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression>
+    number_expression: <literal_number> | <number_evaluation_expression>
+    number_evaluation_expression: <four_arithmetic_expressions>
+    four_arithmetic_expressions: a four arithmetic expressions composed of literal real numbers, such as `(3.14 * 6 * 6) / 5`
 
     number_expression: <literal_number> | <number_evaluation_expression>
     number_evaluation_expression: <four_arithmetic_expressions>
