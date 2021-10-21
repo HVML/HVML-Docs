@@ -2166,17 +2166,16 @@ HVML 为不同的数据类型提供了如下操作：
    1. `...` 表示重复前一个词法单元。
 1. 若一条规则中包含有被指名的词法单元，将另起一行定义该词法单元的语法，直到所有被指名的词法单元均被完整定义或说明为止。
 1. 定义被指名的词法单元之语法时，在该词法单元名称之后使用冒号（`:`），冒号后可换行，但第二行通常会缩进书写。
-1. 当某个被指名的词法单元之解释有多个缩进的行描述时，每一行表示一种并列的描述。
+1. 当某个被指名的词法单元之解释有多个缩进的行描述时，每一行表示一种并列（单选）的描述。
 1. 通常使用一行来描述一个词法单元，若太长，可使用反斜杠（`\`）表示续行。
 1. 使用一对尖括号（`< >`）表示一个必须存在的词法单元（组）。
 1. 使用一对中括号（`[ ]`）包围的词法单元（组）表示可选。
-1. 多个词法单元形成词法单元组。
+1. 多个词法单元形成词法单元组；使用一对大括号（`{ }`）对多个词法单元进行分组。
 1. 当某个词法单元由单个或者多个词法单元表示时，或者可从多个词法单元（组）中选择时，我们使用 `||`、`&&`、`|` 等符号表示这些单元是否可以同时出现，其规则如下：
    1. 并置的单元表示所有的词法单元（组）都要以给定的顺序传递。
    1. `&&` 分隔的两个或多个词法单元（组），表示必须传递所有这些词法单元（组），顺序任意。
    1. `||` 分隔的两个或多个词法单元（组），表示必须传递这些词法单元（组）的一个或多个，顺序任意。
    1. `|` 分隔两个或者多个词法单元（组），表示必须传递其中一个。
-   1. 使用一对大括号（`{ }`）对多个词法单元进行分组。
 1. `literal_number` 遵循 EJSON 语法，不再赘述。
 1. `literal_integer` 本质上同 `literal_number`，只是在具体的实现当中，应强制转换为整数使用。
 1. 额外说明：
@@ -2191,10 +2190,11 @@ HVML 为不同的数据类型提供了如下操作：
 ```
     "FOO" [ws] ':' [ws] "ALL" | { "LIKE" [ws] <pattern_expression> }
 
-    pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length] | '/'<regular_expression>'/'[<regexp_flags>]
+    pattern_expression: <quoted_wildcard_expression>[<matching_flags>][<max_matching_length] | '/'<regular_expression>'/'[<regexp_flags>]
     wildcard_expression: A sequence of zero or more Unicode characters in UTF-8 encoding, using backslash escapes like C language and wildcard characters (`*` or `?`).
     regular_expression: A regular expression conforms to POSIX.1-2001.
 
+    quoted_wildcard_expression: '''<wildcard_expression>''' | '"'<wildcard_expression>'"'
     regexp_flags: 'g' || 'i' || 'm' || 's' || 'u' || 'y'
     matching_flags: 'i' || 's' || 'c'
     max_matching_length: <literal_positive_integer>
@@ -2212,8 +2212,10 @@ HVML 为不同的数据类型提供了如下操作：
     FOO: ALL
     FOO :ALL
     FOO: LIKE   'a wildcard card such as *.md'
+    FOO: LIKE "a wildcard card such as *.md"
     FOO: LIKE /a regular expression like ^[0-9]*[1-9][0-9]*$/
     FOO: LIKE 'zh_??'i5
+    FOO: LIKE "zh_??"i5
 ```
 
 而如下的规则字符串不符合语法要求：
@@ -2223,6 +2225,7 @@ HVML 为不同的数据类型提供了如下操作：
     FOO: ALL 'a literal string'
     FOO: LIKE
     FOO: ALL LIKE 'a literal string'
+    FOO: LIKE 'zh_??"i5
 ```
 
 另外，我们经常会在规则中使用正则表达式，需注意如下要点：
@@ -2279,13 +2282,16 @@ HVML 为不同的数据类型提供了如下操作：
 - `zh-C`
 - `xx_CH`
 
-另外，由于使用单引号包围普通字符串或者含有通配符的字符串，故而在这些字符串中包含字面的 `'` 字符时，需使用转义，其他特殊字符，如 +U0009 TAB 等，参照 [JSON] 语法。
-
 注意，如下被指名的词法单元在后文中不再重复描述：
 
 ```
+    quoted_literal_char: '''<literal_char>''' | '"'<literal_char>'"'
+    quoted_literal_char_sequence: '''<literal_char_sequence>''' | '"'<literal_char_sequence>'"'
+    quoted_wildcard_expression: '''<wildcard_expression>''' | '"'<wildcard_expression>'"'
+    quoted_regular_expression: '/'<regular_expression>'/'
+
     literal_char: A Unicode characters in UTF-8 encoding, using backslash escapes like C language.
-    literal_char_seqence: A sequence of zero or more Unicode characters in UTF-8 encoding, using backslash escapes like C language.
+    literal_char_sequence: A sequence of zero or more Unicode characters in UTF-8 encoding, using backslash escapes like C language.
     wildcard_expression: A sequence of zero or more Unicode characters in UTF-8 encoding, using backslash escapes like C language and wildcard characters (`*` or `?`).
     regular_expression: A regular expression conforms to POSIX.1-2001.
 
@@ -2297,11 +2303,21 @@ HVML 为不同的数据类型提供了如下操作：
     hws: /[ \t]/        # horizontal white space
 ```
 
-在 `literal_char` 和 `literal_char_sequence` 的使用需注意如下要点：
+由于执行器的规则字符串通常作为属性值使用，考虑到属性值可使用单引号及双引号包围，因此，规则中的字符串字面值（string literal）可使用单引号（`'`）或双引号（`"`）包围：
 
-1. 因 HVML 要求使用 UTF-8 编码，`literal_char` 本质上是字符串。当实际的 `literal_char` 中包含多个字符时，仅第一个字符生效。
-1. 支持的转义字符包括：`\\`、`\/`（非强制）、`\"`（非强制）、`\'`、`\b`、`\f`、`\n`、`\r`、`\t`、`\uHHHH`。
+- 当属性值本身使用双引号（`"`）包围时，规则中的字符串应使用单引号（`'`）包围。
+- 当属性值本身使用单引号（`'`）包围时，规则中的字符串应使用双引号（`"`）包围。注意，此种情况下，属性值中的 `$` 将被当做字面值处理，不按 JSON 求值表达式解析。
+
+所有规则中的字符串字面值，故而在这些字符串中包含字面的单引号（`'`）或双引号时（`"`）时，需使用转义，其他特殊字符，如 +U0009 TAB 等，参照 [JSON] 语法：
+
+1. 需转义的特殊字符包括：`\\`、`\/`（非强制）、`\b`、`\f`、`\n`、`\r`、`\t`。
+1. 当规则中的字符串使用单引号（`'`）包围时，字符串中包含字面的单引号（`'`）应使用转义表达：`\'`。
+1. 当规则中的字符串使用双引号（`"`）包围时，字符串中包含字面的双引号（`"`）应使用转义表达：`\"`。
 1. `\uHHHH` 用四个十六进制数字表示一个 Unicode 字符，如 `\uA0A0`；不支持 C 语言十六进制或八进制（如 `\xA0\xA0`）这种写法。
+
+以上说明适用 `literal_char` 和 `literal_char_sequence`。
+
+注意，因 HVML 要求使用 UTF-8 编码，`literal_char` 本质上是一个多字节序列，对应字符串类型。当实际的 `literal_char` 中包含多个 Unicode 字符时，仅第一个字符生效。
 
 ##### 2.3.1.1) `KEY` 执行器
 
@@ -2331,8 +2347,8 @@ HVML 为不同的数据类型提供了如下操作：
     "KEY" [ws] ':' [ws] { "ALL" | <key_matching_list> } [ [ws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
 
     key_matching_list: <string_matching_expression>[ <ws> <string_matching_expression>[ <ws> ...]]
-    string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws>'''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
-    string_pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
+    string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws><quoted_literal_char_sequence>[<matching_flags>][<max_matching_length>]
+    string_pattern_expression: <quoted_wildcard_expression>[<matching_flags>][<max_matching_length>] | <quoted_regular_expression>[<regexp_flags>]
 
     regexp_flags: 'g' || 'i' || 'm' || 's' || 'u' || 'y'
     matching_flags: 'i' || 's' || 'c'
@@ -2437,8 +2453,8 @@ HVML 为不同的数据类型提供了如下操作：
     four_arithmetic_expressions: a four arithmetic expressions composed of literal real numbers, such as `(3.14 * 6 * 6) / 5`
 
     string_matching_list: <string_matching_expression>[ <ws> <string_matching_expression>[ <ws> ...]]
-    string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws>'''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
-    string_pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
+    string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws><quoted_literal_char_sequence>[<matching_flags>][<max_matching_length>]
+    string_pattern_expression: <quoted_wildcard_expression>[<matching_flags>][<max_matching_length>] | <quoted_regular_expression>[<regexp_flags>]
 ```
 
 注意：
@@ -2460,7 +2476,7 @@ HVML 为不同的数据类型提供了如下操作：
 `CHAR` 执行器的语法如下：
 
 ```
-    "CHAR" [ws] ':' [ws] "FROM" <ws> <integer_expression> [ <ws> "TO" <ws> <integer_expression>] [ [ws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [ws] ',' [ws] "UNTIL"  <ws> '''<literal_char>''']
+    "CHAR" [ws] ':' [ws] "FROM" <ws> <integer_expression> [ <ws> "TO" <ws> <integer_expression>] [ [ws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [ws] ',' [ws] "UNTIL"  <ws> <quoted_literal_char>]
 
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
@@ -2476,15 +2492,15 @@ HVML 为不同的数据类型提供了如下操作：
 `TOKEN` 执行器的语法如下：
 
 ```
-    "TOKEN" [ws] ':' [ws] "FROM" <ws> <integer_expression> [<ws> "TO" <ws> <integer_expression>] [ [ws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [ws] ',' [ws] "DELIMETERS" <ws> '''<literal_char_sequence>'''] [ [ws] ',' [ws] "UNTIL" <ws> '''<string_matching_list>''']
+    "TOKEN" [ws] ':' [ws] "FROM" <ws> <integer_expression> [<ws> "TO" <ws> <integer_expression>] [ [ws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [ws] ',' [ws] "DELIMETERS" <ws> <quoted_literal_char_sequence>] [ [ws] ',' [ws] "UNTIL" <ws> '''<string_matching_list>''']
 
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
     four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 
     string_matching_list: <string_matching_expression>[ [ws] ',' [ws]<string_matching_expression>[ [ws] ',' ...]]
-    string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws>'''<literal_char_sequence>'''[<matching_flags>][<max_matching_length>]
-    string_pattern_expression: '''<wildcard_expression>'''[<matching_flags>][<max_matching_length>] | '/'<regular_expression>'/'[<regexp_flags>]
+    string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws><quoted_literal_char_sequence>[<matching_flags>][<max_matching_length>]
+    string_pattern_expression: <quoted_wildcard_expression>[<matching_flags>][<max_matching_length>] | <quoted_regular_expression>[<regexp_flags>]
 ```
 
 比如，当我们使用 `TOKEN: FROM 0 TO 3, DELIMETERS ' '` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
