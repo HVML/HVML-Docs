@@ -2501,7 +2501,7 @@ HVML 为不同的数据类型提供了如下操作：
     integer_evaluation_expression: <four_arithmetic_expressions>
     four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 
-    string_matching_list: <string_matching_expression>[ [ws] ',' [ws]<string_matching_expression>[ [ws] ',' ...]]
+    string_matching_list: <string_matching_expression>[ <ws> <string_matching_expression>[ <ws> ...]]
     string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws><quoted_literal_char_sequence>[<matching_flags>][<max_matching_length>]
     string_pattern_expression: <quoted_wildcard_expression>[<matching_flags>][<max_matching_length>] | <quoted_regular_expression>[<regexp_flags>]
 ```
