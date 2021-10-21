@@ -1128,7 +1128,7 @@ HVML 还定义有如下一些动作标签：
 `at` 属性值可以是数组的索引值或者对象的属性名称（可指定多个，用空格分割），也可以是 `iterate` 父元素提供的迭代子（iterator）来指定位置：
 
 ```html
-    <iterate on="$users" to="erase" by="RANGE: FROM $EJSON.number($users) TO 0, ADVANCE -2">
+    <iterate on="$users" to="erase" by="RANGE: FROM $EJSON.number($users) TO 0 ADVANCE -2">
         <erase on="$users" at="$&" />
     </iterate>
 ```
@@ -1351,12 +1351,12 @@ HVML 还定义有如下一些动作标签：
 
 ```html
     <iterate on="$users" to="update" in="#the-user-list"
-            by="RANGE: FROM 0 TO $EJSON.number($users), ADVANCE 2">
+            by="RANGE: FROM 0 TO $EJSON.number($users) ADVANCE 2">
         <update on="~[id=user-$?.id] span" attr.class *= "text-* text-info" />
     </iterate>
 ```
 
-上述 HVML 代码，在 `$users` 数据上执行迭代，但未使用脚本程序定义的类，而使用了 `RANGE` 关键词来定义迭代范围。`RANGE: FROM 0 TO $EJSON.number($users), ADVANCE 2` 表示取 `$users` 数组中索引下标为偶数的所有数组项，之后，针对这些数据项执行 `update` 标签定义的更新操作。在 `update` 标签中，首先使用 `on` 介词属性定义了目标元素：`[id=user-$?.id] span`。该表达式使用了 CSS 选择器在 `#the-user-list` 定义的 DOM 子树中查找子元素，其中 `$?.id` 表示的是当前迭代得到的用户标志符。若存在这个子元素，则将其 `class` 属性设置为 `text-info`。这样，所有索引值为偶数的用户条目将使用由 `text-info` 类定义的样式来展现。
+上述 HVML 代码，在 `$users` 数据上执行迭代，但未使用脚本程序定义的类，而使用了 `RANGE` 关键词来定义迭代范围。`RANGE: FROM 0 TO $EJSON.number($users) ADVANCE 2` 表示取 `$users` 数组中索引下标为偶数的所有数组项，之后，针对这些数据项执行 `update` 标签定义的更新操作。在 `update` 标签中，首先使用 `on` 介词属性定义了目标元素：`[id=user-$?.id] span`。该表达式使用了 CSS 选择器在 `#the-user-list` 定义的 DOM 子树中查找子元素，其中 `$?.id` 表示的是当前迭代得到的用户标志符。若存在这个子元素，则将其 `class` 属性设置为 `text-info`。这样，所有索引值为偶数的用户条目将使用由 `text-info` 类定义的样式来展现。
 
 #### 2.2.7) `reduce` 标签
 
@@ -1388,7 +1388,7 @@ HVML 还定义有如下一些动作标签：
     <reduce on="$users" to="update emtpy iterate" in="#the-user-statistics" by="CLASS: RUserRegionStats">
         <update on="> h2 > span" textContent="$?.count" />
         <clear on="> dl" />
-        <sort on="$?.regions" to="iterate" by="KEY: ALL, FOR KV" descendingly>
+        <sort on="$?.regions" to="iterate" by="KEY: ALL FOR KV" descendingly>
             <iterate on="$?" to="append" in="> dl" with="#region-to-users" by="RANGE: ALL">
             </iterate>
         </sort>
@@ -1458,7 +1458,7 @@ HVML 还定义有如下一些动作标签：
 如
 
 ```html
-        <sort on="$?.regions" by="KEY: ALL, FOR KV" descendingly>
+        <sort on="$?.regions" by="KEY: ALL FOR KV" descendingly>
             ...
         </sort>
 ```
@@ -1466,7 +1466,7 @@ HVML 还定义有如下一些动作标签：
 相当于
 
 ```html
-        <choose on="$?.regions" by="KEY: ALL, FOR KV">
+        <choose on="$?.regions" by="KEY: ALL FOR KV">
             <sort on="$?" descendingly via="v">
                 ...
             </sort>
@@ -1661,7 +1661,7 @@ HVML 还定义有如下一些动作标签：
                     <update on="$@" textContent="$?" />
                 </choose>
                 <clear in="#the-user-statistics > dl" />
-                <sort on="$?.regions" to="iterate" by="KEY: ALL, FOR KV" ascendingly>
+                <sort on="$?.regions" to="iterate" by="KEY: ALL FOR KV" ascendingly>
                     <iterate on="$?" to="append" in="> dl" with="#region-to-users" by="RANGE: FROM 0">
                     </iterate>
                 </sort>
@@ -2347,7 +2347,7 @@ HVML 为不同的数据类型提供了如下操作：
 `KEY` 执行器的语法如下：
 
 ```
-    "KEY" [ws] ':' [ws] { "ALL" | <key_matching_list> } [ [ws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
+    "KEY" [ws] ':' [ws] { "ALL" | <key_matching_list> } [ <ws> "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
 
     key_matching_list: <string_matching_expression>[ <ws> <string_matching_expression>[ <ws> ...]]
     string_matching_expression: "LIKE"<ws><string_pattern_expression> | "AS"<ws><quoted_literal_char_sequence>[<matching_flags>][<max_matching_length>]
@@ -2405,7 +2405,7 @@ HVML 为不同的数据类型提供了如下操作：
 `RANGE` 执行器的语法如下：
 
 ```
-    "RANGE" [ws] ':' [ws] "FROM" <ws> <integer_expression> ["TO" <ws> <integer_expression>][ [ws] ',' [ws] "ADVANCE" <ws> <integer_expression>]
+    "RANGE" [ws] ':' [ws] "FROM" <ws> <integer_expression> ["TO" <ws> <integer_expression>][ <ws> "ADVANCE" <ws> <integer_expression>]
 
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
@@ -2448,7 +2448,7 @@ HVML 为不同的数据类型提供了如下操作：
 `FILTER` 执行器的语法如下：
 
 ```
-    "FILTER" [ws] ':' [ws] { "ALL" | <number_comparing_condition>  | <string_matching_list> } [ [ws] ',' [ws] "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
+    "FILTER" [ws] ':' [ws] { "ALL" | <number_comparing_condition>  | <string_matching_list> } [ <ws> "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
 
     number_comparing_condition: < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression>
     number_expression: <literal_number> | <number_evaluation_expression>
@@ -2479,7 +2479,7 @@ HVML 为不同的数据类型提供了如下操作：
 `CHAR` 执行器的语法如下：
 
 ```
-    "CHAR" [ws] ':' [ws] "FROM" <ws> <integer_expression> [ <ws> "TO" <ws> <integer_expression>] [ [ws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [ws] ',' [ws] "UNTIL"  <ws> <quoted_literal_char>]
+    "CHAR" [ws] ':' [ws] "FROM" <ws> <integer_expression> [ <ws> "TO" <ws> <integer_expression>] [ <ws> "ADVANCE" <ws> <integer_expression>] [ <ws> "UNTIL" <ws> <quoted_literal_char>]
 
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
@@ -2495,7 +2495,7 @@ HVML 为不同的数据类型提供了如下操作：
 `TOKEN` 执行器的语法如下：
 
 ```
-    "TOKEN" [ws] ':' [ws] "FROM" <ws> <integer_expression> [<ws> "TO" <ws> <integer_expression>] [ [ws] ',' [ws] "ADVANCE" <ws> <integer_expression>] [ [ws] ',' [ws] "DELIMETERS" <ws> <quoted_literal_char_sequence>] [ [ws] ',' [ws] "UNTIL" <ws> '''<string_matching_list>''']
+    "TOKEN" [ws] ':' [ws] "FROM" <ws> <integer_expression> [<ws> "TO" <ws> <integer_expression>] [ <ws> "ADVANCE" <ws> <integer_expression>] [ <ws> "DELIMETERS" <ws> <quoted_literal_char_sequence>] [ <ws> "UNTIL" <ws> '''<string_matching_list>''']
 
     integer_expression: <literal_integer> | <integer_evaluation_expression>
     integer_evaluation_expression: <four_arithmetic_expressions>
@@ -2506,7 +2506,7 @@ HVML 为不同的数据类型提供了如下操作：
     string_pattern_expression: <quoted_wildcard_expression>[<matching_flags>][<max_matching_length>] | <quoted_regular_expression>[<regexp_flags>]
 ```
 
-比如，当我们使用 `TOKEN: FROM 0 TO 3, DELIMETERS ' '` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
+比如，当我们使用 `TOKEN: FROM 0 TO 3 DELIMETERS ' '` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
 
 ```json
     [ "A", "brown", "fox" ]
@@ -2529,14 +2529,14 @@ HVML 为不同的数据类型提供了如下操作：
 `ADD`、`SUB`、`MUL`、`DIV` 执行器的语法如下：
 
 ```
-    < "ADD" | "SUB" | "MUL" | "DIV" > [ws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> [ws] ',' [ws] "BY" <ws> <number_expression>
+    < "ADD" | "SUB" | "MUL" | "DIV" > [ws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> <ws> "BY" <ws> <number_expression>
 
     number_expression: <literal_number> | <number_evaluation_expression>
     number_evaluation_expression: <four_arithmetic_expressions>
     four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 ```
 
-比如，当我们使用 `ADD: GT 90, BY -3` 执行器作用于数值 `100` 时，返回的数列为：
+比如，当我们使用 `ADD: GT 90 BY -3` 执行器作用于数值 `100` 时，返回的数列为：
 
 ```json
     [ 100, 97, 94, 91 ]
@@ -2545,7 +2545,7 @@ HVML 为不同的数据类型提供了如下操作：
 `FORMULA` 执行器的语法如下：
 
 ```
-    "FORMULA" [ws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> [ws] ',' [ws] "BY" <ws> <iterative_formula_expression>
+    "FORMULA" [ws] ':' [ws] < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression> <ws> "BY" <ws> <iterative_formula_expression>
 
     number_expression: <literal_number> | <number_evaluation_expression>
     number_evaluation_expression: <four_arithmetic_expressions>
@@ -2553,7 +2553,7 @@ HVML 为不同的数据类型提供了如下操作：
     iterative_formula_expression: a four arithmetic expressions containing `X` as the iterative value, such as `(3.14 * X * X) / 5`
 ```
 
-比如，当我们使用 `FORMULA: LT 500, BY (X * 2 - 50)` 执行器作用于数值 `100` 时，返回的数列为：
+比如，当我们使用 `FORMULA: LT 500 BY (X * 2 - 50)` 执行器作用于数值 `100` 时，返回的数列为：
 
 ```json
     [ 100, 150, 250, 450 ]
