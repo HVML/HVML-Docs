@@ -268,7 +268,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
             </test>
         </footer>
 
-        <send on="$databus" to="subscribe" at="">
+        <send on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED">
             <observe on="$databus" for="event:$?" to="update" in="...">
                 <update by="FUNC: on_battery_changed" />
             </observe>
