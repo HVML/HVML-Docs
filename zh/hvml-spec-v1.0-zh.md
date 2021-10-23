@@ -2204,7 +2204,8 @@ HVML 为不同的数据类型提供了如下操作：
     "FOO" [ws] ':' [ws] "ALL" | { "LIKE" [ws] <pattern_expression> }
 
     pattern_expression: <quoted_wildcard_expression>[<matching_flags>][<max_matching_length] | '/'<regular_expression>'/'[<regexp_flags>]
-    wildcard_expression: A sequence of zero or more Unicode characters in UTF-8 encoding, using backslash escapes like C language and wildcard characters (`*` or `?`).
+    wildcard_expression: A sequence of zero or more Unicode characters in UTF-8 encoding, using backslash escapes like C language \
+        and `*` or `?` as the wildcard characters.
     regular_expression: A regular expression conforms to POSIX.1-2001.
 
     quoted_wildcard_expression: '''<wildcard_expression>''' | '"'<wildcard_expression>'"'
@@ -2305,7 +2306,8 @@ HVML 为不同的数据类型提供了如下操作：
 
     literal_char: A Unicode characters in UTF-8 encoding, using backslash escapes like C language.
     literal_char_sequence: A sequence of zero or more Unicode characters in UTF-8 encoding, using backslash escapes like C language.
-    wildcard_expression: A sequence of zero or more Unicode characters in UTF-8 encoding, using backslash escapes like C language and wildcard characters (`*` or `?`).
+    wildcard_expression: A sequence of zero or more Unicode characters in UTF-8 encoding, using backslash escapes like C language \
+        and `*` or `?` as the wildcard characters.
     regular_expression: A regular expression conforms to POSIX.1-2001.
 
     literal_integer: /^-?[0-9]*[1-9][0-9]*$/
