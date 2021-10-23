@@ -494,7 +494,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 只要在 HVML 中修改某个定时器的 `active` 参数即可激活这个定时器，然后使用后面介绍的 `observe` 即可监听定时器到期时间：
 
 ```html
-    <choose on="$TIMERS" to="update" by="SQL: GET WHERE id = 'foo'">
+    <choose on="$TIMERS" to="update" by="FILTER: LIKE 'foo'">
         <update on="$?" property.active="yes" />
     </choose>
 
@@ -1074,6 +1074,7 @@ HVML 还定义有如下一些动作标签：
 - 对元素节点而言，我们使用 `style.<style_name>`、`style[style_name]` 来表示元素的样式名称，如 `style.width` 或 `style[width]` 表示修改元素的 `width` 样式值。
 - 如果数据项是对象，我们使用 `property.<key_name>` 或 `property[<key_name>]` 来表示数据项的键值。
 - 如果数据项是数组，我们使用 `member.<index_num>` 或 `member[<index_num>]` 来表示数组型数据项的第 `<index_num>` 个单元。
+- 如果数据项是集合，`update` 标签设定的更新操作，将用于集合中所有的成员。
 - 如果数据项是不可变类型，如字符串、数值或者逻辑类型，将抛出异常。
 
 在 HVML 中，根据目标标记语言的不同，我们可以引入一些虚拟的属性值来指代对特定内容的修改，比如针对 HTML 文档我们可使用 `textContent` 这一虚拟属性名来表示元素节点的纯文本内容，使用 `innerHTML` 来表示使用 HTML 标记片段来作为其内容（这可能改变 DOM 子树的结构）。类似地，我们可以使用 `innerXML` 表示使用 XML 文档片段来设定其内容。这类虚拟属性，取决于 HVML 的目标标记语言。
@@ -1083,8 +1084,6 @@ HVML 还定义有如下一些动作标签：
 ```html
     <update on="$users[1]" property.locale="$?.locale" />
 ```
-
-注意，当 `on` 属性值指定的是一个元素集合时，`update` 标签设定的属性或内容操作，将用于集合中所有的元素。
 
 另外，我们还可以使用除 `=` 之外的属性修改操作符修改内容，详情见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性)。
 
@@ -1792,12 +1791,12 @@ HVML 为不同的数据类型提供了如下操作：
 - `intersect`：在集合上执行相交操作，作用于集合，相当于求交集。
 - `subtract`：在集合上执行相减操作，作用于集合，相当于求差集。
 - `xor`：在集合上执行异或操作，作用于集合，相当于并集和交集之差。
-- `update`：在集合上匹配给定的键值并更新其他键值，作用于基于字典的集合。
+- `replace`：在集合上匹配给定的键值并更新其他键值，作用于基于字典的集合。
 
 比如修改全局定时器的操作，我们可以使用 `set` 标签完成：
 
 ```html
-    <set on="$TIMERS" to="update">
+    <set on="$TIMERS" to="replace">
         { "id" : "foo", "active" : "yes" },
     </set>
 ```
@@ -2503,12 +2502,14 @@ HVML 为不同的数据类型提供了如下操作：
 
 注意：
 
-1. 当集合中的元素使用额外的唯一性键名来判断唯一性时，`FILTER` 指定的匹配条件，仅和唯一性键名对应的值相关。
 1. 当使用数值对比分句时，则数据将被强制转换为数值进行处理。
-1. 当使用字符串匹配分句时，则数据会首先被序列化字符串，然后进行匹配处理。
+1. 当使用字符串匹配分句时，则数据会首先被序列化为字符串，然后进行匹配处理。
+1. 当集合中的元素使用额外的唯一性键名来判断唯一性时，`FILTER` 指定的匹配条件，仅和唯一性键名对应的值相关。
 1. 当该执行器用于集合时，使用键值做过滤条件，并可使用类似 `KEY` 执行器一样的 `FOR` 分句指定返回的数据形式。
 
 对于集合数据，不指定 `by` 属性时，默认使用 `FILTER: ALL` 执行器。
+
+作为示例，本文档 [2.1.6.4) `$TIMERS`](#2164-timers) 小节中激活某个特定定时器时使用了 `FILTER` 执行器。
 
 ##### 2.3.1.4) 用于字符串的内建执行器
 
@@ -2671,6 +2672,14 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 - `WHERE`: 用于指定筛选条件。
 - `GROUP BY`：用于指定分组（归约）条件。
 - `ORDER BY`：用于指定排序操作。
+
+另外，在 HVML 内置 SQL 解释器的 `SELECT` 语句中，除了使用 `*` 表示返回所有可能字段之外，还可以使用 `&` 返回符合给定条件的字典数据或原生实体对象（本质上是可变数据），从而可以供 `update` 语句操作修改其内容。如：
+
+```html
+    <choose on="$TIMERS" to="update" by="SQL: SELECT & WHERE id = 'foo'">
+        <update on="$?" property.active="yes" />
+    </choose>
+```
 
 在 HVML 中，SQL 执行器也可以作用于 DOM 文档子树或者嵌套的 JSON 字典数据。为此，我们引入了一个新的 SQL SELECT 分句 `TRAVEL IN`，可选 `SLIBLINGS`、`DEPTH`、`BREADTH` 或者 `LEAVES`，分别表示使用兄弟节点遍历、深度优先（depth-first）遍历、广度优先（breadth-first）遍历和叶子节点遍历，其语法为：
 
@@ -2835,7 +2844,9 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 ]
 ```
 
-使用 `TRAVEL IN` 分句时，可使用 `DEPTH FROM ... TO ...` 限定词，用于指定遍历树状数据时的深度（depth），如 `SELECT tag, attr.id, textContent TRAVEL IN DEPTH FROM 1 TO 2` 将给出如下结果：
+注意，在基于字典数据的数组或者树状结构上执行 SQL 语句时，可选的字段（如 `tag`、`attr.id` 等）为所有字典数据的键名之并集。对所有未定义的键值对，相应的键值为 `null`。
+
+在使用 `TRAVEL IN` 分句时，可使用内置变量，如 `@__depth` 作为当前的遍历深度，`@__index` 作为在当前深度上的索引值，从而可以复用 `WHERE` 条件分句来限定遍历的深度或者数量。如 `SELECT tag, attr.id, textContent WHERE @__depth > 0 AND @__depth < 3 TRAVEL IN DEPTH` 将给出如下结果：
 
 ```json
 [
@@ -2843,10 +2854,6 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
     { "tag": "li", "attr.id": "user-2", "textContent": null },
 ]
 ```
-
-注意，在基于字典数据的数组或者树状结构上执行 SQL 语句时，可选的字段（如 `tag`、`attr.id` 等）为所有字典数据的键名之并集。对所有未定义的键值对，相应的键值为 null。
-
-除了 `SELECT` 语句外，HVML 的 SQL 执行器支持 `GET` 语句，其语法和 `SELECT` 类似，唯一的不同在于 `GET` 语句返回给定条件的字典数据之引用，而不是字典数据值。通常，我们配合 `update` 操作使用 `GET` 语句，以便更新数据。如本文档 [2.1.6.4) `$TIMERS`](#2164-timers) 小节中修改激活定时器时使用的 SQL 语句。
 
 ##### 2.3.1.7) `TRAVEL` 执行器
 
@@ -3279,7 +3286,7 @@ def on_battery_changed (on_value, via_value, root_in_scope):
     <input type="text" name="user-name" placeholder="Your Name" value="$user_name" />
 
     <observe on="~ input[name='user-name']" for="change">
-        <update on="$user_name" value="$?" />
+        <set at="user_name" with="$?" />
     </observe>
 ```
 
@@ -3738,7 +3745,7 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
 在其他的属性值中，我们可嵌入 JSON 表达式，如：
 
 ```html
-<update on='$foo' value="foo-$bar" />
+<set at='foo' with="foo-$bar" />
 ```
 
 在模板数据中，我们可嵌入 JSON 表达式，如：
