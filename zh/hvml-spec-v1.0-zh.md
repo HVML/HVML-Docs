@@ -2578,11 +2578,12 @@ HVML 为不同的数据类型提供了如下操作：
 
 针对数值数据，HVML 提供如下内建执行器，可用于产生数值列表或简称“数列”：
 
-- `ADD`：在给定数值基础上执行加法操作，满足给定条件时继续。
-- `SUB`：在给定数值基础上执行减法操作，满足给定条件时继续。
-- `MUL`：在给定数值基础上执行乘法操作，满足给定条件时继续。
-- `DIV:`：在给定数值基础上执行除法操作，满足给定条件时继续。
-- `FORMULA:`：在给定的四则运算表达式上求值，满足给定条件时继续。
+- `ADD`：满足给定条件时，在给定数值基础上执行加法操作。
+- `SUB`：满足给定条件时，在给定数值基础上执行减法操作。
+- `MUL`：满足给定条件时，在给定数值基础上执行乘法操作。
+- `DIV:`：满足给定条件时，在给定的数值基础上执行除法操作。
+- `FORMULA:`：满足给定条件时，使用给定的迭代公式求值。
+- `OBJFORMULA:`：满足给定条件时，使用给定的多个迭代公式在对象上求值。
 
 `ADD`、`SUB`、`MUL`、`DIV` 执行器的语法如下：
 
@@ -2637,10 +2638,46 @@ HVML 为不同的数据类型提供了如下操作：
 
 对于数值数据，若不指定 `by` 属性时，默认使用 `ADD: LE $? BY 1` 执行器；该执行器将产生只包含一个数值的数列，这个数值就是初始上下文数据。
 
+`OBJFORMULA` 执行器的语法如下：
+
+```
+    "OBJFORMULA" [ws] ':' [ws] <value_number_comparing_logical_expression> <ws> "BY" <ws> <iterative_assignment_list>
+
+    value_number_comparing_logical_expression: a logical expression using `NOT`, `AND`, `OR`, `XOR` as the logical operators, \
+        `( )` as the precedence operators, and <value_number_comparing_condition> as the basic/minimal logical expression \
+        which can be evaluated as `true` or `false`.
+
+    value_number_comparing_condition: <key_name> <ws> < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression>
+
+    key_name: /^[A-Za-z_][A-Za-z0-9_]*$/
+
+    number_expression: <literal_number> | <number_evaluation_expression>
+    number_evaluation_expression: <four_arithmetic_expressions>
+    four_arithmetic_expressions: a four arithmetic expressions composed of literal real numbers, such as `(3.14 * 6 * 6) / 5`
+
+    number_expression: <literal_number> | <number_evaluation_expression>
+    number_evaluation_expression: <four_arithmetic_expressions>
+    four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
+
+    iterative_assignment_list: <iterative_assignment_expression>[ [ws] ',' [ws] <iterative_assignment_expression>[ [ws] ',' [ws] ...]]
+    iterative_assignment_expression: an assignment expression using `=`, the left operand is one of the key name of the current object \
+        and the right operand is a four arithmetic expressions containing the key names as the iterative values, such as `x = (3.14 * y * y) / 5`
+```
+
+比如，当我们使用 `OBJFORMULA: x LT 500 AND y LT 600 BY x = (x * 2 - 50), y = y + x` 执行器作用于对象 `{ x: 100, y: 0 }` 时，返回的数列为：
+
+```json
+    [
+        { "x": 100, "y", 100 },
+        { "x": 150, "y", 250 },
+        { "x": 250, "y", 500 },
+    ]
+```
+
 注：数值执行器可能导致死循环。
 
-__讨论__  
-我们可以定义一组迭代公式，从而可以就多个数值进行迭代操作。这种情况下，迭代的数据变成 `{ x: 5; y: 6 }` 这样的对象，而迭代公式变更为这种形式：`x = x + y; y = x - y;` 这种形式。不过这个执行器的迭代进行条件不好指定。或者，我们应该提供复数和矩阵运算？
+__讨论__：
+未来，可以增加对矩阵运算的支持。
 
 ##### 2.3.1.6) `SQL` 执行器
 
