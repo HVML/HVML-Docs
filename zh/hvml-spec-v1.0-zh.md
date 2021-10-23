@@ -2660,8 +2660,9 @@ HVML 为不同的数据类型提供了如下操作：
     four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 
     iterative_assignment_list: <iterative_assignment_expression>[ [ws] ',' [ws] <iterative_assignment_expression>[ [ws] ',' [ws] ...]]
-    iterative_assignment_expression: an assignment expression using `=`, the left operand is one of the key name of the current object \
-        and the right operand is a four arithmetic expressions containing the key names as the iterative values, such as `x = (3.14 * y * y) / 5`
+    iterative_assignment_expression: an assignment expression using `=` as the operator, the left operand is one of the key name of \
+        the current object and the right operand is a four arithmetic expressions containing the key names as the iterative values, \
+        such as `x = (3.14 * y * y) / 5`
 ```
 
 比如，当我们使用 `OBJFORMULA: x LT 500 AND y LT 600 BY x = (x * 2 - 50), y = y + x` 执行器作用于对象 `{ x: 100, y: 0 }` 时，返回的数列为：
@@ -2710,7 +2711,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 - `GROUP BY`：用于指定分组（归约）条件。
 - `ORDER BY`：用于指定排序操作。
 
-另外，在 HVML 内置 SQL 解释器的 `SELECT` 语句中，除了使用 `*` 表示返回所有可能字段之外，还可以使用 `&` 返回符合给定条件的字典数据或原生实体对象（本质上是可变数据），从而可以供 `update` 语句操作修改其内容。如：
+另外，在 HVML 内置 SQL 解释器的 `SELECT` 语句中，除了使用 `*` 表示返回所有可能字段之外，还可以使用 `&` 返回符合给定条件的整个数据；当数据是数组、字典或者原生实体对象时，可使用 `update` 语句操作修改其内容。如：
 
 ```html
     <choose on="$TIMERS" to="update" by="SQL: SELECT & WHERE id = 'foo'">
