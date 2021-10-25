@@ -1109,7 +1109,7 @@ JSON 求值表达式的语法，见本文档 [3.1.2.8) JSONEE 的语法](#3128-j
 
 注意，我们可以使用不含等号的属性值表述语法，如：
 
-```html
+```
     <update on="$users[0]" at="property.age" 3 />
     <update on="$users[1]" at="property.age" with $math.eval("$~.age + 1") />
 ```
@@ -1118,7 +1118,7 @@ JSON 求值表达式的语法，见本文档 [3.1.2.8) JSONEE 的语法](#3128-j
 
 当我们使用 `undefined` 赋值给某个数据项时，该数值项将被删除（同 `erase` 标签的效果），如：
 
-```html
+```
     <update on="$users[1]" at="property.age" with undefined />
 ```
 
@@ -1141,7 +1141,7 @@ JSON 求值表达式的语法，见本文档 [3.1.2.8) JSONEE 的语法](#3128-j
 
 可组合成一个：
 
-```html
+```
     <update on="~ p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
 ```
 
@@ -1346,7 +1346,7 @@ JSON 求值表达式的语法，见本文档 [3.1.2.8) JSONEE 的语法](#3128-j
 
 比如要实现根据当前 `locale` 动态生成搜索链接的功能，我们也可以使用嵌套在 `choose` 标签中的 `update` 标签完成相关功能，如：
 
-```html
+```
   <head>
       ...
   </head>
@@ -1430,7 +1430,7 @@ JSON 求值表达式的语法，见本文档 [3.1.2.8) JSONEE 的语法](#3128-j
 
 使用脚本程序定义的类，可用于实现较为复杂的迭代逻辑和操作。但在一些简单的场合，我们也可以不使用类而使用其他动作标签完成动作，如使用 `update` 标签使用当前迭代数据更新特定的元素属性：
 
-```html
+```
     <iterate on="$users" to="update" in="#the-user-list"
             by="RANGE: FROM 0 TO $EJSON.number($users) ADVANCE 2">
         <update on="~[id=user-$?.id] span" at="attr.class" with *= "text-* text-info" />
@@ -2137,7 +2137,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 `catch` 作为任意动作元素的子元素，定义该动作出现错误或者异常时要执行的动作。`catch` 标签定义的元素作为 `error` 和 `except` 元素的补充，可定义错误或者异常情形下的动作。如：
 
-```html
+```
     <choose on="$locales" to="update" in="#the-footer" by="KEY: AS '$global.locale'">
         <update on="~ p > a" at="textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
         <catch for="error:nodata">
