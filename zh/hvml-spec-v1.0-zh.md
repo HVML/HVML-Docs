@@ -182,6 +182,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 1. 数据项（data item）或数据元素（data element）。对数组而言，每个数组单元就是一个数据项；对对象数据而言，其中的某个键值对就是一个数据项。
 1. 文档元素（document element）。指文档对象模型中，使用某个标签（tag）定义的元素节点；一个文档元素可包含一个或多个属性（attribute）以及属性值，还可以包含内容（content）；一个元素可包含文本内容或者使用标签定义的单个或多个子元素。
 1. 文档片段（document fragement）。指 XML/HTML 文档中的一个片段，可作为模板被克隆（clone）到文档的其他位置。
+1. 元素汇集（element collection）。指使用选择器选择的一组元素。这里避免使用“集合”这个术语，是为了防止和`集合（set）`数据类型混淆。
 
 #### 2.1.1) 程序结构
 
@@ -204,8 +205,8 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
         <init as="users">
             [
-                { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-                { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+                { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US", "age": 2 },
+                { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN", "age": 3 }
             ]
         </init>
 
@@ -412,7 +413,7 @@ HVML 还定义有如下两种特殊数据类型：
 
 - 数组（array）。
 - 对象（object）。
-- 集合（collection 或 set）。
+- 集合（set）。
 
 和不可变数据相反，可变数据的含义是，我们可以在运行时改变这个数据的值。本质上，可变数据都是容器类数据，也就是数组、对象和集合。我们改变这些数据的值，本质上改变的是这些数据所包含的内容，比如删除其中的一个数据项。
 
@@ -436,6 +437,7 @@ HVML 不提供任何操作可以用来改变不可变数据，但开发者可以
 HVML 定义的上下文变量可罗列如下：
 
 - `$?`：指父操作给出的结果数据，也称为当前上下文数据。
+- `$~`：指当前数据，即对介词属性 `on` 的属性值求值后的结果数据。
 - `$@`：指当前的文档操作范围，即代表当前操作范围的 DOM 子树，也就是介词属性 `in` 定义的当前文档操作位置。
 - `$#`：指当前上下文数据所包含的数据项个数，同 `$EJSON.number($?)` 的返回值。
 - `$*`：指当前上下文数据的类型，用字符串表示，可能的取值有：`object`、`array`、`string`、`number`、`true`、`false`、`null`，分别表示对象、数组、字符串、数值、真值、假值以及空值。
@@ -444,7 +446,7 @@ HVML 定义的上下文变量可罗列如下：
 
 以下上下文变量专用于迭代时（其他情形下为非法值）：
 
-- `$&`：当前迭代的迭代子（iterator），本质上是迭代子对应的原生实体。
+- __TODO__`$&`：当前迭代的迭代子（iterator），本质上是迭代子对应的原生实体。
 - `$%`：当前迭代的索引值，比如第一次迭代，该变量的值为 0，第二次迭代，该变量的值为 1，以此类推。
 
 我们还可以在上下文变量的符号之前添加一个正整数来引用从当前向上回溯 `<N>` 级的上下文数据：
@@ -471,11 +473,11 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ##### 2.1.6.3) `$DOC`
 
-`$DOC` 是一个动态对象，该对象表述的是 HVML 生成的目标文档对象。我们可以使用该对象上的特定键名以及 `query` 方法使用 CSS 选择器获取目标文档上的特定元素或者元素集合，如：
+`$DOC` 是一个动态对象，该对象表述的是 HVML 生成的目标文档对象。我们可以使用该对象上的特定键名以及 `query` 方法使用 CSS 选择器获取目标文档上的特定元素或者元素汇集，如：
 
 1. `$DOC.doctype`：获取该目标文档对象的 `doctype` 节点。
 1. `$DOC.query("#foo")`：获取该目标文档对象中 id 属性值为 `foo` 的元素。
-1. `$DOC.query(".bar")`：获取该目标文档对象中 class 属性值为 `foo` 的元素或元素集合。
+1. `$DOC.query(".bar")`：获取该目标文档对象中 class 属性值为 `foo` 的元素或元素汇集。
 
 ##### 2.1.6.4) `$TIMERS`
 
@@ -498,13 +500,13 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ```html
     <choose on="$TIMERS" to="update" by="FILTER: LIKE 'foo'">
-        <update on="$?" property.active="yes" />
+        <update on="$?" at="property.active" with="yes" />
     </choose>
 
     ...
 
     <observe on="$TIMERS" for="expired:foo" to="update" in="#the-header" >
-        <update on="> span.local-time" textContent="$SYSTEM.time('%H:%m')" />
+        <update on="> span.local-time" at="textContent" with="$SYSTEM.time('%H:%m')" />
     </observe>
 ```
 
@@ -573,8 +575,9 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 该变量主要用于获得指定数据相关的信息，比如类型、数据项个数等。
 
-1. `$EJSON.type(<any>)`：获取数据的类型，如 `undefined`、`null`、`boolean`、`longdouble` 等，返回表示数据类型的字符串。
+1. `$EJSON.type(<any>)`：获取数据的类型，如 `null`、`boolean`、`longdouble` 等，返回表示数据类型的字符串。
 1. `$EJSON.number(<any>)`：获取给定数据的数据项个数。
+1. `$EJSON.select(<container>, <string: selector>[, <boolean: recursively])`：按照给定的选择器返回给定容器数据中符合条件的数据项，返回一个新的数组。
 
 各数据类型的数据项个数规则如下：
 
@@ -582,6 +585,21 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 - 对象：数据项个数指键值对数量。
 - 其他数据类型，如字符串、数值、`true`、`false` 或 `null` 等：数据项个数为 1。
 - `undefined`：数据项个数为 0。
+
+在 `select` 方法中，我们对第二个参数（`selector`）使用类似 CSS 选择器的方式来返回某个数据项或者某些数据项的汇集（数组），比如：
+
+- 在针对基于字典数据的树形结构或者数组中：
+    - `$EJSON.select($users, '[locale]')`：表示选择 `$users` 中定义有 `locale` 键名的数据项。
+    - `$EJSON.select($users, '[locale = 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值等于 `abc` 的数据项。
+    - `$EJSON.select($users, '[locale *= 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值包含 `abc` 子字符串的数据项。
+    - `$EJSON.select($users, '[locale ^= 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值以 `abc` 打头的数据项。
+    - `$EJSON.select($users, '[locale $= 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值以 `abc` 结尾的数据项。
+    - `$EJSON.select($users, '[locale |= 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值以 `abc` 或者 `abc-` 打头的数据项。
+    - `$EJSON.select($users, '[locale ~= 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值中以 `abc` 作为一个完整词元的数据项。
+- 针对数组：
+    - `$EJSON.select($users, ':nth-child(3n+1)')`：表示当前数组中所有索引下标匹配 4、7、10 等的数据项。
+
+使用上述选择器之后，相当于对原有单个数据项做了一些过滤。比如 `<choose on="$users" ... />` 选择了整个 `$users` 数组内容做后续处理，但如果使用 `<choose on="$EJSON.select($users, ":nth-child(2n)")` 则仅选择下标为偶数的数组单元。
 
 ##### 2.1.6.8) 集合
 
@@ -824,7 +842,7 @@ HVML 定义有如下几个基本的动作标签，用于操作数据或者元素
 - `iterate` 标签用来定义在一个可迭代数据或者元素上的迭代动作。
 - `reduce` 标签用来定义在一个可迭代数据或者元素上执行归约（reduce）动作。
 - `observe` 标签用来定义针对特定数据或者元素上的观察动作；`fire` 标签用来显式发起一个事件；`forget` 标签用来撤销对某个数据或者元素上的观察动作。
-- `update` 标签用来在指定的元素、元素集合或者容器数据上执行更新操作。
+- `update` 标签用来在指定的元素、元素汇集或者容器数据上执行更新操作。
 - `clear` 标签用来在指定元素或者容器数据上执行清空操作，通常意味者删除当前元素或者数据的所有子元素或者数据项。
 - `erase` 标签用来清除指定的元素、元素属性或容器中的数据项。
 - `set` 标签用来在字典、数组或者集合上，依据另外一项数据执行特定的操作。
@@ -922,7 +940,7 @@ HVML 还定义有如下一些动作标签：
 
 - `at`：在 `set` 动作元素中，用来指定要操作的变量名称；在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URI，如 `tcp://foo.com:2345`、 `unix:///var/run/hibus.sock`。
 - `from`：在 `init`、`set`、`load` 等动作元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URI。
-- `on`：用于定义执行动作所依赖的数据、元素或元素集合。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`$?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
+- `on`：用于定义执行动作所依赖的数据、元素或元素汇集。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`$?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
 - `in`：用于定义执行操作的文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。注意，使用 `in` 介词属性指定数据作为操作范围时，不会改变文档的操作位置。
 - `for`：在 `observe`、`forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的消息类型；在 `match` 标签中，用于定义匹配条件；在 `connect` 标签中，用于定义协议或用途。
 - `as`：用于定义 `init`、`connect`、`bind`、`load` 等元素绑定的变量名称、页面名称等。
@@ -960,7 +978,7 @@ HVML 还定义有如下一些动作标签：
 
 #### 2.1.14) 引用元素或数据
 
-当我们需要在动作标签的 `on` 属性中引用某个或某个元素集合时，我们使用 CSS 选择器。如：
+当我们需要在动作标签的 `on` 属性中引用某个元素或某个元素汇集时，我们使用 CSS 选择器。如：
 
 - `.avatar` 表示所有 `class` 属性包含 `avatar` 的元素（集合）。
 - `#the-user-list` 表示 `id` 属性为 `the-user-list` 的元素。
@@ -972,20 +990,28 @@ HVML 还定义有如下一些动作标签：
 - `~[name='user']` 表示 `name` 属性为 `user` 的元素（集合）。
 - `~div > p` 选择父元素为 `<div>` 元素的所有 `<p>` 元素。
 
-如果要在 `on` 属性中引用一个数据，则必定使用 `$`、`[`、`{` 或 `"` 作为前导字符，或者使用字面的数值（number）、`true`、`false`、`null` 等关键词：
+如果要在 `on` 属性中引用一个数据，则必定使用 `$`、`[`、或 `{` 作为前导字符：
 
 - `$` 用来定义一个 JSON 求值表达式，如 `$TIMERS[0]`。
 - `[` 用来定义一个 JSON 数组，如 `[ $foo, $bar, true, false ]`。
 - `{` 用来定义一个 JSON 对象，如 `{ "$foo" : $bar, "foo": "bar" }`。
 - `"` 用来定义一个 JSON 字符串，如 `"$foo"`。
-- `12345` 用来定义一个 JSON 数值。
+
+或者使用不使用等号的属性值表述语法，此时可或者使用字面的数值（number）、`true`、`false`、`null` 等关键词：
+
+```html
+    <choose on 12345 by="ADD: LE 9999 BY 1000">
+    </choose>
+```
+
+类似地，动作标签的 `with` 属性也使用这类规则来引用数据。详情见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性) 一节。
 
 在 HVML 中，`on` 或者 `in` 介词属性在引用文档中的元素时，若使用前导字符 `>`，则将被限定在父元素 `in` 介词指定的范围内。如下面例子中，
 
 ```html
         <reduce on="$?" to="choose clear iterate" in="#the-user-statistics" by="class: RUserRegionStats">
             <choose on="$?.count" to="update" in="> h2 > span">
-                <update on="$@" textContent="$?" />
+                <update on="$@" at="textContent" with="$?" />
             </choose>
             <clear in="#the-user-statistics > dl" />
             <iterate on="$?.regions" to="append" in="> dl" with="#region-to-users" by="class: IUserRegions">
@@ -1005,24 +1031,25 @@ HVML 还定义有如下一些动作标签：
 
 在上面的例子中，我们在文档片段模板或者数据模板中使用 `$` 前缀指定一个基于 JSON 数据的求值表达式。该求值表达式需要符合如下规则：
 
-- 一个 JSON 求值表达式的返回值类型是动态的，取决于使用这个表达式的上下文。但大部分情况下，JSON 求值表达式返回字符串，此时，非字符串类型的返回值将使用 EJSON 表达，比如空值的字符串表达为 `null`，真值的字符串表达为 `true`，而对象（或字典）的字符串表达就是该对象的 JSON 表述本身。
 - 求值表达式可嵌套使用已绑定的动态对象，如上述示例中使用 `$string` 变量一样。
 - 在可能有歧义的情况下，可使用一对 `{}` 包围整个 JSON 数据的求值表达式，比如：`user-$?.id` 和 `user-{$?.id}` 是一样的，但 `$user_item` 和 `{$user}_item` 是不一样的。
 - 除上下文变量之外，变量名须符合一般的编程语言所定义的变量名规则，若使用正则表达式，可表达为：`/^[A-Za-z_][A-Za-z0-9_]*$/`。
-- 使用 `\`（反斜杠）字符用于 `$` 、`{`、`}`、`<`、`>` 等字符的转义。
+- 使用 `\`（反斜杠）字符用于 `$` 、`{`、`}`、`(`、`)` 等字符的转义。
+
+一个 JSON 求值表达式的返回值类型要么是一个字符串，要么是实际数据，这取决于使用这个表达式的位置。比如在一般的属性（不是 `on` 也不是 `with` 属性）时，将求值为字符串，而在 `archetype` 等模板中，若包含有 `raw` 属性，则所有 `$` 将被忽略。当 JSON 求值表达式被求值为字符串时，非字符串类型的返回值将使用 EJSON 表达，比如空值的字符串表达为 `null`，真值的字符串表达为 `true`，而对象（或字典）的字符串表达就是该对象的 JSON 表述本身。
 
 在本文档中，JSON 求值表达式被简称为 `JSONEE`。
 
-废弃的内容：
+有关属性值的指定语法，见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性) 一节。
 
-- 若求值表达式最终返回的不是一个字符串，则使用对应的 JSON 表达，比如空值表达为 `null`。
-- 一个 JSON 表达式的返回值类型不是字符串的情况，通常发生在内建执行器中。当在内建执行器中使用一个 JSON 表达式时，其返回值类型会根据该执行器的语法确定。比如在 `RANGE: FROM <integer_expression> [TO <integer_expression>][ADVANCE <integer_expression>]` 这个内建执行器中，当使用 JSON 求值表达式来确定起始索引值以及步进值时，其返回值类型将被强制转换成整数。
+JSON 求值表达式的语法，见本文档 [3.1.2.8) JSONEE 的语法](#3128-jsonee-的语法) 一节。
+
 
 ### 2.2) 动作标签详解
 
 #### 2.2.1) `update` 标签
 
-`update` 标签用于修改一个可变数据，比如一个数组或者对象的特定数据项，或者元素的属性或者内容，或者一个元素集合。该标签支持 `on` 和 `by` 介词属性。`on` 属性用于指定要修改的数组、对象、元素或元素集合；`by` 指定执行器。当执行成功时，该标签的结果数据为更新后的数据。
+`update` 标签用于修改一个可变数据，比如一个数组或者对象的特定数据项，或者元素的属性或者内容，或者一个元素汇集。该标签支持 `on`、`at` 和 `by` 介词属性。`on` 属性用于指定要修改的数组、对象、元素或元素汇集；`at` 属性指定要修改的位置；`by` 指定执行器。当执行成功时，该标签的结果数据为更新后的数据。
 
 比如对下面的文档片段：
 
@@ -1035,7 +1062,8 @@ HVML 还定义有如下一些动作标签：
 我们通过下面的 `update` 标签来设置用户数量并修改其 `class` 属性：
 
 ```html
-    <update on="#the-user-stats > h2 > span" textContent="10" attr.class="text-warning" />
+    <update on="#the-user-stats > h2 > span" at="textContent" with="10" />
+    <update on="#the-user-stats > h2 > span" at="attr.class" with="text-warning" />
 ```
 
 执行上述 `update` 动作后，上面的 HTML 代码片段将变为：
@@ -1049,31 +1077,80 @@ HVML 还定义有如下一些动作标签：
 类似地，我们也可以在数据上执行 `update` 动作。比如更新 `$users` 的第二个用户的名称（`name`）：
 
 ```html
-    <update on="$users[1]" property.name="Richard" />
+    <init as="users">
+        [
+            { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US", "age": 2 },
+            { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN", "age": 3 }
+        ]
+    </init>
+
+    ...
+
+    <update on="$users[1]" at="property.name" with="Richard" />
 ```
 
-在 `update` 标签中，除了介词属性之外，我们使用其他属性来完成数据项或元素的内容更新，如上面的 `textContent`、`attr.class` 以及 `property.name` 等。其规则如下：
+在 `update` 标签中，使用如下形式的字符串作为 `at` 的属性值，用于指定要更改的数据成员，如上面的 `textContent`、`attr.class` 以及 `property.name` 等。其规则如下：
 
 - 对元素节点而言，我们使用 `attr.<attr_name>`、`attr[attr_name]` 来表示元素的属性名称，如 `attr.value` 或 `attr[value]` 表示修改元素的 `value` 属性值。
 - 对元素节点而言，我们使用 `style.<style_name>`、`style[style_name]` 来表示元素的样式名称，如 `style.width` 或 `style[width]` 表示修改元素的 `width` 样式值。
-- 如果数据项是对象，我们使用 `property.<key_name>` 或 `property[<key_name>]` 来表示数据项的键值。
-- 如果数据项是数组，我们使用 `member.<index_num>` 或 `member[<index_num>]` 来表示数组型数据项的第 `<index_num>` 个单元。
-- 如果数据项是集合，`update` 标签设定的更新操作，将用于集合中所有的成员。
+- 如果数据项是元素汇集时，`update` 标签设定的更新操作，将作用于汇集中所有元素。
+- 如果数据项是对象，我们使用 `property.<key_name>` 或 `property[<key_name>]` 来表示数据项的键名。
+- 如果数据项是数组或集合时，我们使用 `member.<index_num>` 或 `member[<index_num>]` 来表示数组中的第 `<index_num>` 个数据项。
+- 如果数据项是数组或集合时，且使用 `property.<key_name>` 或 `property[<key_name>]` 时，`update` 标签设定的更新操作，将作用于数组或集合中所有的元素。
 - 如果数据项是不可变类型，如字符串、数值或者逻辑类型，将抛出异常。
+- 如果更新操作破坏了集合的唯一性条件，将抛出异常。
 
-在 HVML 中，根据目标标记语言的不同，我们可以引入一些虚拟的属性值来指代对特定内容的修改，比如针对 HTML 文档我们可使用 `textContent` 这一虚拟属性名来表示元素节点的纯文本内容，使用 `innerHTML` 来表示使用 HTML 标记片段来作为其内容（这可能改变 DOM 子树的结构）。类似地，我们可以使用 `innerXML` 表示使用 XML 文档片段来设定其内容。这类虚拟属性，取决于 HVML 的目标标记语言。
+在 HVML 中，除使用 `textContent` 这一虚拟数据成员名来表示元素节点的纯文本内容之外，我们还使用 `innerML` 来表示使用 HTML/XML 片段来作为其内容（这可能改变 DOM 子树的结构）。
 
 注意，在属性值的表达式中，我们可以应用当前上下文数据（即 `$?`）等上下文变量的值，比如：
 
 ```html
-    <update on="$users[1]" property.locale="$?.locale" />
+    <update on="$users[1]" at="property.locale" with="$?.locale" />
 ```
 
-另外，我们还可以使用除 `=` 之外的属性修改操作符修改内容，详情见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性)。
+注意，我们可以使用不含等号的属性值表述语法，如：
+
+```html
+    <update on="$users[0]" at="property.age" 3 />
+    <update on="$users[1]" at="property.age" with $math.eval("$~.age + 1") />
+```
+
+上例中，我们针对用户的 `age` 属性，使用了不含等号的属性值表述语法，第一个赋值语句，使用了常数 `3`；第二个赋值语句，使用了 JSON 表达式，求值结果为 `4`。
+
+当我们使用 `undefined` 赋值给某个数据项时，该数值项将被删除（同 `erase` 标签的效果），如：
+
+```html
+    <update on="$users[1]" at="property.age" with undefined />
+```
+
+当上述 `update` 标签作用于上面的 `$users` 之后，结果为：
+
+```json
+    [
+        { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US", "age": 2 },
+        { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+    ]
+```
+
+当我们需要在一个 `update` 标签中同时修改多个属性值时，我们使用在 `at` 属性值中使用空格表示多个属性名称，在 `with` 属性值中使用数组对应这些属性值要做的修改。如下面的三个 `update` 标签：
+
+```html
+    <update on="~ p > a" at="textContent" with="$?.se_name" />
+    <update on="~ p > a" at="attr.href" with="$?.se_url" />
+    <update on="~ p > a" at="attr.title" with="$?.se_title" />
+```
+
+可组合成一个：
+
+```html
+    <update on="~ p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
+```
+
+另外，当属性值按字符串求值时，我们还可以使用除 `=` 之外的属性修改操作符修改内容，详情见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性)。
 
 #### 2.2.2) `erase` 标签
 
-`erase` 标签用于从数组、对象、元素或元素集合中移除一个指定的数据项，支持 `on`、`at` 和 `by` 介词属性。`on` 属性用于指定数组、对象、元素或元素集合；`at` 用于要移除的数据子项，不指定时表示整个数据项；`by` 属性指定执行器。该元素的结果数据为数值，表示移除的数据项个数。
+`erase` 标签用于从数组、对象、元素或元素汇集中移除一个指定的数据项，支持 `on`、`at` 和 `by` 介词属性。`on` 属性用于指定数组、对象、元素或元素汇集；`at` 用于要移除的数据子项，不指定时表示整个数据项；`by` 属性指定执行器。该元素的结果数据为数值，表示移除的数据项个数。
 
 如针对如下的 HTML 代码片段：
 
@@ -1110,7 +1187,7 @@ HVML 还定义有如下一些动作标签：
     </div>
 ```
 
-注意，当 `on` 属性值指定的是一个元素集合时，`erase` 标签将移除该集合中所有的元素，或者所有元素的指定属性或内容。
+注意，当 `on` 属性值指定的是一个元素汇集时，`erase` 标签将移除该集合中所有的元素，或者所有元素的指定属性或内容。
 
 类似地，我们也可以在数组上执行 `erase` 动作。比如清除 `$users` 的第二个成员：
 
@@ -1124,17 +1201,23 @@ HVML 还定义有如下一些动作标签：
     <erase on="$users[0]" at="property.name" />
 ```
 
-`at` 属性值可以是数组的索引值或者对象的属性名称（可指定多个，用空格分割），也可以是 `iterate` 父元素提供的迭代子（iterator）来指定位置：
+`at` 属性值可以是数组的索引值或者对象的属性名称（可指定多个，用空格分割）：
 
 ```html
-    <iterate on="$users" to="erase" by="RANGE: FROM $EJSON.number($users) TO 0 ADVANCE -2">
-        <erase on="$users" at="$&" />
+    <erase on="$users[0]" at="property.name property.age" />
+```
+
+作为示例，下面的代码在 `iterate` 标签中使用 `erase` 标签，间隔删除数组中成员：
+
+```html
+    <iterate on="$EJSON.number($users)" to="erase" by="SUB: GE 0 BY 2">
+        <erase on="$users" at="member.$?" />
     </iterate>
 ```
 
 #### 2.2.3) `clear` 标签
 
-`clear` 标签用于清空一个指定的数组、对象、元素或元素集合，仅支持 `on` 介词属性，用于指定要清空的数组、对象、元素或元素集合。该元素产生 `true` 或 `false` 两种结果数据，分别表示成功或失败。
+`clear` 标签用于清空一个指定的数组、对象、元素或元素汇集，仅支持 `on` 介词属性，用于指定要清空的数组、对象、元素或元素汇集。该元素产生 `true` 或 `false` 两种结果数据，分别表示成功或失败。
 
 如针对如下的 HTML 代码片段：
 
@@ -1172,9 +1255,9 @@ HVML 还定义有如下一些动作标签：
     <clear on="$users[1]" />
 ```
 
-执行上述清空指令后，`$users` 的第二个用户数据项仍然存在，但其值将变为空值。
+执行上述清空指令后，`$users` 的第二个用户数据项仍然存在，但该数据项将变为空对象。
 
-注意，当 `on` 属性值指定的是一个元素集合时，`clear` 标签将对集合中的每个元素执行清空操作。
+注意，当 `on` 属性值指定的是一个元素汇集时，`clear` 标签将对中的每个元素执行清空操作。
 
 #### 2.2.4) `test` 标签和 `match` 标签
 
@@ -1286,15 +1369,15 @@ HVML 还定义有如下一些动作标签：
     </footer>
 
     <choose on="$locales" to="update" in="#the-footer" by="KEY: AS '$global.locale'">
-        <update on="~ p > a" textContent="$?.se_name" attr.href="$?.se_url" attr.title="$?.se_title" />
+        <update on="~ p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
         <catch for="error:nodata">
-            <update on="~ p" textContent="You forget to define the \$locales/\$global variables!" />
+            <update on="~ p" at="textContent" with='You forget to define the $locales/$global variables!' />
         </catch>
         <catch for="KeyError">
-            <update on="~p > a" textContent="Google" attr.href="https://www.google.com" attr.title="Google" />
+            <update on="~p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
         </catch>
         <catch for="*">
-            <update on="~p" textContent="Bad \$locales/\$global data!" />
+            <update on="~p" at="textContent" with='Bad $locales/$global data!' />
         </catch>
     </choose>
   </body>
@@ -1351,7 +1434,7 @@ HVML 还定义有如下一些动作标签：
 ```html
     <iterate on="$users" to="update" in="#the-user-list"
             by="RANGE: FROM 0 TO $EJSON.number($users) ADVANCE 2">
-        <update on="~[id=user-$?.id] span" attr.class *= "text-* text-info" />
+        <update on="~[id=user-$?.id] span" at="attr.class" with *= "text-* text-info" />
     </iterate>
 ```
 
@@ -1385,7 +1468,7 @@ HVML 还定义有如下一些动作标签：
     </archetype>
 
     <reduce on="$users" to="update emtpy iterate" in="#the-user-statistics" by="CLASS: RUserRegionStats">
-        <update on="> h2 > span" textContent="$?.count" />
+        <update on="> h2 > span" at="textContent" with="$?.count" />
         <clear on="> dl" />
         <sort on="$?.regions" to="iterate" by="KEY: ALL FOR KV" descendingly>
             <iterate on="$?" to="append" in="> dl" with="#region-to-users" by="RANGE: ALL">
@@ -1546,7 +1629,7 @@ HVML 还定义有如下一些动作标签：
 ```html
     <send on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED">
         <observe on="$databus" for="event:$?" to="update" in="#the-header">
-            <update on="~span.mobile-operator" textContent="$?.name">
+            <update on="~span.mobile-operator" at="textContent" with="$?.name">
                 <error>
                     <p>Bad scope.</p>
                 </error>
@@ -1564,25 +1647,25 @@ HVML 还定义有如下一些动作标签：
     <observe on="$databus" for="event:$?" to="test">
         <test on="$?.level" in="#the-header">
             <match for="100" to="update" exclusively>
-                <update on="~img.mobile-status" attr.src="/battery-level-full.png" />
+                <update on="~img.mobile-status" at="attr.src" with="/battery-level-full.png" />
             </match>
             <match for=">90" to="update" exclusively>
-                <update on="~img.mobile-status" attr.src="/battery-level-90.png" />
+                <update on="~img.mobile-status" at="attr.src" with="/battery-level-90.png" />
             </match>
             <match for=">70" to="update" exclusively>
-                <update on="~img.mobile-status" attr.src="/battery-level-70.png" />
+                <update on="~img.mobile-status" at="attr.src" with="/battery-level-70.png" />
             </match>
             <match for=">50" to="update" exclusively>
-                <update on="~img.mobile-status" attr.src="/battery-level-50.png" />
+                <update on="~img.mobile-status" at="attr.src" with="/battery-level-50.png" />
             </match>
             <match for=">30" to="update" exclusively>
-                <update on="~img.mobile-status" attr.src="/battery-level-30.png" />
+                <update on="~img.mobile-status" at="attr.src" with="/battery-level-30.png" />
             </match>
             <match for=">10" to="update" exclusively>
-                <update on="~img.mobile-status" attr.src="/battery-level-10.png" />
+                <update on="~img.mobile-status" at="attr.src" with="/battery-level-10.png" />
             </match>
             <match for="*" to="update">
-                <update on="~img.mobile-status" attr.src="/battery-level-low.png" />
+                <update on="~img.mobile-status" at="attr.src" with="/battery-level-low.png" />
             </match>
         </test>
         <error>
@@ -1657,7 +1740,7 @@ HVML 还定义有如下一些动作标签：
 
             <reduce on="$users" to="choose clear iterate" in="#the-user-statistics" by="CLASS: RUserRegionStats">
                 <choose on="$?" to="update" in="> h2 > span" by="KEY: AS 'count'">
-                    <update on="$@" textContent="$?" />
+                    <update on="$@" at="textContent" with="$?" />
                 </choose>
                 <clear in="#the-user-statistics > dl" />
                 <sort on="$?.regions" to="iterate" by="KEY: ALL FOR KV" ascendingly>
@@ -2057,18 +2140,18 @@ HVML 为不同的数据类型提供了如下操作：
 
 ```html
     <choose on="$locales" to="update" in="#the-footer" by="KEY: AS '$global.locale'">
-        <update on="~ p > a" textContent="$?.se_name" attr.href="$?.se_url" attr.title="$?.se_title" />
+        <update on="~ p > a" at="textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
         <catch for="error:nodata">
-            <update on="~ p" textContent='You forget to define the $locales/$global variables!' />
+            <update on="~ p" at="textContent" with='You forget to define the $locales/$global variables!' />
         </catch>
         <catch for="error:*">
-            <update on="~ p" textContent='You forget to define the $locales/$global variables!' />
+            <update on="~ p" at="textContent" with='You forget to define the $locales/$global variables!' />
         </catch>
         <catch for="KeyError">
-            <update on="~ p > a" textContent="Google" attr.href="https://www.google.com" attr.title="Google" />
+            <update on="~ p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
         </catch>
         <catch>
-            <update on="~ p" textContent='Bad $locales/$global data!' />
+            <update on="~ p" at="textContent" with='Bad $locales/$global data!' />
         </catch>
     </choose>
 ```
@@ -2701,7 +2784,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 
 ```html
     <choose on="$TIMERS" to="update" by="SQL: SELECT & WHERE id = 'foo'">
-        <update on="$?" property.active="yes" />
+        <update on="$?" at="property.active" with="yes" />
     </choose>
 ```
 
@@ -3000,7 +3083,7 @@ class HVMLChooser (object):
         ...
 
         <choose on='$TIMERS' to="update" by="CLASS: CTimer" via="foo">
-            <update on="$?" property.active="yes" />
+            <update on="$?" at="property.active" with="yes" />
         </choose>
 
         ...
@@ -3261,7 +3344,7 @@ def on_battery_changed (on_value, via_value, root_in_scope):
         $message
 
         <observe on="$message" for="change">
-            <update on="$@" textContent="$message">
+            <update on="$@" at="textContent" with="$message">
         </observe>
     </p>
 ```
@@ -3284,7 +3367,7 @@ def on_battery_changed (on_value, via_value, root_in_scope):
     <input type="text" name="user-name" placeholder="Your Name" value="$user_name" />
 
     <observe on="~ input[name='user-name']" for="change">
-        <update on="$user_name" value="$?" />
+        <set at="user_name" with="$?" />
     </observe>
 ```
 
@@ -3300,10 +3383,10 @@ def on_battery_changed (on_value, via_value, root_in_scope):
         $hello$user_name
 
         <observe on="$hello" for="change">
-            <update on="$@" textContent="$hello$user_name">
+            <update on="$@" at="textContent" with="$hello$user_name">
         </observe>
         <observe on="$user_name" for="change">
-            <update on="$@" textContent="$hello$user_name">
+            <update on="$@" at="textContent" with="$hello$user_name">
         </observe>
     </p>
 
@@ -3597,7 +3680,7 @@ There must never be two or more attributes on the same start tag whose names are
 
 ```
     <choose on "$2.payload" to "append update" in "#the-user-list" with "$user_item">
-        <update textContent = "foo" />
+        <update at = "textContent" with = "foo" />
     </choose>
 ```
 
@@ -3635,7 +3718,7 @@ There must never be two or more attributes on the same start tag whose names are
 
 ```
     <choose on "$2.payload" to "append update" in "#the-user-list" with "$user_item">
-        <update attr.class %= "text-* text-info" />
+        <update at="attr.class" with %= "text-* text-info" />
     </choose>
 ```
 
@@ -3969,7 +4052,7 @@ Comments must have the following format:
 
 ### 3.2) 解析 HVML 文档
 
-见 [解析 HVML 文档]。
+（待公开文档）。
 
 ## 4) 应用示例
 
@@ -4047,7 +4130,7 @@ Comments must have the following format:
         </button>
 
         <observe on="#entries" for="selected-item-changed">
-            <update on="$fileInfo" property.selected_type="$?.type" property.selected_name="$?.name" />
+            <update on="$fileInfo" at="property.selected_type property.selected_name" with ["$?.type", "$?.name"] />
         </observe>
 
         <observe on="#open" for="click">
@@ -4059,8 +4142,8 @@ Comments must have the following format:
 
                     <clear on="#entries" />
                     <call on="$fillDirEntries" with="$new_path" />
-                    <update on="$fileInfo" property.curr_path="$new_path" />
-                    <update on="#path" textContent="$new_path" />
+                    <update on="$fileInfo" at="property.curr_path" with="$new_path" />
+                    <update on="#path" at="textContent" with="$new_path" />
                 </match>
                 <match for="file" exclusively>
                     <back to="_caller" with="$fileInfo" />
@@ -4142,14 +4225,14 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
     <body>
         <div class="clock" id="clock">
             <observe on="$TIMERS" for="expired:clock">
-                <update on="#clock" textContent="$SYSTEM.time('%H:%m')" />
+                <update on="#clock" at="textContent" with="$SYSTEM.time('%H:%m')" />
             </observe>
         </div>
 
         <div class="temperature" id="temperature">
             <send on="$braceletInfo" to="subscribe" at="temperature">
                 <observe on="$braceletInfo" for="event:$?">
-                    <update on="#temperature" textContent="$?.value ℃" />
+                    <update on="#temperature" at="textContent" with="$?.value ℃" />
                 </observe>
             </send>
         </div>
@@ -4157,7 +4240,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
         <div class="heartbeat" id="heartbeat">
             <send on="$braceletInfo" to="subscribe" at="heartbeat">
                 <observe on="$braceletInfo" for="event:$?">
-                    <update on="#heartbeat" textContent="$?.value BPM" />
+                    <update on="#heartbeat" at="textContent" with="$?.value BPM" />
                 </observe>
             </send>
         </div>
@@ -4165,7 +4248,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
         <div class="steps" id="steps">
             <send on="$braceletInfo" to="subscribe" at="steps">
                 <observe on="$braceletInfo" for="event:$?">
-                    <update on="#steps" textContent="$?.value" />
+                    <update on="#steps" at="textContent" with="$?.value" />
                 </observe>
             </send>
         </div>
@@ -4206,22 +4289,6 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 ## 附 1) 贡献者榜单
 
 ## 附 2) 废弃或待定的内容
-
-### 附 2.1) 在容器数据上提供类似 CSS 选择器的功能
-
-在数据上执行选择、迭代或者归约操作时，上述方案只支持使用 `on` 属性指定单个数据项。我们也可以使用类似 CSS 选择器的方式来引用某个数据项或者某个数据项的集合，比如：
-
-- 针对基于字典数据的树形结构或者数组：
-    - `$users[locale]`：表示选择 `$users` 中定义有 `locale` 键名的数据项。
-    - `$users[locale = 'abc']`：表示选择 `$users` 中所有 `locale` 键值等于 `abc` 的数据项。
-    - `$users[locale *= 'abc']`：表示选择 `$users` 中所有 `locale` 键值包含 `abc` 子字符串的数据项。
-    - `$users[locale ^= 'abc']`：表示选择 `$users` 中所有 `locale` 键值以 `abc` 打头的数据项。
-    - `$users[locale $= 'abc']`：表示选择 `$users` 中所有 `locale` 键值以 `abc` 结尾的数据项。
-    - `$users[locale ~= 'abc']`：表示选择 `$users` 中所有 `locale` 键值中以 `abc` 作为一个而完整词元的数据项。
-- 针对数组：
-    - `$users:nth-child(3n+1)`：表示当前数组中所有索引下标匹配 4、7、10 等的数据项。
-
-使用上述选择器之后，相当于对原有单个数据项做了一些过滤。比如 `<choose on="$users" ... />` 选择了整个 `$users` 数组内容做后续处理，但如果使用 `<choose on="$users:nth-child(2n)"` 则仅选择下标为偶数的数组单元。
 
 ## 附 3) 商标声明
 
