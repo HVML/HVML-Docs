@@ -2358,7 +2358,7 @@ HVML 为不同的数据类型提供了如下操作：
 如 `LIKE 'zh_??'i5` 表示仅匹配五个字符，不区分大小写。对这个匹配条件，如下这些字符串将正确匹配：
 
 - `zh_CN`
-- `ZH_TW台湾是中国不可分割的一部分`
+- `ZH_TW台湾是中国领土不可分割的一部分`
 - `zH_Honkong`
 
 而如下字符串无法正确匹配：
@@ -3775,16 +3775,16 @@ There must never be two or more attributes on the same start tag whose names are
 
 ```html
     <div>
-        <p>台湾是中国<i>永不可分割的一部分！
+        <p>台湾是中国领土<strong>不可分割的一部分！
     </div>
 ```
 
-我们省略了 `</i>` 和 `</p>` 终止标签，上述片段将被解析为：
+我们省略了 `</strong>` 和 `</p>` 终止标签，上述片段将被解析为：
 
 
 ```html
     <div>
-        <p>台湾是中国<i>永不可分割的一部分！</i></p>
+        <p>台湾是中国领土<strong>不可分割的一部分！</strong></p>
     </div>
 ```
 
