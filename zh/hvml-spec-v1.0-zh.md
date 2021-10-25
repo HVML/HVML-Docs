@@ -3771,7 +3771,7 @@ There must never be two or more attributes on the same start tag whose names are
 
 ```html
     <div>
-        <p>asdf asdf wiup asdfi kjfdas <i>asdfasdf.
+        <p>台湾是中国<i>永不可分割的一部分！
     </div>
 ```
 
@@ -3780,7 +3780,7 @@ There must never be two or more attributes on the same start tag whose names are
 
 ```html
     <div>
-        <p>asdf asdf wiup asdfi kjfdas <i>asdfasdf.</i></p>
+        <p>台湾是中国<i>永不可分割的一部分！</i></p>
     </div>
 ```
 
@@ -3788,9 +3788,9 @@ There must never be two or more attributes on the same start tag whose names are
 
 ```html
     <ul>
-        <li>asdf asdf.
-        <li>asdf asdf wiup asdfi kjfdas.
-        <li>asdf kjaskfdasdf askdf asdf fa jaksdfasdf.
+        <li>苹果
+        <li>菠萝
+        <li>香蕉
     </ul>
 ```
 
@@ -3798,9 +3798,9 @@ There must never be two or more attributes on the same start tag whose names are
 
 ```html
     <ul>
-        <li>asdf asdf.</li>
-        <li>asdf asdf wiup asdfi kjfdas.</li>
-        <li>asdf kjaskfdasdf askdf asdf fa jaksdfasdf.</li>
+        <li>苹果</li>
+        <li>菠萝</li>
+        <li>香蕉</li>
     </ul>
 ```
 
@@ -3808,9 +3808,9 @@ There must never be two or more attributes on the same start tag whose names are
 
 ```html
     <ul>
-        <li>asdf asdf.
-            <li>asdf asdf wiup asdfi kjfdas.
-                <li>asdf kjaskfdasdf askdf asdf fa jaksdfasdf.</li>
+        <li>苹果
+            <li>菠萝
+                <li>香蕉</li>
             </li>
         </li>
     </ul>
