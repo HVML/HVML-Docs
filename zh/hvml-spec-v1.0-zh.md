@@ -1145,6 +1145,10 @@ JSON 求值表达式的语法，见本文档 [3.1.2.8) JSONEE 的语法](#3128-j
     <update on="~ p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
 ```
 
+当 `at` 指定多个属性或内容名称，其数量和 `with` 属性值的数组不匹配时，未指定值的属性或者内容，取 `with` 属性最后一个值。
+
+当 `at` 指定多个属性或内容名称，而 `with` 属性值不是一个数组时，`with` 属性值作用于所有的属性和内容名称。
+
 另外，当属性值按字符串求值时，我们还可以使用除 `=` 之外的属性修改操作符修改内容，详情见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性)。
 
 #### 2.2.2) `erase` 标签
@@ -3673,7 +3677,7 @@ There must never be two or more attributes on the same start tag whose names are
 1. 动作元素的属性值可分为介词属性（preposition attribute）和副词属性（adverb attribute），这些属性是固有属性。
 1. 所有介词属性均需定义对应的属性值，可省略其赋值操作符（U+003D EQUALS SIGN `=`）。
 1. 所有副词属性按上述（Empty attribute syntax/空属性语法）表述。
-1. 除固有的介词属性及副词属性之外，其他属性使用上述四种语法之一，且可使用额外的赋值运算符。
+1. 除固有的介词属性及副词属性之外，`update` 标签的 `with` 属性可使用额外的赋值运算符。
 
 所有介词属性（仅在动作元素中）的赋值操作符（`=`）可以被忽略：
 
@@ -3703,13 +3707,13 @@ There must never be two or more attributes on the same start tag whose names are
 
 在某些动作元素（如 `update`）中，我们可以使用除 `=` 之外的属性值操作符来改变目标元素或者数据的属性或者内容：
 
-- `+=`：在当前的属性值中添加一个新的词元（token），若已有该词元，则不做修改。比如，原有的 `attr.class` 的属性值为 `foo`，使用 `attr.class += "text-warning"` 后，将修改为：`foo text-warning`；若原有属性值为 `foo text-warning`，则会保持不变。
-- `-=`：从当前属性值中移除一个词元，若没有该词元，则不做修改。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class -= "text-warning"` 后，将修改为 `foo`。
-- `%=`：从当前属性值中精确匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class %= "text-warning text-info"` 后，将修改为 `foo text-info`。
-- `~=`：从当前属性值中按指定的通配符模式匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class ~= "text-* text-info"` 后，将修改为 `foo text-info`。
-- `/=`：从当前属性值中按正则表达式匹配一个词元，并使用第二个词元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `attr.class /= "/^text/ text-info"` 后，将修改为 `foo text-info`。
-- `^=`：在当前属性值的头部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value ^= "C"` 后，将修改为：`Cab`。
-- `$=`：在当前属性值的尾部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `attr.data-value $= "C"` 后，将修改为：`abC`。
+- `+=`：在当前的属性值中添加一个新的词元（token），若已有该词元，则不做修改。比如，原有的 `attr.class` 的属性值为 `foo`，使用 `at="attr.class" with += "text-warning"` 后，将修改为：`foo text-warning`；若原有属性值为 `foo text-warning`，则会保持不变。
+- `-=`：从当前属性值中移除一个词元，若没有该词元，则不做修改。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with -= "text-warning"` 后，将修改为 `foo`。
+- `%=`：从当前属性值中精确匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with %= "text-warning text-info"` 后，将修改为 `foo text-info`。
+- `~=`：从当前属性值中按指定的通配符模式匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with ~= "text-* text-info"` 后，将修改为 `foo text-info`。
+- `/=`：从当前属性值中按正则表达式匹配一个词元，并使用第二个词元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with /= "/^text/ text-info"` 后，将修改为 `foo text-info`。
+- `^=`：在当前属性值的头部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `at="attr.data-value" with ^= "C"` 后，将修改为：`Cab`。
+- `$=`：在当前属性值的尾部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `at="attr.data-value" with $= "C"` 后，将修改为：`abC`。
 
 上述说明中所指词元（token），通常指一个长度不为零的字符序列，其中的字符为 ASCII 字母、ASCII 数字、或者减号（`-`）、连字符（`_`），词元之间由一个或多个空白字符分隔。但在具体的实现中，不包含任何空白字符的可打印字符串视作一个完整的词元。
 
@@ -3723,8 +3727,8 @@ There must never be two or more attributes on the same start tag whose names are
 
 注意，动作元素的介词属性，通常会被解释器视作字符串，或被串行化为字符串使用，但存在如下例外：
 
-- 所有动作元素的 `on` 和 `with` 属性，若赋值操作符（=）被忽略，且使用无引号属性值语法，或者使用其他语法情形下，以 `[`、`{`、`$` 打头时，将被视作一个表达式处理；否则按字符串处理。
-- `choose`、`iterate`、`reduce` 和 `update` 元素的 `via` 属性，若赋值操作符（=）被忽略，且使用无引号属性值语法，或者使用其他语法情形下，以 `[`、`{`、`$` 打头时，将被视作一个表达式处理；否则按字符串处理。
+- 所有动作元素的 `on` 和 `with` 属性，若赋值操作符（=）被忽略且使用无引号属性值语法，或者使用其他语法情形下，以 `[`、`{`、`$` 打头时，将被视作一个表达式处理；否则按字符串处理。
+- `choose`、`iterate`、`reduce` 和 `update` 元素的 `via` 属性，若赋值操作符（=）被忽略且使用无引号属性值语法，或者使用其他语法情形下，以 `[`、`{`、`$` 打头时，将被视作一个表达式处理；否则按字符串处理。
 
 如：
 
