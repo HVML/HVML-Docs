@@ -138,31 +138,31 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
         </footer>
 
         <observe on="$TIMERS" for="foo:expired" in="#the-header" >
-            <update on="> span.local-time" textContent="$_SYSTEM.time('%H:%m')" />
+            <update on="> span.local-time" at="textContent" with="$_SYSTEM.time('%H:%m')" />
         </observe>
 
         <observe on="$systemStatus" for="battery" to="test">
             <test on="$?.level" in="#the-header">
                 <match for="100" to="update" exclusively>
-                    <update on="img.mobile-status" attr.src="/battery-level-full.png" />
+                    <update on="img.mobile-status" at="attr.src" with="/battery-level-full.png" />
                 </match>
                 <match for=">90" to="update" exclusively>
-                    <update on="img.mobile-status" attr.src="/battery-level-90.png" />
+                    <update on="img.mobile-status" at="attr.src" with="/battery-level-90.png" />
                 </match>
                 <match for=">70" to="update" exclusively>
-                    <update on="img.mobile-status" attr.src="/battery-level-70.png" />
+                    <update on="img.mobile-status" at="attr.src" with="/battery-level-70.png" />
                 </match>
                 <match for=">50" to="update" exclusively>
-                    <update on="img.mobile-status" attr.src="/battery-level-50.png" />
+                    <update on="img.mobile-status" at="attr.src" with="/battery-level-50.png" />
                 </match>
                 <match for=">30" to="update" exclusively>
-                    <update on="img.mobile-status" attr.src="/battery-level-30.png" />
+                    <update on="img.mobile-status" at="attr.src" with="/battery-level-30.png" />
                 </match>
                 <match for=">10" to="update" exclusively>
-                    <update on="img.mobile-status" attr.src="/battery-level-10.png" />
+                    <update on="img.mobile-status" at="attr.src" with="/battery-level-10.png" />
                 </match>
                 <match for="*" to="update">
-                    <update on="img.mobile-status" attr.src="/battery-level-low.png" />
+                    <update on="img.mobile-status" at="attr.src" with="/battery-level-low.png" />
                 </match>
             </test>
         </observe>
@@ -263,7 +263,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
         </button>
 
         <observe on="$entries" for="selected-item-changed">
-            <update on="$fileInfo" key.selected_type=$?.type key.selected_name=$?.name />
+            <update on="$fileInfo" at="property.selected_type key.selected_name" with ["$?.type", "$?.name" ] />
         </observe>
 
         <observe on="$open" for="click">
@@ -275,8 +275,8 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
 
                     <empty on="#entries" />
                     <call on="$fillDirEntries" with="$new_path" />
-                    <update on="$fileInfo" key.curr_path=$new_path />
-                    <update on="#path" textContent="$new_path" />
+                    <update on="$fileInfo" at="property.curr_path" with="$new_path" />
+                    <update on="#path" at="textContent" with="$new_path" />
                 </match>
                 <match for="file" exclusively>
                     <back to="_caller" with="$fileInfo">
@@ -356,25 +356,25 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
     <body>
         <div class="clock" id="clock">
             <observe on="$TIMERS" for="clock:expired">
-                <update on="#clock" textContent="$_SYSTEM.time('%H:%m')" />
+                <update on="#clock" at="textContent" with="$_SYSTEM.time('%H:%m')" />
             </observe>
         </div>
 
         <div class="temperature" id="temperature">
             <observe on="$braceletInfo" for="temperature">
-                <update on="#temperature" textContent="$?.value ℃" />
+                <update on="#temperature" at="textContent" with="$?.value ℃" />
             </observe>
         </div>
 
         <div class="heartbeat" id="heartbeat">
             <observe on="$braceletInfo" for="heartbeat">
-                <update on="#heartbeat" textContent="$?.value BPM" />
+                <update on="#heartbeat" at="textContent" with="$?.value BPM" />
             </observe>
         </div>
 
         <div class="steps" id="steps">
             <observe on="$braceletInfo" for="steps">
-                <update on="#steps" textContent="$?.value" />
+                <update on="#steps" at="textContent" with="$?.value" />
             </observe>
         </div>
 
