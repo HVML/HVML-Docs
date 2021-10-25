@@ -84,20 +84,20 @@ Language: Chinese
    + [3.1) 书写 HVML 文档](#31-书写-hvml-文档)
       * [3.1.1) DOCTYPE](#311-doctype)
       * [3.1.2) 元素](#312-元素)
-         - [3.1.2.1) 起始标签/Start tags](#3121-起始标签start-tags)
-         - [3.1.2.2) 终止标签/End tags](#3122-终止标签end-tags)
-         - [3.1.2.3) 属性/Attributes](#3123-属性attributes)
+         - [3.1.2.1) 起始标签](#3121-起始标签)
+         - [3.1.2.2) 终止标签](#3122-终止标签)
+         - [3.1.2.3) 属性](#3123-属性)
          - [3.1.2.4) 动作元素属性](#3124-动作元素属性)
          - [3.1.2.5) 可选标签](#3125-可选标签)
          - [3.1.2.6) 裸文本元素和可转义裸文本元素的内容限制](#3126-裸文本元素和可转义裸文本元素的内容限制)
          - [3.1.2.7) JSONTEXT 和 JSONSTR](#3127-jsontext-和-jsonstr)
-         - [3.1.2.8) JSONEE 的语法/Syntax of JSONEE](#3128-jsonee-的语法syntax-of-jsonee)
-      * [3.1.3) 文本/Text](#313-文本text)
-         - [3.1.3.1) 新行/Newlines](#3131-新行newlines)
+         - [3.1.2.8) JSONEE 的语法](#3128-jsonee-的语法)
+      * [3.1.3) 文本](#313-文本)
+         - [3.1.3.1) 新行](#3131-新行)
          - [3.1.3.2) 扩展 JSON 语法](#3132-扩展-json-语法)
-      * [3.1.4) 字符引用/Character references](#314-字符引用character-references)
-      * [3.1.5) CDATA 段落/CDATA sections](#315-cdata-段落cdata-sections)
-      * [3.1.6) 注释/Comments](#316-注释comments)
+      * [3.1.4) 字符引用](#314-字符引用)
+      * [3.1.5) CDATA 段落](#315-cdata-段落)
+      * [3.1.6) 注释](#316-注释)
    + [3.2) 解析 HVML 文档](#32-解析-hvml-文档)
 - [4) 应用示例](#4-应用示例)
    + [4.1) 使用 HVML 开发传统 GUI 应用](#41-使用-hvml-开发传统-gui-应用)
@@ -105,7 +105,6 @@ Language: Chinese
 - [5) 总结](#5-总结)
 - [附 1) 贡献者榜单](#附-1-贡献者榜单)
 - [附 2) 废弃或待定的内容](#附-2-废弃或待定的内容)
-   + [附 2.1) 在容器数据上提供类似 CSS 选择器的功能](#附-21-在容器数据上提供类似-css-选择器的功能)
 - [附 3) 商标声明](#附-3-商标声明)
 
 
@@ -1042,7 +1041,7 @@ HVML 还定义有如下一些动作标签：
 
 有关属性值的指定语法，见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性) 一节。
 
-JSON 求值表达式的语法，见本文档 [3.1.3.2) 扩展 JSON 语法](#3132-扩展-json-语法) 一节。
+JSON 求值表达式的语法，见本文档 [3.1.2.8) JSONEE 的语法](#3128-jsonee-的语法) 一节。
 
 
 ### 2.2) 动作标签详解
@@ -2463,7 +2462,7 @@ HVML 为不同的数据类型提供了如下操作：
 
 对于字典数据，不指定 `by` 属性时，默认使用 `KEY: ALL` 执行器。
 
-注：JSON 求值表达式（JSON evaluation expression）的规则及语法，在本文档 [3.1.2.8) JSONEE 的语法/Syntax of JSONEE](#3128-jsonee-的语法syntax-of-jsonee) 小节中描述（下同）。
+注：JSON 求值表达式（JSON evaluation expression）的规则及语法，在本文档 [3.1.2.8) JSONEE 的语法](#3128-jsonee-的语法) 小节中描述（下同）。
 
 ##### 2.3.1.2) `RANGE` 执行器
 
@@ -3585,7 +3584,7 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: M
 
 注意，HVML 标签名称区别大小写。对于外部元素的标签，将保留其大小写形式。
 
-##### 3.1.2.1) 起始标签/Start tags
+##### 3.1.2.1) 起始标签
 
 Start tags must have the following format:
 
@@ -3597,7 +3596,7 @@ Start tags must have the following format:
 1. Then, if the element is one of the void elements, or if the element is a foreign element, then there may be a single U+002F SOLIDUS character (/). This character has no effect on void elements, but on foreign elements it marks the start tag as self-closing.
 1. Finally, start tags must be closed by a U+003E GREATER-THAN SIGN character (>).
 
-##### 3.1.2.2) 终止标签/End tags
+##### 3.1.2.2) 终止标签
 
 End tags must have the following format:
 
@@ -3607,7 +3606,7 @@ End tags must have the following format:
 1. After the tag name, there may be one or more ASCII whitespace.
 1. Finally, end tags must be closed by a U+003E GREATER-THAN SIGN character (>).
 
-##### 3.1.2.3) 属性/Attributes
+##### 3.1.2.3) 属性
 
 Attributes for an element are expressed inside the element's start tag.
 
@@ -3866,7 +3865,7 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
 
 对这类可嵌入式 JSONEE 的属性值或者可嵌入式 JSONEE 的模板数据，我们简称为 `JSONSTR`。
 
-##### 3.1.2.8) JSONEE 的语法/Syntax of JSONEE
+##### 3.1.2.8) JSONEE 的语法
 
 一个合法的 JSON 表达式（`json_evaluation_expression`）需要符合如下的语法规则，且可递归使用：
 
@@ -3903,11 +3902,11 @@ HVML 的 `init`、`set` 和 `archedata` 元素中包含的文本内容必须为�
     <hws>: /[ \t]+/         # horinzontal white space
 ```
 
-#### 3.1.3) 文本/Text
+#### 3.1.3) 文本
 
 Text is allowed inside elements, attribute values, and comments. Extra constraints are placed on what is and what is not allowed in text based on where the text is to be put, as described in the other sections.
 
-##### 3.1.3.1) 新行/Newlines
+##### 3.1.3.1) 新行
 
 Newlines in HVML may be represented either as U+000D CARRIAGE RETURN (CR) characters, U+000A LINE FEED (LF) characters, or pairs of U+000D CARRIAGE RETURN (CR), U+000A LINE FEED (LF) characters in that order.
 
@@ -4006,7 +4005,7 @@ Where character references are allowed, a character reference of a U+000A LINE F
 }
 ```
 
-#### 3.1.4) 字符引用/Character references
+#### 3.1.4) 字符引用
 
 In certain cases described in other sections, text may be mixed with character references. These can be used to escape characters that couldn't otherwise legally be included in text.
 
@@ -4022,7 +4021,7 @@ The numeric character reference forms described above are allowed to reference a
 
 An ambiguous ampersand is a U+0026 AMPERSAND character (&) that is followed by one or more ASCII alphanumerics, followed by a U+003B SEMICOLON character (;), where these characters do not match any of the names given in the named character references section.
 
-#### 3.1.5) CDATA 段落/CDATA sections
+#### 3.1.5) CDATA 段落
 
 CDATA sections must consist of the following components, in this order:
 
@@ -4042,7 +4041,7 @@ CDATA sections must consist of the following components, in this order:
 </math>
 ```
 
-#### 3.1.6) 注释/Comments
+#### 3.1.6) 注释
 
 Comments must have the following format:
 
