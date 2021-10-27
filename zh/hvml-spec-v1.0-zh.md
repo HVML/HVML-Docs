@@ -3668,27 +3668,49 @@ DOCTYPE 定义了文档格式以及 HVML 标签使用的前缀。
 <!DOCTYPE hvml>
 ```
 
-A DOCTYPE must consist of the following components, in this order:
+一个 `DOCTYPE` 必须按顺序由如下几个部分组成：
 
-1. A string that is an ASCII case-insensitive match for the string `"<!DOCTYPE"`.
-1. One or more ASCII whitespace.
-1. A string that is an ASCII case-insensitive match for the string `"hvml"`.
-1. Optionally, a DOCTYPE system information string.
-1. Zero or more ASCII whitespace.
-1. A U+003E GREATER-THAN SIGN character (`>`).
+> A DOCTYPE must consist of the following components, in this order:
 
-In other words, `<!DOCTYPE hvml>`, case-sensitively.
+1. 一个由 ASCII 字符组成，且匹配 `<!DOCTYPE` 的字符串，大小写敏感。
+1. 一个或多个 ASCII 空白字符。
+1. 一个由 ASCII 字符组成，且匹配 `hvml` 的字符串，大小写敏感。
+1. 一个可选的 DOCTYPE 系统信息字符串。
+1. 零个或多个 ASCII 空白字符。
+1. 一个 U+003E GREATER-THAN SIGN 字符（`>`）。
+
+> 1. A string that is an ASCII case-sensitive match for the string `"<!DOCTYPE"`.
+> 1. One or more ASCII whitespace.
+> 1. A string that is an ASCII case-sensitive match for the string `"hvml"`.
+> 1. Optionally, a DOCTYPE system information string.
+> 1. Zero or more ASCII whitespace.
+> 1. A U+003E GREATER-THAN SIGN character (`>`).
+
+通常书写为`<!DOCTYPE hvml>`，大小写敏感。
+
+> In other words, `<!DOCTYPE hvml>`, case-sensitively.
 
 在 HVML 文档中，当某个 HVML 标签可能和目标标记语言的标签冲突时，我们可以使用预定义前缀来标记 HVML 的标签，默认使用 `v:` 作为前缀，但我们也可以在 DOCTYPE 中自定义这个前缀。前缀字符串必须以字母打头，以冒号（`:`）结尾。
 
-1. One or more ASCII whitespace.
-1. A string that is an ASCII case-sensitive match for the string "SYSTEM".
-1. One or more ASCII whitespace.
-1. A U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (the quote mark).
-1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: MATH". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The other tokens defines the variables should be bound for this document, such as `MATH`, `FILE.FS`, `FILE.FILE:F`, and so on.
-1. A matching U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (i.e. the same character as in the earlier step labeled quote mark).
+SYSTEM 标识符字符串的格式如下：
 
-For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: MATH FILE.FS FILE.FILE:F">`, you can add the specific prefix to some HVML tags:
+1. 一个或多个 ASCII 空白字符。
+1. 一个由 ASCII 字符组成，且匹配 `SYSTEM` 的字符串，大小写敏感。
+1. 一个或多个 ASCII 空白字符。
+1. 一个 U+0022 QUOTATION MARK 字符（双引号，`"`）或 U+0027 APOSTROPHE 字符（单引号，`'`）。
+1. 一个指定系统标识符的字面字符串，由一个或者多个被 U+0020 SPACE 字符（空格，` `）分隔的词元组成，比如 `v: MATH`。第一个词元必须由ASCII 字母打头并以 U+003A COLON MARK（冒号，`:`）结尾；该词元定义了 HVML 标签的前缀。其他的词元定义了应该为当前文档装载并绑定的全局变量，比如 `MATH`、 `FILE.FS`、 `FILE.FILE:F` 等。
+1. 一个 U+0022 QUOTATION MARK 字符（双引号）或 U+0027 APOSTROPHE 字符（单引号），需匹配先前使用的引号。
+
+> 1. One or more ASCII whitespace.
+> 1. A string that is an ASCII case-sensitive match for the string "SYSTEM".
+> 1. One or more ASCII whitespace.
+> 1. A U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (the quote mark).
+> 1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: MATH". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The other tokens defines the variables should be bound for this document, such as `MATH`, `FILE.FS`, `FILE.FILE:F`, and so on.
+> 1. A matching U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (i.e. the same character as in the earlier step labeled quote mark).
+
+比如，如果 DOCTYPE 元素被书写为 `<!DOCTYPE hvml SYSTEM "hvml: MATH FILE.FS FILE.FILE:F">`，则可在 HVML 标签之前添加指定的前缀，以免和目标标记语言的标签名称发生冲突：
+
+> For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: MATH FILE.FS FILE.FILE:F">`, you can add the specific prefix to some HVML tags:
 
 ```html
 <!DOCTYPE hvml SYSTEM "hvml: MATH FILE:FS FILE:FILE">
@@ -3812,7 +3834,9 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: M
 
 ##### 3.1.2.1) 起始标签
 
-Start tags must have the following format:
+起始标签必须具有如下格式：
+
+> Start tags must have the following format:
 
 1. The first character of a start tag must be a U+003C LESS-THAN SIGN character (<).
 1. The next few characters of a start tag must be the element's tag name.
@@ -3824,7 +3848,9 @@ Start tags must have the following format:
 
 ##### 3.1.2.2) 终止标签
 
-End tags must have the following format:
+终止标签必须具有如下格式：
+
+> End tags must have the following format:
 
 1. The first character of an end tag must be a U+003C LESS-THAN SIGN character (<).
 1. The second character of an end tag must be a U+002F SOLIDUS character (/).
