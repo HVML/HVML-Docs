@@ -40,7 +40,7 @@ Language: Chinese
          - [2.1.6.6) `$T`](#2166-t)
          - [2.1.6.7) `$EJSON`](#2167-ejson)
          - [2.1.6.8) 集合](#2168-集合)
-         - [2.1.6.9) 绑定表达式](#2169-绑定表达式)
+         - [2.1.6.9) 表达式变量](#2169-表达式变量)
       * [2.1.7) 文档片段的 JSON 数据表达](#217-文档片段的-json-数据表达)
       * [2.1.8) 数据模板和文档片段模板](#218-数据模板和文档片段模板)
       * [2.1.9) 用来操作数据或元素的动作标签](#219-用来操作数据或元素的动作标签)
@@ -445,6 +445,7 @@ id:2
 name:Jerry
 age:3
 male:true
+
 ```
 
 字符串化数据的目的，是为了按照字符串对多个数据进行对比、排序等操作。
@@ -764,7 +765,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并集、交集、差集、异或集等。详情见 `set` 标签的描述。
 
-##### 2.1.6.9) 绑定表达式
+##### 2.1.6.9) 表达式变量
 
 HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
@@ -912,7 +913,7 @@ HVML 定义了两种模板标签，用于定义可以插入 DOM 文档中的 XML
 
 在上述 HVML 代码中，当我们在 `ul` 元素中引用 `$user_item` 时，对应的文档模板是 `<li>$?</li>`，而在 `ul` 元素之外引用 `$user_item` 时，得到的文档模板是 `<p>$?</p>`。
 
-另外，HVML 允许使用 `ERROR` 或 `EXCEPT` 两个保留名称定义当前范围内默认的错误和异常模板：
+另外，HVML 允许使用 `ERROR` 或 `EXCEPT` 两个保留名称定义当前文档位置内默认的错误和异常模板：
 
 ```
     <body>
@@ -1011,12 +1012,12 @@ HVML 还定义有如下一些动作标签：
 
     <body>
         <footer id="the-footer">
-            <test on="$global.locale" in='#the-footer'>
-                <match for="AS 'zh_CN'" to="displace" with="$footer-cn" exclusively>
+            <test on="$global.locale" in="#the-footer">
+                <match for="AS 'zh_CN'" to="displace" with="$footer_cn" exclusively>
                 </match>
-                <match for="AS 'zh_TW'" to="displace" with="$footer-tw" exclusively>
+                <match for="AS 'zh_TW'" to="displace" with="$footer_tw" exclusively>
                 </match>
-                <match for="ANY" to="displace" with="$footer-others">
+                <match for="ANY"to="displace" with="$footer_def" >
                 </match>
 
                 <error type="nodata">
@@ -1043,11 +1044,11 @@ HVML 还定义有如下一些动作标签：
 - `with`：用于定义克隆数据项或者文档片段时模板（`archetype` 或 `archedata`）名称；亦用于在 `init`、`request`、`send` 元素中定义发送请求或消息时的参数。
 - `to`：用于定义后续动作或者动作列表，多个动作使用空格分割。一个动作如果定义有相应的动作标签，则需要使用子元素描述，也可以是如下无需使用子元素描述的动作：
    - `noop`：空操作。
-   - `append`：在当前范围追加（append）一个子元素或子对象项。
-   - `prepend`：在当前当前范围前置（prepend）一个子元素或子数据项。
-   - `insertBefore`：在当前范围之前插入一个元素。
-   - `insertAfter`：在当前范围之后插入一个元素。
-   - `displace`：置换当前范围中的所有子元素。
+   - `append`：在当前文档操作位置追加（append）一个子元素或子对象项。
+   - `prepend`：在当前文档操作位置前置（prepend）一个子元素或子数据项。
+   - `insertBefore`：在当前文档操作位置之前插入一个元素。
+   - `insertAfter`：在当前文档操作位置之后插入一个元素。
+   - `displace`：置换当前文档操作位置中的所有子元素。
 - `by`：主要用于定义执行测试、选择、迭代、归约操作时的脚本程序类或函数名称，分别称为选择器、迭代器或归约器，并统称为执行器（executor）。HVML 允许解释器支持内建（built-in）执行器。对简单的数据处理，可直接使用内置执行器，在复杂的数据处理情形中，可使用外部脚本定义的类或者函数。在 HVML 中，我们使用如下前缀来表示不同的执行器类型：
    - `CLASS: ` 表示使用外部程序定义的类作为执行器。
    - `FUNC: ` 表示使用外部程序定义的函数作为执行器。
@@ -1157,13 +1158,13 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
     </init>
 
     <test on="$locales" in='#the-footer' by="KEY: AS '$global.locale' FOR VALUE">
-        <match for="AS '中国简体'" to="displace" with="$footer-cn" exclusively>
+        <match for="AS '中国简体'" to="displace" with="$footer_cn" exclusively>
         </match>
-        <match for="AS '中国繁体'" to="displace" with="$footer-tw" exclusively>
+        <match for="AS '中国繁体'" to="displace" with="$footer_tw" exclusively>
         </match>
-        <match for="LIKE /英语\$/" to="displace" with="$footer-en" exclusively>
+        <match for="LIKE /英语\$/" to="displace" with="$footer_en" exclusively>
         </match>
-        <match for="ANY" to="displace" with="$footer-others">
+        <match for="ANY" to="displace" with="$footer_def" >
         </match>
 
         <error type="nodata">
@@ -1497,6 +1498,22 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 
 另外，当属性值按字符串求值时，我们还可以使用除 `=` 之外的属性修改操作符修改内容，详情见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性)。
 
+以上的更新操作，是在容器的指定位置上执行默认的替换（displace）动作，我们还可以在 `update` 标签的 `to` 属性中指定一个不同于的更新动作：
+
+- `displace`：表示整个替换当前位置的值，是默认动作。
+- `append`：表示在当前位置上执行追加操作，作用于容器或者文档位置。
+- `prepend`：表示执行前置操作，作用于容器或者文档位置。
+- `insertBefore`：表示在当前位置之前插入一个数据，作用于容器数据或者文档位置。
+- `insertAfter`：表示在当前位置之后插入一个数据，作用于容器数据或者文档位置。
+
+```html
+    <init as="newUser">
+        { "id": "0", "avatar": "/img/avatars/0.png", "name": "Annoymous", "region": "en_US", "age": 2 },
+    </init>
+
+    <update on="$users" to="prepend" with $newUser />
+```
+
 #### 2.3.2) `erase` 标签
 
 `erase` 标签用于从数组、对象、元素或元素汇集中移除一个指定的数据项，支持 `on`、`at` 和 `by` 介词属性。`on` 属性用于指定数组、对象、元素或元素汇集；`at` 用于要移除的数据子项，不指定时表示整个数据项；`by` 属性指定执行器。该元素的结果数据为数值，表示移除的数据项个数。
@@ -1617,25 +1634,29 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 如：
 
 ```html
-    <archetype name="footer-cn">
+    <archetype name="footer_cn">
         <p><a href="http://www.baidu.com" title="百度">Baidu</a></p>
     </archetype>
 
-    <archetype name="footer-tw">
+    <archetype name="footer_tw">
         <p><a href="http://www.bing.com" title="必應">Bing</a></p>
     </archetype>
 
-    <archetype name="footer-others">
+    <archetype name="footer_en">
+        <p><a href="http://www.google.com" title="Google">Google</a></p>
+    </archetype>
+
+    <archetype name="footer_def">
         <p><a href="http://www.google.com" title="Google">Google</a></p>
     </archetype>
 
     <footer id="the-footer">
         <test on="$global.locale" in='#the-footer'>
-            <match for="AS 'zh_CN'" to="displace" with="$footer-cn" exclusively>
+            <match for="AS 'zh_CN'" to="displace" with="$footer_cn" exclusively>
             </match>
-            <match for="AS 'zh_TW'" to="displace" with="$footer-tw" exclusively>
+            <match for="AS 'zh_TW'" to="displace" with="$footer_tw" exclusively>
             </match>
-            <match for="LIKE '*'" to="displace" with="$footer-others">
+            <match for="LIKE '*'" to="displace" with="$footer_def">
             </match>
 
             <error type="nodata">
@@ -1704,6 +1725,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 
 ```html
     <match for="GT 10 AND LT 100">
+        ...
     </match>
 ```
 
@@ -1828,7 +1850,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
         </dl>
     </div>
 
-    <archetype id="region-to-users">
+    <archetype name="region_to_users">
         <div>
             <dt>$?.k</dt>
             <dd>$?.v</dd>
@@ -1839,7 +1861,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
         <update on="> h2 > span" at="textContent" with="$?.count" />
         <clear on="> dl" />
         <sort on="$?.regions" to="iterate" by="KEY: ALL FOR KV" descendingly>
-            <iterate on="$?" to="append" in="> dl" with="#region-to-users" by="RANGE: ALL">
+            <iterate on="$?" to="append" in="> dl" with="$region_to_users" by="RANGE: ALL">
             </iterate>
         </sort>
     </reduce>
@@ -2083,7 +2105,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
             </dl>
         </div>
 
-        <archetype id="region-to-users">
+        <archetype name="region_to_users">
             <div>
                 <dt>$?.k</dt>
                 <dd>$?.v</dd>
@@ -2210,11 +2232,11 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 上述代码定义了一个 `$users` 变量作为集合（使用 `id` 作为唯一性键名），并定义了一个 `$new_users` 字典数组。在使用 `set` 标签指定的 `merge` 操作后，得到如下结果：
 
 ```json
-        [
-            { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-            { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" },
-            { "id": "3", "avatar": "/img/avatars/3.png", "name": "David", "region": "zh_CN" }
-        ]
+    [
+        { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+        { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" },
+        { "id": "3", "avatar": "/img/avatars/3.png", "name": "David", "region": "zh_CN" }
+    ]
 ```
 
 HVML 为不同的数据类型提供了如下操作：
@@ -2226,12 +2248,12 @@ HVML 为不同的数据类型提供了如下操作：
 - `intersect`：在集合上执行相交操作，作用于集合，相当于求交集。
 - `subtract`：在集合上执行相减操作，作用于集合，相当于求差集。
 - `xor`：在集合上执行异或操作，作用于集合，相当于并集和交集之差。
-- `update`：在集合上匹配给定的键值并更新其他键值，作用于基于字典的集合。
+- `modify`：在集合上匹配给定的键值并更新其他键值，作用于基于字典的集合。
 
 比如修改全局定时器的操作，我们可以使用 `set` 标签完成：
 
 ```html
-    <set on="$TIMERS" to="update">
+    <set on="$TIMERS" to="modify">
         { "id" : "foo", "active" : "yes" },
     </set>
 ```
@@ -2293,7 +2315,7 @@ HVML 为不同的数据类型提供了如下操作：
     <body>
         <button id="theBtnWifiList">Click to fetch WiFi List</button>
 
-        <archetype id="wifi-item">
+        <archetype name="wifi_item">
             <li>@?.name</li>
         </archetype>
 
@@ -2313,7 +2335,7 @@ HVML 为不同的数据类型提供了如下操作：
                     <disconnect on="$hibus" />
 
                     <!-- fill the Wifi list with the response data -->
-                    <iterate on="$?" to="append" with="#wifi-item" in="#theWifiList">
+                    <iterate on="$?" to="append" with="$wifi_item" in="#theWifiList">
                     </iterate>
 
                 </observe>
@@ -2402,7 +2424,7 @@ HVML 为不同的数据类型提供了如下操作：
 ```html
         <define as="fillDirEntries">
             <choose on="$?" to="iterate" by="CLASS: CDirEntries">
-                <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: FROM 0">
+                <iterate on="$?" to="append" in="#entries" with="$dir_entry" by="RANGE: FROM 0">
                 </iterate>
             </choose>
         </define>
@@ -2443,7 +2465,7 @@ HVML 为不同的数据类型提供了如下操作：
 ```html
         <define as="fillDirEntries">
             <choose on="$?" to="iterate" by="CLASS: CDirEntries">
-                <iterate on="$?" to="append" with="#dir-entry" by="RANGE: FROM 0">
+                <iterate on="$?" to="append" with="$dir_entry" by="RANGE: FROM 0">
                 </iterate>
                 <return with="$#" />
             </choose>
@@ -2492,7 +2514,7 @@ HVML 为不同的数据类型提供了如下操作：
         <listbox id="entries">
             <call as="my_task" on="$collectAllDirEntriesRecursively" with="/" asynchronously />
             <observe on="$my_task" for="success">
-                <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: FROM 0">
+                <iterate on="$?" to="append" in="#entries" with="$dir_entry" by="RANGE: FROM 0">
                 </iterate>
             </observe>
         </listbox>
@@ -4269,13 +4291,13 @@ Comments must have the following format:
             $fileInfo.curr_path
         </label>
 
-        <archetype id="dir-entry">
+        <archetype name="dir_entry">
             <item class="$?.type">$?.name</item>
         </archetype>
 
         <define as="fillDirEntries">
             <choose on="$?" to="iterate" by="CLASS: CDirEntries">
-                <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: 0">
+                <iterate on="$?" to="append" in="#entries" with="$dir_entry" by="RANGE: 0">
                 </iterate>
             </choose>
         </define>
@@ -4351,7 +4373,7 @@ Comments must have the following format:
         <init>
 
         <request on="lcmd:///bin/ls" with="$lcmdParams" via="GET">
-            <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: 0">
+            <iterate on="$?" to="append" in="#entries" with="$dir_entry" by="RANGE: 0">
             </iterate>
         </request>
 ```
