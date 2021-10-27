@@ -3728,17 +3728,17 @@ For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: M
 
 注意，我们通常在目标标记语言定义的标签和 HVML 标签冲突时才使用前缀。
 
-当我们使用 `DOCTYPE` 的 `SYSTEM` 标志符定义需要预先装载的全局动态对象时，使用 `<package-name>`、 `<package-name>:<variable-name>`、 `<package-name>.<dvobj-name>` 或者 `<package-name>.<dvobj-name>:<variable-name>` 这样的表示法。以上四种表示法的含义分别解释如下：
+当我们使用 `DOCTYPE` 的 `SYSTEM` 标志符定义需要预先装载的全局动态对象时，使用 `<pkg_name>`、 `<pkg_name>:<var_name>`、 `<pkg_name>.<obj_name>` 或者 `<pkg_name>.<obj_name>:<var_name>` 这样的表示法。以上四种表示法的含义分别解释如下：
 
-1. 表示从 `<package-name>` 对应的共享库中装载名称同包名 `<package-name>` 的动态对象，并绑定为名称是 `<package-name>` 的变量。
-1. 表示从 `<package-name>` 对应的共享库中装载名称同包名 `<package-name>` 的动态对象，并绑定为名称是 `<variable-name>` 的变量。
-1. 表示从 `<package-name>` 对应的共享库中装载名称为 `<dvobj-name>` 的动态对象，并绑定为名称是 `<dvobj-name>` 的变量。
-1. 表示从 `<package-name>` 对应的共享库中装载名称为 `<dvobj-name>` 的动态对象，并绑定为变量 `<variable-name>`。
+1. 表示从 `<pkg_name>` 对应的共享库中装载名称同包名 `<pkg_name>` 的动态对象，并绑定为名称是 `<pkg_name>` 的变量。
+1. 表示从 `<pkg_name>` 对应的共享库中装载名称同包名 `<pkg_name>` 的动态对象，并绑定为名称是 `<var_name>` 的变量。
+1. 表示从 `<pkg_name>` 对应的共享库中装载名称为 `<obj_name>` 的动态对象，并绑定为名称是 `<obj_name>` 的变量。
+1. 表示从 `<pkg_name>` 对应的共享库中装载名称为 `<obj_name>` 的动态对象，并绑定为变量 `<var_name>`。
 
-如 `MATH MATH:M FILE.FS FILE.FILE:F`，表示从：
+如 `DATETIME math:MATH FILE.FS FILE.FILE:F`，表示从：
 
-- 从 `MATH` 库中装载动态对象 `MATH` 并绑定到全局 `MATH` 变量；
-- 从 `MATH` 库中装载动态对象 `MATH` 并绑定到全局 `M` 变量；
+- 从 `DATETIME` 库中装载动态对象 `DATETIME` 并绑定到全局 `DATETIME` 变量；
+- 从 `math` 库中装载动态对象 `MATH` 并绑定到全局 `MATH` 变量；
 - 从 `FILE` 库中装载动态对象 `FS` 并绑定到全局 `FS` 变量；
 - 从 `FILE` 库中装载动态对象 `FILE` 并绑定到全局 `F` 变量；
 
