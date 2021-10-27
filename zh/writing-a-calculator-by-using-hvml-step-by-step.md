@@ -298,8 +298,8 @@
             <div id="c_text">
                 <input type="text" id="text" value="$expression" readonly="readonly" />
                 <bind on="$expression" as="listener_exp">
-                    <observe on="$listener_exp" for="change">
-                        <update on="#text" attr.value="$listener_exp.eval" />
+                    <observe on="$listener_exp" for="change" to="update">
+                        <update on="#text" at="attr.value" with="$listener_exp.eval" />
                     </observe>
                 </bind>
             </div>
@@ -315,7 +315,7 @@
 接下来，我们使用 HVML 的 `observe` 标签处理按钮事件，并重置 `expression` 变量的值。首先清除（C）按钮，是最容易处理的：
 
 ```hvml
-        <observe on=".clear" for="click" to="update">
+        <observe on=".clear" for="click" to="set">
             <set at="expression">0</set>
         </observe>
 ```
@@ -323,7 +323,7 @@
 其次是 1、2、3 等数字按钮，我们先简化处理，每次在表达式之后追加按钮元素的文本内容：
 
 ```hvml
-        <observe on=".letters" for="click" to="update">
+        <observe on=".letters" for="click" to="set">
             <set at="expression" with="$expression$@.textContent">
         </observe>
 ```
@@ -341,7 +341,7 @@
 那么，我们可以使用如下的代码来处理 `←`（回退）按钮上的单击事件：
 
 ```html
-        <observe on=".backspace" for="click" to="update">
+        <observe on=".backspace" for="click" to="set">
             <set at="expression" with="$STR.strip($expression, 1)" />
         </observe>
 ```
@@ -350,7 +350,7 @@
 
 ```html
         <observe on=".equal" for="click" to="choose">
-            <choose on="$expression" to="update" by="CLASS: CEval">
+            <choose on="$expression" to="set" by="CLASS: CEval">
                 <set at="expression" with="$?" />
             </choose>
         </observe>
@@ -372,7 +372,7 @@ class CEval (HVMLChooser):
 如果我们将 `eval` 这类函数的功能实现为全局动态对象（`$MATH`）的一个方法，则相应的代码可简化为：
 
 ```html
-        <observe on=".equal" for="click" to="update">
+        <observe on=".equal" for="click" to="set">
             <set at="expression" value="$MATH.eval($expression)" />
         </observe>
 ```
@@ -384,10 +384,10 @@ class CEval (HVMLChooser):
 ```html
         <observe on=".letters" for="click" to="test">
             <test on="$expression">
-                <match for="~err*" to="update" exclusively>
+                <match for="~err*" to="set" exclusively>
                     <set at="expression" with="$@.textContent" />
                 </match>
-                <match for="~*" to="update">
+                <match for="~*" to="set">
                     <set at="expression" with="$expression$@.textContent" />
                 </match>
             </test>
@@ -401,10 +401,10 @@ class CEval (HVMLChooser):
 ```html
         <observe on=".backspace" for="click" to="test">
             <test on="$STR.strlen($expression)">
-                <match for="1" to="update" exclusively>
+                <match for="1" to="set" exclusively>
                     <set at="expression" with="0" />
                 </match>
-                <match for="*" to="update">
+                <match for="*" to="set">
                     <set at="expression" with="$STR.strip($expression, 1)" />
                 </match>
             </test>
@@ -414,12 +414,12 @@ class CEval (HVMLChooser):
 而在等号按钮的处理中，我们增加了对异常的捕获处理（注意，`catch` 是新增的用来捕获异常的动作标签）：
 
 ```html
-        <observe on=".equal" for="click" to="update">
+        <observe on=".equal" for="click" to="set">
             <set at="expression" with="$MATH.eval($expression)">
-                <catch for="*" to="update">
+                <catch for="*" to="set">
                     <set at="expression" with="ERROR" />
                 </catch>
-            </update>
+            </set>
         </observe>
 ```
 
@@ -475,8 +475,8 @@ class CEval (HVMLChooser):
             <div id="c_text">
                 <input type="text" id="text" value="$expression" readonly="readonly" />
                 <bind on="$expression" as="listener_exp">
-                    <observe on="$listener_exp" for="change">
-                        <update on="#text" attr.value="$listener_exp.eval" />
+                    <observe on="$listener_exp" for="change" to="update">
+                        <update on="#text" at="attr.value" with="$listener_exp.eval" />
                     </observe>
                 </bind>
             </div>
@@ -497,16 +497,16 @@ class CEval (HVMLChooser):
 
         </div>
 
-        <observe on=".clear" for="click" to="update">
+        <observe on=".clear" for="click" to="set">
             <set at="expression" with="0" />
         </observe>
 
         <observe on=".number" for="click" to="test">
             <test on="$expression">
-                <match for="~err*" to="update" exclusively>
+                <match for="~err*" to="set" exclusively>
                     <set at="expression" with="$@.textContent" />
                 </match>
-                <match for="~*" to="update">
+                <match for="~*" to="set">
                     <set at="expression" with="$expression$@.textContent" />
                 </match>
             </test>
@@ -514,21 +514,21 @@ class CEval (HVMLChooser):
 
         <observe on=".backspace" for="click" to="test">
             <test on="$STR.strlen($expression)">
-                <match for="1" to="update" exclusively>
+                <match for="1" to="set" exclusively>
                     <set at="expression" with="0" />
                 </match>
-                <match for="*" to="update">
+                <match for="*" to="set">
                     <set at="expression" with="$STR.strip($expression, 1)" />
                 </match>
             </test>
         </observe>
 
-        <observe on=".equal" for="click" to="update">
+        <observe on=".equal" for="click" to="set">
             <set at="expression" with="$MATH.eval($expression)">
-                <catch for="*" to="update">
+                <catch for="*" to="set">
                     <set at="expression" value="ERROR" />
                 </catch>
-            </update>
+            </set>
         </observe>
 
     </body>
