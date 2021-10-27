@@ -531,13 +531,13 @@ HVML 不提供任何操作可以用来改变不可变数据，但开发者可以
 - `init`：该标签初始化一个变量；我们将有名字的数据称为变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义请求的 URL，`with` 属性定义请求的参数，`via` 属性定义请求的方法（如 `GET` 或 `POST`）。
 - `connect`：该标签定义对一个外部数据源的连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包。
 - `disconnect`：该标签关闭先前建立的外部数据源连接。
-- `bind`：该标签用于定义一个绑定表达式的变量。
+- `bind`：该标签用于定义一个表达式变量。
 
 在 HVML 中，当我们引用变量时，我们使用 `$` 前缀，比如 `$global`、`$users`、`$?` 等。当我们要指代普通的 `$` 字符时，我们使用 `\` 做转义字符。
 
 `$global`、`$users` 这种变量称为命名变量（named variables），又分为全局变量或者局部变量。`$?` 这类使用特殊字符的变量称为上下文变量（context variables），根据 HVML 解释器的解析上下文确定其值。
 
-HVML 定义的上下文变量可罗列如下：
+HVML 定义的上下文变量罗列如下：
 
 - `$?`：指父操作给出的结果数据，即父操作结果数据。
 - `$~`：指当前操作数据，即对介词属性 `on` 的属性值求值后的结果数据。
@@ -615,19 +615,19 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ##### 2.1.6.5) `$L`
 
-`$L` 是一个动态对象，该对象完成数值对比、字符串对比以及逻辑与、或、异或、取反等逻辑操作：
+`$L` 是一个动态对象，该对象完成数值对比、字符串对比以及逻辑与、或、异或、取反等逻辑操作，比如：
 
-1. `$L.not(<json_evaluation_expression>)`：用于逻辑取反操作。
-1. `$L.and(<json_evaluation_expression>, <json_evaluation_expression>, ...)`：用于逻辑与运算。
-1. `$L.or(<json_evaluation_expression>, <json_evaluation_expression>, ...)`：用于逻辑或运算。
-1. `$L.xor(<json_evaluation_expression>, <json_evaluation_expression>)`：用于逻辑异或运算。
-1. `$L.eq(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较两个参数是否在数值上相等。
-1. `$L.ne(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较两个参数是否在数值上不相等。
-1. `$L.gt(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上大于第二个参数。
-1. `$L.ge(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上大于或等于第二个参数。
-1. `$L.lt(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上小于第二个参数。
-1. `$L.le(<json_evaluation_expression>, <json_evaluation_expression>)`：用于比较第一个参数在数值上小于或等于第二个参数。
-1. `$L.streq(< 'caseless' | 'case' | 'wildcard' | 'reg' >, <json_evaluation_expression>, <json_evaluation_expression>)`：用于对比两个字符串是否相等；第一个参数用来表示字符串的匹配方式（区分大小写、通配符、正则表达式），其后的两个参数用来传递两个字符串。
+1. `$L.not(<any>)`：用于逻辑取反操作。
+1. `$L.and(<any>, <any>, ...)`：用于逻辑与运算。
+1. `$L.or(<any>, <any>, ...)`：用于逻辑或运算。
+1. `$L.xor(<any>, <any>)`：用于逻辑异或运算。
+1. `$L.eq(<any>, <any>)`：用于比较两个参数是否在数值上相等。
+1. `$L.ne(<any>, <any>)`：用于比较两个参数是否在数值上不相等。
+1. `$L.gt(<any>, <any>)`：用于比较第一个参数在数值上大于第二个参数。
+1. `$L.ge(<any>, <any>)`：用于比较第一个参数在数值上大于或等于第二个参数。
+1. `$L.lt(<any>, <any>)`：用于比较第一个参数在数值上小于第二个参数。
+1. `$L.le(<any>, <any>)`：用于比较第一个参数在数值上小于或等于第二个参数。
+1. `$L.streq(< 'caseless' | 'case' | 'wildcard' | 'reg' >, <any>, <any>)`：用于对比两个字符串是否相等；第一个参数用来表示字符串的匹配方式（区分大小写、通配符、正则表达式），其后的两个参数用来传递两个字符串。
 
 比如 `$L.not($L.gt(5, 3))` 的结果是假值（`false`）。
 
@@ -695,15 +695,15 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 在 `select` 方法中，我们对第二个参数（`selector`）使用类似 CSS 选择器的方式来返回某个数据项或者某些数据项的汇集（数组），比如：
 
 - 在针对基于字典数据的树形结构或者数组中：
-    - `$EJSON.select($users, '[locale]')`：表示选择 `$users` 中定义有 `locale` 键名的数据项。
-    - `$EJSON.select($users, '[locale = 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值等于 `abc` 的数据项。
-    - `$EJSON.select($users, '[locale *= 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值包含 `abc` 子字符串的数据项。
-    - `$EJSON.select($users, '[locale ^= 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值以 `abc` 打头的数据项。
-    - `$EJSON.select($users, '[locale $= 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值以 `abc` 结尾的数据项。
-    - `$EJSON.select($users, '[locale |= 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值以 `abc` 或者 `abc-` 打头的数据项。
-    - `$EJSON.select($users, '[locale ~= 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值中以 `abc` 作为一个完整词元的数据项。
+   - `$EJSON.select($users, '[locale]')`：表示选择 `$users` 中定义有 `locale` 键名的数据项。
+   - `$EJSON.select($users, '[locale = 'zh_CN']')`：表示选择 `$users` 中所有 `locale` 的键值等于 `zh_CN` 的数据项。
+   - `$EJSON.select($users, '[locale *= 'zh']')`：表示选择 `$users` 中所有 `locale` 的键值包含 `zh` 子字符串的数据项。
+   - `$EJSON.select($users, '[locale ^= 'zh']')`：表示选择 `$users` 中所有 `locale` 的键值以 `zh` 打头的数据项。
+   - `$EJSON.select($users, '[locale $= 'zh']')`：表示选择 `$users` 中所有 `locale` 的键值以 `zh` 结尾的数据项。
+   - `$EJSON.select($users, '[locale |= 'zh']')`：表示选择 `$users` 中所有 `locale` 的键值以 `zh`、`zh-`、`zh_` 打头的数据项。
+   - `$EJSON.select($users, '[locale ~= 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值中以 `abc` 作为一个完整词元的数据项。
 - 针对数组：
-    - `$EJSON.select($users, ':nth-child(3n+1)')`：表示当前数组中所有索引下标匹配 4、7、10 等的数据项。
+   - `$EJSON.select($users, ':nth-child(3n+1)')`：表示当前数组中所有索引下标匹配 4、7、10 等的数据项。
 
 使用上述选择器之后，相当于对原有单个数据项做了一些过滤。比如 `<choose on="$users" ... />` 选择了整个 `$users` 数组内容做后续处理，但如果使用 `<choose on="$EJSON.select($users, ":nth-child(2n)")` 则仅选择下标为偶数的数组单元。
 
