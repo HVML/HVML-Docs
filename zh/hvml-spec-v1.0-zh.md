@@ -145,7 +145,7 @@ Language: Chinese
 以 React.js、Vue.js 为代表的前端框架取得了巨大成功，但存在如下缺陷和不足：
 
 - 这些技术建立在已有成熟的 Web 标准之上，需要完整支持相关前端规范的浏览器才能运行，因此无法应用于其他场合。比如要在 Python 脚本中使用这类技术，目前没有任何解决方案；再比如在传统的 GUI 应用编程中，也无法使用这一技术带来的好处。
-- 这些技术通过引入 `v-if`、 `v-else`、 `v-for` 等虚拟属性实现了基于数据的条件和循环流程控制，但这种方法带来代码可读性的急剧下降，代码可读性的下降带来代码可维护性的下降。如下面 Vue.js 的一个示例：
+- 这些技术通过引入 `v-if`、 `v-else`、 `v-for` 等虚拟属性实现了基于数据的条件和循环流程控制，但这种方法带来代码可读性的下降，代码可读性的下降带来代码可维护性的下降。如下面 Vue.js 的一个示例：
 
 ```html
 <div v-if="Math.random() > 0.5">
@@ -953,6 +953,7 @@ HVML 定义了两种模板标签，用于定义可以插入 DOM 文档中的 XML
 
 HVML 定义有如下几个基本的动作标签，用于操作数据或者元素：
 
+- `init` 标签用来初始化或重置一个变量。
 - `update` 标签用来在指定的元素、元素汇集或者容器数据上执行更新操作。
 - `clear` 标签用来在指定元素或者容器数据上执行清空操作，通常意味者删除当前元素或者数据的所有子元素或者数据项。
 - `erase` 标签用来清除指定的元素、元素属性或容器中的数据项。
@@ -1176,23 +1177,23 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 ```html
     <init as="locales">
       {
-          "en_US" : "美式英语",
-          "en_UK" : "英式英语",
-          "zh_CN" : "中文简体",
-          "zh_TW" : "中文繁体",
-          "zh_HK" : "中文繁体",
-          "zh_MO" : "中文繁体",
+          "en_US" : "英语（美国）",
+          "en_UK" : "英语（英国）",
+          "zh_CN" : "中文（中国大陆）",
+          "zh_TW" : "中文（中国台湾）",
+          "zh_HK" : "中文（中国香港）",
+          "zh_MO" : "中文（中国澳门）",
       }
     </init>
 
     <test on="$locales" in='#the-footer' by="KEY: AS '$global.locale' FOR VALUE">
-        <match for="AS '中国简体'" exclusively>
+        <match for="AS '中文（中国大陆）'" exclusively>
             <update on="$@" to="displace" with="$footer_cn" />
         </match>
-        <match for="AS '中国繁体'" exclusively>
+        <match for="AS '中文（中国台湾）'" exclusively>
             <update on="$@" to="displace" with="$footer_tw" />
         </match>
-        <match for="LIKE /英语\$/" exclusively>
+        <match for="LIKE /^英语/" exclusively>
             <update on="$@" to="displace" with="$footer_en" />
         </match>
         <match for="ANY">
@@ -4650,6 +4651,10 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 
 ### 附 2.2) 其他
+
+使用 `caseinsensitively` 副词属性，在 `init` 动作标签中初始化一个集合时，用于指定唯一性值的对比对大小写不敏感，默认为大小写敏感。
+
+在初始化集合时，使用 `by` 属性指定用于对比两个数据的外部执行器（类似 `strcmp` 的函数）。默认使用数值或者字符串对比函数，取决于添加到集合中的第一个数据类型。
 
 使用 `$&` 作为当前迭代的迭代子（iterator），本质上是迭代子对应的原生实体。
 
