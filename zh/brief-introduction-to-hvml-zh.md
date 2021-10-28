@@ -61,12 +61,12 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
             ]
         </init>
 
-        <set on="$TIMERS" to="displace">
+        <update on="$TIMERS" to="displace">
             [
                 { "id" : "foo", "interval" : 500,  "active" : "yes" },
                 { "id" : "bar", "interval" : 1000, "active" : "no" },
             ]
-        </set>
+        </update>
 
         <connect at="socket:///var/run/hibus.sock" as="systemStatus" for="hiBus" />
     </head>
@@ -95,7 +95,8 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
         </header>
 
         <ul class="user-list">
-            <iterate on="$users" with="$user_item" to="append" by="CLASS: IUser">
+            <iterate on="$users" by="CLASS: IUser">
+                <update on="$@" to="append" with="$user_item" />
                 <error on="nodata">
                     <img src="wait.png" />
                 </error>
@@ -119,11 +120,14 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
 
         <footer id="the-footer">
             <test on="$_SYSTEM.locale" in='the-footer'>
-                <match for="~zh_CN" to="displace" with="$footer_cn" exclusively>
+                <match for="AS 'zh_CN'" exclusively>
+                    <update on="$@" to="displace" with="$footer_cn" />
                 </match>
-                <match for="~zh_TW" to="displace" with="$footer_tw" exclusively>
+                <match for="AS 'zh_TW'" exclusively>
+                    <update on="$@" to="displace" with="$footer_tw" />
                 </match>
-                <match for="*" to="displace" with="$footer_def">
+                <match for="ANY">
+                    <update on="$@" to="displace" with="$footer_def" />
                 </match>
                 <error on="nodata">
                     <p>You forget to define the global variable!</p>
@@ -141,33 +145,33 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
             <update on="> span.local-time" at="textContent" with="$_SYSTEM.time('%H:%m')" />
         </observe>
 
-        <observe on="$systemStatus" for="battery" to="test">
+        <observe on="$systemStatus" for="battery">
             <test on="$?.level" in="#the-header">
-                <match for="100" to="update" exclusively>
+                <match for="GE 100" exclusively>
                     <update on="img.mobile-status" at="attr.src" with="/battery-level-full.png" />
                 </match>
-                <match for=">90" to="update" exclusively>
+                <match for="GE 90" exclusively>
                     <update on="img.mobile-status" at="attr.src" with="/battery-level-90.png" />
                 </match>
-                <match for=">70" to="update" exclusively>
+                <match for="GE 70" exclusively>
                     <update on="img.mobile-status" at="attr.src" with="/battery-level-70.png" />
                 </match>
-                <match for=">50" to="update" exclusively>
+                <match for="GE 50" exclusively>
                     <update on="img.mobile-status" at="attr.src" with="/battery-level-50.png" />
                 </match>
-                <match for=">30" to="update" exclusively>
+                <match for="GE 30" exclusively>
                     <update on="img.mobile-status" at="attr.src" with="/battery-level-30.png" />
                 </match>
-                <match for=">10" to="update" exclusively>
+                <match for="GE 10" exclusively>
                     <update on="img.mobile-status" at="attr.src" with="/battery-level-10.png" />
                 </match>
-                <match for="*" to="update">
+                <match for="ANY">
                     <update on="img.mobile-status" at="attr.src" with="/battery-level-low.png" />
                 </match>
             </test>
         </observe>
 
-        <observe on=".avatar" for="clicked" to="load">
+        <observe on=".avatar" for="clicked">
             <load on="user.hvml" with="{'id': $@.attr['data-value']}" as="modal" />
         </observe>
     </body>
@@ -180,7 +184,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
 
 首先是数据驱动编程（data-driven programming）。通过基于数据的迭代、插入、更新、清除等操作，开发者不需要编写程序或者只要少量编写程序即可动态生成最终的 XML/HTML 文档。比如下面的上面示例代码中的 `iterate` 标签，就在`$users` 变量代表的数据（在 `header` 中使用 `init` 标签定义）上做迭代，然后在最终文档的 `ul` 元素中插入了若干 `li` 元素。而 `li` 元素的属性（包括子元素）由一个 `archetype` 标签定义，其中使用 `$？` 来指代被迭代的 `$users` 中的一个数据单元。
 
-在上面的示例代码中，我们使用了系统内置变量 `$TIMERS` 来定义定时器，每个定时器有一个全局的标识符，间隔时间以及是否激活的标志。如果要激活一个定时器，我们只需要使用 HVML 的 `update` 或 `set` 标签来修改对应的键值，而不需要调用某个特定的编程接口。这是数据驱动编程的另一个用法——我们不需要为定时器或者其他的类似模块的操作提供额外的 API。
+在上面的示例代码中，我们使用了系统内置变量 `$TIMERS` 来定义定时器，每个定时器有一个全局的标识符，间隔时间以及是否激活的标志。如果要激活一个定时器，我们只需要使用 HVML 的 `update` 标签来修改对应的键值，而不需要调用某个特定的编程接口。这是数据驱动编程的另一个用法——我们不需要为定时器或者其他的类似模块的操作提供额外的 API。
 
 另外，在上面的示例代码中，我们通过 `observe` 标签观察新的数据或文档本身的变化以及用户交互事件，可实现 XML/HTML 文档或数据的动态更新。比如在最后一个 `observe` 标签中，通过监听用户头像上的点击事件来装载一个新的 `user.hvml` 文件，以模态对话框的形式展示对应用户的详细信息。
 
@@ -190,7 +194,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
 
 再次是数据的 JSON 表达。HVML 对文档和数据的操作提供了一致接口。HVML 要求所有外部数据均使用 JSON 格式表述，JSON 格式是一种人机共读的数据表述形式，可在数值、字符串、数组、字典等基本数据单元的基础上表述复杂对象。由于 HTML/XML 文档片段（DOM 子树）可表述为 JSON 格式的数据，因此，HVML 亦可用于操作使用 JSON 表述的数据。在 HVML 中，我们还提供了对动态 JSON 对象的支持，我们可以使用外部脚本程序来实现自己的动态 JSON 对象，且可以在这些对象上执行类似函数调用一样的功能。
 
-最后，HVML 通过动作标签（通常都是一些英文的动词，如 `init`、`set`、`update`、`iterate` 等）以及与之配合的介词或副词属性来定义动作标签所依赖的数据、目标操作位置以及执行条件来完成特定的文档操作。这和常见的编程语言有很大不同，HVML 的描述方式更加贴近自然语言，从而可以大幅降低学习门槛。
+最后，HVML 通过动作标签（通常都是一些英文的动词，如 `init`、`update`、`iterate` 等）以及与之配合的介词或副词属性来定义动作标签所依赖的数据、目标操作位置以及执行条件来完成特定的文档操作。这和常见的编程语言有很大不同，HVML 的描述方式更加贴近自然语言，从而可以大幅降低学习门槛。
 
 限于篇幅，我们不打算在本文中详细介绍 HVML，读者对 HVML 有个感性认识就可以了。有兴趣了解详细规范的读者，可以参阅文末的原文链接。不过要耐心点哦，定义一个完备、自恰的编程语言不是一件容易的事儿，所以要读，就要找个大段的时间，耐心点儿仔细地阅读。
 
@@ -243,13 +247,14 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
             $fileInfo.curr_path
         </label>
 
-        <archetype id="dir-entry">
+        <archetype name="dir_entry">
             <item class="$?.type">$?.name</item>
         </archetype>
 
         <define as="fillDirEntries">
-            <choose on="$?" to="iterate" by="CLASS: CDirEntries">
-                <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: 0">
+            <choose on="$?" by="CLASS: CDirEntries">
+                <iterate on="$?" in="#entries" by="RANGE: 0">
+                    <update on="$@" to="append" with="$dir_entry" />
                 </iterate>
             </choose>
         </define>
@@ -268,7 +273,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
 
         <observe on="$open" for="click">
             <test on="$fileInfo.selected_type">
-                <match for="dir" to="empty call update update" exclusively>
+                <match for="dir" exclusively>
                     <init as="new_path">
                         "$fileInfo.curr_path{$2.name}/"
                     </init>
@@ -321,7 +326,8 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
 
 ```html
         <requset on="lcmd:///bin/ls" with="{ "cmdLine": "ls $fileInfo.curr_path" }">
-            <iterate on="$?" to="append" in="#entries" with="#dir-entry" by="RANGE: 0">
+            <iterate on="$?" in="#entries" by="RANGE: 0">
+                <update on="$@" to="append" with="$dir_entry" />
             </iterate>
         </request>
 ```
@@ -344,11 +350,11 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
     <head>
         <connect at="tcp://foo.bar/bracelet" as="braceletInfo" for="MQTT">
 
-        <set on="$TIMERS" to="displace">
+        <update on="$TIMERS" to="displace">
             [
                 { "id" : "clock", "interval" : 1000, "active" : "yes" },
             ]
-        </set>
+        </update>
 
         <link rel="stylesheet" type="text/css" href="/foo/bar/bracelet.css">
     </head>
@@ -379,7 +385,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
         </div>
 
         <observe on="$braceletInfo">
-            <choose on="$?" to="noop" by="CLASS: CDumpEvent" />
+            <choose on="$?" by="CLASS: CDumpEvent" />
         </observe>
     </body>
 </hvml>
