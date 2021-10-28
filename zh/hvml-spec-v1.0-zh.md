@@ -4,7 +4,7 @@ HVML Specification Version 1.0
 Author: Vincent Wei  
 Category: App Framework  
 Date: Dec., 2021  
-Status: Proposal  
+Status: Release Candidate  
 Language: Chinese
 
 *Copyright Notice*
