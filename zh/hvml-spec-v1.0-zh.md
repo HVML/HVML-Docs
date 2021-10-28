@@ -55,19 +55,19 @@ Language: Chinese
       * [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法)
       * [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)
    + [2.3) 动作标签](#22-动作标签)
-      * [2.3.1) `update` 标签](#231-update-标签)
-         - [2.3.1.1) 指定目标位置](#2311-指定目标位置)
-         - [2.3.1.2) 更新集合](#2312-更新集合)
-      * [2.3.2) `erase` 标签](#232-erase-标签)
-      * [2.3.3) `clear` 标签](#233-clear-标签)
-      * [2.3.4) `test` 标签和 `match` 标签](#234-test-标签和-match-标签)
-      * [2.3.5) `choose` 标签](#235-choose-标签)
-      * [2.3.6) `iterate` 标签](#236-iterate-标签)
-      * [2.3.7) `reduce` 标签](#237-reduce-标签)
-      * [2.3.8) `sort` 标签](#238-sort-标签)
-      * [2.3.9) `observe`、 `forget` 和 `fire` 标签](#239-observeforget-和-fire-标签)
-      * [2.3.10) `request` 标签](#2310-request-标签)
-      * [2.3.11) `init` 标签](#2311-init-标签)
+      * [2.3.1) `init` 标签](#231-init-标签)
+      * [2.3.2) `update` 标签](#232-update-标签)
+         - [2.3.2.1) 指定目标位置](#2321-指定目标位置)
+         - [2.3.2.2) 更新集合](#2322-更新集合)
+      * [2.3.3) `erase` 标签](#233-erase-标签)
+      * [2.3.4) `clear` 标签](#234-clear-标签)
+      * [2.3.5) `test` 标签和 `match` 标签](#235-test-标签和-match-标签)
+      * [2.3.6) `choose` 标签](#236-choose-标签)
+      * [2.3.7) `iterate` 标签](#237-iterate-标签)
+      * [2.3.8) `reduce` 标签](#238-reduce-标签)
+      * [2.3.9) `sort` 标签](#239-sort-标签)
+      * [2.3.10) `observe`、 `forget` 和 `fire` 标签](#2310-observeforget-和-fire-标签)
+      * [2.3.11) `request` 标签](#2311-request-标签)
       * [2.3.12) `connect`、 `send` 和 `disconnect` 标签](#2312-connectsend-和-disconnect-标签)
       * [2.3.13) `load` 和 `back` 标签](#2313-load-和-back-标签)
       * [2.3.14) `define` 和 `include` 标签](#2314-define-和-include-标签)
@@ -585,8 +585,8 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 `$DOC` 是一个动态对象，该对象表述的是 HVML 生成的目标文档对象。我们可以使用该对象上的特定键名以及 `query` 方法使用 CSS 选择器获取目标文档上的特定元素或者元素汇集，如：
 
 1. `$DOC.doctype`：获取该目标文档对象的 `doctype` 节点。
-1. `$DOC.query("#foo")`：获取该目标文档对象中 id 属性值为 `foo` 的元素。
-1. `$DOC.query(".bar")`：获取该目标文档对象中 class 属性值为 `foo` 的元素或元素汇集。
+1. `$DOC.query("#foo")`：获取该目标文档对象中 `id` 属性值为 `foo` 的元素。
+1. `$DOC.query(".bar")`：获取该目标文档对象中 `class` 属性值为 `foo` 的元素或元素汇集。
 
 ##### 2.1.6.4) `$TIMERS`
 
@@ -689,7 +689,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 1. `$EJSON.stringify(<any>)`：对给定数据执行字符串化，结果数据的类型为字符串。
 1. `$EJSON.serilize(<any>, <string: options>)`：对给定数据执行序列化，结果数据的类型为字符串。
 1. `$EJSON.count(<any>)`：获取给定数据的数据项个数。
-1. `$EJSON.select(<container>, <string: selector>[, <boolean: recursively])`：按照给定的选择器返回给定容器数据中符合条件的数据项，返回一个新的数组。
+1. `$EJSON.select(<container>, <string: selector>[, <boolean: recursively])`：按照给定的选择器返回给定容器数据中符合条件的数据项或一个数据汇集。
 
 各数据类型的数据项个数规则如下：
 
@@ -698,20 +698,20 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 - 其他数据类型，如字符串、数值、 `true`、 `false` 或 `null` 等：数据项个数为 1。
 - `undefined`：数据项个数为 0。
 
-在 `select` 方法中，我们对第二个参数（`selector`）使用类似 CSS 选择器的方式来返回某个数据项或者某些数据项的汇集（数组），比如：
+在 `select` 方法中，我们对第二个参数（`selector`）使用类似 CSS 选择器的方式来返回某个数据项或者某些数据项的汇集，比如：
 
 - 在针对基于字典数据的树形结构或者数组中：
-   - `$EJSON.select($users, '[locale]')`：表示选择 `$users` 中定义有 `locale` 键名的数据项。
-   - `$EJSON.select($users, '[locale = 'zh_CN']')`：表示选择 `$users` 中所有 `locale` 的键值等于 `zh_CN` 的数据项。
-   - `$EJSON.select($users, '[locale *= 'zh']')`：表示选择 `$users` 中所有 `locale` 的键值包含 `zh` 子字符串的数据项。
-   - `$EJSON.select($users, '[locale ^= 'zh']')`：表示选择 `$users` 中所有 `locale` 的键值以 `zh` 打头的数据项。
-   - `$EJSON.select($users, '[locale $= 'zh']')`：表示选择 `$users` 中所有 `locale` 的键值以 `zh` 结尾的数据项。
-   - `$EJSON.select($users, '[locale |= 'zh']')`：表示选择 `$users` 中所有 `locale` 的键值以 `zh`、 `zh-`、 `zh_` 打头的数据项。
-   - `$EJSON.select($users, '[locale ~= 'abc']')`：表示选择 `$users` 中所有 `locale` 的键值中以 `abc` 作为一个完整词元的数据项。
+   - `[<key_name>]`：表示定义有 `<key_name>` 键名的数据项。
+   - `[<key_name> = <value>]`：表示所有 `<key_name>` 的键值等于 `<value>` 的数据项。
+   - `[<key_name> ~= <value>]`：表示所有 `<key_name>` 的键值包含以 `<value>` 作为空白字符分隔的完整词元的数据项。
+   - `[<key_name> *= <value>]`：表示所有 `<key_name>` 的键值包含以 `<value>` 为子字符串的数据项。
+   - `[<key_name> ^= <value>]`：表示所有 `<key_name>` 的键值以 `<value>` 打头的数据项。
+   - `[<key_name> $= <value>]`：表示所有 `<key_name>` 的键值以 `<value>` 结尾的数据项。
 - 针对数组：
-   - `$EJSON.select($users, ':nth-child(3n+1)')`：表示当前数组中所有索引下标匹配 4、7、10 等的数据项。
+   - `:nth-child(<n>)`：表示当前数组中第 `<n>` 个数据项；`<n>` 可以是数字、关键词或者公式。
+   - `<type>:nth-of-type(<n>)`：表示当前数组中所有类型为 `<type>` 的第 `<n>` 个数据项；`<n>` 可以是数字、关键词或者公式。
 
-使用上述选择器之后，相当于对原有单个数据项做了一些过滤。比如 `<choose on="$users" ... />` 选择了整个 `$users` 数组内容做后续处理，但如果使用 `<choose on="$EJSON.select($users, ":nth-child(2n)")` 则仅选择下标为偶数的数组单元。
+使用上述选择器之后，相当于对原有的单个数据项做了一些过滤。比如 `<choose on="$users" ... />` 选择了整个 `$users` 数组内容做后续处理，但如果使用 `<choose on="$EJSON.select($users, ":nth-child(even)")` 则仅选择下标为偶数的数组单元。
 
 ##### 2.1.6.8) 集合
 
@@ -852,10 +852,14 @@ HVML 解释器按照固定的策略将 DOM 子树（文档片段）视作一个�
 
 在引用元素的属性或者文本内容时，我们使用如下约定：
 
-- 当我们在一个元素上获取 `textContent` 键名时，相当于引用这个元素的文本内容，包括所有子元素的文本内容，按照深度优先遍历路径连接起来的字符串。
+- 当我们在一个元素上获取 `textContent` 键名的键值时，相当于引用这个元素的文本内容，包括所有子元素的文本内容，按照深度优先遍历路径连接起来的字符串。
 - 当我们在一个元素上设置 `textContent` 键值时，相当于移除该元素的所有子元素（若有），并设置该元素的文本内容为对应的键值。
-- 当我们在一个元素上获得 `xmlContent`、 `htmlContent`、 `jsonContent` 键名的键值时，相当于获得这个元素所有子元素的 XML、HTML 或者 JSON 表达；在设置该键名的键值时，相当于使用 XML、HTML 或者 JSON 表述的文本来创建该元素的子元素（替换掉原有子元素）。
+- 当我们在一个元素上获取 `jsonContent` 键名的键值时，相当于引用这个元素的所有数据内容，包括所有子元素的数据内容按照深度优先遍历路径形成的汇集。
+- 当我们在一个元素上设置 `jsonContent` 键值时，相当于移除该元素的所有子元素（若有），并设置该元素的数据内容为对应的键值。
+- 当我们在一个元素上获得 `content` 键名的键值时，相当于获得这个元素所有子元素的文档片段的文本表达；在设置该键名的键值时，相当于使用文本表达来创建该元素的子元素（替换掉原有子元素）。
 - 我们可以使用 `attr.class` 这样的复合键名来引用一个元素的特定属性，从而将其看成是一个描述该元素的字典的一个键值。引用一个未定义的属性时，按属性值为 `undefined` 值对待。
+
+注：目前只有 SGML 支持 `jsonContent`。
 
 #### 2.1.8) 数据模板和文档片段模板
 
@@ -919,7 +923,7 @@ HVML 定义了两种模板标签，用于定义可以插入 DOM 文档中的 XML
 
 在上述 HVML 代码中，当我们在 `ul` 元素中引用 `$user_item` 时，对应的文档模板是 `<li>$?</li>`，而在 `ul` 元素之外引用 `$user_item` 时，得到的文档模板是 `<p>$?</p>`。
 
-另外，HVML 允许使用 `ERROR` 或 `EXCEPT` 两个保留名称定义当前文档位置内默认的错误和异常模板：
+另外，HVML 允许使用 `ERROR` 或 `EXCEPT` 两个保留名称定义当前目标文档位置内默认的错误和异常模板：
 
 ```
     <body>
@@ -1046,7 +1050,7 @@ HVML 还定义有如下一些动作标签：
 - `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URI，如 `tcp://foo.com:2345`、 `unix:///var/run/hibus.sock`。
 - `from`：在 `init`、 `update`、 `load` 等动作元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URI。
 - `on`：用于定义执行动作所依赖的数据、元素或元素汇集。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`$?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
-- `in`：用于定义执行操作的文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。注意，使用 `in` 介词属性指定数据作为操作范围时，不会改变文档的操作位置。
+- `in`：用于定义执行操作的目标文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。注意，使用 `in` 介词属性指定数据作为操作范围时，不会改变文档的操作位置。
 - `for`：在 `observe`、 `forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的消息类型；在 `match` 标签中，用于定义匹配条件；在 `connect` 标签中，用于定义协议或用途。
 - `as`：用于定义 `init`、 `connect`、 `bind`、 `load` 等元素绑定的变量名称、页面名称等。
 - `with`：用于定义克隆数据项或者文档片段时模板（`archetype` 或 `archedata`）名称；亦用于在 `init`、 `request`、 `send` 元素中定义发送请求或消息时的参数。
@@ -1065,47 +1069,59 @@ HVML 还定义有如下一些动作标签：
 
 针对某些动作标签，HVML 定义了如下几个副词属性，用于修饰操作行为。如：
 
-- `ascendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为升序；可简写为 `asc`。
-- `descendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为降序；可简写为 `desc`。
 - `synchronously`：在 `request`、 `send`、 `call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用同步请求方式；默认值；可简写为 `sync`。
 - `asynchronously`：在 `request`、 `send`、 `call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用异步请求方式；可简写为 `async`。
-- `exclusively`：在 `match` 动作标签中，用于定义排他性；具有这一属性时，匹配当前动作时，将不再处理同级其他 `match` 标签；可简写为 `excl`。
-- `uniquely`：在 `init` 动作标签中，用于定义集合；具有这一属性时，`init` 定义的变量将具有唯一性条件；可简写为 `uniq`。
+- `exclusively`：在 `match` 标签中，用于定义排他性；具有这一属性时，匹配当前动作时，将不再处理同级其他 `match` 标签；可简写为 `excl`。
+- `uniquely`：在 `init` 标签中，用于定义集合；具有这一属性时，`init` 定义的变量将具有唯一性条件；可简写为 `uniq`。
+- `individually`：在 `update` 标签中，用于定义更新动作作用于数组、对象或者集合的单个数据项上；可简写为 `indv`。
 - `once`：在 `observe` 动作标签中，用于指定仅观察一次，之后该观察将被自动解除。
+- `ascendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为升序；可简写为 `asc`。该属性当前未使用，保留。
+- `descendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为降序；可简写为 `desc`。该属性当前未使用，保留。
 
 注意：在 HVML 中，我们无需为副词属性赋值。
 
 #### 2.1.14) 引用元素或数据
 
-当我们需要在动作标签的 `on` 属性中引用某个元素或某个元素汇集时，我们使用 CSS 选择器。如：
+当我们需要引用某个元素或某个元素汇集时，我们使用 CSS 选择器。如：
 
 - `.avatar` 表示所有 `class` 属性包含 `avatar` 的元素（集合）。
 - `#the-user-list` 表示 `id` 属性为 `the-user-list` 的元素。
 - `:root` 表示文档的根元素。
-- `*` 表示 `id` 属性为 `the-user-list` 的元素。
+- `*` 表示文档中的所有元素。
 
-当 CSS 选择器的起始字符不是上述 `.`、 `#`、 `:`、 `>`、 `*` 之一时，我们使用 `~` 前导字符做标记，以防混淆：
+然后使用 `$DOC.query()` 方法：
 
-- `~[name='user']` 表示 `name` 属性为 `user` 的元素（集合）。
-- `~div > p` 选择父元素为 `<div>` 元素的所有 `<p>` 元素。
+```html
+    <update on="$DOC.query('#the-user-list > li')" at="attr.class" with="text-info" />
+```
 
-如果要在 `on` 属性中引用一个数据，则必定使用 `$`、 `[`、或 `{` 作为前导字符：
+由于 `update` 标签的 `on` 属性值不允许使用整数、字符串等不可变数据，而 `observe` 标签的 `on` 属性值只能为可观察的原生实体或容器数据，因此，我们也可以在 `update` 和 `observe` 标签的 `on` 属性值中使用 CSS 选择器。比如：
+
+```html
+    <update on="#the-user-list > li" at="attr.class" with="text-info" />
+```
+
+本质上，我们在上述两种标签的 `on` 属性值中使用 CSS 选择器选择目标文档的元素或者元素汇集时，解释器实质调用的是 `$DOC.query(<selector>)`方法。
+
+由于通过 CSS 选择器指定的元素或者元素汇集通常指目标文档的位置，故而我们使用“目标文档位置”一词来统称元素或元素汇集。
+
+如果要在 `update` 标签的 `on` 属性中引用一个数据，则必定使用 `$`、 `[`、或 `{` 作为前导字符：
 
 - `$` 用来定义一个 JSON 求值表达式，如 `$TIMERS[0]`。
 - `[` 用来定义一个 JSON 数组，如 `[ $foo, $bar, true, false ]`。
 - `{` 用来定义一个 JSON 对象，如 `{ "$foo" : $bar, "foo": "bar" }`。
-- `"` 用来定义一个 JSON 字符串，如 `"$foo"`。
 
-或者使用不使用等号的属性值表述语法，此时可或者使用字面的数值（number）、 `true`、 `false`、 `null` 等关键词：
+在其他可能导致混淆的动作标签中，可使用无等号的属性值表述语法，此时可或者使用字面的数值（number）、 `true`、 `false`、 `null` 等关键词：
 
 ```html
     <choose on 12345 by="ADD: LE 9999 BY 1000">
+        ...
     </choose>
 ```
 
 类似地，动作标签的 `with` 属性也使用这类规则来引用数据。详情见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性) 一节。
 
-在 HVML 中，`on` 或者 `in` 介词属性在引用文档中的元素时，若使用前导字符 `>`，则将被限定在父元素 `in` 介词指定的范围内。如下面例子中，
+在 HVML 中，`on` 或者 `in` 介词属性在引用目标文档中的元素时，若使用前导字符 `>`，则将被限定在父元素 `in` 介词指定的范围内。如下面例子中，
 
 ```html
         <reduce on="$?" in="#the-user-statistics" by="class: RUserRegionStats">
@@ -1400,22 +1416,55 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 
 ### 2.3) 动作标签
 
-#### 2.3.1) `update` 标签
+#### 2.3.1) `init` 标签
 
-`update` 标签用于使用一个源数据（source data）修改一个目标数据（destination data）。目标数据应该是可变数据，比如一个数组、一个对象、数组或对象的一个特定数据项、一个集合、一个数据汇集、一个文档位置。
+`init` 标签初始化一个变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义该请求的 URL，使用 `with` 参数定义请求参数，使用 `via` 定义请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
+
+我们也可以使用 `init` 标签从共享库中初始化一个自定义的动态对象，此时，使用 `from` 指定要装在的动态库名称，使用 `for` 指定要装载的动态对象名称，并给定 `via` 属性值为 `LOAD`，表示装载共享库。
+
+在一个已经初始化的变量上使用 `init` 标签时，将使用新的数据重置这个变量。
+
+该标签的常见用法如下：
+
+```html
+    <init as="users" uniquely via="id">
+        [
+            { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+            { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+        ]
+    </init>
+
+    <!-- init $math from a shared library -->
+    <init as="math" from="purc_dvobj_math" via="LOAD" />
+
+    <init as="locales" from="http://foo.bar.com/locales" with="{ from: 'foo' }" via="POST" />
+
+    <!-- reset $new_users -->
+    <init as="new_users">
+        [
+            { "id": "1", "avatar": "/img/avatars/101.png", "name": "Jerry", "region": "en_US" }
+            { "id": "2", "avatar": "/img/avatars/102.png", "name": "Tom", "region": "en_US" }
+            { "id": "3", "avatar": "/img/avatars/103.png", "name": "Mike", "region": "en_US" }
+        ]
+    </init>
+```
+
+#### 2.3.2) `update` 标签
+
+`update` 标签用于使用一个源数据（source data）修改一个目标数据（destination data）。目标数据应该是可变数据或者一个可在其上执行更新动作的原生实体数据，比如一个数组、一个对象、数组或对象的一个特定数据项、一个集合、一个数据汇集或者一个目标文档位置（即一个元素或元素汇集）。
 
 该标签支持如下属性：
 
-1. `on` 属性用于指定要修改的数组、对象、集合或者文档位置，即目标数据。注意，当我们在 `on` 属性上使用 CSS 选择器指定文档位置时，将形成一个代表元素的原生实体或者原生实体的汇集，因此，我们也会使用“元素”、“元素汇集”来指代文档位置。当目标数据是不可变类型，如字符串、数值或者逻辑类型，将抛出异常。
+1. `on` 属性用于指定要修改的数组、对象、集合或者目标文档位置，即目标数据。
 1. `at` 属性指定在目标数据上做修改的具体位置，比如键名、索引值等，称为目标位置（destination position）。目标数据在目标位置上的数据，称为最终数据（ultimate data）。当要修改的数据是目标数据本身时，不指定此属性，此时最终数据就是目标数据本身。
 1. `to` 属性指定具体的修改动作（action），可取如下值之一：
    - `displace`：表示整个替换目标位置上的数据，是默认动作。
-   - `append`：表示在目标数据或目标位置中执行追加操作；最终数据必须是数组或者文档位置。
-   - `prepend`：表示在目标数据或目标位置中执行前置操作；最终数据必须是数组或者文档位置。
+   - `append`：表示在目标数据或目标位置中执行追加操作；最终数据必须是数组或者目标文档位置。
+   - `prepend`：表示在目标数据或目标位置中执行前置操作；最终数据必须是数组或者目标文档位置。
    - `merge`：表示在目标数据或目标位置中执行对象的合并操作；最终数据和源数据必须均为对象。
    - `remove`：表示移除目标位置上的数据，等同于用 `undefined` 替换当前位置的值。
-   - `insertBefore`：表示在目标数据或者目标位置之前插入一个数据；最终数据必须是数组或者文档位置。
-   - `insertAfter`：表示在目标数据或者目标位置之后插入一个数据；最终数据必须是数组或者文档位置。
+   - `insertBefore`：表示在目标数据或者目标位置之前插入一个数据；最终数据必须是数组或者目标文档位置。
+   - `insertAfter`：表示在目标数据或者目标位置之后插入一个数据；最终数据必须是数组或者目标文档位置。
    - `unite`：当目标数据为集合，源数据为数组或集合时，使用该动作执行将源数据（数组或集合）中的数据项合并到目标数据（集合）中，相当于求并集。
    - `intersect`：在集合（目标数据）上执行相交操作，相当于求交集；源数据可为数组或集合。
    - `subtract`：在集合（目标数据）上执行相减操作，作用于集合，相当于求差集；源数据可为数组或集合。
@@ -1429,12 +1478,12 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 在指定源数据时，除了 `with` 属性和 `from` 属性之外，我们还可以使用 `update` 元素的 JSON 内容。三种源数据指定方式的优先级为：
 
 1. 内容。
-1. `from` 属性值。
-1. `with` 属性值。
+1. `from` 属性值；此时，使用 `with` 属性指定请求参数。
+1. `with` 属性值（当未定义有效的 `from` 属性时）。
 
 当执行成功时，该标签的结果数据为修改后的数据。
 
-##### 2.3.1.1) 指定目标位置
+##### 2.3.2.1) 指定目标位置
 
 对下面的文档片段：
 
@@ -1474,7 +1523,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
     <update on="$users[1]" at=".name" with="Richard" />
 ```
 
-当目标数据是文档位置（元素或者元素汇集）、数组或对象时，我们使用 `at` 的属性值指定要更改的数据成员位置或名称，如上面的 `textContent`、 `attr.class` 以及 `.name` 等。其规则如下：
+当目标数据是目标文档位置（元素或者元素汇集）、数组或对象时，我们使用 `at` 的属性值指定要更改的数据成员位置或名称，如上面的 `textContent`、 `attr.class` 以及 `.name` 等。其规则如下：
 
 - 如果目标数据是元素，我们使用 `textContent` 这一虚拟数据成员名称来表示元素的文本内容。
 - 如果目标数据是元素，我们使用 `jsonContent` 这一虚拟数据成员名称来表示元素的 JSON 内容。
@@ -1517,15 +1566,15 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 当我们需要在一个 `update` 标签中同时修改多个数据项时，我们在 `at` 属性值中使用空格表示多个数据项位置，在 `with` 属性值中使用数组对应这些位置上要做的修改。如下面的三个 `update` 标签：
 
 ```html
-    <update on="~ p > a" at="textContent" with="$?.se_name" />
-    <update on="~ p > a" at="attr.href" with="$?.se_url" />
-    <update on="~ p > a" at="attr.title" with="$?.se_title" />
+    <update on="p > a" at="textContent" with="$?.se_name" />
+    <update on="p > a" at="attr.href" with="$?.se_url" />
+    <update on="p > a" at="attr.title" with="$?.se_title" />
 ```
 
 可组合成一个 `update` 标签：
 
 ```
-    <update on="~ p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
+    <update on="p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
 ```
 
 当 `at` 指定多个目标位置，其数量和 `with` 属性值的数组数据项数量不匹配时，未指定值的位置，取 `with` 属性最后一个值。
@@ -1546,9 +1595,59 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 
 另外，当属性值按字符串求值时，我们还可以使用除 `=` 之外的属性修改操作符修改内容，详情见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性)。
 
-当目标数据是数据汇集或者元素汇集时，`update` 标签设定的更新动作，将作用于汇集中所有的元素和数据项在指定位置上的数据。
+当目标数据是元素汇集时，`update` 标签设定的更新动作，将作用于汇集中所有的元素在指定位置上的数据。比如，
 
-##### 2.3.1.2) 更新集合
+```html
+    <update on="span" at="attr.class" with="text-danger" />
+```
+
+将修改目标文档中所有类型为 `span` 的元素之类名为 `text-danger`。
+
+当目标数据是对象、数组、集合，且具有 `individually` 副词属性时，`update` 标签设定的更新动作，将作用于数组中所有的数据项在指定位置上的数据。如，
+
+```html
+    <init as="users" uniquely via="id">
+        [
+            { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+            { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+        ]
+    </init>
+
+    <update on="$users" at=".region" with="zh_CN" individually />
+
+    <init as="localeNames">
+        {
+            "locales": [ "zh_CN", "zh_TW", "en_US" ],
+            "nameEN": [ "Chines (mainland of China)", "Chinese (Taiwan, China)", "English (USA)"],
+            "nameZH": [ "中文（中国大陆）", "中文（中国台湾）", "英文（美国）"],
+        }
+    </init>
+
+    <update on="$localeNames" at="[2]" to="remove" individually />
+```
+
+上述代码中的第一个 `update` 标签把 `$users` 集合中所有用户的 `region` 更改为 `zh_CN`；第二个 `update` 标签把 `$localeNames` 中所有键值的第二个数据项删除。分别得到如下结果：
+
+```json
+    [
+        { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "zh_CN" },
+        { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" },
+    ]
+```
+
+和
+
+```json
+    {
+        "locales": [ "zh_CN", "zh_TW" ],
+        "nameEN": [ "Chines (mainland of China)", "Chinese (Taiwan, China)"],
+        "nameZH": [ "中文（中国大陆）", "中文（中国台湾）"],
+    }
+```
+
+如果更新操作破坏了集合的唯一性条件，将抛出异常。
+
+##### 2.3.2.2) 更新集合
 
 当目标数据是集合时，将忽略 `at` 属性值，且只能执行针对集合的 `unite` 等动作。如果更新操作破坏了集合的唯一性条件，将抛出异常。
 
@@ -1613,7 +1712,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
     </update>
 ```
 
-#### 2.3.2) `erase` 标签
+#### 2.3.3) `erase` 标签
 
 `erase` 标签用于从数组、对象、元素或元素汇集中移除一个指定的数据项，支持 `on`、 `at` 和 `by` 介词属性。`on` 属性用于指定数组、对象、元素或元素汇集；`at` 用于要移除的数据子项，不指定时表示整个数据项；`by` 属性指定执行器。该元素的结果数据为数值，表示移除的数据项个数。
 
@@ -1680,7 +1779,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
     </iterate>
 ```
 
-#### 2.3.3) `clear` 标签
+#### 2.3.4) `clear` 标签
 
 `clear` 标签用于清空一个指定的数组、对象、元素或元素汇集，仅支持 `on` 介词属性，用于指定要清空的数组、对象、元素或元素汇集。该元素产生 `true` 或 `false` 两种结果数据，分别表示成功或失败。
 
@@ -1724,7 +1823,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 
 注意，当 `on` 属性值指定的是一个元素汇集时，`clear` 标签将对中的每个元素执行清空操作。
 
-#### 2.3.4) `test` 标签和 `match` 标签
+#### 2.3.5) `test` 标签和 `match` 标签
 
 `test` 标签和 `match` 标签配合使用，主要用于实现条件处理。`test` 标签通过 `on` 属性定义在哪个数据项或者元素上执行测试，而 `match` 作为 `test` 元素的子元素，每个 `match` 子元素定义一个匹配分支。
 
@@ -1833,7 +1932,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
     </match>
 ```
 
-#### 2.3.5) `choose` 标签
+#### 2.3.6) `choose` 标签
 
 `choose` 标签在 `on` 属性指定的数据或者元素上产生一个可供后续动作标签处理的数据项。
 
@@ -1863,15 +1962,15 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
     </footer>
 
     <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
-        <update on="~ p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
+        <update on="p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
         <catch for="error:nodata">
-            <update on="~ p" at="textContent" with='You forget to define the $locales/$global variables!' />
+            <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
         </catch>
         <catch for="KeyError">
-            <update on="~p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
+            <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
         </catch>
         <catch for="*">
-            <update on="~p" at="textContent" with='Bad $locales/$global data!' />
+            <update on="p" at="textContent" with='Bad $locales/$global data!' />
         </catch>
     </choose>
   </body>
@@ -1881,7 +1980,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 
 在复杂情形下，我们也可以编写脚本程序作为外部执行器来完成选择动作。
 
-#### 2.3.6) `iterate` 标签
+#### 2.3.7) `iterate` 标签
 
 `iterate` 标签用于在指定的可迭代数据项或者元素上执行迭代操作。比如执行插入操作时，可将迭代得到的每个数据项作用到 `with` 属性指定的模板，并插入到 `in` 介词属性指定的位置。如下面的 HVML 代码片段：
 
@@ -1929,13 +2028,13 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 ```
     <iterate on="$users" in="#the-user-list"
             by="RANGE: FROM 0 TO $EJSON.count($users) ADVANCE 2">
-        <update on="~[id=user-$?.id] span" at="attr.class" with *= "text-* text-info" />
+        <update on="[id=user-$?.id] span" at="attr.class" with *= "text-* text-info" />
     </iterate>
 ```
 
 上述 HVML 代码，在 `$users` 数据上执行迭代，但未使用脚本程序定义的类，而使用了 `RANGE` 关键词来定义迭代范围。`RANGE: FROM 0 TO $EJSON.count($users) ADVANCE 2` 表示取 `$users` 数组中索引下标为偶数的所有数组项，之后，针对这些数据项执行 `update` 标签定义的更新操作。在 `update` 标签中，首先使用 `on` 介词属性定义了目标元素：`[id=user-$?.id] span`。该表达式使用了 CSS 选择器在 `#the-user-list` 定义的 DOM 子树中查找子元素，其中 `$?.id` 表示的是当前迭代得到的用户标志符。若存在这个子元素，则将其 `class` 属性设置为 `text-info`。这样，所有索引值为偶数的用户条目将使用由 `text-info` 类定义的样式来展现。
 
-#### 2.3.7) `reduce` 标签
+#### 2.3.8) `reduce` 标签
 
 `reduce` 标签用于定义一个归约（Reduce）操作。比如在上面的例子中，我们通过 `reduce` 标签统计来自不同区域用户的个数，最终形成一个类似下面这样的数据：
 
@@ -1996,7 +2095,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
     </div>
 ```
 
-#### 2.3.8) `sort` 标签
+#### 2.3.9) `sort` 标签
 
 `sort` 标签用于对指定的数组或者由执行器产生的序列执行排序操作：
 
@@ -2053,7 +2152,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 
 注意，在第一种用法（即使用 `by` 属性指定执行器的情况）中，`via="v"` 的排序条件将被隐含指定，无需显式指定。
 
-#### 2.3.9) `observe`、 `forget` 和 `fire` 标签
+#### 2.3.10) `observe`、 `forget` 和 `fire` 标签
 
 `observe` 标签用于观察特定数据源上获得数据或状态，或者文档元素节点上的事件，并完成指定的操作。
 
@@ -2125,7 +2224,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 ```html
     <send on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED">
         <observe on="$databus" for="event:$?" in="#the-header">
-            <update on="~span.mobile-operator" at="textContent" with="$?.name">
+            <update on="span.mobile-operator" at="textContent" with="$?.name">
                 <error>
                     <p>Bad scope.</p>
                 </error>
@@ -2143,25 +2242,25 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
     <observe on="$databus" for="event:$?">
         <test on="$?.level" in="#the-header">
             <match for="GE 100" exclusively>
-                <update on="~img.mobile-status" at="attr.src" with="/battery-level-full.png" />
+                <update on="img.mobile-status" at="attr.src" with="/battery-level-full.png" />
             </match>
             <match for="GT 90" exclusively>
-                <update on="~img.mobile-status" at="attr.src" with="/battery-level-90.png" />
+                <update on="img.mobile-status" at="attr.src" with="/battery-level-90.png" />
             </match>
             <match for="GT 70" exclusively>
-                <update on="~img.mobile-status" at="attr.src" with="/battery-level-70.png" />
+                <update on="img.mobile-status" at="attr.src" with="/battery-level-70.png" />
             </match>
             <match for="GT 50" exclusively>
-                <update on="~img.mobile-status" at="attr.src" with="/battery-level-50.png" />
+                <update on="img.mobile-status" at="attr.src" with="/battery-level-50.png" />
             </match>
             <match for="GT 30" exclusively>
-                <update on="~img.mobile-status" at="attr.src" with="/battery-level-30.png" />
+                <update on="img.mobile-status" at="attr.src" with="/battery-level-30.png" />
             </match>
             <match for="GT 10" exclusively>
-                <update on="~img.mobile-status" at="attr.src" with="/battery-level-10.png" />
+                <update on="img.mobile-status" at="attr.src" with="/battery-level-10.png" />
             </match>
             <match for="ANY">
-                <update on="~img.mobile-status" at="attr.src" with="/battery-level-low.png" />
+                <update on="img.mobile-status" at="attr.src" with="/battery-level-low.png" />
             </match>
         </test>
         <error>
@@ -2278,7 +2377,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 
 `fire` 元素将把 `with` 属性指定的数据作为事件数据包的 `payload` 进行处理，并根据 `on` 属性指定的元素或者数据确定事件的源，`for` 属性值作为事件名称打包事件数据包，并将事件加入到事件队列中。 注意，`fire` 元素不产生结果数据，所以不能包含其他子动作元素。
 
-#### 2.3.10) `request` 标签
+#### 2.3.11) `request` 标签
 
 `request` 标签定义一个在指定 URL 上的同步或异步请求。使用 `request` 元素时，我们使用 `on` 属性指定 URL，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）。`init` 元素提供类似的功能，但区别在于，`request` 可支持异步请求，而 `request` 不支持内嵌 JSON 数据为内容。
 
@@ -2288,39 +2387,6 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
             ...
         </observe>
     </request>
-```
-
-#### 2.3.11) `init` 标签
-
-`init` 标签初始化一个变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义该请求的 URL，使用 `with` 参数定义请求参数，使用 `via` 定义请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
-
-我们也可以使用 `init` 标签从共享库中初始化一个自定义的动态对象，此时，使用 `from` 指定要装在的动态库名称，使用 `for` 指定要装载的动态对象名称，并给定 `via` 属性值为 `LOAD`，表示装载共享库。
-
-在一个已经初始化的变量上使用 `init` 标签时，将使用新的数据重置这个变量。
-
-该标签的常见用法如下：
-
-```html
-    <init as="users" uniquely via="id">
-        [
-            { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-            { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
-        ]
-    </init>
-
-    <!-- init $math from a shared library -->
-    <init as="math" from="purc_dvobj_math" via="LOAD" />
-
-    <init as="locales" from="http://foo.bar.com/locales" with="{ from: 'foo' }" via="POST" />
-
-    <!-- reset $new_users -->
-    <init as="new_users">
-        [
-            { "id": "1", "avatar": "/img/avatars/101.png", "name": "Jerry", "region": "en_US" }
-            { "id": "2", "avatar": "/img/avatars/102.png", "name": "Tom", "region": "en_US" }
-            { "id": "3", "avatar": "/img/avatars/103.png", "name": "Mike", "region": "en_US" }
-        ]
-    </init>
 ```
 
 #### 2.3.12) `connect`、 `send` 和 `disconnect` 标签
@@ -2580,18 +2646,18 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 
 ```
     <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
-        <update on="~ p > a" at="textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
+        <update on="p > a" at="textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
         <catch for="error:nodata">
-            <update on="~ p" at="textContent" with='You forget to define the $locales/$global variables!' />
+            <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
         </catch>
         <catch for="error:*">
-            <update on="~ p" at="textContent" with='You forget to define the $locales/$global variables!' />
+            <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
         </catch>
         <catch for="KeyError">
-            <update on="~ p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
+            <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
         </catch>
         <catch>
-            <update on="~ p" at="textContent" with='Bad $locales/$global data!' />
+            <update on="p" at="textContent" with='Bad $locales/$global data!' />
         </catch>
     </choose>
 ```
@@ -3633,8 +3699,8 @@ def on_battery_changed (on_value, via_value, root_in_scope):
 
     <input type="text" name="user-name" placeholder="Your Name" value="$user_name" />
 
-    <observe on="~ input[name='user-name']" for="change">
-        <init as="user_name" with="$?" />
+    <observe on="input[name='user-name']" for="change">
+        <init as="user_name" with="$?.attr.value" />
     </observe>
 ```
 
@@ -3659,8 +3725,8 @@ def on_battery_changed (on_value, via_value, root_in_scope):
 
     <input type="text" name="user-name" placeholder="Your Name" value="$user_name" />
 
-    <observe on="~ input[name='user-name']" for="change">
-        <init as="user_name" with="$?" />
+    <observe on="input[name='user-name']" for="change">
+        <init as="user_name" with="$?.attr.value" />
     </observe>
 ```
 
