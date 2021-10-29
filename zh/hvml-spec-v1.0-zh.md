@@ -4066,13 +4066,21 @@ SYSTEM 标识符字符串的格式如下：
 
 > Start tags must have the following format:
 
-1. The first character of a start tag must be a U+003C LESS-THAN SIGN character (<).
-1. The next few characters of a start tag must be the element's tag name.
-1. If there are to be any attributes in the next step, there must first be one or more ASCII whitespace.
-1. Then, the start tag may have a number of attributes, the syntax for which is described below. Attributes must be separated from each other by one or more ASCII whitespace.
-1. After the attributes, or after the tag name if there are no attributes, there may be one or more ASCII whitespace. (Some attributes are required to be followed by a space. See the attributes section below.)
-1. Then, if the element is one of the void elements, or if the element is a foreign element, then there may be a single U+002F SOLIDUS character (/). This character has no effect on void elements, but on foreign elements it marks the start tag as self-closing.
-1. Finally, start tags must be closed by a U+003E GREATER-THAN SIGN character (>).
+1. 一个起始标签的第一个字符必须是 U+003C LESS-THAN SIGN 字符（`<`）。
+1. 该起始标签其后的几个字符必须是该元素的标签名称。
+1. 如果在接下来的步骤中存在任意一个属性，则必须有一个或多个 ASCII 空白字符。
+1. 然后，起始标签中可包括一些属性，属性的语法会在后面描述。属性之间必须使用一个或者多个 ASCII 空白字符分隔。
+1. 在属性之后，或者没有属性的情况下在标签名称之后，可以包含一个或者多个 ASCII 空白字符。（某些属性要求必须跟随一个空白字符；见后面的属性小节。）
+1. 然后，如果该元素是一个空白（void）元素，或者该元素是一个外部元素，则可包含一个 U+002F SOLIDUS 字符（`/`）。该字符对空白元素无效，但对外部元素来讲，表明该起始标签是自关闭的（self-closing）。
+1. 最后，起始标签必须由一个 U+003E GREATER-THAN SIGN 字符（`>`）关闭.
+
+> 1. The first character of a start tag must be a U+003C LESS-THAN SIGN character (<).
+> 1. The next few characters of a start tag must be the element's tag name.
+> 1. If there are to be any attributes in the next step, there must first be one or more ASCII whitespace.
+> 1. Then, the start tag may have a number of attributes, the syntax for which is described below. Attributes must be separated from each other by one or more ASCII whitespace.
+> 1. After the attributes, or after the tag name if there are no attributes, there may be one or more ASCII whitespace. (Some attributes are required to be followed by a space. See the attributes section below.)
+> 1. Then, if the element is one of the void elements, or if the element is a foreign element, then there may be a single U+002F SOLIDUS character (/). This character has no effect on void elements, but on foreign elements it marks the start tag as self-closing.
+> 1. Finally, start tags must be closed by a U+003E GREATER-THAN SIGN character (>).
 
 ##### 3.1.2.2) 终止标签
 
@@ -4080,71 +4088,111 @@ SYSTEM 标识符字符串的格式如下：
 
 > End tags must have the following format:
 
-1. The first character of an end tag must be a U+003C LESS-THAN SIGN character (<).
-1. The second character of an end tag must be a U+002F SOLIDUS character (/).
-1. The next few characters of an end tag must be the element's tag name.
-1. After the tag name, there may be one or more ASCII whitespace.
-1. Finally, end tags must be closed by a U+003E GREATER-THAN SIGN character (>).
+1. 一个终止标签的第一个字符必须是 U+003C LESS-THAN SIGN 字符（`<`）。
+1. 一个终止标签的第二个字符必须是 U+002F SOLIDUS 字符（`/`）。
+1. 该起始标签其后的几个字符必须是该元素的标签名称。
+1. 在标签名称之后，可以有一个或多个 ASCII 空白字符。
+1. 最后，终止标签必须由一个 U+003E GREATER-THAN SIGN 字符（`>`）关闭.
+
+> 1. The first character of an end tag must be a U+003C LESS-THAN SIGN character (<).
+> 1. The second character of an end tag must be a U+002F SOLIDUS character (/).
+> 1. The next few characters of an end tag must be the element's tag name.
+> 1. After the tag name, there may be one or more ASCII whitespace.
+> 1. Finally, end tags must be closed by a U+003E GREATER-THAN SIGN character (>).
 
 ##### 3.1.2.3) 属性
 
-Attributes for an element are expressed inside the element's start tag.
+> 一个元素的属性在元素的起始标签中表达。
 
-Attributes have a name and a value. Attribute names must consist of one or more characters other than controls, U+0020 SPACE, U+0022 ("), U+0027 ('), U+003E (>), U+002F (/), U+003D (=), and noncharacters. In the HVML syntax, attribute names, even those for foreign elements, may be written with any mix of ASCII lower and ASCII upper alphas.
+> Attributes for an element are expressed inside the element's start tag.
 
-Attribute values are a mixture of text and character references, except with the additional restriction that the text cannot contain an ambiguous ampersand.
+> 属性有一个名称和一个值。属性名称必须由一个或者多个不是控制字符、U+0020 SPACE、 U+0022（`"`）、 U+0027（`'`）、 U+003E（`>`）、 U+002F（`/`）、  U+003D（`=`）以及非字符（noncharacter）的字符组成。
 
-Attributes can be specified in four different ways:
+> Attributes have a name and a value. Attribute names must consist of one or more characters other than controls, U+0020 SPACE, U+0022 ("), U+0027 ('), U+003E (>), U+002F (/), U+003D (=), and noncharacters. In the HVML syntax, attribute names, even those for foreign elements, may be written with any mix of ASCII lower and ASCII upper alphas.
+
+属性值一般是文本和字符引用的混合体，且具有额外限制：文本中不能包含含糊的 `&` 符号。
+
+> Attribute values are a mixture of text and character references, except with the additional restriction that the text cannot contain an ambiguous ampersand.
+
+属性可以如下四种方式指定：
+
+> Attributes can be specified in four different ways:
 
 1) 空属性语法/Empty attribute syntax
 
-Just the attribute name. The value is implicitly the empty string.
+仅仅一个属性名，属性值被隐式指定为空字符串。
 
-In the following example, the `uniquely` attribute is given with the empty attribute syntax:
+> Just the attribute name. The value is implicitly the empty string.
+
+在下面的例子中，`uniquely` 属性以空属性语法的形式给定：
+
+> In the following example, the `uniquely` attribute is given with the empty attribute syntax:
 
 ```html
     <init as="foo" uniquely via="id">
 ```
 
-If an attribute using the empty attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
+如果一个使用空属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
+
+> If an attribute using the empty attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
 
 2) 无引号属性值语法/Unquoted attribute value syntax
 
-The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal ASCII whitespace, any U+0022 QUOTATION MARK characters ("), U+0027 APOSTROPHE characters ('), U+003D EQUALS SIGN characters (=), U+003C LESS-THAN SIGN characters (<), U+003E GREATER-THAN SIGN characters (>), or U+0060 GRAVE ACCENT characters (`), and must not be the empty string.
+属性名之后跟随有零个或多个 ASCII 空白字符，随后是 U+003D EQUALS SIGN 字符（`=`），随后是零个或者多个 ASCII 空白字符，随后是属性值，而这里的属性值，除了需满足上面提到的属性值要求之外，还不能包含任何字面的 ASCII 空白字符、 U+0022 QUOTATION MARK 字符（`"`）、 U+0027 APOSTROPHE 字符（`'`）、 U+003D EQUALS SIGN 字符（`=`）、 U+003C LESS-THAN SIGN 字符（`<`）、 U+003E GREATER-THAN SIGN 字符（`>`）或者 U+0060 GRAVE ACCENT 字符（`\``），而且不能是一个空字符串。
 
-In the following example, the value attribute is given with the unquoted attribute value syntax:
+> The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal ASCII whitespace, any U+0022 QUOTATION MARK characters ("), U+0027 APOSTROPHE characters ('), U+003D EQUALS SIGN characters (=), U+003C LESS-THAN SIGN characters (<), U+003E GREATER-THAN SIGN characters (>), or U+0060 GRAVE ACCENT characters (`), and must not be the empty string.
+
+在下面的例子中，属性由无引号属性值语法的形式给定：
+
+> In the following example, the value attribute is given with the unquoted attribute value syntax:
 
 ```html
     <init as=foo uniquely via=id>
 ```
 
-If an attribute using the unquoted attribute syntax is to be followed by another attribute or by the optional U+002F SOLIDUS character (/) allowed in step 6 of the start tag syntax above, then there must be ASCII whitespace separating the two.
+如果一个使用无引号属性语法的属性之后跟随另一个属性，或者随后是起始标签语法第 6 步中提到的可选 U+002F SOLIDUS 字符（`/`），则必须使用 ASCII 空白字符来分隔这两个东西。
+
+> If an attribute using the unquoted attribute syntax is to be followed by another attribute or by the optional U+002F SOLIDUS character (/) allowed in step 6 of the start tag syntax above, then there must be ASCII whitespace separating the two.
 
 3) 单引号属性值语法/Single-quoted attribute value syntax
 
-The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by a single U+0027 APOSTROPHE character ('), followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal U+0027 APOSTROPHE characters ('), and finally followed by a second single U+0027 APOSTROPHE character (').
+属性名之后跟随有零个或多个 ASCII 空白字符，随后是 U+003D EQUALS SIGN 字符（`=`），随后是零个或者多个 ASCII 空白字符，随后是单个 U+0027 APOSTROPHE 字符（`'`），随后是属性值，而这里的属性值，除了需满足上面提到的属性值要求之外，还不能包含任何字面的 U+0027 APOSTROPHE 字符（`'`），最后由第二个单独的 U+0027 APOSTROPHE 字符（`'`）结尾。
 
-In the following example, the type attribute is given with the single-quoted attribute value syntax:
+>The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by a single U+0027 APOSTROPHE character ('), followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal U+0027 APOSTROPHE characters ('), and finally followed by a second single U+0027 APOSTROPHE character (').
+
+在下面的例子中，属性由单引号属性值语法的形式给定：
+
+> In the following example, the type attribute is given with the single-quoted attribute value syntax:
 
 ```html
     <init as='foo' uniquely via='id'>
 ```
 
+如果一个使用单引号属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
+
 If an attribute using the single-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
 
 4) 双引号属性值语法/Double-quoted attribute value syntax
 
-The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by a single U+0022 QUOTATION MARK character ("), followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal U+0022 QUOTATION MARK characters ("), and finally followed by a second single U+0022 QUOTATION MARK character (").
+属性名之后跟随有零个或多个 ASCII 空白字符，随后是 U+003D EQUALS SIGN 字符（`=`），随后是零个或者多个 ASCII 空白字符，随后是单个 U+0022 QUOTATION MARK 字符（`"`），随后是属性值，而这里的属性值，除了需满足上面提到的属性值要求之外，还不能包含任何字面的 U+0022 QUOTATION MARK 字符（`"`），最后由第二个单独的 U+0022 QUOTATION MARK 字符（`"`）结尾。
 
-In the following example, the name attribute is given with the double-quoted attribute value syntax:
+> The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by a single U+0022 QUOTATION MARK character ("), followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal U+0022 QUOTATION MARK characters ("), and finally followed by a second single U+0022 QUOTATION MARK character (").
+
+在下面的例子中，属性由双引号属性值语法的形式给定：
+
+> In the following example, the name attribute is given with the double-quoted attribute value syntax:
 
 ```html
     <choose on="$2.payload" in="#the-user-list" with="$user_item">
 ```
 
+如果一个使用双引号属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
+
 If an attribute using the double-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
 
-There must never be two or more attributes on the same start tag whose names are an ASCII case-sensitive match for each other.
+在同一起始标签内，不能有两个或更多属性具有相同的属性名。
+
+> There must never be two or more attributes on the same start tag whose names are an ASCII case-sensitive match for each other.
 
 ##### 3.1.2.4) 动作元素属性
 
@@ -4347,13 +4395,19 @@ HVML 的 `init` 和 `archedata` 元素中包含的文本内容必须为一个完
 
 #### 3.1.3) 文本
 
-Text is allowed inside elements, attribute values, and comments. Extra constraints are placed on what is and what is not allowed in text based on where the text is to be put, as described in the other sections.
+在元素内部、属性值和注释中允许使用文本。有关文本使用的限制和使用文本的地方有关，并在其他小节中描述。
+
+> Text is allowed inside elements, attribute values, and comments. Extra constraints are placed on what is and what is not allowed in text based on where the text is to be put, as described in the other sections.
 
 ##### 3.1.3.1) 新行
 
-Newlines in HVML may be represented either as U+000D CARRIAGE RETURN (CR) characters, U+000A LINE FEED (LF) characters, or pairs of U+000D CARRIAGE RETURN (CR), U+000A LINE FEED (LF) characters in that order.
+HVML 中的新行必须表达为 U+000D CARRIAGE RETURN（CR）字符、U+000A LINE FEED（LF）字符，或者成对出现的 U+000D CARRIAGE RETURN（CR）和 U+000A LINE FEED（LF）字符。
 
-Where character references are allowed, a character reference of a U+000A LINE FEED (LF) character (but not a U+000D CARRIAGE RETURN (CR) character) also represents a newline.
+> Newlines in HVML may be represented either as U+000D CARRIAGE RETURN (CR) characters, U+000A LINE FEED (LF) characters, or pairs of U+000D CARRIAGE RETURN (CR), U+000A LINE FEED (LF) characters in that order.
+
+在允许字符引用的情况下，U+000A LINE FEED 字符（但非 U+000D CARRIAGE RETURN 字符）的字符引用亦可表达一个新行。
+
+> Where character references are allowed, a character reference of a U+000A LINE FEED (LF) character (but not a U+000D CARRIAGE RETURN (CR) character) also represents a newline.
 
 ##### 3.1.3.2) 扩展 JSON 语法
 
@@ -4450,28 +4504,57 @@ Where character references are allowed, a character reference of a U+000A LINE F
 
 #### 3.1.4) 字符引用
 
-In certain cases described in other sections, text may be mixed with character references. These can be used to escape characters that couldn't otherwise legally be included in text.
+在其他小节描述的特定情况下，文本中可混有字符应用。当文本中不能合法地包含某些字符时，字符引用可用于转义。
 
-Character references must start with a U+0026 AMPERSAND character (&). Following this, there are three possible kinds of character references:
+> In certain cases described in other sections, text may be mixed with character references. These can be used to escape characters that couldn't otherwise legally be included in text.
 
-Named character references
-The ampersand must be followed by one of the names given in the named character references section, using the same case. The name must be one that is terminated by a U+003B SEMICOLON character (;).
-Decimal numeric character reference
-The ampersand must be followed by a U+0023 NUMBER SIGN character (#), followed by one or more ASCII digits, representing a base-ten integer that corresponds to a code point that is allowed according to the definition below. The digits must then be followed by a U+003B SEMICOLON character (;).
-Hexadecimal numeric character reference
-The ampersand must be followed by a U+0023 NUMBER SIGN character (#), which must be followed by either a U+0078 LATIN SMALL LETTER X character (x) or a U+0058 LATIN CAPITAL LETTER X character (X), which must then be followed by one or more ASCII hex digits, representing a hexadecimal integer that corresponds to a code point that is allowed according to the definition below. The digits must then be followed by a U+003B SEMICOLON character (;).
-The numeric character reference forms described above are allowed to reference any code point excluding U+000D CR, noncharacters, and controls other than ASCII whitespace.
+字符引用必须由一个 U+0026 AMPERSAND 字符（`&`）起始，之后是三种可能的字符引用类型：
 
-An ambiguous ampersand is a U+0026 AMPERSAND character (&) that is followed by one or more ASCII alphanumerics, followed by a U+003B SEMICOLON character (;), where these characters do not match any of the names given in the named character references section.
+> Character references must start with a U+0026 AMPERSAND character (&). Following this, there are three possible kinds of character references:
+
+1) 被指名的字符引用/Named character references
+
+`&` 字符之后必须跟随 [HTML Specification] 中“被指名的字符引用”一节中给定的名称，且必须使用相同的大小写形式。名称必须是被 U+003B SEMICOLON 字符（`;`）终止的。
+
+> The ampersand must be followed by one of the names given in the named character references section in [HTML Specification], using the same case. The name must be one that is terminated by a U+003B SEMICOLON character (;).
+
+2) 十进制编号的字符引用/Decimal numeric character reference
+
+`&` 字符之后必须跟随一个 U+0023 NUMBER SIGN 字符（`#`），随后是一个或者多个 ASCII 数字，这些数字表示一个十进制的整数，对应于 下面的定义被允许的码点。数字之后必须由一个 U+003B SEMICOLON 字符（`;`）终止。
+
+> The ampersand must be followed by a U+0023 NUMBER SIGN character (#), followed by one or more ASCII digits, representing a base-ten integer that corresponds to a code point that is allowed according to the definition below. The digits must then be followed by a U+003B SEMICOLON character (;).
+
+3) 十六进制编号的字符引用/Hexadecimal numeric character reference
+
+`&` 字符之后必须跟随一个 U+0023 NUMBER SIGN 字符（`#`），随后是一个 U+0078 LATIN SMALL LETTER X 字符（`x`）或一个 U+0058 LATIN CAPITAL LETTER X 字符（`X`），随后是一个或多个 ASCII 十六进制数字，这些数字表示一个十六进制的整数，对应于 下面的定义被允许的码点。数字之后必须由一个 U+003B SEMICOLON 字符（`;`）终止。
+
+> The ampersand must be followed by a U+0023 NUMBER SIGN character (#), which must be followed by either a U+0078 LATIN SMALL LETTER X character (x) or a U+0058 LATIN CAPITAL LETTER X character (X), which must then be followed by one or more ASCII hex digits, representing a hexadecimal integer that corresponds to a code point that is allowed according to the definition below. The digits must then be followed by a U+003B SEMICOLON character (;).
+
+上面描述的两种编号的字符引用形式，不允许引用 U+000D CR、非字符（noncharacter）以及除 ASCII 空白字符之外的控制字符，其他任意码点均可引用。
+
+> The numeric character reference forms described above are allowed to reference any code point excluding U+000D CR, noncharacters, and controls other than ASCII whitespace.
+
+一个含糊的 `&` 字符是指，一个 U+0026 AMPERSAND 字符（`&`）之后跟随一个或多个 ASCII 字母及数字，随后是一个 U+003B SEMICOLON 字符（`;`），但这些字符并不能匹配 [HTML Specification] “被指名的字符引用”一节中给定的名称。
+
+> An ambiguous ampersand is a U+0026 AMPERSAND character (&) that is followed by one or more ASCII alphanumerics, followed by a U+003B SEMICOLON character (;), where these characters do not match any of the names given in the named character references section.
 
 #### 3.1.5) CDATA 段落
 
-CDATA sections must consist of the following components, in this order:
+CDATA 段落必须按给定的顺序包含如下组件：
 
-1. The string `<![CDATA[`.
-1. Optionally, text, with the additional restriction that the text must not contain the string `]]>`.
-1. The string `]]>`.
-1. CDATA sections can only be used in foreign content (MathML or SVG). In this example, a CDATA section is used to escape the contents of a MathML ms element:
+> CDATA sections must consist of the following components, in this order:
+
+1. 字符串 `<![CDATA[`。
+1. 可选的文本，但文本中不能包含字符串 `]]>`。
+1. 字符串 `]]>`。
+
+> 1. The string `<![CDATA[`.
+> 1. Optionally, text, with the additional restriction that the text must not contain the string `]]>`.
+> 1. The string `]]>`.
+
+CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被用于转义 MathML `ms` 元素的内容：
+
+> CDATA sections can only be used in foreign content. In this example, a CDATA section is used to escape the contents of a MathML ms element:
 
 ```html
 <p>You can add a string to a number, but this stringifies the number:</p>
@@ -4486,11 +4569,17 @@ CDATA sections must consist of the following components, in this order:
 
 #### 3.1.6) 注释
 
-Comments must have the following format:
+注释必须具有如下的格式：
 
-1. The string `<!--`.
-1. Optionally, text, with the additional restriction that the text must not start with the string `>`, nor start with the string `->`, nor contain the strings `<!--`, `-->`, or `--!>`, nor end with the string `<!-`.
-1. The string `-->`.
+> Comments must have the following format:
+
+1. 字符串 `<!--`。
+1. 可选文本，但文本中不能以字符串 `>` 打头，也不能以字符串 `->` 打头，也不能包含 `<!--`、 `-->` 或者 `--!>` 字符串，也不能以字符串 `<!-` 结尾。
+1. 字符串 `-->`。
+
+> 1. The string `<!--`.
+> 1. Optionally, text, with the additional restriction that the text must not start with the string `>`, nor start with the string `->`, nor contain the strings `<!--`, `-->`, or `--!>`, nor end with the string `<!-`.
+> 1. The string `-->`.
 
 ### 3.2) 解析 HVML 文档
 
