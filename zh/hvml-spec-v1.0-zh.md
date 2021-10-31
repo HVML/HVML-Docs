@@ -200,7 +200,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 1. 变量（variable）。
 1. 数据项（data item）或数据成员（data member）。对数组而言，每个数组单元就是一个数据项；对对象数据而言，其中的某个键值对就是一个数据项。
 1. 文档元素（document element）。指文档对象模型中，使用某个标签（tag）定义的元素节点；一个文档元素可包含一个或多个属性（attribute）以及属性值，还可以包含内容（content）；一个元素可包含文本内容、数据内容或者使用标签定义的单个或多个子元素。
-1. 文档片段（document fragement）。指 XML/HTML 文档中的一个片段，可作为模板被克隆（clone）到目标文档的其他位置。
+1. 文档片段（document fragment）。指 XML/HTML 文档中的一个片段，可作为模板被克隆（clone）到目标文档的其他位置。
 1. 元素汇集（element collection）。指使用选择器选择的一组元素。这里避免使用“集合”这个术语，是为了防止和`集合（set）`数据类型混淆。
 
 #### 2.1.1) 程序结构
@@ -379,8 +379,8 @@ HVML 定义如下基本数据类型：
 
 HVML 还定义有如下两种特殊数据类型：
 
-- 动态值（dynamic value）。动态值本质上由 `getter` 和 `setter` 方法构成，读取时，由 `getter` 返回对应的值，设置时，由 `setter` 完成对应的工作。
-- 原生实体（native entity）。由底层实现的原生实体，通常用于代表一些可执行复杂操作的抽象数据，如读写流、长连接等。这些复杂操作包括实现虚拟属性上的 `getter` 和 `setter` 方法，实现对原生对象的观察（observe）等。
+- 动态值（dynamic value）。动态值本质上由 `获取器（getter）` 和 `设置器（setter）` 方法构成，读取时，由获取器返回对应的值，设置时，由设置器完成对应的工作。
+- 原生实体（native entity）。由底层实现的原生实体，通常用于代表一些可执行复杂操作的抽象数据，如读写流、长连接等。这些复杂操作包括实现虚拟属性上的获取器或设置器方法，实现对原生对象的观察（observe）等。
 
 上述特殊数据类型属于内部数据类型，仅在运行时有效，在 HVML 代码中可通过变量和表达式访问。
 
@@ -394,7 +394,7 @@ HVML 还定义有如下两种特殊数据类型：
 
 更进一步，我们还可以将某个特定的属性当作函数使用，通过传递参数来获得不同的返回值，或者对该属性设置特定的值。比如在 `$SYSTEM` 对象上，如果我们要获取对当前时间执行特定格式化的字符串，可以使用 `$SYSTEM.time('%H:%m')`，这时，我们将获得类似 `11:27` 的时间字符串。如果我们要设置当前时间，则可以使用 `$SYSTEM.time(! 123456 )`。
 
-这里，我们引入了两种运算符：`( )` 和 `(! )`。本质上，前者对应于动态属性的获取方法（getter），后者对应于动态属性的设置方法（setter）。
+这里，我们引入了两种运算符：`( )` 和 `(! )`。本质上，前者对应于动态属性的获取器方法，后者对应于动态属性的设置器方法。
 
 除了内置的 `$SYSTEM` 动态对象之外，我们还可以通过外部脚本来实现自定义的动态对象，并通过 `init` 标签将这个动态对象和某个变量绑定在一起，如：
 
@@ -418,12 +418,12 @@ HVML 还定义有如下两种特殊数据类型：
 1. `true` 值转换为 1。
 1. 空字符串按 0 处理；非空字符串按照 EJSON 数值的规则进行转换，比如 `123.34` 将转换为实数，`abcd` 转换为 0。
 1. 空字节序列按 0 处理；非空字节序列取最高 64 位（最长 8 字节）按小端字节序转为有符号的长整数，再转为数值。
-1. 动态值，不传递任何参数调用 `getter` 方法，若返回值为无效值则取 0，若返回值为数值型，则取其数值，若返回值为非数值型，按本规则递归处理。
-1. 原生实体，尝试获取 `__number` 键名的 `getter` 方法。若存在该方法，则不传递任何参数调用这个 `getter`，参考动态值处理；若不存在该方法，则取 0。
+1. 动态值，不传递任何参数调用获取器方法，若返回值为无效值则取 0，若返回值为数值型，则取其数值，若返回值为非数值型，按本规则递归处理。
+1. 原生实体，尝试获取 `__number` 键名的获取器方法。若存在该方法，则不传递任何参数调用这个获取器，参考动态值处理；若不存在该方法，则取 0。
 1. 数组的数值，累加所有数组单元，若数组单元不是数值型，按本规则递归处理。
 1. 字典的数值，累加所有键值，若某键值不是数值型，按本规则递归处理。
 
-以上操作称为“数值化（numberalize）”。
+以上操作称为“数值化（numberify）”。
 
 ##### 2.1.4.2) 布尔化
 
@@ -720,9 +720,9 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 该变量主要用于获得指定数据相关的信息，比如类型、数据项个数，并完成数据的数值化、字符串化、序列化等。
 
 1. `$EJSON.type(<any>)`：获取数据的类型，如 `null`、 `boolean`、 `longdouble` 等，返回表示数据类型的字符串。
-1. `$EJSON.numberalize(<any>)`：对给定数据执行数值化，结果数据的类型为数值。
+1. `$EJSON.numberify(<any>, ['number' | 'longint' | 'ulongint' | 'longdouble'])`：对给定的数据执行数值化，结果数据的类型为指定的实数类型，默认为 `number`。
 1. `$EJSON.stringify(<any>)`：对给定数据执行字符串化，结果数据的类型为字符串。
-1. `$EJSON.serilize(<any>, <string: options>)`：对给定数据执行序列化，结果数据的类型为字符串。
+1. `$EJSON.serilize(<any>, <string: options>)`：对给定数据执行 EJSON 序列化，结果数据的类型为字符串。
 1. `$EJSON.count(<any>)`：获取给定数据的数据项个数。
 1. `$EJSON.select(<container>, <string: selector>[, <boolean: recursively])`：按照给定的选择器返回给定容器数据中符合条件的数据项或一个数据汇集。
 
@@ -759,11 +759,11 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 我们按如下规则判断两个数据项是否相等：
 
-- 类型不同的数据项不相等，但 `number`、 `longint`、 `ulongint` 和 `ldouble` 视作同一种类型，这里统称为数值。
-- 两个数值相同时，相等。
+- `number`、 `longint`、 `ulongint` 和 `longdouble` 视作同一种类型，强制转换为解释器可支持的最高精度实数类型后做对比，两个实数相同时，相等。
+- 其他类型不同的数据项不相等。
 - 两个字符串相同时，相等。
 - 两个字节序列逐字节相同时，相等。
-- 两个动态值的 setter 和 getter 相等时，相等。
+- 两个动态值的获取器和设置器相等时，相等。
 - 两个原生实体指向同一原生实体对象时，相等。
 - 两个数组的成员一对一相同时，相等。
 - 两个字典字符串化后的字符串相同时，相等。
@@ -1387,8 +1387,8 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
     <json_expression>: <json_evaluation_expression> | <extended_json>
 
     <json_addressing_expression>:
-       '.'<literal_key_name>'(' [ws] <json_expression>[<',' [ws] <json_expression> [ws]>, ...] [ws] ')': 用于在动态对象上调用特定键名的 getter 方法。
-       '.'<literal_key_name>'(!' [ws] <json_expression>[<',' [ws] <json_expression> [ws]>, ...] [ws] ')': 用于在动态对象上调用特定键名的 setter 方法。
+       '.'<literal_key_name>'(' [ws] <json_expression>[<',' [ws] <json_expression> [ws]>, ...] [ws] ')': 用于在动态对象上调用特定键名的获取器方法。
+       '.'<literal_key_name>'(!' [ws] <json_expression>[<',' [ws] <json_expression> [ws]>, ...] [ws] ')': 用于在动态对象上调用特定键名的设置器方法。
        '.'<literal_key_name>: 用于引用一个对象的键值。
        '[' [ws] <json_evaluation_expression> | <quoted_key_name> | <literal_integer> [ws] ']': 用于引用一个数组的特定单元或者用于引用一个对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。
 
@@ -2289,7 +2289,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             ]
 ```
 
-`sort` 动作支持按照字符串或数值两种类型执行排序，这取决于从数组中获得的第一个排序数据的类型。若第一个参与排序的数据类型是 `boolean`、 `number、 `longint`、 `ulongint` 或者 `ldouble` 时，使用数值排序，否则使用字符串排序。当使用数值时，所有数据数值化之后进行排序，而使用字符串时，所有数据字符串化之后进行排序。
+`sort` 动作支持按照字符串或数值两种类型执行排序，这取决于从数组中获得的第一个排序数据的类型。若第一个参与排序的数据类型是 `number、 `longint`、 `ulongint` 或者 `longdouble` 时，使用数值排序，否则使用字符串排序。当使用数值时，所有数据数值化之后进行排序，而使用字符串时，所有数据字符串化之后进行排序。
 
 当使用 `by` 属性指定了执行器之后，`sort` 标签定义的排序操作，可理解为一个 `choose` 动作外加一个 `sort` 操作。
 
@@ -4058,7 +4058,7 @@ SYSTEM 标识符字符串的格式如下：
       `init` 和 `update` 元素。其内容必须是符合 eJSON 语法的文本，可包含 JSON 求值表达式。
    1. 一般动作元素（ordinary operation elements）  
        `erase`、 `clear`、 `test`、 `match`、 `choose`、 `iterate`、 `reduce`、 `observe`、 `fire`、 `connect`、 `disconnect`、 `load`、 `back`、 `define`、 `include`、 `call`、 `return` 和 `catch` 元素。
-   1. 片段模板元素（fragement template elements）  
+   1. 片段模板元素（fragment template elements）  
       `archetype`、 `error` 和 `except` 元素。片段模板元素的内容通常是使用目标标记语言书写的文档片段。简称模板元素（template elements）。
    1. 数据模板元素（data template elements）  
       `archedata` 元素。其内容必须是符合 eJSON 语法的文本，可包含 JSON 求值表达式。
