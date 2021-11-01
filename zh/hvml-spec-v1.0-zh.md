@@ -50,10 +50,11 @@ Language: Chinese
       * [2.1.13) 副词属性](#2113-副词属性)
       * [2.1.14) 引用元素或数据](#2114-引用元素或数据)
       * [2.1.15) JSON 求值表达式](#2115-json-求值表达式)
-   + [2.2) 表达式及规则的描述语法](#22-表达式及规则的描述语法)
+   + [2.2) 规则、表达式及参数的描述语法](#22-规则表达式及参数的描述语法)
       * [2.2.1) 规则描述语法](#221-规则描述语法)
       * [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法)
       * [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)
+      * [2.2.4) 参数描述语法](#224-参数描述语法)
    + [2.3) 框架标签](#23-框架标签)
       * [2.3.1) `hvml` 标签](#231-hvml-标签)
       * [2.3.2) `head` 标签](#232-head-标签)
@@ -720,10 +721,10 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 该变量主要用于获得指定数据相关的信息，比如类型、数据项个数，并完成数据的数值化、字符串化、序列化等。
 
 1. `$EJSON.type(<any>)`：获取数据的类型，如 `null`、 `boolean`、 `longdouble` 等，返回表示数据类型的字符串。
-1. `$EJSON.numberify(<any>, ['number' | 'longint' | 'ulongint' | 'longdouble'])`：对给定的数据执行数值化，结果数据的类型为指定的实数类型，默认为 `number`。
+1. `$EJSON.count(<any>)`：获取给定数据的数据项个数。
+1. `$EJSON.numberify(<any>, ["number | longint | ulongint | longdouble": the number subtype to return])`：对给定的数据执行数值化，结果数据的类型为指定的实数类型，默认为 `number`。
 1. `$EJSON.stringify(<any>)`：对给定数据执行字符串化，结果数据的类型为字符串。
 1. `$EJSON.serilize(<any>, <string: options>)`：对给定数据执行 EJSON 序列化，结果数据的类型为字符串。
-1. `$EJSON.count(<any>)`：获取给定数据的数据项个数。
 1. `$EJSON.select(<container>, <string: selector>[, <boolean: recursively])`：按照给定的选择器返回给定容器数据中符合条件的数据项或一个数据汇集。
 
 各数据类型的数据项个数规则如下：
@@ -1200,7 +1201,7 @@ HVML 还定义有如下一些动作标签：
 
 JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法) 一节。
 
-### 2.2) 表达式及规则的描述语法
+### 2.2) 规则、表达式及参数的描述语法
 
 在 HVML 中，我们经常会使用属性中的表达式或者规则字符串来表示一个求值行为，比如：
 
@@ -1453,6 +1454,49 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 以上说明适用 `literal_char` 和 `literal_char_sequence`。
 
 注意，因 HVML 要求使用 UTF-8 编码，`literal_char` 本质上是一个多字节序列，对应字符串类型。当实际的 `literal_char` 中包含多个 Unicode 字符时，仅第一个字符生效。
+
+#### 2.2.4) 参数描述语法
+
+在描述获取器、设置器方法的参数，我们使用如下语法：
+
+1. 必须传递的参数，包含在两个尖括号（`< >`）中描述；可选的参数，包含在两个中括号（`[ ]`）中描述。
+1. 参数的描述用冒号分隔成两部分；冒号前的部分描述参数的类型，冒号后的部分描述用途，如：
+   - 必传参数：`<number: seconds since epoch>`。
+   - 可选参数：`[string: locale category]`。
+1. 亦可使用如下的类型别名：
+   1. `any`：任意类型。
+   1. `real`：任意实数类型，`number`、 `longint`、 `ulongint` 或 `longdouble` 之一。
+   1. `container`：容器，即 `array`、 `object` 或 `set`。
+1. 参数可传递多个类型时，使用 `|` 分隔，如：`string | number`。
+1. 当字符串参数中使用多个或者单个关键词表示单个或者多个选项时，我们用空格分隔这些关键词，使用 `||` `&&` 等符号表示这些关键词是否可以同时出现，然后将整个字符串参数用单引号（`'`）或双引号（`"`）包围，如 `"kernel-name || machine"` 或 `'kernel-name && machine'`。具体规则描述如下：
+   1. 并置的关键词表示所有的关键词（组）都要以给定的顺序传递。
+   1. `&&` 分隔的两个或多个关键词（组），表示必须传递所有这些关键词，顺序任意。
+   1. `||` 分隔的两个或多个关键词（组），表示必须传递这些关键词中的一个或多个，顺序任意。
+   1. `|` 分隔两个或者多个关键词（组），表示必须传递其中一个。
+   1. 使用一对中括号（`[ ]`）对多个关键词进行分组。
+1. 参数中使用的关键词由不包含空格和控制字符的可打印字符组成；参数中需要传递多个关键词时，使用单个或者多个 ASCII 空白字符分隔。
+
+上述语法中的第五条，示例如下：
+
+- `'kernel-name | kernel-release | kernel-version | machine | all'`：表示只能传递这些关键词中的一个。
+- `'[kernel-name || kernel-release || kernel-version || machine] | all'`：表示要么传递 `all` 要么传递前面可选关键词中一个或多个，顺序任意。
+
+比如我们使用如下的语法描述 `EJSON.numberify` 方法的接口：
+
+`$EJSON.numberify(<any>, ['number | longint | ulongint | longdouble': the number subtype to return])`：对给定的数据做数值化，返回指定的实数类型，默认为 `number`。
+
+以上语法亦可用于描述对象的属性，如：
+
+```json
+    {
+        "messageType": <string: the type of this message, such as `event`, `result`, `change`, and an implementation defined message type.>,
+        "messageSubType": <string: the sub type of this message, optional>,
+        "source": <any: the variant generating this message>,
+        "time": <number: the time when this message fired>,
+        "signature": <string: optional signature>,
+        "payload" : <object: the payload of this message>
+    }
+```
 
 ### 2.3) 框架标签
 
