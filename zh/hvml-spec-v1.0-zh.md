@@ -241,13 +241,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
    - ASCII 字母数字要么是一个 ASCII 数字，要么是一个 ASCII 字母。
 
 
-   
-   比如，表情符号🤔 的码点是 U+1F914，可表述为 U+1F914 (🤔)，也可以表述为 U+1F914 THINKING FACE（🤔）。再如，
-
-Example
-> `Code points` that are difficult to render unambigiously, such as U+000A, can be referred to as "U+000A LF". U+0029 can be referred to as "U+0029 RIGHT PARENTHESIS", because even though it renders, this avoids unmatched parentheses.
-
-`Code points` are sometimes referred to as `characters` and in certain contexts are prefixed with "0x" rather than "U+".
+比如，表情符号 🤔 的码点是 U+1F914，可表述为 U+1F914（🤔），也可以表述为 U+1F914 THINKING FACE（🤔）。
 
 #### 2.1.1) 程序结构
 
