@@ -1240,11 +1240,11 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
     </test>
 ```
 
-`test` 标签中的 `by` 属性定义了 `KEY` 执行器的规则，而 `match` 标签中的 `for` 属性定义了一个可用来判断字符串是否匹配的逻辑表达式，如 `LIKE /英语\$/` 表示父操作结果数据是否以 `英语` 结尾。注意此处对正则表达式表示结尾的 `$` 符号使用了转义，以避免被 HVML 解析器将 `$/` 作为 JSON 求值表达式处理。
+`test` 标签中的 `by` 属性定义了 `KEY` 执行器的规则，而 `match` 标签中的 `for` 属性定义了一个可用来判断字符串是否匹配的逻辑表达式，如 `LIKE /^英语/` 表示父操作结果数据是否以 `英语` 打头。注意此处使用了正则表达式表示开头的 `^` 符号；如果使用正则表达式中表示结尾的 `$` 符号，则必须转义，以避免被 HVML 解析器将 `$` 作为 JSON 求值表达式处理。
 
 #### 2.2.1) 规则描述语法
 
-对此类规则或者表达式（这里统称为“规则”），我们使用统一的描述语法，该语法也用来描述 JSON 求值表达式：
+对此类规则，我们使用统一的描述语法，该语法也用来描述 JSON 求值表达式：
 
 1. 一条规则由单个或者多个词法单元（lexical unit）组成。
 1. 词法单元分如下几类：
@@ -1350,8 +1350,8 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 更多信息，可参阅：
 
 - `man regex` on Linux
-- [Python 3 re module](https://docs.python.org/3/library/re.html)
-- [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#advanced_searching_with_flags)
+- Python 3 re module: <https://docs.python.org/3/library/re.html>
+- JavaScript Regular Expressions: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#advanced_searching_with_flags>
 
 在字符串匹配的另外两种模式（一般匹配和通配符匹配下），亦可使用类似正则表达式的标志字符，并额外指定最大的匹配长度。
 
