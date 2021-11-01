@@ -664,7 +664,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 1. `$L.ge(<any>, <any>)`：用于比较第一个参数在数值上大于或等于第二个参数。
 1. `$L.lt(<any>, <any>)`：用于比较第一个参数在数值上小于第二个参数。
 1. `$L.le(<any>, <any>)`：用于比较第一个参数在数值上小于或等于第二个参数。
-1. `$L.streq(< 'caseless' | 'case' | 'wildcard' | 'reg' >, <any>, <any>)`：用于对比两个字符串是否相等；第一个参数用来表示字符串的匹配方式（区分大小写、通配符、正则表达式），其后的两个参数用来传递两个字符串。
+1. `$L.streq(<'caseless | case | wildcard | reg'>, <any>, <any>)`：用于对比两个字符串是否相等；第一个参数用来表示字符串的匹配方式（区分大小写、通配符、正则表达式），其后的两个参数用来传递两个字符串。
 
 比如 `$L.not($L.gt(5, 3))` 的结果是假值（`false`）。
 
@@ -1465,7 +1465,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
    - 可选参数：`[string: locale category]`。
 1. 亦可使用如下的类型别名：
    1. `any`：任意类型。
-   1. `real`：任意实数类型，`number`、 `longint`、 `ulongint` 或 `longdouble` 之一。
+   1. `real`：任意实数类型，即 `number`、 `longint`、 `ulongint` 或 `longdouble` 之一。
    1. `container`：容器，即 `array`、 `object` 或 `set`。
 1. 参数可传递多个类型时，使用 `|` 分隔，如：`string | number`。
 1. 当字符串参数中使用多个或者单个关键词表示单个或者多个选项时，我们用空格分隔这些关键词，使用 `||` `&&` 等符号表示这些关键词是否可以同时出现，然后将整个字符串参数用单引号（`'`）或双引号（`"`）包围，如 `"kernel-name || machine"` 或 `'kernel-name && machine'`。具体规则描述如下：
@@ -1487,7 +1487,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 
 以上语法亦可用于描述对象的属性，如：
 
-```json
+```
     {
         "messageType": <string: the type of this message, such as `event`, `result`, `change`, and an implementation defined message type.>,
         "messageSubType": <string: the sub type of this message, optional>,
