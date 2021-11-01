@@ -1,4 +1,4 @@
-# HVML 规范（V1.0）
+# HVML 规范
 
 HVML Specification Version 1.0  
 Author: Vincent Wei  
@@ -883,18 +883,17 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
 ##### 2.1.6.10) 预定义动态对象
 
-作为 HVML 规范的一部分，如下文档定了公共动态对象的接口，各实现应根据规范要求实现对应的动态对象：
+作为 HVML 规范的一部分，文档 [HVML 预定义动态对象](hvml-spec-common-dynamic-objects-v1.0-zh.md) 规定了如下预定义动态对象及其接口，各实现应根据规范要求做相应的实现：
 
-- [HVML 预定义动态对象的接口](hvml-spec-common-dynamic-objects-v1.0-zh.md) 文档中定义了如下预定义动态对象的接口：
-   1. `$SYSTEM`
-   1. `$SESSION`
-   1. `$STR`
-   1. `$EJSON`
-   1. `$L`
-   1. `$DATETIME`
-   1. `$FILE`
-   1. `$FS`
-   1. `$MATH`
+- `$SYSTEM`
+- `$SESSION`
+- `$STR`
+- `$EJSON`
+- `$L`
+- `$DATETIME`
+- `$FILE`
+- `$FS`
+- `$MATH`
 
 #### 2.1.7) 文档片段的 JSON 数据表达
 

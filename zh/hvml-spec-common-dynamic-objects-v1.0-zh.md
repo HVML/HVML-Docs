@@ -1,4 +1,4 @@
-# HVML 常见动态对象的接口（V1.0）
+# HVML 预定义动态对象
 
 Interfaces of Common Dynamic Objects of HVML Version 1.0  
 Author: Vincent Wei  
