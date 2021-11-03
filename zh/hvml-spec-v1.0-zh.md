@@ -1,10 +1,10 @@
 # HVML 规范
 
-Title: HVML Specification  
+Subject: HVML Specification  
 Version: 1.0  
 Author: Vincent Wei  
 Category: Language Specification  
-Date: Dec., 2021  
+Creation Date: July, 2020  
 Status: Release Candidate  
 Language: Chinese
 
@@ -42,7 +42,6 @@ Language: Chinese
          - [2.1.6.7) `$EJSON`](#2167-ejson)
          - [2.1.6.8) 集合变量](#2168-集合变量)
          - [2.1.6.9) 表达式变量](#2169-表达式变量)
-         - [2.1.6.10) 预定义动态对象](#21610-预定义动态对象)
       * [2.1.7) 文档片段的 JSON 数据表达](#217-文档片段的-json-数据表达)
       * [2.1.8) 数据模板和文档片段模板](#218-数据模板和文档片段模板)
       * [2.1.9) 用来操作数据或元素的动作标签](#219-用来操作数据或元素的动作标签)
@@ -634,7 +633,11 @@ HVML 定义的上下文变量罗列如下：
 
 - `$<N><SYMB>`，如 `$1&`、 `$1?` 等：指从当前上下文向上回溯 `<N>` 级的上下文数据；这里的 `<N>` 必须是正整数。这个上下文变量主要用于访问执行栈上祖先动作元素对应栈帧的上下文数据。
 
-在 HVML 中，我们通常使用 `as` 属性来给数据命名，但 HVML 保留如下几个变量名称用于特殊场合，我们称为内置全局变量，习惯上全部使用大写形式。
+在 HVML 中，我们通常使用 `as` 属性来给数据命名，但 HVML 保留若干变量名称用于预定义场合，我们称为预定义全局变量，习惯上全部使用大写形式。
+
+作为 HVML 规范集合的一部分，文档 [HVML 预定义变量](hvml-spec-predefined-variables-v1.0-zh.md) 详细规定了所有的预定义变量及其接口，各解释器实现应根据规范要求做相应的实现。
+
+下面简单介绍一些关键的预定义变量。
 
 ##### 2.1.6.1) `$REQUEST`
 
@@ -881,20 +884,6 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
         </observe>
     </bind>
 ```
-
-##### 2.1.6.10) 预定义动态对象
-
-作为 HVML 规范的一部分，文档 [HVML 预定义动态对象](hvml-spec-common-dynamic-objects-v1.0-zh.md) 规定了如下预定义动态对象及其接口，各实现应根据规范要求做相应的实现：
-
-- `$SYSTEM`
-- `$SESSION`
-- `$STR`
-- `$EJSON`
-- `$L`
-- `$DATETIME`
-- `$FILE`
-- `$FS`
-- `$MATH`
 
 #### 2.1.7) 文档片段的 JSON 数据表达
 
@@ -1961,7 +1950,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```html
     <update on="$TIMERS" to="overwrite">
-        { "id" : "foo", "active" : "yes" },
+        { "id" : "foo", "active" : "yes" }
     </update>
 ```
 

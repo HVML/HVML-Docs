@@ -1,10 +1,10 @@
-# HVML 预定义动态对象
+# HVML 预定义变量
 
-Title: Common Dynamic Objects of HVML  
+Subject: HVML Predefined Variables  
 Version: 1.0  
 Author: Vincent Wei  
 Category: Language Specification  
-Date: Dec., 2021  
+Creation Date: Nov. 1, 2021  
 Status: Proposal  
 Language: Chinese
 
@@ -22,76 +22,81 @@ Language: Chinese
 __目录__
 
 - [1) 背景](#1-背景)
-- [2) 必要动态对象](#2-必要动态对象)
-   + [2.1) `SYSTEM`](#21-system)
-      * [2.1.1) `uname` 方法](#211-uname-方法)
-      * [2.1.2) `uname_prt` 方法](#212-uname_prt-方法)
-      * [2.1.3) `locale` 方法](#213-locale-方法)
-      * [2.1.4) `random` 方法](#214-random-方法)
-      * [2.1.5) `time` 方法](#215-time-方法)
-   + [2.2) `L`](#22-l)
-      * [2.2.1) `not` 方法](#221-not-方法)
-      * [2.2.2) `and` 方法：逻辑与运算。](#222-and-方法逻辑与运算)
-      * [2.2.3) `or` 方法：逻辑或运算。](#223-or-方法逻辑或运算)
-      * [2.2.4) `xor` 方法：逻辑亦或运算。](#224-xor-方法逻辑亦或运算)
-      * [2.2.5) `eq` 方法](#225-eq-方法)
-      * [2.2.6) `ne` 方法](#226-ne-方法)
-      * [2.2.7) `gt` 方法](#227-gt-方法)
-      * [2.2.8) `ge` 方法](#228-ge-方法)
-      * [2.2.9) `lt` 方法](#229-lt-方法)
-      * [2.2.10) `le` 方法](#2210-le-方法)
-      * [2.2.11) `streq` 方法](#2211-streq-方法)
-      * [2.2.12) `strne` 方法](#2212-strne-方法)
-      * [2.2.13) `strgt` 方法](#2213-strgt-方法)
-      * [2.2.14) `strge` 方法](#2214-strge-方法)
-      * [2.2.15) `strlt` 方法](#2215-strlt-方法)
-      * [2.2.16) `strle` 方法](#2216-strle-方法)
-      * [2.2.17) `eval` 方法](#2217-eval-方法)
-   + [2.3) `SESSION`](#23-session)
-      * [2.3.1) `cwd` 方法](#231-cwd-方法)
-      * [2.3.2) `user` 方法](#232-user-方法)
-   + [2.4) `T`](#24-t)
-   + [2.5) `TIMERS`](#25-timers)
-   + [2.6) `STR`](#26-str)
-      * [2.6.1) `contains` 方法](#261-contains-方法)
-      * [2.6.2) `ends_with` 方法](#262-ends_with-方法)
-      * [2.6.3) `explode` 方法](#263-explode-方法)
-      * [2.6.4) `shuffle` 方法](#264-shuffle-方法)
-      * [2.6.5) `replace` 方法](#265-replace-方法)
-      * [2.6.6) `format_c` 方法](#266-format_c-方法)
-      * [2.6.7) `format_p` 方法](#267-format_p-方法)
-   + [2.7) `DOC`](#27-doc)
-      * [2.7.1) `doctype` 方法](#271-doctype-方法)
-      * [2.7.2) `base` 方法](#272-base-方法)
-      * [2.7.3) `query` 方法](#273-query-方法)
-   + [2.8) `EJSON`](#28-ejson)
-      * [2.8.1) `type` 方法](#281-type-方法)
-      * [2.8.2) `count` 方法](#282-count-方法)
-- [3) 可选动态对象](#3-可选动态对象)
-   + [3.1) `MATH`](#31-math)
-      * [3.1.1) `pi` 方法](#311-pi-方法)
-      * [3.1.2) `e` 方法](#312-e-方法)
-      * [3.1.3) `const` 和 `const_l` 方法](#313-const-和-const_l-方法)
-      * [3.1.4) `eval` 和 `eval_l` 方法](#314-eval-和-eval_l-方法)
-      * [3.1.5) 其他](#315-其他)
-   + [3.2) `FS`](#32-fs)
-      * [3.2.1) `list` 方法](#321-list-方法)
-      * [3.2.2) `list_prt` 方法](#322-list_prt-方法)
-      * [3.2.3) 其他](#323-其他)
-   + [3.3) `FILE`](#33-file)
-      * [3.3.1) `txt.head` 方法](#331-txthead-方法)
-      * [3.3.2) `txt.tail` 方法](#332-txttail-方法)
-      * [3.3.3) `bin.head` 方法](#333-binhead-方法)
-      * [3.3.4) `bin.tail` 方法](#334-bintail-方法)
-      * [3.3.5) 二进制结构表示法](#335-二进制结构表示法)
-      * [3.3.6) `stream.open` 方法](#336-streamopen-方法)
-      * [3.3.7) `stream.readstruct` 方法](#337-streamreadstruct-方法)
-      * [3.3.8) `stream.writestruct` 方法](#338-streamwritestruct-方法)
-      * [3.3.9) `stream.readlines` 方法](#339-streamreadlines-方法)
-      * [3.3.10) `stream.writelines` 方法](#3310-streamwritelines-方法)
-      * [3.3.11) `stream.readbytes` 方法](#3311-streamreadbytes-方法)
-      * [3.3.12) `stream.writebytes` 方法](#3312-streamwritebytes-方法)
-      * [3.3.13) `stream.seek` 方法](#3313-streamseek-方法)
+- [2) 非动态变量](#2-非动态变量)
+   + [2.1) `TIMERS`](#21-timers)
+      * [2.1.1) 批量新增定时器](#211-批量新增定时器)
+      * [2.1.2) 新增一个定时器](#212-新增一个定时器)
+      * [2.1.3) 移除一个定时器](#213-移除一个定时器)
+      * [2.1.4) 修改特定定时器的属性](#214-修改特定定时器的属性)
+- [3) 必要动态变量](#3-必要动态变量)
+   + [3.1) `SYSTEM`](#31-system)
+      * [3.1.1) `uname` 方法](#311-uname-方法)
+      * [3.1.2) `uname_prt` 方法](#312-uname_prt-方法)
+      * [3.1.3) `locale` 方法](#313-locale-方法)
+      * [3.1.4) `random` 方法](#314-random-方法)
+      * [3.1.5) `time` 方法](#315-time-方法)
+   + [3.2) `L`](#32-l)
+      * [3.2.1) `not` 方法](#321-not-方法)
+      * [3.2.2) `and` 方法](#322-and-方法)
+      * [3.2.3) `or` 方法](#323-or-方法)
+      * [3.2.4) `xor` 方法](#324-xor-方法)
+      * [3.2.5) `eq` 方法](#325-eq-方法)
+      * [3.2.6) `ne` 方法](#326-ne-方法)
+      * [3.2.7) `gt` 方法](#327-gt-方法)
+      * [3.2.8) `ge` 方法](#328-ge-方法)
+      * [3.2.9) `lt` 方法](#329-lt-方法)
+      * [3.2.10) `le` 方法](#3210-le-方法)
+      * [3.2.11) `streq` 方法](#3211-streq-方法)
+      * [3.2.12) `strne` 方法](#3212-strne-方法)
+      * [3.2.13) `strgt` 方法](#3213-strgt-方法)
+      * [3.2.14) `strge` 方法](#3214-strge-方法)
+      * [3.2.15) `strlt` 方法](#3215-strlt-方法)
+      * [3.2.16) `strle` 方法](#3216-strle-方法)
+      * [3.2.17) `eval` 方法](#3217-eval-方法)
+   + [3.3) `SESSION`](#33-session)
+      * [3.3.1) `cwd` 方法](#331-cwd-方法)
+      * [3.3.2) `user` 方法](#332-user-方法)
+   + [3.4) `T`](#34-t)
+   + [3.5) `STR`](#35-str)
+      * [3.5.1) `contains` 方法](#351-contains-方法)
+      * [3.5.2) `ends_with` 方法](#352-ends_with-方法)
+      * [3.5.3) `explode` 方法](#353-explode-方法)
+      * [3.5.4) `shuffle` 方法](#354-shuffle-方法)
+      * [3.5.5) `replace` 方法](#355-replace-方法)
+      * [3.5.6) `format_c` 方法](#356-format_c-方法)
+      * [3.5.7) `format_p` 方法](#357-format_p-方法)
+   + [3.6) `DOC`](#36-doc)
+      * [3.6.1) `doctype` 方法](#361-doctype-方法)
+      * [3.6.2) `base` 方法](#362-base-方法)
+      * [3.6.3) `query` 方法](#363-query-方法)
+   + [3.7) `EJSON`](#37-ejson)
+      * [3.7.1) `type` 方法](#371-type-方法)
+      * [3.7.2) `count` 方法](#372-count-方法)
+- [4) 可选动态变量](#4-可选动态变量)
+   + [4.1) `MATH`](#41-math)
+      * [4.1.1) `pi` 方法](#411-pi-方法)
+      * [4.1.2) `e` 方法](#412-e-方法)
+      * [4.1.3) `const` 和 `const_l` 方法](#413-const-和-const_l-方法)
+      * [4.1.4) `eval` 和 `eval_l` 方法](#414-eval-和-eval_l-方法)
+      * [4.1.5) 其他](#415-其他)
+   + [4.2) `FS`](#42-fs)
+      * [4.2.1) `list` 方法](#421-list-方法)
+      * [4.2.2) `list_prt` 方法](#422-list_prt-方法)
+      * [4.2.3) 其他](#423-其他)
+   + [4.3) `FILE`](#43-file)
+      * [4.3.1) `txt.head` 方法](#431-txthead-方法)
+      * [4.3.2) `txt.tail` 方法](#432-txttail-方法)
+      * [4.3.3) `bin.head` 方法](#433-binhead-方法)
+      * [4.3.4) `bin.tail` 方法](#434-bintail-方法)
+      * [4.3.5) 二进制结构表示法](#435-二进制结构表示法)
+      * [4.3.6) `stream.open` 方法](#436-streamopen-方法)
+      * [4.3.7) `stream.readstruct` 方法](#437-streamreadstruct-方法)
+      * [4.3.8) `stream.writestruct` 方法](#438-streamwritestruct-方法)
+      * [4.3.9) `stream.readlines` 方法](#439-streamreadlines-方法)
+      * [4.3.10) `stream.writelines` 方法](#4310-streamwritelines-方法)
+      * [4.3.11) `stream.readbytes` 方法](#4311-streamreadbytes-方法)
+      * [4.3.12) `stream.writebytes` 方法](#4312-streamwritebytes-方法)
+      * [4.3.13) `stream.seek` 方法](#4313-streamseek-方法)
 - [附录](#附录)
    + [附.1) 贡献者榜单](#附1-贡献者榜单)
    + [附.2) 商标声明](#附2-商标声明)
@@ -100,13 +105,98 @@ __目录__
 
 ## 1) 背景
 
-## 2) 必要动态对象
+本文档是 HVML 规范的一部分，用于详细定义 HVML 解释器必须支持或者可选支持的预定义变量。
 
-### 2.1) `SYSTEM`
+本文档遵循的技术规范或术语如下所列：
+
+- HVML（Hybrid Virtual Markup Language），是飞漫软件提出的一种数据驱动的可编程标记语言，其规范见：<https://gitlab.fmsoft.cn/hvml/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md>。HVML 规范文档的如下部分和本文档相关：
+  1. 2.1.6) 变量
+  1. 2.2.4) 参数描述语法
+- 解释器（interpreter），指解析并运行 HVML 程序的计算机软件。
+- 渲染器（renderer），指渲染 HVML 程序生成的目标文档并和用户交互的计算机软件。
+- 文档（document），特指人类可读的文本形式保存的 HVML 程序。
+- 会话（session），指一个解释器实例的上下文信息；每个解释器实例对应一个 HVML 会话，每个 HVML 会话运行多个 HVML 文档，对应渲染器中的多个窗口。
+
+按是否含有动态对象划分，HVML 程序中的预定义变量可分为：
+
+1. 非动态变量，即变量对应的数据不提供动态方法。所有本规范定义的非动态变量都是内置（built-in）且必要的（required）。
+1. 动态变量，即变量对应的数据提供动态方法。动态变量又分为必要（required）动态变量及可选（optional）动态变量。通常，动态变量可设计为可加载的（loadable）共享库或者模块。解释器应根据本文档的要求将动态变量实现为内置的或可加载的；可选动态变量是否实现为可加载的，由解释器决定。
+
+按变量对应数据的作用域，可分为：
+
+1. 会话级变量。指该变量对应的数据对当前实例中的所有 HVML 文档可见。也就是说，同一会话中的不同文档对应同一个数据副本。
+1. 文档级变量。指该变量对应的数据仅对当前实例中的单个 HVML 文档可见。也就是说，不同的文档有一个自己的数据副本。
+
+## 2) 非动态变量
+
+### 2.1) `TIMERS`
+
+`TIMERS` 是一个文档级内置变量。该变量是一个对象集合（对象的 `id` 属性做唯一性键值）。
+
+用于描述一个定时器对象的属性如下：
+
+```
+{
+    id: <string: the timer identifier, the key with unique restriction>,
+    interval: <string: the interval of the timer in milliseconds>,
+    active: <string: activated or not>,
+}
+```
+
+该变量用于定义定时器，其上不提供动态方法；程序通过 `update` 元素修改该变量对应的容器数据来操作定时器。
+
+#### 2.1.1) 批量新增定时器
+
+```html
+    <update on="$TIMERS" to="unite">
+        [
+            { "id" : "foo", "interval" : 1000, "active" : "no" },
+            { "id" : "bar", "interval" : 2000, "active" : "no" },
+        ]
+    </update>
+```
+
+
+#### 2.1.2) 新增一个定时器
+
+```html
+    <update on="$TIMERS" to="append">
+        { "id" : "foobar", "interval" : 3000, "active" : "yes" }
+    </update>
+```
+
+#### 2.1.3) 移除一个定时器
+
+```html
+    <update on="$TIMERS" to="subtract">
+        { "id" : "foobar" }
+    </update>
+```
+
+#### 2.1.4) 修改特定定时器的属性
+
+```html
+    <!-- activate the timer `foo` -->
+    <choose on="$TIMERS" by="FILTER: AS 'foo'">
+        <update on="$?" at=".active" with="yes" />
+    </choose>
+```
+
+或，
+
+```html
+    <update on="$TIMERS" to="overwrite">
+        { "id" : "foo", "interval": 1500, "active" : "yes" }
+    </update>
+```
+
+## 3) 必要动态变量
+
+### 3.1) `SYSTEM`
 
 该变量是会话级内置变量，在初始化 PurC 实例之后绑定。该变量提供如下接口：
 
-#### 2.1.1) `uname` 方法
+#### 3.1.1) `uname` 方法
 
 方法。获取系统信息，返回包含有内核名称、版本号等键值对的对象：
 
@@ -133,7 +223,7 @@ $SYSTEM.uname
 }
 ```
 
-#### 2.1.2) `uname_prt` 方法
+#### 3.1.2) `uname_prt` 方法
 
 获取可打印的系统信息，返回字符串：
 
@@ -149,7 +239,7 @@ $SYSTEM.uname_prt('[kernel-name || kernel-release || kernel-version || nodename 
 $SYSTEM.uname_prt('kernel-name kernel-release kernel-version')
 ```
 
-#### 2.1.3) `locale` 方法
+#### 3.1.3) `locale` 方法
 
 获取或设置 locale。主要用法：
 
@@ -164,7 +254,7 @@ $SYSTEM.locale('ctype | numeric | time | collate | monetary | messages | paper |
 $SYSTEM.locale(! '[ctype || numeric || time || collate || monetary || messages || paper || name || address || telephone || measurement || identification] | all', <string: locale> )
 ```
 
-#### 2.1.4) `random` 方法
+#### 3.1.4) `random` 方法
 
 获取随机值。主要用法：
 
@@ -176,7 +266,7 @@ $SYSTEM.random
 $SYSTEM.random(<number: the max value>)
 ```
 
-#### 2.1.5) `time` 方法
+#### 3.1.5) `time` 方法
 
 获取或设置系统时间。主要用法：
 
@@ -225,13 +315,13 @@ $SYSTEM.time(! <number: seconds since epoch> )
 
 有关时间的显示标准，除了 ISO8601 之外，还有 RFC822 等。详细列表可见：<https://www.php.net/manual/en/class.datetime.php>
 
-### 2.2) `L`
+### 3.2) `L`
 
 该变量是一个会话级内置变量，主要用于逻辑运算。
 
 有关任何变体值转换为逻辑真假值时的规则，请参阅 [任意数据类型的强制转换规则](https://gitlab.fmsoft.cn/hvml/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md#213-%E4%BB%BB%E6%84%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%BC%BA%E5%88%B6%E8%BD%AC%E6%8D%A2%E8%A7%84%E5%88%99)。
 
-#### 2.2.1) `not` 方法
+#### 3.2.1) `not` 方法
 
 逻辑取反操作。
 
@@ -243,7 +333,9 @@ $L.not(<any>)
 $L.not( false )
 ```
 
-#### 2.2.2) `and` 方法：逻辑与运算。
+#### 3.2.2) `and` 方法
+
+逻辑与运算。
 
 ```php
 // 原型：两个或以上变体执行逻辑与操作，返回 true 或 false
@@ -253,7 +345,9 @@ $L.and(<any>, <any>[, <any>[, ...]])
 $L.and( false, true )
 ```
 
-#### 2.2.3) `or` 方法：逻辑或运算。
+#### 3.2.3) `or` 方法
+
+逻辑或运算。
 
 ```php
 // 原型：两个或以上变体执行逻辑或操作，返回 true 或 false
@@ -263,7 +357,9 @@ $L.or(<any>, <any>[, <any>[, ...]])
 $L.or( false, true )
 ```
 
-#### 2.2.4) `xor` 方法：逻辑亦或运算。
+#### 3.2.4) `xor` 方法
+
+逻辑亦或运算。
 
 ```php
 // 原型：两个变体执行逻辑亦或操作，返回 true 或 false
@@ -273,17 +369,17 @@ $L.xor(<any>, <any>)
 $L.xor( false, true )
 ```
 
-#### 2.2.5) `eq` 方法
+#### 3.2.5) `eq` 方法
 
-#### 2.2.6) `ne` 方法
+#### 3.2.6) `ne` 方法
 
-#### 2.2.7) `gt` 方法
+#### 3.2.7) `gt` 方法
 
-#### 2.2.8) `ge` 方法
+#### 3.2.8) `ge` 方法
 
-#### 2.2.9) `lt` 方法
+#### 3.2.9) `lt` 方法
 
-#### 2.2.10) `le` 方法
+#### 3.2.10) `le` 方法
 
 对比两个变体的数值是否相等、不相等、大于、大于等于、小于、小于等于。
 
@@ -310,17 +406,17 @@ $L.le(<any>, <any>)
 $L.eq("1", 1)
 ```
 
-#### 2.2.11) `streq` 方法
+#### 3.2.11) `streq` 方法
 
-#### 2.2.12) `strne` 方法
+#### 3.2.12) `strne` 方法
 
-#### 2.2.13) `strgt` 方法
+#### 3.2.13) `strgt` 方法
 
-#### 2.2.14) `strge` 方法
+#### 3.2.14) `strge` 方法
 
-#### 2.2.15) `strlt` 方法
+#### 3.2.15) `strlt` 方法
 
-#### 2.2.16) `strle` 方法
+#### 3.2.16) `strle` 方法
 
 对比两个字符串是否相等、不相等、大于、大于等于、小于、小于等于。
 
@@ -351,7 +447,7 @@ $L.streq("case", "1", 1)
 
 对非字符串类型的变体值，取不添加任何格式化字符的串行化结果做对比。
 
-#### 2.2.17) `eval` 方法
+#### 3.2.17) `eval` 方法
 
 对参数化的逻辑运算表达式求值。
 
@@ -363,11 +459,11 @@ $L.eval(<string: logical expression>, <object: the parameter map>)
 $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) })
 ```
 
-### 2.3) `SESSION`
+### 3.3) `SESSION`
 
 该变量是一个会话级内置变量，PurC 在创建一个新的会话时，会自动创建并绑定。该变量主要用于会话相关的信息，并提供给用户在当前会话的不同 HVML 文档之间共享数据的机制。该变量提供如下接口：
 
-#### 2.3.1) `cwd` 方法
+#### 3.3.1) `cwd` 方法
 
 获取或设置当前工作路径。
 
@@ -379,7 +475,7 @@ $SESSION.cwd
 $SESSION.cwd(! <string: new path for the current working directory> )
 ```
 
-#### 2.3.2) `user` 方法
+#### 3.3.2) `user` 方法
 
 获取或设置用户键值对。
 
@@ -394,7 +490,7 @@ $SESSION.user(<string: the user defined key name>, <any: the new variant value>)
 $SESSION.user('userId')
 ```
 
-### 2.4) `T`
+### 3.4) `T`
 
 该变量是一个文档级内置变量，主要用于文本的本地化替代。其上提供两个键名：
 
@@ -429,13 +525,7 @@ $T.get(<string: original text>)
 </hvml>
 ```
 
-### 2.5) `TIMERS`
-
-该变量是一个文档级内置变量，是一个对象数组，主要用于定义定时器。初始为空数组；程序通过 `init` 或 `update` 命令来修改这个变量，从而操作定时器。
-
-该变量上不提供动态方法。
-
-### 2.6) `STR`
+### 3.5) `STR`
 
 `STR` 是一个内置的动态变量，该变量用于实现常见的字符串操作。
 
@@ -446,37 +536,37 @@ __注__
 
 主要有：
 
-#### 2.6.1) `contains` 方法
+#### 3.5.1) `contains` 方法
 
 用于判断一个字符串中是否包含给定的子字符串。
 
 参阅：<https://www.php.net/manual/en/function.str-contains.php>
 
-#### 2.6.2) `ends_with` 方法
+#### 3.5.2) `ends_with` 方法
 
 用于判断一个字符串是否以给定的字符串结尾。
 
 参阅：<https://www.php.net/manual/en/function.str-ends-with.php>
 
-#### 2.6.3) `explode` 方法
+#### 3.5.3) `explode` 方法
 
 使用指定的字符串分隔一个字符串。
 
 参阅：<https://www.php.net/manual/en/function.explode.php>
 
-#### 2.6.4) `shuffle` 方法
+#### 3.5.4) `shuffle` 方法
 
 用于随机打乱一个字符串。
 
 参阅：<https://www.php.net/manual/en/function.str-shuffle.php>
 
-#### 2.6.5) `replace` 方法
+#### 3.5.5) `replace` 方法
 
 用于子字符串替换。
 
 参阅：<https://www.php.net/manual/en/function.str-replace.php>
 
-#### 2.6.6) `format_c` 方法
+#### 3.5.6) `format_c` 方法
 
 格式化数值及字符串变体值，使用 C 格式化字符表述方法。
 
@@ -488,7 +578,7 @@ $STR.format_c(<string: C format string>[, <boolean | number | longint | ulongint
 $STR.format_c(<string: C format string>, <array>)
 ```
 
-#### 2.6.7) `format_p` 方法
+#### 3.5.7) `format_p` 方法
 
 使用占位符格式化任意变体值，使用 eJSON 串行化输出格式。
 
@@ -510,11 +600,11 @@ $STR.format_p(<string: string contains placeholders>, <object>)
 $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry'})
 ```
 
-### 2.7) `DOC`
+### 3.6) `DOC`
 
 `DOC` 是一个内置的文档级动态变量，该变量用于访问 HVML 程序生成的 eDOM 树中的元素。
 
-#### 2.7.1) `doctype` 方法
+#### 3.6.1) `doctype` 方法
 
 该方法返回文档类型，字符串。
 
@@ -534,7 +624,7 @@ $DOC.doctype("public")
 $DOC.doctype
 ```
 
-#### 2.7.2) `base` 方法
+#### 3.6.2) `base` 方法
 
 该方法获取或设置文档的根 URL。
 
@@ -549,7 +639,7 @@ $DOC.base(! <string, new base URL> )
 $DOC.base(! "https://foo.example.com/app/hvml" )
 ```
 
-#### 2.7.3) `query` 方法
+#### 3.6.3) `query` 方法
 
 使用 CSS 选择器查询目标文档上的特定元素或者元素汇集（collection）。
 
@@ -592,11 +682,11 @@ $DOC.query("#foo").attr("bar")
 $DOC.query("#foo").attr<"bar", "qux">
 ```
 
-### 2.8) `EJSON`
+### 3.7) `EJSON`
 
 该动态变量为会话级内置变量，用于返回变体的类型、成员个数等信息。
 
-#### 2.8.1) `type` 方法
+#### 3.7.1) `type` 方法
 
 该方法返回变体的类型名称，字符串。
 
@@ -605,7 +695,7 @@ $DOC.query("#foo").attr<"bar", "qux">
 $EJSON.type( <any> )
 ```
 
-#### 2.8.2) `count` 方法
+#### 3.7.2) `count` 方法
 
 该方法返回变体的数据项个数，数值。
 
@@ -614,15 +704,15 @@ $EJSON.type( <any> )
 $EJSON.count( <any> )
 ```
 
-## 3) 可选动态对象
+## 4) 可选动态变量
 
-### 3.1) `MATH`
+### 4.1) `MATH`
 
 `MATH` 是一个可装载的动态变量，用于实现复杂的数学运算和函数。
 
 该变量提供如下接口：
 
-#### 3.1.1) `pi` 方法
+#### 4.1.1) `pi` 方法
 
 该方法用于获得给定精度的 PI 值：
 
@@ -636,7 +726,7 @@ $MATH.pi
 $MATH.pi_l
 ```
 
-#### 3.1.2) `e` 方法
+#### 4.1.2) `e` 方法
 
 该方法用于获得给定精度的 e（自然常数，欧拉数）值：
 
@@ -650,7 +740,7 @@ $MATH.e
 $MATH.e_l
 ```
 
-#### 3.1.3) `const` 和 `const_l` 方法
+#### 4.1.3) `const` 和 `const_l` 方法
 
 该方法用于获得其他常见数学常数：
 
@@ -672,7 +762,7 @@ $MATH.const_l('1/sqrt(2)')
 
 注：各常量的值，见 C 语言标准库头文件：`<math.h>`。
 
-#### 3.1.4) `eval` 和 `eval_l` 方法
+#### 4.1.4) `eval` 和 `eval_l` 方法
 
 该方法用于求解参数化四则运算表达式：
 
@@ -694,7 +784,7 @@ $MATH.eval_l(<string: a four arithmetic expressions>[, <object: parameter map>])
 
 ```
 
-#### 3.1.5) 其他
+#### 4.1.5) 其他
 
 参照 PHP 数学接口：<https://www.php.net/manual/en/book.math.php>，如：
 
@@ -721,7 +811,7 @@ $MATH.sqrt(<number | longint | ulongint | longdouble>)
 
 注意，以上数学函数，均应该包括对应的 `_l` 版本，即返回 long double 类型的版本。如，`$MATH.sin_l`。
 
-### 3.2) `FS`
+### 4.2) `FS`
 
 `FS` 是一个可装载的动态变量，该变量用于实现常见的文件系统操作。
 
@@ -730,7 +820,7 @@ __注意__
 
 该变量提供如下接口：
 
-#### 3.2.1) `list` 方法
+#### 4.2.1) `list` 方法
 
 该方法用于列出指定路径下的目录项，返回对象数组。原型及主要用法如下：
 
@@ -769,7 +859,7 @@ $FS.list($path, "*.txt; *.md")
 }
 ```
 
-#### 3.2.2) `list_prt` 方法
+#### 4.2.2) `list_prt` 方法
 
 该方法用于列出指定路径下的目录项信息，返回经过格式化的字符串数组。原型及主要用法如下：
 
@@ -789,7 +879,7 @@ $FS.list_prt($path, "*.txt; *.md", "mode nlink uid gid size blksize atime ctime 
 
 注：`list_prt` 对每个目录项信息的格式化方法同 Linux `ls` 命令。
 
-#### 3.2.3) 其他
+#### 4.2.3) 其他
 
 参照 PHP 文件系统接口：<https://www.php.net/manual/en/book.filesystem.php>，如：
 
@@ -799,7 +889,7 @@ $FS.list_prt($path, "*.txt; *.md", "mode nlink uid gid size blksize atime ctime 
 - `unlink` 方法。该方法移除指定的文件。
 - `rm` 方法。该方法移除指定的文件或者目录。
 
-### 3.3) `FILE`
+### 4.3) `FILE`
 
 `FILE` 是一个可装载的动态变量，该变量用于实现常见的文件读写操作。
 
@@ -812,7 +902,7 @@ $FS.list_prt($path, "*.txt; *.md", "mode nlink uid gid size blksize atime ctime 
 __注意__  
 当指定的文件以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前会话维护的当前工作路径信息（同 `$SESSION.cwd`）。
 
-#### 3.3.1) `txt.head` 方法
+#### 4.3.1) `txt.head` 方法
 
 该方法读取文本文件的前几行，并返回一个字符串数组。
 
@@ -830,7 +920,7 @@ $FILE.txt.head($file, 5)
 $FILE.txt.head($file, -5)
 ```
 
-#### 3.3.2) `txt.tail` 方法
+#### 4.3.2) `txt.tail` 方法
 
 该方法读取文本文件的后几行，并返回一个字符串数组。
 
@@ -848,7 +938,7 @@ $FILE.txt.tail($file, 5)
 $FILE.txt.tail($file, -5)
 ```
 
-#### 3.3.3) `bin.head` 方法
+#### 4.3.3) `bin.head` 方法
 
 该方法读取二进制文件的前几字节，并返回一个字节序列。
 
@@ -866,7 +956,7 @@ $FILE.bin.head($file, 5)
 $FILE.bin.head($file, -5)
 ```
 
-#### 3.3.4) `bin.tail` 方法
+#### 4.3.4) `bin.tail` 方法
 
 该方法读取二进制文件的后几字节，并返回一个字节序列。
 
@@ -884,7 +974,7 @@ $FILE.bin.tail($file, 5)
 $FILE.bin.tail($file, -5)
 ```
 
-#### 3.3.5) 二进制结构表示法
+#### 4.3.5) 二进制结构表示法
 
 为配合 FILE 的流式读写方法（`readstruct`、`writestruct`），我们定义了一种二进制结构表示法。
 
@@ -945,39 +1035,39 @@ $FILE.bin.tail($file, -5)
 
 该结构一共 140 字节。
 
-#### 3.3.6) `stream.open` 方法
+#### 4.3.6) `stream.open` 方法
 
 打开文件作为流，返回一个代表流对象的原生实体值。注意，流的关闭将在最终释放对应的变体值时自动进行。
 
-#### 3.3.7) `stream.readstruct` 方法
+#### 4.3.7) `stream.readstruct` 方法
 
 从二进制流中读取一个二进制结构，并转换为适当的变体值。
 
 二进制结构的构成表示法，可参阅：[HVML 二进制结构表示法](dvobj-file-stream-struct-notation.md)
 
-#### 3.3.8) `stream.writestruct` 方法
+#### 4.3.8) `stream.writestruct` 方法
 
 将多个变体按照指定的结构格式写入二进制流。
 
 二进制结构的构成表示法，可参阅：[HVML 二进制结构表示法](dvobj-file-stream-struct-notation.md)
 
-#### 3.3.9) `stream.readlines` 方法
+#### 4.3.9) `stream.readlines` 方法
 
 从文本流中读取给定行数，返回字符串数组。
 
-#### 3.3.10) `stream.writelines` 方法
+#### 4.3.10) `stream.writelines` 方法
 
 将字符串写入文本流中。
 
-#### 3.3.11) `stream.readbytes` 方法
+#### 4.3.11) `stream.readbytes` 方法
 
 从二进制或文本流中读取一个字节序列，返回一个字节序列。
 
-#### 3.3.12) `stream.writebytes` 方法
+#### 4.3.12) `stream.writebytes` 方法
 
 将一个字节序列写入流。
 
-#### 3.3.13) `stream.seek` 方法
+#### 4.3.13) `stream.seek` 方法
 
 在二进制或文本流中执行定位操作。
 
