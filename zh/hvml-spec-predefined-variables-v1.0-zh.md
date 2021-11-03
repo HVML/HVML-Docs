@@ -29,49 +29,49 @@ __目录__
       * [2.1.3) 移除一个定时器](#213-移除一个定时器)
       * [2.1.4) 修改特定定时器的属性](#214-修改特定定时器的属性)
 - [3) 必要动态变量](#3-必要动态变量)
-   + [3.1) `SYSTEM`](#31-system)
-      * [3.1.1) `uname` 方法](#311-uname-方法)
-      * [3.1.2) `uname_prt` 方法](#312-uname_prt-方法)
-      * [3.1.3) `locale` 方法](#313-locale-方法)
-      * [3.1.4) `random` 方法](#314-random-方法)
-      * [3.1.5) `time` 方法](#315-time-方法)
-   + [3.2) `L`](#32-l)
-      * [3.2.1) `not` 方法](#321-not-方法)
-      * [3.2.2) `and` 方法](#322-and-方法)
-      * [3.2.3) `or` 方法](#323-or-方法)
-      * [3.2.4) `xor` 方法](#324-xor-方法)
-      * [3.2.5) `eq` 方法](#325-eq-方法)
-      * [3.2.6) `ne` 方法](#326-ne-方法)
-      * [3.2.7) `gt` 方法](#327-gt-方法)
-      * [3.2.8) `ge` 方法](#328-ge-方法)
-      * [3.2.9) `lt` 方法](#329-lt-方法)
-      * [3.2.10) `le` 方法](#3210-le-方法)
-      * [3.2.11) `streq` 方法](#3211-streq-方法)
-      * [3.2.12) `strne` 方法](#3212-strne-方法)
-      * [3.2.13) `strgt` 方法](#3213-strgt-方法)
-      * [3.2.14) `strge` 方法](#3214-strge-方法)
-      * [3.2.15) `strlt` 方法](#3215-strlt-方法)
-      * [3.2.16) `strle` 方法](#3216-strle-方法)
-      * [3.2.17) `eval` 方法](#3217-eval-方法)
-   + [3.3) `SESSION`](#33-session)
-      * [3.3.1) `cwd` 方法](#331-cwd-方法)
-      * [3.3.2) `user` 方法](#332-user-方法)
-   + [3.4) `T`](#34-t)
-   + [3.5) `STR`](#35-str)
-      * [3.5.1) `contains` 方法](#351-contains-方法)
-      * [3.5.2) `ends_with` 方法](#352-ends_with-方法)
-      * [3.5.3) `explode` 方法](#353-explode-方法)
-      * [3.5.4) `shuffle` 方法](#354-shuffle-方法)
-      * [3.5.5) `replace` 方法](#355-replace-方法)
-      * [3.5.6) `format_c` 方法](#356-format_c-方法)
-      * [3.5.7) `format_p` 方法](#357-format_p-方法)
-   + [3.6) `DOC`](#36-doc)
-      * [3.6.1) `doctype` 方法](#361-doctype-方法)
-      * [3.6.2) `base` 方法](#362-base-方法)
-      * [3.6.3) `query` 方法](#363-query-方法)
-   + [3.7) `EJSON`](#37-ejson)
-      * [3.7.1) `type` 方法](#371-type-方法)
-      * [3.7.2) `count` 方法](#372-count-方法)
+   + [3.1) `SESSION`](#31-session)
+      * [3.1.1) `cwd` 方法](#311-cwd-方法)
+      * [3.1.2) `user` 方法](#312-user-方法)
+   + [3.2) `SYSTEM`](#32-system)
+      * [3.2.1) `uname` 方法](#321-uname-方法)
+      * [3.2.2) `uname_prt` 方法](#322-uname_prt-方法)
+      * [3.2.3) `locale` 方法](#323-locale-方法)
+      * [3.2.4) `random` 方法](#324-random-方法)
+      * [3.2.5) `time` 方法](#325-time-方法)
+   + [3.3) `DOC`](#33-doc)
+      * [3.3.1) `doctype` 方法](#331-doctype-方法)
+      * [3.3.2) `base` 方法](#332-base-方法)
+      * [3.3.3) `query` 方法](#333-query-方法)
+   + [3.4) `EJSON`](#34-ejson)
+      * [3.4.1) `type` 方法](#341-type-方法)
+      * [3.4.2) `count` 方法](#342-count-方法)
+   + [3.5) `L`](#35-l)
+      * [3.5.1) `not` 方法](#351-not-方法)
+      * [3.5.2) `and` 方法](#352-and-方法)
+      * [3.5.3) `or` 方法](#353-or-方法)
+      * [3.5.4) `xor` 方法](#354-xor-方法)
+      * [3.5.5) `eq` 方法](#355-eq-方法)
+      * [3.5.6) `ne` 方法](#356-ne-方法)
+      * [3.5.7) `gt` 方法](#357-gt-方法)
+      * [3.5.8) `ge` 方法](#358-ge-方法)
+      * [3.5.9) `lt` 方法](#359-lt-方法)
+      * [3.5.10) `le` 方法](#3510-le-方法)
+      * [3.5.11) `streq` 方法](#3511-streq-方法)
+      * [3.5.12) `strne` 方法](#3512-strne-方法)
+      * [3.5.13) `strgt` 方法](#3513-strgt-方法)
+      * [3.5.14) `strge` 方法](#3514-strge-方法)
+      * [3.5.15) `strlt` 方法](#3515-strlt-方法)
+      * [3.5.16) `strle` 方法](#3516-strle-方法)
+      * [3.5.17) `eval` 方法](#3517-eval-方法)
+   + [3.6) `T`](#36-t)
+   + [3.7) `STR`](#37-str)
+      * [3.7.1) `contains` 方法](#371-contains-方法)
+      * [3.7.2) `ends_with` 方法](#372-ends_with-方法)
+      * [3.7.3) `explode` 方法](#373-explode-方法)
+      * [3.7.4) `shuffle` 方法](#374-shuffle-方法)
+      * [3.7.5) `replace` 方法](#375-replace-方法)
+      * [3.7.6) `format_c` 方法](#376-format_c-方法)
+      * [3.7.7) `format_p` 方法](#377-format_p-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -192,11 +192,42 @@ __目录__
 
 ## 3) 必要动态变量
 
-### 3.1) `SYSTEM`
+### 3.1) `SESSION`
+
+该变量是一个会话级内置变量，PurC 在创建一个新的会话时，会自动创建并绑定。该变量主要用于会话相关的信息，并提供给用户在当前会话的不同 HVML 文档之间共享数据的机制。该变量提供如下接口：
+
+#### 3.1.1) `cwd` 方法
+
+获取或设置当前工作路径。
+
+```php
+// 原型：获取当前工作路径
+$SESSION.cwd
+
+// 原型：改变当前工作路径
+$SESSION.cwd(! <string: new path for the current working directory> )
+```
+
+#### 3.1.2) `user` 方法
+
+获取或设置用户键值对。
+
+```php
+// 原型：获取指定键名对应的值
+$SESSION.user(<string: the user defined key name>)
+
+// 原型：设置指定键名的值
+$SESSION.user(<string: the user defined key name>, <any: the new variant value>)
+
+// 示例：
+$SESSION.user('userId')
+```
+
+### 3.2) `SYSTEM`
 
 该变量是会话级内置变量，在初始化 PurC 实例之后绑定。该变量提供如下接口：
 
-#### 3.1.1) `uname` 方法
+#### 3.2.1) `uname` 方法
 
 方法。获取系统信息，返回包含有内核名称、版本号等键值对的对象：
 
@@ -223,7 +254,7 @@ $SYSTEM.uname
 }
 ```
 
-#### 3.1.2) `uname_prt` 方法
+#### 3.2.2) `uname_prt` 方法
 
 获取可打印的系统信息，返回字符串：
 
@@ -239,7 +270,7 @@ $SYSTEM.uname_prt('[kernel-name || kernel-release || kernel-version || nodename 
 $SYSTEM.uname_prt('kernel-name kernel-release kernel-version')
 ```
 
-#### 3.1.3) `locale` 方法
+#### 3.2.3) `locale` 方法
 
 获取或设置 locale。主要用法：
 
@@ -254,7 +285,7 @@ $SYSTEM.locale('ctype | numeric | time | collate | monetary | messages | paper |
 $SYSTEM.locale(! '[ctype || numeric || time || collate || monetary || messages || paper || name || address || telephone || measurement || identification] | all', <string: locale> )
 ```
 
-#### 3.1.4) `random` 方法
+#### 3.2.4) `random` 方法
 
 获取随机值。主要用法：
 
@@ -266,7 +297,7 @@ $SYSTEM.random
 $SYSTEM.random(<number: the max value>)
 ```
 
-#### 3.1.5) `time` 方法
+#### 3.2.5) `time` 方法
 
 获取或设置系统时间。主要用法：
 
@@ -315,296 +346,11 @@ $SYSTEM.time(! <number: seconds since epoch> )
 
 有关时间的显示标准，除了 ISO8601 之外，还有 RFC822 等。详细列表可见：<https://www.php.net/manual/en/class.datetime.php>
 
-### 3.2) `L`
-
-该变量是一个会话级内置变量，主要用于逻辑运算。
-
-有关任何变体值转换为逻辑真假值时的规则，请参阅 [任意数据类型的强制转换规则](https://gitlab.fmsoft.cn/hvml/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md#213-%E4%BB%BB%E6%84%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%BC%BA%E5%88%B6%E8%BD%AC%E6%8D%A2%E8%A7%84%E5%88%99)。
-
-#### 3.2.1) `not` 方法
-
-逻辑取反操作。
-
-```php
-// 原型：逻辑取反的结果，返回 true 或 false
-$L.not(<any>)
-
-// 示例：false 取反，返回 true
-$L.not( false )
-```
-
-#### 3.2.2) `and` 方法
-
-逻辑与运算。
-
-```php
-// 原型：两个或以上变体执行逻辑与操作，返回 true 或 false
-$L.and(<any>, <any>[, <any>[, ...]])
-
-// 示例：false 和 true 的与操作，返回 false
-$L.and( false, true )
-```
-
-#### 3.2.3) `or` 方法
-
-逻辑或运算。
-
-```php
-// 原型：两个或以上变体执行逻辑或操作，返回 true 或 false
-$L.or(<any>, <any>[, <any>[, ...]])
-
-// 示例：false 和 true 的或操作，返回 true
-$L.or( false, true )
-```
-
-#### 3.2.4) `xor` 方法
-
-逻辑亦或运算。
-
-```php
-// 原型：两个变体执行逻辑亦或操作，返回 true 或 false
-$L.xor(<any>, <any>)
-
-// 示例：false 和 true 的或或操作，返回 true
-$L.xor( false, true )
-```
-
-#### 3.2.5) `eq` 方法
-
-#### 3.2.6) `ne` 方法
-
-#### 3.2.7) `gt` 方法
-
-#### 3.2.8) `ge` 方法
-
-#### 3.2.9) `lt` 方法
-
-#### 3.2.10) `le` 方法
-
-对比两个变体的数值是否相等、不相等、大于、大于等于、小于、小于等于。
-
-```php
-// 原型：对比两个变体在数值上是否相等，返回 true 或 false
-$L.eq(<any>, <any>)
-
-// 原型：对比两个变体在数值上是否不相等，返回 true 或 false
-$L.ne(<any>, <any>)
-
-// 原型：对比第一个变体在数值上是否大于第二个变体，返回 true 或 false
-$L.gt(<any>, <any>)
-
-// 原型：对比第一个变体在数值上是否大于或等于第二个变体，返回 true 或 false
-$L.ge(<any>, <any>)
-
-// 原型：对比第一个变体在数值上是否小于第二个变体，返回 true 或 false
-$L.lt(<any>, <any>)
-
-// 原型：对比第一个变体在数值上是否小于或等于第二个变体，返回 true 或 false
-$L.le(<any>, <any>)
-
-// 示例：返回 true
-$L.eq("1", 1)
-```
-
-#### 3.2.11) `streq` 方法
-
-#### 3.2.12) `strne` 方法
-
-#### 3.2.13) `strgt` 方法
-
-#### 3.2.14) `strge` 方法
-
-#### 3.2.15) `strlt` 方法
-
-#### 3.2.16) `strle` 方法
-
-对比两个字符串是否相等、不相等、大于、大于等于、小于、小于等于。
-
-```php
-// 原型：对比两个变体的字符串形式是否相等或匹配，返回 true 或 false
-$L.streq("caseless | case | wildcard | reg", <any>, <any>)
-
-// 原型：对比两个变体的字符串形式是否不相等或不匹配，返回 true 或 false
-$L.strne("caseless | case | wildcard | reg", <any>, <any>)
-
-// 原型：对比第一个变体的字符串形式是否大于第二个变体的字符串形式，返回 true 或 false
-$L.strgt("caseless | case", <any>, <any>)
-
-// 原型：对比第一个变体的字符串形式是否大于或等于第二个变体的字符串形式，返回 true 或 false
-$L.strge("caseless | case", <any>, <any>)
-
-// 原型：对比第一个变体的字符串形式是否小于第二个变体的字符串形式，返回 true 或 false
-$L.strlt("caseless | case", <any>, <any>)
-
-// 原型：对比第一个变体的字符串形式是否小于或等于第二个变体的字符串形式，返回 true 或 false
-$L.strle("caseless | case", <any>, <any>)
-
-// 示例：返回 true
-$L.streq("case", "1", 1)
-```
-
-第一个参数用来表示字符串的匹配方式（不区分大小写、区分大小写、通配符、正则表达式），其后的两个参数用来传递两个字符串。
-
-对非字符串类型的变体值，取不添加任何格式化字符的串行化结果做对比。
-
-#### 3.2.17) `eval` 方法
-
-对参数化的逻辑运算表达式求值。
-
-```php
-// 原型：
-$L.eval(<string: logical expression>, <object: the parameter map>)
-
-// 示例
-$L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) })
-```
-
-### 3.3) `SESSION`
-
-该变量是一个会话级内置变量，PurC 在创建一个新的会话时，会自动创建并绑定。该变量主要用于会话相关的信息，并提供给用户在当前会话的不同 HVML 文档之间共享数据的机制。该变量提供如下接口：
-
-#### 3.3.1) `cwd` 方法
-
-获取或设置当前工作路径。
-
-```php
-// 原型：获取当前工作路径
-$SESSION.cwd
-
-// 原型：改变当前工作路径
-$SESSION.cwd(! <string: new path for the current working directory> )
-```
-
-#### 3.3.2) `user` 方法
-
-获取或设置用户键值对。
-
-```php
-// 原型：获取指定键名对应的值
-$SESSION.user(<string: the user defined key name>)
-
-// 原型：设置指定键名的值
-$SESSION.user(<string: the user defined key name>, <any: the new variant value>)
-
-// 示例：
-$SESSION.user('userId')
-```
-
-### 3.4) `T`
-
-该变量是一个文档级内置变量，主要用于文本的本地化替代。其上提供两个键名：
-
-- `map`：一个静态对象，用来定义字符串映射表，初始为空对象。程序可在 `head` 中使用 `update` 设置其内容。
-- `get`：一个动态方法，用于返回替代字符串。
-
-```php
-// 原型
-$T.get(<string: original text>)
-```
-
-示例用法：
-
-```html
-<!DOCTYPE hvml>
-<hvml target="html">
-    <head>
-        <update on="$T.map" to="displace">
-            {
-                "Hello, world!": "世界，您好！",
-                "Hello, HVML!": "HVML，您好！",
-            }
-        </update>
-
-        <title>$T.get('Hello, world!')</title>
-    </head>
-
-    <body>
-        <p>$T.get('Hello, HVML!')</p>
-    </body>
-
-</hvml>
-```
-
-### 3.5) `STR`
-
-`STR` 是一个内置的动态变量，该变量用于实现常见的字符串操作。
-
-__注__  
-所有可动态装载的变量模块都是文档级的。在加载 HVML 文档时，根据 `DOCTYPE` 中定义的模块列表加载相应的模块并绑定到对应的变量上，供当前 HVML 文档使用。
-
-该变量提供的接口，类似 PHP 的字符串函数：<https://www.php.net/manual/en/ref.strings.php>
-
-主要有：
-
-#### 3.5.1) `contains` 方法
-
-用于判断一个字符串中是否包含给定的子字符串。
-
-参阅：<https://www.php.net/manual/en/function.str-contains.php>
-
-#### 3.5.2) `ends_with` 方法
-
-用于判断一个字符串是否以给定的字符串结尾。
-
-参阅：<https://www.php.net/manual/en/function.str-ends-with.php>
-
-#### 3.5.3) `explode` 方法
-
-使用指定的字符串分隔一个字符串。
-
-参阅：<https://www.php.net/manual/en/function.explode.php>
-
-#### 3.5.4) `shuffle` 方法
-
-用于随机打乱一个字符串。
-
-参阅：<https://www.php.net/manual/en/function.str-shuffle.php>
-
-#### 3.5.5) `replace` 方法
-
-用于子字符串替换。
-
-参阅：<https://www.php.net/manual/en/function.str-replace.php>
-
-#### 3.5.6) `format_c` 方法
-
-格式化数值及字符串变体值，使用 C 格式化字符表述方法。
-
-```php
-// 原型
-$STR.format_c(<string: C format string>[, <boolean | number | longint | ulongint | longdouble | string>[, ...]])
-
-// 原型
-$STR.format_c(<string: C format string>, <array>)
-```
-
-#### 3.5.7) `format_p` 方法
-
-使用占位符格式化任意变体值，使用 eJSON 串行化输出格式。
-
-使用数组表达要格式化的数据时，占位符用 `{0}`、`{1}` 等表示。
-
-使用对象表达要格式化的数据时，占位符用 `{name}`、`{id}` 等表示。
-
-```php
-// 原型
-$STR.format_p(<string: string contains placeholders>, <array>)
-
-// 示例
-$STR.format_p('There are two boys: {0} and {1}', ['Tom', 'Jerry'])
-
-// 原型
-$STR.format_p(<string: string contains placeholders>, <object>)
-
-// 示例
-$STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry'})
-```
-
-### 3.6) `DOC`
+### 3.3) `DOC`
 
 `DOC` 是一个内置的文档级动态变量，该变量用于访问 HVML 程序生成的 eDOM 树中的元素。
 
-#### 3.6.1) `doctype` 方法
+#### 3.3.1) `doctype` 方法
 
 该方法返回文档类型，字符串。
 
@@ -624,7 +370,7 @@ $DOC.doctype("public")
 $DOC.doctype
 ```
 
-#### 3.6.2) `base` 方法
+#### 3.3.2) `base` 方法
 
 该方法获取或设置文档的根 URL。
 
@@ -639,7 +385,7 @@ $DOC.base(! <string, new base URL> )
 $DOC.base(! "https://foo.example.com/app/hvml" )
 ```
 
-#### 3.6.3) `query` 方法
+#### 3.3.3) `query` 方法
 
 使用 CSS 选择器查询目标文档上的特定元素或者元素汇集（collection）。
 
@@ -682,11 +428,11 @@ $DOC.query("#foo").attr("bar")
 $DOC.query("#foo").attr<"bar", "qux">
 ```
 
-### 3.7) `EJSON`
+### 3.4) `EJSON`
 
 该动态变量为会话级内置变量，用于返回变体的类型、成员个数等信息。
 
-#### 3.7.1) `type` 方法
+#### 3.4.1) `type` 方法
 
 该方法返回变体的类型名称，字符串。
 
@@ -695,13 +441,267 @@ $DOC.query("#foo").attr<"bar", "qux">
 $EJSON.type( <any> )
 ```
 
-#### 3.7.2) `count` 方法
+#### 3.4.2) `count` 方法
 
 该方法返回变体的数据项个数，数值。
 
 ```php
 // 原型
 $EJSON.count( <any> )
+```
+
+### 3.5) `L`
+
+该变量是一个会话级内置变量，主要用于逻辑运算。
+
+有关任何变体值转换为逻辑真假值时的规则，请参阅 [任意数据类型的强制转换规则](https://gitlab.fmsoft.cn/hvml/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md#213-%E4%BB%BB%E6%84%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%BC%BA%E5%88%B6%E8%BD%AC%E6%8D%A2%E8%A7%84%E5%88%99)。
+
+#### 3.5.1) `not` 方法
+
+逻辑取反操作。
+
+```php
+// 原型：逻辑取反的结果，返回 true 或 false
+$L.not(<any>)
+
+// 示例：false 取反，返回 true
+$L.not( false )
+```
+
+#### 3.5.2) `and` 方法
+
+逻辑与运算。
+
+```php
+// 原型：两个或以上变体执行逻辑与操作，返回 true 或 false
+$L.and(<any>, <any>[, <any>[, ...]])
+
+// 示例：false 和 true 的与操作，返回 false
+$L.and( false, true )
+```
+
+#### 3.5.3) `or` 方法
+
+逻辑或运算。
+
+```php
+// 原型：两个或以上变体执行逻辑或操作，返回 true 或 false
+$L.or(<any>, <any>[, <any>[, ...]])
+
+// 示例：false 和 true 的或操作，返回 true
+$L.or( false, true )
+```
+
+#### 3.5.4) `xor` 方法
+
+逻辑亦或运算。
+
+```php
+// 原型：两个变体执行逻辑亦或操作，返回 true 或 false
+$L.xor(<any>, <any>)
+
+// 示例：false 和 true 的或或操作，返回 true
+$L.xor( false, true )
+```
+
+#### 3.5.5) `eq` 方法
+
+#### 3.5.6) `ne` 方法
+
+#### 3.5.7) `gt` 方法
+
+#### 3.5.8) `ge` 方法
+
+#### 3.5.9) `lt` 方法
+
+#### 3.5.10) `le` 方法
+
+对比两个变体的数值是否相等、不相等、大于、大于等于、小于、小于等于。
+
+```php
+// 原型：对比两个变体在数值上是否相等，返回 true 或 false
+$L.eq(<any>, <any>)
+
+// 原型：对比两个变体在数值上是否不相等，返回 true 或 false
+$L.ne(<any>, <any>)
+
+// 原型：对比第一个变体在数值上是否大于第二个变体，返回 true 或 false
+$L.gt(<any>, <any>)
+
+// 原型：对比第一个变体在数值上是否大于或等于第二个变体，返回 true 或 false
+$L.ge(<any>, <any>)
+
+// 原型：对比第一个变体在数值上是否小于第二个变体，返回 true 或 false
+$L.lt(<any>, <any>)
+
+// 原型：对比第一个变体在数值上是否小于或等于第二个变体，返回 true 或 false
+$L.le(<any>, <any>)
+
+// 示例：返回 true
+$L.eq("1", 1)
+```
+
+#### 3.5.11) `streq` 方法
+
+#### 3.5.12) `strne` 方法
+
+#### 3.5.13) `strgt` 方法
+
+#### 3.5.14) `strge` 方法
+
+#### 3.5.15) `strlt` 方法
+
+#### 3.5.16) `strle` 方法
+
+对比两个字符串是否相等、不相等、大于、大于等于、小于、小于等于。
+
+```php
+// 原型：对比两个变体的字符串形式是否相等或匹配，返回 true 或 false
+$L.streq("caseless | case | wildcard | reg", <any>, <any>)
+
+// 原型：对比两个变体的字符串形式是否不相等或不匹配，返回 true 或 false
+$L.strne("caseless | case | wildcard | reg", <any>, <any>)
+
+// 原型：对比第一个变体的字符串形式是否大于第二个变体的字符串形式，返回 true 或 false
+$L.strgt("caseless | case", <any>, <any>)
+
+// 原型：对比第一个变体的字符串形式是否大于或等于第二个变体的字符串形式，返回 true 或 false
+$L.strge("caseless | case", <any>, <any>)
+
+// 原型：对比第一个变体的字符串形式是否小于第二个变体的字符串形式，返回 true 或 false
+$L.strlt("caseless | case", <any>, <any>)
+
+// 原型：对比第一个变体的字符串形式是否小于或等于第二个变体的字符串形式，返回 true 或 false
+$L.strle("caseless | case", <any>, <any>)
+
+// 示例：返回 true
+$L.streq("case", "1", 1)
+```
+
+第一个参数用来表示字符串的匹配方式（不区分大小写、区分大小写、通配符、正则表达式），其后的两个参数用来传递两个字符串。
+
+对非字符串类型的变体值，取不添加任何格式化字符的串行化结果做对比。
+
+#### 3.5.17) `eval` 方法
+
+对参数化的逻辑运算表达式求值。
+
+```php
+// 原型：
+$L.eval(<string: logical expression>, <object: the parameter map>)
+
+// 示例
+$L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) })
+```
+
+### 3.6) `T`
+
+该变量是一个文档级内置变量，主要用于文本的本地化替代。其上提供两个键名：
+
+- `map`：一个静态对象，用来定义字符串映射表，初始为空对象。程序可在 `head` 中使用 `update` 设置其内容。
+- `get`：一个动态方法，用于返回替代字符串。
+
+```php
+// 原型
+$T.get(<string: original text>)
+```
+
+示例用法：
+
+```html
+<!DOCTYPE hvml>
+<hvml target="html">
+    <head>
+        <update on="$T.map" to="displace">
+            {
+                "Hello, world!": "世界，您好！",
+                "Hello, HVML!": "HVML，您好！",
+            }
+        </update>
+
+        <title>$T.get('Hello, world!')</title>
+    </head>
+
+    <body>
+        <p>$T.get('Hello, HVML!')</p>
+    </body>
+
+</hvml>
+```
+
+### 3.7) `STR`
+
+`STR` 是一个内置的动态变量，该变量用于实现常见的字符串操作。
+
+__注__  
+所有可动态装载的变量模块都是文档级的。在加载 HVML 文档时，根据 `DOCTYPE` 中定义的模块列表加载相应的模块并绑定到对应的变量上，供当前 HVML 文档使用。
+
+该变量提供的接口，类似 PHP 的字符串函数：<https://www.php.net/manual/en/ref.strings.php>
+
+主要有：
+
+#### 3.7.1) `contains` 方法
+
+用于判断一个字符串中是否包含给定的子字符串。
+
+参阅：<https://www.php.net/manual/en/function.str-contains.php>
+
+#### 3.7.2) `ends_with` 方法
+
+用于判断一个字符串是否以给定的字符串结尾。
+
+参阅：<https://www.php.net/manual/en/function.str-ends-with.php>
+
+#### 3.7.3) `explode` 方法
+
+使用指定的字符串分隔一个字符串。
+
+参阅：<https://www.php.net/manual/en/function.explode.php>
+
+#### 3.7.4) `shuffle` 方法
+
+用于随机打乱一个字符串。
+
+参阅：<https://www.php.net/manual/en/function.str-shuffle.php>
+
+#### 3.7.5) `replace` 方法
+
+用于子字符串替换。
+
+参阅：<https://www.php.net/manual/en/function.str-replace.php>
+
+#### 3.7.6) `format_c` 方法
+
+格式化数值及字符串变体值，使用 C 格式化字符表述方法。
+
+```php
+// 原型
+$STR.format_c(<string: C format string>[, <boolean | number | longint | ulongint | longdouble | string>[, ...]])
+
+// 原型
+$STR.format_c(<string: C format string>, <array>)
+```
+
+#### 3.7.7) `format_p` 方法
+
+使用占位符格式化任意变体值，使用 eJSON 串行化输出格式。
+
+使用数组表达要格式化的数据时，占位符用 `{0}`、`{1}` 等表示。
+
+使用对象表达要格式化的数据时，占位符用 `{name}`、`{id}` 等表示。
+
+```php
+// 原型
+$STR.format_p(<string: string contains placeholders>, <array>)
+
+// 示例
+$STR.format_p('There are two boys: {0} and {1}', ['Tom', 'Jerry'])
+
+// 原型
+$STR.format_p(<string: string contains placeholders>, <object>)
+
+// 示例
+$STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry'})
 ```
 
 ## 4) 可选动态变量
