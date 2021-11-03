@@ -19,7 +19,7 @@ Language: Chinese
 
 本文提及的飞漫软件或其合作伙伴的注册商标或商标之详细列表，请查阅文档末尾。
 
-__目录__
+**目录**
 
 [//]:# (START OF TOC)
 
@@ -636,9 +636,6 @@ $T.get(<string: original text>)
 
 `STR` 是一个内置的动态变量，该变量用于实现常见的字符串操作。
 
-__注__  
-所有可动态装载的变量模块都是文档级的。在加载 HVML 文档时，根据 `DOCTYPE` 中定义的模块列表加载相应的模块并绑定到对应的变量上，供当前 HVML 文档使用。
-
 该变量提供的接口，类似 PHP 的字符串函数：<https://www.php.net/manual/en/ref.strings.php>
 
 主要有：
@@ -818,7 +815,7 @@ $MATH.sqrt(<number | longint | ulongint | longdouble>)
 
 `FS` 是一个可装载的动态变量，该变量用于实现常见的文件系统操作。
 
-__注意__  
+**注意**  
 当指定的路径以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前会话维护的当前工作路径信息（同 `$SESSION.cwd`）。
 
 该变量提供如下接口：
@@ -902,7 +899,7 @@ $FS.list_prt($path, "*.txt; *.md", "mode nlink uid gid size blksize atime ctime 
 - `bin`：提供以二进制文件方式读写的接口。
 - `stream`：提供以流方式读写的接口。
 
-__注意__  
+**注意**  
 当指定的文件以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前会话维护的当前工作路径信息（同 `$SESSION.cwd`）。
 
 #### 4.3.1) `txt.head` 方法
