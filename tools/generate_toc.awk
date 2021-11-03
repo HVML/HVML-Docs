@@ -18,8 +18,10 @@ function get_anchor(title)
 {
     gsub(/-/, "TMD", title)
     gsub(/ /, "TMD", title)
+    gsub(/_/, "LOWLINE", title)
     gsub(/[[:punct:]]/, "", title)
     gsub(/TMD/, "-", title)
+    gsub(/LOWLINE/, "_", title)
     anchor = tolower(title)
     return anchor
 }
