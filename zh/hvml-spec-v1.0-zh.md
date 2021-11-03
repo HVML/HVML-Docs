@@ -1,8 +1,9 @@
 # HVML 规范
 
-HVML Specification Version 1.0  
+Title: HVML Specification  
+Version: 1.0  
 Author: Vincent Wei  
-Category: App Framework  
+Category: Language Specification  
 Date: Dec., 2021  
 Status: Release Candidate  
 Language: Chinese

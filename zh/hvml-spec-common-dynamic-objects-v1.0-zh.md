@@ -1,8 +1,9 @@
 # HVML 预定义动态对象
 
-Interfaces of Common Dynamic Objects of HVML Version 1.0  
+Title: Common Dynamic Objects of HVML  
+Version: 1.0  
 Author: Vincent Wei  
-Category: App Framework  
+Category: Language Specification  
 Date: Dec., 2021  
 Status: Proposal  
 Language: Chinese
