@@ -30,6 +30,7 @@ Language: Chinese
       * [2.1.2) 新增一个定时器](#212-新增一个定时器)
       * [2.1.3) 移除一个定时器](#213-移除一个定时器)
       * [2.1.4) 修改特定定时器的属性](#214-修改特定定时器的属性)
+   + [2.2) `REQUEST`](#22-request)
 - [3) 必要动态变量](#3-必要动态变量)
    + [3.1) `SESSION`](#31-session)
       * [3.1.1) `cwd` 方法](#311-cwd-方法)
@@ -213,6 +214,18 @@ Language: Chinese
         { "id" : "foo", "interval": 1500, "active" : "yes" }
     </update>
 ```
+
+### 2.2) `REQUEST`
+
+`REQUEST` 是一个文档级内置变量。该变量用来保存装载一个 HVML 程序时传递给该程序的请求参数，以对象形式保存。
+
+比如下面的 Python 脚本装载一个 HVML 文档，并传递了 `nrUsers` 参数：
+
+```python
+hvml.load ("a.hvml", { "nrUsers" : 10 })
+```
+
+在 HVML 文档中，我们可使用 `$REQUEST.nrUsers` 来引用上述脚本代码传入的数值（`10`）。
 
 ## 3) 必要动态变量
 
