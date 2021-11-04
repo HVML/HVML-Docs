@@ -223,13 +223,16 @@ $SESSION.cwd(! <string: new path for the current working directory> )
 获取或设置用户键值对。
 
 ```php
-// 原型：获取指定键名对应的值
-$SESSION.user(<string: the user defined key name>)
+// 原型：获取指定键名对应的键值；未设置时返回 `undefine`
+$SESSION.user( <string: the user defined key name> )
 
-// 原型：设置指定键名的值
-$SESSION.user(<string: the user defined key name>, <any: the new variant value>)
+// 原型：设置指定键名的值，返回值是否覆盖了已有属性
+$SESSION.user(! <string: the user defined key name>, <any: the new variant value> )
 
-// 示例：
+// 示例：设置 `userId` 为 `20211104-01`
+$SESSION.user(! 'userId', '20211104-01' )
+
+// 示例：获取 `userId` 对应的键值
 $SESSION.user('userId')
 ```
 
