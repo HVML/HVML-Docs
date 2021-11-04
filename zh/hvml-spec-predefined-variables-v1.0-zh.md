@@ -90,19 +90,22 @@ Language: Chinese
       * [4.2.2) `list_prt` 方法](#422-list_prt-方法)
       * [4.2.3) 其他](#423-其他)
    + [4.3) `FILE`](#43-file)
-      * [4.3.1) `txt.head` 方法](#431-txthead-方法)
-      * [4.3.2) `txt.tail` 方法](#432-txttail-方法)
-      * [4.3.3) `bin.head` 方法](#433-binhead-方法)
-      * [4.3.4) `bin.tail` 方法](#434-bintail-方法)
-      * [4.3.5) 二进制结构表示法](#435-二进制结构表示法)
-      * [4.3.6) `stream.open` 方法](#436-streamopen-方法)
-      * [4.3.7) `stream.readstruct` 方法](#437-streamreadstruct-方法)
-      * [4.3.8) `stream.writestruct` 方法](#438-streamwritestruct-方法)
-      * [4.3.9) `stream.readlines` 方法](#439-streamreadlines-方法)
-      * [4.3.10) `stream.writelines` 方法](#4310-streamwritelines-方法)
-      * [4.3.11) `stream.readbytes` 方法](#4311-streamreadbytes-方法)
-      * [4.3.12) `stream.writebytes` 方法](#4312-streamwritebytes-方法)
-      * [4.3.13) `stream.seek` 方法](#4313-streamseek-方法)
+      * [4.3.1) 文本文件](#431-文本文件)
+         - [4.3.1.1) `txt.head` 方法](#4311-txthead-方法)
+         - [4.3.1.2) `txt.tail` 方法](#4312-txttail-方法)
+      * [4.3.2) 二进制文件](#432-二进制文件)
+         - [4.3.2.1) `bin.head` 方法](#4321-binhead-方法)
+         - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
+      * [4.3.3) 流式读写](#433-流式读写)
+         - [4.3.3.1) 二进制结构表示法](#4331-二进制结构表示法)
+         - [4.3.3.2) `stream.open` 方法](#4332-streamopen-方法)
+         - [4.3.3.3) `stream.readstruct` 方法](#4333-streamreadstruct-方法)
+         - [4.3.3.4) `stream.writestruct` 方法](#4334-streamwritestruct-方法)
+         - [4.3.3.5) `stream.readlines` 方法](#4335-streamreadlines-方法)
+         - [4.3.3.6) `stream.writelines` 方法](#4336-streamwritelines-方法)
+         - [4.3.3.7) `stream.readbytes` 方法](#4337-streamreadbytes-方法)
+         - [4.3.3.8) `stream.writebytes` 方法](#4338-streamwritebytes-方法)
+         - [4.3.3.9) `stream.seek` 方法](#4339-streamseek-方法)
 - [附录](#附录)
    + [附.1) 贡献者榜单](#附1-贡献者榜单)
    + [附.2) 商标声明](#附2-商标声明)
@@ -987,7 +990,9 @@ $FS.list_prt($path, "*.txt; *.md", "mode nlink uid gid size blksize atime ctime 
 **注意**  
 当指定的文件以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前会话维护的当前工作路径信息（同 `$SESSION.cwd`）。
 
-#### 4.3.1) `txt.head` 方法
+#### 4.3.1) 文本文件
+
+##### 4.3.1.1) `txt.head` 方法
 
 该方法读取文本文件的前几行，并返回一个字符串数组。
 
@@ -1005,7 +1010,7 @@ $FILE.txt.head($file, 5)
 $FILE.txt.head($file, -5)
 ```
 
-#### 4.3.2) `txt.tail` 方法
+##### 4.3.1.2) `txt.tail` 方法
 
 该方法读取文本文件的后几行，并返回一个字符串数组。
 
@@ -1023,7 +1028,9 @@ $FILE.txt.tail($file, 5)
 $FILE.txt.tail($file, -5)
 ```
 
-#### 4.3.3) `bin.head` 方法
+#### 4.3.2) 二进制文件
+
+##### 4.3.2.1) `bin.head` 方法
 
 该方法读取二进制文件的前几字节，并返回一个字节序列。
 
@@ -1041,7 +1048,7 @@ $FILE.bin.head($file, 5)
 $FILE.bin.head($file, -5)
 ```
 
-#### 4.3.4) `bin.tail` 方法
+##### 4.3.2.2) `bin.tail` 方法
 
 该方法读取二进制文件的后几字节，并返回一个字节序列。
 
@@ -1058,8 +1065,9 @@ $FILE.bin.tail($file, 5)
 // 示例：读取最前 5 字节之外的所有字节
 $FILE.bin.tail($file, -5)
 ```
+#### 4.3.3) 流式读写
 
-#### 4.3.5) 二进制结构表示法
+##### 4.3.3.1) 二进制结构表示法
 
 为配合 FILE 的流式读写方法（`readstruct`、`writestruct`），我们定义了一种二进制结构表示法。
 
@@ -1120,35 +1128,35 @@ $FILE.bin.tail($file, -5)
 
 该结构一共 140 字节。
 
-#### 4.3.6) `stream.open` 方法
+##### 4.3.3.2) `stream.open` 方法
 
 打开文件作为流，返回一个代表流对象的原生实体值。注意，流的关闭将在最终释放对应的数据时自动进行。
 
-#### 4.3.7) `stream.readstruct` 方法
+##### 4.3.3.3) `stream.readstruct` 方法
 
 从二进制流中读取一个二进制结构，并转换为适当的数据。
 
-#### 4.3.8) `stream.writestruct` 方法
+##### 4.3.3.4) `stream.writestruct` 方法
 
 将多个数据按照指定的结构格式写入二进制流。
 
-#### 4.3.9) `stream.readlines` 方法
+##### 4.3.3.5) `stream.readlines` 方法
 
 从文本流中读取给定行数，返回字符串数组。
 
-#### 4.3.10) `stream.writelines` 方法
+##### 4.3.3.6) `stream.writelines` 方法
 
 将字符串写入文本流中。
 
-#### 4.3.11) `stream.readbytes` 方法
+##### 4.3.3.7) `stream.readbytes` 方法
 
 从二进制或文本流中读取一个字节序列，返回一个字节序列。
 
-#### 4.3.12) `stream.writebytes` 方法
+##### 4.3.3.8) `stream.writebytes` 方法
 
 将一个字节序列写入流。
 
-#### 4.3.13) `stream.seek` 方法
+##### 4.3.3.9) `stream.seek` 方法
 
 在二进制或文本流中执行定位操作。
 
