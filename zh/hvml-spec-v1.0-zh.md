@@ -140,8 +140,8 @@ Language: Chinese
 本文涉及的背景技术、术语及其最新规范如下：
 
 - HTML 及其规范。HTML 和 CSS 等规范和标准是由 W3C <https://www.w3.org> 组织制定的，用来规范 Web 页面内容的编写和渲染行为。关键规范如下：
-   * HTML：超文本标记语言（HyperText Markup Language），用于表述网页内容结构的标准。HTML 最新规范：<https://html.spec.whatwg.org/>；
-   * CSS：级联样式表（Cascading Style Sheets），用于定义 HTML 页面元素布局、渲染效果等的规范。在 CSS 2.2 <https://www.w3.org/TR/CSS22/> 之后，CSS 规范开始按照模块划分，各模块分头演进，目前普遍支持到 Level 3。在如下网页中可以看到 CSS 各模块的规范进展情况：<https://drafts.csswg.org>；
+   * HTML：超文本标记语言（HyperText Markup Language），用于表述网页内容结构的标准。HTML 最新规范：<https://html.spec.whatwg.org/>。
+   * CSS：级联样式表（Cascading Style Sheets），用于定义 HTML 页面元素布局、渲染效果等的规范。在 CSS 2.2 <https://www.w3.org/TR/CSS22/> 之后，CSS 规范开始按照模块划分，各模块分头演进，目前普遍支持到 Level 3。在如下网页中可以看到 CSS 各模块的规范进展情况：<https://drafts.csswg.org>。
    * JavaScript/ECMAScript：一种符合 ECMAScript 规范的脚本编程语言，最初由网景公司设计给浏览器使用，用于操控 HTML 页面中的内容和渲染行为，现在由欧洲计算机制造商协会和国际标准化组织负责制定相关标准，最新的标准为 ECMA-262：<http://www.ecma-international.org/publications/standards/Ecma-262.htm>。
    * DOM：文档对象模型（Document Object Model），用于 XML/HTML 文档结构的内部表达。一个 XML/HTML 文档，会被 XML/HTML 解析器解析并生成一个 DOM 树，XML/HTML 文档中的每个元素构成 DOM 树上的元素结点，而每个元素的子元素、属性、文本内容等，又构成了这个元素节点的子节点。有关 DOM 的最新的规范可见：<https://dom.spec.whatwg.org/>。
    * JSON：JavaScript 对象表述法（JavaScript Object Notation）是一种轻量级的信息互换格式。最初被用于 JavaScript 对象的字符串表达，易于被 JavaScript 脚本代码使用，现在被广泛使用在不同编程语言之间的数据交换。有关 JSON 的描述，可见：<https://json.org/>。
@@ -203,17 +203,17 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
 为方便描述，本文档中使用如下术语：
 
-1. 数据（data）。
-1. 变量（variable）。
-1. 数据项（data item）或数据成员（data member）。对数组而言，每个数组单元就是一个数据项；对对象数据而言，其中的某个键值对就是一个数据项。
-1. 文档元素（document element）。指文档对象模型中，使用某个标签（tag）定义的元素节点；一个文档元素可包含一个或多个属性（attribute）以及属性值，还可以包含内容（content）；一个元素可包含文本内容、数据内容或者使用标签定义的单个或多个子元素。
-1. 文档片段（document fragment）。指 XML/HTML 文档中的一个片段，可作为模板被克隆（clone）到目标文档的其他位置。
-1. 元素汇集（element collection）。指使用选择器选择的一组元素。这里避免使用“集合”这个术语，是为了防止和`集合（set）`数据类型混淆。
-1. 码点（code point）。指一个表述为 `U+` 和四到六个 ASCII 大写十六进制数字形式的 Unicode 码点，范围在 U+0000 到 U+10FFFF（含）。有时候，我们会在码点之后包含码点的名称以及包含在小括号中的该码点渲染后的形式，但除了 U+0028 或 U+0029 之外（这两个码点表示的是小括号本身）。对不能渲染的码点以及 U+0028 或 U+0029，本文档会尽量包含其码点的名称。有关 Unicode 字符的更多术语解释如下：
-   - 码点的名称由 Unicode 标准定义并以 ASCII 大写形式表述，如 `CR` 指 `Carriage Return（回车）`。
-   - 替代符（surrogate）是范围在 U+D800 到 U+DFFF（含）的码点。
-   - 不是替代符的码点被称为标量值（scalar value）。
-   - U+FDD0 到 U+FDEF（含）范围内的码点，以及如下码点被称为非字符（noncharacter）：
+1. `数据（data）`。
+1. `变量（variable）`。
+1. `数据项（data item）`或`数据成员（data member）`。对数组而言，每个数组单元就是一个数据项；对对象数据而言，其中的某个键值对就是一个数据项。
+1. `文档元素（document element）`。指文档对象模型中，使用某个标签（tag）定义的元素节点；一个文档元素可包含一个或多个属性（attribute）以及属性值，还可以包含内容（content）；一个元素可包含文本内容、数据内容或者使用标签定义的单个或多个子元素。
+1. `文档片段（document fragment）`。指 XML/HTML 文档中的一个片段，可作为模板被克隆（clone）到目标文档的其他位置。
+1. `元素汇集（element collection）`。指使用选择器选择的一组元素。这里避免使用“集合”这个术语，是为了防止和`集合（set）`数据类型混淆。
+1. `码点（code point）`。指一个表述为 `U+` 和四到六个 ASCII 大写十六进制数字形式的 Unicode 码点，范围在 U+0000 到 U+10FFFF（含）。有时候，我们会在码点之后包含码点的名称以及包含在小括号中的该码点的渲染形式，且高亮或加粗显示该码点的渲染形式。对无法渲染的码点，本文档会给出其码点名称。有关 Unicode 字符的更多术语解释如下：
+   - 码点的名称由 Unicode 标准定义并以 ASCII 大写形式表述，如 `CR` 指 Carriage Return（回车）。
+   - `替代符（surrogate）`是范围在 U+D800 到 U+DFFF（含）的码点。
+   - 不是替代符的码点被称为`标量值（scalar value）`。
+   - U+FDD0 到 U+FDEF（含）范围内的码点，以及如下码点被称为`非字符（noncharacter）`：
       + U+FFFE、 U+FFFF
       + U+1FFFE、 U+1FFFF
       + U+2FFFE、 U+2FFFF
@@ -231,21 +231,20 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
       + U+EFFFE、 U+EFFFF
       + U+FFFFE、 U+FFFFF
       + U+10FFFE、 U+10FFFF.
-   - ASCII 码点是指范围在 U+0000 NULL 到 U+007F DELETE（含）的码点。
-   - ASCII 制表符或者新行符指 U+0009 TAB、 U+000A LF 或 U+000D CR。
-   - ASCII 空白字符是指 U+0009 TAB、 U+000A LF、 U+000C FF、 U+000D CR、或 U+0020 SPACE。也常常简称为`空白字符`。
-   - C0 控制字符是范围在 U+0000 NULL 到 U+001F INFORMATION SEPARATOR ONE（含）的码点。
-   - C0 控制字符或空格指 C0 控制字符或 U+0020 SPACE。
-   - 控制字符是指一个`C0 控制字符范围在 U+007F DELETE 到 U+009F APPLICATION PROGRAM COMMAND（含）的码点。
-   - ASCII 数字是范围在 U+0030（`0`） 到 U+0039（`9`）（含）的字符。
-   - ASCII 大写十六进制数字要么是一个 ASCII 数字，要么是一个范围在 U+0041（`A`）到 U+0046（`F`）（含）的码点。
-   - ASCII 小写十六进制数字要么是一个 ASCII 数字，要么是一个范围在 U+0061（`a`）到 U+0066（`f`）（含）的码点。
-   - ASCII 十六进制数字要么是一个 ASCII 大写十六进制数字，要么是一个 ASCII 小写十六进制数字。
-   - ASCII 大写字母是一个范围在 U+0041（`A`）到 U+005A（`Z`）（含）的码点。
-   - ASCII 小写字母是一个范围在 U+0061（`a`）到 U+007A（`z`）（含）的码点。
-   - ASCII 字母要么是一个 ASCII 大写字母，要么是一个 ASCII 小写字母。
-   - ASCII 字母数字要么是一个 ASCII 数字，要么是一个 ASCII 字母。
-
+   - `ASCII 码点`是指范围在 U+0000 NULL 到 U+007F DELETE（含）的码点。
+   - `ASCII 制表符或者新行符`指 U+0009 TAB、 U+000A LF 或 U+000D CR。
+   - `ASCII 空白字符`是指 U+0009 TAB、 U+000A LF、 U+000C FF、 U+000D CR、或 U+0020 SPACE。也常常简称为`空白字符`。
+   - `C0 控制字符`是范围在 U+0000 NULL 到 U+001F INFORMATION SEPARATOR ONE（含）的码点。
+   - `C0 控制字符或空格`指 C0 控制字符或 U+0020 SPACE。
+   - `控制字符`是指一个`C0 控制字符`或者范围在 U+007F DELETE 到 U+009F APPLICATION PROGRAM COMMAND（含）的码点。
+   - `ASCII 数字`是范围在 U+0030（`0`） 到 U+0039（`9`）（含）的字符。
+   - `ASCII 大写十六进制数字`要么是一个 ASCII 数字，要么是一个范围在 U+0041（`A`）到 U+0046（`F`）（含）的码点。
+   - `ASCII 小写十六进制数字`要么是一个 ASCII 数字，要么是一个范围在 U+0061（`a`）到 U+0066（`f`）（含）的码点。
+   - `ASCII 十六进制数字`要么是一个 ASCII 大写十六进制数字，要么是一个 ASCII 小写十六进制数字。
+   - `ASCII 大写字母`是一个范围在 U+0041（`A`）到 U+005A（`Z`）（含）的码点。
+   - `ASCII 小写字母`是一个范围在 U+0061（`a`）到 U+007A（`z`）（含）的码点。
+   - `ASCII 字母`要么是一个 ASCII 大写字母，要么是一个 ASCII 小写字母。
+   - `ASCII 字母数字`要么是一个 ASCII 数字，要么是一个 ASCII 字母。
 
 比如，表情符号 🤔 的码点是 U+1F914，可表述为 U+1F914（🤔），也可以表述为 U+1F914 THINKING FACE（🤔）。
 
@@ -4143,10 +4142,10 @@ SYSTEM 标识符字符串的格式如下：
 
 如 `DATETIME math:MATH FILE.FS FILE.FILE:F`，表示从：
 
-- 从 `DATETIME` 库中装载动态对象 `DATETIME` 并绑定到全局 `DATETIME` 变量；
-- 从 `math` 库中装载动态对象 `MATH` 并绑定到全局 `MATH` 变量；
-- 从 `FILE` 库中装载动态对象 `FS` 并绑定到全局 `FS` 变量；
-- 从 `FILE` 库中装载动态对象 `FILE` 并绑定到全局 `F` 变量；
+1. 从 `DATETIME` 库中装载动态对象 `DATETIME` 并绑定到全局 `DATETIME` 变量。
+1. 从 `math` 库中装载动态对象 `MATH` 并绑定到全局 `MATH` 变量。
+1. 从 `FILE` 库中装载动态对象 `FS` 并绑定到全局 `FS` 变量。
+1. 从 `FILE` 库中装载动态对象 `FILE` 并绑定到全局 `F` 变量。
 
 #### 3.1.2) 元素
 
