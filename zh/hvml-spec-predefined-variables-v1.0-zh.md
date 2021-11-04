@@ -79,8 +79,12 @@ Language: Chinese
       * [4.1.1) `pi` 方法](#411-pi-方法)
       * [4.1.2) `e` 方法](#412-e-方法)
       * [4.1.3) `const` 和 `const_l` 方法](#413-const-和-const_l-方法)
-      * [4.1.4) `eval` 和 `eval_l` 方法](#414-eval-和-eval_l-方法)
-      * [4.1.5) 其他](#415-其他)
+      * [4.1.4) `add` 方法](#414-add-方法)
+      * [4.1.5) `sub` 方法](#415-sub-方法)
+      * [4.1.6) `mul` 方法](#416-mul-方法)
+      * [4.1.7) `div` 方法](#417-div-方法)
+      * [4.1.8) `eval` 和 `eval_l` 方法](#418-eval-和-eval_l-方法)
+      * [4.1.9) 其他](#419-其他)
    + [4.2) `FS`](#42-fs)
       * [4.2.1) `list` 方法](#421-list-方法)
       * [4.2.2) `list_prt` 方法](#422-list_prt-方法)
@@ -742,16 +746,16 @@ $MATH.e_l
 
 #### 4.1.3) `const` 和 `const_l` 方法
 
-该方法用于获得其他常见数学常数：
+这两个方法的获取器用于获得预定义和自定义数学常数：
 
 ```php
 // 原型
-// 根据传入的关键词返回指定常数，返回类型为数值
-$MATH.const('e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)')
+// 根据传入的关键词或自定义常数名称返回指定常数，返回类型为数值
+$MATH.const( ['e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)'] | <string: a user-defined const name>)
 
 // 原型
-// 根据传入的关键词返回指定常数，返回类型为长双精度浮点数
-$MATH.const_l('e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)')
+// 根据传入的关键词或自定义常数名称返回指定常数，返回类型为长双精度浮点数
+$MATH.const_l( ['e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)'] | <string: a user-defined const name>)
 
 // 示例：获取 log2e 值，即：1.4426950408889634074
 $MATH.const('log2e')
@@ -760,11 +764,92 @@ $MATH.const('log2e')
 $MATH.const_l('1/sqrt(2)')
 ```
 
-注：各常量的值，见 C 语言标准库头文件：`<math.h>`。
+注：预定义常量的值，见 C 语言标准库头文件：`<math.h>`。
 
-#### 4.1.4) `eval` 和 `eval_l` 方法
+这两个方法的设置器用于设置自定义的数学常数：
 
-该方法用于求解参数化四则运算表达式：
+```php
+// 原型
+// 设置自定义常数
+$MATH.const(! <string: a user-defined const name>, <number: the constant>[, <longdouble: the constant>] )
+
+// 示例：设置 c（真空光速）为 299792458
+$MATH.const(! 'c', 299792458)
+
+// 示例：设置 G0（引力常数）为 6.67e-11
+$MATH.const_l(! 'G0', 6.67e-11)
+```
+
+实现要求：
+
+1. 通过设置器可修改已定义常量和已设置的自定义常量的值。
+1. 每个常量有有两个精度的数值，一个是一般精度数值，一个是长双精度数值。
+1. 若没有传递常量对应的长双精度浮点值，则视同一般精度的数值处理。
+1. 当通过设置器改变了 `pi` 和 `e` 的常量值时，`$MATH.pi` 和 `$MATH.e` 的返回值应相应改变。
+
+#### 4.1.4) `add` 方法
+
+求两个实数的和。
+
+```php
+// 原型：求两个实数的和，返回指定类型的数值；默认为 `number`
+$MATH.add(<real>, <real>[, 'number | longint | ulongint | longdouble'])
+
+// 示例：求 (1.4 + 0.7) 默认返回 `number` 类型，结果为 `2.1`。
+$MATH.add(1.4, 0.7)
+
+// 示例：求 (1.4 + 0.7) 并转换为 `longint` 类型，结果为 `2L`。
+$MATH.add(1.4, 0.7, 'longint')
+```
+
+#### 4.1.5) `sub` 方法
+
+求两个实数的差。
+
+```php
+// 原型：求两个实数的差，返回指定类型的数值；默认为 `number`
+$MATH.sub(<real>, <real>[, 'number | longint | ulongint | longdouble'])
+
+// 示例：求 (1.4 - 0.7) 默认返回 `number` 类型，结果为 `0.7`。
+$MATH.sub(1.4, 0.7)
+
+// 示例：求 (1.4 - 0.7) 返回 `longint` 类型，结果为 `0L`。
+$MATH.sub(1.4, 0.7, 'longint')
+```
+
+#### 4.1.6) `mul` 方法
+
+求两个实数的积。
+
+```php
+// 原型：求两个实数的积，返回指定类型的数值；默认为 `number`
+$MATH.mul(<real>, <real>[, 'number | longint | ulongint | longdouble'])
+
+// 示例：求 (1.4 * 0.7) 默认返回 `number` 类型，结果为 `0.98`。
+$MATH.mul(1.4, 0.7)
+
+// 示例：求 (1.4 * 0.7) 返回 `longint` 类型，结果为 `0L`。
+$MATH.mul(1.4, 0.7, 'longint')
+```
+
+#### 4.1.7) `div` 方法
+
+求两个实数的商。
+
+```php
+// 原型：求两个实数的商，返回指定类型的数值；默认为 `number`
+$MATH.div(<real>, <real>[, 'number | longint | ulongint | longdouble'])
+
+// 示例：求 (1.4 / 0.7) 默认返回 `number` 类型，结果为 `2.0`。
+$MATH.div(1.4, 0.7)
+
+// 示例：求 (1.4 / 0.7) 返回 `longint` 类型，结果为 `2L`。
+$MATH.div(1.4, 0.7, 'longint')
+```
+
+#### 4.1.8) `eval` 和 `eval_l` 方法
+
+这两个方法用于求解参数化四则运算表达式，`eval` 方法返回 `number` 类型的结果数据，`eval_l` 方法返回 `longdouble` 类型的结果数据。
 
 ```php
 // 原型
@@ -784,7 +869,7 @@ $MATH.eval_l(<string: a four arithmetic expressions>[, <object: parameter map>])
 
 ```
 
-#### 4.1.5) 其他
+#### 4.1.9) 其他
 
 参照 PHP 数学接口：<https://www.php.net/manual/en/book.math.php>，如：
 
