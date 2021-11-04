@@ -2281,13 +2281,12 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 使用脚本程序定义的类，可用于实现较为复杂的迭代逻辑和操作。但在一些简单的场合，我们也可以不使用类而使用其他动作标签完成动作，如使用 `update` 标签使用当前迭代数据更新特定的元素属性：
 
 ```
-    <iterate on="$users" in="#the-user-list"
-            by="RANGE: FROM 0 TO $EJSON.count($users) ADVANCE 2">
+    <iterate on="$users" in="#the-user-list" by="RANGE: FROM 0 ADVANCE 2">
         <update on="[id=user-$?.id] span" at="attr.class" with *= "text-* text-info" />
     </iterate>
 ```
 
-上述 HVML 代码，在 `$users` 数据上执行迭代，但未使用脚本程序定义的类，而使用了 `RANGE` 关键词来定义迭代范围。`RANGE: FROM 0 TO $EJSON.count($users) ADVANCE 2` 表示取 `$users` 数组中索引下标为偶数的所有数组项，之后，针对这些数据项执行 `update` 标签定义的更新操作。在 `update` 标签中，首先使用 `on` 介词属性定义了目标元素：`[id=user-$?.id] span`。该表达式使用了 CSS 选择器在 `#the-user-list` 定义的 DOM 子树中查找子元素，其中 `$?.id` 表示的是当前迭代得到的用户标志符。若存在这个子元素，则将其 `class` 属性设置为 `text-info`。这样，所有索引值为偶数的用户条目将使用由 `text-info` 类定义的样式来展现。
+上述 HVML 代码，在 `$users` 数据上执行迭代，但未使用外部执行器，而使用了 `RANGE` 关键词来定义迭代范围。`RANGE: FROM 0 ADVANCE 2` 表示取 `$users` 数组中索引下标为偶数的所有数组项，之后，针对这些数据项执行 `update` 标签定义的更新操作。在 `update` 标签中，首先使用 `on` 介词属性定义了目标元素：`[id=user-$?.id] span`。该表达式使用了 CSS 选择器在 `#the-user-list` 定义的 DOM 子树中查找子元素，其中 `$?.id` 表示的是当前迭代得到的用户标志符。若存在这个子元素，则将其 `class` 属性设置为 `text-info`。这样，所有索引值为偶数的用户条目将使用由 `text-info` 类定义的样式来展现。
 
 #### 2.5.8) `reduce` 标签
 
@@ -3067,7 +3066,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 如果我们要获得所有的数组单元，则使用 `RANGE: FROM 0`。
 
-如果我们要获得前四个数组单元，则使用 `RANGE: FROM 0 TO 4`，返回的数据为：
+如果我们要获得前四个数组单元，则使用 `RANGE: FROM 0 TO 3`，返回的数据为：
 
 ```json
     [ "zh_CN", 100, "zh_TW", 90 ]
@@ -3223,7 +3222,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     max_matching_length: <literal_positive_integer>
 ```
 
-比如，当我们使用 `TOKEN: FROM 0 TO 3 DELIMETERS ' '` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
+比如，当我们使用 `TOKEN: FROM 0 TO 2 DELIMETERS ' '` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
 
 ```json
     [ "A", "brown", "fox" ]
