@@ -47,6 +47,10 @@ Language: Chinese
    + [3.4) `EJSON`](#34-ejson)
       * [3.4.1) `type` 方法](#341-type-方法)
       * [3.4.2) `count` 方法](#342-count-方法)
+      * [3.4.3) `numberify` 方法](#343-numberify-方法)
+      * [3.4.4) `booleanize` 方法](#344-booleanize-方法)
+      * [3.4.5) `stringify` 方法](#345-stringify-方法)
+      * [3.4.6) `serialize` 方法](#346-serialize-方法)
    + [3.5) `L`](#35-l)
       * [3.5.1) `not` 方法](#351-not-方法)
       * [3.5.2) `and` 方法](#352-and-方法)
@@ -419,13 +423,13 @@ $DOC.base(! "https://foo.example.com/app/hvml" )
 如此实现后，HVML 动作元素中通过 CSS 选择器引用元素时，如：
 
 ```html
-<update on="#the-user-stats > h2 > span" at="textContent attr.class" with=["10", "text-warning"] />
+<update on="#the-user-stats > h2 > span" at="textContent attr.class" with='["10", "text-warning"]' />
 ```
 
 相当于：
 
 ```html
-<update on="$DOC.query('#the-user-stats > h2 > span')" at="textContent attr.class" with=["10", "text-warning"] />
+<update on="$DOC.query('#the-user-stats > h2 > span')" at="textContent attr.class" with='["10", "text-warning"]' />
 ```
 
 通常在这些键名上会设定有相应的 getter 或 setter 函数，于是即可实现 HVML 规范中要求的表达式：
@@ -438,7 +442,7 @@ $DOC.query("#foo").attr.bar
 $DOC.query("#foo").attr("bar")
 
 // 设置 id 为 foo 的元素上的属性 `bar` 的值：
-$DOC.query("#foo").attr<"bar", "qux">
+$DOC.query("#foo").attr(! "bar", "qux")
 ```
 
 ### 3.4) `EJSON`
@@ -461,6 +465,42 @@ $EJSON.type( <any> )
 ```php
 // 原型
 $EJSON.count( <any> )
+```
+
+#### 3.4.3) `numberify` 方法
+
+该方法对给定的数据做数值化处理，返回一个数值。
+
+```php
+// 原型
+$EJSON.numberify( <any> )
+```
+
+#### 3.4.4) `booleanize` 方法
+
+该方法对给定的数据做布尔化处理，返回布尔值（`true` 或者 `false`）。
+
+```php
+// 原型
+$EJSON.booleanize( <any> )
+```
+
+#### 3.4.5) `stringify` 方法
+
+该方法对给定的数据做字符串化处理，返回字符串。
+
+```php
+// 原型
+$EJSON.stringify( <any> )
+```
+
+#### 3.4.6) `serialize` 方法
+
+该方法对给定的数据做序列化处理，返回字符串。
+
+```php
+// 原型
+$EJSON.serialize( <any> )
 ```
 
 ### 3.5) `L`
