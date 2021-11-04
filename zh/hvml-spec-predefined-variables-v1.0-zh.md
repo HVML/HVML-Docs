@@ -40,6 +40,7 @@ Language: Chinese
       * [3.2.3) `locale` 方法](#323-locale-方法)
       * [3.2.4) `random` 方法](#324-random-方法)
       * [3.2.5) `time` 方法](#325-time-方法)
+      * [3.2.6) `env` 方法](#326-env-方法)
    + [3.3) `DOC`](#33-doc)
       * [3.3.1) `doctype` 方法](#331-doctype-方法)
       * [3.3.2) `base` 方法](#332-base-方法)
@@ -70,6 +71,8 @@ Language: Chinese
       * [3.5.16) `strle` 方法](#3516-strle-方法)
       * [3.5.17) `eval` 方法](#3517-eval-方法)
    + [3.6) `T`](#36-t)
+      * [3.6.1) `map` 静态属性](#361-map-静态属性)
+      * [3.6.2) `get` 方法](#362-get-方法)
    + [3.7) `STR`](#37-str)
       * [3.7.1) `contains` 方法](#371-contains-方法)
       * [3.7.2) `ends_with` 方法](#372-ends_with-方法)
@@ -124,12 +127,16 @@ Language: Chinese
 本文档遵循的技术规范或术语如下所列：
 
 - HVML（Hybrid Virtual Markup Language），是飞漫软件提出的一种数据驱动的可编程标记语言，其规范见：<https://gitlab.fmsoft.cn/hvml/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md>。HVML 规范文档的如下部分和本文档相关：
-  1. 2.1.6) 变量
-  1. 2.2.4) 参数描述语法
+  1. 2.1) 术语及基本原理
+  1. 2.2) 规则、表达式及参数的描述语法
 - 解释器（interpreter），指解析并运行 HVML 程序的计算机软件。
 - 渲染器（renderer），指渲染 HVML 程序生成的目标文档并和用户交互的计算机软件。
 - 文档（document），特指人类可读的文本形式保存的 HVML 程序。
 - 会话（session），指一个解释器实例的上下文信息；每个解释器实例对应一个 HVML 会话，每个 HVML 会话运行多个 HVML 文档，对应渲染器中的多个窗口。
+- 静态属性（static property），指一个对象上键值为普通数据的属性，其键值不是动态值。
+- 方法（method），指一个对象上键值为动态值的属性，对应于非动态数据。
+- 获取器（getter），指一个方法的获取器。调用获取器返回该方法的动态属性值。
+- 设置器（setter），指一个方法的设置器。调用特定方法的设置器，将完成对应属性的设置工作。
 
 按是否含有动态对象划分，HVML 程序中的预定义变量可分为：
 
@@ -140,6 +147,9 @@ Language: Chinese
 
 1. 会话级变量。指该变量对应的数据对当前实例中的所有 HVML 文档可见。也就是说，同一会话中的不同文档对应同一个数据副本。
 1. 文档级变量。指该变量对应的数据仅对当前实例中的单个 HVML 文档可见。也就是说，不同的文档有一个自己的数据副本。
+
+**约定**  
+解释器可自行实现全局变量，作为约定，解释器自行实现的全局变量，其名称应以 ASCII U+005F LOW LINE（`_`）打头，使用全大写字母并添加解释器前缀。如 `_PURC_VAR`。而一般的变量，使用全小写字母。
 
 ## 2) 非动态变量
 
@@ -363,6 +373,24 @@ $SYSTEM.time(! <number: seconds since epoch> )
 
 有关时间的显示标准，除了 ISO8601 之外，还有 RFC822 等。详细列表可见：<https://www.php.net/manual/en/class.datetime.php>
 
+#### 3.2.6) `env` 方法
+
+获取或设置环境变量。
+
+```php
+// 原型：获取指定环境变量的值（字符串）；未设置时返回 `undefine`
+$SYSTEM.env( <string: the environment name> )
+
+// 原型：设置指定环境变量，返回值是否覆盖了已有属性
+$SYSTEM.env(! <string: the environment name>, <string: the value> )
+
+// 示例：获取环境变量 `LOGNAME` 的值
+$SYSTEM.env('LONGNAME')
+```
+
+**讨论**  
+该功能亦可设置为一个 `SYSTEM` 变量上的一个静态属性，初始化时从系统中获取所有环境变量构造为一个对象，程序可使用 `update` 元素修改环境变量。
+
 ### 3.3) `DOC`
 
 `DOC` 是一个内置的文档级动态变量，该变量用于访问 HVML 程序生成的 eDOM 树中的元素。
@@ -412,7 +440,7 @@ $DOC.base(! "https://foo.example.com/app/hvml" )
 1. 要么是代表 eDOM 上特定元素的一个原生实体数据，我们称为“元素实体”。
 1. 要么是一个元素实体数组，可能为空数组。
 
-在元素实体上，我们可就如下键名获得对应的 getter 和 setter 函数：
+在元素实体上，我们可就如下键名获得对应的获取器和设置器：
 
 1. `attr`：用于获得或者设置对应元素的特定属性值。
 1. `style`：用于获得或者设置对应元素的特定样式值。
@@ -432,7 +460,7 @@ $DOC.base(! "https://foo.example.com/app/hvml" )
 <update on="$DOC.query('#the-user-stats > h2 > span')" at="textContent attr.class" with='["10", "text-warning"]' />
 ```
 
-通常在这些键名上会设定有相应的 getter 或 setter 函数，于是即可实现 HVML 规范中要求的表达式：
+通常在这些键名上会设定有相应的获取器或设置器函数，于是即可实现 HVML 规范中要求的表达式：
 
 ```php
 // <div id="foo" bar="baz">
@@ -649,17 +677,13 @@ $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) }
 
 ### 3.6) `T`
 
-该变量是一个文档级内置变量，主要用于文本的本地化替代。其上提供两个键名：
+该变量是一个文档级内置变量，主要用于文本的本地化替代。
 
-- `map`：一个静态对象，用来定义字符串映射表，初始为空对象。程序可在 `head` 中使用 `update` 设置其内容。
 - `get`：一个动态方法，用于返回替代字符串。
 
-```php
-// 原型
-$T.get(<string: original text>)
-```
+#### 3.6.1) `map` 静态属性
 
-示例用法：
+`map` 是 `T` 的一个静态属性，用来定义字符串映射表，初始为空对象。程序可使用 `update` 元素设置其内容：
 
 ```html
 <!DOCTYPE hvml>
@@ -680,6 +704,17 @@ $T.get(<string: original text>)
     </body>
 
 </hvml>
+```
+
+#### 3.6.2) `get` 方法
+
+```php
+// 原型
+$T.get(<string: original text>)
+
+// 示例：
+// 返回值：`世界，您好！`
+$T.get('Hello, world!')
 ```
 
 ### 3.7) `STR`
