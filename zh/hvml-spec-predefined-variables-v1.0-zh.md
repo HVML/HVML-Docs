@@ -253,7 +253,7 @@ $SESSION.cwd(! <string: new path for the current working directory> )
 // 原型：获取指定键名对应的键值；未设置时返回 `undefine`
 $SESSION.user( <string: the user defined key name> )
 
-// 原型：设置指定键名的值，返回值是否覆盖了已有属性
+// 原型：设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。
 $SESSION.user(! <string: the user defined key name>, <any: the new variant value> )
 
 // 示例：设置 `userId` 为 `20211104-01`
@@ -394,11 +394,14 @@ $SYSTEM.time(! <number: seconds since epoch> )
 // 原型：获取指定环境变量的值（字符串）；未设置时返回 `undefine`
 $SYSTEM.env( <string: the environment name> )
 
-// 原型：设置指定环境变量，返回值是否覆盖了已有属性
+// 原型：设置指定环境变量，返回布尔数据，指明是否覆盖了已有环境变量
 $SYSTEM.env(! <string: the environment name>, <string: the value> )
 
 // 示例：获取环境变量 `LOGNAME` 的值
 $SYSTEM.env('LONGNAME')
+
+// 示例：设置环境变量 `HVML_VER` 的值
+$SYSTEM.env('HVML_VER', '1.0')
 ```
 
 **讨论**  
