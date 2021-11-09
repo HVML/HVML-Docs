@@ -53,6 +53,8 @@ Language: Chinese
       * [3.4.4) `booleanize` 方法](#344-booleanize-方法)
       * [3.4.5) `stringify` 方法](#345-stringify-方法)
       * [3.4.6) `serialize` 方法](#346-serialize-方法)
+      * [3.4.7) `sort` 方法](#347-sort-方法)
+      * [3.4.8) `compare` 方法](#348-compare-方法)
    + [3.5) `L`](#35-l)
       * [3.5.1) `not` 方法](#351-not-方法)
       * [3.5.2) `and` 方法](#352-and-方法)
@@ -547,6 +549,41 @@ $EJSON.stringify( <any> )
 $EJSON.serialize( <any> )
 ```
 
+#### 3.4.7) `sort` 方法
+
+该方法对给定的数组或者集合做排序。
+
+```php
+// 原型
+$EJSON.sort(
+        < array | set >,
+        < 'asc | desc ': sorting ascendingly or descendingly >,
+        [ 'case | caseless': case-sensitively or case-insensitively ]
+    )
+```
+
+#### 3.4.8) `compare` 方法
+
+该方法对给定两个数据做对比，返回数值：
+
+- 等于 0 表示两个数据相等；
+- 小于 0 表示第一个数据小于第二个数据；
+- 大于 0 表示第一个数据大于第二个数据。
+
+```php
+// 原型
+$EJSON.compare(
+        < any: the first data >,
+        < any: the second data >,
+        < 'auto | number | case | caseless':
+            `auto`: comparing automatically;
+            `number`: comparing as numbers;
+            `case`: comparing as strings case-sensitively;
+            `caseless`: comparing as strings case-insensitively.
+        >
+    )
+```
+
 ### 3.5) `L`
 
 该变量是一个会话级内置变量，主要用于逻辑运算。
@@ -603,81 +640,177 @@ $L.xor( false, true )
 
 #### 3.5.5) `eq` 方法
 
-#### 3.5.6) `ne` 方法
-
-#### 3.5.7) `gt` 方法
-
-#### 3.5.8) `ge` 方法
-
-#### 3.5.9) `lt` 方法
-
-#### 3.5.10) `le` 方法
-
-对比两个数据的数值是否相等、不相等、大于、大于等于、小于、小于等于。
+对比两个数据在数值上是否相等，返回 `true` 或 `false`。
 
 ```php
-// 原型：对比两个数据在数值上是否相等，返回 true 或 false
+// 原型：
 $L.eq(<any>, <any>)
-
-// 原型：对比两个数据在数值上是否不相等，返回 true 或 false
-$L.ne(<any>, <any>)
-
-// 原型：对比第一个数据在数值上是否大于第二个变体，返回 true 或 false
-$L.gt(<any>, <any>)
-
-// 原型：对比第一个数据在数值上是否大于或等于第二个变体，返回 true 或 false
-$L.ge(<any>, <any>)
-
-// 原型：对比第一个数据在数值上是否小于第二个变体，返回 true 或 false
-$L.lt(<any>, <any>)
-
-// 原型：对比第一个数据在数值上是否小于或等于第二个变体，返回 true 或 false
-$L.le(<any>, <any>)
 
 // 示例：返回 true
 $L.eq("1", 1)
 ```
 
+#### 3.5.6) `ne` 方法
+
+对比两个数据在数值上是否不相等，返回 `true` 或 `false`。
+
+```php
+// 原型
+$L.ne(<any>, <any>)
+
+// 示例：返回 true
+$L.ne("1", 2)
+```
+
+#### 3.5.7) `gt` 方法
+
+对比第一个数据在数值上是否大于第二个数据，返回 `true` 或 `false`。
+
+```php
+// 原型
+$L.gt(<any>, <any>)
+
+// 示例：返回 true
+$L.gt("2", 1)
+```
+
+#### 3.5.8) `ge` 方法
+
+对比第一个数据在数值上是否大于或等于第二个数据，返回 `true` 或 `false`。
+
+```php
+// 原型
+$L.ge(<any>, <any>)
+
+// 示例：返回 true
+$L.ge("2", 2)
+```
+
+#### 3.5.9) `lt` 方法
+
+对比第一个数据在数值上是否小于第二个数据，返回 `true` 或 `false`。
+
+```php
+// 原型：
+$L.lt(<any>, <any>)
+
+// 示例：返回 true
+$L.lt("1", 2)
+```
+
+#### 3.5.10) `le` 方法
+
+对比第一个数据在数值上是否小于或等于第二个数据，返回 `true` 或 `false`。
+
+```php
+// 原型
+$L.le(<any>, <any>)
+
+// 示例：返回 true
+$L.lt("1", 2)
+```
+
 #### 3.5.11) `streq` 方法
+
+对比两个数据的字符串形式是否相等或匹配，返回 `true` 或 `false`。
+
+```php
+// 原型
+$L.streq("case | caseless | wildcard | regexp", <any>, <any>)
+
+// 示例：返回 false
+$L.streq("case", "zh_CN", "zh_CN")
+
+// 示例：返回 true
+$L.streq("wildcard", "zh_*", "zh_CN")
+
+// 示例：返回 true
+$L.streq("reg", "^zh", "zh_CN")
+```
+
+第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写、通配符模式匹配、正则表达式匹配），其后的两个参数用来传递两个字符串。使用通配符和正则表达式时，第一个参数用于指定通配符模式字符串或者正则表达式。
+
+对非字符串类型的数据，字符串化后做对比。
 
 #### 3.5.12) `strne` 方法
 
+对比两个数据的字符串形式是否不相等或不匹配，返回 `true` 或 `false`。
+
+```php
+// 原型：
+$L.strne("case | caseless | wildcard | regexp", <any>, <any>)
+
+// 示例：返回 true
+$L.strne("case", "zh_CN", "zh_cn")
+```
+
+第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写、通配符模式匹配、正则表达式匹配），其后的两个参数用来传递两个字符串。使用通配符和正则表达式时，第一个参数用于指定通配符模式字符串或者正则表达式。
+
+对非字符串类型的数据，字符串化后做对比。
+
 #### 3.5.13) `strgt` 方法
+
+对比第一个数据的字符串形式是否大于第二个数据的字符串形式，返回 `true` 或 `false`。
+
+```php
+// 原型
+$L.strgt("case | caseless", <any>, <any>)
+
+// 示例：返回 true
+$L.strgt("case", 'A', 'Z')
+```
+
+第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写），其后的两个参数用来传递两个字符串。
+
+对非字符串类型的数据，字符串化后做对比。
 
 #### 3.5.14) `strge` 方法
 
+对比第一个数据的字符串形式是否大于或等于第二个数据的字符串形式，返回 `true` 或 `false`。
+
+```php
+// 原型
+$L.strge("case | caseless", <any>, <any>)
+
+// 示例：返回 true
+$L.strge("caseless", "abc", "ABC")
+```
+
+第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写），其后的两个参数用来传递两个字符串。
+
+对非字符串类型的数据，字符串化后做对比。
+
 #### 3.5.15) `strlt` 方法
+
+对比第一个数据的字符串形式是否小于第二个数据的字符串形式，返回 `true` 或 `false`。
+
+```php
+// 原型
+$L.strlt("case | caseless", <any>, <any>)
+
+// 示例：返回 false
+$L.strlt("case", "Z", "A")
+```
+
+第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写），其后的两个参数用来传递两个字符串。
+
+对非字符串类型的数据，字符串化后做对比。
 
 #### 3.5.16) `strle` 方法
 
-对比两个字符串是否相等、不相等、大于、大于等于、小于、小于等于。
+对比第一个数据的字符串形式是否小于或等于第二个数据的字符串形式，返回 `true` 或 `false`。
 
 ```php
-// 原型：对比两个数据的字符串形式是否相等或匹配，返回 true 或 false
-$L.streq("caseless | case | wildcard | reg", <any>, <any>)
-
-// 原型：对比两个数据的字符串形式是否不相等或不匹配，返回 true 或 false
-$L.strne("caseless | case | wildcard | reg", <any>, <any>)
-
-// 原型：对比第一个数据的字符串形式是否大于第二个变体的字符串形式，返回 true 或 false
-$L.strgt("caseless | case", <any>, <any>)
-
-// 原型：对比第一个数据的字符串形式是否大于或等于第二个变体的字符串形式，返回 true 或 false
-$L.strge("caseless | case", <any>, <any>)
-
-// 原型：对比第一个数据的字符串形式是否小于第二个变体的字符串形式，返回 true 或 false
-$L.strlt("caseless | case", <any>, <any>)
-
-// 原型：对比第一个数据的字符串形式是否小于或等于第二个变体的字符串形式，返回 true 或 false
-$L.strle("caseless | case", <any>, <any>)
+// 原型
+$L.strle("case | caseless", <any>, <any>)
 
 // 示例：返回 true
-$L.streq("case", "1", 1)
+$L.strle("caseless", "abc", "ABC")
 ```
 
-第一个参数用来表示字符串的匹配方式（不区分大小写、区分大小写、通配符、正则表达式），其后的两个参数用来传递两个字符串。
+第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写），其后的两个参数用来传递两个字符串。
 
-对非字符串类型的数据，取不添加任何格式化字符的串行化结果做对比。
+对非字符串类型的数据，字符串化后做对比。
 
 #### 3.5.17) `eval` 方法
 
