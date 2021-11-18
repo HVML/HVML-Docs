@@ -4163,9 +4163,9 @@ SYSTEM 标识符字符串的格式如下：
 
 根据其功能及用途，HVML 元素可划分为如下几类：
 
-1) 框架元素（framework elements）  
+1. 框架元素（framework elements）  
 `hvml`、 `head` 和 `body` 元素。此类元素用于定义 HVML 文档的框架结构。
-2) 普通元素（normal elements）  
+2. 普通元素（normal elements）  
 除框架元素之外的其他 HVML 元素，被称为普通元素。普通元素可进一步划分为如下子类：
    1. 数据操作元素（data operation elements）  
       `init` 和 `update` 元素。其内容必须是符合 eJSON 语法的文本，可包含 JSON 求值表达式。
@@ -4175,14 +4175,14 @@ SYSTEM 标识符字符串的格式如下：
       `archetype`、 `error` 和 `except` 元素。片段模板元素的内容通常是使用目标标记语言书写的文档片段。简称模板元素（template elements）。
    1. 数据模板元素（data template elements）  
       `archedata` 元素。其内容必须是符合 eJSON 语法的文本，可包含 JSON 求值表达式。
-3) 外部元素（foreign elements）  
+3. 外部元素（foreign elements）  
 所有不属于 HVML 标签定义的元素，被视为外部元素。所有可合法插入到 HVML 文档树中的外部元素，可被视作空动作元素（noop element），亦可被称为骨架元素（skeleton element）。此类元素中可包含文本内容、其他外部元素以及其他 HVML 普通元素。
 
 根据其语法特点，HVML 元素可划分为如下两类：
 
-1) 名词元素（noun elements）  
+1. 名词元素（noun elements）  
 包括框架元素、外部元素、模板元素和数据模板元素。
-2) 动作元素（operation elements）  
+2. 动作元素（operation elements）  
 包括一般动作元素和数据操作元素。
 
 一般动作元素用于定义对数据或文档的操作，可包含其他普通元素，但不能包含外部元素，也不能定义其文本内容。
@@ -5018,23 +5018,23 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 ![MiniGUI](https://www.fmsoft.cn/application/files/cache/thumbnails/54e87b0c49d659be3380e207922fff63.jpg)
 
-6) xGUI
+7) xGUI
 
 ![xGUI](https://www.fmsoft.cn/application/files/cache/thumbnails/7fbcb150d7d0747e702fd2d63f20017e.jpg)
 
-7) miniStudio
+8) miniStudio
 
 ![miniStudio](https://www.fmsoft.cn/application/files/cache/thumbnails/82c3be63f19c587c489deb928111bfe2.jpg)
 
-8) HVML
+9) HVML
 
 ![HVML](https://www.fmsoft.cn/application/files/8116/1931/8777/HVML256132.jpg)
 
-9) 呼噜猫
+10) 呼噜猫
 
 ![呼噜猫](https://www.fmsoft.cn/application/files/8416/1931/8781/256132.jpg)
 
-10) Purring Cat
+11) Purring Cat
 
 ![Purring Cat](https://www.fmsoft.cn/application/files/2816/1931/9258/PurringCat256132.jpg)
 
