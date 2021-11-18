@@ -450,18 +450,17 @@ $DOC.base(! "https://foo.example.com/app/hvml" )
 
 #### 3.3.3) `query` 方法
 
-使用 CSS 选择器查询目标文档上的特定元素或者元素汇集（collection）。
+使用 CSS 选择器查询目标文档上的元素汇集（collection）。
 
-该方法的返回值可能有如下三种情况：
+该方法的返回值可能有如下两种情况：
 
-1. `undefined`。错误的 CSS 选择器。
-1. 要么是代表 eDOM 上特定元素的一个原生实体数据，我们称为“元素实体”。
-1. 要么是一个元素实体数组，可能为空数组。
+1. `undefined`：错误的 CSS 选择器或者参数。
+1. 一个元素实体集合，可能为空。
 
 在元素实体上，我们可就如下键名获得对应的获取器和设置器：
 
 1. `attr`：用于获得或者设置对应元素的特定属性值。
-1. `style`：用于获得或者设置对应元素的特定样式值。
+1. `style`：用于设置对应元素的特定样式值。`style` 不提供 `getter` 方法，因为 eDOM 不维护样式信息；仅支持 `setter` 方法，用于通知 uDOM 设置元素的样式。
 1. `textContent`：用于获得或者设置对应元素（含子元素）的文本内容。
 1. `jsonContent`：用于获得或者设置对应元素（含子元素）的数据内容，多个内容形成数组。
 1. `content`：用于获得或者设置对应元素内部内容（按目标标记语言格式化）。
@@ -484,11 +483,11 @@ $DOC.base(! "https://foo.example.com/app/hvml" )
 // <div id="foo" bar="baz">
 
 // 获取 id 为 foo 的元素上的属性 `bar` 的值：
-$DOC.query("#foo").attr.bar
-$DOC.query("#foo").attr("bar")
+$DOC.query("#foo")[0].attr.bar
+$DOC.query("#foo")[0].attr("bar")
 
 // 设置 id 为 foo 的元素上的属性 `bar` 的值：
-$DOC.query("#foo").attr(! "bar", "qux")
+$DOC.query("#foo")[0].attr(! "bar", "qux")
 ```
 
 ### 3.4) `EJSON`

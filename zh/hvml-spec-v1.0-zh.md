@@ -208,7 +208,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 1. `数据项（data item）`或`数据成员（data member）`。对数组而言，每个数组单元就是一个数据项；对对象数据而言，其中的某个键值对就是一个数据项。
 1. `文档元素（document element）`。指文档对象模型中，使用某个标签（tag）定义的元素节点；一个文档元素可包含一个或多个属性（attribute）以及属性值，还可以包含内容（content）；一个元素可包含文本内容、数据内容或者使用标签定义的单个或多个子元素。
 1. `文档片段（document fragment）`。指 XML/HTML 文档中的一个片段，可作为模板被克隆（clone）到目标文档的其他位置。
-1. `元素汇集（element collection）`。指使用选择器选择的一组元素。这里避免使用“集合”这个术语，是为了防止和`集合（set）`数据类型混淆。
+1. `元素汇集（element collection）`。指使用选择器选择的零个或者多个元素。这里避免使用“集合”这个术语，是为了防止和`集合（set）`数据类型混淆。
 1. `码点（code point）`。指一个表述为 `U+` 和四到六个 ASCII 大写十六进制数字形式的 Unicode 码点，范围在 U+0000 到 U+10FFFF（含）。有时候，我们会在码点之后包含码点的名称以及包含在小括号中的该码点的渲染形式，且高亮或加粗显示该码点的渲染形式。对无法渲染的码点，本文档会给出其码点名称。有关 Unicode 字符的更多术语解释如下：
    - 码点的名称由 Unicode 标准定义并以 ASCII 大写形式表述，如 `CR` 指 Carriage Return（回车）。
    - `替代符（surrogate）`是范围在 U+D800 到 U+DFFF（含）的码点。
@@ -661,11 +661,13 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ##### 2.1.6.3) `$DOC`
 
-`$DOC` 是一个动态对象，该对象表述的是 HVML 生成的目标文档。我们可以使用该对象上的特定键名以及 `query` 方法通过 CSS 选择器获取目标文档上的特定元素或者元素汇集，如：
+`$DOC` 是一个动态对象，该对象表述的是 HVML 生成的目标文档。我们可以使用该对象上的特定键名以及 `query` 方法通过 CSS 选择器获取目标文档上的元素汇集，如：
 
-1. `$DOC.doctype`：获取该目标文档的 `doctype` 节点。
-1. `$DOC.query("#foo")`：获取该目标文档中 `id` 属性值为 `foo` 的元素。
-1. `$DOC.query(".bar")`：获取该目标文档中类名为 `foo` 的元素或元素汇集。
+1. `$DOC.doctype`：获取该目标文档的 `doctype` 节点内容。
+1. `$DOC.query("#foo")`：获取该目标文档中 `id` 属性值为 `foo` 的元素形成的元素汇集。
+1. `$DOC.query(".bar")`：获取该目标文档中 `class` 属性值为 `bar` 的所有元素形成的元素汇集。
+
+元素汇集应该实现为集合，这样，可以在元素汇集上执行迭代或者其他集合支持的操作，如合并、相交等。
 
 ##### 2.1.6.4) `$TIMERS`
 
@@ -901,7 +903,7 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
 ```html
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
-    <bind on="$DOC.query('#the-user-name').attr.value" as="user_name">
+    <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name">
         <observe on="$user_name" for="change">
         </observe>
     </bind>
@@ -1191,14 +1193,14 @@ HVML 还定义有如下一些动作标签：
 
 #### 2.1.14) 引用元素或数据
 
-当我们需要引用某个元素或某个元素汇集时，我们使用 CSS 选择器。如：
+当我们需要引用某个元素时，我们使用 CSS 选择器。如：
 
 - `.avatar` 表示所有 `class` 属性包含 `avatar` 的元素（集合）。
 - `#the-user-list` 表示 `id` 属性为 `the-user-list` 的元素。
 - `:root` 表示文档的根元素。
 - `*` 表示文档中的所有元素。
 
-然后使用 `$DOC.query()` 方法：
+然后使用 `$DOC.query()` 方法获得对应的元素汇集：
 
 ```html
     <update on="$DOC.query('#the-user-list > li')" at="attr.class" with="text-info" />
@@ -1210,9 +1212,9 @@ HVML 还定义有如下一些动作标签：
     <update on="#the-user-list > li" at="attr.class" with="text-info" />
 ```
 
-本质上，我们在上述两种标签的 `on` 属性值中使用 CSS 选择器选择目标文档的元素或者元素汇集时，解释器实质调用的是 `$DOC.query(<selector>)`方法。
+本质上，我们在上述两种标签的 `on` 属性值中使用 CSS 选择器选择目标文档的元素汇集时，解释器实质调用的是 `$DOC.query(<selector>)`方法。
 
-由于通过 CSS 选择器指定的元素或者元素汇集通常指目标文档的位置，故而我们使用“目标文档位置”一词来统称元素或元素汇集。
+由于通过 CSS 选择器指定的元素汇集通常指目标文档中的单个或者多个位置，故而我们使用“目标文档位置”一词来统称元素或元素汇集。
 
 如果要在 `update` 标签的 `on` 属性中引用一个数据，则必定使用 `$`、 `[`、或 `{` 作为前导字符：
 
@@ -2999,7 +3001,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```html
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
-    <bind on="$DOC.query('#the-user-name').attr.value" as="user_name">
+    <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name">
         <observe on="$user_name" for="change">
             ...
         </observe>
@@ -4016,7 +4018,7 @@ def on_battery_changed (on_value, via_value, root_in_scope):
     </p>
 
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="$user_name" />
-    <bind on="$DOC.query('#the-user-name').attr.value" as="user_name" />
+    <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name" />
 ```
 
 ## 3) HVML 语法
