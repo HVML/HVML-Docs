@@ -3207,10 +3207,10 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 ```
 
-比如，当我们使用 `CAHR: FROM 0 TO 10 ADVANCE 2 UNTIL 'f'` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
+比如，当我们使用 `CHAR: FROM 0 TO 10 ADVANCE 2 UNTIL 'f'` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
 
 ```json
-    [ "A", "b", "o" ]
+    [ "A", "b", "o", "n" ]
 ```
 
 `TOKEN` 执行器的语法如下：
