@@ -352,7 +352,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
         </send>
 
         <observe on=".avatar" for="click">
-            <load from="user.hvml" with="{'id': $@.attr['data-value']}" as="userProfile" in="_blank" sync />
+            <load from="user.hvml" with="{'id': $@.attr['data-value']}" as="userProfile" in="_modal" />
         </observe>
     </body>
 </hvml>
@@ -2739,15 +2739,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <load from="b.hvml" with="$user" as="userProfile" in="_blank" />
 ```
 
-`load` 元素将装载一个新的 HVML 程序，我们使用 `as` 属性指定这个页面的名称，并在 `in` 属性指定的目标窗口中渲染内容：
+`load` 元素将装载一个新的 HVML 程序，我们使用 `as` 属性指定这个 HVML 程序的名称，并在 `in` 属性指定的目标窗口中渲染内容：
 
 - `_self`：表示不创建窗口，而在当前窗口中渲染新的内容。
-- `_modal`：表示创建一个新的模态窗口并在其中渲染目标文档，`load` 元素将同步等待新的 HVML 程序终止。
+- `_modal`：表示创建一个新的模态窗口并在其中渲染目标文档。
 - `_blank`：表示创建一个新的非模态窗口并在其中渲染目标文档。
 - `_top`：表示在最顶层窗口中渲染新页面。
 - `_parent`：表示在父窗口（若存在）中渲染新的页面，若没有父窗口，则等同于 `_blank`。
-
-如果指定 `synchronously` 副词属性，相当于开启一个模态对话框装载新的 HVML 程序；默认为 `asynchronously`。
 
 `back` 标签用于终止当前的 HVML 程序，关闭当前的渲染窗口，并将返回值返回到指定的目标 HVML 程序。
 
@@ -2764,23 +2762,25 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <back to="_parent" with="$user_info" />
 ```
 
-使用 `back` 标签时，我们可以使用 `to` 属性指定要返回的目标窗口（`_parent` 是保留名称，用于指代父窗口）。此时，还可以使用 `with` 属性返回一个数据。当前 HVML 程序在模态对话框中渲染时，该数据将作为 `load` 元素的结果数据返回；如果当前 HVML 程序不在模态对话框中渲染，则该数据将做为请求数据（对应 `$REQUEST` 内置全局变量）提供给目标返回对应的 HVML 程序，此时，该页面会执行一次重新装载 HVML 程序的操作（相当于浏览器刷新页面功能）。
+使用 `back` 标签时，我们可以使用 `to` 属性指定要返回的目标窗口（`_parent` 是保留名称，用于指代父窗口）。此时，还可以使用 `with` 属性返回一个数据。当前 HVML 程序在模态窗口中渲染时，可观察该程序的 `terminated:success` 事件，然后进行处理。如果当前 HVML 程序不在模态对话框中渲染，则该数据将做为请求数据（对应 `$REQUEST` 内置全局变量）提供给目标返回对应的 HVML 程序，此时，该页面会执行一次重新装载 HVML 程序的操作（相当于浏览器刷新页面功能）。
 
 ```html
-    <load from="new_user.hvml" in="_modal">
-        <test on="$?.retcode">
-            <match for="AS 'ok'" exclusively>
-                <choose on="$2.payload" in="#the-user-list">
-                    <update on="$@" to="append" with="$user_item" />
-                </choose>
-            </match>
-        </test>
+    <load from="new_user.hvml" as="newUser" in="_modal">
+        <observe on="$newUser" for="terminated:success" >
+            <test on="$?.retcode">
+                <match for="AS 'ok'" exclusively>
+                    <choose on="$2.payload" in="#the-user-list">
+                        <update on="$@" to="append" with="$user_item" />
+                    </choose>
+                </match>
+            </test>
+        </observe>
     </load>
 ```
 
 以上 HVML 代码中的 `load` 标签装载了用来创建新用户的 HVML 程序作为模态对话框。新的 HVML 程序返回的状态为 `ok` 时，在 `#the-user-list` 中插入了一条新的用户条目。
 
-正常情况下，`load` 元素装载一个 HVML 程序在一个新建的模态对话框中渲染时，其执行结果数据就是新 HVML 程序中 `back` 元素的 `with` 属性值；如果在新建窗口中渲染，则正常情况下 `load` 元素的操作结果数据为字符串 `ok`；如果在其他已有的窗口中渲染，则将终止该窗口中运行的 HVML 程序，并在当前窗口中渲染新的 HVML 程序内容。
+正常情况下，`load` 元素装载一个 HVML 程序在一个模态窗口中渲染时，其执行结果数据就是新 HVML 程序中 `back` 元素的 `with` 属性值；如果在一个新建的普通窗口中渲染，则正常情况下 `load` 元素的操作结果数据为字符串 `ok`；如果在其他已有的窗口中渲染，则将终止该窗口中运行的 HVML 程序，并在当前窗口中渲染新的 HVML 程序内容。
 
 `back` 元素不产生任何结果数据，故而不能包含子动作元素。
 
