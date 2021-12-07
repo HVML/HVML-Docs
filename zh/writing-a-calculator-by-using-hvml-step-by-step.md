@@ -255,9 +255,6 @@
                 <ul>
                     <iterate on="$buttons">
                         <update on="$@" to="append" with="$button" />
-                        <error>
-                            <p>Bad data!</p>
-                        </error>
                         <except>
                             <p>Bad data!</p>
                         </except>
@@ -490,9 +487,9 @@ class CEval (HVMLChooser):
                 <ul>
                     <iterate on="$buttons">
                         <update on="$@" to="append" with="$button" />
-                        <error>
+                        <except>
                             <p>Bad data!</p>
-                        </error>
+                        </except>
                     </iterate>
                 </ul>
             </div>

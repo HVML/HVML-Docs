@@ -97,9 +97,9 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
         <ul class="user-list">
             <iterate on="$users" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <error on="nodata">
+                <except on="NoData">
                     <img src="wait.png" />
-                </error>
+                </except>
                 <except on="StopIteration">
                     <p>Bad user data!</p>
                 </except>
@@ -129,9 +129,9 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
                 <match for="ANY">
                     <update on="$@" to="displace" with="$footer_def" />
                 </match>
-                <error on="nodata">
-                    <p>You forget to define the global variable!</p>
-                </error>
+                <except on="NoData" raw>
+                    <p>You forget to define the $global variable!</p>
+                </except>
                 <except on="KeyError">
                     <p>Bad global data!</p>
                 </except>
