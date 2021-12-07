@@ -301,9 +301,9 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
         <ul class="user-list">
             <iterate on="$users" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <error type="nodata">
+                <except type="NoData">
                     <img src="wait.png" />
-                </error>
+                </except>
                 <except type="StopIteration">
                     <p>Bad user data!</p>
                 </except>
@@ -333,9 +333,9 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
                 <match for="ANY" to="displace" with="$footer_def">
                     <update on="$@" with="$footer_def" />
                 </match>
-                <error type="nodata">
+                <except type="NoData" raw>
                     <p>You forget to define the $global variable!</p>
-                </error>
+                </except>
                 <except type="KeyError">
                     <p>Bad global data!</p>
                 </except>
@@ -1094,21 +1094,27 @@ HVML 还定义有如下一些动作标签：
 
 #### 2.1.11) 错误和异常标签
 
+在 HVML 中，错误指无法恢复的致命问题，比如耗尽内存，而异常指可以被捕获或者处理的错误情形。
+
 为了方便处理错误和异常情形，HVML 定义了如下错误或异常处理标签：
 
-- `error`：出现错误时，插入其中包含的内容到目标 DOM 树的当前位置。`error` 标签支持 `type` 属性，用来指定错误类型。如：
-   - `nodata` 表示不存在指定的数据。
-   - `notready` 表示数据尚未就绪。
-   - `unauthorized` 表示连接指定的数据源时出现身份验证错误。
-   - `timeout` 表示从数据源获取数据时出现超时错误。
-- `except`：处理出现异常时，插入其中包含的内容到目标 DOM 树的当前位置。`except` 标签支持 `type` 属性，用来指定脚本的异常类型。如：
+- `error`：出现错误时，尝试用其中包含的内容插入到目标 DOM 树的当前位置。`error` 标签支持 `type` 属性，用来指定错误类型。如：
+   - `OutOfMemory` 表示内存已被耗尽。
+   - `Terminated` 表示进程被人为终止。
+   - `CPUTimeLimitExceeded` 表示达到 CPU 时间上限。
+   - `FileSizeLimitExceeded` 表示达到文件大小上限。
+- `except`：出现未被捕获的异常时，插入其中包含的内容到目标 DOM 树的当前位置。`except` 标签支持 `type` 属性，用来指定脚本的异常类型。如：
+   - `NoData` 表示不存在指定的数据。
+   - `NotReady` 表示数据尚未就绪。
+   - `Unauthorized` 表示连接指定的数据源时出现身份验证错误。
+   - `Timeout` 表示从数据源获取数据时出现超时错误。
    - `SyntaxError` 表示语法错误。
    - `NotIterable` 表示指定的元素或数据不是可迭代的。
    - `IndexError` 索引错误，通常指索引值超出了数组范围。
    - `KeyError` 字典中的键值错误，通常指引用了一个不存在的键值。
    - `ZeroDivisionError` 表示遇到被零除错误。
 
-另外，对可应对的错误或异常，HVML 提供了 `catch` 动作标签，可用来定义捕获特定的错误或者异常并进行处理。
+另外，对可应对的异常，HVML 提供了 `catch` 动作标签，可用来定义捕获特定的异常并进行处理。
 
 注意：
 
@@ -1120,11 +1126,11 @@ HVML 还定义有如下一些动作标签：
     <head>
         ...
         <error raw>
-            <p class="text-danger">There is an error.</p>
+            <p class="text-danger">There is an unrecoverable error.</p>
         </error>
 
         <except>
-            <p class="text-warning">There is an execption: {$?.messages}</p>
+            <p class="text-warning">There is an uncaught exception: {$?.messages}</p>
         </except>
     </head>
 
@@ -1141,9 +1147,9 @@ HVML 还定义有如下一些动作标签：
                     <update on="$@" to="displace" with="$footer_def" />
                 </match>
 
-                <error type="nodata">
+                <except type="NoData" raw>
                     <p>You forget to define the $global variable!</p>
-                </error>
+                </except>
                 <except type="KeyError">
                     <p>Bad global data!</p>
                 </except>
@@ -1301,9 +1307,9 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
             <update on="$@" to="displace" with="$footer_def" />
         </match>
 
-        <error type="nodata">
+        <except type="NoData" raw>
             <p>You forget to define the $global variable!</p>
-        </error>
+        </except>
         <except type="KeyError">
             <p>Bad global data!</p>
         </except>
@@ -1643,17 +1649,17 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `error` 标签用于定义一个针对错误的文档片段模板，可使用 `type` 属性指定对应的错误名称，但无需指定 `name` 属性。
 
-当未指定 `tpye` 属性时，表示默认的错误模板。
+当未指定 `type` 属性时，表示默认的错误模板。
 
 本质上，`error` 标签定义的内容设置了 `ERROR` 变量对应 `type` 键名的键值，故而如下两个标签的功能是一样的：
 
 ```hvml
-    <error type="nodata">
-        <p>No user data!</p>
+    <error type="OutOfMemory">
+        <p>Out of memory!</p>
     </error>
 
-    <update on="$ERROR" at=".nodata">
-        "<p>No user data!</p>"
+    <update on="$ERROR" at=".OutOfMemory">
+        "<p>Out of memory!</p>"
     </update>
 ```
 
@@ -1661,7 +1667,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `except` 标签用于定义一个针对异常的文档片段模板，可使用 `type` 属性指定对应的异常名称，但无需指定 `name` 属性。
 
-当未指定 `tpye` 属性时，表示默认的异常模板。
+当未指定 `type` 属性时，表示默认的异常模板。
 
 本质上，`except` 标签定义的内容设置了 `EXCEPT` 变量对应 `type` 键名的键值，故而如下两个标签的功能是一样的：
 
@@ -2134,9 +2140,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                 <update on="$@" to="displace" with="$footer_def" />
             </match>
 
-            <error type="nodata">
+            <except type="NoData" raw>
                 <p>You forget to define the $global variable!</p>
-            </error>
+            </except>
             <except type="KeyError">
                 <p>Bad global data!</p>
             </except>
@@ -2237,8 +2243,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
     <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
         <update on="p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
-        <catch for="error:nodata">
-            <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
+        <catch for="NoData">
+            <update on="p" at="textContent" with='You forget to define the \$locales/\$global variables!' />
         </catch>
         <catch for="KeyError">
             <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
@@ -2284,9 +2290,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         <ul id="the-user-list" class="user-list">
             <iterate on="$users" in="#the-user-list" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <error type="notready">
+                <except type="NotReady">
                     <img src="wait.gif" />
-                </error>
+                </except>
                 <except type="StopIteration">
                     <p>Bad user data!</p>
                 </except>
@@ -2450,9 +2456,6 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         <send on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED">
             <observe on="$databus" for="event:$?">
                 <update in="#the-header" by="FUNC: on_battery_changed">
-                    <error>
-                       <p>Bad scope.</p>
-                    </error>
                     <except>
                         <p>Failed to update battery status</p>
                     </except>
@@ -2499,9 +2502,6 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <send on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED">
         <observe on="$databus" for="event:$?" in="#the-header">
             <update on="span.mobile-operator" at="textContent" with="$?.name">
-                <error>
-                    <p>Bad scope.</p>
-                </error>
                 <except>
                     <p>Failed to update mobile operator</p>
                 </except>
@@ -2537,9 +2537,6 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                 <update on="img.mobile-status" at="attr.src" with="/battery-level-low.png" />
             </match>
         </test>
-        <error>
-            <p>Bad scope.</p>
-        </error>
         <except>
             <p>Failed to update battery status</p>
         </except>
@@ -2564,9 +2561,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         <observe on="$mqtt" for="event:$new_user">
             <iterate on="$?" in="#the-user-list" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <error type="notready">
+                <except type="NotReady">
                     <img src="wait.gif" />
-                </error>
+                </except>
                 <except>
                     <p>Bad user data!</p>
                 </except>
@@ -2916,15 +2913,12 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 #### 2.5.16) `catch` 标签
 
-`catch` 作为任意动作元素的子元素，定义该动作出现错误或者异常时要执行的动作。`catch` 标签定义的元素作为 `error` 和 `except` 元素的补充，可定义错误或者异常情形下的动作。如：
+`catch` 作为任意动作元素的子元素，定义该动作出现异常时要执行的动作。`catch` 标签定义的元素作为 `except` 元素的补充，可定义异常情形下的动作。如：
 
 ```
     <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
         <update on="p > a" at="textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
-        <catch for="error:nodata">
-            <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
-        </catch>
-        <catch for="error:*">
+        <catch for="NoData" raw>
             <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
         </catch>
         <catch for="KeyError">
@@ -2936,13 +2930,12 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </choose>
 ```
 
-我们使用 `for` 介词属性来定义要捕获的错误或异常名称，或错误或异常名称的模式。错误名称始终具有 `error:` 前缀，而异常名称始终具有 `except` 前缀，但异常名称前的前缀可以忽略。
+我们使用 `for` 介词属性来定义要捕获的异常具体名称或模式。
 
 `for` 属性值的取值有如下规则：
 
-- 若未定义 `for` 属性，或 `for` 的属性值为 `*` 或空字符串，则相当于匹配任意错误或异常。
-- 多个错误或者异常，可使用空白字符分隔。
-- 若错误或异常名称使用 `*` 字符，则表示匹配所有错误或异常。
+- 若未定义 `for` 属性，或 `for` 的属性值为 `*` 或空字符串，则相当于匹配任意异常。
+- 多个异常，可使用空白字符分隔。
 
 #### 2.5.17) `bind` 标签
 
@@ -3761,9 +3754,9 @@ class HVMLIterator:
         <ul id="the-user-list" class="user-list">
             <iterate on="$users" in="#the-user-list" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <error type="notready">
+                <except type="NotReady">
                     <img src="wait.gif" />
-                </error>
+                </except>
                 <except type="StopIteration">
                     <p>Bad user data!</p>
                 </except>
@@ -4131,9 +4124,9 @@ SYSTEM 标识符字符串的格式如下：
         <ul class="user-list">
             <iterate on="$users" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <hvml:error type="nodata">
+                <hvml:except type="NoData">
                     <img src="wait.png" />
-                </hvml:error>
+                </hvml:except>
                 <hvml:except type="StopIteration">
                     <p>Bad user data!</p>
                 </hvml:except>
@@ -4518,7 +4511,7 @@ HVML 的 `init` 和 `archedata` 元素中包含的文本内容必须为一个完
 ```html
 <init as="foo">
     [
-        "<p>The error message: $?.messages</p>",
+        "<p>There is an unrecoverable error!</p>",
         "<p>The exception message: $?.messages</p>"
     ]
 </init>
