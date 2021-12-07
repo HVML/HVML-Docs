@@ -1094,12 +1094,13 @@ HVML 还定义有如下一些动作标签：
 
 #### 2.1.11) 错误和异常标签
 
-在 HVML 中，错误指无法恢复的致命问题，比如耗尽内存，而异常指可以被捕获或者处理的错误情形。
+在 HVML 中，错误指无法恢复的致命问题，比如段故障、总线错误等；而异常指可以被捕获或者处理的错误情形。
 
 为了方便处理错误和异常情形，HVML 定义了如下错误或异常处理标签：
 
 - `error`：出现错误时，尝试用其中包含的内容插入到目标 DOM 树的当前位置。`error` 标签支持 `type` 属性，用来指定错误类型。如：
-   - `OutOfMemory` 表示内存已被耗尽。
+   - `BusError` 表示总线错误（错误内存访问）。
+   - `SegFault` 表示段故障（无效内存引用）。
    - `Terminated` 表示进程被人为终止。
    - `CPUTimeLimitExceeded` 表示达到 CPU 时间上限。
    - `FileSizeLimitExceeded` 表示达到文件大小上限。
@@ -1654,11 +1655,11 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 本质上，`error` 标签定义的内容设置了 `ERROR` 变量对应 `type` 键名的键值，故而如下两个标签的功能是一样的：
 
 ```hvml
-    <error type="OutOfMemory">
+    <error type="SegFault">
         <p>Out of memory!</p>
     </error>
 
-    <update on="$ERROR" at=".OutOfMemory">
+    <update on="$ERROR" at=".SegFault">
         "<p>Out of memory!</p>"
     </update>
 ```
