@@ -131,7 +131,7 @@ Language: Chinese
 
 - HVML（Hybrid Virtual Markup Language），是飞漫软件提出的一种数据驱动的可编程标记语言，其规范见：<https://gitlab.fmsoft.cn/hvml/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md>。HVML 规范文档的如下部分和本文档相关：
   1. 2.1) 术语及基本原理
-  1. 2.2) 规则、表达式及参数的描述语法
+  1. 2.2) 规则、表达式及方法的描述语法
 - 解释器（interpreter），指解析并运行 HVML 程序的计算机软件。
 - 渲染器（renderer），指渲染 HVML 程序生成的目标文档并和用户交互的计算机软件。
 - 文档（document），特指人类可读的文本形式保存的 HVML 程序。
@@ -241,22 +241,31 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ```php
 // 原型：获取当前工作路径
-$SESSION.cwd
+$SESSION.cwd: string
 
 // 原型：改变当前工作路径
-$SESSION.cwd(! <string: new path for the current working directory> )
+$SESSION.cwd(! <string: new path for the current working directory> ): boolean
 ```
+
+该方法可能产生的异常：
+
+- `AccessDenied`
+- `IOError`
+- `TooMany`
+- `TooLong`
+- `NotDesiredEntity`
+- `OSError`
 
 #### 3.1.2) `user` 方法
 
 获取或设置用户键值对。
 
 ```php
-// 原型：获取指定键名对应的键值；未设置时返回 `undefine`
-$SESSION.user( <string: the user defined key name> )
+// 原型：获取指定键名对应的键值；未设置时抛出异常 `KeyError`
+$SESSION.user( <string: the user defined key name> ): any
 
 // 原型：设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。
-$SESSION.user(! <string: the user defined key name>, <any: the new variant value> )
+$SESSION.user(! <string: the user defined key name>, <any: the new variant value> ): boolean
 
 // 示例：设置 `userId` 为 `20211104-01`
 $SESSION.user(! 'userId', '20211104-01' )
@@ -264,6 +273,10 @@ $SESSION.user(! 'userId', '20211104-01' )
 // 示例：获取 `userId` 对应的键值
 $SESSION.user('userId')
 ```
+
+该方法可能产生的异常：
+
+- `KeyError`
 
 ### 3.2) `SYSTEM`
 
@@ -275,7 +288,7 @@ $SESSION.user('userId')
 
 ```php
 // 原型：获取系统信息
-$SYSTEM.uname
+$SYSTEM.uname: object
 
 // 示例：
 $SYSTEM.uname
@@ -302,7 +315,7 @@ $SYSTEM.uname
 
 ```php
 // 原型：获取内核名称；默认行为
-$SYSTEM.uname_prt
+$SYSTEM.uname_prt: string
 
 // 原型：获取系统指定部分的名称
 $SYSTEM.uname_prt('[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default')
@@ -393,7 +406,7 @@ $SYSTEM.time(! <number: seconds since epoch> )
 获取或设置环境变量。
 
 ```php
-// 原型：获取指定环境变量的值（字符串）；未设置时返回 `undefine`
+// 原型：获取指定环境变量的值（字符串）；未设置时返回 `undefined`
 $SYSTEM.env( <string: the environment name> )
 
 // 原型：设置指定环境变量，返回布尔数据，指明是否覆盖了已有环境变量

@@ -1099,21 +1099,42 @@ HVML 还定义有如下一些动作标签：
 为了方便处理错误和异常情形，HVML 定义了如下错误或异常处理标签：
 
 - `error`：出现错误时，尝试用其中包含的内容插入到目标 DOM 树的当前位置。`error` 标签支持 `type` 属性，用来指定错误类型。如：
-   - `BusError` 表示总线错误（错误内存访问）。
-   - `SegFault` 表示段故障（无效内存引用）。
-   - `Terminated` 表示进程被人为终止。
-   - `CPUTimeLimitExceeded` 表示达到 CPU 时间上限。
-   - `FileSizeLimitExceeded` 表示达到文件大小上限。
+   - `BusError`：表示总线错误（错误内存访问）。
+   - `SegFault`：表示段故障（无效内存引用）。
+   - `Terminated`：表示进程被人为终止。
+   - `CPUTimeLimitExceeded`：表示达到 CPU 时间上限。
+   - `FileSizeLimitExceeded`：表示达到文件大小上限。
 - `except`：出现未被捕获的异常时，插入其中包含的内容到目标 DOM 树的当前位置。`except` 标签支持 `type` 属性，用来指定脚本的异常类型。如：
-   - `NoData` 表示不存在指定的数据。
-   - `NotReady` 表示数据尚未就绪。
-   - `Unauthorized` 表示连接指定的数据源时出现身份验证错误。
-   - `Timeout` 表示从数据源获取数据时出现超时错误。
-   - `SyntaxError` 表示语法错误。
-   - `NotIterable` 表示指定的元素或数据不是可迭代的。
-   - `IndexError` 索引错误，通常指索引值超出了数组范围。
-   - `KeyError` 字典中的键值错误，通常指引用了一个不存在的键值。
-   - `ZeroDivisionError` 表示遇到被零除错误。
+   - `BadName`：表示错误的变量名称。
+   - `NoData`：表示不存在指定的数据。
+   - `NotReady`：表示指定的数据尚未就绪。
+   - `Unauthorized`：表示出现身份验证错误。
+   - `Timeout`：出现超时错误。
+   - `SyntaxError`：表示语法（尤指执行器）错误。
+   - `NotIterable`：表示指定的元素或数据不是可迭代的。
+   - `IndexError`：索引错误，通常指索引值超出了数组范围。
+   - `KeyError`：字典中的键值错误，通常指引用了一个不存在的键值。
+   - `ZeroDivision`：表示遇到被零除错误。
+   - `Overflow`：表示计算溢出。
+   - `FloatingPoint`：表示浮点错误。
+   - `NotImplemented`：表示未实现错误。
+   - `MaxRecursionDepth`：表示达到最大递归深度。
+   - `BadEncoding`：表示错误的字符编码。
+   - `BadValue`：表示错误的值。
+   - `WrongDataType`：表示错误的数据类型。
+   - `WrongDomain`：表示错误的域，如求反余弦时传递大于 1 的数值。
+   - `OSError`：表示遇到未明确定义为异常的一般性操作系统错误。
+   - `AccessDenied`：表示拒绝访问或者权限不足。
+   - `IOError`：表示 IO 错误。
+   - `TooMany`：表示太多（如符号链接）。
+   - `TooLong`：表示太长（如路径名称）。
+   - `NotDesiredEntity`：表示传递了一个未预期的实体。
+   - `EntityNotFound`：未找到指定的实体（如文件）。
+   - `EntityExists`：创建新实体（如文件）时，该实体已存在。
+   - `BrokenPipe`：管道的另一端已经关闭。
+   - `ConnectionAborted`：连接中断。
+   - `ConnectionRefused`：连接被拒绝。
+   - `ConnectionReset`：连接被重置。
 
 另外，对可应对的异常，HVML 提供了 `catch` 动作标签，可用来定义捕获特定的异常并进行处理。
 
@@ -1542,6 +1563,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
    - 可选参数：`[string: locale category]`。
 1. 亦可使用如下的类型别名：
    1. `any`：任意类型。
+   1. `specific`：特定类型。
    1. `real`：任意实数类型，即 `number`、 `longint`、 `ulongint` 或 `longdouble` 之一。
    1. `container`：容器，即 `array`、 `object` 或 `set`。
 1. 参数可传递多个类型时，使用 `|` 分隔，如：`string | number`。
