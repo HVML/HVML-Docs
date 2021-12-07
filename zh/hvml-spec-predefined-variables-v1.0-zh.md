@@ -513,7 +513,7 @@ $DOC.query("#foo")[0].attr(! "bar", "qux")
 
 ```php
 // 原型
-$EJSON.type( <any> )
+$EJSON.type( <any> ): string
 ```
 
 #### 3.4.2) `count` 方法
@@ -522,7 +522,7 @@ $EJSON.type( <any> )
 
 ```php
 // 原型
-$EJSON.count( <any> )
+$EJSON.count( <any> ): number
 ```
 
 #### 3.4.3) `numberify` 方法
@@ -531,7 +531,7 @@ $EJSON.count( <any> )
 
 ```php
 // 原型
-$EJSON.numberify( <any> )
+$EJSON.numberify( <any> ): number
 ```
 
 #### 3.4.4) `booleanize` 方法
@@ -540,7 +540,7 @@ $EJSON.numberify( <any> )
 
 ```php
 // 原型
-$EJSON.booleanize( <any> )
+$EJSON.booleanize( <any> ): boolean
 ```
 
 #### 3.4.5) `stringify` 方法
@@ -549,7 +549,7 @@ $EJSON.booleanize( <any> )
 
 ```php
 // 原型
-$EJSON.stringify( <any> )
+$EJSON.stringify( <any> ): string
 ```
 
 #### 3.4.6) `serialize` 方法
@@ -558,7 +558,7 @@ $EJSON.stringify( <any> )
 
 ```php
 // 原型
-$EJSON.serialize( <any> )
+$EJSON.serialize( <any> ): string
 ```
 
 #### 3.4.7) `sort` 方法
@@ -570,7 +570,12 @@ $EJSON.serialize( <any> )
 $EJSON.sort(
         < array | set >,
         < 'asc | desc ': sorting ascendingly or descendingly >,
-        [ 'case | caseless': case-sensitively or case-insensitively ]
+        [ 'auto | number | case | caseless':
+            `auto`: comparing members automatically;
+            `number`: comparing members as numbers;
+            `case`: comparing members as strings case-sensitively;
+            `caseless`: comparing members as strings case-insensitively.
+        ]
     )
 ```
 
