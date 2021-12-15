@@ -95,6 +95,7 @@ Language: Chinese
       * [4.1.7) `div` 方法](#417-div-方法)
       * [4.1.8) `eval` 和 `eval_l` 方法](#418-eval-和-eval_l-方法)
       * [4.1.9) 其他](#419-其他)
+      * [4.1.10) 错误与异常](#4110-错误与异常)
    + [4.2) `FS`](#42-fs)
       * [4.2.1) `list` 方法](#421-list-方法)
       * [4.2.2) `list_prt` 方法](#422-list_prt-方法)
@@ -1134,6 +1135,90 @@ $MATH.sin(<number | longint | ulongint | longdouble>)
 $MATH.cos(<number | longint | ulongint | longdouble>)
 ```
 
+- `tan` 方法。该方法用于计算正切值。原型如下：
+
+```php
+// 原型，返回 number
+$MATH.tan(<number | longint | ulongint | longdouble>)
+```
+
+- `asin` 方法。该方法用于计算反正弦值。原型如下：
+
+```php
+// 原型，返回 number
+$MATH.asin(<number | longint | ulongint | longdouble>)
+```
+
+- `acos` 方法。该方法用于计算反余弦值。原型如下：
+
+```php
+// 原型，返回 number
+$MATH.acos(<number | longint | ulongint | longdouble>)
+```
+
+- `atan` 方法。该方法用于计算反正切值。原型如下：
+
+```php
+// 原型，返回 number
+$MATH.atan(<number | longint | ulongint | longdouble>)
+```
+
+- `fmod` 方法。该方法用于计算两值相除的余数。原型如下：
+
+```php
+// 原型，返回 number
+$MATH.fmod(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>)
+```
+
+- `fabs` 方法。该方法用于计算数值的绝对值。原型如下：
+
+```php
+// 原型，返回 number
+$MATH.fabs(<number | longint | ulongint | longdouble>)
+```
+
+- `log` 方法。该方法用于计算数值的自然对数。原型如下：
+
+```php
+// 原型，返回 number
+$MATH.log(<number | longint | ulongint | longdouble>)
+```
+
+- `log10` 方法。该方法用于计算数值的以`10`为底的对数。原型如下：
+
+```php
+// 原型，返回 number
+$MATH.log10(<number | longint | ulongint | longdouble>)
+```
+
+- `pow` 方法。该方法用于计算`x`的`y`次幂。原型如下：
+
+```php
+// 原型，返回 number
+$MATH.pow(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y)
+```
+
+- `exp` 方法。该方法用于计算`e`的`x`次幂。原型如下：
+
+```php
+// 原型，返回 number
+$MATH.exp(<number | longint | ulongint | longdouble> x)
+```
+
+- `floor` 方法。该方法用于计算向下取整的数值。原型如下：
+
+```php
+// 原型，返回 number
+$MATH.floor(<number | longint | ulongint | longdouble>)
+```
+
+- `ceil` 方法。该方法用于计算向上取整的数值。原型如下：
+
+```php
+// 原型，返回 number
+$MATH.ceil(<number | longint | ulongint | longdouble>)
+```
+
 - `sqrt` 方法。该方法用于计算平方根。原型如下：
 
 ```php
@@ -1142,6 +1227,20 @@ $MATH.sqrt(<number | longint | ulongint | longdouble>)
 ```
 
 注意，以上数学函数，均应该包括对应的 `_l` 版本，即返回 long double 类型的版本。如，`$MATH.sin_l`。
+
+#### 4.1.10) 错误与异常
+
+在调用`MATH`动态对象的过程中，会产生如下的错误码和异常：
+
+
+| Error Code            | Exception     | 备注                               |
+| --------------------- | ------------- | ---------------------------------- |
+| PURC_ERROR_WRONG_ARGS |               | 调用参数类型错误，或参数个数错误   |
+| PURC_ERROR_DIVBYZERO  | FloatingPoint | 除零错误                           |
+| PURC_ERROR_OVERFLOW   | Overflow      | 计算值超出数据类型的最大值         |
+| PURC_ERROR_UNDERFLOW  | Underflow     | 计算值小与数据类型所能表示的最小值 |
+| PURC_ERROR_FEINVALID  | FloatingPoint | 其他浮点数错误                     |
+
 
 ### 4.2) `FS`
 
