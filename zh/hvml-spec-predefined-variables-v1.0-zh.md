@@ -94,8 +94,22 @@ Language: Chinese
       * [4.1.6) `mul` 方法](#416-mul-方法)
       * [4.1.7) `div` 方法](#417-div-方法)
       * [4.1.8) `eval` 和 `eval_l` 方法](#418-eval-和-eval_l-方法)
-      * [4.1.9) 其他](#419-其他)
-      * [4.1.10) 错误与异常](#4110-错误与异常)
+      * [4.1.9) `sin` 和 'sin_l` 方法](#419-sin-和-sin_l-方法)
+      * [4.1.10) `cos` 和 `cos_l` 方法](#4110-cos-和-cos_l-方法)
+      * [4.1.11) `tan` 和 `tan_l` 方法](#4111-tan-和-tan_l-方法)
+      * [4.1.12) `asin` 和 `asin_l` 方法](#4112-asin-和-asin_l-方法)
+      * [4.1.13) `acos` 和 `acos_l` 方法](#4113-acos-和-acos_l-方法)
+      * [4.1.14) `atan` 和 `atan_l` 方法](#4114-atan-和-atan_l-方法)
+      * [4.1.15) `fmod` 和 `fmod_l` 方法](#4115-fmod-和-fmod_l-方法)
+      * [4.1.16) `fabs` 和 `fabs_l` 方法](#4116-fabs-和-fabs_l-方法)
+      * [4.1.17) `log` 和 `log_l` 方法](#4117-log-和-log_l-方法)
+      * [4.1.18) `log10` 和 `log10_l` 方法](#4118-log10-和-log10_l-方法)
+      * [4.1.19) `pow` 和 `pow_l` 方法](#4119-pow-和-pow_l-方法)
+      * [4.1.20) `exp` 和 `exp_l` 方法](#4120-exp-和-exp_l-方法)
+      * [4.1.21) `floor` 和 `floor_l` 方法](#4121-floor-和-floor_l-方法)
+      * [4.1.22) `ceil` 和 `ceil_l` 方法](#4122-ceil-和-ceil_l-方法)
+      * [4.1.23) `sqrt` 和 `sqrt_l` 方法](#4123-sqrt-和-sqrt_l-方法)
+      * [4.1.24) 错误与异常](#4124-错误与异常)
    + [4.2) `FS`](#42-fs)
       * [4.2.1) `list` 方法](#421-list-方法)
       * [4.2.2) `list_prt` 方法](#422-list_prt-方法)
@@ -1117,121 +1131,278 @@ $MATH.eval_l(<string: a four arithmetic expressions>[, <object: parameter map>])
 
 ```
 
-#### 4.1.9) 其他
+#### 4.1.9) `sin` 和 'sin_l` 方法
 
-参照 PHP 数学接口：<https://www.php.net/manual/en/book.math.php>，如：
-
-- `sin` 方法。该方法用于计算正弦值。原型如下：
+用于计算角度的正弦值。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：求角度的正弦值，角度为弧度值；返回值为 `number` 类型
 $MATH.sin(<number | longint | ulongint | longdouble>)
+
+// 原型：求角度的正弦值，角度为弧度值；返回值为 `longdouble` 类型
+$MATH.sin_l(<number | longint | ulongint | longdouble>)
+
+// 示例：求 (pi/4) 的正弦值，返回 `number` 类型，结果为 `0.707107`。
+$MATH.sin($MATH.const('pi/4'))
+
+// 示例：求 (pi/4) 的正弦值，返回 `longdouble` 类型，结果为 `0.707107`。
+$MATH.sin_l($MATH.const('pi/4'))
 ```
 
-- `cos` 方法。该方法用于计算余弦值。原型如下：
+#### 4.1.10) `cos` 和 `cos_l` 方法
+
+用于计算角度的余弦值。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：求角度的余弦值，角度为弧度值；返回值为 `number` 类型
 $MATH.cos(<number | longint | ulongint | longdouble>)
+
+// 原型：求角度的余弦值，角度为弧度值；返回值为 `longdouble` 类型
+$MATH.cos_l(<number | longint | ulongint | longdouble>)
+
+// 示例：求 (pi/4) 的余弦值，返回 `number` 类型，结果为 `0.707107`。
+$MATH.cos($MATH.const('pi/4'))
+
+// 示例：求 (pi/4) 的余弦值，返回 `longdouble` 类型，结果为 `0.707107`。
+$MATH.cos_l($MATH.const('pi/4'))
 ```
 
-- `tan` 方法。该方法用于计算正切值。原型如下：
+#### 4.1.11) `tan` 和 `tan_l` 方法
+
+用于计算角度的正切值。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：求角度的正切值，角度为弧度值；返回值为 `number` 类型
 $MATH.tan(<number | longint | ulongint | longdouble>)
+
+// 原型：求角度的正切值，角度为弧度值；返回值为 `longdouble` 类型
+$MATH.tan_l(<number | longint | ulongint | longdouble>)
+
+// 示例：求 (pi/4) 的正切值，返回 `number` 类型，结果为 `1.0`。
+$MATH.tan($MATH.const('pi/4'))
+
+// 示例：求 (pi/4) 的正切值，返回 `longdouble` 类型，结果为 `1.0`。
+$MATH.tan_l($MATH.const('pi/4'))
 ```
 
-- `asin` 方法。该方法用于计算反正弦值。原型如下：
+#### 4.1.12) `asin` 和 `asin_l` 方法
+
+用于计算反正弦值。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：求反正弦值，获得对应角度的弧度值；返回值为 `number` 类型
 $MATH.asin(<number | longint | ulongint | longdouble>)
+
+// 原型：求反正弦值，获得对应角度的弧度值；返回值为 `longdouble` 类型
+$MATH.asin_l(<number | longint | ulongint | longdouble>)
+
+// 示例：求 `0.707107` 的反正弦值，返回 `number` 类型，结果为 `0.785398`。
+$MATH.asin(0.707107)
+
+// 示例：求 `0.707107` 的反正弦值，返回 `longdouble` 类型，结果为 `0.785398`。
+$MATH.asin_l(0.707107)
 ```
 
-- `acos` 方法。该方法用于计算反余弦值。原型如下：
+#### 4.1.13) `acos` 和 `acos_l` 方法
+
+用于计算反余弦值。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：求反余弦值，获得对应角度的弧度值；返回值为 `number` 类型
 $MATH.acos(<number | longint | ulongint | longdouble>)
+
+// 原型：求反余弦值，获得对应角度的弧度值；返回值为 `longdouble` 类型
+$MATH.acos_l(<number | longint | ulongint | longdouble>)
+
+// 示例：求 `0.707107` 的反余弦值，返回 `number` 类型，结果为 `0.785398`。
+$MATH.acos(0.707107)
+
+// 示例：求 `0.707107` 的反余弦值，返回 `longdouble` 类型，结果为 `0.785398`。
+$MATH.acos_l(0.707107)
 ```
 
-- `atan` 方法。该方法用于计算反正切值。原型如下：
+#### 4.1.14) `atan` 和 `atan_l` 方法
+
+用于计算反正切值。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：求反正切值，获得对应角度的弧度值；返回值为 `number` 类型
 $MATH.atan(<number | longint | ulongint | longdouble>)
+
+// 原型：求反正切值，获得对应角度的弧度值；返回值为 `longdouble` 类型
+$MATH.atan_l(<number | longint | ulongint | longdouble>)
+
+// 示例：求 `1.0` 的反余弦值，返回 `number` 类型，结果为 `0.785398`。
+$MATH.atan(1.0)
+
+// 示例：求 `1.0` 的反余弦值，返回 `longdouble` 类型，结果为 `0.785398`。
+$MATH.atan_l(1.0)
 ```
 
-- `fmod` 方法。该方法用于计算两值相除的余数。原型如下：
+#### 4.1.15) `fmod` 和 `fmod_l` 方法
+
+用于计算两值相除的余数。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：求两值相除的余数；返回值为 `number` 类型
 $MATH.fmod(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>)
+
+// 原型：求两值相除的余数；返回值为 `longdouble` 类型
+$MATH.fmod_l(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>)
+
+// 示例：求 `(4.5/2.0)` 的余数，返回 `number` 类型，结果为 `0.5`。
+$MATH.fmod(4.5, 2.0)
+
+// 示例：求 `(4.5/2.0)` 的余数，返回 `number` 类型，结果为 `0.5`。
+$MATH.fmod_l(4.5, 2.0)
 ```
 
-- `fabs` 方法。该方法用于计算数值的绝对值。原型如下：
+#### 4.1.16) `fabs` 和 `fabs_l` 方法
+
+用于计算数值的绝对值。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：求数值的绝对值；返回值为 `number` 类型
 $MATH.fabs(<number | longint | ulongint | longdouble>)
+
+// 原型：求数值的绝对值；返回值为 `longdouble` 类型
+$MATH.fabs_l(<number | longint | ulongint | longdouble>)
+
+// 示例：求 `-2.5` 的绝对值，返回 `number` 类型，结果为 `2.5`。
+$MATH.fabs(-2.5)
+
+// 示例：求 `-2.5` 的绝对值，返回 `longdouble` 类型，结果为 `2.5`。
+$MATH.fabs_l(-2.5)
 ```
 
-- `log` 方法。该方法用于计算数值的自然对数。原型如下：
+#### 4.1.17) `log` 和 `log_l` 方法
+
+用于计算数值的自然对数。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：求数值的自然对数；返回值为 `number` 类型
 $MATH.log(<number | longint | ulongint | longdouble>)
+
+// 原型：求数值的自然对数；返回值为 `longdouble` 类型
+$MATH.log_l(<number | longint | ulongint | longdouble>)
+
+// 示例：求 `e` 的自然对数，返回 `number` 类型，结果为 `1.0`。
+$MATH.log($MATH.const('e'))
+
+// 示例：求 `e` 的自然对数，返回 `longdouble` 类型，结果为 `1.0`。
+$MATH.log_l($MATH.const('e'))
 ```
 
-- `log10` 方法。该方法用于计算数值的以`10`为底的对数。原型如下：
+#### 4.1.18) `log10` 和 `log10_l` 方法
+
+用于计算数值以 `10` 为底的对数。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：求数值以 `10` 为底的对数；返回值为 `number` 类型
 $MATH.log10(<number | longint | ulongint | longdouble>)
+
+// 原型：求数值以 `10` 为底的对数；返回值为 `longdouble` 类型
+$MATH.log10_l(<number | longint | ulongint | longdouble>)
+
+// 示例：求 `10.0` 以 `10` 为底的对数，返回 `number` 类型，结果为 `1.0`。
+$MATH.log10(10.0)
+
+// 示例：求 `10.0` 以 `10` 为底的对数，返回 `longdouble` 类型，结果为 `1.0`。
+$MATH.log10i_l(10.0)
 ```
 
-- `pow` 方法。该方法用于计算`x`的`y`次幂。原型如下：
+#### 4.1.19) `pow` 和 `pow_l` 方法
+
+用于计算 `x` 的 `y` 次幂。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：求 `x` 的 `y` 次幂；返回值为 `number` 类型
 $MATH.pow(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y)
+
+// 原型：求 `x` 的 `y` 次幂；返回值为 `longdouble` 类型
+$MATH.pow_l(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y)
+
+// 示例：求 `3.0` 的 `2.0` 次幂，返回 `number` 类型，结果为 `9.0`。
+$MATH.pow(3.0, 2.0)
+
+// 示例：求 `3.0` 的 `2.0` 次幂，返回 `longdouble` 类型，结果为 `9.0`。
+$MATH.pow_l(3.0, 2.0)
 ```
 
-- `exp` 方法。该方法用于计算`e`的`x`次幂。原型如下：
+#### 4.1.20) `exp` 和 `exp_l` 方法
+
+用于计算 `e` 的 `x` 次幂。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：求 `e` 的 `x` 次幂；返回值为 `number` 类型
 $MATH.exp(<number | longint | ulongint | longdouble> x)
+
+// 原型：求 `e` 的 `x` 次幂；返回值为 `longdouble` 类型
+$MATH.exp_l(<number | longint | ulongint | longdouble> x)
+
+// 示例：求 `e` 的 `1.0` 次幂，返回 `number` 类型，结果为 `2.718282`。
+$MATH.exp(1.0)
+
+// 示例：求 `e` 的 `1.0` 次幂，返回 `longdouble` 类型，结果为 `2.718282`。
+$MATH.exp_l(1.0)
 ```
 
-- `floor` 方法。该方法用于计算向下取整的数值。原型如下：
+#### 4.1.21) `floor` 和 `floor_l` 方法
+
+用于计算数值的向下取整数值。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：计算向下取整的数值；返回值为 `number` 类型
 $MATH.floor(<number | longint | ulongint | longdouble>)
+
+// 原型：计算向下取整的数值；返回值为 `longdouble` 类型
+$MATH.floor_l(<number | longint | ulongint | longdouble>)
+
+// 示例：求 `-2.3` 向下取整数值，返回 `number` 类型，结果为 `-3.0`。
+$MATH.floor(-2.3)
+
+// 示例：求 `-2.3` 向下取整数值，返回 `longdouble` 类型，结果为 `-3.0`。
+$MATH.floor_l(-2.3)
 ```
 
-- `ceil` 方法。该方法用于计算向上取整的数值。原型如下：
+#### 4.1.22) `ceil` 和 `ceil_l` 方法
+
+用于计算数值的向上取整数值。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：计算向上取整的数值；返回值为 `number` 类型
 $MATH.ceil(<number | longint | ulongint | longdouble>)
+
+// 原型：计算向上取整的数值；返回值为 `longdouble` 类型
+$MATH.ceil_l(<number | longint | ulongint | longdouble>)
+
+// 示例：求 `-2.3` 向上取整数值，返回 `number` 类型，结果为 `-2.0`。
+$MATH.ceil(-2.3)
+
+// 示例：求 `-2.3` 向上取整数值，返回 `longdouble` 类型，结果为 `-2.0`。
+$MATH.ceil_l(-2.3)
 ```
 
-- `sqrt` 方法。该方法用于计算平方根。原型如下：
+#### 4.1.23) `sqrt` 和 `sqrt_l` 方法
+
+用于计算数值的平方根。原型如下：
 
 ```php
-// 原型，返回 number
+// 原型：计算数值的平方根；返回值为 `number` 类型
 $MATH.sqrt(<number | longint | ulongint | longdouble>)
+
+// 原型：计算数值的平方根；返回值为 `longdouble` 类型
+$MATH.sqrt_l(<number | longint | ulongint | longdouble>)
+
+// 示例：求 `9.0` 的平方根，返回 `number` 类型，结果为 `3.0`。
+$MATH.sqrt(9.0)
+
+// 示例：求 `9.0` 的平方根，返回 `longdouble` 类型，结果为 `3.0`。
+$MATH.sqrt_l(9.0)
 ```
-
-注意，以上数学函数，均应该包括对应的 `_l` 版本，即返回 long double 类型的版本。如，`$MATH.sin_l`。
-
-#### 4.1.10) 错误与异常
+#### 4.1.24) 错误与异常
 
 在调用`MATH`动态对象的过程中，会产生如下的错误码和异常：
-
 
 | Error Code            | Exception     | 备注                               |
 | --------------------- | ------------- | ---------------------------------- |
@@ -1241,6 +1412,7 @@ $MATH.sqrt(<number | longint | ulongint | longdouble>)
 | PURC_ERROR_UNDERFLOW  | Underflow     | 计算值小与数据类型所能表示的最小值 |
 | PURC_ERROR_FEINVALID  | FloatingPoint | 其他浮点数错误                     |
 
+参照 PHP 数学接口：<https://www.php.net/manual/en/book.math.php>
 
 ### 4.2) `FS`
 
@@ -1560,23 +1732,23 @@ $FILE.bin.tail($file, -5)
 
 ![MiniGUI](https://www.fmsoft.cn/application/files/cache/thumbnails/54e87b0c49d659be3380e207922fff63.jpg)
 
-6) xGUI
+7) xGUI
 
 ![xGUI](https://www.fmsoft.cn/application/files/cache/thumbnails/7fbcb150d7d0747e702fd2d63f20017e.jpg)
 
-7) miniStudio
+8) miniStudio
 
 ![miniStudio](https://www.fmsoft.cn/application/files/cache/thumbnails/82c3be63f19c587c489deb928111bfe2.jpg)
 
-8) HVML
+9) HVML
 
 ![HVML](https://www.fmsoft.cn/application/files/8116/1931/8777/HVML256132.jpg)
 
-9) 呼噜猫
+10) 呼噜猫
 
 ![呼噜猫](https://www.fmsoft.cn/application/files/8416/1931/8781/256132.jpg)
 
-10) Purring Cat
+11) Purring Cat
 
 ![Purring Cat](https://www.fmsoft.cn/application/files/2816/1931/9258/PurringCat256132.jpg)
 
