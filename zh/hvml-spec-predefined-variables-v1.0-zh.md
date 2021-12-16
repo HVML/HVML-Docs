@@ -1404,13 +1404,13 @@ $MATH.sqrt_l(9.0)
 
 在调用`MATH`动态对象的过程中，会产生如下的错误码和异常：
 
-| Error Code            | Exception     | 备注                               |
-| --------------------- | ------------- | ---------------------------------- |
-| PURC_ERROR_WRONG_ARGS |               | 调用参数类型错误，或参数个数错误   |
-| PURC_ERROR_DIVBYZERO  | FloatingPoint | 除零错误                           |
-| PURC_ERROR_OVERFLOW   | Overflow      | 计算值超出数据类型的最大值         |
-| PURC_ERROR_UNDERFLOW  | Underflow     | 计算值小与数据类型所能表示的最小值 |
-| PURC_ERROR_FEINVALID  | FloatingPoint | 其他浮点数错误                     |
+| Error Code                 | Exception     | 备注                               |
+| -------------------------- | ------------- | ---------------------------------- |
+| PURC_ERROR_WRONG_ARGS      |               | 调用参数类型错误，或参数个数错误   |
+| PURC_ERROR_DIVBYZERO       | FloatingPoint | 除零错误                           |
+| PURC_ERROR_OVERFLOW        | Overflow      | 计算值超出数据类型的最大值         |
+| PURC_ERROR_UNDERFLOW       | Underflow     | 计算值小与数据类型所能表示的最小值 |
+| PURC_ERROR_INV_FLOATPOINT  | FloatingPoint | 其他浮点数错误                     |
 
 参照 PHP 数学接口：<https://www.php.net/manual/en/book.math.php>
 
