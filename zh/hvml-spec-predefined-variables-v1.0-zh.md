@@ -1035,6 +1035,9 @@ $MATH.const_l('1/sqrt(2)')
 // 设置自定义常数
 $MATH.const(! <string: a user-defined const name>, <number: the constant>[, <longdouble: the constant>] )
 
+// 设置自定义常数
+$MATH.const_l(! <string: a user-defined const name>, <longdouble: the constant>[, <number: the constant>] )
+
 // 示例：设置 c（真空光速）为 299792458
 $MATH.const(! 'c', 299792458)
 
