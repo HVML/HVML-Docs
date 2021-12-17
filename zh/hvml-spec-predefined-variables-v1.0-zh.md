@@ -949,16 +949,16 @@ $STR.ends_with('hello world', 'world')
 // 原型：将字符串 `s1` 用字符串 `s2` 进行分隔；返回值为 `array` 类型
 $STR.explode(<string: C format string> s1, <string: C format string> s2)
 
-// 示例：将字符串 `beijing--shanghai--guangzhou` 用字符串 `-- ` 分隔；返回 `array` 类型，结果为 `[`beijing`, `shanghai`, `guangzhou`]`。
+// 示例：将字符串 `beijing--shanghai--guangzhou` 用字符串 `--` 分隔；返回 `array` 类型，结果为 `['beijing', 'shanghai', 'guangzhou']`。
 $STR.explode('beijing--shanghai--guangzhou', '--')
 ```
 
 #### 3.7.4) `implode` 方法
 
-使用指定的字符串连接若干字符串。
+使用指定的字符串连接字符串数组中的字符串。
 
 ```php
-// 原型：使用字符串 `s1` ，连接数组 `a1` 中的每个字符串；返回值为 `string` 类型
+// 原型：使用字符串 `s1` ，连接字符串数组 `a1` 中的每个字符串；返回值为 `string` 类型
 $STR.implode(<string: C format string> s1, <array: string array> a1)
 
 // 示例：使用字符串 `new` 连接数组中的每个字符串；返回 `string` 类型，结果为 `beijingnewshanghainewguangzhou`。
