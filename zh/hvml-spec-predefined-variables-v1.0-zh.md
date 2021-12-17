@@ -80,10 +80,15 @@ Language: Chinese
       * [3.7.1) `contains` 方法](#371-contains-方法)
       * [3.7.2) `ends_with` 方法](#372-ends_with-方法)
       * [3.7.3) `explode` 方法](#373-explode-方法)
-      * [3.7.4) `shuffle` 方法](#374-shuffle-方法)
-      * [3.7.5) `replace` 方法](#375-replace-方法)
-      * [3.7.6) `format_c` 方法](#376-format_c-方法)
-      * [3.7.7) `format_p` 方法](#377-format_p-方法)
+      * [3.7.4) `implode` 方法](#374-implode-方法)
+      * [3.7.5) `shuffle` 方法](#375-shuffle-方法)
+      * [3.7.6) `replace` 方法](#376-replace-方法)
+      * [3.7.7) `format_c` 方法](#377-format_c-方法)
+      * [3.7.8) `format_p` 方法](#378-format_p-方法)
+      * [3.7.9) `strcat` 方法](#379-strcat-方法)
+      * [3.7.10) `strlen` 方法](#3710-strlen-方法)
+      * [3.7.11) `lower` 方法](#3711-lower-方法)
+      * [3.7.12) `upper` 方法](#3712-upper-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -916,33 +921,81 @@ $T.get('Hello, world!')
 
 用于判断一个字符串中是否包含给定的子字符串。
 
-参阅：<https://www.php.net/manual/en/function.str-contains.php>
+```php
+// 原型：判断字符串 `s1` 是否包含字符串 `s2`；返回值为 `boolean` 类型
+$STR.contains(<string: C format string> s1, <string: C format string> s2)
+
+// 示例：判断字符串 `hello world` 是否包含字符串 `world`；返回 `boolean` 类型，结果为 `true`。
+$STR.contains('hello world', 'world')
+```
 
 #### 3.7.2) `ends_with` 方法
 
 用于判断一个字符串是否以给定的字符串结尾。
 
-参阅：<https://www.php.net/manual/en/function.str-ends-with.php>
+```php
+// 原型：判断字符串 `s1` 是否以字符串 `s2` 结尾；返回值为 `boolean` 类型
+$STR.ends_with(<string: C format string> s1, <string: C format string> s2)
+
+// 示例：判断字符串 `hello world` 是否以字符串 `world`结尾；返回 `boolean` 类型，结果为 `true`。
+$STR.ends_with('hello world', 'world')
+```
 
 #### 3.7.3) `explode` 方法
 
 使用指定的字符串分隔一个字符串。
 
-参阅：<https://www.php.net/manual/en/function.explode.php>
+```php
+// 原型：将字符串 `s1` 用字符串 `s2` 进行分隔；返回值为 `array` 类型
+$STR.explode(<string: C format string> s1, <string: C format string> s2)
 
-#### 3.7.4) `shuffle` 方法
+// 示例：将字符串 `beijing--shanghai--guangzhou` 用字符串 `-- ` 分隔；返回 `array` 类型，结果为 `[`beijing`, `shanghai`, `guangzhou`]`。
+$STR.explode('beijing--shanghai--guangzhou', '--')
+```
 
-用于随机打乱一个字符串。
+#### 3.7.4) `implode` 方法
 
-参阅：<https://www.php.net/manual/en/function.str-shuffle.php>
+使用指定的字符串连接若干字符串。
 
-#### 3.7.5) `replace` 方法
+```php
+// 原型：使用字符串 `s1` ，连接数组 `a1` 中的每个字符串；返回值为 `string` 类型
+$STR.implode(<string: C format string> s1, <array: string array> a1)
+
+// 示例：使用字符串 `new` 连接数组中的每个字符串；返回 `string` 类型，结果为 `beijingnewshanghainewguangzhou`。
+$STR.implode('new', ['beijing', 'shanghai', 'guangzhou'])
+```
+- 如果 `s1` 为空字符串，则该方法直接连接数组中的各个字符串，各个字符串之间没有分隔；
+
+- 如果数组为空，则返回空字符串；
+
+- 如果数组中的某个元素为空字符串，将不会在该元素后面添加 `s1` 字符串。
+
+
+#### 3.7.5) `shuffle` 方法
+
+用于随机打乱一个字符串，返回一个新的重新排列的字符串。
+
+```php
+// 原型：将字符串 `s1` 中的字符随机打乱，重排后返回新的字符串；返回值为 `string` 类型
+$STR.shuffle(<string: C format string> s1)
+
+// 示例：将字符串 `beijing` 中的字母顺序打乱，产生一个新的字符串；返回 `string` 类型，结果可能是 `jbienig`。
+$STR.shuffle('beijing')
+```
+
+#### 3.7.6) `replace` 方法
 
 用于子字符串替换。
 
-参阅：<https://www.php.net/manual/en/function.str-replace.php>
+```php
+// 原型：将字符串 `s1` 中的子字符串 `sub`，用字符串 `new` 替换，替换后返回新的字符串；返回值为 `string` 类型
+$STR.replace(<string: C format string> s1, <string: C format string> sub, <string: C format string> new)
 
-#### 3.7.6) `format_c` 方法
+// 示例：将字符串 `hello world beijing` 中的空格 ` `，用 `-` 替换，产生一个新的字符串；返回 `string` 类型，结果可能是 `hello-world-beijing`。
+$STR.replace('hello world beijing', ' ', '-')
+```
+
+#### 3.7.7) `format_c` 方法
 
 格式化数值及字符串数据，使用 C 格式化字符表述方法。
 
@@ -954,7 +1007,7 @@ $STR.format_c(<string: C format string>[, <boolean | number | longint | ulongint
 $STR.format_c(<string: C format string>, <array>)
 ```
 
-#### 3.7.7) `format_p` 方法
+#### 3.7.8) `format_p` 方法
 
 使用占位符格式化任意数据，使用 eJSON 串行化输出格式。
 
@@ -974,6 +1027,54 @@ $STR.format_p(<string: string contains placeholders>, <object>)
 
 // 示例
 $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry'})
+```
+
+#### 3.7.9) `strcat` 方法
+
+用于连接两个字符串。
+
+```php
+// 原型：将字符串 `s1` 与字符串 `s2` 连接，产生新的字符串并返回；返回值为 `string` 类型
+$STR.strcat(<string: C format string> s1, <string: C format string> s2)
+
+// 示例：将字符串 `hello` 与字符串 ` world` 连接，产生一个新的字符串；返回 `string` 类型，结果是 `hello world`。
+$STR.strcat('hello', ' world')
+```
+
+#### 3.7.10) `strlen` 方法
+
+用于获得字符串的长度，该长度包含字符串结尾的 `\0`。
+
+```php
+// 原型：获得字符串 `s` 的长度，该长度包含字符串结尾的 `\0`；返回值为 `ulongint` 类型
+$STR.strlen(<string: C format string> s)
+
+// 示例：获得字符串 `hello world` 的长度；返回 `ulongint` 类型，结果是 `12`。
+$STR.strlen('hello world')
+```
+
+#### 3.7.11) `lower` 方法
+
+用于将字符串全部转换为小写，并返回转换后的字符串。
+
+```php
+// 原型：将字符串 `s` 全部转换为小写，并返回转换后的字符串；返回值为 `string` 类型
+$STR.lower(<string: C format string> s)
+
+// 示例：将字符串 `HELLO WORLD` 全部转换为小写，并返回转换后的字符串；返回 `string` 类型，结果是 `hello world`。
+$STR.lower('HELLO WORLD')
+```
+
+#### 3.7.12) `upper` 方法
+
+用于将字符串全部转换为大写，并返回转换后的字符串。
+
+```php
+// 原型：将字符串 `s` 全部转换为大写，并返回转换后的字符串；返回值为 `string` 类型
+$STR.upper(<string: C format string> s)
+
+// 示例：将字符串 `hello world` 全部转换为大写，并返回转换后的字符串；返回 `string` 类型，结果是 `HELLO WORLD`。
+$STR.upper('hello world')
 ```
 
 ## 4) 可选动态变量
