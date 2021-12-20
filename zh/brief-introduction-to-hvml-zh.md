@@ -141,7 +141,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
             </test>
         </footer>
 
-        <observe on="$TIMERS" for="foo:expired" in="#the-header" >
+        <observe on="$TIMERS" for="expired:foo" in="#the-header" >
             <update on="> span.local-time" at="textContent" with="$_SYSTEM.time('%H:%m')" />
         </observe>
 
@@ -361,7 +361,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
     <body>
         <div class="clock" id="clock">
-            <observe on="$TIMERS" for="clock:expired">
+            <observe on="$TIMERS" for="expired:clock">
                 <update on="#clock" at="textContent" with="$_SYSTEM.time('%H:%m')" />
             </observe>
         </div>

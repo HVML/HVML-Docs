@@ -42,53 +42,56 @@ Language: Chinese
       * [3.2.4) `random` 方法](#324-random-方法)
       * [3.2.5) `time` 方法](#325-time-方法)
       * [3.2.6) `env` 方法](#326-env-方法)
-   + [3.3) `DOC`](#33-doc)
-      * [3.3.1) `doctype` 方法](#331-doctype-方法)
-      * [3.3.2) `base` 方法](#332-base-方法)
-      * [3.3.3) `query` 方法](#333-query-方法)
-   + [3.4) `EJSON`](#34-ejson)
-      * [3.4.1) `type` 方法](#341-type-方法)
-      * [3.4.2) `count` 方法](#342-count-方法)
-      * [3.4.3) `numberify` 方法](#343-numberify-方法)
-      * [3.4.4) `booleanize` 方法](#344-booleanize-方法)
-      * [3.4.5) `stringify` 方法](#345-stringify-方法)
-      * [3.4.6) `serialize` 方法](#346-serialize-方法)
-      * [3.4.7) `sort` 方法](#347-sort-方法)
-      * [3.4.8) `compare` 方法](#348-compare-方法)
-   + [3.5) `L`](#35-l)
-      * [3.5.1) `not` 方法](#351-not-方法)
-      * [3.5.2) `and` 方法](#352-and-方法)
-      * [3.5.3) `or` 方法](#353-or-方法)
-      * [3.5.4) `xor` 方法](#354-xor-方法)
-      * [3.5.5) `eq` 方法](#355-eq-方法)
-      * [3.5.6) `ne` 方法](#356-ne-方法)
-      * [3.5.7) `gt` 方法](#357-gt-方法)
-      * [3.5.8) `ge` 方法](#358-ge-方法)
-      * [3.5.9) `lt` 方法](#359-lt-方法)
-      * [3.5.10) `le` 方法](#3510-le-方法)
-      * [3.5.11) `streq` 方法](#3511-streq-方法)
-      * [3.5.12) `strne` 方法](#3512-strne-方法)
-      * [3.5.13) `strgt` 方法](#3513-strgt-方法)
-      * [3.5.14) `strge` 方法](#3514-strge-方法)
-      * [3.5.15) `strlt` 方法](#3515-strlt-方法)
-      * [3.5.16) `strle` 方法](#3516-strle-方法)
-      * [3.5.17) `eval` 方法](#3517-eval-方法)
-   + [3.6) `T`](#36-t)
-      * [3.6.1) `map` 静态属性](#361-map-静态属性)
-      * [3.6.2) `get` 方法](#362-get-方法)
-   + [3.7) `STR`](#37-str)
-      * [3.7.1) `contains` 方法](#371-contains-方法)
-      * [3.7.2) `ends_with` 方法](#372-ends_with-方法)
-      * [3.7.3) `explode` 方法](#373-explode-方法)
-      * [3.7.4) `implode` 方法](#374-implode-方法)
-      * [3.7.5) `shuffle` 方法](#375-shuffle-方法)
-      * [3.7.6) `replace` 方法](#376-replace-方法)
-      * [3.7.7) `format_c` 方法](#377-format_c-方法)
-      * [3.7.8) `format_p` 方法](#378-format_p-方法)
-      * [3.7.9) `strcat` 方法](#379-strcat-方法)
-      * [3.7.10) `strlen` 方法](#3710-strlen-方法)
-      * [3.7.11) `lower` 方法](#3711-lower-方法)
-      * [3.7.12) `upper` 方法](#3712-upper-方法)
+   + [3.3) `HVML`](#33-hvml)
+      * [3.3.1) `base` 方法](#331-base-方法)
+      * [3.3.2) `maxIterationCount` 方法](#332-maxiterationcount-方法)
+      * [3.3.3) `maxRecursionDepth` 方法](#333-maxrecursiondepth-方法)
+   + [3.4) `DOC`](#34-doc)
+      * [3.4.1) `doctype` 方法](#341-doctype-方法)
+      * [3.4.2) `query` 方法](#342-query-方法)
+   + [3.5) `EJSON`](#35-ejson)
+      * [3.5.1) `type` 方法](#351-type-方法)
+      * [3.5.2) `count` 方法](#352-count-方法)
+      * [3.5.3) `numberify` 方法](#353-numberify-方法)
+      * [3.5.4) `booleanize` 方法](#354-booleanize-方法)
+      * [3.5.5) `stringify` 方法](#355-stringify-方法)
+      * [3.5.6) `serialize` 方法](#356-serialize-方法)
+      * [3.5.7) `sort` 方法](#357-sort-方法)
+      * [3.5.8) `compare` 方法](#358-compare-方法)
+   + [3.6) `L`](#36-l)
+      * [3.6.1) `not` 方法](#361-not-方法)
+      * [3.6.2) `and` 方法](#362-and-方法)
+      * [3.6.3) `or` 方法](#363-or-方法)
+      * [3.6.4) `xor` 方法](#364-xor-方法)
+      * [3.6.5) `eq` 方法](#365-eq-方法)
+      * [3.6.6) `ne` 方法](#366-ne-方法)
+      * [3.6.7) `gt` 方法](#367-gt-方法)
+      * [3.6.8) `ge` 方法](#368-ge-方法)
+      * [3.6.9) `lt` 方法](#369-lt-方法)
+      * [3.6.10) `le` 方法](#3610-le-方法)
+      * [3.6.11) `streq` 方法](#3611-streq-方法)
+      * [3.6.12) `strne` 方法](#3612-strne-方法)
+      * [3.6.13) `strgt` 方法](#3613-strgt-方法)
+      * [3.6.14) `strge` 方法](#3614-strge-方法)
+      * [3.6.15) `strlt` 方法](#3615-strlt-方法)
+      * [3.6.16) `strle` 方法](#3616-strle-方法)
+      * [3.6.17) `eval` 方法](#3617-eval-方法)
+   + [3.7) `T`](#37-t)
+      * [3.7.1) `map` 静态属性](#371-map-静态属性)
+      * [3.7.2) `get` 方法](#372-get-方法)
+   + [3.8) `STR`](#38-str)
+      * [3.8.1) `contains` 方法](#381-contains-方法)
+      * [3.8.2) `ends_with` 方法](#382-ends_with-方法)
+      * [3.8.3) `explode` 方法](#383-explode-方法)
+      * [3.8.4) `implode` 方法](#384-implode-方法)
+      * [3.8.5) `shuffle` 方法](#385-shuffle-方法)
+      * [3.8.6) `replace` 方法](#386-replace-方法)
+      * [3.8.7) `format_c` 方法](#387-format_c-方法)
+      * [3.8.8) `format_p` 方法](#388-format_p-方法)
+      * [3.8.9) `strcat` 方法](#389-strcat-方法)
+      * [3.8.10) `strlen` 方法](#3810-strlen-方法)
+      * [3.8.11) `lower` 方法](#3811-lower-方法)
+      * [3.8.12) `upper` 方法](#3812-upper-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -448,11 +451,64 @@ $SYSTEM.env('HVML_VER', '1.0')
 **讨论**  
 该功能亦可设置为一个 `SYSTEM` 变量上的一个静态属性，初始化时从系统中获取所有环境变量构造为一个对象，程序可使用 `update` 元素修改环境变量。
 
-### 3.3) `DOC`
+### 3.3) `HVML`
+
+`HVML` 是一个内置的文档级动态变量，该变量用于设置解释器在执行 HVML 程序时一些参数。
+
+#### 3.3.1) `base` 方法
+
+该方法获取或设置 HVML 程序的根 URL。
+
+```php
+// 原型，返回字符串，如 `file:///app/com.example.foo/hvml`
+$HVML.base: string
+
+// 原型，设置 HVML 程序的根 URL，返回设置后的值。
+$HVML.base(! <string, new base URL> ): string
+
+// 示例：
+$HVML.base(! "https://foo.example.com/app/hvml" )
+```
+
+#### 3.3.2) `maxIterationCount` 方法
+
+该方法获取或设置 HVML 程序在执行 `iterate` 动作元素时的最大迭代次数，用于检测可能的死循环。
+
+默认值为 64 位无符号整数的最大值：`2 ^ 64 - 1`。
+
+```php
+// 原型，返回当前值
+$HVML.maxIterationCount: ulongint
+
+// 原型，设置文档的根 URL，返回设置后的值。
+$HVML.maxIterationCount(! <ulongint, new maximal interation count> ): ulongint
+
+// 示例：
+$HVML.maxIterationCount(! 10000UL )
+```
+
+#### 3.3.3) `maxRecursionDepth` 方法
+
+该方法获取或设置 HVML 程序在递归执行某个功能时的最大递归深度，以防止栈溢出。
+
+默认值为 16 位无符号整数的最大值：`2 ^ 64 - 1 = 65535`。
+
+```php
+// 原型，返回当前值
+$HVML.maxRecursionDepth: ulongint
+
+// 原型，设置文档的根 URL，返回设置后的值。
+$HVML.maxRecursionDepth(! <ulongint, new maximal recursion depth> ): ulongint
+
+// 示例：
+$HVML.maxRecursionDepth(! 10000UL )
+```
+
+### 3.4) `DOC`
 
 `DOC` 是一个内置的文档级动态变量，该变量用于访问 HVML 程序生成的 eDOM 树中的元素。
 
-#### 3.3.1) `doctype` 方法
+#### 3.4.1) `doctype` 方法
 
 该方法返回文档类型，字符串。
 
@@ -472,22 +528,7 @@ $DOC.doctype("public")
 $DOC.doctype
 ```
 
-#### 3.3.2) `base` 方法
-
-该方法获取或设置文档的根 URL。
-
-```php
-// 原型，返回字符串，如 `file:///app/com.example.foo/hvml`
-$DOC.base
-
-// 原型，设置文档的根 URL，返回 boolean。
-$DOC.base(! <string, new base URL> )
-
-// 示例：
-$DOC.base(! "https://foo.example.com/app/hvml" )
-```
-
-#### 3.3.3) `query` 方法
+#### 3.4.2) `query` 方法
 
 使用 CSS 选择器查询目标文档上的元素汇集（collection）。
 
@@ -529,11 +570,11 @@ $DOC.query("#foo")[0].attr("bar")
 $DOC.query("#foo")[0].attr(! "bar", "qux")
 ```
 
-### 3.4) `EJSON`
+### 3.5) `EJSON`
 
 该动态变量为会话级内置变量，用于返回数据的类型、成员个数等信息。
 
-#### 3.4.1) `type` 方法
+#### 3.5.1) `type` 方法
 
 该方法返回数据的类型名称，字符串。
 
@@ -542,7 +583,7 @@ $DOC.query("#foo")[0].attr(! "bar", "qux")
 $EJSON.type( <any> ): string
 ```
 
-#### 3.4.2) `count` 方法
+#### 3.5.2) `count` 方法
 
 该方法返回数据的数据项个数，数值。
 
@@ -551,7 +592,7 @@ $EJSON.type( <any> ): string
 $EJSON.count( <any> ): number
 ```
 
-#### 3.4.3) `numberify` 方法
+#### 3.5.3) `numberify` 方法
 
 该方法对给定的数据做数值化处理，返回一个数值。
 
@@ -560,7 +601,7 @@ $EJSON.count( <any> ): number
 $EJSON.numberify( <any> ): number
 ```
 
-#### 3.4.4) `booleanize` 方法
+#### 3.5.4) `booleanize` 方法
 
 该方法对给定的数据做布尔化处理，返回布尔值（`true` 或者 `false`）。
 
@@ -569,7 +610,7 @@ $EJSON.numberify( <any> ): number
 $EJSON.booleanize( <any> ): boolean
 ```
 
-#### 3.4.5) `stringify` 方法
+#### 3.5.5) `stringify` 方法
 
 该方法对给定的数据做字符串化处理，返回字符串。
 
@@ -578,7 +619,7 @@ $EJSON.booleanize( <any> ): boolean
 $EJSON.stringify( <any> ): string
 ```
 
-#### 3.4.6) `serialize` 方法
+#### 3.5.6) `serialize` 方法
 
 该方法对给定的数据做序列化处理，返回字符串。
 
@@ -587,7 +628,7 @@ $EJSON.stringify( <any> ): string
 $EJSON.serialize( <any> ): string
 ```
 
-#### 3.4.7) `sort` 方法
+#### 3.5.7) `sort` 方法
 
 该方法对给定的数组或者集合做排序。
 
@@ -605,7 +646,7 @@ $EJSON.sort(
     )
 ```
 
-#### 3.4.8) `compare` 方法
+#### 3.5.8) `compare` 方法
 
 该方法对给定两个数据做对比，返回数值：
 
@@ -627,13 +668,13 @@ $EJSON.compare(
     )
 ```
 
-### 3.5) `L`
+### 3.6) `L`
 
 该变量是一个会话级内置变量，主要用于逻辑运算。
 
 有关任何数据转换为逻辑真假值时的规则，请参阅 [任意数据类型的强制转换规则](https://gitlab.fmsoft.cn/hvml/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md#213-%E4%BB%BB%E6%84%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%BC%BA%E5%88%B6%E8%BD%AC%E6%8D%A2%E8%A7%84%E5%88%99)。
 
-#### 3.5.1) `not` 方法
+#### 3.6.1) `not` 方法
 
 逻辑取反操作。
 
@@ -645,7 +686,7 @@ $L.not(<any>)
 $L.not( false )
 ```
 
-#### 3.5.2) `and` 方法
+#### 3.6.2) `and` 方法
 
 逻辑与运算。
 
@@ -657,7 +698,7 @@ $L.and(<any>, <any>[, <any>[, ...]])
 $L.and( false, true )
 ```
 
-#### 3.5.3) `or` 方法
+#### 3.6.3) `or` 方法
 
 逻辑或运算。
 
@@ -669,7 +710,7 @@ $L.or(<any>, <any>[, <any>[, ...]])
 $L.or( false, true )
 ```
 
-#### 3.5.4) `xor` 方法
+#### 3.6.4) `xor` 方法
 
 逻辑亦或运算。
 
@@ -681,7 +722,7 @@ $L.xor(<any>, <any>)
 $L.xor( false, true )
 ```
 
-#### 3.5.5) `eq` 方法
+#### 3.6.5) `eq` 方法
 
 对比两个数据在数值上是否相等，返回 `true` 或 `false`。
 
@@ -693,7 +734,7 @@ $L.eq(<any>, <any>)
 $L.eq("1", 1)
 ```
 
-#### 3.5.6) `ne` 方法
+#### 3.6.6) `ne` 方法
 
 对比两个数据在数值上是否不相等，返回 `true` 或 `false`。
 
@@ -705,7 +746,7 @@ $L.ne(<any>, <any>)
 $L.ne("1", 2)
 ```
 
-#### 3.5.7) `gt` 方法
+#### 3.6.7) `gt` 方法
 
 对比第一个数据在数值上是否大于第二个数据，返回 `true` 或 `false`。
 
@@ -717,7 +758,7 @@ $L.gt(<any>, <any>)
 $L.gt("2", 1)
 ```
 
-#### 3.5.8) `ge` 方法
+#### 3.6.8) `ge` 方法
 
 对比第一个数据在数值上是否大于或等于第二个数据，返回 `true` 或 `false`。
 
@@ -729,7 +770,7 @@ $L.ge(<any>, <any>)
 $L.ge("2", 2)
 ```
 
-#### 3.5.9) `lt` 方法
+#### 3.6.9) `lt` 方法
 
 对比第一个数据在数值上是否小于第二个数据，返回 `true` 或 `false`。
 
@@ -741,7 +782,7 @@ $L.lt(<any>, <any>)
 $L.lt("1", 2)
 ```
 
-#### 3.5.10) `le` 方法
+#### 3.6.10) `le` 方法
 
 对比第一个数据在数值上是否小于或等于第二个数据，返回 `true` 或 `false`。
 
@@ -753,7 +794,7 @@ $L.le(<any>, <any>)
 $L.lt("1", 2)
 ```
 
-#### 3.5.11) `streq` 方法
+#### 3.6.11) `streq` 方法
 
 对比两个数据的字符串形式是否相等或匹配，返回 `true` 或 `false`。
 
@@ -775,7 +816,7 @@ $L.streq("reg", "^zh", "zh_CN")
 
 对非字符串类型的数据，字符串化后做对比。
 
-#### 3.5.12) `strne` 方法
+#### 3.6.12) `strne` 方法
 
 对比两个数据的字符串形式是否不相等或不匹配，返回 `true` 或 `false`。
 
@@ -791,7 +832,7 @@ $L.strne("case", "zh_CN", "zh_cn")
 
 对非字符串类型的数据，字符串化后做对比。
 
-#### 3.5.13) `strgt` 方法
+#### 3.6.13) `strgt` 方法
 
 对比第一个数据的字符串形式是否大于第二个数据的字符串形式，返回 `true` 或 `false`。
 
@@ -807,7 +848,7 @@ $L.strgt("case", 'A', 'Z')
 
 对非字符串类型的数据，字符串化后做对比。
 
-#### 3.5.14) `strge` 方法
+#### 3.6.14) `strge` 方法
 
 对比第一个数据的字符串形式是否大于或等于第二个数据的字符串形式，返回 `true` 或 `false`。
 
@@ -823,7 +864,7 @@ $L.strge("caseless", "abc", "ABC")
 
 对非字符串类型的数据，字符串化后做对比。
 
-#### 3.5.15) `strlt` 方法
+#### 3.6.15) `strlt` 方法
 
 对比第一个数据的字符串形式是否小于第二个数据的字符串形式，返回 `true` 或 `false`。
 
@@ -839,7 +880,7 @@ $L.strlt("case", "Z", "A")
 
 对非字符串类型的数据，字符串化后做对比。
 
-#### 3.5.16) `strle` 方法
+#### 3.6.16) `strle` 方法
 
 对比第一个数据的字符串形式是否小于或等于第二个数据的字符串形式，返回 `true` 或 `false`。
 
@@ -855,7 +896,7 @@ $L.strle("caseless", "abc", "ABC")
 
 对非字符串类型的数据，字符串化后做对比。
 
-#### 3.5.17) `eval` 方法
+#### 3.6.17) `eval` 方法
 
 对参数化的逻辑运算表达式求值。
 
@@ -867,13 +908,13 @@ $L.eval(<string: logical expression>, <object: the parameter map>)
 $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) })
 ```
 
-### 3.6) `T`
+### 3.7) `T`
 
 该变量是一个文档级内置变量，主要用于文本的本地化替代。
 
 - `get`：一个动态方法，用于返回替代字符串。
 
-#### 3.6.1) `map` 静态属性
+#### 3.7.1) `map` 静态属性
 
 `map` 是 `T` 的一个静态属性，用来定义字符串映射表，初始为空对象。程序可使用 `update` 元素设置其内容：
 
@@ -898,7 +939,7 @@ $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) }
 </hvml>
 ```
 
-#### 3.6.2) `get` 方法
+#### 3.7.2) `get` 方法
 
 ```php
 // 原型
@@ -909,11 +950,13 @@ $T.get(<string: original text>)
 $T.get('Hello, world!')
 ```
 
-### 3.7) `STR`
+### 3.8) `STR`
 
 `STR` 是一个内置的动态变量，该变量用于实现常见的字符串操作。
 
-#### 3.7.1) `contains` 方法
+该变量提供的接口，类似 PHP 的字符串函数：<https://www.php.net/manual/en/ref.strings.php>
+
+#### 3.8.1) `contains` 方法
 
 用于判断一个字符串中是否包含给定的子字符串。
 
@@ -925,7 +968,7 @@ $STR.contains(<string: C format string> s1, <string: C format string> s2) : bool
 $STR.contains('hello world', 'world')
 ```
 
-#### 3.7.2) `ends_with` 方法
+#### 3.8.2) `ends_with` 方法
 
 用于判断一个字符串是否以给定的字符串结尾。
 
@@ -937,7 +980,7 @@ $STR.ends_with(<string: C format string> s1, <string: C format string> s2) : boo
 $STR.ends_with('hello world', 'world')
 ```
 
-#### 3.7.3) `explode` 方法
+#### 3.8.3) `explode` 方法
 
 使用指定的字符串分隔一个字符串。
 
@@ -949,7 +992,7 @@ $STR.explode(<string: C format string> s1, <string: C format string> s2) : array
 $STR.explode('beijing:shanghai:guangzhou', ':')
 ```
 
-#### 3.7.4) `implode` 方法
+#### 3.8.4) `implode` 方法
 
 使用指定的字符串连接字符串数组中的字符串。
 
@@ -967,7 +1010,7 @@ $STR.implode(':', ['beijing', 'shanghai', 'guangzhou'])
 - 如果数组中的某个元素为空字符串，将不会在该元素后面添加 `s1` 字符串。
 
 
-#### 3.7.5) `shuffle` 方法
+#### 3.8.5) `shuffle` 方法
 
 用于随机打乱一个字符串，返回一个新的重新排列的字符串。
 
@@ -979,7 +1022,7 @@ $STR.shuffle(<string: C format string> s1) : string
 $STR.shuffle('beijing')
 ```
 
-#### 3.7.6) `replace` 方法
+#### 3.8.6) `replace` 方法
 
 用于子字符串替换。
 
@@ -991,7 +1034,7 @@ $STR.replace(<string: C format string> s1, <string: C format string> sub, <strin
 $STR.replace('hello world beijing', ' ', '-')
 ```
 
-#### 3.7.7) `format_c` 方法
+#### 3.8.7) `format_c` 方法
 
 格式化数值及字符串数据，使用 C 格式化字符表述方法。
 
@@ -1003,7 +1046,7 @@ $STR.format_c(<string: C format string>[, <boolean | number | longint | ulongint
 $STR.format_c(<string: C format string>, <array>)
 ```
 
-#### 3.7.8) `format_p` 方法
+#### 3.8.8) `format_p` 方法
 
 使用占位符格式化任意数据，使用 eJSON 串行化输出格式。
 
@@ -1025,7 +1068,7 @@ $STR.format_p(<string: string contains placeholders>, <object>) : string
 $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry'})
 ```
 
-#### 3.7.9) `strcat` 方法
+#### 3.8.9) `strcat` 方法
 
 用于连接两个字符串。
 
@@ -1037,7 +1080,7 @@ $STR.strcat(<string: C format string> s1, <string: C format string> s2) : string
 $STR.strcat('hello', ' world')
 ```
 
-#### 3.7.10) `strlen` 方法
+#### 3.8.10) `strlen` 方法
 
 用于获得字符串的长度，该长度包含字符串结尾的 `\0`。
 
@@ -1049,7 +1092,7 @@ $STR.strlen(<string: C format string> s) : ulongint
 $STR.strlen('hello world')
 ```
 
-#### 3.7.11) `lower` 方法
+#### 3.8.11) `lower` 方法
 
 用于将字符串全部转换为小写，并返回转换后的字符串。
 
@@ -1061,7 +1104,7 @@ $STR.lower(<string: C format string> s) : string
 $STR.lower('HELLO WORLD')
 ```
 
-#### 3.7.12) `upper` 方法
+#### 3.8.12) `upper` 方法
 
 用于将字符串全部转换为大写，并返回转换后的字符串。
 
