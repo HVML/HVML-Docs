@@ -913,17 +913,13 @@ $T.get('Hello, world!')
 
 `STR` 是一个内置的动态变量，该变量用于实现常见的字符串操作。
 
-该变量提供的接口，类似 PHP 的字符串函数：<https://www.php.net/manual/en/ref.strings.php>
-
-主要有：
-
 #### 3.7.1) `contains` 方法
 
 用于判断一个字符串中是否包含给定的子字符串。
 
 ```php
 // 原型：判断字符串 `s1` 是否包含字符串 `s2`；返回值为 `boolean` 类型
-$STR.contains(<string: C format string> s1, <string: C format string> s2)
+$STR.contains(<string: C format string> s1, <string: C format string> s2) : boolean
 
 // 示例：判断字符串 `hello world` 是否包含字符串 `world`；返回 `boolean` 类型，结果为 `true`。
 $STR.contains('hello world', 'world')
@@ -935,7 +931,7 @@ $STR.contains('hello world', 'world')
 
 ```php
 // 原型：判断字符串 `s1` 是否以字符串 `s2` 结尾；返回值为 `boolean` 类型
-$STR.ends_with(<string: C format string> s1, <string: C format string> s2)
+$STR.ends_with(<string: C format string> s1, <string: C format string> s2) : boolean
 
 // 示例：判断字符串 `hello world` 是否以字符串 `world`结尾；返回 `boolean` 类型，结果为 `true`。
 $STR.ends_with('hello world', 'world')
@@ -947,10 +943,10 @@ $STR.ends_with('hello world', 'world')
 
 ```php
 // 原型：将字符串 `s1` 用字符串 `s2` 进行分隔；返回值为 `array` 类型
-$STR.explode(<string: C format string> s1, <string: C format string> s2)
+$STR.explode(<string: C format string> s1, <string: C format string> s2) : array
 
-// 示例：将字符串 `beijing--shanghai--guangzhou` 用字符串 `--` 分隔；返回 `array` 类型，结果为 `['beijing', 'shanghai', 'guangzhou']`。
-$STR.explode('beijing--shanghai--guangzhou', '--')
+// 示例：将字符串 `beijing:shanghai:guangzhou` 用字符串 `:` 分隔；返回 `array` 类型，结果为 `['beijing', 'shanghai', 'guangzhou']`。
+$STR.explode('beijing:shanghai:guangzhou', ':')
 ```
 
 #### 3.7.4) `implode` 方法
@@ -959,10 +955,10 @@ $STR.explode('beijing--shanghai--guangzhou', '--')
 
 ```php
 // 原型：使用字符串 `s1` ，连接字符串数组 `a1` 中的每个字符串；返回值为 `string` 类型
-$STR.implode(<string: C format string> s1, <array: string array> a1)
+$STR.implode(<string: C format string> s1, <array: string array> a1) : string
 
-// 示例：使用字符串 `new` 连接数组中的每个字符串；返回 `string` 类型，结果为 `beijingnewshanghainewguangzhou`。
-$STR.implode('new', ['beijing', 'shanghai', 'guangzhou'])
+// 示例：使用字符串 `:` 连接数组中的每个字符串；返回 `string` 类型，结果为 `beijing:shanghai:guangzhou`。
+$STR.implode(':', ['beijing', 'shanghai', 'guangzhou'])
 ```
 - 如果 `s1` 为空字符串，则该方法直接连接数组中的各个字符串，各个字符串之间没有分隔；
 
@@ -977,7 +973,7 @@ $STR.implode('new', ['beijing', 'shanghai', 'guangzhou'])
 
 ```php
 // 原型：将字符串 `s1` 中的字符随机打乱，重排后返回新的字符串；返回值为 `string` 类型
-$STR.shuffle(<string: C format string> s1)
+$STR.shuffle(<string: C format string> s1) : string
 
 // 示例：将字符串 `beijing` 中的字母顺序打乱，产生一个新的字符串；返回 `string` 类型，结果可能是 `jbienig`。
 $STR.shuffle('beijing')
@@ -989,7 +985,7 @@ $STR.shuffle('beijing')
 
 ```php
 // 原型：将字符串 `s1` 中的子字符串 `sub`，用字符串 `new` 替换，替换后返回新的字符串；返回值为 `string` 类型
-$STR.replace(<string: C format string> s1, <string: C format string> sub, <string: C format string> new)
+$STR.replace(<string: C format string> s1, <string: C format string> sub, <string: C format string> new) : string
 
 // 示例：将字符串 `hello world beijing` 中的空格 ` `，用 `-` 替换，产生一个新的字符串；返回 `string` 类型，结果可能是 `hello-world-beijing`。
 $STR.replace('hello world beijing', ' ', '-')
@@ -1001,7 +997,7 @@ $STR.replace('hello world beijing', ' ', '-')
 
 ```php
 // 原型
-$STR.format_c(<string: C format string>[, <boolean | number | longint | ulongint | longdouble | string>[, ...]])
+$STR.format_c(<string: C format string>[, <boolean | number | longint | ulongint | longdouble | string>[, ...]]) : string
 
 // 原型
 $STR.format_c(<string: C format string>, <array>)
@@ -1017,13 +1013,13 @@ $STR.format_c(<string: C format string>, <array>)
 
 ```php
 // 原型
-$STR.format_p(<string: string contains placeholders>, <array>)
+$STR.format_p(<string: string contains placeholders>, <array>) : string
 
 // 示例
 $STR.format_p('There are two boys: {0} and {1}', ['Tom', 'Jerry'])
 
 // 原型
-$STR.format_p(<string: string contains placeholders>, <object>)
+$STR.format_p(<string: string contains placeholders>, <object>) : string
 
 // 示例
 $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry'})
@@ -1035,7 +1031,7 @@ $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 
 
 ```php
 // 原型：将字符串 `s1` 与字符串 `s2` 连接，产生新的字符串并返回；返回值为 `string` 类型
-$STR.strcat(<string: C format string> s1, <string: C format string> s2)
+$STR.strcat(<string: C format string> s1, <string: C format string> s2) : string
 
 // 示例：将字符串 `hello` 与字符串 ` world` 连接，产生一个新的字符串；返回 `string` 类型，结果是 `hello world`。
 $STR.strcat('hello', ' world')
@@ -1047,7 +1043,7 @@ $STR.strcat('hello', ' world')
 
 ```php
 // 原型：获得字符串 `s` 的长度，该长度包含字符串结尾的 `\0`；返回值为 `ulongint` 类型
-$STR.strlen(<string: C format string> s)
+$STR.strlen(<string: C format string> s) : ulongint
 
 // 示例：获得字符串 `hello world` 的长度；返回 `ulongint` 类型，结果是 `12`。
 $STR.strlen('hello world')
@@ -1059,7 +1055,7 @@ $STR.strlen('hello world')
 
 ```php
 // 原型：将字符串 `s` 全部转换为小写，并返回转换后的字符串；返回值为 `string` 类型
-$STR.lower(<string: C format string> s)
+$STR.lower(<string: C format string> s) : string
 
 // 示例：将字符串 `HELLO WORLD` 全部转换为小写，并返回转换后的字符串；返回 `string` 类型，结果是 `hello world`。
 $STR.lower('HELLO WORLD')
@@ -1071,7 +1067,7 @@ $STR.lower('HELLO WORLD')
 
 ```php
 // 原型：将字符串 `s` 全部转换为大写，并返回转换后的字符串；返回值为 `string` 类型
-$STR.upper(<string: C format string> s)
+$STR.upper(<string: C format string> s) : string
 
 // 示例：将字符串 `hello world` 全部转换为大写，并返回转换后的字符串；返回 `string` 类型，结果是 `HELLO WORLD`。
 $STR.upper('hello world')
@@ -1120,11 +1116,11 @@ $MATH.e_l
 ```php
 // 原型
 // 根据传入的关键词或自定义常数名称返回指定常数，返回类型为 `number`
-$MATH.const( ['e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)'] | <string: a user-defined const name>)
+$MATH.const( ['e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)'] | <string: a user-defined const name>) : number
 
 // 原型
 // 根据传入的关键词或自定义常数名称返回指定常数，返回类型为 `longdouble`
-$MATH.const_l( ['e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)'] | <string: a user-defined const name>)
+$MATH.const_l( ['e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)'] | <string: a user-defined const name>) : longdouble
 
 // 示例：获取 log2e 值，即：1.4426950408889634074
 $MATH.const('log2e')
@@ -1162,7 +1158,7 @@ $MATH.const(! 'G0', 6.67e-11)
 
 ```php
 // 原型：求两个实数的和，返回指定类型的数值；默认为 `number`
-$MATH.add(<real>, <real>[, 'number | longint | ulongint | longdouble'])
+$MATH.add(<real>, <real>[, 'number | longint | ulongint | longdouble']) : number | longint | ulongint | longdouble
 
 // 示例：求 (1.4 + 0.7) 默认返回 `number` 类型，结果为 `2.1`。
 $MATH.add(1.4, 0.7)
@@ -1177,7 +1173,7 @@ $MATH.add(1.4, 0.7, 'longint')
 
 ```php
 // 原型：求两个实数的差，返回指定类型的数值；默认为 `number`
-$MATH.sub(<real>, <real>[, 'number | longint | ulongint | longdouble'])
+$MATH.sub(<real>, <real>[, 'number | longint | ulongint | longdouble']) : number | longint | ulongint | longdouble
 
 // 示例：求 (1.4 - 0.7) 默认返回 `number` 类型，结果为 `0.7`。
 $MATH.sub(1.4, 0.7)
@@ -1192,7 +1188,7 @@ $MATH.sub(1.4, 0.7, 'longint')
 
 ```php
 // 原型：求两个实数的积，返回指定类型的数值；默认为 `number`
-$MATH.mul(<real>, <real>[, 'number | longint | ulongint | longdouble'])
+$MATH.mul(<real>, <real>[, 'number | longint | ulongint | longdouble']) : number | longint | ulongint | longdouble
 
 // 示例：求 (1.4 * 0.7) 默认返回 `number` 类型，结果为 `0.98`。
 $MATH.mul(1.4, 0.7)
@@ -1207,7 +1203,7 @@ $MATH.mul(1.4, 0.7, 'longint')
 
 ```php
 // 原型：求两个实数的商，返回指定类型的数值；默认为 `number`
-$MATH.div(<real>, <real>[, 'number | longint | ulongint | longdouble'])
+$MATH.div(<real>, <real>[, 'number | longint | ulongint | longdouble']) : number | longint | ulongint | longdouble
 
 // 示例：求 (1.4 / 0.7) 默认返回 `number` 类型，结果为 `2.0`。
 $MATH.div(1.4, 0.7)
@@ -1222,7 +1218,7 @@ $MATH.div(1.4, 0.7, 'longint')
 
 ```php
 // 原型
-$MATH.eval(<string: a four arithmetic expressions>[, <object: parameter map>])
+$MATH.eval(<string: a four arithmetic expressions>[, <object: parameter map>]) : number
 
 // 示例1：求解 (500 + 10) * (700 + 30)
 $MATH.eval("(500 + 10) * (700 + 30)")
@@ -1234,7 +1230,7 @@ $MATH.eval("2 * pi * r", { pi: $MATH.pi, r: $r })
 $MATH.eval("pi * r * r", { pi: $MATH.pi, r: $MATH.sqrt(2) })
 
 // 原型：eval_l 的 long double 版本
-$MATH.eval_l(<string: a four arithmetic expressions>[, <object: parameter map>])
+$MATH.eval_l(<string: a four arithmetic expressions>[, <object: parameter map>]) : longdouble
 
 ```
 
@@ -1244,10 +1240,10 @@ $MATH.eval_l(<string: a four arithmetic expressions>[, <object: parameter map>])
 
 ```php
 // 原型：求角度的正弦值，角度为弧度值；返回值为 `number` 类型
-$MATH.sin(<number | longint | ulongint | longdouble>)
+$MATH.sin(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求角度的正弦值，角度为弧度值；返回值为 `longdouble` 类型
-$MATH.sin_l(<number | longint | ulongint | longdouble>)
+$MATH.sin_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 (pi/4) 的正弦值，返回 `number` 类型，结果为 `0.707107`。
 $MATH.sin($MATH.const('pi/4'))
@@ -1262,10 +1258,10 @@ $MATH.sin_l($MATH.const('pi/4'))
 
 ```php
 // 原型：求角度的余弦值，角度为弧度值；返回值为 `number` 类型
-$MATH.cos(<number | longint | ulongint | longdouble>)
+$MATH.cos(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求角度的余弦值，角度为弧度值；返回值为 `longdouble` 类型
-$MATH.cos_l(<number | longint | ulongint | longdouble>)
+$MATH.cos_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 (pi/4) 的余弦值，返回 `number` 类型，结果为 `0.707107`。
 $MATH.cos($MATH.const('pi/4'))
@@ -1280,10 +1276,10 @@ $MATH.cos_l($MATH.const('pi/4'))
 
 ```php
 // 原型：求角度的正切值，角度为弧度值；返回值为 `number` 类型
-$MATH.tan(<number | longint | ulongint | longdouble>)
+$MATH.tan(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求角度的正切值，角度为弧度值；返回值为 `longdouble` 类型
-$MATH.tan_l(<number | longint | ulongint | longdouble>)
+$MATH.tan_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 (pi/4) 的正切值，返回 `number` 类型，结果为 `1.0`。
 $MATH.tan($MATH.const('pi/4'))
@@ -1298,10 +1294,10 @@ $MATH.tan_l($MATH.const('pi/4'))
 
 ```php
 // 原型：求数值的双曲正弦值；返回值为 `number` 类型
-$MATH.sinh(<number | longint | ulongint | longdouble>)
+$MATH.sinh(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求数值的双曲正弦值；返回值为 `longdouble` 类型
-$MATH.sinh_l(<number | longint | ulongint | longdouble>)
+$MATH.sinh_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `1.0` 的双曲正弦值，返回 `number` 类型，结果为 `1.175201`。
 $MATH.sinh(1.0)
@@ -1316,10 +1312,10 @@ $MATH.sinh_l(1.0)
 
 ```php
 // 原型：求数值的双曲余弦值；返回值为 `number` 类型
-$MATH.cosh(<number | longint | ulongint | longdouble>)
+$MATH.cosh(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求数值的双曲余弦值；返回值为 `longdouble` 类型
-$MATH.cosh_l(<number | longint | ulongint | longdouble>)
+$MATH.cosh_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `1.0` 的双曲余弦值，返回 `number` 类型，结果为 `1.543081`。
 $MATH.cosh(1.0)
@@ -1334,10 +1330,10 @@ $MATH.cosh_l(1.0)
 
 ```php
 // 原型：求数值的双曲正切值；返回值为 `number` 类型
-$MATH.tanh(<number | longint | ulongint | longdouble>)
+$MATH.tanh(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求数值的双曲正切值；返回值为 `longdouble` 类型
-$MATH.tanh_l(<number | longint | ulongint | longdouble>)
+$MATH.tanh_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `1.0` 的双曲正切值，返回 `number` 类型，结果为 `0.761594`。
 $MATH.tan(1.0)
@@ -1352,10 +1348,10 @@ $MATH.tan_l(1.0)
 
 ```php
 // 原型：求数值的反正弦值，获得对应角度的弧度值；返回值为 `number` 类型
-$MATH.asin(<number | longint | ulongint | longdouble>)
+$MATH.asin(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求数值的反正弦值，获得对应角度的弧度值；返回值为 `longdouble` 类型
-$MATH.asin_l(<number | longint | ulongint | longdouble>)
+$MATH.asin_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `0.707107` 的反正弦值，返回 `number` 类型，结果为 `0.785398`。
 $MATH.asin(0.707107)
@@ -1370,10 +1366,10 @@ $MATH.asin_l(0.707107)
 
 ```php
 // 原型：求数值的反余弦值，获得对应角度的弧度值；返回值为 `number` 类型
-$MATH.acos(<number | longint | ulongint | longdouble>)
+$MATH.acos(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求数值的反余弦值，获得对应角度的弧度值；返回值为 `longdouble` 类型
-$MATH.acos_l(<number | longint | ulongint | longdouble>)
+$MATH.acos_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `0.707107` 的反余弦值，返回 `number` 类型，结果为 `0.785398`。
 $MATH.acos(0.707107)
@@ -1388,10 +1384,10 @@ $MATH.acos_l(0.707107)
 
 ```php
 // 原型：求数值的反正切值，获得对应角度的弧度值；返回值为 `number` 类型
-$MATH.atan(<number | longint | ulongint | longdouble>)
+$MATH.atan(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求数值的反正切值，获得对应角度的弧度值；返回值为 `longdouble` 类型
-$MATH.atan_l(<number | longint | ulongint | longdouble>)
+$MATH.atan_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `1.0` 的反正切值，返回 `number` 类型，结果为 `0.785398`。
 $MATH.atan(1.0)
@@ -1406,10 +1402,10 @@ $MATH.atan_l(1.0)
 
 ```php
 // 原型：求数值的反双曲正弦值；返回值为 `number` 类型
-$MATH.asinh(<number | longint | ulongint | longdouble>)
+$MATH.asinh(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求数值的反双曲正弦值；返回值为 `longdouble` 类型
-$MATH.asinh_l(<number | longint | ulongint | longdouble>)
+$MATH.asinh_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `1.0` 的反双曲正弦值，返回 `number` 类型，结果为 `0.881374`。
 $MATH.asin(1.0)
@@ -1424,10 +1420,10 @@ $MATH.asin_l(1.0)
 
 ```php
 // 原型：求数值的反双曲余弦值；返回值为 `number` 类型
-$MATH.acosh(<number | longint | ulongint | longdouble>)
+$MATH.acosh(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求数值的反双曲余弦值；返回值为 `longdouble` 类型
-$MATH.acosh_l(<number | longint | ulongint | longdouble>)
+$MATH.acosh_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `1.0` 的反双曲余弦值，返回 `number` 类型，结果为 `0.0`。
 $MATH.acos(1.0)
@@ -1442,10 +1438,10 @@ $MATH.acos_l(1.0)
 
 ```php
 // 原型：求数值的反双曲正切值；返回值为 `number` 类型
-$MATH.atanh(<number | longint | ulongint | longdouble>)
+$MATH.atanh(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求数值的反双曲正切值；返回值为 `longdouble` 类型
-$MATH.atanh_l(<number | longint | ulongint | longdouble>)
+$MATH.atanh_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `0.5` 的反双曲正切值，返回 `number` 类型，结果为 `0.549306`。
 $MATH.atanh(0.5)
@@ -1460,10 +1456,10 @@ $MATH.atanh_l(0.5)
 
 ```php
 // 原型：求两值相除的余数；返回值为 `number` 类型
-$MATH.fmod(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>)
+$MATH.fmod(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>) : number
 
 // 原型：求两值相除的余数；返回值为 `longdouble` 类型
-$MATH.fmod_l(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>)
+$MATH.fmod_l(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `(4.5/2.0)` 的余数，返回 `number` 类型，结果为 `0.5`。
 $MATH.fmod(4.5, 2.0)
@@ -1491,10 +1487,10 @@ $MATH.fabs(-2.5L)
 
 ```php
 // 原型：求数值的自然对数；返回值为 `number` 类型
-$MATH.log(<number | longint | ulongint | longdouble>)
+$MATH.log(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求数值的自然对数；返回值为 `longdouble` 类型
-$MATH.log_l(<number | longint | ulongint | longdouble>)
+$MATH.log_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `e` 的自然对数，返回 `number` 类型，结果为 `1.0`。
 $MATH.log($MATH.const('e'))
@@ -1509,10 +1505,10 @@ $MATH.log_l($MATH.const('e'))
 
 ```php
 // 原型：求数值以 `10` 为底的对数；返回值为 `number` 类型
-$MATH.log10(<number | longint | ulongint | longdouble>)
+$MATH.log10(<number | longint | ulongint | longdouble>) : number
 
 // 原型：求数值以 `10` 为底的对数；返回值为 `longdouble` 类型
-$MATH.log10_l(<number | longint | ulongint | longdouble>)
+$MATH.log10_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `10.0` 以 `10` 为底的对数，返回 `number` 类型，结果为 `1.0`。
 $MATH.log10(10.0)
@@ -1527,10 +1523,10 @@ $MATH.log10i_l(10.0)
 
 ```php
 // 原型：求 `x` 的 `y` 次幂；返回值为 `number` 类型
-$MATH.pow(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y)
+$MATH.pow(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y) : number
 
 // 原型：求 `x` 的 `y` 次幂；返回值为 `longdouble` 类型
-$MATH.pow_l(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y)
+$MATH.pow_l(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y) : longdouble
 
 // 示例：求 `3.0` 的 `2.0` 次幂，返回 `number` 类型，结果为 `9.0`。
 $MATH.pow(3.0, 2.0)
@@ -1545,10 +1541,10 @@ $MATH.pow_l(3.0, 2.0)
 
 ```php
 // 原型：求 `e` 的 `x` 次幂；返回值为 `number` 类型
-$MATH.exp(<number | longint | ulongint | longdouble> x)
+$MATH.exp(<number | longint | ulongint | longdouble> x) : number
 
 // 原型：求 `e` 的 `x` 次幂；返回值为 `longdouble` 类型
-$MATH.exp_l(<number | longint | ulongint | longdouble> x)
+$MATH.exp_l(<number | longint | ulongint | longdouble> x) : longdouble
 
 // 示例：求 `e` 的 `1.0` 次幂，返回 `number` 类型，结果为 `2.718282`。
 $MATH.exp(1.0)
@@ -1563,10 +1559,10 @@ $MATH.exp_l(1.0)
 
 ```php
 // 原型：计算向下取整的数值；返回值为 `number` 类型
-$MATH.floor(<number | longint | ulongint | longdouble>)
+$MATH.floor(<number | longint | ulongint | longdouble>) : number
 
 // 原型：计算向下取整的数值；返回值为 `longdouble` 类型
-$MATH.floor_l(<number | longint | ulongint | longdouble>)
+$MATH.floor_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `-2.3` 向下取整数值，返回 `number` 类型，结果为 `-3.0`。
 $MATH.floor(-2.3)
@@ -1581,10 +1577,10 @@ $MATH.floor_l(-2.3)
 
 ```php
 // 原型：计算向上取整的数值；返回值为 `number` 类型
-$MATH.ceil(<number | longint | ulongint | longdouble>)
+$MATH.ceil(<number | longint | ulongint | longdouble>) : number
 
 // 原型：计算向上取整的数值；返回值为 `longdouble` 类型
-$MATH.ceil_l(<number | longint | ulongint | longdouble>)
+$MATH.ceil_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `-2.3` 向上取整数值，返回 `number` 类型，结果为 `-2.0`。
 $MATH.ceil(-2.3)
@@ -1599,10 +1595,10 @@ $MATH.ceil_l(-2.3)
 
 ```php
 // 原型：计算数值的平方根；返回值为 `number` 类型
-$MATH.sqrt(<number | longint | ulongint | longdouble>)
+$MATH.sqrt(<number | longint | ulongint | longdouble>) : number
 
 // 原型：计算数值的平方根；返回值为 `longdouble` 类型
-$MATH.sqrt_l(<number | longint | ulongint | longdouble>)
+$MATH.sqrt_l(<number | longint | ulongint | longdouble>) : longdouble
 
 // 示例：求 `9.0` 的平方根，返回 `number` 类型，结果为 `3.0`。
 $MATH.sqrt(9.0)
