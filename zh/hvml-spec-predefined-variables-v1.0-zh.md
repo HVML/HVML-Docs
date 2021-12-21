@@ -46,6 +46,7 @@ Language: Chinese
       * [3.3.1) `base` 方法](#331-base-方法)
       * [3.3.2) `maxIterationCount` 方法](#332-maxiterationcount-方法)
       * [3.3.3) `maxRecursionDepth` 方法](#333-maxrecursiondepth-方法)
+      * [3.3.4) `timeout` 方法](#334-timeout-方法)
    + [3.4) `DOC`](#34-doc)
       * [3.4.1) `doctype` 方法](#341-doctype-方法)
       * [3.4.2) `query` 方法](#342-query-方法)
@@ -480,7 +481,7 @@ $HVML.base(! "https://foo.example.com/app/hvml" )
 // 原型，返回当前值
 $HVML.maxIterationCount: ulongint
 
-// 原型，设置文档的根 URL，返回设置后的值。
+// 原型，设置最大迭代次数值，返回设置后的值。当传入无效值（如零）时，不做改变。
 $HVML.maxIterationCount(! <ulongint, new maximal interation count> ): ulongint
 
 // 示例：
@@ -497,11 +498,28 @@ $HVML.maxIterationCount(! 10000UL )
 // 原型，返回当前值
 $HVML.maxRecursionDepth: ulongint
 
-// 原型，设置文档的根 URL，返回设置后的值。
+// 原型，设置最大递归深度值，返回设置后的值。当传入无效值（如零）时，不做改变。
 $HVML.maxRecursionDepth(! <ulongint, new maximal recursion depth> ): ulongint
 
 // 示例：
 $HVML.maxRecursionDepth(! 10000UL )
+```
+
+#### 3.3.4) `timeout` 方法
+
+该方法获取或设置 HVML 程序在通过数据获取器获取数据或者建立长连接、发送请求时的超时值（单位：秒）。
+
+默认值为 10.0。
+
+```php
+// 原型，返回当前超时值
+$HVML.timeout: number
+
+// 原型，设置超时值，返回设置后的值。当传入无效值（如零或者负数）时，不做改变。
+$HVML.timeout(! <number, new timeout value> ): number
+
+// 示例：设置超时值魏 3.5 秒。
+$HVML.timeout(! 3.5 )
 ```
 
 ### 3.4) `DOC`
