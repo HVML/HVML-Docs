@@ -1148,9 +1148,9 @@ HVML 还定义有如下一些动作标签：
       - `Underflow`：表示浮点数运算时出现向下溢出错误。
       - `InvalidFloat`：表示传入了无效的浮点数。比如在调用 `$MATH.asin` 时，传入了不在 `[-1, 1]` 范围内的实数。
    - 操作系统相关：
-      - `OSFailure`：表示遇到未明确定义为异常的一般性操作系统错误。
       - `AccessDenied`：表示拒绝访问或者权限不足。
       - `IOFailure`：表示输入输出错误。
+      - `TooSmall`：表示太小（如缓冲区大小）。
       - `TooMany`：表示太多（如符号链接）。
       - `TooLong`：表示太长（如路径名称）。
       - `NotDesiredEntity`：表示传递了一个未预期的实体。
@@ -1160,6 +1160,7 @@ HVML 还定义有如下一些动作标签：
       - `ConnectionAborted`：连接中断。
       - `ConnectionRefused`：连接被拒绝。
       - `ConnectionReset`：连接被重置。
+      - `OSFailure`：表示遇到未明确定义为异常的一般性操作系统错误。
    - 其他：
       - `NotImplemented`：表示某个特性尚未实现。
       - `NotReady`：表示指定的数据尚未就绪。
