@@ -1117,11 +1117,16 @@ HVML 还定义有如下一些动作标签：
    - `FileSizeLimitExceeded`：表示达到文件大小上限。
 - `except`：出现未被捕获的异常时，插入其中包含的内容到目标 DOM 树的当前位置。`except` 标签支持 `type` 属性，用来指定脚本的异常类型。如：
    - 解析相关：
-      - `BadHVML`：表示错误的 HVML 代码。
-      - `BadExpression`：表示错误的表达式。
-      - `BadExecutor`：表示错误的执行器。
       - `BadEncoding`：表示错误的字符编码。
+      - `BadHVMLTag`：表示错误的、不适合的标签，或者不匹配的 HVML 关闭标签。
+      - `BadHVMLAttrName`：表示错误的 HVML 元素属性名称，如未知的属性名称，不符合规范的属性名称等。
+      - `BadHVMLAttrValue`：表示无法解析的 HVML 元素属性值。
+      - `BadHVMLContent`：表示无法解析的 HVML 元素内容。
    - 解释器相关：
+      - `BadExpression`：表示错误的表达式，在对 EJSON 表达式求值时产生。
+      - `BadExecutor`：表示错误的执行器，在解析执行器时产生。
+      - `eDOMFailure`：表示在构建 eDOM 时遇到问题。
+      - `LostRenderer`：丢失到渲染器的连接。
       - `BadName`：表示错误的变量名称。通常发生在对对 EJSON 求值表达式求值时，指定的变量名不符合规范要求。
       - `NoData`：表示不存在指定的数据，或者指定的变量名未绑定到任何数据。
       - `Unauthorized`：表示连接时出现身份验证错误。
