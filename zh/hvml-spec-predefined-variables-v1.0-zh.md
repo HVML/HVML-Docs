@@ -279,18 +279,18 @@ $SESSION.cwd(! <string: new path for the current working directory> ): boolean
 该方法可能产生的异常：
 
 - `AccessDenied`
-- `IOError`
+- `IOFailure`
 - `TooMany`
 - `TooLong`
 - `NotDesiredEntity`
-- `OSError`
+- `OSFailure`
 
 #### 3.1.2) `user` 方法
 
 获取或设置用户键值对。
 
 ```php
-// 原型：获取指定键名对应的键值；未设置时抛出异常 `KeyError`
+// 原型：获取指定键名对应的键值；未设置时抛出异常 `NoSuchKey`
 $SESSION.user( <string: the user defined key name> ): any
 
 // 原型：设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。
@@ -305,7 +305,7 @@ $SESSION.user('userId')
 
 该方法可能产生的异常：
 
-- `KeyError`
+- `NoSuchKey`
 
 ### 3.2) `SYSTEM`
 
@@ -1651,7 +1651,7 @@ $MATH.sqrt_l(9.0)
 ```
 #### 4.1.30) 错误与异常
 
-在调用`MATH`动态对象的过程中，会产生如下异常：
+在调用`MATH` 动态对象方法的过程中，可能产生如下异常：
 
 - `ArgumentMissed`：缺少必要的参数，或传入的参数不足。
 - `WrongDataType`：错误的参数类型。
