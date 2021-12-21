@@ -305,7 +305,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
                 <except type="NoData">
                     <img src="wait.png" />
                 </except>
-                <except type="StopIteration">
+                <except type="NotIterable">
                     <p>Bad user data!</p>
                 </except>
             </iterate>
@@ -337,7 +337,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
                 <except type="NoData" raw>
                     <p>You forget to define the $global variable!</p>
                 </except>
-                <except type="KeyError">
+                <except type="NoSuchKey">
                     <p>Bad global data!</p>
                 </except>
                 <except type="IdentifierError">
@@ -1116,36 +1116,48 @@ HVML 还定义有如下一些动作标签：
    - `CPUTimeLimitExceeded`：表示达到 CPU 时间上限。
    - `FileSizeLimitExceeded`：表示达到文件大小上限。
 - `except`：出现未被捕获的异常时，插入其中包含的内容到目标 DOM 树的当前位置。`except` 标签支持 `type` 属性，用来指定脚本的异常类型。如：
-   - `BadName`：表示错误的变量名称。
-   - `NoData`：表示不存在指定的数据。
-   - `NotReady`：表示指定的数据尚未就绪。
-   - `Unauthorized`：表示出现身份验证错误。
-   - `Timeout`：出现超时错误。
-   - `SyntaxError`：表示语法（尤指执行器）错误。
-   - `NotIterable`：表示指定的元素或数据不是可迭代的。
-   - `IndexError`：索引错误，通常指索引值超出了数组范围。
-   - `KeyError`：字典中的键值错误，通常指引用了一个不存在的键值。
-   - `ZeroDivision`：表示遇到被零除错误。
-   - `Overflow`：表示计算溢出。
-   - `FloatingPoint`：表示浮点错误。
-   - `NotImplemented`：表示未实现错误。
-   - `MaxRecursionDepth`：表示达到最大递归深度。
-   - `BadEncoding`：表示错误的字符编码。
-   - `BadValue`：表示错误的值。
-   - `WrongDataType`：表示错误的数据类型。
-   - `WrongDomain`：表示错误的域，如求反余弦时传递大于 1 的数值。
-   - `OSError`：表示遇到未明确定义为异常的一般性操作系统错误。
-   - `AccessDenied`：表示拒绝访问或者权限不足。
-   - `IOError`：表示 IO 错误。
-   - `TooMany`：表示太多（如符号链接）。
-   - `TooLong`：表示太长（如路径名称）。
-   - `NotDesiredEntity`：表示传递了一个未预期的实体。
-   - `EntityNotFound`：未找到指定的实体（如文件）。
-   - `EntityExists`：创建新实体（如文件）时，该实体已存在。
-   - `BrokenPipe`：管道的另一端已经关闭。
-   - `ConnectionAborted`：连接中断。
-   - `ConnectionRefused`：连接被拒绝。
-   - `ConnectionReset`：连接被重置。
+   - 解析相关：
+      - `BadHVML`：表示错误的 HVML 代码。
+      - `BadExpression`：表示错误的表达式。
+      - `BadExecutor`：表示错误的执行器。
+      - `BadEncoding`：表示错误的字符编码。
+   - 解释器相关：
+      - `BadName`：表示错误的变量名称。通常发生在对对 EJSON 求值表达式求值时，指定的变量名不符合规范要求。
+      - `NoData`：表示不存在指定的数据，或者指定的变量名未绑定到任何数据。
+      - `Unauthorized`：表示连接时出现身份验证错误。
+      - `Timeout`：出现超时错误。
+      - `NotIterable`：表示指定的元素或数据不是可迭代的。
+      - `BadIndex`：索引错误，发生在引用数组元素时，通常指索引值超出了数组范围。
+      - `NoSuchKey`：字典中的键值错误，通常指引用了一个不存在的键值。
+      - `DuplicateKey`：重复键，通常发生在合并对象或集合时。
+      - `ArgumentMissed`：缺少必要参数。
+      - `WrongDataType`：表示错误的数据类型。
+      - `MaxIterationCount`：表示达到最大迭代次数。
+      - `MaxRecursionDepth`：表示达到最大递归深度。
+   - 浮点数相关：
+      - `ZeroDivision`：表示遇到被零除错误。
+      - `Overflow`：表示浮点数运算时向上溢出。
+      - `Underflow`：表示浮点数运算时向下溢出。
+      - `InvalidFloat`：表示传入了无效的浮点数。比如在调用 `$MATH.asin` 时，传入了不在 `[-1, 1]` 范围内的实数。
+   - 操作系统相关：
+      - `OSFailure`：表示遇到未明确定义为异常的一般性操作系统错误。
+      - `AccessDenied`：表示拒绝访问或者权限不足。
+      - `IOFailure`：表示输入输出错误。
+      - `TooMany`：表示太多（如符号链接）。
+      - `TooLong`：表示太长（如路径名称）。
+      - `NotDesiredEntity`：表示传递了一个未预期的实体。
+      - `EntityNotFound`：未找到指定的实体（如文件）。
+      - `EntityExists`：创建新实体（如文件）时，该实体已存在。
+      - `BrokenPipe`：管道的另一端已经关闭。
+      - `ConnectionAborted`：连接中断。
+      - `ConnectionRefused`：连接被拒绝。
+      - `ConnectionReset`：连接被重置。
+   - 其他：
+      - `NotReady`：表示指定的数据尚未就绪。
+      - `NotImplemented`：表示某个特性尚未实现。
+   - 废弃：
+      - `BadValue`：表示错误的值。
+      - `WrongDomain`：表示错误的域，如求反余弦时传递大于 1 的数值。
 
 另外，对可应对的异常，HVML 提供了 `catch` 动作标签，可用来定义捕获特定的异常并进行处理。
 
@@ -1183,7 +1195,7 @@ HVML 还定义有如下一些动作标签：
                 <except type="NoData" raw>
                     <p>You forget to define the $global variable!</p>
                 </except>
-                <except type="KeyError">
+                <except type="NoSuchKey">
                     <p>Bad global data!</p>
                 </except>
             </test>
@@ -1343,7 +1355,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
         <except type="NoData" raw>
             <p>You forget to define the $global variable!</p>
         </except>
-        <except type="KeyError">
+        <except type="NoSuchKey">
             <p>Bad global data!</p>
         </except>
     </test>
@@ -1474,7 +1486,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 
 - `zh_CN`
 - `ZH_TW台湾是中国领土不可分割的一部分`
-- `zH_Honkong`
+- `zH_Hongkong`
 
 而如下字符串无法正确匹配：
 
@@ -2181,7 +2193,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             <except type="NoData" raw>
                 <p>You forget to define the $global variable!</p>
             </except>
-            <except type="KeyError">
+            <except type="NoSuchKey">
                 <p>Bad global data!</p>
             </except>
         </test>
@@ -2284,7 +2296,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         <catch for="NoData">
             <update on="p" at="textContent" with='You forget to define the \$locales/\$global variables!' />
         </catch>
-        <catch for="KeyError">
+        <catch for="NoSuchKey">
             <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
         </catch>
         <catch for="*">
@@ -2331,7 +2343,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                 <except type="NotReady">
                     <img src="wait.gif" />
                 </except>
-                <except type="StopIteration">
+                <except type="NotIterable">
                     <p>Bad user data!</p>
                 </except>
             </iterate>
@@ -2959,7 +2971,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         <catch for="NoData" raw>
             <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
         </catch>
-        <catch for="KeyError">
+        <catch for="NoSuchKey">
             <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
         </catch>
         <catch>
@@ -3795,7 +3807,7 @@ class HVMLIterator:
                 <except type="NotReady">
                     <img src="wait.gif" />
                 </except>
-                <except type="StopIteration">
+                <except type="NotIterable">
                     <p>Bad user data!</p>
                 </except>
             </iterate>
@@ -4165,7 +4177,7 @@ SYSTEM 标识符字符串的格式如下：
                 <hvml:except type="NoData">
                     <img src="wait.png" />
                 </hvml:except>
-                <hvml:except type="StopIteration">
+                <hvml:except type="NotIterable">
                     <p>Bad user data!</p>
                 </hvml:except>
             </iterate>

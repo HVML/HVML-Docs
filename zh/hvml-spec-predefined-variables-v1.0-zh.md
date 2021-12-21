@@ -1653,15 +1653,15 @@ $MATH.sqrt_l(9.0)
 ```
 #### 4.1.30) 错误与异常
 
-在调用`MATH`动态对象的过程中，会产生如下的错误码和异常：
+在调用`MATH`动态对象的过程中，会产生如下异常：
 
-| Error Code                 | Exception     | 备注                               |
-| -------------------------- | ------------- | ---------------------------------- |
-| PURC_ERROR_WRONG_ARGS      |               | 调用参数类型错误，或参数个数错误   |
-| PURC_ERROR_DIVBYZERO       | FloatingPoint | 除零错误                           |
-| PURC_ERROR_OVERFLOW        | Overflow      | 计算值超出数据类型的最大值         |
-| PURC_ERROR_UNDERFLOW       | Underflow     | 计算值小与数据类型所能表示的最小值 |
-| PURC_ERROR_INV_FLOATPOINT  | FloatingPoint | 其他浮点数错误                     |
+- `ArgumentMissed`：缺少必要的参数，或传入的参数不足。
+- `WrongDataType`：错误的参数类型。
+- `ZeroDivision`：被零除错误。
+- `Overflow`：计算时产生向上溢出错误。
+- `Underflow`：计算时产生向下溢出错误。
+- `InvalidFloat`：无效浮点数。
+
 
 参照 PHP 数学接口：<https://www.php.net/manual/en/book.math.php>
 
