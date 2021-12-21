@@ -2340,7 +2340,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         <ul id="the-user-list" class="user-list">
             <iterate on="$users" in="#the-user-list" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <except type="NotReady">
+                <except type="BadData">
                     <img src="wait.gif" />
                 </except>
                 <except type="NotIterable">
@@ -2611,12 +2611,6 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         <observe on="$mqtt" for="event:$new_user">
             <iterate on="$?" in="#the-user-list" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <except type="NotReady">
-                    <img src="wait.gif" />
-                </except>
-                <except>
-                    <p>Bad user data!</p>
-                </except>
             </iterate>
         </observe>
 
@@ -3804,7 +3798,7 @@ class HVMLIterator:
         <ul id="the-user-list" class="user-list">
             <iterate on="$users" in="#the-user-list" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <except type="NotReady">
+                <except type="BadData">
                     <img src="wait.gif" />
                 </except>
                 <except type="NotIterable">
