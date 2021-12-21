@@ -1247,6 +1247,7 @@ HVML 还定义有如下一些动作标签：
 - `caseinsensitively`：在 `init` 动作标签中初始化一个集合时，用于指定唯一性值的对比对大小写不敏感，亦可用在 `sort` 标签；可简写为 `caseless`。
 - `ascendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为升序；可简写为 `asc`。
 - `descendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为降序；可简写为 `desc`。
+- `silently`：在动作元素中，用于忽略执行当前元素时的所有异常；在骨架元素中使用 `hvml:silently` 属性。
 
 注意：在 HVML 中，我们无需为副词属性赋值。
 
