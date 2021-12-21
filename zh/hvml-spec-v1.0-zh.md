@@ -1139,6 +1139,8 @@ HVML 还定义有如下一些动作标签：
       - `WrongDataType`：表示错误的数据类型。
       - `MaxIterationCount`：表示达到最大迭代次数。
       - `MaxRecursionDepth`：表示达到最大递归深度。
+      - `MemoryFailure`：内存错误，如内部堆太小，内存分配失败。
+      - `InternalFailure`：解释器内部错误。
    - 浮点数相关：
       - `ZeroDivision`：表示遇到被零除错误。
       - `Overflow`：表示浮点数运算时向上溢出。
