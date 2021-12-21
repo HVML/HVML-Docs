@@ -1125,20 +1125,21 @@ HVML 还定义有如下一些动作标签：
    - 解释器相关：
       - `BadExpression`：表示错误的表达式，在对 EJSON 表达式求值时产生。
       - `BadExecutor`：表示错误的执行器，在解析执行器时产生。
-      - `eDOMFailure`：表示在构建 eDOM 时遇到问题。
-      - `LostRenderer`：丢失到渲染器的连接。
       - `BadName`：表示错误的变量名称。通常发生在对对 EJSON 求值表达式求值时，指定的变量名不符合规范要求。
       - `NoData`：表示不存在指定的数据，或者指定的变量名未绑定到任何数据。
-      - `Unauthorized`：表示连接时出现身份验证错误。
-      - `Timeout`：出现超时错误。
       - `NotIterable`：表示指定的元素或数据不是可迭代的。
       - `BadIndex`：索引错误，发生在引用数组元素时，通常指索引值超出了数组范围。
       - `NoSuchKey`：字典中的键值错误，通常指引用了一个不存在的键值。
       - `DuplicateKey`：重复键，通常发生在合并对象或集合时。
       - `ArgumentMissed`：缺少必要参数。
       - `WrongDataType`：表示错误的数据类型。
+      - `InvalidValue`：表示错误的、无法接受的值。通常发生在传入了不可接受的数值时。
       - `MaxIterationCount`：表示达到最大迭代次数。
       - `MaxRecursionDepth`：表示达到最大递归深度。
+      - `Unauthorized`：表示连接时出现身份验证错误。
+      - `Timeout`：出现超时错误。
+      - `eDOMFailure`：表示在构建 eDOM 时遇到问题。
+      - `LostRenderer`：丢失到渲染器的连接。
       - `MemoryFailure`：内存错误，如内部堆太小，内存分配失败。
       - `InternalFailure`：解释器内部错误。
    - 浮点数相关：
@@ -1160,10 +1161,9 @@ HVML 还定义有如下一些动作标签：
       - `ConnectionRefused`：连接被拒绝。
       - `ConnectionReset`：连接被重置。
    - 其他：
-      - `NotReady`：表示指定的数据尚未就绪。
       - `NotImplemented`：表示某个特性尚未实现。
+      - `NotReady`：表示指定的数据尚未就绪。
    - 废弃：
-      - `BadValue`：表示错误的值。
       - `WrongDomain`：表示错误的域，如求反余弦时传递大于 1 的数值。
 
 另外，对可应对的异常，HVML 提供了 `catch` 动作标签，可用来定义捕获特定的异常并进行处理。
