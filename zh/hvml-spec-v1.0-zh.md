@@ -1122,6 +1122,9 @@ HVML 还定义有如下一些动作标签：
       - `BadHVMLAttrName`：表示错误的 HVML 元素属性名称，如未知的属性名称，不符合规范的属性名称等。
       - `BadHVMLAttrValue`：表示无法解析的 HVML 元素属性值。
       - `BadHVMLContent`：表示无法解析的 HVML 元素内容。
+      - `BadTargetHTML`：表示解析目标标签文档（HTML）时出现错误。
+      - `BadTargetXGML`：表示解析目标标签文档（XGML）时出现错误。
+      - `BadTargetXML`：表示解析目标标签文档（XML）时出现错误。
    - 解释器相关：
       - `BadExpression`：表示错误的表达式，在对 EJSON 表达式求值时产生。
       - `BadExecutor`：表示错误的执行器，在解析执行器时产生。
@@ -1153,9 +1156,11 @@ HVML 还定义有如下一些动作标签：
       - `TooSmall`：表示太小（如缓冲区大小）。
       - `TooMany`：表示太多（如符号链接）。
       - `TooLong`：表示太长（如路径名称）。
+      - `TooLarge`：表示太大（如数据包大小）。
       - `NotDesiredEntity`：表示传递了一个未预期的实体。
       - `EntityNotFound`：未找到指定的实体（如文件）。
       - `EntityExists`：创建新实体（如文件）时，该实体已存在。
+      - `NoStorageSpace`：表示存储空间不足（如写入文件）时。
       - `BrokenPipe`：管道的另一端已经关闭。
       - `ConnectionAborted`：连接中断。
       - `ConnectionRefused`：连接被拒绝。
