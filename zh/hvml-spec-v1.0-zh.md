@@ -2511,11 +2511,18 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 ```html
         <init as="users" from="http://foo.bar.com/get_all_users" async />
 
+        <archetype name="user_item">
+            <li class="user-item">
+                <img class="avatar" src="" />
+                <span></span>
+            </li>
+        </archetype>
+
         <ul class="user-list">
             <img src="wait.png" />
         </ul>
 
-        <observe at="users" for="ready" in="#user-list">
+        <observe at="users" for="attached" in="#user-list">
             <clear on="$@" />
             <iterate on="$users" by="RANGE: FROM 0">
                 <update on="$@" to="append" with="$user_item" />
@@ -2523,13 +2530,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         </observe>
 ```
 
-当我们观察到 `users` 变量上的 `ready` 事件之后，表明数据已经就绪，此时，即可执行 `observe` 定义的操作组：清空 `#user-list` 中的内容，然后迭代 `$users` 数组上的数据，使用模板`$user_item` 生成文档片段追加到 `#user-list` 当中。
+当我们观察到 `users` 变量上的 `attached` 事件之后，表明数据已经就绪，此时，即可执行 `observe` 定义的操作组：清空 `#user-list` 中的内容，然后迭代 `$users` 数组的成员，使用模板`$user_item` 生成文档片段追加到 `#user-list` 当中。
 
 类似地，我们可以跟踪处理命名变量上的如下事件：
 
-- `attached`：表示命名变量上的数据已经就绪。
+- `attached`：表示命名变量上的数据已就绪并关联到该变量。
 - `detached`：表示先前关联到该变量上的数据被取消，比如使用 `init` 重置该变量时。
-- `except`：表示获取数据时出现异常，可能是请求出错，也可能是解析出错。
+- `except`：表示在获取该变量对应的数据时出现异常，可能是请求出错，也可能是解析出错。具体信息，由事件的子类型给出。
 
 注意：当我们尝试使用一个尚未附加数据的命名变量时，将产生 `NotReady` 异常。
 
