@@ -1165,7 +1165,9 @@ HVML 还定义有如下一些动作标签：
       - `ConnectionAborted`：连接中断。
       - `ConnectionRefused`：连接被拒绝。
       - `ConnectionReset`：连接被重置。
-      - `OSFailure`：表示遇到未明确定义为异常的一般性操作系统错误。
+      - `NameResolutionFailed`：名称解析失败。该异常应定义额外信息以便应用程序可以知晓解析失败的具体名称。
+      - `RequestFailed`：请求失败。该异常应定义额外信息以便应用程序可以获得具体的请求失败信息，如 HTTP 协议状态码。
+      - `OSFailure`：表示遇到未明确定义为异常的一般性操作系统错误。该异常应定义额外信息以便应用程序可以获得具体的错误信息，如 Unix 类系统中的 `errno`。
    - 其他：
       - `NotReady`：表示指定的命名变量对应的数据尚未就绪。
       - `NotImplemented`：表示某个特性尚未实现。
