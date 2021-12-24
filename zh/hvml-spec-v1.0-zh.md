@@ -1167,8 +1167,8 @@ HVML 还定义有如下一些动作标签：
       - `ConnectionReset`：连接被重置。
       - `OSFailure`：表示遇到未明确定义为异常的一般性操作系统错误。
    - 其他：
+      - `NotReady`：表示指定的命名变量对应的数据尚未就绪。
       - `NotImplemented`：表示某个特性尚未实现。
-      - `NotReady`：表示指定的数据尚未就绪。
    - 废弃：
       - `WrongDomain`：表示错误的域，如求反余弦时传递大于 1 的数值。
 
@@ -2498,7 +2498,40 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 #### 2.5.10) `observe`、 `forget` 和 `fire` 标签
 
-`observe` 标签用于观察特定数据源上获得数据或状态，或者文档元素节点上的事件，并完成指定的操作。
+`observe` 标签用于观察特定变量或数据上的状态变化，并在指定的事件到来时，执行该标签定义的操作组。
+
+我们使用 `observe` 的 `at` 属性指定一个要观察的命名变量之名称，使用 `on` 属性指定一项要观察的数据。`at` 属性的优先级高于 `on` 属性。
+
+当我们观察一个命名变量时，我们可以观察这个命名变量对应的数据是否已经就绪，或者在获取数据的过程是否发生了错误，或者这个命名变量上的数据是否已经被销毁等等。
+
+下面的代码从远程服务器上获得当前的用户信息，但使用异步请求：
+
+```html
+        <init as="users" from="http://foo.bar.com/get_all_users" async />
+
+        <ul class="user-list">
+            <img src="wait.png" />
+        </ul>
+
+        <observe at="users" for="ready" in="#user-list">
+            <clear on="$@" />
+            <iterate on="$users" by="RANGE: FROM 0">
+                <update on="$@" to="append" with="$user_item" />
+            </iterate>
+        </observe>
+```
+
+当我们观察到 `users` 变量上的 `ready` 事件之后，表明数据已经就绪，此时，即可执行 `observe` 定义的操作组：清空 `#user-list` 中的内容，然后迭代 `$users` 数组上的数据，使用模板`$user_item` 生成文档片段追加到 `#user-list` 当中。
+
+类似地，我们可以跟踪处理命名变量上的如下事件：
+
+- `attached`：表示命名变量上的数据已经就绪。
+- `detached`：表示先前关联到该变量上的数据被取消，比如使用 `init` 重置该变量时。
+- `except`：表示获取数据时出现异常，可能是请求出错，也可能是解析出错。
+
+注意：当我们尝试使用一个尚未附加数据的命名变量时，将产生 `NotReady` 异常。
+
+当我们观察一项数据时，我们可获得该数据产生的事件或者数据本身上的变化。比如，我们可监听来自长连接的事件，异步请求的返回值，或者获得长连接上调用远程过程后返回的结果，亦可用来监听某些内部数据产生的事件，比如 `$TIMERS` 数据产生的定时器到期事件，等等。
 
 假设文档通过本地总线机制（本例中是 `hiBus`）监听来自系统的状态改变事件，如电池电量、WiFi 信号强度、移动网络信号强度等信息，并在文档使用相应的图标来表示这些状态的改变。为此，我们可以定义如下的 HVML 文档：
 
@@ -2509,7 +2542,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </head>
 
     <body>
-        <header id="the-footer">
+        <header id="the-header">
             <img class="mobile-status" src="/placeholder.png" />
             <span class="mobile-operator"></span>
             <img class="wifi-status" src="/placeholder.png" />
@@ -2541,7 +2574,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     {
         "messageType": "event",
         "messageSubType": "XXXXXX",
-        "source": "@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED",
+        "source": <source data>,
         "time": 20200616100207.567,
         "signature": "XXXXX",
         "payload" : {
@@ -2551,11 +2584,11 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     }
 ```
 
-其中，`messageType` 字段表示数据包类型；`source` 表示产生此事件来源；`time` 表示此事件产生的系统时间；`signature` 是此事件的内容的签名，可用来验证数据来源的合法性；`payload` 中包含事件关联的数据。在上面这个例子中，事件包含两个信息，一个信息用来表示当前电量百分比，另一个信息表示是否在充电状态。
+其中，`messageType` 字段表示数据包类型；`source` 表示产生此事件的来源数据；`time` 表示此事件产生的系统时间；`signature` 是此事件的内容的签名，可用来验证数据来源的合法性；`payload` 中包含事件关联的数据。在上面这个例子中，事件包含两个信息，一个信息用来表示当前电量百分比，另一个信息表示是否在充电状态。
 
 当 HVML 代理观察到来自 `$databus` 上的电池变化事件数据包之后，将根据 `observe` 标签定义的观察动作执行相应的操作。在上面的例子中，`observe` 标签所定义的操作及条件解释如下：
 
-- 当来自`$databus`（`on` 属性值）上的数据包类型为 `event:$?`（`for` 属性值），这里的 `$?` 是 `send` 返回的唯一性标识字符串（相当于事件标志符），执行 `to` 介词属性定义的 `update` 操作。
+- 当来自`$databus`（由 `on` 属性值指定）上的数据包类型为 `event:$?`（由 `for` 属性值指定），这里的 `$?` 是 `send` 返回的唯一性标识字符串（相当于事件标志符），执行 `observe` 定义的操作组。
 - `observe` 元素的子元素 `update` 元素定义了具体的更新操作：由 `by` 介词属性定义的脚本函数 `on_battery_changed` 完成，该更新操作限定在 `in` 介词属性定义的 `#the-header` 元素节点中。
 
 注意，当 `observe` 观察到了来自特定数据源上的数据包时，其结果数据为该事件数据包中的 `payload` 数据；若没有通过 `for` 属性和 `via` 指定具体要观察的数据包类型以及过滤条件时，则结果数据为整个数据包。
@@ -2668,7 +2701,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                 <choose on="$?" in="> h2 > span" by="KEY: AS 'count'">
                     <update on="$@" at="textContent" with="$?" />
                 </choose>
-                <clear in="#the-user-statistics > dl" />
+                <clear on="#the-user-statistics > dl" />
                 <sort on="$?.regions" by="KEY: ALL FOR KV" ascendingly>
                     <iterate on="$?" in="> dl" by="RANGE: FROM 0">
                         <update on="$@" to="append" with="$region_to_users" />
@@ -2695,16 +2728,16 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         { "id": "5", "avatar": "/img/avatars/5.png", "name": "Vincent", "region": "zh_CN" }
     </init>
 
-    <fire on="#user-list" for="new-user" with="$new_user" />
+    <fire on="#user-list" for="newUser" with="$new_user" />
 
     ...
 
-    <observe on="#user-list" for="new-user:*">
+    <observe on="#user-list" for="newUser">
         ...
     </observe>
 ```
 
-`fire` 元素将把 `with` 属性指定的数据作为事件数据包的 `payload` 进行处理，并根据 `on` 属性指定的元素或者数据确定事件的源，`for` 属性值作为事件名称打包事件数据包，并将事件加入到事件队列中。 注意，`fire` 元素不产生结果数据，所以不能包含其他子动作元素。
+`fire` 元素将把 `with` 属性指定的数据作为事件数据包的 `payload` 进行处理，并根据 `on` 属性指定的元素或者数据确定事件的源，`for` 属性值作为事件名称打包事件数据包，并将事件加入到事件队列中。
 
 #### 2.5.11) `request` 标签
 
@@ -3018,7 +3051,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当我们使用这个变量时，我们调用其上的 `eval` 方法获得该表达式对应的具体数据。因此，下面的 `init` 和 `bind` 元素的执行效果是不一样的：
 
-```
+```html
     <init as="sysClock">
         $SYSTEM.time
     </init>
@@ -3031,7 +3064,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
     ...
 
-    <p>The current system time: $rcClock.eval</p>
+    <p>The current system time: $rtClock.eval</p>
 ```
 
 另外，若在该变量上执行 `observe` 动作，将在 HVML 程序运行进入消息循环时该变量对应的表达式将被重新求值，若前后发生变化，则将产生一个 `change` 消息，从而可以在 `observe` 动作元素定义的操作组中做相应的处理：
