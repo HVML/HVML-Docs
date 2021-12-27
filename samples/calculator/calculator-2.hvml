@@ -1,11 +1,11 @@
 <!DOCTYPE hvml>
 <hvml target="html" lang="en">
     <head>
-        <base href="$HVML.base(! 'https://gitlab.fmsoft.cn/hvml/purc/raw/master/Source/Samples/hvml/calculator/' )" />
+        <base href="$HVML.base(! 'https://gitlab.fmsoft.cn/hvml/hvml-docs/raw/master/samples/calculator/' )" />
 
-        <update on="$T.map" from="{$SYSTEM.locale}.json" to="merge" />
+        <update on="$T.map" from="assets/{$SYSTEM.locale}.json" to="merge" />
 
-        <init as="buttons" from="buttons.json" />
+        <init as="buttons" from="assets/buttons.json" />
 
         <title>$T.get('Calculator')</title>
 
@@ -15,7 +15,7 @@
             ]
         </update>
 
-        <link rel="stylesheet" type="text/css" href="calculator.css" />
+        <link rel="stylesheet" type="text/css" href="assets/calculator.css" />
     </head>
 
     <body>
