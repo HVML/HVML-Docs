@@ -34,7 +34,7 @@
             <div id="c_text">
                 <input type="text" id="expression" value="0" readonly="readonly" />
                 <observe on="$TIMERS" for="expired:input">
-                    <test on="$buttons[$SYSTEM.random($EJSON.count($buttons)]">
+                    <test on="$buttons[$SYSTEM.random($EJSON.count($buttons)].letters">
 
                         <match for="AS '='" exclusively>
                             <choose on="$MATH.eval($DOC.query('#expression').attr.value)">
@@ -59,7 +59,7 @@
                         </match>
 
                         <match>
-                            <update on="#expression" at="attr.value" with $= "$?.letters" />
+                            <update on="#expression" at="attr.value" with $= "$?" />
                         </match>
                     </test>
                 </observe>
