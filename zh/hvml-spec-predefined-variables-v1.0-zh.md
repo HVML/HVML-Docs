@@ -1137,21 +1137,21 @@ $STR.upper('hello world')
 
 #### 3.8.13) `substr` 方法
 
-返回字符串 `s` 由 offset 和 length 参数指定的子字符串。
+返回字符串 `s` 由 `offset` 和 `length` 参数指定的子字符串。
 
 ```php
-// 原型：返回字符串 `s` 由 offset 和 length 参数指定的子字符串；返回值为 `string` 类型
+// 原型：返回字符串 `s` 由 `offset` 和 `length` 参数指定的子字符串；返回值为 `string` 类型
 $STR.substr(<string: C format string> s, <longint: start position> offset[, <longint: length> length]) : string
 
-- `offset`
-   - 非负值: 返回的字符串将从字符串 `s` 的 `offset` 处开始，从 `0` 开始计算；
-   - 负值: 返回的字符串将从字符串 `s` 的结尾向前数第 `offset` 个字符开始；
-   - 字符串 `s` 的长度小于 `offset`，将返回空字符串。
-- `length`
-   - 0: 返回空字符串；
-   - 正值: 返回的字符串将从 `offset` 开始，最多包含 `length` 个字符（取决于 `s` 的长度）；
-   - 负值: 字符串 `s` 末尾处的 `length` 个字符将被省略；
-   - 不提供该参数，则返回的字符串从 `offset` 开始到字符串 `s` 的结尾。
+- offset
+   - 非负值: 返回的字符串将从字符串 `s` 的 `offset` 处开始, 从 `0` 开始计算;
+   - 负值: 返回的字符串将从字符串 `s` 的结尾向前数第 `offset` 个字符开始;
+   - 字符串 `s` 的长度小于 `offset`, 将返回空字符串;
+- length
+   - 0: 返回空字符串;
+   - 正值: 返回的字符串将从 `offset` 开始, 最多包含 `length` 个字符 (取决于 `s` 的长度);
+   - 负值: 字符串 `s` 末尾处的 `length` 个字符将被省略;
+   - 不提供该参数, 则返回的字符串从 `offset` 开始到字符串 `s` 的结尾.
 
 // 示例：返回字符串 `abcdef` 从第 `0` 个字符开始，最多包含 `10` 个字符的子字符串；返回 `string` 类型，结果是 `abcdef`。
 $STR.substr('abcdef', 0, 10)
