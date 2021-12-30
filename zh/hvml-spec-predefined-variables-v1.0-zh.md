@@ -93,6 +93,7 @@ Language: Chinese
       * [3.8.10) `strlen` 方法](#3810-strlen-方法)
       * [3.8.11) `lower` 方法](#3811-lower-方法)
       * [3.8.12) `upper` 方法](#3812-upper-方法)
+      * [3.8.13) `substr` 方法](#3813-substr-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -1132,6 +1133,37 @@ $STR.upper(<string: C format string> s) : string
 
 // 示例：将字符串 `hello world` 全部转换为大写，并返回转换后的字符串；返回 `string` 类型，结果是 `HELLO WORLD`。
 $STR.upper('hello world')
+```
+
+#### 3.8.13) `substr` 方法
+
+返回字符串 `s` 由 offset 和 length 参数指定的子字符串。
+
+```php
+// 原型：返回字符串 `s` 由 offset 和 length 参数指定的子字符串；返回值为 `string` 类型
+$STR.substr(<string: C format string> s, <longint: start position> offset[, <longint length> length]) : string
+
+- `pos`：
+   - 非负值：返回的字符串将从字符串 `s` 的 `offset` 处开始，从 `0` 开始计算；
+   - 负值：返回的字符串将从字符串 `s` 的结尾向前数第 `offset` 个字符开始；
+   - 字符串 `s` 的长度小于 `offset`，将返回空字符串。
+- `length`：
+   - 0：返回空字符串；
+   - 正值：返回的字符串将从 `offset` 开始，最多包含 `length` 个字符（取决于 `s` 的长度）；
+   - 负值：字符串 `s` 末尾处的 `length` 个字符将被省略；
+   - 不提供该参数，则返回的字符串从 `offset` 开始到字符串 `s` 的结尾。
+
+// 示例：返回字符串 `abcdef` 从第 `0` 个字符开始，最多 `10` 个字符的子字符串；返回 `string` 类型，结果是 `abcdef`。
+$STR.substr('abcdef', 0, 10)
+
+// 示例：返回字符串 `abcdef` 从最后一个字符开始的子字符串；返回 `string` 类型，结果是 `f`。
+$STR.substr('abcdef', -1)
+
+// 示例：返回字符串 `abcdef` 除最后一个字符之前的子字符串；返回 `string` 类型，结果是 `abcde`。
+$STR.substr('abcdef', 0, -1)
+
+// 示例：返回字符串 `abcdef` 从倒数第 `3` 个字符开始，到最后一个字符之前的子字符串；返回 `string` 类型，结果是 `de`。
+$STR.substr('abcdef', -3, -1)
 ```
 
 ## 4) 可选动态变量
