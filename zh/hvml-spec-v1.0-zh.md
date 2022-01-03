@@ -2373,7 +2373,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```
     <iterate on="$users" in="#the-user-list" by="RANGE: FROM 0 ADVANCE 2">
-        <update on="[id=user-$?.id] span" at="attr.class" with *= "text-* text-info" />
+        <update on=" [id=user-$?.id] span" at="attr.class" with *= "text-* text-info" />
     </iterate>
 ```
 
