@@ -37,7 +37,7 @@
                     <test on="$buttons[$SYSTEM.random($EJSON.count($buttons)].letters">
 
                         <match for="AS '='" exclusively>
-                            <choose on="$MATH.eval($DOC.query('#expression').attr.value)">
+                            <choose on="$MATH.eval($DOC.query('#expression').attr('value'))">
                                 <update on="#expression" at="attr.value" with="$?" />
                                 <update on="$TIMERS" to="overwrite">
                                     { "id" : "input", "active" : "no" }

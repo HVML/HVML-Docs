@@ -556,13 +556,67 @@ $DOC.doctype
 1. `undefined`：错误的 CSS 选择器或者参数。
 1. 一个元素实体集合，可能为空。
 
-在元素实体上，我们可就如下键名获得对应的获取器和设置器：
+在元素汇集实体上，我们可以就如下键名获得对应的获取器：
 
-1. `attr`：用于获得或者设置对应元素的特定属性值。
-1. `style`：用于设置对应元素的特定样式值。`style` 不提供 `getter` 方法，因为 eDOM 不维护样式信息；仅支持 `setter` 方法，用于通知 uDOM 设置元素的样式。
-1. `textContent`：用于获得或者设置对应元素（含子元素）的文本内容。
-1. `jsonContent`：用于获得或者设置对应元素（含子元素）的数据内容，多个内容形成数组。
-1. `content`：用于获得或者设置对应元素内部内容（按目标标记语言格式化）。
+1. `.count()`：获取元素汇集中元素的个数。
+1. `.at( <real: index> )`：获取指定索引值上的元素实体。
+1. `.attr( <string: attributeName> )`：获取元素汇集中第一个元素的指定属性值。
+1. `.prop( <string: propertyName> )`：获取元素汇集中第一个元素的指定状态值。
+1. `.style( <string: styleName> )`：获取元素汇集中第一个元素的指定样式值。
+1. `.content()`：获取元素汇集中第一个元素的内容（字符串，按目标标记语言序列化）。
+1. `.textContent()`：获得元素汇集中第一个元素（含子元素）的文本内容。
+1. `.jsonContent()`：获得元素汇集中第一个元素（含子元素）的数据内容，多个内容形成数组。
+1. `.val()`：获得元素汇集中第一个元素的当前值。
+1. `.hasClass( <string: className> )`：判断元素汇集中是否有任意元素被赋予指定的类名。
+
+在元素汇集实体上，我们可以就如下键名获得对应的设置器：
+
+1. `.attr(! <string: attributeName>, <string: value> )`：设置元素汇集中所有元素的属性值。
+1. `.attr(! <object: attributes> )`：使用对象信息设置元素汇集中所有元素的多个属性值。
+1. `.prop(! <string: propertyName>, <any: value> )`：设置元素汇集中所有元素的状态值。
+1. `.prop(! <object: properties> )`：使用对象信息设置元素汇集中所有元素的多个状态值。
+1. `.style(! <string: styleName>, <string: value> )`：设置元素汇集中所有元素的样式值。
+1. `.style(! <object: styles> )`：使用对象信息设置元素汇集中所有元素的多个样式值。
+1. `.content(! <string: content> )`：设置元素汇集中所有元素的内容。
+1. `.textContent(! <string: content> )`：设置元素汇集中所有元素的文本内容，将移除可能的子元素。
+1. `.jsonContent(! <any: content> )`：设置元素汇集中所有元素的数据内容，将移除可能的子元素。
+1. `.val(! newValue)`：设置元素汇集中所有元素的当前值。
+1. `.addClass(! <string: className> )`：为元素汇集中所有的元素添加指定的类名。
+1. `.addClass(! <array: classNames> )`：为元素汇集中所有的元素添加数组中指定的所有类名。
+1. `.removeAttr(! <string: attributeName> )`：移除元素汇集中所有元素的指定属性。
+1. `.removeClass(! )`：移除元素汇集中所有元素的所有类名。
+1. `.removeClass(! <string: className> )`：移除元素汇集中所有元素的指定类名。
+1. `.removeClass(! <array: classNames> )`：移除元素汇集中所有元素在数组中的所有类名。
+
+类似地，在单个元素实体上，我们可就如下键名获得对应的获取器：
+
+1. `.attr( <string: attributeName> )`：获取元素的指定属性值。
+1. `.prop( <string: propertyName> )`：获取元素的指定状态值。
+1. `.style( <string: styleName> )`：获取元素的指定样式值。
+1. `.content()`：获取元素的内容（字符串，按目标标记语言序列化）。
+1. `.textContent()`：获得元素（含子元素）的文本内容。
+1. `.jsonContent()`：获得元素（含子元素）的数据内容，多个内容形成数组。
+1. `.val()`：获得元素的当前值。
+1. `.hasClass( <string: className> )`：判断元素是否被赋予指定的类名。
+
+在单个元素实体上，我们可就如下键名获得对应的设置器：
+
+1. `.attr(! <string: attributeName>, <string: value> )`：设置元素的属性值。
+1. `.attr(! <object: attributes> )`：使用对象信息设置元素的多个属性值。
+1. `.prop(! <string: propertyName>, <any: value> )`：设置元素的状态值。
+1. `.prop(! <object: properties> )`：使用对象信息设置元素的多个状态值。
+1. `.style(! <string: styleName>, <string: value> )`：设置元素的样式值。
+1. `.style(! <object: styles> )`：使用对象信息设置元素的样式值。
+1. `.content(! <string: content> )`：设置元素的内容。
+1. `.textContent(! <string: content> )`：用于设置元素的文本内容，将移除可能的子元素。
+1. `.jsonContent(! <any: content> )`：用于设置元素的数据内容，将移除可能的子元素。
+1. `.val(! <string: newValue>)`：设置元素的当前值。
+1. `.addClass(! <string: className> )`：添加指定的类名。
+1. `.addClass(! <array: classNames> )`：从数组中添加指定的类名。
+1. `.removeAttr(! <string: attributeName> )`：移除元素的指定属性。
+1. `.removeClass(! )`：移除元素的所有类名。
+1. `.removeClass(! <string: className> )`：移除元素的指定类名。
+1. `.removeClass(! <array: classNames> )`：移除元素在数组中的所有类名。
 
 如此实现后，HVML 动作元素中通过 CSS 选择器引用元素时，如：
 
@@ -582,12 +636,13 @@ $DOC.doctype
 // <div id="foo" bar="baz">
 
 // 获取 id 为 foo 的元素上的属性 `bar` 的值：
-$DOC.query("#foo")[0].attr.bar
-$DOC.query("#foo")[0].attr("bar")
+$DOC.query("#foo").attr('bar')
 
 // 设置 id 为 foo 的元素上的属性 `bar` 的值：
-$DOC.query("#foo")[0].attr(! "bar", "qux")
+$DOC.query("#foo").attr(! "bar", "qux")
 ```
+
+参阅：<https://api.jquery.com/category/attributes/>
 
 ### 3.5) `EJSON`
 
