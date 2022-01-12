@@ -331,7 +331,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
                 <match for="AS 'zh_TW'" exclusively>
                     <update on="$@" to="displace" with="$footer_tw" />
                 </match>
-                <match for="ANY" to="displace" with="$footer_def">
+                <match for="ANY">
                     <update on="$@" with="$footer_def" />
                 </match>
                 <except type="NoData" raw>
