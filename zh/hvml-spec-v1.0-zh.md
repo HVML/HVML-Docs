@@ -620,13 +620,17 @@ HVML 不提供任何操作可以用来改变不可变数据，但开发者可以
 
 `$global`、 `$users` 这种变量称为命名变量（named variables），又分为全局变量或者局部变量。`$?` 这类使用特殊字符的变量称为上下文变量（context variables），根据 HVML 解释器的解析上下文确定其值。
 
+
+
 HVML 定义的上下文变量罗列如下：
 
 - `$?`：指父操作给出的结果数据，即父操作结果数据。
-- `$~`：指当前操作数据，即对介词属性 `on` 的属性值求值后的结果数据。
+- `$^`：指当前操作数据，即对介词属性 `on` 的属性值求值后的数据。（220120 修订：从 `$~` 更改为 `$^`，更易识别）
+- `$&`：指当前使用数据，即对介词属性 `with` 的属性值求值后的数据。（220120 修订：新增）
 - `$@`：指当前文档操作位置，即代表当前操作范围的 DOM 子树，也就是介词属性 `in` 定义的当前文档操作位置。
 - `$#`：指父操作结果数据所包含的数据项个数，同 `$EJSON.count($?)` 的返回值。
 - `$*`：指父操作结果数据的类型，用字符串表示，同 `$EJSON.type($?)` 的返回值。
+- `$!`：用户自定义数据。（220120 修订：新增，用于定义临时数据）
 - `$:`：若父操作结果数据是一个键值对象，则该变量表示键名，其他情形下为未定义。
 - `$=`：若父操作结果数据是一个键值对象，则该变量表示键值，其他情形下为未定义。
 
@@ -1794,6 +1798,35 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         ]
     </init>
 ```
+
+我们也可以在 `init` 标签中使用 `at` 属性指定要修改的已存在的变量名，避免创建新的命名变量（220120 修订：新增，用于覆盖祖先元素中的命名变量）。如：
+
+```html
+    <!-- init a set with an object array -->
+    <init as="users" uniquely via="id">
+        [
+            { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+            { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+        ]
+    </init>
+
+    <div>
+        <!-- this will not create a new named variable called `users`, instead it will replace the old value -->
+        <init at="users">
+            [
+                { "id": "3", "avatar": "/img/avatars/3.png", "name": "Vincent", "region": "zh_CN" },
+                { "id": "4", "avatar": "/img/avatars/4.png", "name": "David", "region": "en_US" }
+            ]
+        </init>
+
+        <!-- this will create a new named variable at `div` element. -->
+        <init as="users" with="[]" />
+    </div>
+```
+
+当 `at` 属性指定的变量名不存在时，将抛出相应的异常。
+
+当我们在 `init` 标签中不指定 `as` 或者 `at` 属性时，则初始化父栈帧中的用户自定义上下文变量 `$!`（220120 修订：新增，方便开发者）。
 
 #### 2.5.2) `update` 标签
 
