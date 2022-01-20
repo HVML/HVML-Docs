@@ -25,13 +25,11 @@
         <init as="exp_chars" with="[]" />
 
         <iterate on="$expressions" by="RANGE: FROM 0" >
-            <init as="chars" with="[]" />
+            <update on="$exp_chars" to="append" with="[]" />
 
             <iterate on="$?" by="CHAR: FROM 0" >
-                <update on="$chars" to="append" with="$?" />
+                <update on="$exp_chars" at="$1%" to="append" with="$?" />
             </iterate>
-
-            <update on="$exp_chars" to="append" with="$chars" />
         </iterate>
 
         <init as="info">
