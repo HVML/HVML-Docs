@@ -22,9 +22,23 @@
     </head>
 
     <body>
+        <init as="exp_chars" with="[]" />
+
+        <iterate on="$expressions" by="RANGE: FROM 0" >
+            <init as="chars" with="[]" />
+
+            <iterate on="$?" by="CHAR: FROM 0" >
+                <update on="$chars" to="append" with="$?" />
+            </iterate>
+
+            <update on="$exp_chars" to="append" with="$chars" />
+        </iterate>
+
         <init as="info">
-            { "expression" : $expressions[$SYSTEM.random($EJSON.count($expressions)] },
-            { "index" : 0 },
+            {
+                "chars" : $exp_chars[$SYSTEM.random($EJSON.count($exp_chars)],
+                "index" : 0,
+            }
         </init>
 
         <div id="calculator">
@@ -41,7 +55,7 @@
             <div id="c_text">
                 <input type="text" id="expression" value="0" readonly="readonly" />
                 <observe on="$TIMERS" for="expired:input">
-                    <test on="$STR.substr($info.expression, $info.index, 1)">
+                    <test on="$info.chars[$info.index]">
                         <update on="$info" at=".index" with="$MATH.add($info.index, 1)" />
 
                         <match for="AS '='" exclusively>
