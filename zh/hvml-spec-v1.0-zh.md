@@ -5201,7 +5201,6 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 3) 其他
 
-
 未来，可以增加针对矩阵运算的执行器。
 
 [Beijing FMSoft Technologies Co., Ltd.]: https://www.fmsoft.cn
