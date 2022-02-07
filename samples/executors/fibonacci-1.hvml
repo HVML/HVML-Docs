@@ -1,4 +1,4 @@
-<!DOCTYPE hvml>
+<!DOCTYPE hvml SYSTEM 'v: MATH'>
 <hvml target="html" lang="en">
     <head>
         <title>Fibonacci Numbers</title>
@@ -7,7 +7,7 @@
     <body>
         <header>
             <h1>Fibonacci Numbers less than 2000</h1>
-            <p>- Using named variable</p>
+            <p hvml:raw>Using named variable ($fibonacci), $MATH, and $EJSON</p>
         </header>
 
         <init as="fibonacci">
