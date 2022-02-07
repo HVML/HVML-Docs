@@ -1,0 +1,35 @@
+<!DOCTYPE hvml>
+<hvml target="html" lang="en">
+    <head>
+        <title>Fibonacci Numbers</title>
+    </head>
+
+    <body>
+        <header>
+            <h1>Fibonacci Numbers less than 2000</h1>
+            <p hvml:raw>Not using array</p>
+        </header>
+
+        <ul>
+            <init>
+                {
+                    last_one: 0,
+                    last_two: 1,
+                    count: 2,
+                }
+            </init>
+
+            <iterate on 1 by="ADD: LT 2000 BY $!.last_one">
+                <update on="$1!" at=".last_one" to="displace" with="$1!.last_two" />
+                <update on="$1!" at=".last_two" to="displace" with="$?" />
+                <update on="$1!" at=".count" to="displace" with += 1 />
+                <li>$?</li>
+            </iterate>
+        </ul>
+
+        <footer>
+            <p>Totally $1!.count numbers.</p>
+        </footer>
+    </body>
+
+</hvml>
