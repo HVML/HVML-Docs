@@ -1,0 +1,32 @@
+<!DOCTYPE hvml>
+<hvml target="html" lang="en">
+    <head>
+        <title>Fibonacci Numbers</title>
+    </head>
+
+    <body>
+        <header>
+            <h1>Fibonacci Numbers less than 2000</h1>
+            <p hvml:raw>- Using temp. variable ($!)</p>
+        </header>
+
+        <init>
+            [0, 1, ]
+        </init>
+
+        <iterate on 1 by="ADD: LT 2000 BY $![-2]">
+            <update on="$1!" to="append" with="$?" />
+        </iterate>
+
+        <ul>
+            <iterate on="$1!">
+                <li>$?</li>
+            </iterate>
+        </ul>
+
+        <footer>
+            <p>Totally $EJSON.count($1!) numbers.</p>
+        </footer>
+    </body>
+
+</hvml>
