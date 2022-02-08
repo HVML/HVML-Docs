@@ -1152,7 +1152,7 @@ $STR.ireplace("%BODY%", "black", "<body text=%BODY%>");
 
 #### 3.8.8) `ireplace` 方法
 
-`$STR.replace()` 的大小写无关版本。
+子字符串替换，忽略大小写的版本。
 
 **描述**
 
@@ -1224,7 +1224,7 @@ $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 
 
 #### 3.8.11) `join` 方法
 
-用于连接两个字符串。
+用于连接两个或更多个字符串。
 
 **描述**
 
@@ -1235,7 +1235,16 @@ $STR.join(<string str1>, <string str2>[, <string strN>, ...]) : string
 
 **参数**
 
+- `str1`  
+第一个输入字符串。
+- `str2`  
+第二个输入字符串。
+- `strN`  
+第N个输入字符串。
+
 **返回值**
+
+依次连接后的字符串。
 
 **示例**
 
@@ -1247,17 +1256,33 @@ $STR.join('hello', ' ', 'world')    // hello world
 
 用于获得字符串的长度（字符为单位）。
 
-```php
-// 原型：获得字符串 `s` 的长度，该长度包含字符串结尾的 `\0`；返回值为 `ulongint` 类型
-$STR.length(<string str: >) : ulongint
-```
+**描述**
 
 ```php
-// 示例：获得字符串 `中国` 的长度；返回 `ulongint` 类型，结果是 `2`。
-$STR.length('中国')
+$STR.length(<string str>) : ulongint
+```
+
+获得字符串 `str` 中字符的个数。
+
+**参数**
+
+- `str`  
+输入字符串。
+
+**返回值**
+
+返回值为 `ulongint` 类型，表示字符个数。
+
+**示例**
+
+```php
+// 获得字符串 `中国` 的长度
+$STR.length('中国')     // ulongint: 2
 ```
 
 #### 3.8.13) `tolower` 方法
+
+将字符串转换为小写。
 
 **描述**
 
@@ -1285,7 +1310,7 @@ $STR.tolower('HELLO WORLD') // string: 'hello world'
 
 #### 3.8.14) `toupper` 方法
 
-用于将字符串全部转换为大写，并返回转换后的字符串。
+将字符串转换为大写。
 
 **描述**
 
