@@ -55,7 +55,7 @@
 
         <init as="breakingNews" from="assets/breaking-news-{$SYSTEM.locale}.json">
             <catch>
-                <update on="#breaking-news > p" at="textContent" with='$T.get('Failed to load content!') />
+                <update on="#breaking-news > p" at="textContent" with="$T.get('Failed to load content!')" />
             </catch>
 
             <update on="#breaking-news" to="displace" with="$realCardBody" />

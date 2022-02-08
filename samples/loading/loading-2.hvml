@@ -60,7 +60,7 @@
         </observe>
 
         <observe at="breakingNews" for="except" in="">
-            <update on="#breaking-news > p" at="textContent" with='$T.get('Failed to load content!') />
+            <update on="#breaking-news > p" at="textContent" with=$T.get('Failed to load content!') />
         </observe>
 
         <footer>
