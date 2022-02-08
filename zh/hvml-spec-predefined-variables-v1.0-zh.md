@@ -1028,18 +1028,28 @@ $T.get('Hello, world!')
 
 `STR` 是一个内置的动态变量，该变量用于实现常见的字符串操作。
 
-该变量提供的接口，类似 PHP 的字符串函数：<https://www.php.net/manual/en/ref.strings.php>
-
 #### 3.8.1) `contains` 方法
 
 用于判断一个字符串中是否包含给定的子字符串。
 
 ```php
-// 原型：判断字符串 `s1` 是否包含字符串 `s2`；返回值为 `boolean` 类型
-$STR.contains(<string: C format string> s1, <string: C format string> s2) : boolean
+// 原型：判断字符串 `haystack` 是否包含字符串 `needle`；返回值为 `boolean` 类型
+$STR.contains(<string haystack: the string to search in>, <string needle: The substring to search for in the haystack>) : boolean
 
 // 示例：判断字符串 `hello world` 是否包含字符串 `world`；返回 `boolean` 类型，结果为 `true`。
 $STR.contains('hello world', 'world')
+```
+
+#### 3.8.2) `starts_with` 方法
+
+用于判断一个字符串是否以给定的字符串开头。
+
+```php
+// 原型：判断字符串 `haystack` 是否以子字符串 `needle` 开头；返回值为 `boolean` 类型
+$STR.starts_with(<string haystack: the string to search in>,  <string needle: The substring to search for in the haystack>) : boolean
+
+// 示例：判断字符串 `hello world` 是否以字符串 `hello` 开头；返回 `boolean` 类型，结果为 `true`。
+$STR.starts_with('hello world', 'hello')
 ```
 
 #### 3.8.2) `ends_with` 方法
@@ -1047,10 +1057,10 @@ $STR.contains('hello world', 'world')
 用于判断一个字符串是否以给定的字符串结尾。
 
 ```php
-// 原型：判断字符串 `s1` 是否以字符串 `s2` 结尾；返回值为 `boolean` 类型
-$STR.ends_with(<string: C format string> s1, <string: C format string> s2) : boolean
+// 原型：判断字符串 `haystack` 是否以子字符串 `needle` 结尾；返回值为 `boolean` 类型
+$STR.ends_with(<string haystack: the string to search in>,  <string needle: The substring to search for in the haystack>) : boolean
 
-// 示例：判断字符串 `hello world` 是否以字符串 `world`结尾；返回 `boolean` 类型，结果为 `true`。
+// 示例：判断字符串 `hello world` 是否以字符串 `world` 结尾；返回 `boolean` 类型，结果为 `true`。
 $STR.ends_with('hello world', 'world')
 ```
 

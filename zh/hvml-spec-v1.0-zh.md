@@ -4550,8 +4550,8 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 
 1. 当 `with` 属性的属性值是字符串类型，且修改动作为 `displace` 时：
    - `+=`：在最终数据中添加一个新的词元（token），若已有该词元，则不做修改。比如，原有的 `attr.class` 的属性值为 `foo`，使用 `at="attr.class" with += "text-warning"` 后，将修改为：`foo text-warning`；若原有属性值为 `foo text-warning`，则会保持不变。
-   - `-=`：在最终数据移除一个词元，若没有该词元，则不做修改。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with -= "text-warning"` 后，将修改为 `foo`。
-   - `*=`：替代最终数据中每个词元的指定子字符串。比如，原有的 `attr.class` 的属性值为 `foo-bar-info foo-bar-warning`，使用 `at="attr.class" with *= "foo-bar text"` 后，将修改为：`text-info text-warning`。（注：这是暂定操作）
+   - `-=`：在最终数据中移除一个词元，若没有该词元，则不做修改。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with -= "text-warning"` 后，将修改为 `foo`。
+   - `*=`：在最终数据的每个词元之后（默认）或之前（使用 `^` 前缀字符）追加指定的子字符串。比如，原有的 `attr.class` 的属性值为 `info warning`，使用 `at="attr.class" with *= "^text-"` 后，将修改为：`text-info text-warning`。
    - `/=`：在最终数据中按正则表达式匹配一个词元，并使用第二个词元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with /= "/^text/ text-info"` 后，将修改为 `foo text-info`。
    - `%=`：在最终数据中精确匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with %= "text-warning text-info"` 后，将修改为 `foo text-info`。
    - `~=`：在最终数据中按指定的通配符模式匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with ~= "text-* text-info"` 后，将修改为 `foo text-info`。
