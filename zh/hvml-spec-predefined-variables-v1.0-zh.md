@@ -1307,7 +1307,7 @@ $STR.toupper('hello world') // `HELLO WORLD`
 
 返回字符串的子串。
 
-1) 描述
+**描述**
 
 ```php
 $STR.substr(<string str> s, <longint offset>[, <longint length>]) : string
@@ -1315,7 +1315,7 @@ $STR.substr(<string str> s, <longint offset>[, <longint length>]) : string
 
 返回字符串 `str` 中由 `offset` 和 `length` 参数指定的子字符串。
 
-2) 参数
+**参数**
 
 - `str`  
 输入字符串。
@@ -1329,11 +1329,11 @@ $STR.substr(<string str> s, <longint offset>[, <longint length>]) : string
    - 负值: 字符串 `s` 末尾处的 `length` 个字符将被省略;
    - 不提供该参数, 则返回的字符串从 `offset` 开始到字符串 `s` 的结尾.
 
-3) 返回值
+**返回值**
 
 返回从 `str` 中提取的部分或者空字符串。
 
-4) 示例
+**示例**
 
 ```php
 // 返回字符串 `abcdef` 从第 `0` 个字符开始，最多包含 `10` 个字符的子字符串
