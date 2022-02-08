@@ -7,10 +7,10 @@
     <body>
         <header>
             <h1>Fibonacci Numbers less than 2000</h1>
-            <p hvml:raw>Not using array</p>
+            <p hvml:raw>Version without array</p>
         </header>
 
-        <ul>
+        <dl>
             <init>
                 {
                     last_one: 0,
@@ -23,9 +23,10 @@
                 <update on="$1!" at=".last_one" to="displace" with="$1!.last_two" />
                 <update on="$1!" at=".last_two" to="displace" with="$?" />
                 <update on="$1!" at=".count" to="displace" with += 1 />
-                <li>$?</li>
+                <dt>$%</dt>
+                <dd>$?</dd>
             </iterate>
-        </ul>
+        </dl>
 
         <footer>
             <p>Totally $1!.count numbers.</p>

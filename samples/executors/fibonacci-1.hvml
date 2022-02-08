@@ -18,11 +18,14 @@
             <update on="$fibonacci" to="append" with="$?" />
         </iterate>
 
-        <ul>
+        <!-- remove the first invalid number (0) -->
+        <erase on="$fibonacci" at="[0]" />
+
+        <ol>
             <iterate on="$fibonacci">
                 <li>$?</li>
             </iterate>
-        </ul>
+        </ol>
 
         <footer>Totally $EJSON.count($fibonacci) numbers.</footer>
     </body>

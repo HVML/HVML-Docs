@@ -18,11 +18,14 @@
             <update on="$1!" to="append" with="$?" />
         </iterate>
 
-        <ul>
+        <!-- remove the first invalid number (0) -->
+        <update on = $! at="[0]" with = undefined />
+
+        <ol>
             <iterate on="$1!">
                 <li>$?</li>
             </iterate>
-        </ul>
+        </ol>
 
         <footer>
             <p>Totally $EJSON.count($1!) numbers.</p>
