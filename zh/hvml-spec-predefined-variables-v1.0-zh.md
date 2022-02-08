@@ -1118,7 +1118,7 @@ $STR.shuffle('beijing')
 
 子字符串替换。
 
-###### 描述
+**描述**
 
 ```php
 $STR.replace(<string|array search>, <string|array replace>, <array|string subject>) : string|array
@@ -1126,7 +1126,7 @@ $STR.replace(<string|array search>, <string|array replace>, <array|string subjec
 
 该函数返回一个字符串或者数组。该字符串或数组是将 `subject` 中全部的 `search` 都被 `replace` 替换之后的结果。
 
-###### 参数
+**参数**
 
 如果 `search` 和 `replace` 为数组，那么 `$STR.replace()` 将对 `subject` 做二者的映射替换。如果 `replace` 中值的个数少于 `search` 的个数，多余的替换将使用空字符串来进行。如果 `search` 是一个数组而 `replace` 是一个字符串，那么 `search` 中每个元素的替换将始终使用这个字符串。该转换不会改变大小写。
 
@@ -1139,11 +1139,11 @@ search 的替换值。一个数组可以被用来指定多重替换。
 - `subject`  
 执行替换的数组或者字符串，也就是常说的 `haystack`。 如果 `subject` 是一个数组，替换操作将遍历整个 `subject`，返回值也将是一个数组。
 
-###### 返回值
+**返回值**
 
 该函数返回替换后的数组或者字符串。
 
-###### 示例
+**示例**
 
 ```php
 // <body text=black>
@@ -1154,14 +1154,14 @@ $STR.ireplace("%BODY%", "black", "<body text=%BODY%>");
 
 `$STR.replace()` 的大小写无关版本。
 
-###### 描述
+**描述**
 
 ```php
 $STR.ireplace(<string|array search>, <string|array replace>, <array|string subject>) : string|array
 ```
 该函数返回一个字符串或者数组。该字符串或数组是将 `subject` 中全部的 `search` 都被 `replace` 替换（忽略大小写）之后的结果。
 
-###### 参数
+**参数**
 
 如果 `search` 和 `replace` 为数组，那么 `$STR.ireplace()` 将对 `subject` 做二者的映射替换。如果 `replace` 中值的个数少于 `search` 的个数，多余的替换将使用空字符串来进行。如果 `search` 是一个数组而 `replace` 是一个字符串，那么 `search` 中每个元素的替换将始终使用这个字符串。
 
@@ -1174,11 +1174,11 @@ $STR.ireplace(<string|array search>, <string|array replace>, <array|string subje
 - `subject`  
 要被搜索和替换的字符串或数组，就像是常说的 `haystack`。如果 `subject` 是一个数组，替换操作将遍历整个 `subject`，并且也将返回一个数组。
 
-###### 返回值
+**返回值**
 
 该函数返回替换后的数组或者字符串。
 
-###### 示例
+**示例**
 
 ```php
 // <body text=black>
@@ -1226,18 +1226,18 @@ $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 
 
 用于连接两个字符串。
 
-1) 描述
+**描述**
 
 ```php
 // 原型：将字符串 `s1` 与字符串 `s2` 连接，产生新的字符串并返回；返回值为 `string` 类型
 $STR.join(<string str1>, <string str2>[, <string strN>, ...]) : string
 ```
 
-2) 参数
+**参数**
 
-3) 返回值
+**返回值**
 
-4) 示例
+**示例**
 
 ```php
 $STR.join('hello', ' ', 'world')    // hello world
@@ -1259,31 +1259,35 @@ $STR.length('中国')
 
 #### 3.8.13) `tolower` 方法
 
-用于将字符串全部转换为小写，并返回转换后的字符串。
-
-1) 描述
+**描述**
 
 ```php
 // 原型：将字符串 `s` 全部转换为小写，并返回转换后的字符串；返回值为 `string` 类型
-$STR.tolower(<string: C format string> s) : string
+$STR.tolower(<string str>) : string
 ```
 
-2) 参数
+将字符串 `str` 中的所有字符转换为小写，并返回转换后的字符串。
 
-3) 返回值
+**参数**
 
-4) 示例
+- `str`  
+输入字符串。
+
+**返回值**
+
+转换为小写的字符串。
+
+**示例**
 
 ```php
-// hello world
-$STR.tolower('HELLO WORLD')
+$STR.tolower('HELLO WORLD') // string: 'hello world'
 ```
 
 #### 3.8.14) `toupper` 方法
 
 用于将字符串全部转换为大写，并返回转换后的字符串。
 
-1) 描述
+**描述**
 
 ```php
 $STR.toupper(<string: str>) : string
@@ -1291,16 +1295,19 @@ $STR.toupper(<string: str>) : string
 
 将字符串 `str` 中的所有字符转换为大写，并返回转换后的字符串。
 
-2) 参数
+**参数**
 
-3) 返回值
+- `str`  
+输入字符串。
+
+**返回值**
 
 转换为大写的字符串。
 
-4) 示例
+**示例**
 
 ```php
-$STR.toupper('hello world') // `HELLO WORLD`
+$STR.toupper('hello world') // string: 'HELLO WORLD'
 ```
 
 #### 3.8.15) `substr` 方法
