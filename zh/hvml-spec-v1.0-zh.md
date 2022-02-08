@@ -4322,7 +4322,7 @@ SYSTEM 标识符字符串的格式如下：
 `hvml`、 `head` 和 `body` 元素。此类元素用于定义 HVML 文档的框架结构。
 2. 普通元素（normal elements）  
 除框架元素之外的其他 HVML 元素，被称为普通元素。普通元素可进一步划分为如下子类：
-   1. 数据操作元素（data operation elements）  
+   1. 数据动作元素（data operation elements）  
       `init` 和 `update` 元素。其内容必须是符合 eJSON 语法的文本，可包含 JSON 求值表达式。
    1. 一般动作元素（ordinary operation elements）  
        `erase`、 `clear`、 `test`、 `match`、 `choose`、 `iterate`、 `reduce`、 `observe`、 `fire`、 `connect`、 `disconnect`、 `load`、 `back`、 `define`、 `include`、 `call`、 `return` 和 `catch` 元素。
@@ -4331,18 +4331,18 @@ SYSTEM 标识符字符串的格式如下：
    1. 数据模板元素（data template elements）  
       `archedata` 元素。其内容必须是符合 eJSON 语法的文本，可包含 JSON 求值表达式。
 3. 外部元素（foreign elements）  
-所有不属于 HVML 标签定义的元素，被视为外部元素。所有可合法插入到 HVML 文档树中的外部元素，可被被称为骨架元素（skeleton element）。此类元素中可包含文本内容、其他外部元素以及其他 HVML 普通元素。
+所有不属于 HVML 标签定义的元素，被视为外部元素。所有可合法插入到 HVML 文档树中的外部元素，可被称为骨架元素（skeleton element）。此类元素中可包含文本内容、其他外部元素以及其他 HVML 普通元素。
 
 根据其语法特点，HVML 元素可划分为如下两类：
 
 1. 名词元素（noun elements）  
 包括框架元素、模板元素和数据模板元素。
 2. 动作元素（operation elements）  
-包括一般动作元素、骨架元素和数据操作元素。
+包括一般动作元素、骨架元素和数据动作元素。
 
-一般动作元素用于定义对数据或文档的操作，可包含其他普通元素，但不能包含外部元素，也不能定义其文本内容。
+一般动作元素用于定义对数据或文档的操作，可包含其他普通元素以及可作为骨架元素使用的外部元素，但不能定义其文本内容。
 
-数据动作元素用于定义 JSON 数据以及其上的操作，可包含其他普通元素，但不能包含外部元素。
+数据动作元素用于定义 JSON 数据以及其上的操作，可包含其他普通元素以及可作为骨架元素使用的外部元素。
 
 一个模板元素的内容位于该模板元素的起始标签之后，终止标签之前，可包含任意的文本、字符引用、外部元素以及注释，但文本不能包含 U+003C LESS-THAN SIGN (`<`) 或者含糊的 `＆` 符号。
 
