@@ -1222,83 +1222,131 @@ $STR.format_p(<string: string contains placeholders>, <object>) : string
 $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry' })
 ```
 
-#### 3.8.11) `strcat` 方法
+#### 3.8.11) `join` 方法
 
 用于连接两个字符串。
 
+1) 描述
+
 ```php
 // 原型：将字符串 `s1` 与字符串 `s2` 连接，产生新的字符串并返回；返回值为 `string` 类型
-$STR.strcat(<string: C format string> s1, <string: C format string> s2) : string
-
-// 示例：将字符串 `hello` 与字符串 ` world` 连接，产生一个新的字符串；返回 `string` 类型，结果是 `hello world`。
-$STR.strcat('hello', ' world')
+$STR.join(<string str1>, <string str2>[, <string strN>, ...]) : string
 ```
 
-#### 3.8.12) `strlen` 方法
+2) 参数
 
-用于获得字符串的长度，该长度包含字符串结尾的 `\0`。
+3) 返回值
+
+4) 示例
+
+```php
+$STR.join('hello', ' ', 'world')    // hello world
+```
+
+#### 3.8.12) `length` 方法
+
+用于获得字符串的长度（字符为单位）。
 
 ```php
 // 原型：获得字符串 `s` 的长度，该长度包含字符串结尾的 `\0`；返回值为 `ulongint` 类型
-$STR.strlen(<string: C format string> s) : ulongint
-
-// 示例：获得字符串 `hello world` 的长度；返回 `ulongint` 类型，结果是 `12`。
-$STR.strlen('hello world')
+$STR.length(<string str: >) : ulongint
 ```
 
-#### 3.8.13) `lower` 方法
+```php
+// 示例：获得字符串 `中国` 的长度；返回 `ulongint` 类型，结果是 `2`。
+$STR.length('中国')
+```
+
+#### 3.8.13) `tolower` 方法
 
 用于将字符串全部转换为小写，并返回转换后的字符串。
 
+1) 描述
+
 ```php
 // 原型：将字符串 `s` 全部转换为小写，并返回转换后的字符串；返回值为 `string` 类型
-$STR.lower(<string: C format string> s) : string
-
-// 示例：将字符串 `HELLO WORLD` 全部转换为小写，并返回转换后的字符串；返回 `string` 类型，结果是 `hello world`。
-$STR.lower('HELLO WORLD')
+$STR.tolower(<string: C format string> s) : string
 ```
 
-#### 3.8.14) `upper` 方法
+2) 参数
+
+3) 返回值
+
+4) 示例
+
+```php
+// hello world
+$STR.tolower('HELLO WORLD')
+```
+
+#### 3.8.14) `toupper` 方法
 
 用于将字符串全部转换为大写，并返回转换后的字符串。
 
-```php
-// 原型：将字符串 `s` 全部转换为大写，并返回转换后的字符串；返回值为 `string` 类型
-$STR.upper(<string: C format string> s) : string
+1) 描述
 
-// 示例：将字符串 `hello world` 全部转换为大写，并返回转换后的字符串；返回 `string` 类型，结果是 `HELLO WORLD`。
-$STR.upper('hello world')
+```php
+$STR.toupper(<string: str>) : string
+```
+
+将字符串 `str` 中的所有字符转换为大写，并返回转换后的字符串。
+
+2) 参数
+
+3) 返回值
+
+转换为大写的字符串。
+
+4) 示例
+
+```php
+$STR.toupper('hello world') // `HELLO WORLD`
 ```
 
 #### 3.8.15) `substr` 方法
 
-返回字符串 `s` 由 `offset` 和 `length` 参数指定的子字符串。
+返回字符串的子串。
+
+1) 描述
 
 ```php
-// 原型：返回字符串 `s` 由 `offset` 和 `length` 参数指定的子字符串；返回值为 `string` 类型
-$STR.substr(<string: C format string> s, <longint: start position> offset[, <longint: length> length]) : string
+$STR.substr(<string str> s, <longint offset>[, <longint length>]) : string
+```
 
-- offset
+返回字符串 `str` 中由 `offset` 和 `length` 参数指定的子字符串。
+
+2) 参数
+
+- `str`  
+输入字符串。
+- `offset`
    - 非负值: 返回的字符串将从字符串 `s` 的 `offset` 处开始, 从 `0` 开始计算;
    - 负值: 返回的字符串将从字符串 `s` 的结尾向前数第 `offset` 个字符开始;
    - 字符串 `s` 的长度小于 `offset`, 将返回空字符串;
-- length
+- `length`
    - 0: 返回空字符串;
    - 正值: 返回的字符串将从 `offset` 开始, 最多包含 `length` 个字符 (取决于 `s` 的长度);
    - 负值: 字符串 `s` 末尾处的 `length` 个字符将被省略;
    - 不提供该参数, 则返回的字符串从 `offset` 开始到字符串 `s` 的结尾.
 
-// 示例：返回字符串 `abcdef` 从第 `0` 个字符开始，最多包含 `10` 个字符的子字符串；返回 `string` 类型，结果是 `abcdef`。
-$STR.substr('abcdef', 0, 10)
+3) 返回值
 
-// 示例：返回字符串 `abcdef` 从最后一个字符开始的子字符串；返回 `string` 类型，结果是 `f`。
-$STR.substr('abcdef', -1)
+返回从 `str` 中提取的部分或者空字符串。
 
-// 示例：返回字符串 `abcdef` 除最后一个字符之前的子字符串；返回 `string` 类型，结果是 `abcde`。
-$STR.substr('abcdef', 0, -1)
+4) 示例
 
-// 示例：返回字符串 `abcdef` 从倒数第 `3` 个字符开始，到最后一个字符之前的子字符串；返回 `string` 类型，结果是 `de`。
-$STR.substr('abcdef', -3, -1)
+```php
+// 返回字符串 `abcdef` 从第 `0` 个字符开始，最多包含 `10` 个字符的子字符串
+$STR.substr('abcdef', 0, 10)    // string: 'abcdef'
+
+// 返回字符串 `abcdef` 从最后一个字符开始的子字符串
+$STR.substr('abcdef', -1)       // string: 'f'
+
+// 返回字符串 `abcdef` 除最后一个字符之前的子字符串
+$STR.substr('abcdef', 0, -1)    // string: 'abcde'
+
+// 返回字符串 `abcdef` 从倒数第 3 个字符开始，到最后一个字符之前的子字符串
+$STR.substr('abcdef', -3, -1)   // string: 'de'
 ```
 
 ## 4) 可选动态变量
