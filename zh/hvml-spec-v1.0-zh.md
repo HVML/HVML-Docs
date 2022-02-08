@@ -1929,8 +1929,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 我们可以使用不含等号的 `on` 和 `with` 属性值表述语法，如：
 
 ```
-    <update on="$users[0]" at=".age" 3>
-        <update on="$users[1]" at=".age" with $math.eval("$^.age + 1") />
+    <update on $users[0] at=".age" with 3>
+        <update on $users[1] at=".age" with $math.eval("$^.age + 1") />
     </update>
 ```
 
@@ -1939,13 +1939,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 当我们使用 `undefined` 赋值给数组或者对象的某个数据项时，该数值项将被删除（同 `erase` 标签的效果），如：
 
 ```
-    <update on="$users[1]" at=".age" with undefined />
+    <update on $users[1] at=".age" with undefined />
 ```
 
 亦可用 `remove` 动作：
 
 ```
-    <update on="$users[1]" at=".age" to="remove" />
+    <update on $users[1] at=".age" to="remove" />
 ```
 
 当上述 `update` 标签作用于上面的 `$users` 之后，结果为：
@@ -2049,7 +2049,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 下面的代码定义了一个 `$users` 变量作为集合（使用 `id` 作为唯一性键名），并定义了一个 `$new_users` 对象数组：
 
-```
+```html
     <init as="users" uniquely via="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
@@ -2343,7 +2343,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 比如要实现根据当前 `locale` 动态生成搜索链接的功能，我们也可以使用嵌套在 `choose` 标签中的 `update` 标签完成相关功能，如：
 
-```
+```html
   <head>
       ...
   </head>
