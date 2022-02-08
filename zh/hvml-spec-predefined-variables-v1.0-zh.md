@@ -82,18 +82,20 @@ Language: Chinese
       * [3.7.2) `get` 方法](#372-get-方法)
    + [3.8) `STR`](#38-str)
       * [3.8.1) `contains` 方法](#381-contains-方法)
-      * [3.8.2) `ends_with` 方法](#382-ends_with-方法)
-      * [3.8.3) `explode` 方法](#383-explode-方法)
-      * [3.8.4) `implode` 方法](#384-implode-方法)
-      * [3.8.5) `shuffle` 方法](#385-shuffle-方法)
-      * [3.8.6) `replace` 方法](#386-replace-方法)
-      * [3.8.7) `format_c` 方法](#387-format_c-方法)
-      * [3.8.8) `format_p` 方法](#388-format_p-方法)
-      * [3.8.9) `strcat` 方法](#389-strcat-方法)
-      * [3.8.10) `strlen` 方法](#3810-strlen-方法)
-      * [3.8.11) `lower` 方法](#3811-lower-方法)
-      * [3.8.12) `upper` 方法](#3812-upper-方法)
-      * [3.8.13) `substr` 方法](#3813-substr-方法)
+      * [3.8.2) `starts_with` 方法](#382-starts_with-方法)
+      * [3.8.3) `ends_with` 方法](#383-ends_with-方法)
+      * [3.8.4) `explode` 方法](#384-explode-方法)
+      * [3.8.5) `implode` 方法](#385-implode-方法)
+      * [3.8.6) `shuffle` 方法](#386-shuffle-方法)
+      * [3.8.7) `replace` 方法](#387-replace-方法)
+      * [3.8.8) `ireplace` 方法](#388-ireplace-方法)
+      * [3.8.9) `format_c` 方法](#389-format_c-方法)
+      * [3.8.10) `format_p` 方法](#3810-format_p-方法)
+      * [3.8.11) `strcat` 方法](#3811-strcat-方法)
+      * [3.8.12) `strlen` 方法](#3812-strlen-方法)
+      * [3.8.13) `lower` 方法](#3813-lower-方法)
+      * [3.8.14) `upper` 方法](#3814-upper-方法)
+      * [3.8.15) `substr` 方法](#3815-substr-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -1052,7 +1054,7 @@ $STR.starts_with(<string haystack: the string to search in>,  <string needle: Th
 $STR.starts_with('hello world', 'hello')
 ```
 
-#### 3.8.2) `ends_with` 方法
+#### 3.8.3) `ends_with` 方法
 
 用于判断一个字符串是否以给定的字符串结尾。
 
@@ -1064,61 +1066,126 @@ $STR.ends_with(<string haystack: the string to search in>,  <string needle: The 
 $STR.ends_with('hello world', 'world')
 ```
 
-#### 3.8.3) `explode` 方法
+#### 3.8.4) `explode` 方法
 
-使用指定的字符串分隔一个字符串。
+使用指定的子字符串分割一个字符串。
 
 ```php
-// 原型：将字符串 `s1` 用字符串 `s2` 进行分隔；返回值为 `array` 类型
-$STR.explode(<string: C format string> s1, <string: C format string> s2) : array
+// 原型：将输入字符串用分割字符串 `separator` 进行分割；返回值分割后的字符串数组
+// 若 `separator` 为空，则按字符分割输入字符串；省略 `separator` 时，视同分割字符串为空字符串。
+$STR.explode(<string: the input string to explode>[, <string separator: the boundary string>]) : array
 
-// 示例：将字符串 `beijing:shanghai:guangzhou` 用字符串 `:` 分隔；返回 `array` 类型，结果为 `['beijing', 'shanghai', 'guangzhou']`。
-$STR.explode('beijing:shanghai:guangzhou', ':')
+// 示例：将字符串 `beijing:shanghai:guangzhou` 用字符串 `:` 分隔；返回结果为 `['beijing', 'shanghai', 'guangzhou']`。
+$STR.explode('beijing:shanghai:guangzhou', '')
+
+// 示例：将字符串 `汉字` 用空字符串分隔；返回结果为 `['汉', '字']`。
+$STR.explode('汉字')
 ```
 
-#### 3.8.4) `implode` 方法
+#### 3.8.5) `implode` 方法
 
 使用指定的字符串连接字符串数组中的字符串。
 
 ```php
 // 原型：使用字符串 `s1` ，连接字符串数组 `a1` 中的每个字符串；返回值为 `string` 类型
-$STR.implode(<string: C format string> s1, <array: string array> a1) : string
+$STR.implode(<array: The array of strings to implode>[, <string separator: the boundary string>]) : string
 
 // 示例：使用字符串 `:` 连接数组中的每个字符串；返回 `string` 类型，结果为 `beijing:shanghai:guangzhou`。
-$STR.implode(':', ['beijing', 'shanghai', 'guangzhou'])
+$STR.implode(['beijing', 'shanghai', 'guangzhou'], ':')
+
+// 示例：返回结果为 `汉字`。
+$STR.implode(['汉', '字'])
 ```
-- 如果 `s1` 为空字符串，则该方法直接连接数组中的各个字符串，各个字符串之间没有分隔；
 
+- 如果 `separator` 为空字符串，则该方法直接连接数组中的各个字符串，各个字符串之间没有分隔符；
+- 未传递 `separator` 参数时，视同空字符串。
 - 如果数组为空，则返回空字符串；
+- 如果数组中的某个成员为空字符串，将不会在该元素后面添加 `separator` 字符串。
 
-- 如果数组中的某个元素为空字符串，将不会在该元素后面添加 `s1` 字符串。
-
-
-#### 3.8.5) `shuffle` 方法
+#### 3.8.6) `shuffle` 方法
 
 用于随机打乱一个字符串，返回一个新的重新排列的字符串。
 
 ```php
-// 原型：将字符串 `s1` 中的字符随机打乱，重排后返回新的字符串；返回值为 `string` 类型
-$STR.shuffle(<string: C format string> s1) : string
+// 原型：将输入字符串中的字符随机打乱，重排后返回新的字符串；返回值为 `string` 类型
+$STR.shuffle(<string: the input string to shuffle>) : string
 
 // 示例：将字符串 `beijing` 中的字母顺序打乱，产生一个新的字符串；返回 `string` 类型，结果可能是 `jbienig`。
 $STR.shuffle('beijing')
 ```
 
-#### 3.8.6) `replace` 方法
+#### 3.8.7) `replace` 方法
 
-用于子字符串替换。
+子字符串替换。
+
+###### 描述
 
 ```php
-// 原型：将字符串 `s1` 中的子字符串 `sub`，用字符串 `new` 替换，替换后返回新的字符串；返回值为 `string` 类型
-$STR.replace(<string: C format string> s1, <string: C format string> sub, <string: C format string> new) : string
-
-// 示例：将字符串 `hello world beijing` 中的空格 ` `，用 `-` 替换，产生一个新的字符串；返回 `string` 类型，结果可能是 `hello-world-beijing`。
-$STR.replace('hello world beijing', ' ', '-')
+$STR.replace(<string|array search>, <string|array replace>, <array|string subject>) : string|array
 ```
 
-#### 3.8.7) `format_c` 方法
+该函数返回一个字符串或者数组。该字符串或数组是将 `subject` 中全部的 `search` 都被 `replace` 替换之后的结果。
+
+###### 参数
+
+如果 `search` 和 `replace` 为数组，那么 `$STR.replace()` 将对 `subject` 做二者的映射替换。如果 `replace` 中值的个数少于 `search` 的个数，多余的替换将使用空字符串来进行。如果 `search` 是一个数组而 `replace` 是一个字符串，那么 `search` 中每个元素的替换将始终使用这个字符串。该转换不会改变大小写。
+
+如果 `search` 和 `replace` 都是数组，它们的值将会被依次处理。
+
+- `search`  
+查找的目标值，也就是 needle。一个数组可以指定多个目标。
+- `replace`  
+search 的替换值。一个数组可以被用来指定多重替换。
+- `subject`  
+执行替换的数组或者字符串，也就是常说的 `haystack`。 如果 `subject` 是一个数组，替换操作将遍历整个 `subject`，返回值也将是一个数组。
+
+###### 返回值
+
+该函数返回替换后的数组或者字符串。
+
+###### 示例
+
+```php
+// <body text=black>
+$STR.ireplace("%BODY%", "black", "<body text=%BODY%>");
+```
+
+#### 3.8.8) `ireplace` 方法
+
+`$STR.replace()` 的大小写无关版本。
+
+###### 描述
+
+```php
+$STR.ireplace(<string|array search>, <string|array replace>, <array|string subject>) : string|array
+```
+该函数返回一个字符串或者数组。该字符串或数组是将 `subject` 中全部的 `search` 都被 `replace` 替换（忽略大小写）之后的结果。
+
+###### 参数
+
+如果 `search` 和 `replace` 为数组，那么 `$STR.ireplace()` 将对 `subject` 做二者的映射替换。如果 `replace` 中值的个数少于 `search` 的个数，多余的替换将使用空字符串来进行。如果 `search` 是一个数组而 `replace` 是一个字符串，那么 `search` 中每个元素的替换将始终使用这个字符串。
+
+如果 `search` 或 `replace` 是数组，它们的元素将从头到尾一个个处理。
+
+- `search`  
+要搜索的值，就像是常说的 `needle`。可以使用数组来提供多个 `needle`。
+- `replace`  
+`search` 的替换值。一个数组可以被用来指定多重替换。
+- `subject`  
+要被搜索和替换的字符串或数组，就像是常说的 `haystack`。如果 `subject` 是一个数组，替换操作将遍历整个 `subject`，并且也将返回一个数组。
+
+###### 返回值
+
+该函数返回替换后的数组或者字符串。
+
+###### 示例
+
+```php
+// <body text=black>
+$STR.ireplace("%body%", "black", "<body text=%BODY%>");
+```
+
+#### 3.8.9) `format_c` 方法
 
 格式化数值及字符串数据，使用 C 格式化字符表述方法。
 
@@ -1128,9 +1195,12 @@ $STR.format_c(<string: C format string>[, <boolean | number | longint | ulongint
 
 // 原型
 $STR.format_c(<string: C format string>, <array>)
+
+// 示例
+$STR.format_c('Tom is %d years old, while Jerry is %d years old.', 9, 7)
 ```
 
-#### 3.8.8) `format_p` 方法
+#### 3.8.10) `format_p` 方法
 
 使用占位符格式化任意数据，使用 eJSON 串行化输出格式。
 
@@ -1149,10 +1219,10 @@ $STR.format_p('There are two boys: {0} and {1}', ['Tom', 'Jerry'])
 $STR.format_p(<string: string contains placeholders>, <object>) : string
 
 // 示例
-$STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry'})
+$STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry' })
 ```
 
-#### 3.8.9) `strcat` 方法
+#### 3.8.11) `strcat` 方法
 
 用于连接两个字符串。
 
@@ -1164,7 +1234,7 @@ $STR.strcat(<string: C format string> s1, <string: C format string> s2) : string
 $STR.strcat('hello', ' world')
 ```
 
-#### 3.8.10) `strlen` 方法
+#### 3.8.12) `strlen` 方法
 
 用于获得字符串的长度，该长度包含字符串结尾的 `\0`。
 
@@ -1176,7 +1246,7 @@ $STR.strlen(<string: C format string> s) : ulongint
 $STR.strlen('hello world')
 ```
 
-#### 3.8.11) `lower` 方法
+#### 3.8.13) `lower` 方法
 
 用于将字符串全部转换为小写，并返回转换后的字符串。
 
@@ -1188,7 +1258,7 @@ $STR.lower(<string: C format string> s) : string
 $STR.lower('HELLO WORLD')
 ```
 
-#### 3.8.12) `upper` 方法
+#### 3.8.14) `upper` 方法
 
 用于将字符串全部转换为大写，并返回转换后的字符串。
 
@@ -1200,7 +1270,7 @@ $STR.upper(<string: C format string> s) : string
 $STR.upper('hello world')
 ```
 
-#### 3.8.13) `substr` 方法
+#### 3.8.15) `substr` 方法
 
 返回字符串 `s` 由 `offset` 和 `length` 参数指定的子字符串。
 
