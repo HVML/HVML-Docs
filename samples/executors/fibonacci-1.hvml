@@ -7,7 +7,7 @@
     <body>
         <header>
             <h1>Fibonacci Numbers less than 2000</h1>
-            <p hvml:raw>Using named variable ($fibonacci), $MATH, and $EJSON</p>
+            <p hvml:raw>Using named array variable ($fibonacci), $MATH, and $EJSON</p>
         </header>
 
         <init as="fibonacci">
