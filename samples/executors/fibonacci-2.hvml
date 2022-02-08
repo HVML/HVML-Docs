@@ -18,11 +18,13 @@
             <update on="$1!" to="append" with="$?" />
         </iterate>
 
-        <ol>
-            <iterate on="$1!">
-                <li>$?</li>
-            </iterate>
-        </ol>
+        <section>
+            <ol>
+                <iterate on="$2!">
+                    <li>$?</li>
+                </iterate>
+            </ol>
+        </section>
 
         <footer>
             <p>Totally $EJSON.count($1!) numbers.</p>

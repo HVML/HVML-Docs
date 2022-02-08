@@ -18,13 +18,17 @@
             <update on="$fibonacci" to="append" with="$?" />
         </iterate>
 
-        <ol>
-            <iterate on="$fibonacci">
-                <li>$?</li>
-            </iterate>
-        </ol>
+        <section>
+            <ol>
+                <iterate on="$fibonacci">
+                    <li>$?</li>
+                </iterate>
+            </ol>
+        </section>
 
-        <footer>Totally $EJSON.count($fibonacci) numbers.</footer>
+        <footer>
+            <p>Totally $EJSON.count($fibonacci) numbers.</p>
+        </footer>
     </body>
 
 </hvml>
