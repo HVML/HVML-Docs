@@ -2385,7 +2385,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 #### 2.5.7) `iterate` 标签
 
-`iterate` 标签用于在指定的可迭代数据项或者元素上执行迭代操作。比如执行插入操作时，可将迭代得到的每个数据项作用到 `with` 属性指定的模板，并插入到 `in` 介词属性指定的位置。如下面的 HVML 代码片段：
+`iterate` 标签用于在指定的可迭代数据项或者元素上执行迭代操作。比如执行插入操作时，可将迭代得到的每个数据项使用 `update` 子元素将指定的文档片段模板插入到目标文档。如下面的 HVML 代码片段：
 
 ```html
     <head>
@@ -2430,7 +2430,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```
     <iterate on="$users" in="#the-user-list" by="RANGE: FROM 0 ADVANCE 2">
-        <update on=" [id=user-$?.id] span" at="attr.class" with *= "text-* text-info" />
+        <update on=" [id=user-$?.id] span" at="attr.class" with ~= "text-* text-info" />
     </iterate>
 ```
 
