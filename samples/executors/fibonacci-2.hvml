@@ -18,9 +18,6 @@
             <update on="$1!" to="append" with="$?" />
         </iterate>
 
-        <!-- remove the first invalid number (0) -->
-        <update on = $! at="[0]" with = undefined />
-
         <ol>
             <iterate on="$1!">
                 <li>$?</li>
