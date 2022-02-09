@@ -110,7 +110,7 @@ Language: Chinese
       * [3.8.25) `repeat` 方法](#3825-repeat-方法)
       * [3.8.26) `reverse` 方法](#3826-reverse-方法)
       * [3.8.27) `tokenize` 方法](#3827-tokenize-方法)
-      * [3.8.28) `transfer` 方法](#3828-transfer-方法)
+      * [3.8.28) `translate` 方法](#3828-translate-方法)
       * [3.8.29) `bin2hex` 方法](#3829-bin2hex-方法)
       * [3.8.30) `hex2bin` 方法](#3830-hex2bin-方法)
       * [3.8.31) `base64_encode` 方法](#3831-base64_encode-方法)
@@ -1625,15 +1625,16 @@ $STR.substr('abcdef', -3, -1)
 
 #### 3.8.15) `substr_compare` 方法
 
-安全比较字符串（从偏移位置比较指定长度）
+安全比较字符串（从指定的偏移位置开始比较指定的长度）
 
 **描述**
 
 ```php
 $STR.substr_compare(
-    <string $main_str>,
-    <string $str>,
-    <real $offset>,
+    <string $str1>,
+    <string $str2>,
+    <real $offset1>,
+    <real $offset2>,
     [, <real $length = 0>
         [, <boolean $case_insensitivity = false>
         ]
@@ -1657,6 +1658,17 @@ $STR.substr_compare(
 
 **描述**
 
+```php
+$STR.substr_count(
+    <string $haystack>,
+    <string $needle>
+    [, <real $offset = 0>
+        [, <real $length = 0>
+        ]
+    ]
+): ulongint
+```
+
 **参数**
 
 **返回值**
@@ -1673,6 +1685,17 @@ $STR.substr_compare(
 
 **描述**
 
+```php
+$STR.substr_replace(
+    <array|string $string>,
+    <array|string $replace>,
+    <array|real $offset>
+    [,
+        <array|real $length = 0>
+    ]
+): string|array
+```
+
 **参数**
 
 **返回值**
@@ -1688,6 +1711,19 @@ $STR.substr_compare(
 返回在目标字符串中，以指定字符串起始或结尾的子字符串。
 
 **描述**
+
+```php
+$STR.strstr(
+        <string $haystack>,
+        <string $needle>
+        [,
+            <bool $before_needle = false>
+            [,
+                <bool $case_insensitivity = false>
+            ]
+        ]
+) : string|false
+```
 
 **参数**
 
@@ -1706,6 +1742,19 @@ $STR.substr_compare(
 
 **描述**
 
+```php
+$STR.strpos(
+        <string $haystack>,
+        <string $needle>
+        [,
+            <real $offset = 0>
+            [,
+                <bool $case_insensitivity = false>
+            ]
+        ]
+) : ulongint|false
+```
+
 **参数**
 
 **返回值**
@@ -1723,6 +1772,16 @@ $STR.substr_compare(
 
 **描述**
 
+```php
+$STR.strpbrk(
+        <string $string>,
+        <string $characters>
+        [,
+            <bool $case_insensitivity = false>
+        ]
+) : string|false
+```
+
 **参数**
 
 **返回值**
@@ -1739,6 +1798,15 @@ $STR.substr_compare(
 
 **描述**
 
+```php
+$STR.split(
+        <string $string>
+        [,
+            <real $length = 1>
+        ]
+) : array
+```
+
 **参数**
 
 **返回值**
@@ -1753,8 +1821,19 @@ $STR.substr_compare(
 
 将字符串按给定的小块长度和分隔符切分，生成一个新的字符串。
 
-
 **描述**
+
+```php
+$STR.chunk_split(
+        <string $string>
+        [,
+            <real $length = 76>
+            [,
+                <string $separator = "\r\n">
+            ]
+        ]
+) : string
+```
 
 **参数**
 
@@ -1771,6 +1850,18 @@ $STR.substr_compare(
 删除字符串开头、结尾或两者处的空白字符（或其他字符）。
 
 **描述**
+
+```php
+$STR.trim(
+        <string $string>
+        [,
+            <string $position "left | right | both" = "both">
+            [,
+                <string $characters = " \n\r\t\v\x00">
+            ]
+        ]
+): string
+```
 
 **参数**
 
@@ -1790,6 +1881,19 @@ $STR.substr_compare(
 
 **描述**
 
+```php
+$STR.pad(
+    <string $string>,
+    <real $length>,
+    [,
+        <string $pad_string = " ">,
+        [,
+            <string $pad_type 'left | right | both' = 'right'>
+        ]
+    ]
+): string
+```
+
 **参数**
 
 **返回值**
@@ -1805,6 +1909,13 @@ $STR.substr_compare(
 重复一个字符串。
 
 **描述**
+
+```php
+$STR.str_repeat(
+        <string $string>,
+        <real $times>
+): string
+```
 
 **参数**
 
@@ -1822,6 +1933,12 @@ $STR.substr_compare(
 
 **描述**
 
+```php
+$STR.strrev(
+        <string $string>
+): string
+```
+
 **参数**
 
 **返回值**
@@ -1834,9 +1951,16 @@ $STR.substr_compare(
 
 #### 3.8.27) `tokenize` 方法
 
-使用给定的标记分隔符分隔字符串，返回分隔后的词元数组。
+使用给定的词元分隔符分隔字符串，返回分隔后的词元数组。
 
 **描述**
+
+```
+$STR.tokenize(
+        <string $string>,
+        <string $delimiters>
+): array
+```
 
 **参数**
 
@@ -1848,11 +1972,24 @@ $STR.substr_compare(
 
 - PHP `strtok()` 函数：<https://www.php.net/manual/zh/function.strtok.php>
 
-#### 3.8.28) `transfer` 方法
+#### 3.8.28) `translate` 方法
 
 转换指定子字符串。
 
 **描述**
+
+```
+$STR.translate(
+    <string $string>,
+    <string $from>,
+    <string $to>
+): string
+
+$STR.translate(
+    <string $string>,
+    <object $from_to_pairs>,
+): string
+```
 
 **参数**
 
