@@ -1184,7 +1184,12 @@ $STR.ends_with('Hello, world', '')
 **描述**
 
 ```php
-$STR.explode(<string $string: the input string to explode>[, <string $separator: the boundary string>][, <longint $limit>]) : array
+$STR.explode(
+        <string $string: the input string to explode>
+        [, <string $separator: the boundary string>
+            [, <longint $limit>]
+        ]
+) : array
 ```
 
 此函数返回由字符串组成的数组，每个元素都是 `string` 的一个子串，它们被字符串 `separator` 作为边界点分割出来。
@@ -1229,7 +1234,10 @@ $STR.explode('中华人民共和国', 2)
 **描述**
 
 ```php
-$STR.implode(<array $pieces: The array to implode>[, <string $separator: the boundary string>]) : string
+$STR.implode(
+        <array $pieces: The array to implode>
+        [, <string $separator: the boundary string>]
+) : string
 ```
 
 使用 `separator` 将数组 `pieces` 的成员字符串化后串接为新的字符串。
@@ -1373,10 +1381,18 @@ $STR.ireplace("%body%", "black", "<body text=%BODY%>");
 
 ```php
 // 原型
-$STR.format_c(<string: C format string>[, <boolean | number | longint | ulongint | longdouble | string>[, ...]]) : string
+$STR.format_c(
+        <string: C format string>
+        [, <boolean | number | longint | ulongint | longdouble | string>
+            [, ...]
+        ]
+) : string
 
 // 原型
-$STR.format_c(<string: C format string>, <array>)
+$STR.format_c(
+        <string: C format string>,
+        <array>
+) : string
 
 // 示例
 $STR.format_c('Tom is %d years old, while Jerry is %d years old.', 9, 7)
@@ -1411,7 +1427,13 @@ $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 
 **描述**
 
 ```php
-$STR.join(<string $str1>, <string $str2> [, <string $str3>[, ...]]) : string
+$STR.join(
+        <string $str1>,
+        <string $str2>
+        [, <string $str3>
+            [, ...]
+        ]
+) : string
 ```
 
 将所有参数（至少两个）做字符串化处理后串接成新的字符串。
