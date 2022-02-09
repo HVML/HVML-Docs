@@ -5,12 +5,13 @@ Version: 1.0
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
+Last Modified Date: Feb., 2022  
 Status: Proposal  
 Language: Chinese
 
 *Copyright Notice*
 
-版权所有 &copy; 2021 北京飞漫软件技术有限公司  
+版权所有 &copy; 2021, 2022 北京飞漫软件技术有限公司  
 保留所有权利
 
 此文档不受 HVML 相关软件开源许可证的管辖。
@@ -91,10 +92,10 @@ Language: Chinese
       * [3.8.8) `ireplace` 方法](#388-ireplace-方法)
       * [3.8.9) `format_c` 方法](#389-format_c-方法)
       * [3.8.10) `format_p` 方法](#3810-format_p-方法)
-      * [3.8.11) `strcat` 方法](#3811-strcat-方法)
-      * [3.8.12) `strlen` 方法](#3812-strlen-方法)
-      * [3.8.13) `lower` 方法](#3813-lower-方法)
-      * [3.8.14) `upper` 方法](#3814-upper-方法)
+      * [3.8.11) `join` 方法](#3811-join-方法)
+      * [3.8.12) `length` 方法](#3812-length-方法)
+      * [3.8.13) `tolower` 方法](#3813-tolower-方法)
+      * [3.8.14) `toupper` 方法](#3814-toupper-方法)
       * [3.8.15) `substr` 方法](#3815-substr-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
