@@ -1077,10 +1077,9 @@ $T.get('Hello, world!')
 $STR.contains(
         <string $haystack: the string to search in>,
         <string $needle: The substring to search for in the haystack>
-        [, <string $case:
-            'case': performs a case-sensitive check;
-            'caseless': performs a case-insensitive check;
-            anything else: performs a case-sensitive check.
+        [, <boolean $case:
+            `true`: performs a case-sensitive check;
+            `false`: performs a case-insensitive check.>
         ]
 ) : boolean
 ```
@@ -1120,10 +1119,9 @@ $STR.contains('Hello, world!', '')
 $STR.starts_with(
         <string haystack: the string to search in.>,
         <string needle: The substring to search for in the haystack.>
-        [, <string $case:
-            'case': performs a case-sensitive check;
-            'caseless': performs a case-insensitive check;
-            anything else: performs a case-sensitive check.>
+        [, <boolean $case:
+            `true`: performs a case-sensitive check;
+            `false`: performs a case-insensitive check.>
         ]
 ) : boolean
 ```
@@ -1161,10 +1159,9 @@ $STR.starts_with('Hello, world', '', 'caseless')
 $STR.ends_with(
         <string haystack: the string to search in>,
         <string needle: The substring to search for in the haystack>
-        [, <string $case:
-            'case': performs a case-sensitive check;
-            'caseless': performs a case-insensitive check;
-            anything else: performs a case-sensitive check.>
+        [, <boolean $case:
+            `true`: performs a case-sensitive check;
+            `false`: performs a case-insensitive check.>
         ]
 ) : boolean
 ```
@@ -1324,9 +1321,9 @@ $STR.replace(
         <string|array $search>,
         <string|array $replace>,
         <array|string $subject>
-        [, <string $case 'case | caseless':
-            `case`*: performs case-sensitive replacements;
-            `caseless`: performs case-insensitive replacements.
+        [, <boolean $case:
+            `true`: performs case-sensitive replacements;
+            `false`: performs case-insensitive replacements.>
         ]
 ) : string|array
 ```
