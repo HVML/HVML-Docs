@@ -18,7 +18,7 @@
     <body>
         <header>
             <h1>$T.get('Sample - Loading')</h1>
-            <p>$T.get('Initializing named variable asynchronously')</p>
+            <p>$T.get('Overriding named variable asynchronously')</p>
         </header>
 
         <section>
