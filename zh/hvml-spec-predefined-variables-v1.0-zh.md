@@ -1060,9 +1060,9 @@ $T.get('Hello, world!')
 $STR.contains(
         <string $haystack: the string to search in>,
         <string $needle: The substring to search for in the haystack>
-        [, <string $case ('case | caseless'):
-            `case`: performs a case-sensitive check;
-            `caseless`: performs a case-insensitive check;
+        [, <string $case:
+            'case': performs a case-sensitive check;
+            'caseless': performs a case-insensitive check;
             anything else: performs a case-sensitive check.
         ]
 ) : boolean
@@ -1077,7 +1077,7 @@ $STR.contains(
 - `needle`  
 要搜索的子字符串。
 - `case`  
-指定是否忽略大小写；默认为大小写敏感。
+指定是否忽略大小写（可选）；默认为大小写敏感。
 
 **返回值**
 
@@ -1103,9 +1103,9 @@ $STR.contains('Hello, world!', '')
 $STR.starts_with(
         <string haystack: the string to search in.>,
         <string needle: The substring to search for in the haystack.>
-        [, <string $case ('case | caseless'):
-            `case`: performs a case-sensitive check;
-            `caseless`: performs a case-insensitive check;
+        [, <string $case:
+            'case': performs a case-sensitive check;
+            'caseless': performs a case-insensitive check;
             anything else: performs a case-sensitive check.>
         ]
 ) : boolean
@@ -1120,7 +1120,7 @@ $STR.starts_with(
 - `needle`  
 要搜索的子字符串。
 - `case`  
-指定是否忽略大小写；默认为大小写敏感。
+指定是否忽略大小写（可选）；默认为大小写敏感。
 
 **返回值**
 
@@ -1141,7 +1141,15 @@ $STR.starts_with('Hello, world', '', 'caseless')
 用于判断一个字符串是否以给定的字符串结尾。
 
 ```php
-$STR.ends_with(<string haystack: the string to search in>,  <string needle: The substring to search for in the haystack>) : boolean
+$STR.ends_with(
+        <string haystack: the string to search in>,
+        <string needle: The substring to search for in the haystack>
+        [, <string $case:
+            'case': performs a case-sensitive check;
+            'caseless': performs a case-insensitive check;
+            anything else: performs a case-sensitive check.>
+        ]
+) : boolean
 ```
 
 判断字符串 `haystack` 是否以子字符串 `needle` 结尾。
@@ -1153,7 +1161,7 @@ $STR.ends_with(<string haystack: the string to search in>,  <string needle: The 
 - `needle`  
 要搜索的子字符串。
 - `case`  
-指定是否忽略大小写；默认为大小写敏感。
+指定是否忽略大小写（可选）；默认为大小写敏感。
 
 **返回值**
 
@@ -1260,7 +1268,7 @@ $STR.implode(['汉', '字'])
 **描述**
 
 ```php
-$STR.shuffle(<string string: the input string to shuffle>) : string
+$STR.shuffle(<string $string: the input string to shuffle>) : string
 ```
 
 该函数在输入字符串 `string` 的基础上，返回一个新的随机排列的字符串。
@@ -1287,7 +1295,11 @@ $STR.shuffle('beijing') // string: 'jbienig'
 **描述**
 
 ```php
-$STR.replace(<string|array search>, <string|array replace>, <array|string subject>) : string|array
+$STR.replace(
+        <string|array $search>,
+        <string|array $replace>,
+        <array|string $subject>
+) : string|array
 ```
 
 该函数返回一个字符串或者数组。该字符串或数组是将 `subject` 中全部的 `search` 都被 `replace` 替换之后的结果。
@@ -1323,7 +1335,11 @@ $STR.ireplace("%BODY%", "black", "<body text=%BODY%>");
 **描述**
 
 ```php
-$STR.ireplace(<string|array search>, <string|array replace>, <array|string subject>) : string|array
+$STR.ireplace(
+        <string|array $search>,
+        <string|array $replace>,
+        <array|string $subject>
+) : string|array
 ```
 该函数返回一个字符串或者数组。该字符串或数组是将 `subject` 中全部的 `search` 都被 `replace` 替换（忽略大小写）之后的结果。
 
@@ -1395,9 +1411,10 @@ $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 
 **描述**
 
 ```php
-// 原型：将字符串 `s1` 与字符串 `s2` 串接，产生新的字符串并返回；返回值为 `string` 类型
-$STR.join(<string str1>, <string str2>[, <string str3>[, ...]]) : string
+$STR.join(<string $str1>, <string $str2> [, <string $str3>[, ...]]) : string
 ```
+
+将所有参数（至少两个）做字符串化处理后串接成新的字符串。
 
 **参数**
 
@@ -1425,7 +1442,7 @@ $STR.join('hello', ' ', 'world')    // string: 'hello world'
 **描述**
 
 ```php
-$STR.length(<string string>) : ulongint
+$STR.length(<string $string>) : ulongint
 ```
 
 获得字符串 `string` 中字符的个数。
@@ -1455,7 +1472,7 @@ $STR.length('中国')
 
 ```php
 // 原型：将字符串 `s` 全部转换为小写，并返回转换后的字符串；返回值为 `string` 类型
-$STR.tolower(<string string>) : string
+$STR.tolower(<string $string>) : string
 ```
 
 将字符串 `string` 中的所有字符转换为小写，并返回转换后的字符串。
@@ -1483,7 +1500,7 @@ $STR.tolower('Hello, world')
 **描述**
 
 ```php
-$STR.toupper(<string: string>) : string
+$STR.toupper(<string $string>) : string
 ```
 
 将字符串 `string` 中的所有字符转换为大写，并返回转换后的字符串。
@@ -1511,7 +1528,7 @@ $STR.toupper('Hello, world')
 **描述**
 
 ```php
-$STR.substr(<string string> s, <longint offset>[, <longint length>]) : string
+$STR.substr(<string $string>, <real $offset>[, <real $length>]) : string
 ```
 
 返回字符串 `string` 中由 `offset` 和 `length` 参数指定的子字符串。
