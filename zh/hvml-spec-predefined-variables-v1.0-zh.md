@@ -90,28 +90,31 @@ Language: Chinese
       * [3.8.5) `implode` 方法](#385-implode-方法)
       * [3.8.6) `shuffle` 方法](#386-shuffle-方法)
       * [3.8.7) `replace` 方法](#387-replace-方法)
-      * [3.8.8) `ireplace` 方法](#388-ireplace-方法)
-      * [3.8.9) `format_c` 方法](#389-format_c-方法)
-      * [3.8.10) `format_p` 方法](#3810-format_p-方法)
-      * [3.8.11) `join` 方法](#3811-join-方法)
-      * [3.8.12) `length` 方法](#3812-length-方法)
-      * [3.8.13) `tolower` 方法](#3813-tolower-方法)
-      * [3.8.14) `toupper` 方法](#3814-toupper-方法)
-      * [3.8.15) `substr` 方法](#3815-substr-方法)
-      * [3.8.16) `substr_compare` 方法](#3816-substr_compare-方法)
-      * [3.8.17) `substr_count` 方法](#3817-substr_count-方法)
-      * [3.8.18) `substr_replace` 方法](#3818-substr_replace-方法)
-      * [3.8.19) `strstr` 方法](#3819-strstr-方法)
-      * [3.8.20) `strpos` 方法](#3820-strpos-方法)
-      * [3.8.21) `strpbrk` 方法](#3821-strpbrk-方法)
-      * [3.8.22) `split` 方法](#3822-split-方法)
-      * [3.8.23) `chunk_split` 方法](#3823-chunk_split-方法)
-      * [3.8.24) `trim` 方法](#3824-trim-方法)
-      * [3.8.25) `pad` 方法](#3825-pad-方法)
-      * [3.8.26) `repeat` 方法](#3826-repeat-方法)
-      * [3.8.27) `reverse` 方法](#3827-reverse-方法)
-      * [3.8.28) `tokenize` 方法](#3828-tokenize-方法)
-      * [3.8.29) `transfer` 方法](#3829-transfer-方法)
+      * [3.8.8) `format_c` 方法](#388-format_c-方法)
+      * [3.8.9) `format_p` 方法](#389-format_p-方法)
+      * [3.8.10) `join` 方法](#3810-join-方法)
+      * [3.8.11) `length` 方法](#3811-length-方法)
+      * [3.8.12) `tolower` 方法](#3812-tolower-方法)
+      * [3.8.13) `toupper` 方法](#3813-toupper-方法)
+      * [3.8.14) `substr` 方法](#3814-substr-方法)
+      * [3.8.15) `substr_compare` 方法](#3815-substr_compare-方法)
+      * [3.8.16) `substr_count` 方法](#3816-substr_count-方法)
+      * [3.8.17) `substr_replace` 方法](#3817-substr_replace-方法)
+      * [3.8.18) `strstr` 方法](#3818-strstr-方法)
+      * [3.8.19) `strpos` 方法](#3819-strpos-方法)
+      * [3.8.20) `strpbrk` 方法](#3820-strpbrk-方法)
+      * [3.8.21) `split` 方法](#3821-split-方法)
+      * [3.8.22) `chunk_split` 方法](#3822-chunk_split-方法)
+      * [3.8.23) `trim` 方法](#3823-trim-方法)
+      * [3.8.24) `pad` 方法](#3824-pad-方法)
+      * [3.8.25) `repeat` 方法](#3825-repeat-方法)
+      * [3.8.26) `reverse` 方法](#3826-reverse-方法)
+      * [3.8.27) `tokenize` 方法](#3827-tokenize-方法)
+      * [3.8.28) `transfer` 方法](#3828-transfer-方法)
+      * [3.8.29) `bin2hex` 方法](#3829-bin2hex-方法)
+      * [3.8.30) `hex2bin` 方法](#3830-hex2bin-方法)
+      * [3.8.31) `base64_encode` 方法](#3831-base64_encode-方法)
+      * [3.8.32) `base64_decode` 方法](#3832-base64_decode-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -1321,14 +1324,18 @@ $STR.replace(
         <string|array $search>,
         <string|array $replace>,
         <array|string $subject>
+        [, <string $case 'case | caseless':
+            `case`*: performs case-sensitive replacements;
+            `caseless`: performs case-insensitive replacements.
+        ]
 ) : string|array
 ```
 
-该函数返回一个字符串或者数组。该字符串或数组是将 `subject` 中全部的 `search` 都被 `replace` 替换之后的结果。
+该函数返回一个字符串或者数组，该字符串或数组是将 `subject` 中全部的 `search` 都被 `replace` 替换之后的结果。
 
 **参数**
 
-如果 `search` 和 `replace` 为数组，那么 `$STR.replace()` 将对 `subject` 做二者的映射替换。如果 `replace` 中值的个数少于 `search` 的个数，多余的替换将使用空字符串来进行。如果 `search` 是一个数组而 `replace` 是一个字符串，那么 `search` 中每个元素的替换将始终使用这个字符串。该转换不会改变大小写。
+如果 `search` 和 `replace` 为数组，那么该函数将对 `subject` 做二者的映射替换。如果 `replace` 中值的个数少于 `search` 的个数，多余的替换将使用空字符串来进行。如果 `search` 是一个数组而 `replace` 是一个字符串，那么 `search` 中每个元素的替换将始终使用这个字符串。该替换不会改变大小写。
 
 如果 `search` 和 `replace` 都是数组，它们的值将会被依次处理。
 
@@ -1338,6 +1345,8 @@ $STR.replace(
 search 的替换值。一个数组可以被用来指定多重替换。
 - `subject`  
 执行替换的数组或者字符串，也就是常说的 `haystack`。 如果 `subject` 是一个数组，替换操作将遍历整个 `subject`，返回值也将是一个数组。
+- `case`  
+指定是否忽略大小写（可选）；默认为大小写敏感。
 
 **返回值**
 
@@ -1346,50 +1355,14 @@ search 的替换值。一个数组可以被用来指定多重替换。
 **示例**
 
 ```php
-// <body text=black>
-$STR.ireplace("%BODY%", "black", "<body text=%BODY%>");
+$STR.replace("%BODY%", "black", "<body text=%BODY%>");
+    // string: '<body text=black>'
+
+$STR.ireplace("%body%", "black", "<body text=%BODY%>", 'caseless');
+    // string: '<body text=black>'
 ```
 
-#### 3.8.8) `ireplace` 方法
-
-子字符串替换，忽略大小写的版本。
-
-**描述**
-
-```php
-$STR.ireplace(
-        <string|array $search>,
-        <string|array $replace>,
-        <array|string $subject>
-) : string|array
-```
-该函数返回一个字符串或者数组。该字符串或数组是将 `subject` 中全部的 `search` 都被 `replace` 替换（忽略大小写）之后的结果。
-
-**参数**
-
-如果 `search` 和 `replace` 为数组，那么 `$STR.ireplace()` 将对 `subject` 做二者的映射替换。如果 `replace` 中值的个数少于 `search` 的个数，多余的替换将使用空字符串来进行。如果 `search` 是一个数组而 `replace` 是一个字符串，那么 `search` 中每个元素的替换将始终使用这个字符串。
-
-如果 `search` 或 `replace` 是数组，它们的元素将从头到尾一个个处理。
-
-- `search`  
-要搜索的值，就像是常说的 `needle`。可以使用数组来提供多个 `needle`。
-- `replace`  
-`search` 的替换值。一个数组可以被用来指定多重替换。
-- `subject`  
-要被搜索和替换的字符串或数组，就像是常说的 `haystack`。如果 `subject` 是一个数组，替换操作将遍历整个 `subject`，并且也将返回一个数组。
-
-**返回值**
-
-该函数返回替换后的数组或者字符串。
-
-**示例**
-
-```php
-// <body text=black>
-$STR.ireplace("%body%", "black", "<body text=%BODY%>");
-```
-
-#### 3.8.9) `format_c` 方法
+#### 3.8.8) `format_c` 方法
 
 格式化数值及字符串数据，使用 C 格式化字符表述方法。
 
@@ -1412,7 +1385,7 @@ $STR.format_c(
 $STR.format_c('Tom is %d years old, while Jerry is %d years old.', 9, 7)
 ```
 
-#### 3.8.10) `format_p` 方法
+#### 3.8.9) `format_p` 方法
 
 使用占位符格式化任意数据，使用 eJSON 串行化输出格式。
 
@@ -1434,7 +1407,7 @@ $STR.format_p(<string: string contains placeholders>, <object>) : string
 $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry' })
 ```
 
-#### 3.8.11) `join` 方法
+#### 3.8.10) `join` 方法
 
 用于串接两个或更多个字符串。
 
@@ -1471,7 +1444,7 @@ $STR.join(
 $STR.join('hello', ' ', 'world')    // string: 'hello world'
 ```
 
-#### 3.8.12) `length` 方法
+#### 3.8.11) `length` 方法
 
 用于获得字符串的长度（字符为单位）。
 
@@ -1500,7 +1473,7 @@ $STR.length('中国')
     // ulongint: 2
 ```
 
-#### 3.8.13) `tolower` 方法
+#### 3.8.12) `tolower` 方法
 
 将字符串转换为小写。
 
@@ -1529,7 +1502,7 @@ $STR.tolower('Hello, world')
     // string: 'hello, world'
 ```
 
-#### 3.8.14) `toupper` 方法
+#### 3.8.13) `toupper` 方法
 
 将字符串转换为大写。
 
@@ -1557,7 +1530,7 @@ $STR.toupper('Hello, world')
     // string: 'HELLO, WORLD'
 ```
 
-#### 3.8.15) `substr` 方法
+#### 3.8.14) `substr` 方法
 
 返回字符串的子串。
 
@@ -1607,12 +1580,10 @@ $STR.substr('abcdef', -3, -1)
     // string: 'de'
 ```
 
-#### 3.8.16) `substr_compare` 方法
+#### 3.8.15) `substr_compare` 方法
 
 二进制安全比较字符串（从偏移位置比较指定长度）
 
-<https://www.php.net/manual/zh/function.substr-compare.php>
-
 **描述**
 
 **参数**
@@ -1621,12 +1592,14 @@ $STR.substr('abcdef', -3, -1)
 
 **示例**
 
-#### 3.8.17) `substr_count` 方法
+**参考链接**
+
+- PHP `substr_compare()` 函数：<https://www.php.net/manual/zh/function.substr-compare.php>
+
+#### 3.8.16) `substr_count` 方法
 
 计算子字符串出现的次数。
 
-<https://www.php.net/manual/zh/function.substr-count.php>
-
 **描述**
 
 **参数**
@@ -1635,12 +1608,14 @@ $STR.substr('abcdef', -3, -1)
 
 **示例**
 
-#### 3.8.18) `substr_replace` 方法
+**参考链接**
+
+- PHP `substr_count()` 函数：<https://www.php.net/manual/zh/function.substr-count.php>
+
+#### 3.8.17) `substr_replace` 方法
 
 在子字符串中做替换。
 
-<https://www.php.net/manual/zh/function.substr-replace.php>
-
 **描述**
 
 **参数**
@@ -1649,12 +1624,14 @@ $STR.substr('abcdef', -3, -1)
 
 **示例**
 
-#### 3.8.19) `strstr` 方法
+**参考链接**
+
+- PHP `substr_replace()` 函数：<https://www.php.net/manual/zh/function.substr-replace.php>
+
+#### 3.8.18) `strstr` 方法
 
 返回在目标字符串中，以指定字符串起始或结尾的子字符串。
 
-<https://www.php.net/manual/zh/function.strstr.php>
-
 **描述**
 
 **参数**
@@ -1663,12 +1640,15 @@ $STR.substr('abcdef', -3, -1)
 
 **示例**
 
-#### 3.8.20) `strpos` 方法
+**参考链接**
+
+- PHP `strstr()` 函数：<https://www.php.net/manual/zh/function.strstr.php>
+- PHP `stristr()` 函数：<https://www.php.net/manual/zh/function.stristr.php>
+
+#### 3.8.19) `strpos` 方法
 
 返回在目标字符串中指定字符串第一次或者最后一次出现的位置。
 
-<https://www.php.net/manual/zh/function.strpos.php>
-
 **描述**
 
 **参数**
@@ -1677,12 +1657,15 @@ $STR.substr('abcdef', -3, -1)
 
 **示例**
 
-#### 3.8.21) `strpbrk` 方法
+**参考链接**
+
+- PHP `strpos()` 函数：<https://www.php.net/manual/zh/function.strpos.php>
+- PHP `stripos()` 函数：<https://www.php.net/manual/zh/function.stripos.php>
+
+#### 3.8.20) `strpbrk` 方法
 
 在目标字符串中查找从一组字符的任何一个字符开始或结尾的子字符串。
 
-<https://www.php.net/manual/zh/function.strpbrk.php>
-
 **描述**
 
 **参数**
@@ -1691,12 +1674,14 @@ $STR.substr('abcdef', -3, -1)
 
 **示例**
 
-#### 3.8.22) `split` 方法
+**参考链接**
+
+- PHP `strpbrk()` 函数：<https://www.php.net/manual/zh/function.strpbrk.php>
+
+#### 3.8.21) `split` 方法
 
 将字符串按给定的长度切分成子字符串数组。
 
-<https://www.php.net/manual/zh/function.str-split.php>
-
 **描述**
 
 **参数**
@@ -1705,11 +1690,14 @@ $STR.substr('abcdef', -3, -1)
 
 **示例**
 
-#### 3.8.23) `chunk_split` 方法
+**参考链接**
+
+- PHP `str_split()` 函数：<https://www.php.net/manual/zh/function.str-split.php>
+
+#### 3.8.22) `chunk_split` 方法
 
 将字符串按给定的小块长度和分隔符切分，生成一个新的字符串。
 
-<https://www.php.net/manual/zh/function.chunk-split.php>
 
 **描述**
 
@@ -1719,12 +1707,14 @@ $STR.substr('abcdef', -3, -1)
 
 **示例**
 
-#### 3.8.24) `trim` 方法
+**参考链接**
+
+- PHP `chunk_split()` 函数：<https://www.php.net/manual/zh/function.chunk-split.php>
+
+#### 3.8.23) `trim` 方法
 
 删除字符串开头、结尾或两者处的空白字符（或其他字符）。
 
-<https://www.php.net/manual/zh/function.trim.php>
-
 **描述**
 
 **参数**
@@ -1733,12 +1723,16 @@ $STR.substr('abcdef', -3, -1)
 
 **示例**
 
-#### 3.8.25) `pad` 方法
+**参考链接**
+
+- PHP `trim()` 函数：<https://www.php.net/manual/zh/function.trim.php>
+- PHP `ltrim()` 函数：<https://www.php.net/manual/zh/function.ltrim.php>
+- PHP `rtrim()` 函数：<https://www.php.net/manual/zh/function.rtrim.php>
+
+#### 3.8.24) `pad` 方法
 
 使用另一个字符串填充字符串为指定长度。
 
-<https://www.php.net/manual/zh/function.str-pad.php>
-
 **描述**
 
 **参数**
@@ -1747,12 +1741,14 @@ $STR.substr('abcdef', -3, -1)
 
 **示例**
 
-#### 3.8.26) `repeat` 方法
+**参考链接**
+
+- PHP `str_pad()` 函数：<https://www.php.net/manual/zh/function.str-pad.php>
+
+#### 3.8.25) `repeat` 方法
 
 重复一个字符串。
 
-<https://www.php.net/manual/zh/function.str-repeat.php>
-
 **描述**
 
 **参数**
@@ -1761,12 +1757,14 @@ $STR.substr('abcdef', -3, -1)
 
 **示例**
 
-#### 3.8.27) `reverse` 方法
+**参考链接**
+
+- PHP `str_repeat()` 函数：<https://www.php.net/manual/zh/function.str-repeat.php>
+
+#### 3.8.26) `reverse` 方法
 
 反转一个字符串。
 
-<https://www.php.net/manual/zh/function.strrev.php>
-
 **描述**
 
 **参数**
@@ -1775,12 +1773,14 @@ $STR.substr('abcdef', -3, -1)
 
 **示例**
 
-#### 3.8.28) `tokenize` 方法
+**参考链接**
+
+- PHP `strrev()` 函数：<https://www.php.net/manual/zh/function.strrev.php>
+
+#### 3.8.27) `tokenize` 方法
 
 使用给定的标记分隔符分割字符串，返回分隔后的词元数组。
 
-<https://www.php.net/manual/zh/function.strtok.php>
-
 **描述**
 
 **参数**
@@ -1789,12 +1789,14 @@ $STR.substr('abcdef', -3, -1)
 
 **示例**
 
-#### 3.8.29) `transfer` 方法
+**参考链接**
+
+- PHP `strtok()` 函数：<https://www.php.net/manual/zh/function.strtok.php>
+
+#### 3.8.28) `transfer` 方法
 
 转换指定子字符串。
 
-<https://www.php.net/manual/zh/function.strtr.php>
-
 **描述**
 
 **参数**
@@ -1802,6 +1804,130 @@ $STR.substr('abcdef', -3, -1)
 **返回值**
 
 **示例**
+
+**参考链接**
+
+- PHP `strtr()` 函数：<https://www.php.net/manual/zh/function.strtr.php>
+
+#### 3.8.29) `bin2hex` 方法
+
+二进制字符串转换为十六进制。
+
+<https://www.php.net/manual/zh/function.bin2hex.php>
+
+**描述**
+
+```php
+$STR.bin2hex(
+        <string $data>,
+        <boolean $uppercase:
+            'true': use A...F;
+            'false': use a...f.
+        >,
+        <boolean $strict:
+            'true': throw the `BadEncoding` exception for a bad encoded string;
+            'false': stops conversion for any error and returns the converted string.
+        >
+): string
+```
+
+该函数将输入的二进制字符串 `data` 转换为十六进制字符串。
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `bin2hex()` 函数：<https://www.php.net/manual/zh/function.bin2hex.php>
+
+#### 3.8.30) `hex2bin` 方法
+
+十六进制字符串转换为二进制。
+
+**描述**
+
+```php
+$STR.hex2bin(
+        <string $data>,
+        <boolean $strict:
+            'true': throw the `BadEncoding` exception for a bad encoded string;
+            'false': stops conversion for any error and returns the converted string.
+        >
+): string
+```
+
+该函数将输入的十六进制字符串 `data` 转换为二进制字符串。
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `bin2hex()` 函数：<https://www.php.net/manual/zh/function.hex2bin.php>
+
+#### 3.8.31) `base64_encode` 方法
+
+使用 Base64 编码字符串或者字节序列。
+
+<https://www.php.net/manual/zh/function.base64-encode.php>
+
+**描述**
+
+```php
+$STR.base64_encode(
+        <string|bsequence $data>
+): string
+```
+
+该函数将输入字符串或者二进制序列 `data` 按照 Base64 进行编码。
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `base64_encode()` 函数：<https://www.php.net/manual/zh/function.base64-encode.php>
+
+#### 3.8.32) `base64_decode` 方法
+
+解码使用 Base64 编码的字符串。
+
+**描述**
+
+```php
+$STR.base64_decode(
+        <string $data>,
+        <boolean $utf8:
+            'true': decode the input Base64 string to a string.
+            'false': decode the input Base64 string to a binary sequence.
+        >
+        <boolean $strict:
+            'true': throw the `BadEncoding` exception for a bad encoded string;
+            'false': stops conversion for any error and returns the converted string.
+        >
+): string | bseqence
+```
+
+该函数将输入字符串 `data` 按照 Base64 进行解码。若 `utf8` 为 `true`，则按照 UTF-8 编码字符串进行解码，否则解码为一个二进制序列。若 `strict` 为 `true`，则遇到错误编码或者不正确的 UTF-8 字符时，会抛出 `BadEncoding` 异常；若 `strict` 为 `false`，将忽略错误停止解码并返回已经解码的字符串或二进制序列。
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `base64_decode()` 函数：<https://www.php.net/manual/zh/function.base64-decode.php>
 
 ## 4) 可选动态变量
 
