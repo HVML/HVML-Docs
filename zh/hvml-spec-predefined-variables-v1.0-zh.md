@@ -1077,9 +1077,9 @@ $T.get('Hello, world!')
 $STR.contains(
         <string $haystack: the string to search in>,
         <string $needle: The substring to search for in the haystack>
-        [, <boolean $case:
-            `true`: performs a case-sensitive check;
-            `false`: performs a case-insensitive check.>
+        [, <boolean $case_insensitivity = false:
+            `false`: performs a case-sensitive check;
+            `true`: performs a case-insensitive check.>
         ]
 ) : boolean
 ```
@@ -1092,8 +1092,8 @@ $STR.contains(
 被搜索的字符串。
 - `needle`  
 要搜索的子字符串。
-- `case`  
-指定是否忽略大小写（可选）；默认为大小写敏感。
+- `case_insensitivity`  
+指定是否忽略大小写（可选）；默认为忽略大小写。
 
 **返回值**
 
@@ -1111,7 +1111,7 @@ $STR.contains('Hello, world!', '')
 
 **参考链接**
 
-- [PHP `str_contains()` 函数](https://www.php.net/manual/zh/function.str-contains.php)
+- PHP `str_contains()` 函数：<https://www.php.net/manual/zh/function.str-contains.php>
 
 #### 3.8.2) `starts_with` 方法
 
@@ -1123,9 +1123,9 @@ $STR.contains('Hello, world!', '')
 $STR.starts_with(
         <string haystack: the string to search in.>,
         <string needle: The substring to search for in the haystack.>
-        [, <boolean $case:
-            `true`: performs a case-sensitive check;
-            `false`: performs a case-insensitive check.>
+        [, <boolean $case_insensitivity = false:
+            `false`: performs a case-sensitive check;
+            `true`: performs a case-insensitive check.>
         ]
 ) : boolean
 ```
@@ -1138,8 +1138,8 @@ $STR.starts_with(
 被搜索的字符串。
 - `needle`  
 要搜索的子字符串。
-- `case`  
-指定是否忽略大小写（可选）；默认为大小写敏感。
+- `case_insensitivity`  
+指定是否忽略大小写（可选）；默认为忽略大小写。
 
 **返回值**
 
@@ -1148,7 +1148,7 @@ $STR.starts_with(
 **示例**
 
 ```php
-$STR.starts_with('Hello, world', 'hello', false)
+$STR.starts_with('Hello, world', 'hello', true)
     // boolean: true
 
 $STR.starts_with('Hello, world', '')
@@ -1167,9 +1167,9 @@ $STR.starts_with('Hello, world', '')
 $STR.ends_with(
         <string haystack: the string to search in>,
         <string needle: The substring to search for in the haystack>
-        [, <boolean $case:
-            `true`: performs a case-sensitive check;
-            `false`: performs a case-insensitive check.>
+        [, <boolean $case_insensitivity = false:
+            `false`: performs a case-sensitive check;
+            `true`: performs a case-insensitive check.>
         ]
 ) : boolean
 ```
@@ -1182,8 +1182,8 @@ $STR.ends_with(
 被搜索的字符串。
 - `needle`  
 要搜索的子字符串。
-- `case`  
-指定是否忽略大小写（可选）；默认为大小写敏感。
+- `case_insensitivity`  
+指定是否忽略大小写（可选）；默认为忽略大小写。
 
 **返回值**
 
@@ -1192,7 +1192,7 @@ $STR.ends_with(
 **示例**
 
 ```php
-$STR.ends_with('Hello, world', 'World', false)
+$STR.ends_with('Hello, world', 'World', true)
     // boolean: true
 
 $STR.ends_with('Hello, world', '')
@@ -1205,7 +1205,7 @@ $STR.ends_with('Hello, world', '')
 
 #### 3.8.4) `explode` 方法
 
-使用指定的子字符串分割一个字符串。
+使用指定的子字符串分隔一个字符串。
 
 **描述**
 
@@ -1218,14 +1218,14 @@ $STR.explode(
 ) : array
 ```
 
-此函数返回由字符串组成的数组，每个元素都是 `string` 的一个子串，它们被字符串 `separator` 作为边界点分割出来。
+此函数返回由字符串组成的数组，每个元素都是 `string` 的一个子串，它们被字符串 `separator` 作为边界点分隔出来。
 
 **参数**
 
 - `string`  
 输入字符串。
 - `seperator`  
-分隔字符串。`separator` 为空时，按字符分割输入字符串；省略 `separator` 时，视同分割字符串为空字符串。
+分隔字符串。`separator` 为空时，按字符分隔输入字符串；省略 `separator` 时，视同分隔字符串为空字符串。
 - `limit`
    如果传递了 `limit` 参数并且是正数，则返回的数组包含最多 `limit` 个成员，而最后那个成员将包含 `string` 的剩余部分。
    如果 `limit` 参数是负数，则返回除了最后的 `-limit` 个元素外的所有元素。
@@ -1233,9 +1233,9 @@ $STR.explode(
 
 **返回值**
 
-此函数返回由字符串组成的数组，其每个成员都是 `string` 的一个子串，它们被字符串 `separator` 作为边界点分割出来。
+此函数返回由字符串组成的数组，其每个成员都是 `string` 的一个子串，它们被字符串 `separator` 作为边界点分隔出来。
 
-如果 `separator` 为空字符串，将按字符分割输入字符串。 如果 `separator` 所包含的值在 `string` 中找不到，并且使用了负数的 `limit`，那么会返回一个空数组，否则返回只包含 `string` 单个成员的数组。如果 `separator` 出现在了 `string` 的开头或末尾，将在返回的数组之头部或尾部添加空字符串（`""`）为边界值。
+如果 `separator` 为空字符串，将按字符分隔输入字符串。 如果 `separator` 所包含的值在 `string` 中找不到，并且使用了负数的 `limit`，那么会返回一个空数组，否则返回只包含 `string` 单个成员的数组。如果 `separator` 出现在了 `string` 的开头或末尾，将在返回的数组之头部或尾部添加空字符串（`""`）为边界值。
 
 **示例**
 
@@ -1345,9 +1345,9 @@ $STR.replace(
         <string|array $search>,
         <string|array $replace>,
         <array|string $subject>
-        [, <boolean $case:
-            `true`: performs case-sensitive replacements;
-            `false`: performs case-insensitive replacements.>
+        [, <boolean $case_insensitivity = false:
+            `false`: performs case-sensitive replacements;
+            `true`: performs case-insensitive replacements.>
         ]
 ) : string|array
 ```
@@ -1366,8 +1366,8 @@ $STR.replace(
 search 的替换值。一个数组可以被用来指定多重替换。
 - `subject`  
 执行替换的数组或者字符串，也就是常说的 `haystack`。 如果 `subject` 是一个数组，替换操作将遍历整个 `subject`，返回值也将是一个数组。
-- `case`  
-指定是否忽略大小写（可选）；默认为大小写敏感。
+- `case_insensitivity`  
+指定是否忽略大小写（可选）；默认为忽略大小写。
 
 **返回值**
 
@@ -1379,7 +1379,7 @@ search 的替换值。一个数组可以被用来指定多重替换。
 $STR.replace("%BODY%", "black", "<body text=%BODY%>");
     // string: '<body text=black>'
 
-$STR.replace("%body%", "black", "<body text=%BODY%>", false);
+$STR.replace("%body%", "black", "<body text=%BODY%>", true);
     // string: '<body text=black>'
 ```
 
@@ -1625,9 +1625,21 @@ $STR.substr('abcdef', -3, -1)
 
 #### 3.8.15) `substr_compare` 方法
 
-二进制安全比较字符串（从偏移位置比较指定长度）
+安全比较字符串（从偏移位置比较指定长度）
 
 **描述**
+
+```php
+$STR.substr_compare(
+    <string $main_str>,
+    <string $str>,
+    <real $offset>,
+    [, <real $length = 0>
+        [, <boolean $case_insensitivity = false>
+        ]
+    ]
+) : number
+```
 
 **参数**
 
@@ -1822,7 +1834,7 @@ $STR.substr('abcdef', -3, -1)
 
 #### 3.8.27) `tokenize` 方法
 
-使用给定的标记分隔符分割字符串，返回分隔后的词元数组。
+使用给定的标记分隔符分隔字符串，返回分隔后的词元数组。
 
 **描述**
 
