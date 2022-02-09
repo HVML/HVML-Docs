@@ -98,6 +98,20 @@ Language: Chinese
       * [3.8.13) `tolower` 方法](#3813-tolower-方法)
       * [3.8.14) `toupper` 方法](#3814-toupper-方法)
       * [3.8.15) `substr` 方法](#3815-substr-方法)
+      * [3.8.16) `substr_compare` 方法](#3816-substr_compare-方法)
+      * [3.8.17) `substr_count` 方法](#3817-substr_count-方法)
+      * [3.8.18) `substr_replace` 方法](#3818-substr_replace-方法)
+      * [3.8.19) `strstr` 方法](#3819-strstr-方法)
+      * [3.8.20) `strpos` 方法](#3820-strpos-方法)
+      * [3.8.21) `strpbrk` 方法](#3821-strpbrk-方法)
+      * [3.8.22) `split` 方法](#3822-split-方法)
+      * [3.8.23) `chunk_split` 方法](#3823-chunk_split-方法)
+      * [3.8.24) `trim` 方法](#3824-trim-方法)
+      * [3.8.25) `pad` 方法](#3825-pad-方法)
+      * [3.8.26) `repeat` 方法](#3826-repeat-方法)
+      * [3.8.27) `reverse` 方法](#3827-reverse-方法)
+      * [3.8.28) `tokenize` 方法](#3828-tokenize-方法)
+      * [3.8.29) `transfer` 方法](#3829-transfer-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -1592,6 +1606,202 @@ $STR.substr('abcdef', 0, -1)
 $STR.substr('abcdef', -3, -1)
     // string: 'de'
 ```
+
+#### 3.8.16) `substr_compare` 方法
+
+二进制安全比较字符串（从偏移位置比较指定长度）
+
+<https://www.php.net/manual/zh/function.substr-compare.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
+
+#### 3.8.17) `substr_count` 方法
+
+计算子字符串出现的次数。
+
+<https://www.php.net/manual/zh/function.substr-count.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
+
+#### 3.8.18) `substr_replace` 方法
+
+在子字符串中做替换。
+
+<https://www.php.net/manual/zh/function.substr-replace.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
+
+#### 3.8.19) `strstr` 方法
+
+返回在目标字符串中，以指定字符串起始或结尾的子字符串。
+
+<https://www.php.net/manual/zh/function.strstr.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
+
+#### 3.8.20) `strpos` 方法
+
+返回在目标字符串中指定字符串第一次或者最后一次出现的位置。
+
+<https://www.php.net/manual/zh/function.strpos.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
+
+#### 3.8.21) `strpbrk` 方法
+
+在目标字符串中查找从一组字符的任何一个字符开始或结尾的子字符串。
+
+<https://www.php.net/manual/zh/function.strpbrk.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
+
+#### 3.8.22) `split` 方法
+
+将字符串按给定的长度切分成子字符串数组。
+
+<https://www.php.net/manual/zh/function.str-split.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
+
+#### 3.8.23) `chunk_split` 方法
+
+将字符串按给定的小块长度和分隔符切分，生成一个新的字符串。
+
+<https://www.php.net/manual/zh/function.chunk-split.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
+
+#### 3.8.24) `trim` 方法
+
+删除字符串开头、结尾或两者处的空白字符（或其他字符）。
+
+<https://www.php.net/manual/zh/function.trim.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
+
+#### 3.8.25) `pad` 方法
+
+使用另一个字符串填充字符串为指定长度。
+
+<https://www.php.net/manual/zh/function.str-pad.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
+
+#### 3.8.26) `repeat` 方法
+
+重复一个字符串。
+
+<https://www.php.net/manual/zh/function.str-repeat.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
+
+#### 3.8.27) `reverse` 方法
+
+反转一个字符串。
+
+<https://www.php.net/manual/zh/function.strrev.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
+
+#### 3.8.28) `tokenize` 方法
+
+使用给定的标记分隔符分割字符串，返回分隔后的词元数组。
+
+<https://www.php.net/manual/zh/function.strtok.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
+
+#### 3.8.29) `transfer` 方法
+
+转换指定子字符串。
+
+<https://www.php.net/manual/zh/function.strtr.php>
+
+**描述**
+
+**参数**
+
+**返回值**
+
+**示例**
 
 ## 4) 可选动态变量
 
