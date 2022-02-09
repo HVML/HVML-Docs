@@ -1535,7 +1535,7 @@ $STR.tolower('Hello, world')
 
 **参考链接**
 
-- PHP `strtolower() 函数：<https://www.php.net/manual/zh/function.strtolower.php>
+- PHP `strtolower()` 函数：<https://www.php.net/manual/zh/function.strtolower.php>
 
 #### 3.8.13) `toupper` 方法
 
@@ -1567,7 +1567,7 @@ $STR.toupper('Hello, world')
 
 **参考链接**
 
-- PHP `strtoupper() 函数：<https://www.php.net/manual/zh/function.strtoupper.php>
+- PHP `strtoupper()` 函数：<https://www.php.net/manual/zh/function.strtoupper.php>
 
 #### 3.8.14) `substr` 方法
 
