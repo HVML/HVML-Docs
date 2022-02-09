@@ -1109,6 +1109,10 @@ $STR.contains('Hello, world!', '')
     // boolean: true
 ```
 
+**参考链接**
+
+- [PHP `str_contains()` 函数](https://www.php.net/manual/zh/function.str-contains.php)
+
 #### 3.8.2) `starts_with` 方法
 
 用于判断一个字符串是否以给定的字符串开头。
@@ -1144,12 +1148,16 @@ $STR.starts_with(
 **示例**
 
 ```php
-$STR.starts_with('Hello, world', 'hello', 'caseless')
+$STR.starts_with('Hello, world', 'hello', false)
     // boolean: true
 
-$STR.starts_with('Hello, world', '', 'caseless')
+$STR.starts_with('Hello, world', '')
     // boolean: true
 ```
+
+**参考链接**
+
+- PHP `str_starts_with()` 函数：<https://www.php.net/manual/zh/function.str-starts-with.php>
 
 #### 3.8.3) `ends_with` 方法
 
@@ -1184,12 +1192,16 @@ $STR.ends_with(
 **示例**
 
 ```php
-$STR.ends_with('Hello, world', 'world')
+$STR.ends_with('Hello, world', 'World', false)
     // boolean: true
 
 $STR.ends_with('Hello, world', '')
     // boolean: true
 ```
+
+**参考链接**
+
+- PHP `str_ends_with()` 函数：<https://www.php.net/manual/zh/function.str-ends-with.php>
 
 #### 3.8.4) `explode` 方法
 
@@ -1241,6 +1253,10 @@ $STR.explode('中华人民共和国', 2)
     // array: ['中', '华']
 ```
 
+**参考链接**
+
+- PHP `explode()` 函数：<https://www.php.net/manual/zh/function.explode.php>
+
 #### 3.8.5) `implode` 方法
 
 将一个数组的成员串接为一个新的字符串。使用指定的字符串串接字符串数组中的字符串。
@@ -1283,6 +1299,10 @@ $STR.implode(['汉', '字'])
     // string: '汉字'
 ```
 
+**参考链接**
+
+- PHP `implode()` 函数：<https://www.php.net/manual/zh/function.implode.php>
+
 #### 3.8.6) `shuffle` 方法
 
 随机打乱一个字符串。
@@ -1309,6 +1329,10 @@ $STR.shuffle(<string $string: the input string to shuffle>) : string
 ```php
 $STR.shuffle('beijing') // string: 'jbienig'
 ```
+
+**参考链接**
+
+- PHP `str_shuffle()` 函数：<https://www.php.net/manual/zh/function.str-shuffle.php>
 
 #### 3.8.7) `replace` 方法
 
@@ -1355,9 +1379,14 @@ search 的替换值。一个数组可以被用来指定多重替换。
 $STR.replace("%BODY%", "black", "<body text=%BODY%>");
     // string: '<body text=black>'
 
-$STR.ireplace("%body%", "black", "<body text=%BODY%>", 'caseless');
+$STR.replace("%body%", "black", "<body text=%BODY%>", false);
     // string: '<body text=black>'
 ```
+
+**参考链接**
+
+- PHP `str_replace()` 函数：<https://www.php.net/manual/zh/function.str-replace.php>
+- PHP `str_ireplace()` 函数：<https://www.php.net/manual/zh/function.str-ireplace.php>
 
 #### 3.8.8) `format_c` 方法
 
@@ -1441,6 +1470,8 @@ $STR.join(
 $STR.join('hello', ' ', 'world')    // string: 'hello world'
 ```
 
+**参考链接**
+
 #### 3.8.11) `length` 方法
 
 用于获得字符串的长度（字符为单位）。
@@ -1469,6 +1500,9 @@ $STR.length(<string $string>) : ulongint
 $STR.length('中国')
     // ulongint: 2
 ```
+
+**参考链接**
+
 
 #### 3.8.12) `tolower` 方法
 
@@ -1499,6 +1533,10 @@ $STR.tolower('Hello, world')
     // string: 'hello, world'
 ```
 
+**参考链接**
+
+- PHP `strtolower() 函数：<https://www.php.net/manual/zh/function.strtolower.php>
+
 #### 3.8.13) `toupper` 方法
 
 将字符串转换为大写。
@@ -1526,6 +1564,10 @@ $STR.toupper(<string $string>) : string
 $STR.toupper('Hello, world')
     // string: 'HELLO, WORLD'
 ```
+
+**参考链接**
+
+- PHP `strtoupper() 函数：<https://www.php.net/manual/zh/function.strtoupper.php>
 
 #### 3.8.14) `substr` 方法
 
@@ -1576,6 +1618,10 @@ $STR.substr('abcdef', 0, -1)
 $STR.substr('abcdef', -3, -1)
     // string: 'de'
 ```
+
+**参考链接**
+
+- PHP `substr()` 函数：<https://www.php.net/manual/zh/function.substr.php>
 
 #### 3.8.15) `substr_compare` 方法
 
