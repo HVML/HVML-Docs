@@ -59,7 +59,8 @@ Language: Chinese
       * [3.5.5) `stringify` 方法](#355-stringify-方法)
       * [3.5.6) `serialize` 方法](#356-serialize-方法)
       * [3.5.7) `sort` 方法](#357-sort-方法)
-      * [3.5.8) `compare` 方法](#358-compare-方法)
+      * [3.5.8) `shuffle` 方法](#358-shuffle-方法)
+      * [3.5.9) `compare` 方法](#359-compare-方法)
    + [3.6) `L`](#36-l)
       * [3.6.1) `not` 方法](#361-not-方法)
       * [3.6.2) `and` 方法](#362-and-方法)
@@ -723,7 +724,7 @@ $EJSON.sort(
 ) : boolean
 ```
 
-#### 3.5.7) `shuffle` 方法
+#### 3.5.8) `shuffle` 方法
 
 该方法随机打乱给定数组或者集合的成员顺序。
 
@@ -741,7 +742,7 @@ $EJSON.shuffle(
 ) : boolean
 ```
 
-#### 3.5.8) `compare` 方法
+#### 3.5.9) `compare` 方法
 
 该方法对给定两个数据做对比，返回数值：
 
