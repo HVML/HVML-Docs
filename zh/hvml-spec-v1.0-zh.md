@@ -2579,7 +2579,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             <img src="wait.png" />
         </ul>
 
-        <observe at="users" for="attached" in="#user-list">
+        <observe at="users" for="change:attached" in="#user-list">
             <clear on="$@" />
             <iterate on="$users" by="RANGE: FROM 0">
                 <update on="$@" to="append" with="$user_item" />
@@ -2587,15 +2587,16 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         </observe>
 ```
 
-当我们观察到 `users` 变量上的 `attached` 事件之后，表明数据已经就绪，此时，即可执行 `observe` 定义的操作组：清空 `#user-list` 中的内容，然后迭代 `$users` 数组的成员，使用模板 `$user_item` 生成文档片段追加到 `#user-list` 当中。
+当我们观察到 `users` 变量上的 `change:attached` 事件之后，表明数据已经就绪，此时，即可执行 `observe` 定义的操作组：清空 `#user-list` 中的内容，然后迭代 `$users` 数组的成员，使用模板 `$user_item` 生成文档片段追加到 `#user-list` 当中。
 
 我们可以跟踪处理命名变量上的如下事件：
 
-- `attached`：表示命名变量上的数据已就绪并关联到该变量。
-- `detached`：表示先前关联到该变量上的数据被取消关联，比如使用 `init` 重置该变量时。
-- `except`：表示在获取该变量对应的数据时出现异常，可能是请求出错，也可能是解析出错。具体信息，由事件的子类型给出。
+- `change:attached`：表示命名变量上的数据从初始的 `undefined` 变化为有效数据。
+- `change:displaced`：表示先前关联到该变量上的数据被置换为新的数据，比如使用 `init` 重置该变量，或者先前发起的异步请求操作成功获得了有效数据。
+- `change:detached`：表示先前关联到该变量上的有效数据被取消关联，其值被重置为 `undefined`，比如先前发起的异步请求操作失败，未能获得有效数据的情形。
+- `except:<exceptionName>`：表示在获取该变量对应的数据时出现异常，可能是请求出错，也可能是解析出错。具体信息，由事件的子类型给出。
 
-注意：当我们尝试使用一个尚未关联到数据的命名变量时，将产生 `NotReady` 异常。
+注意：当我们尝试使用一个尚未关联到有效数据的命名变量时，将产生 `NotReady` 异常。
 
 当我们观察一项数据时，我们可获得该数据产生的事件或者数据本身上的变化。比如，我们可监听来自长连接的事件，异步请求的返回值，或者获得长连接上调用远程过程后返回的结果，亦可用来监听某些内部数据产生的事件，比如 `$TIMERS` 数据产生的定时器到期事件，等等。
 
@@ -4343,7 +4344,25 @@ SYSTEM 标识符字符串的格式如下：
 
 一般动作元素用于定义对数据或文档的操作，可包含其他普通元素以及可作为骨架元素使用的外部元素，但不能定义其文本内容。
 
-数据动作元素用于定义 JSON 数据以及其上的操作，可包含其他普通元素以及可作为骨架元素使用的外部元素。
+数据动作元素用于定义数据内容，可包含其他普通元素以及可作为骨架元素使用的外部元素。当包含有子元素时，其数据内容只能出现一次，且前置于任何子元素之前。如下例所示：
+
+```html
+        <init as="breakingNews" from="assets/breaking-news-{$SYSTEM.locale}.json" async>
+            {
+                "title": "This is an absolute breaking news!",
+                "shortDesc": "The Zhang family's rooster has laid eggs!",
+                "longDesc": 'Yesterday, the second son of the Zhang family came to me and said, "My rooster has laid eggs!"',
+                "detailedUrl": "#",
+                "time": $SYSTEM.time.iso8601
+            }
+
+            <update on="#breaking-news" to="displace" with="$realCardBody" />
+
+            <observe at="breakingNews" for="change:attached" in="#breaking-news">
+                <update on="$@" to="displace" with="$realCardBody" />
+            </observe>
+        </init>
+```
 
 一个模板元素的内容位于该模板元素的起始标签之后，终止标签之前，可包含任意的文本、字符引用、外部元素以及注释，但文本不能包含 U+003C LESS-THAN SIGN (`<`) 或者含糊的 `＆` 符号。
 

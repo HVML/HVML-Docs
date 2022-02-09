@@ -26,19 +26,8 @@
                 <div class="card-header">
                     $T.get('Breaking News!')
                 </div>
-                <div id="breaking-news" class="card-body">
-                    <h5 class="card-title placeholder-glow">
-                        <span class="placeholder col-6"></span>
-                    </h5>
-                    <p class="card-text placeholder-glow">
-                        <span class="placeholder col-7"></span>
-                        <span class="placeholder col-4"></span>
-                        <span class="placeholder col-4"></span>
-                        <span class="placeholder col-6"></span>
-                        <span class="placeholder col-8"></span>
-                    </p>
 
-                    <a href="#" tabindex="-1" class="btn btn-primary disabled placeholder col-6"></a>
+                <div id="breaking-news" class="card-body">
                 </div>
 
                 <div class="card-footer text-muted">
@@ -53,15 +42,21 @@
             <a href="$?.detailedUrl" class="btn btn-primary">$T.get('Read Details…')</a>
         </archetype>
 
-        <init as="breakingNews" from="assets/breaking-news-{$SYSTEM.locale}.json" async />
+        <init as="breakingNews" from="assets/breaking-news-{$SYSTEM.locale}.json" async>
+            {
+                "title": "This is an absolute breaking news!",
+                "shortDesc": "The Zhang family's rooster has laid eggs!",
+                "longDesc": 'Yesterday, the second son of the Zhang family came to me and said, "My rooster has laid eggs!"',
+                "detailedUrl": "#",
+                "time": $SYSTEM.time.iso8601
+            }
 
-        <observe at="breakingNews" for="change:attached" in="#breaking-news">
-            <update on="$@" to="displace" with="$realCardBody" />
-        </observe>
+            <update on="#breaking-news" to="displace" with="$realCardBody" />
 
-        <observe at="breakingNews" for="except:*" in="#breaking-news">
-            <update on="#breaking-news > p" at="textContent" with=$T.get('Failed to load content!') />
-        </observe>
+            <observe at="breakingNews" for="change:attached" in="#breaking-news">
+                <update on="$@" to="displace" with="$realCardBody" />
+            </observe>
+        </init>
 
         <footer>
             <p>Copyring &copy; FMSoft</p>
