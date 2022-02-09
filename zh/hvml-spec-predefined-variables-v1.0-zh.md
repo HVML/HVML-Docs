@@ -511,7 +511,7 @@ $HVML.maxRecursionDepth(! 10000UL )
 
 #### 3.3.4) `timeout` 方法
 
-该方法获取或设置 HVML 程序在通过数据获取器获取数据或者建立长连接、发送请求时的超时值（单位：秒）。
+该方法获取或设置 HVML 程序在通过数据获取器获取数据或者建立长串接、发送请求时的超时值（单位：秒）。
 
 默认值为 10.0。
 
@@ -713,14 +713,32 @@ $EJSON.serialize( <any> ): string
 // 原型
 $EJSON.sort(
         < array | set >,
-        < 'asc | desc ': sorting ascendingly or descendingly >,
-        [ 'auto | number | case | caseless':
-            `auto`: comparing members automatically;
+        < 'asc | desc ': sorting ascendingly or descendingly >
+        [, 'auto | number | case | caseless':
+            `auto`*: comparing members automatically;
             `number`: comparing members as numbers;
             `case`: comparing members as strings case-sensitively;
             `caseless`: comparing members as strings case-insensitively.
         ]
-    )
+) : boolean
+```
+
+#### 3.5.7) `shuffle` 方法
+
+该方法随机打乱给定数组或者集合的成员顺序。
+
+```php
+// 原型
+$EJSON.shuffle(
+        < array | set >,
+        < 'asc | desc ': sorting ascendingly or descendingly >
+        [, 'auto | number | case | caseless':
+            `auto`*: comparing members automatically;
+            `number`: comparing members as numbers;
+            `case`: comparing members as strings case-sensitively;
+            `caseless`: comparing members as strings case-insensitively.
+        ]
+) : boolean
 ```
 
 #### 3.5.8) `compare` 方法
@@ -735,14 +753,14 @@ $EJSON.sort(
 // 原型
 $EJSON.compare(
         < any: the first data >,
-        < any: the second data >,
-        < 'auto | number | case | caseless':
-            `auto`: comparing automatically;
+        < any: the second data >
+        [, 'auto | number | case | caseless':
+            `auto`*: comparing automatically;
             `number`: comparing as numbers;
             `case`: comparing as strings case-sensitively;
             `caseless`: comparing as strings case-insensitively.
-        >
-    )
+        ]
+) : number
 ```
 
 ### 3.6) `L`
@@ -1033,26 +1051,88 @@ $T.get('Hello, world!')
 
 #### 3.8.1) `contains` 方法
 
-用于判断一个字符串中是否包含给定的子字符串。
+判断一个字符串中是否包含给定的子字符串。
+
+**描述**
 
 ```php
-// 原型：判断字符串 `haystack` 是否包含字符串 `needle`；返回值为 `boolean` 类型
-$STR.contains(<string haystack: the string to search in>, <string needle: The substring to search for in the haystack>) : boolean
+$STR.contains(
+        <string $haystack: the string to search in>,
+        <string $needle: The substring to search for in the haystack>
+        [, <string $case ('case | caseless'):
+            `case`: performs a case-sensitive check;
+            `caseless`: performs a case-insensitive check;
+            anything else: performs a case-sensitive check.
+        ]
+) : boolean
+```
 
-// 示例：判断字符串 `hello world` 是否包含字符串 `world`；返回 `boolean` 类型，结果为 `true`。
-$STR.contains('hello world', 'world')
+判断字符串 `haystack` 中是否包含字符串 `needle`，执行
+
+**参数**
+
+- `haystack`  
+被搜索的字符串。
+- `needle`  
+要搜索的子字符串。
+- `case`  
+指定是否忽略大小写；默认为大小写敏感。
+
+**返回值**
+
+如果 `needle` 在 `haystack` 当中，返回 `true`，否则返回 `false`。
+
+**示例**
+
+```php
+$STR.contains('Hello, world!', 'world')
+    // boolean: true
+
+$STR.contains('Hello, world!', '')
+    // boolean: true
 ```
 
 #### 3.8.2) `starts_with` 方法
 
 用于判断一个字符串是否以给定的字符串开头。
 
-```php
-// 原型：判断字符串 `haystack` 是否以子字符串 `needle` 开头；返回值为 `boolean` 类型
-$STR.starts_with(<string haystack: the string to search in>,  <string needle: The substring to search for in the haystack>) : boolean
+**描述**
 
-// 示例：判断字符串 `hello world` 是否以字符串 `hello` 开头；返回 `boolean` 类型，结果为 `true`。
-$STR.starts_with('hello world', 'hello')
+```php
+$STR.starts_with(
+        <string haystack: the string to search in.>,
+        <string needle: The substring to search for in the haystack.>
+        [, <string $case ('case | caseless'):
+            `case`: performs a case-sensitive check;
+            `caseless`: performs a case-insensitive check;
+            anything else: performs a case-sensitive check.>
+        ]
+) : boolean
+```
+
+判断字符串 `haystack` 是否以子字符串 `needle` 开头。
+
+**参数**
+
+- `haystack`  
+被搜索的字符串。
+- `needle`  
+要搜索的子字符串。
+- `case`  
+指定是否忽略大小写；默认为大小写敏感。
+
+**返回值**
+
+如果 `haystack` 以 `needle` 打头，返回 `true`，否则返回 `false`。
+
+**示例**
+
+```php
+$STR.starts_with('Hello, world', 'hello', 'caseless')
+    // boolean: true
+
+$STR.starts_with('Hello, world', '', 'caseless')
+    // boolean: true
 ```
 
 #### 3.8.3) `ends_with` 方法
@@ -1060,59 +1140,143 @@ $STR.starts_with('hello world', 'hello')
 用于判断一个字符串是否以给定的字符串结尾。
 
 ```php
-// 原型：判断字符串 `haystack` 是否以子字符串 `needle` 结尾；返回值为 `boolean` 类型
 $STR.ends_with(<string haystack: the string to search in>,  <string needle: The substring to search for in the haystack>) : boolean
+```
 
-// 示例：判断字符串 `hello world` 是否以字符串 `world` 结尾；返回 `boolean` 类型，结果为 `true`。
-$STR.ends_with('hello world', 'world')
+判断字符串 `haystack` 是否以子字符串 `needle` 结尾。
+
+**参数**
+
+- `haystack`  
+被搜索的字符串。
+- `needle`  
+要搜索的子字符串。
+- `case`  
+指定是否忽略大小写；默认为大小写敏感。
+
+**返回值**
+
+如果 `haystack` 以 `needle` 结尾，返回 `true`，否则返回 `false`。
+
+**示例**
+
+```php
+$STR.ends_with('Hello, world', 'world')
+    // boolean: true
+
+$STR.ends_with('Hello, world', '')
+    // boolean: true
 ```
 
 #### 3.8.4) `explode` 方法
 
 使用指定的子字符串分割一个字符串。
 
+**描述**
+
 ```php
-// 原型：将输入字符串用分割字符串 `separator` 进行分割；返回值分割后的字符串数组
-// 若 `separator` 为空，则按字符分割输入字符串；省略 `separator` 时，视同分割字符串为空字符串。
-$STR.explode(<string: the input string to explode>[, <string separator: the boundary string>]) : array
+$STR.explode(<string $string: the input string to explode>[, <string $separator: the boundary string>][, <longint $limit>]) : array
+```
 
-// 示例：将字符串 `beijing:shanghai:guangzhou` 用字符串 `:` 分隔；返回结果为 `['beijing', 'shanghai', 'guangzhou']`。
-$STR.explode('beijing:shanghai:guangzhou', '')
+此函数返回由字符串组成的数组，每个元素都是 `string` 的一个子串，它们被字符串 `separator` 作为边界点分割出来。
 
-// 示例：将字符串 `汉字` 用空字符串分隔；返回结果为 `['汉', '字']`。
+**参数**
+
+- `string`  
+输入字符串。
+- `seperator`  
+分隔字符串。`separator` 为空时，按字符分割输入字符串；省略 `separator` 时，视同分割字符串为空字符串。
+- `limit`
+   如果传递了 `limit` 参数并且是正数，则返回的数组包含最多 `limit` 个成员，而最后那个成员将包含 `string` 的剩余部分。
+   如果 `limit` 参数是负数，则返回除了最后的 `-limit` 个元素外的所有元素。
+   如果 `limit` 是 0，则会被当做 1。
+
+**返回值**
+
+此函数返回由字符串组成的数组，其每个成员都是 `string` 的一个子串，它们被字符串 `separator` 作为边界点分割出来。
+
+如果 `separator` 为空字符串，将按字符分割输入字符串。 如果 `separator` 所包含的值在 `string` 中找不到，并且使用了负数的 `limit`，那么会返回一个空数组，否则返回只包含 `string` 单个成员的数组。如果 `separator` 出现在了 `string` 的开头或末尾，将在返回的数组之头部或尾部添加空字符串（`""`）为边界值。
+
+**示例**
+
+```php
+$STR.explode('beijing:shanghai:guangzhou', ':')
+    // array: ['beijing', 'shanghai', 'guangzhou']
+
+$STR.explode('1, 2, 3, ', ', ')
+    // array: ['1', '2', '3', ''],
+
 $STR.explode('汉字')
+    // array: ['汉', '字']
+
+$STR.explode('中华人民共和国', 2)
+    // array: ['中', '华']
 ```
 
 #### 3.8.5) `implode` 方法
 
-使用指定的字符串连接字符串数组中的字符串。
+将一个数组的成员串接为一个新的字符串。使用指定的字符串串接字符串数组中的字符串。
+
+**描述**
 
 ```php
-// 原型：使用字符串 `s1` ，连接字符串数组 `a1` 中的每个字符串；返回值为 `string` 类型
-$STR.implode(<array: The array of strings to implode>[, <string separator: the boundary string>]) : string
-
-// 示例：使用字符串 `:` 连接数组中的每个字符串；返回 `string` 类型，结果为 `beijing:shanghai:guangzhou`。
-$STR.implode(['beijing', 'shanghai', 'guangzhou'], ':')
-
-// 示例：返回结果为 `汉字`。
-$STR.implode(['汉', '字'])
+$STR.implode(<array $pieces: The array to implode>[, <string $separator: the boundary string>]) : string
 ```
 
-- 如果 `separator` 为空字符串，则该方法直接连接数组中的各个字符串，各个字符串之间没有分隔符；
-- 未传递 `separator` 参数时，视同空字符串。
-- 如果数组为空，则返回空字符串；
-- 如果数组中的某个成员为空字符串，将不会在该元素后面添加 `separator` 字符串。
+使用 `separator` 将数组 `pieces` 的成员字符串化后串接为新的字符串。
+
+**参数**
+
+- `pieces`  
+数组；如果数组中某个成员不是字符串，则首先做字符串化处理。
+- `seperator`  
+分隔字符串；未传递时，视同空字符串
+
+**返回值**
+
+返回串接后的新字符串。如果数组为空，则返回空字符串。如果 `separator` 为空字符串，则该方法直接串接数组中的各个字符串，各个字符串之间没有分隔符。
+
+**示例**
+
+```php
+$STR.implode(['beijing', 'shanghai', 'guangzhou'], ', ')
+    // string: 'beijing, shanghai, guangzhou'
+
+$STR.implode([1, 2, 3, ''], ', ')
+    // string: '1, 2, 3, '
+
+$STR.implode(["root", 'x', 0, 0, 'root', "/root", "/bin/bash"], ':')
+    // string: 'root:x:0:0:root:/root:/bin/bash'
+
+$STR.implode(['汉', '字'])
+    // string: '汉字'
+```
 
 #### 3.8.6) `shuffle` 方法
 
-用于随机打乱一个字符串，返回一个新的重新排列的字符串。
+随机打乱一个字符串。
+
+**描述**
 
 ```php
-// 原型：将输入字符串中的字符随机打乱，重排后返回新的字符串；返回值为 `string` 类型
-$STR.shuffle(<string: the input string to shuffle>) : string
+$STR.shuffle(<string string: the input string to shuffle>) : string
+```
 
-// 示例：将字符串 `beijing` 中的字母顺序打乱，产生一个新的字符串；返回 `string` 类型，结果可能是 `jbienig`。
-$STR.shuffle('beijing')
+该函数在输入字符串 `string` 的基础上，返回一个新的随机排列的字符串。
+
+**参数**
+
+- `string`  
+输入字符串
+
+**返回值**
+
+该函数返回随机排列后的新字符串。
+
+**示例**
+
+```php
+$STR.shuffle('beijing') // string: 'jbienig'
 ```
 
 #### 3.8.7) `replace` 方法
@@ -1225,13 +1389,13 @@ $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 
 
 #### 3.8.11) `join` 方法
 
-用于连接两个或更多个字符串。
+用于串接两个或更多个字符串。
 
 **描述**
 
 ```php
-// 原型：将字符串 `s1` 与字符串 `s2` 连接，产生新的字符串并返回；返回值为 `string` 类型
-$STR.join(<string str1>, <string str2>[, <string strN>, ...]) : string
+// 原型：将字符串 `s1` 与字符串 `s2` 串接，产生新的字符串并返回；返回值为 `string` 类型
+$STR.join(<string str1>, <string str2>[, <string str3>[, ...]]) : string
 ```
 
 **参数**
@@ -1240,17 +1404,17 @@ $STR.join(<string str1>, <string str2>[, <string strN>, ...]) : string
 第一个输入字符串。
 - `str2`  
 第二个输入字符串。
-- `strN`  
-第N个输入字符串。
+- `str3`  
+第三个输入字符串。
 
 **返回值**
 
-依次连接后的字符串。
+依次串接后的字符串。
 
 **示例**
 
 ```php
-$STR.join('hello', ' ', 'world')    // hello world
+$STR.join('hello', ' ', 'world')    // string: 'hello world'
 ```
 
 #### 3.8.12) `length` 方法
@@ -1260,14 +1424,14 @@ $STR.join('hello', ' ', 'world')    // hello world
 **描述**
 
 ```php
-$STR.length(<string str>) : ulongint
+$STR.length(<string string>) : ulongint
 ```
 
-获得字符串 `str` 中字符的个数。
+获得字符串 `string` 中字符的个数。
 
 **参数**
 
-- `str`  
+- `string`  
 输入字符串。
 
 **返回值**
@@ -1278,7 +1442,8 @@ $STR.length(<string str>) : ulongint
 
 ```php
 // 获得字符串 `中国` 的长度
-$STR.length('中国')     // ulongint: 2
+$STR.length('中国')
+    // ulongint: 2
 ```
 
 #### 3.8.13) `tolower` 方法
@@ -1289,14 +1454,14 @@ $STR.length('中国')     // ulongint: 2
 
 ```php
 // 原型：将字符串 `s` 全部转换为小写，并返回转换后的字符串；返回值为 `string` 类型
-$STR.tolower(<string str>) : string
+$STR.tolower(<string string>) : string
 ```
 
-将字符串 `str` 中的所有字符转换为小写，并返回转换后的字符串。
+将字符串 `string` 中的所有字符转换为小写，并返回转换后的字符串。
 
 **参数**
 
-- `str`  
+- `string`  
 输入字符串。
 
 **返回值**
@@ -1306,7 +1471,8 @@ $STR.tolower(<string str>) : string
 **示例**
 
 ```php
-$STR.tolower('HELLO WORLD') // string: 'hello world'
+$STR.tolower('Hello, world')
+    // string: 'hello, world'
 ```
 
 #### 3.8.14) `toupper` 方法
@@ -1316,14 +1482,14 @@ $STR.tolower('HELLO WORLD') // string: 'hello world'
 **描述**
 
 ```php
-$STR.toupper(<string: str>) : string
+$STR.toupper(<string: string>) : string
 ```
 
-将字符串 `str` 中的所有字符转换为大写，并返回转换后的字符串。
+将字符串 `string` 中的所有字符转换为大写，并返回转换后的字符串。
 
 **参数**
 
-- `str`  
+- `string`  
 输入字符串。
 
 **返回值**
@@ -1333,7 +1499,8 @@ $STR.toupper(<string: str>) : string
 **示例**
 
 ```php
-$STR.toupper('hello world') // string: 'HELLO WORLD'
+$STR.toupper('Hello, world')
+    // string: 'HELLO, WORLD'
 ```
 
 #### 3.8.15) `substr` 方法
@@ -1343,14 +1510,14 @@ $STR.toupper('hello world') // string: 'HELLO WORLD'
 **描述**
 
 ```php
-$STR.substr(<string str> s, <longint offset>[, <longint length>]) : string
+$STR.substr(<string string> s, <longint offset>[, <longint length>]) : string
 ```
 
-返回字符串 `str` 中由 `offset` 和 `length` 参数指定的子字符串。
+返回字符串 `string` 中由 `offset` 和 `length` 参数指定的子字符串。
 
 **参数**
 
-- `str`  
+- `string`  
 输入字符串。
 - `offset`
    - 非负值: 返回的字符串将从字符串 `s` 的 `offset` 处开始, 从 `0` 开始计算;
@@ -1364,22 +1531,26 @@ $STR.substr(<string str> s, <longint offset>[, <longint length>]) : string
 
 **返回值**
 
-返回从 `str` 中提取的部分或者空字符串。
+返回从 `string` 中提取的部分或者空字符串。
 
 **示例**
 
 ```php
 // 返回字符串 `abcdef` 从第 `0` 个字符开始，最多包含 `10` 个字符的子字符串
-$STR.substr('abcdef', 0, 10)    // string: 'abcdef'
+$STR.substr('abcdef', 0, 10)
+    // string: 'abcdef'
 
 // 返回字符串 `abcdef` 从最后一个字符开始的子字符串
-$STR.substr('abcdef', -1)       // string: 'f'
+$STR.substr('abcdef', -1)
+    // string: 'f'
 
 // 返回字符串 `abcdef` 除最后一个字符之前的子字符串
-$STR.substr('abcdef', 0, -1)    // string: 'abcde'
+$STR.substr('abcdef', 0, -1)
+    // string: 'abcde'
 
 // 返回字符串 `abcdef` 从倒数第 3 个字符开始，到最后一个字符之前的子字符串
-$STR.substr('abcdef', -3, -1)   // string: 'de'
+$STR.substr('abcdef', -3, -1)
+    // string: 'de'
 ```
 
 ## 4) 可选动态变量
