@@ -61,6 +61,7 @@ Language: Chinese
       * [3.5.7) `sort` 方法](#357-sort-方法)
       * [3.5.8) `shuffle` 方法](#358-shuffle-方法)
       * [3.5.9) `compare` 方法](#359-compare-方法)
+      * [3.5.10) `parse` 方法](#3510-parse-方法)
    + [3.6) `L`](#36-l)
       * [3.6.1) `not` 方法](#361-not-方法)
       * [3.6.2) `and` 方法](#362-and-方法)
@@ -737,7 +738,24 @@ $EJSON.stringify( <any> ): string
 
 ```php
 // 原型
-$EJSON.serialize( <any> ): string
+$EJSON.serialize(
+        <any $data>
+        [, < '[json | ejson] || [ ignore | placeholder ] || [ plain | spaced | pretty | pretty_tab] || [bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64]' $options = `json ignore spaced bseq-hex`:
+            'json' -
+            'ejson' -
+            'ignore' -
+            'placeholder' -
+            'plain' -
+            'spaced' -
+            'pretty' -
+            'pretty-tab' -
+            'bseq-hex' -
+            'bseq-bin' -
+            'bseq-bin-dots' -
+            'bseq-base64' -
+           >
+        ]
+): string
 ```
 
 #### 3.5.7) `sort` 方法
@@ -796,6 +814,26 @@ $EJSON.compare(
             `caseless`: comparing as strings case-insensitively. >
         ]
 ) : number
+```
+
+#### 3.5.10) `parse` 方法
+
+解析 JSON/EJSON 字符串，返回 EJSON 数据。
+
+**描述**
+
+```php
+$EJSON.parse(
+        < string: $string: the string to be parsed. >
+        [, < boolean $strict_json = `false`:
+           `true` - the string to be parsed should be in strict JSON format.
+           `false` - the string to be parsed should be in EJSON format. >
+            [, < boolean $evalute_expressions = `false`:
+               `true` - will evaluate the EJSON expressions when parsing the string.
+               `false` - all EJSON expressions will be ignored. >
+            ]
+        ]
+) : any
 ```
 
 ### 3.6) `L`
