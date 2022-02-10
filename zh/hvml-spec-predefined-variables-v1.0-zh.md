@@ -121,7 +121,9 @@ Language: Chinese
       * [3.8.36) `md5` 方法](#3836-md5-方法)
       * [3.8.37) `sha1` 方法](#3837-sha1-方法)
       * [3.8.38) `rot13` 方法](#3838-rot13-方法)
-      * [3.8.39) 错误与异常](#3839-错误与异常)
+      * [3.8.39) `count_chars` 方法](#3839-count_chars-方法)
+      * [3.8.40) `count_bytes` 方法](#3840-count_bytes-方法)
+      * [3.8.41) 错误与异常](#3841-错误与异常)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -2318,7 +2320,67 @@ $STR.rot13(
 
 - PHP `rot13()` 函数：<https://www.php.net/manual/zh/function.rot13.php>
 
-#### 3.8.39) 错误与异常
+#### 3.8.39) `count_chars` 方法
+
+统计字符串中的字符出现次数。
+
+**描述**
+
+```php
+$STR.count_chars(
+        < string $string: the examined string. >
+        [, < 'object | string' $mode = 'object':
+            'object' - returns an object with the character as key and the frequency of every character as value.
+            'string' - returns a string containing all unique characters. >
+        ]
+): object | string
+```
+
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `count_chars()` 函数：<https://www.php.net/manual/zh/function.count-chars.php>
+
+#### 3.8.40) `count_bytes` 方法
+
+统计字符串或二进制字节序中的各个字节（0...255）出现的次数。
+
+**描述**
+
+```php
+$STR.count_bytes(
+        < string | bsequence $data: the examined data. >
+        [, < 'object-all | object-appeared | object-not-appeared | string-appeared | string-not-appeared' $mode = 'object-all':
+            'object-all' - returns an object with the byte-value as key and the frequency of every byte as value.
+            'object-appeared' - same as 0 but only byte-values with a frequency greater than zero are listed.
+            'object-not-appeared' - same as 0 but only byte-values with a frequency equal to zero are listed.
+            'bytes-appeared' - a binary sequence containing all unique bytes is returned.
+            'bytes-not-appeared' - a binary sequence containing all not used bytes is returned.
+            >
+        ]
+) : object | bsequence
+```
+
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `count_chars()` 函数：<https://www.php.net/manual/zh/function.count-chars.php>
+
+#### 3.8.41) 错误与异常
 
 在调用`STR` 动态对象方法的过程中，可能产生如下异常：
 
