@@ -195,6 +195,7 @@ Language: Chinese
       * [4.2.27) `unlink` 方法](#4227-unlink-方法)
       * [4.2.28) `file_get_contents` 方法](#4228-file_get_contents-方法)
       * [4.2.29) `file_put_contents` 方法](#4229-file_put_contents-方法)
+      * [4.2.30) 错误与异常](#4230-错误与异常)
    + [4.3) `FILE`](#43-file)
       * [4.3.1) 文本文件](#431-文本文件)
          - [4.3.1.1) `txt.head` 方法](#4311-txthead-方法)
@@ -4000,6 +4001,22 @@ $FS.file_put_contents(
 **参考链接**
 
 - PHP `file_put_contents()` 函数：<https://www.php.net/manual/en/function.file-put-contents.php>
+
+#### 4.2.30) 错误与异常
+
+在调用`FS` 动态对象方法的过程中，可能产生如下异常：
+
+- `ArgumentMissed`：缺少必要的参数，或传入的参数不足。
+- `WrongDataType`：错误的参数类型。
+- `AccessDenied`：拒绝访问。
+- `IOFailure`：输入输出错误。
+- `TooMany`：表示太多（如符号链接）。
+- `TooLong`：表示太长（如路径名称）。
+- `NotDesiredEntity`：表示传递了一个未预期的实体。
+- `EntityNotFound`：未找到指定的实体（如文件）。
+- `EntityExists`：创建新实体（如文件）时，该实体已存在。
+- `OSFailure`：表示遇到未明确定义的一般性操作系统错误。
+- `BadEncoding`：错误编码。
 
 ### 4.3) `FILE`
 
