@@ -169,23 +169,29 @@ Language: Chinese
       * [4.2.1) `list` 方法](#421-list-方法)
       * [4.2.2) `list_prt` 方法](#422-list_prt-方法)
       * [4.2.3) `basename` 方法](#423-basename-方法)
-      * [4.2.4) `copy` 方法](#424-copy-方法)
-      * [4.2.5) `dirname` 方法](#425-dirname-方法)
-      * [4.2.6) `disk_usage` 方法](#426-disk_usage-方法)
-      * [4.2.7) `file_exists` 方法](#427-file_exists-方法)
-      * [4.2.8) `lstat` 方法](#428-lstat-方法)
-      * [4.2.9) `link` 方法](#429-link-方法)
-      * [4.2.10) `mkdir` 方法](#4210-mkdir-方法)
-      * [4.2.11) `pathinfo` 方法](#4211-pathinfo-方法)
-      * [4.2.12) `readlink` 方法](#4212-readlink-方法)
-      * [4.2.13) `realpath` 方法](#4213-realpath-方法)
-      * [4.2.14) `rename` 方法](#4214-rename-方法)
-      * [4.2.15) `rmdir` 方法](#4215-rmdir-方法)
-      * [4.2.16) `symlink` 方法](#4216-symlink-方法)
-      * [4.2.17) `tempname` 方法](#4217-tempname-方法)
-      * [4.2.18) `touch` 方法](#4218-touch-方法)
-      * [4.2.19) `umask` 方法](#4219-umask-方法)
-      * [4.2.20) `unlink` 方法](#4220-unlink-方法)
+      * [4.2.4) `chgrp` 方法](#424-chgrp-方法)
+      * [4.2.5) `chmod` 方法](#425-chmod-方法)
+      * [4.2.6) `chown` 方法](#426-chown-方法)
+      * [4.2.7) `copy` 方法](#427-copy-方法)
+      * [4.2.8) `dirname` 方法](#428-dirname-方法)
+      * [4.2.9) `disk_usage` 方法](#429-disk_usage-方法)
+      * [4.2.10) `file_exists` 方法](#4210-file_exists-方法)
+      * [4.2.11) `lchgrp` 方法](#4211-lchgrp-方法)
+      * [4.2.12) `lchown` 方法](#4212-lchown-方法)
+      * [4.2.13) `linkinfo` 方法](#4213-linkinfo-方法)
+      * [4.2.14) `lstat` 方法](#4214-lstat-方法)
+      * [4.2.15) `link` 方法](#4215-link-方法)
+      * [4.2.16) `mkdir` 方法](#4216-mkdir-方法)
+      * [4.2.17) `pathinfo` 方法](#4217-pathinfo-方法)
+      * [4.2.18) `readlink` 方法](#4218-readlink-方法)
+      * [4.2.19) `realpath` 方法](#4219-realpath-方法)
+      * [4.2.20) `rename` 方法](#4220-rename-方法)
+      * [4.2.21) `rmdir` 方法](#4221-rmdir-方法)
+      * [4.2.22) `symlink` 方法](#4222-symlink-方法)
+      * [4.2.23) `tempname` 方法](#4223-tempname-方法)
+      * [4.2.24) `touch` 方法](#4224-touch-方法)
+      * [4.2.25) `umask` 方法](#4225-umask-方法)
+      * [4.2.26) `unlink` 方法](#4226-unlink-方法)
    + [4.3) `FILE`](#43-file)
       * [4.3.1) 文本文件](#431-文本文件)
          - [4.3.1.1) `txt.head` 方法](#4311-txthead-方法)
@@ -3218,22 +3224,26 @@ $FS.list($path, "*.txt; *.md")
 ```javascript
 {
     name: <string: name of the file (directory entry)>,
-    dev: <number: ID of device containing file>,
-    inode: <number: inode number>
+    dev_major: <ulongint: the major ID of device containing file>,
+    dev_minor: <ulongint: the minor ID of device containing file>,
+    inode: <ulongint: inode number>
     type: <string: file type like 'd', 'b', 's', ...>,
-    mode: <bytesequece: file mode>,
-    mode_str: <string: file mode like `rwxrwxr-x`>,
-    nlink: <number: number of hard links>,
-    uid: <number: the user ID of owner>,
-    gid: <number: the group ID of owner>,
-    rdev_major: <number: the major device ID if it is a special file>,
-    rdev_minor: <number: the minor device ID if it is a special file>,
-    size: <number: total size in bytes>,
-    blksize: <number: block size for filesystem I/O>,
-    blocks: <number: Number of 512B blocks allocated>,
-    atime: <number: time of last acces>,
-    mtime: <number: time of last modification>,
-    ctime: <number: time of last status change>
+    mode_digits: <string: file mode like `0644`>,
+    mode_alphas: <string: file mode like `rwxrwxr-x`>,
+    nlink: <ulongint: number of hard links>,
+    uid: <ulongint: the user ID of owner>,
+    gid: <ulongint: the group ID of owner>,
+    rdev_major: <ulongint: the major device ID if it is a special file>,
+    rdev_minor: <ulongint: the minor device ID if it is a special file>,
+    size: <ulongint: total size in bytes>,
+    blksize: <ulongint: block size for filesystem I/O>,
+    blocks: <ulongint: Number of 512B blocks allocated>,
+    atime_sec: <ulongint: time of last acces (seconds since epoch)>,
+    atime_nsec: <ulongint: time of last acces (nanoseconds)>,
+    mtime_sec: <ulongint: time of last modification (seconds since epoch)>,
+    mtime_nsec: <ulongint: time of last modification (nanoseconds)>,
+    ctime_sec: <ulongint: time of last status change (seconds since epoch)>
+    ctime_nsec: <ulongint: time of last status change (nanoseconds)>
 }
 ```
 
@@ -3282,7 +3292,76 @@ $FS.basename(
 
 - PHP `basename()` 函数：<https://www.php.net/manual/en/function.basename.php>
 
-#### 4.2.4) `copy` 方法
+#### 4.2.4) `chgrp` 方法
+
+改变文件的所有者组。
+
+**描述**
+
+```php
+$FS.chgrp(
+        <string $filename: path to the file.>,
+        <string | number $group: A group name or a group identifier.>
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `chgrp()` 函数：<https://www.php.net/manual/en/function.chgrp.php>
+
+#### 4.2.5) `chmod` 方法
+
+改变文件的访问许可。
+
+**描述**
+
+```php
+$FS.chmod(
+        <string $filename: path to the file.>,
+        <string $permissions: the permission string like '0644' or 'u+rwx,go+rx'.>
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `chmod()` 函数：<https://www.php.net/manual/en/function.chmod.php>
+
+#### 4.2.6) `chown` 方法
+
+改变文件的所有者。
+
+**描述**
+
+```php
+$FS.chown(
+        <string $filename: path to the file.>,
+        <string | number $user: A user name or a user identifier.>
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `chown()` 函数：<https://www.php.net/manual/en/function.chown.php>
+
+#### 4.2.7) `copy` 方法
 
 复制文件。
 
@@ -3305,7 +3384,7 @@ $FS.copy(
 
 - PHP `copy()` 函数：<https://www.php.net/manual/en/function.copy.php>
 
-#### 4.2.5) `dirname` 方法
+#### 4.2.8) `dirname` 方法
 
 返回父目录的路径。
 
@@ -3330,7 +3409,7 @@ $FS.dirname(
 
 - PHP `dirname()` 函数：<https://www.php.net/manual/en/function.dirname.php>
 
-#### 4.2.6) `disk_usage` 方法
+#### 4.2.9) `disk_usage` 方法
 
 返回文件系统的磁盘使用情况。
 
@@ -3352,7 +3431,7 @@ $FS.disk_usage(
 
 - PHP `()` 函数：<https://www.php.net/manual/en/function.file-exists.php>
 
-#### 4.2.7) `file_exists` 方法
+#### 4.2.10) `file_exists` 方法
 
 判断一个文件或目录是否存在。
 
@@ -3374,7 +3453,75 @@ $FS.file_exists(
 
 - PHP `file_exists()` 函数：<https://www.php.net/manual/en/function.file-exists.php>
 
-#### 4.2.8) `lstat` 方法
+#### 4.2.11) `lchgrp` 方法
+
+改变符号链接的所有者组。
+
+**描述**
+
+```php
+$FS.lchgrp(
+        <string $filename: path to the symlink.>,
+        <string | number $group: A group name or a group identifier.>
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `lchgrp()` 函数：<https://www.php.net/manual/en/function.lchgrp.php>
+
+#### 4.2.12) `lchown` 方法
+
+改变符号链接的所有者。
+
+**描述**
+
+```php
+$FS.lchown(
+        <string $filename: path to the symlink.>,
+        <string | number $user: A user name or a user identifier.>
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `lchown()` 函数：<https://www.php.net/manual/en/function.lchown.php>
+
+#### 4.2.13) `linkinfo` 方法
+
+获取链接信息。
+
+**描述**
+
+```php
+$FS.linkinfo(
+        <string $path: path to the link.>
+) : number | false
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `linkinfo()` 函数：<https://www.php.net/manual/en/function.linkinfo.php>
+
+#### 4.2.14) `lstat` 方法
 
 获取一个文件或符号链接的统计信息。
 
@@ -3383,23 +3530,24 @@ $FS.file_exists(
 ```php
 $FS.lstat(
         <string $filename: path to the file or directory.>
-        [, < '[dev || inode || type || mode || mode_str || nlink || uid || gid || size || rdev_major || rdev_minor || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
-            'dev' - number: ID of device containing the file,
-            'inode' - number: inode number,
-            'type' - string: file type like 'd', 'b', 's', ...,
-            'mode' - bytesequece: file mode,
-            'mode_str' - string: file mode like `rwxrwxr-x`,
-            'nlink' - number: number of hard links,
-            'uid' - number: the user ID of owner,
-            'gid' - number: the group ID of owner,
-            'rdev_major' - number: the major device ID if it is a special file,
-            'rdev_minor' - number: the minor device ID if it is a special file,
-            'size' - number: total size in bytes,
-            'blksize' - number: block size for filesystem I/O,
-            'blocks' - number: Number of 512B blocks allocated,
-            'atime' - number: time of last acces,
-            'mtime' - number: time of last modification,
-            'ctime' - number: time of last status change
+        [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
+            'dev' - returns ID of device containing the file;
+            'inode' - returns inode number;
+            'type' - returns file type like 'd', 'b', 's', ...;
+            'mode_digits' - returns file mode like `0644`;
+            'mode_alphas' - returns file mode like `rwxrwxr-x`;
+            'nlink' - returns number of hard links;
+            'uid' - returns the user ID of owner;
+            'gid' - returns the group ID of owner;
+            'rdev' - returns the device ID if it is a special file;
+            'size' - returns total size in bytes;
+            'blksize' - returns block size for filesystem I/O;
+            'blocks' - returns number of 512B blocks allocated;
+            'atime' - returns time of last acces;
+            'mtime' - returns time of last modification;
+            'ctime' - returns time of last status change;
+            'all' - returns all above information;
+            'default' - 'type mode_digits uid gid size rdev ctime';
             >
         ]
 ) : object
@@ -3415,7 +3563,7 @@ $FS.lstat(
 
 - PHP `lstat()` 函数：<https://www.php.net/manual/en/function.lstat.php>
 
-#### 4.2.9) `link` 方法
+#### 4.2.15) `link` 方法
 
 创建硬链接。
 
@@ -3438,7 +3586,7 @@ $FS.link(
 
 - PHP `link()` 函数：<https://www.php.net/manual/en/function.link.php>
 
-#### 4.2.10) `mkdir` 方法
+#### 4.2.16) `mkdir` 方法
 
 创建目录。
 
@@ -3464,7 +3612,7 @@ $FS.mkdir(
 
 - PHP `mkdir()` 函数：<https://www.php.net/manual/en/function.mkdir.php>
 
-#### 4.2.11) `pathinfo` 方法
+#### 4.2.17) `pathinfo` 方法
 
 获取文件路径信息。
 
@@ -3490,7 +3638,7 @@ $FS.pathinfo(
 
 - PHP `pathinfo()` 函数：<https://www.php.net/manual/en/function.pathinfo.php>
 
-#### 4.2.12) `readlink` 方法
+#### 4.2.18) `readlink` 方法
 
 读取符号链接的内容。
 
@@ -3512,7 +3660,7 @@ $FS.readlink(
 
 - PHP `readlink()` 函数：<https://www.php.net/manual/en/function.readlink.php>
 
-#### 4.2.13) `realpath` 方法
+#### 4.2.19) `realpath` 方法
 
 返回规范化的绝对路径名。
 
@@ -3534,7 +3682,7 @@ $FS.realpath(
 
 - PHP `realpath()` 函数：<https://www.php.net/manual/en/function.realpath.php>
 
-#### 4.2.14) `rename` 方法
+#### 4.2.20) `rename` 方法
 
 重命名文件或目录。
 
@@ -3557,7 +3705,7 @@ $FS.rename(
 
 - PHP `rename()` 函数：<https://www.php.net/manual/en/function.rename.php>
 
-#### 4.2.15) `rmdir` 方法
+#### 4.2.21) `rmdir` 方法
 
 移除目录。
 
@@ -3579,7 +3727,7 @@ $FS.rmdir(
 
 - PHP `rmdir()` 函数：<https://www.php.net/manual/en/function.rmdir.php>
 
-#### 4.2.16) `symlink` 方法
+#### 4.2.22) `symlink` 方法
 
 创建符号链接。
 
@@ -3602,7 +3750,7 @@ $FS.link(
 
 - PHP `symlink()` 函数：<https://www.php.net/manual/en/function.symlink.php>
 
-#### 4.2.17) `tempname` 方法
+#### 4.2.23) `tempname` 方法
 
 生成唯一的临时文件名称。
 
@@ -3626,7 +3774,7 @@ $FS.tempname(
 - PHP `tempname()` 函数：<https://www.php.net/manual/en/function.tempname.php>
 
 
-#### 4.2.18) `touch` 方法
+#### 4.2.24) `touch` 方法
 
 设置文件的访问和更新时间。
 
@@ -3651,7 +3799,7 @@ $FS.touch(
 
 - PHP `touch()` 函数：<https://www.php.net/manual/en/function.touch.php>
 
-#### 4.2.19) `umask` 方法
+#### 4.2.25) `umask` 方法
 
 改变当前 umask 值。
 
@@ -3673,7 +3821,7 @@ $FS.umask(
 
 - PHP `umask()` 函数：<https://www.php.net/manual/en/function.umask.php>
 
-#### 4.2.20) `unlink` 方法
+#### 4.2.26) `unlink` 方法
 
 移除硬链接。
 
