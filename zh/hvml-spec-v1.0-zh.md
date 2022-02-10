@@ -1322,12 +1322,12 @@ HVML 还定义有如下一些动作标签：
 在 HVML 中，`on` 或者 `in` 介词属性在引用目标文档中的元素时，若使用前导字符 `>`，则将被限定在父元素 `in` 介词指定的范围内。如下面例子中，
 
 ```html
-        <reduce on="$?" in="#the-user-statistics" by="class: RUserRegionStats">
+        <reduce on="$?" in="#the-user-statistics" by="CLASS: RUserRegionStats">
             <choose on="$?.count" to="update" in="> h2 > span">
                 <update on="$@" at="textContent" with="$?" />
             </choose>
             <clear on="#the-user-statistics > dl" />
-            <iterate on="$?.regions" in="> dl" by="class: IUserRegions">
+            <iterate on="$?.regions" in="> dl" by="CLASS: IUserRegions">
                 <update on="$@" to="append" with="$region_to_users" />
             </iterate>
         </reduce>
@@ -2499,7 +2499,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <reduce on="$users" in="#the-user-statistics" by="CLASS: RUserRegionStats">
         <update on="> h2 > span" at="textContent" with="$?.count" />
         <clear on="> dl" />
-        <sort on="$?.regions" to="iterate" by="KEY: ALL FOR KV" descendingly>
+        <sort on="$?.regions" by="KEY: ALL FOR KV" descendingly>
             <iterate on="$?" in="> dl" by="RANGE: ALL">
                 <update on="$@" to="append" with="$region_to_users" />
             </iterate>
