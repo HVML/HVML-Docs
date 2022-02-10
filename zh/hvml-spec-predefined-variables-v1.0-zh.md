@@ -115,6 +115,13 @@ Language: Chinese
       * [3.8.30) `hex2bin` 方法](#3830-hex2bin-方法)
       * [3.8.31) `base64_encode` 方法](#3831-base64_encode-方法)
       * [3.8.32) `base64_decode` 方法](#3832-base64_decode-方法)
+      * [3.8.33) `htmlentities_encode` 方法](#3833-htmlentities_encode-方法)
+      * [3.8.34) `htmlentities_decode` 方法](#3834-htmlentities_decode-方法)
+      * [3.8.35) `crc32` 方法](#3835-crc32-方法)
+      * [3.8.36) `md5` 方法](#3836-md5-方法)
+      * [3.8.37) `sha1` 方法](#3837-sha1-方法)
+      * [3.8.38) `rot13` 方法](#3838-rot13-方法)
+      * [3.8.39) 错误与异常](#3839-错误与异常)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -2124,7 +2131,7 @@ $STR.base64_decode(
 
 - PHP `base64_decode()` 函数：<https://www.php.net/manual/zh/function.base64-decode.php>
 
-#### 3.8.32) `htmlentities_encode` 方法
+#### 3.8.33) `htmlentities_encode` 方法
 
 转换字符为 HTML 实体。
 
@@ -2167,7 +2174,7 @@ $STR.htmlentities_encode(
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/zh/function.htmlentities.php>
 - PHP `htmlspecialchars()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars.php>
 
-#### 3.8.32) `htmlentities_decode` 方法
+#### 3.8.34) `htmlentities_decode` 方法
 
 转换 HTML 实体为对应的字符。
 
@@ -2206,21 +2213,16 @@ $STR.htmlentities_decode(
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.html-entity-decode.php>
 - PHP `htmlspecialchars_decode()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars-decode.php>
 
+#### 3.8.35) `crc32` 方法
 
-#### 3.8.32) `placeholder` 方法
-
-
+计算一个字符串或二进制序列的 CRC32 多项式。
 
 **描述**
 
 ```php
-$STR.placeholder(
-        <string $data>,
-        <boolean $strict:
-            `true` - throw the `BadEncoding` exception for a bad encoded string;
-            `false` - stops conversion for any error and returns the converted string.
-        >
-): string | bseqence
+$STR.crc32(
+        < string | bsequence $data>
+): ulongint
 ```
 
 
@@ -2233,9 +2235,90 @@ $STR.placeholder(
 
 **参考链接**
 
-- PHP `placeholder()` 函数：<https://www.php.net/manual/zh/function.placeholder.php>
+- PHP `crc32()` 函数：<https://www.php.net/manual/zh/function.crc32.php>
 
-#### 3.8.30) 错误与异常
+#### 3.8.36) `md5` 方法
+
+计算一个字符串或者二进制序列的 MD5 散列值。
+
+**描述**
+
+```php
+$STR.md5(
+        < string | bsequence $data >,
+        < boolean $binary = `false`:
+            `true` - the md5 digest is returned as a binary sequence with a length of 16.
+            `false` - the md5 digest is returned as a 32-character hexadecimal number.
+        >
+): string | bsequence
+```
+
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `md5()` 函数：<https://www.php.net/manual/zh/function.md5.php>
+
+#### 3.8.37) `sha1` 方法
+
+计算一个字符串或者二进制序列的 SHA1 散列值。
+
+**描述**
+
+```php
+$STR.sha1(
+        < string | bsequence $data >,
+        < boolean $binary = `false`:
+            `true` - the sha1 digest is returned in a raw binary sequence with a length of 20.
+            `false` - the sha1 digest is returned as a 40-character hexadecimal number.
+        >
+): string | bsequence
+```
+
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `sha1()` 函数：<https://www.php.net/manual/zh/function.sha1.php>
+
+
+#### 3.8.38) `rot13` 方法
+
+对字符串执行 ROT13 转换。
+
+**描述**
+
+```php
+$STR.rot13(
+        <string $string>
+): string
+```
+
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `rot13()` 函数：<https://www.php.net/manual/zh/function.rot13.php>
+
+#### 3.8.39) 错误与异常
 
 在调用`STR` 动态对象方法的过程中，可能产生如下异常：
 
