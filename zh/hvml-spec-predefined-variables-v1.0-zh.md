@@ -731,12 +731,12 @@ $EJSON.serialize( <any> ): string
 // 原型
 $EJSON.sort(
         < array | set >,
-        < 'asc | desc ': sorting ascendingly or descendingly >
-        [, 'auto | number | case | caseless':
-            `auto`*: comparing members automatically;
-            `number`: comparing members as numbers;
-            `case`: comparing members as strings case-sensitively;
-            `caseless`: comparing members as strings case-insensitively.
+        < 'asc | desc' = 'asc': sorting ascendingly or descendingly >
+        [, < 'auto | number | case | caseless' = 'auto':
+            `auto` - comparing members automatically;
+            `number` - comparing members as numbers;
+            `case` - comparing members as strings case-sensitively;
+            `caseless` - comparing members as strings case-insensitively. >
         ]
 ) : boolean
 ```
@@ -749,12 +749,12 @@ $EJSON.sort(
 // 原型
 $EJSON.shuffle(
         < array | set >,
-        < 'asc | desc ': sorting ascendingly or descendingly >
-        [, 'auto | number | case | caseless':
-            `auto`*: comparing members automatically;
-            `number`: comparing members as numbers;
-            `case`: comparing members as strings case-sensitively;
-            `caseless`: comparing members as strings case-insensitively.
+        < 'asc | desc ' = 'asc': sorting ascendingly or descendingly >
+        [, < 'auto | number | case | caseless' = 'auto':
+            `auto` - comparing members automatically;
+            `number` - comparing members as numbers;
+            `case` - comparing members as strings case-sensitively;
+            `caseless` - comparing members as strings case-insensitively. >
         ]
 ) : boolean
 ```
@@ -772,11 +772,11 @@ $EJSON.shuffle(
 $EJSON.compare(
         < any: the first data >,
         < any: the second data >
-        [, 'auto | number | case | caseless':
-            `auto`*: comparing automatically;
+        [, < 'auto | number | case | caseless' = 'auto':
+            `auto`: comparing automatically;
             `number`: comparing as numbers;
             `case`: comparing as strings case-sensitively;
-            `caseless`: comparing as strings case-insensitively.
+            `caseless`: comparing as strings case-insensitively. >
         ]
 ) : number
 ```
@@ -1076,10 +1076,10 @@ $T.get('Hello, world!')
 ```php
 $STR.contains(
         <string $haystack: the string to search in>,
-        <string $needle: The substring to search for in the haystack>
-        [, <boolean $case_insensitivity = false:
-            `false`: performs a case-sensitive check;
-            `true`: performs a case-insensitive check.>
+        <string $needle: the substring to search for in the haystack>
+        [, <boolean $case_insensitivity = `false`:
+            `false` - performs a case-sensitive check;
+            `true` - performs a case-insensitive check.>
         ]
 ) : boolean
 ```
@@ -1122,10 +1122,10 @@ $STR.contains('Hello, world!', '')
 ```php
 $STR.starts_with(
         <string haystack: the string to search in.>,
-        <string needle: The substring to search for in the haystack.>
-        [, <boolean $case_insensitivity = false:
-            `false`: performs a case-sensitive check;
-            `true`: performs a case-insensitive check.>
+        <string needle: the substring to search for in the haystack.>
+        [, <boolean $case_insensitivity = `false`:
+            `false` - performs a case-sensitive check;
+            `true` - performs a case-insensitive check.>
         ]
 ) : boolean
 ```
@@ -1166,10 +1166,10 @@ $STR.starts_with('Hello, world', '')
 ```php
 $STR.ends_with(
         <string haystack: the string to search in>,
-        <string needle: The substring to search for in the haystack>
-        [, <boolean $case_insensitivity = false:
-            `false`: performs a case-sensitive check;
-            `true`: performs a case-insensitive check.>
+        <string needle: the substring to search for in the haystack>
+        [, <boolean $case_insensitivity = `false`:
+            `false` - performs a case-sensitive check;
+            `true` - performs a case-insensitive check.>
         ]
 ) : boolean
 ```
@@ -1212,8 +1212,8 @@ $STR.ends_with('Hello, world', '')
 ```php
 $STR.explode(
         <string $string: the input string to explode>
-        [, <string $separator: the boundary string>
-            [, <longint $limit>]
+        [, <string $separator: the boundary string = ''>
+            [, <longint $limit = 0>]
         ]
 ) : array
 ```
@@ -1227,9 +1227,9 @@ $STR.explode(
 - `seperator`  
 分隔字符串。`separator` 为空时，按字符分隔输入字符串；省略 `separator` 时，视同分隔字符串为空字符串。
 - `limit`
-   如果传递了 `limit` 参数并且是正数，则返回的数组包含最多 `limit` 个成员，而最后那个成员将包含 `string` 的剩余部分。
+   如果 `limit` 参数是正数，则返回的数组包含最多 `limit` 个成员，而最后那个成员将包含 `string` 的剩余部分。
    如果 `limit` 参数是负数，则返回除了最后的 `-limit` 个元素外的所有元素。
-   如果 `limit` 是 0，则会被当做 1。
+   如果 `limit` 是 0，表示不受限制。
 
 **返回值**
 
@@ -1266,7 +1266,7 @@ $STR.explode('中华人民共和国', 2)
 ```php
 $STR.implode(
         <array $pieces: The array to implode>
-        [, <string $separator: the boundary string>]
+        [, <string $separator: the boundary string = ''>]
 ) : string
 ```
 
@@ -1342,14 +1342,14 @@ $STR.shuffle('beijing') // string: 'jbienig'
 
 ```php
 $STR.replace(
-        <string|array $search>,
-        <string|array $replace>,
-        <array|string $subject>
-        [, <boolean $case_insensitivity = false:
-            `false`: performs case-sensitive replacements;
-            `true`: performs case-insensitive replacements.>
+        <string | array $search>,
+        <string | array $replace>,
+        <array | string $subject>
+        [, <boolean $case_insensitivity = `false`:
+            `false` - performs case-sensitive replacements;
+            `true` - performs case-insensitive replacements.>
         ]
-) : string|array
+) : string | array
 ```
 
 该函数返回一个字符串或者数组，该字符串或数组是将 `subject` 中全部的 `search` 都被 `replace` 替换之后的结果。
@@ -1636,7 +1636,9 @@ $STR.substr_compare(
     <real $offset1>,
     <real $offset2>,
     [, <real $length = 0>
-        [, <boolean $case_insensitivity = false>
+        [, <boolean $case_insensitivity = `false`:
+            `false` - performs a case-sensitive comparison;
+            `true` - performs a case-insensitive comparison.>
         ]
     ]
 ) : number
@@ -1716,10 +1718,10 @@ $STR.substr_replace(
 $STR.strstr(
         <string $haystack>,
         <string $needle>
-        [,
-            <bool $before_needle = false>
-            [,
-                <bool $case_insensitivity = false>
+        [, <bool $before_needle = false>
+            [, <bool $case_insensitivity = false:
+                `false` - performs a case-sensitive check;
+                `true` - performs a case-insensitive check.>
             ]
         ]
 ) : string|false
@@ -1746,10 +1748,10 @@ $STR.strstr(
 $STR.strpos(
         <string $haystack>,
         <string $needle>
-        [,
-            <real $offset = 0>
-            [,
-                <bool $case_insensitivity = false>
+        [, <real $offset = 0>
+            [, <bool $case_insensitivity = false:
+                `false` - performs a case-sensitive check;
+                `true` - performs a case-insensitive check.>
             ]
         ]
 ) : ulongint|false
@@ -1776,8 +1778,9 @@ $STR.strpos(
 $STR.strpbrk(
         <string $string>,
         <string $characters>
-        [,
-            <bool $case_insensitivity = false>
+        [, <bool $case_insensitivity = false:
+            `false` - performs a case-sensitive check;
+            `true` - performs a case-insensitive check.>
         ]
 ) : string|false
 ```
@@ -2013,12 +2016,12 @@ $STR.translate(
 $STR.bin2hex(
         <string $data>,
         <boolean $uppercase:
-            'true': use A...F;
-            'false': use a...f.
+            `true` - use A...F;
+            `false` - use a...f.
         >,
         <boolean $strict:
-            'true': throw the `BadEncoding` exception for a bad encoded string;
-            'false': stops conversion for any error and returns the converted string.
+            `true` - throw the `BadEncoding` exception for a bad encoded string;
+            `false` - stops conversion for any error and returns the converted string.
         >
 ): string
 ```
@@ -2045,8 +2048,8 @@ $STR.bin2hex(
 $STR.hex2bin(
         <string $data>,
         <boolean $strict:
-            'true': throw the `BadEncoding` exception for a bad encoded string;
-            'false': stops conversion for any error and returns the converted string.
+            `true` - throw the `BadEncoding` exception for a bad encoded string;
+            `false` - stops conversion for any error and returns the converted string.
         >
 ): string
 ```
@@ -2099,12 +2102,12 @@ $STR.base64_encode(
 $STR.base64_decode(
         <string $data>,
         <boolean $utf8:
-            'true': decode the input Base64 string to a string.
-            'false': decode the input Base64 string to a binary sequence.
+            `true` - decode the input Base64 string to a string.
+            `false` - decode the input Base64 string to a binary sequence.
         >
         <boolean $strict:
-            'true': throw the `BadEncoding` exception for a bad encoded string;
-            'false': stops conversion for any error and returns the converted string.
+            `true` - throw the `BadEncoding` exception for a bad encoded string;
+            `false` - stops conversion for any error and returns the converted string.
         >
 ): string | bseqence
 ```
