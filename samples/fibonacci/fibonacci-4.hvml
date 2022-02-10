@@ -7,27 +7,20 @@
     <body>
         <header>
             <h1>Fibonacci Numbers less than 2000</h1>
-            <p hvml:raw>Using two temp. variables</p>
+            <p hvml:raw>Using local variables in two levels</p>
         </header>
 
-        <init>
-            {
-                count: 2,
-            }
-        </init>
+        <init as="count" with=2 locally />
 
         <section>
             <dl>
-                <init>
-                    {
-                        last_one: 0,
-                        last_two: 1,
-                    }
-                </init>
+                <init as="last_one" with=0 locally />
+                <init as="last_two" with=1 locally />
 
                 <iterate on 1 by="ADD: LT 2000 BY $!.last_one">
-                    <update on="$1!" at=".last_one" to="displace" with="$1!.last_two" />
-                    <update on="$1!" at=".last_two" to="displace" with="$?" />
+                    <init at="last_one" with="$1!.last_two" />
+                    <init at="last_two" with="$?" />
+
                     <update on="$3!" at=".count" to="displace" with += 1 />
                     <dt>$%</dt>
                     <dd>$?</dd>

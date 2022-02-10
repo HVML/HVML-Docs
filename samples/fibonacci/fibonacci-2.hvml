@@ -7,27 +7,27 @@
     <body>
         <header>
             <h1>Fibonacci Numbers less than 2000</h1>
-            <p hvml:raw>Using temp. array variable ($!) and negative index</p>
+            <p hvml:raw>Using local array variable ($!) and negative index</p>
         </header>
 
-        <init>
+        <init as='fibonacci' locally>
             [0, 1, ]
         </init>
 
-        <iterate on 1 by="ADD: LT 2000 BY $![-2]">
-            <update on="$1!" to="append" with="$?" />
+        <iterate on 1 by="ADD: LT 2000 BY $!.fibonacci[-2]">
+            <update on="$1!.fibonacci" to="append" with="$?" />
         </iterate>
 
         <section>
             <ol>
-                <iterate on="$2!">
+                <iterate on="$2!.fibonacci">
                     <li>$?</li>
                 </iterate>
             </ol>
         </section>
 
         <footer>
-            <p>Totally $EJSON.count($1!) numbers.</p>
+            <p>Totally $EJSON.count($1!.fibonacci) numbers.</p>
         </footer>
     </body>
 

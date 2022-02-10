@@ -7,16 +7,12 @@
     <body>
         <header>
             <h1>Fibonacci Numbers less than 2000</h1>
-            <p hvml:raw>Using non-array temp. variable</p>
+            <p hvml:raw>Using non-array local variables</p>
         </header>
 
-        <init>
-            {
-                last_one: 0,
-                last_two: 1,
-                count: 2,
-            }
-        </init>
+        <init as="last_one" with=0 locally />
+        <init as="last_two" with=1 locally />
+        <init as="count" with=2 locally />
 
         <section>
             <dl>
