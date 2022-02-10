@@ -168,7 +168,24 @@ Language: Chinese
    + [4.2) `FS`](#42-fs)
       * [4.2.1) `list` 方法](#421-list-方法)
       * [4.2.2) `list_prt` 方法](#422-list_prt-方法)
-      * [4.2.3) 其他](#423-其他)
+      * [4.2.3) `basename` 方法](#423-basename-方法)
+      * [4.2.4) `copy` 方法](#424-copy-方法)
+      * [4.2.5) `dirname` 方法](#425-dirname-方法)
+      * [4.2.6) `disk_usage` 方法](#426-disk_usage-方法)
+      * [4.2.7) `file_exists` 方法](#427-file_exists-方法)
+      * [4.2.8) `lstat` 方法](#428-lstat-方法)
+      * [4.2.9) `link` 方法](#429-link-方法)
+      * [4.2.10) `mkdir` 方法](#4210-mkdir-方法)
+      * [4.2.11) `pathinfo` 方法](#4211-pathinfo-方法)
+      * [4.2.12) `readlink` 方法](#4212-readlink-方法)
+      * [4.2.13) `realpath` 方法](#4213-realpath-方法)
+      * [4.2.14) `rename` 方法](#4214-rename-方法)
+      * [4.2.15) `rmdir` 方法](#4215-rmdir-方法)
+      * [4.2.16) `symlink` 方法](#4216-symlink-方法)
+      * [4.2.17) `tempname` 方法](#4217-tempname-方法)
+      * [4.2.18) `touch` 方法](#4218-touch-方法)
+      * [4.2.19) `umask` 方法](#4219-umask-方法)
+      * [4.2.20) `unlink` 方法](#4220-unlink-方法)
    + [4.3) `FILE`](#43-file)
       * [4.3.1) 文本文件](#431-文本文件)
          - [4.3.1.1) `txt.head` 方法](#4311-txthead-方法)
@@ -3240,15 +3257,443 @@ $FS.list_prt($path, "*.txt; *.md", "mode nlink uid gid size blksize atime ctime 
 
 注：`list_prt` 对每个目录项信息的格式化方法同 Linux `ls` 命令。
 
-#### 4.2.3) 其他
+#### 4.2.3) `basename` 方法
 
-参照 PHP 文件系统接口：<https://www.php.net/manual/en/book.filesystem.php>，如：
+返回路径中的尾部名称。
 
-- `mkdir` 方法。该方法用于新建目录。
-- `rmdir` 方法。该方法用于删除空目录。
-- `touch` 方法。该方法用于新建文件或者改变文件的时间戳。
-- `unlink` 方法。该方法移除指定的文件。
-- `rm` 方法。该方法移除指定的文件或者目录。
+**描述**
+
+```php
+$FS.basename(
+        <string $path: a path.>
+        [,
+            <string $suffix = '': if the name component ends in `suffix` this will also be cut off.>
+        ]
+) : string
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `basename()` 函数：<https://www.php.net/manual/en/function.basename.php>
+
+#### 4.2.4) `copy` 方法
+
+复制文件。
+
+**描述**
+
+```php
+$FS.copy(
+        <string $from: path to the source file.>,
+        <string $to: The destination path.>
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `copy()` 函数：<https://www.php.net/manual/en/function.copy.php>
+
+#### 4.2.5) `dirname` 方法
+
+返回父目录的路径。
+
+**描述**
+
+```php
+$FS.dirname(
+        <string $path: a path.>
+        [,
+            <real $levels = 1: The number of parent directories to go up.>
+        ]
+) : string
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `dirname()` 函数：<https://www.php.net/manual/en/function.dirname.php>
+
+#### 4.2.6) `disk_usage` 方法
+
+返回文件系统的磁盘使用情况。
+
+**描述**
+
+```php
+$FS.disk_usage(
+        <string $directory: A directory of the filesystem or disk partition.>
+) : object
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `()` 函数：<https://www.php.net/manual/en/function.file-exists.php>
+
+#### 4.2.7) `file_exists` 方法
+
+判断一个文件或目录是否存在。
+
+**描述**
+
+```php
+$FS.file_exists(
+        <string $filename: path to the file or directory.>
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `file_exists()` 函数：<https://www.php.net/manual/en/function.file-exists.php>
+
+#### 4.2.8) `lstat` 方法
+
+获取一个文件或符号链接的统计信息。
+
+**描述**
+
+```php
+$FS.lstat(
+        <string $filename: path to the file or directory.>
+        [, < '[dev || inode || type || mode || mode_str || nlink || uid || gid || size || rdev_major || rdev_minor || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
+            'dev' - number: ID of device containing the file,
+            'inode' - number: inode number,
+            'type' - string: file type like 'd', 'b', 's', ...,
+            'mode' - bytesequece: file mode,
+            'mode_str' - string: file mode like `rwxrwxr-x`,
+            'nlink' - number: number of hard links,
+            'uid' - number: the user ID of owner,
+            'gid' - number: the group ID of owner,
+            'rdev_major' - number: the major device ID if it is a special file,
+            'rdev_minor' - number: the minor device ID if it is a special file,
+            'size' - number: total size in bytes,
+            'blksize' - number: block size for filesystem I/O,
+            'blocks' - number: Number of 512B blocks allocated,
+            'atime' - number: time of last acces,
+            'mtime' - number: time of last modification,
+            'ctime' - number: time of last status change
+            >
+        ]
+) : object
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `lstat()` 函数：<https://www.php.net/manual/en/function.lstat.php>
+
+#### 4.2.9) `link` 方法
+
+创建硬链接。
+
+**描述**
+
+```php
+$FS.link(
+        < string $target: Target of the link. >,
+        < string $link: The link name. >
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `link()` 函数：<https://www.php.net/manual/en/function.link.php>
+
+#### 4.2.10) `mkdir` 方法
+
+创建目录。
+
+**描述**
+
+```php
+$FS.mkdir(
+        < string $directory: The directory path. >
+        [, < string $permissions = '0777': The permissions are '0777' by default, which means the widest possible access. >
+            [, < boolean $recursive = `false`: Allows the creation of nested directories specified in `directory`. >
+            ]
+        ]
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `mkdir()` 函数：<https://www.php.net/manual/en/function.mkdir.php>
+
+#### 4.2.11) `pathinfo` 方法
+
+获取文件路径信息。
+
+**描述**
+
+```php
+$FS.pathinfo(
+        < string $path: The path to be parsed. >
+        [,
+            < '[dirname || basename || extension || filename] | all' $flags = 'all': Specifies the elements to be returned.
+            >
+        ]
+) : object | string
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `pathinfo()` 函数：<https://www.php.net/manual/en/function.pathinfo.php>
+
+#### 4.2.12) `readlink` 方法
+
+读取符号链接的内容。
+
+**描述**
+
+```php
+$FS.readlink(
+        < string $path: The symbolic link path. >
+) : string | false
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `readlink()` 函数：<https://www.php.net/manual/en/function.readlink.php>
+
+#### 4.2.13) `realpath` 方法
+
+返回规范化的绝对路径名。
+
+**描述**
+
+```php
+$FS.realpath(
+        < string $path: The path being checked. >
+) : string | false
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `realpath()` 函数：<https://www.php.net/manual/en/function.realpath.php>
+
+#### 4.2.14) `rename` 方法
+
+重命名文件或目录。
+
+**描述**
+
+```php
+$FS.rename(
+        < string $from: The old name. >
+        < string $to: The new name. >
+) : string | false
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `rename()` 函数：<https://www.php.net/manual/en/function.rename.php>
+
+#### 4.2.15) `rmdir` 方法
+
+移除目录。
+
+**描述**
+
+```php
+$FS.rmdir(
+        < string $directory: The directory path. >
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `rmdir()` 函数：<https://www.php.net/manual/en/function.rmdir.php>
+
+#### 4.2.16) `symlink` 方法
+
+创建符号链接。
+
+**描述**
+
+```php
+$FS.link(
+        < string $target: Target of the link. >,
+        < string $link: The link name. >
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `symlink()` 函数：<https://www.php.net/manual/en/function.symlink.php>
+
+#### 4.2.17) `tempname` 方法
+
+生成唯一的临时文件名称。
+
+**描述**
+
+```php
+$FS.tempname(
+        < string $directory: The directory where the temporary filename will be created. >
+        < string $prefix: The prefix of the generated temporary filename. >
+) : string | false
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `tempname()` 函数：<https://www.php.net/manual/en/function.tempname.php>
+
+
+#### 4.2.18) `touch` 方法
+
+设置文件的访问和更新时间。
+
+**描述**
+
+```php
+$FS.touch(
+        < string $filename: Path to the file. >
+        [, <real $mtime = 0: The modification time, if it is 0 or negative, use the current system time. >
+            [, <real $atime = 0: The access time, if it is 0 or negative, use `mtime`. > ]
+        ]
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `touch()` 函数：<https://www.php.net/manual/en/function.touch.php>
+
+#### 4.2.19) `umask` 方法
+
+改变当前 umask 值。
+
+**描述**
+
+```php
+$FS.umask(
+        [ string $mask = '': The new umask. ]
+) : string
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `umask()` 函数：<https://www.php.net/manual/en/function.umask.php>
+
+#### 4.2.20) `unlink` 方法
+
+移除硬链接。
+
+**描述**
+
+```php
+$FS.unlink(
+        < string $filename: Path to the file. >
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `unlink()` 函数：<https://www.php.net/manual/en/function.unlink.php>
 
 ### 4.3) `FILE`
 
