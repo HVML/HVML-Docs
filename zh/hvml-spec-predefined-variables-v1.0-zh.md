@@ -5,7 +5,7 @@ Version: 1.0
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Feb., 2022  
+Last Modified Date: Feb. 9, 2022  
 Status: Proposal  
 Language: Chinese
 

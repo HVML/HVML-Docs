@@ -1,11 +1,11 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0  
+Version: 1.0-RC1  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Feb., 2022  
+Last Modified Date: Feb. 9, 2022  
 Status: Release Candidate  
 Language: Chinese
 
