@@ -113,17 +113,25 @@ Language: Chinese
       * [3.8.28) `translate` 方法](#3828-translate-方法)
       * [3.8.29) `bin2hex` 方法](#3829-bin2hex-方法)
       * [3.8.30) `hex2bin` 方法](#3830-hex2bin-方法)
-      * [3.8.31) `base64_encode` 方法](#3831-base64_encode-方法)
-      * [3.8.32) `base64_decode` 方法](#3832-base64_decode-方法)
-      * [3.8.33) `htmlentities_encode` 方法](#3833-htmlentities_encode-方法)
-      * [3.8.34) `htmlentities_decode` 方法](#3834-htmlentities_decode-方法)
-      * [3.8.35) `crc32` 方法](#3835-crc32-方法)
-      * [3.8.36) `md5` 方法](#3836-md5-方法)
-      * [3.8.37) `sha1` 方法](#3837-sha1-方法)
-      * [3.8.38) `rot13` 方法](#3838-rot13-方法)
-      * [3.8.39) `count_chars` 方法](#3839-count_chars-方法)
-      * [3.8.40) `count_bytes` 方法](#3840-count_bytes-方法)
-      * [3.8.41) 错误与异常](#3841-错误与异常)
+      * [3.8.31) `htmlentities_encode` 方法](#3831-htmlentities_encode-方法)
+      * [3.8.32) `htmlentities_decode` 方法](#3832-htmlentities_decode-方法)
+      * [3.8.33) `crc32` 方法](#3833-crc32-方法)
+      * [3.8.34) `md5` 方法](#3834-md5-方法)
+      * [3.8.35) `sha1` 方法](#3835-sha1-方法)
+      * [3.8.36) `rot13` 方法](#3836-rot13-方法)
+      * [3.8.37) `count_chars` 方法](#3837-count_chars-方法)
+      * [3.8.38) `count_bytes` 方法](#3838-count_bytes-方法)
+      * [3.8.39) `nl2br` 方法](#3839-nl2br-方法)
+      * [3.8.40) 错误与异常](#3840-错误与异常)
+   + [3.9) `URL`](#39-url)
+      * [3.9.1) `base64_encode` 方法](#391-base64_encode-方法)
+      * [3.9.2) `base64_decode` 方法](#392-base64_decode-方法)
+      * [3.9.3) `urlencode` 方法](#393-urlencode-方法)
+      * [3.9.4) `urldecode` 方法](#394-urldecode-方法)
+      * [3.9.5) `rawurlencode` 方法](#395-rawurlencode-方法)
+      * [3.9.6) `rawurldecode` 方法](#396-rawurldecode-方法)
+      * [3.9.7) `parse` 方法](#397-parse-方法)
+      * [3.9.8) `http_build_query` 方法](#398-http_build_query-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -2075,65 +2083,7 @@ $STR.hex2bin(
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/zh/function.hex2bin.php>
 
-#### 3.8.31) `base64_encode` 方法
-
-使用 Base64 编码字符串或者字节序列。
-
-<https://www.php.net/manual/zh/function.base64-encode.php>
-
-**描述**
-
-```php
-$STR.base64_encode(
-        <string|bsequence $data>
-): string
-```
-
-该函数将输入字符串或者二进制序列 `data` 按照 Base64 进行编码。
-
-**参数**
-
-**返回值**
-
-**示例**
-
-**参考链接**
-
-- PHP `base64_encode()` 函数：<https://www.php.net/manual/zh/function.base64-encode.php>
-
-#### 3.8.32) `base64_decode` 方法
-
-解码使用 Base64 编码的字符串。
-
-**描述**
-
-```php
-$STR.base64_decode(
-        <string $data>,
-        <boolean $utf8:
-            `true` - decode the input Base64 string to a string.
-            `false` - decode the input Base64 string to a binary sequence.
-        >
-        <boolean $strict:
-            `true` - throw the `BadEncoding` exception for a bad encoded string;
-            `false` - stops conversion for any error and returns the converted string.
-        >
-): string | bseqence
-```
-
-该函数将输入字符串 `data` 按照 Base64 进行解码。若 `utf8` 为 `true`，则按照 UTF-8 编码字符串进行解码，否则解码为一个二进制序列。若 `strict` 为 `true`，则遇到错误编码或者不正确的 UTF-8 字符时，会抛出 `BadEncoding` 异常；若 `strict` 为 `false`，将忽略错误停止解码并返回已经解码的字符串或二进制序列。
-
-**参数**
-
-**返回值**
-
-**示例**
-
-**参考链接**
-
-- PHP `base64_decode()` 函数：<https://www.php.net/manual/zh/function.base64-decode.php>
-
-#### 3.8.33) `htmlentities_encode` 方法
+#### 3.8.31) `htmlentities_encode` 方法
 
 转换字符为 HTML 实体。
 
@@ -2176,7 +2126,7 @@ $STR.htmlentities_encode(
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/zh/function.htmlentities.php>
 - PHP `htmlspecialchars()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars.php>
 
-#### 3.8.34) `htmlentities_decode` 方法
+#### 3.8.32) `htmlentities_decode` 方法
 
 转换 HTML 实体为对应的字符。
 
@@ -2215,7 +2165,7 @@ $STR.htmlentities_decode(
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.html-entity-decode.php>
 - PHP `htmlspecialchars_decode()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars-decode.php>
 
-#### 3.8.35) `crc32` 方法
+#### 3.8.33) `crc32` 方法
 
 计算一个字符串或二进制序列的 CRC32 多项式。
 
@@ -2239,7 +2189,7 @@ $STR.crc32(
 
 - PHP `crc32()` 函数：<https://www.php.net/manual/zh/function.crc32.php>
 
-#### 3.8.36) `md5` 方法
+#### 3.8.34) `md5` 方法
 
 计算一个字符串或者二进制序列的 MD5 散列值。
 
@@ -2267,7 +2217,7 @@ $STR.md5(
 
 - PHP `md5()` 函数：<https://www.php.net/manual/zh/function.md5.php>
 
-#### 3.8.37) `sha1` 方法
+#### 3.8.35) `sha1` 方法
 
 计算一个字符串或者二进制序列的 SHA1 散列值。
 
@@ -2296,7 +2246,7 @@ $STR.sha1(
 - PHP `sha1()` 函数：<https://www.php.net/manual/zh/function.sha1.php>
 
 
-#### 3.8.38) `rot13` 方法
+#### 3.8.36) `rot13` 方法
 
 对字符串执行 ROT13 转换。
 
@@ -2320,7 +2270,7 @@ $STR.rot13(
 
 - PHP `rot13()` 函数：<https://www.php.net/manual/zh/function.rot13.php>
 
-#### 3.8.39) `count_chars` 方法
+#### 3.8.37) `count_chars` 方法
 
 统计字符串中的字符出现次数。
 
@@ -2348,7 +2298,7 @@ $STR.count_chars(
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/zh/function.count-chars.php>
 
-#### 3.8.40) `count_bytes` 方法
+#### 3.8.38) `count_bytes` 方法
 
 统计字符串或二进制字节序中的各个字节（0...255）出现的次数。
 
@@ -2380,13 +2330,264 @@ $STR.count_bytes(
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/zh/function.count-chars.php>
 
-#### 3.8.41) 错误与异常
+#### 3.8.39) `nl2br` 方法
+
+在字符串所有换行符之前插入 HTML 换行标记。
+
+**描述**
+
+```php
+$STR.nl2br(
+        < string $string: the input string. >
+        [, < boolean $is_xhtml = `true`:
+            `true` - use '<br />'.
+            `false` - use '<br>'.
+        ]
+        [, < boolean $lowercases = `true`:
+            `true` - use 'br'.
+            `false` - use 'BR'.
+        ]
+) : object | bsequence
+```
+
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `nl2br()` 函数：<https://www.php.net/manual/zh/function.nl2br.php>
+
+#### 3.8.40) 错误与异常
 
 在调用`STR` 动态对象方法的过程中，可能产生如下异常：
 
 - `ArgumentMissed`：缺少必要的参数，或传入的参数不足。
 - `WrongDataType`：错误的参数类型。
 - `BadEncoding`：错误编码。
+
+### 3.9) `URL`
+
+#### 3.9.1) `base64_encode` 方法
+
+使用 MIME base64 编码字符串或者字节序列。
+
+<https://www.php.net/manual/zh/function.base64-encode.php>
+
+**描述**
+
+```php
+$URL.base64_encode(
+        <string|bsequence $data>
+): string
+```
+
+该函数将输入字符串或者二进制序列 `data` 按照 Base64 进行编码。
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `base64_encode()` 函数：<https://www.php.net/manual/zh/function.base64-encode.php>
+- [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
+
+#### 3.9.2) `base64_decode` 方法
+
+解码使用 MIME base64 编码的字符串。
+
+**描述**
+
+```php
+$URL.base64_decode(
+        <string $data>,
+        <boolean $utf8:
+            `true` - decode the input Base64 string to a string.
+            `false` - decode the input Base64 string to a binary sequence.
+        >
+        <boolean $strict:
+            `true` - throw the `BadEncoding` exception for a bad encoded string;
+            `false` - stops conversion for any error and returns the converted string.
+        >
+): string | bseqence
+```
+
+该函数将输入字符串 `data` 按照 Base64 进行解码。若 `utf8` 为 `true`，则按照 UTF-8 编码字符串进行解码，否则解码为一个二进制序列。若 `strict` 为 `true`，则遇到错误编码或者不正确的 UTF-8 字符时，会抛出 `BadEncoding` 异常；若 `strict` 为 `false`，将忽略错误停止解码并返回已经解码的字符串或二进制序列。
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `base64_decode()` 函数：<https://www.php.net/manual/zh/function.base64-decode.php>
+- [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
+
+#### 3.9.3) `urlencode` 方法
+
+编码 URL 字符串。
+
+**描述**
+
+```php
+$URL.urlencode(
+        <string $str: the string to be encoded>
+) : string
+```
+
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `urlencode()` 函数：<https://www.php.net/manual/zh/function.urlencode.php>
+
+#### 3.9.4) `urldecode` 方法
+
+解码已编码的 URL 字符串。
+
+**描述**
+
+```php
+$URL.urldecode(
+        <string $str: the string to be decoded.>
+): string
+```
+
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `urldecode()` 函数：<https://www.php.net/manual/zh/function.urldecode.php>
+
+#### 3.9.5) `rawurlencode` 方法
+
+按照 RFC 3986 对 URL 进行编码。
+
+**描述**
+
+```php
+$URL.rawurlencode(
+        <string $str: the string to be encoded>
+): string
+```
+
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `rawurlencode()` 函数：<https://www.php.net/manual/zh/function.rawurlencode.php>
+
+#### 3.9.6) `rawurldecode` 方法
+
+对已编码的 URL 字符串进行解码。
+
+**描述**
+
+```php
+$URL.rawurldecode(
+        <string $str: the string to be decoded>
+): string
+```
+
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `rawurldecode()` 函数：<https://www.php.net/manual/zh/function.rawurldecode.php>
+
+#### 3.9.7) `parse` 方法
+
+解析 URL，返回其组成部分。
+
+
+**描述**
+
+```php
+$URL.parse(
+        <string $url: the URL to parse.>,
+        [,
+            <'all | [scheme || host || port || user || password || path || query || fragment]' $components = 'all': the components want to parse.>
+        ]
+) : object | string
+```
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `parse()` 函数：<https://www.php.net/manual/zh/function.parse-url.php>
+
+#### 3.9.8) `http_build_query` 方法
+
+生成 URL 编码的查询字符串。
+
+**描述**
+
+```php
+$URL.http_build_query(
+    < object | array $query_data >
+    [, < string $numeric_prefix = '': the numeric prefix for the argument names if `query_data` is an array. >
+        [, <string $arg_separator = '&': the character used to separate arguments. >
+            [, <'rfc1738 | rfc3986' $enc_type = 'rfc1738':
+              'rfc1738' - encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.
+              'rfc3986' - encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).
+            ]
+        ]
+    ]
+) : string
+```
+
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `http_build_query()` 函数：<https://www.php.net/manual/en/function.http-build-query.php>
+- [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
+- [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
 
 ## 4) 可选动态变量
 
