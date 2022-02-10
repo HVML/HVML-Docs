@@ -469,7 +469,7 @@ $SYSTEM.time.iso8601
 $SYSTEM.time('iso8601')
 
 // 原型：获得指定时间在给定时区，以给定标准名称（`iso`打头）形式展示的时间字符串
-$SYSTEM.time(<string: ISO/RFC standard name>[, <number | longint | ulongint | longdouble: seconds since epoch>[, <string: timezone>]])
+$SYSTEM.time(<string: ISO/RFC standard name>[, <number | longint | ulongint | longdouble: seconds since Epoch>[, <string: timezone>]])
 
 // 示例：获取当前时间之前一个小时在上海时区（北京标准时间）的 ISO8601 标准字符串
 $SYSTEM.time('ISO8601', $MATH.eval('x - 3600', { x: $SYSTEM.time }), 'Asia/Shanghai')
@@ -478,13 +478,13 @@ $SYSTEM.time('ISO8601', $MATH.eval('x - 3600', { x: $SYSTEM.time }), 'Asia/Shang
 $SYSTEM.time('RFC822', $SYSTEM.time, 'Asia/Shanghai')
 
 // 原型：按照给定的格式字符串格式化时间
-$SYSTEM.time(<string: format string>[, <number | longint | ulongint | longdouble: seconds since epoch>[, <string: timezone>]])
+$SYSTEM.time(<string: format string>[, <number | longint | ulongint | longdouble: seconds since Epoch>[, <string: timezone>]])
 
 // 示例：获得类似 `11:27` 的时间字符串
 $SYSTEM.time("The time now is %H:%m")
 
 // 原型：设置系统时间，成功返回 true，失败返回 false
-$SYSTEM.time(! <number: seconds since epoch> )
+$SYSTEM.time(! <number: seconds since Epoch> )
 ```
 
 参阅资料：
@@ -3242,12 +3242,12 @@ $FS.list($path, "*.txt; *.md")
     size: <ulongint: total size in bytes>,
     blksize: <ulongint: block size for filesystem I/O>,
     blocks: <ulongint: Number of 512B blocks allocated>,
-    atime_sec: <ulongint: time of last acces (seconds since epoch)>,
-    atime_nsec: <ulongint: time of last acces (nanoseconds)>,
-    mtime_sec: <ulongint: time of last modification (seconds since epoch)>,
-    mtime_nsec: <ulongint: time of last modification (nanoseconds)>,
-    ctime_sec: <ulongint: time of last status change (seconds since epoch)>
-    ctime_nsec: <ulongint: time of last status change (nanoseconds)>
+    atime_sec: <ulongint: time of last acces (seconds since Epoch)>,
+    atime_nsec: <ulongint: time of last acces (nanoseconds since `atime_sec`)>,
+    mtime_sec: <ulongint: time of last modification (seconds since Epoch)>,
+    mtime_nsec: <ulongint: time of last modification (nanoseconds since `mtime_sec`)>,
+    ctime_sec: <ulongint: time of last status change (seconds since Epoch)>
+    ctime_nsec: <ulongint: time of last status change (nanoseconds since `ctime_sec`)>
 }
 ```
 
@@ -3429,11 +3429,28 @@ $FS.disk_usage(
 
 **返回值**
 
+返回值为如下所示对象：
+
+```php
+{
+    free_blocks: <ulongint>,
+    free_inodes: <ulongint>,
+
+    total_blocks: <ulongint>,
+    total_inodes: <ulongint>,
+
+    mount_point: <string: the mount point of the file system>,
+    dev_majar: <ulongint: the majar device ID>,
+    dev_minor: <ulongint: the minor device ID>,
+}
+```
+
 **示例**
 
 **参考链接**
 
-- PHP `()` 函数：<https://www.php.net/manual/en/function.file-exists.php>
+- PHP `disk_free_space()` 函数：<https://www.php.net/manual/en/function.disk-free-space.php>
+- PHP `disk_total_space()` 函数：<https://www.php.net/manual/en/function.disk-total-space.php>
 
 #### 4.2.10) `file_exists` 方法
 
@@ -3579,12 +3596,12 @@ $FS.lstat(
     size: <ulongint: total size in bytes>,
     blksize: <ulongint: block size for filesystem I/O>,
     blocks: <ulongint: Number of 512B blocks allocated>,
-    atime_sec: <ulongint: time of last acces (seconds since epoch)>,
-    atime_nsec: <ulongint: time of last acces (nanoseconds)>,
-    mtime_sec: <ulongint: time of last modification (seconds since epoch)>,
-    mtime_nsec: <ulongint: time of last modification (nanoseconds)>,
-    ctime_sec: <ulongint: time of last status change (seconds since epoch)>
-    ctime_nsec: <ulongint: time of last status change (nanoseconds)>
+    atime_sec: <ulongint: time of last acces (seconds since Epoch)>,
+    atime_nsec: <ulongint: time of last acces (nanoseconds since `atime_sec`)>,
+    mtime_sec: <ulongint: time of last modification (seconds since Epoch)>,
+    mtime_nsec: <ulongint: time of last modification (nanoseconds since `mtime_sec`)>,
+    ctime_sec: <ulongint: time of last status change (seconds since Epoch)>
+    ctime_nsec: <ulongint: time of last status change (nanoseconds since `ctime_sec`)>
 }
 ```
 
@@ -3812,12 +3829,12 @@ $FS.stat(
     size: <ulongint: total size in bytes>,
     blksize: <ulongint: block size for filesystem I/O>,
     blocks: <ulongint: Number of 512B blocks allocated>,
-    atime_sec: <ulongint: time of last acces (seconds since epoch)>,
-    atime_nsec: <ulongint: time of last acces (nanoseconds)>,
-    mtime_sec: <ulongint: time of last modification (seconds since epoch)>,
-    mtime_nsec: <ulongint: time of last modification (nanoseconds)>,
-    ctime_sec: <ulongint: time of last status change (seconds since epoch)>
-    ctime_nsec: <ulongint: time of last status change (nanoseconds)>
+    atime_sec: <ulongint: time of last acces (seconds since Epoch)>,
+    atime_nsec: <ulongint: time of last acces (nanoseconds since `atime_sec`)>,
+    mtime_sec: <ulongint: time of last modification (seconds since Epoch)>,
+    mtime_nsec: <ulongint: time of last modification (nanoseconds since `mtime_sec`)>,
+    ctime_sec: <ulongint: time of last status change (seconds since Epoch)>
+    ctime_nsec: <ulongint: time of last status change (nanoseconds since `ctime_sec`)>
 }
 ```
 
