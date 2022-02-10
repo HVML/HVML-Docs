@@ -2124,6 +2124,125 @@ $STR.base64_decode(
 
 - PHP `base64_decode()` 函数：<https://www.php.net/manual/zh/function.base64-decode.php>
 
+#### 3.8.32) `htmlentities_encode` 方法
+
+转换字符为 HTML 实体。
+
+**描述**
+
+```php
+$STR.htmlentities_encode(
+        <string $string: The input string.>,
+        <'[compat | quotes | noquotes] || [ignore | substitute | disallowed] || [html401 | xml1 | xhtml | html5]' $flags:
+            'compat' - Will convert double-quotes and leave single-quotes alone.
+            'quotes' - Will convert both double and single quotes.
+            'noquotes' - Will leave both double and single quotes unconverted.
+            'ignore' - Silently discard invalid code unit sequences instead of returning an empty string. Using this flag is discouraged.
+            'substitute' - Replace invalid code unit sequences with a Unicode Replacement Character U+FFFD or &#FFFD.
+            'disallowed' - Replace invalid code points for the given document type with a Unicode Replacement Character U+FFFD or &#FFFD.
+            'html401' - Handle code as HTML 4.01.
+            'xml1' - Handle code as XML 1.
+            'xhtml' - Handle code as XHTML.
+            'html5' - Handle code as HTML 5.
+        >
+        [, <boolean $all = `false`:
+            `false`- only the certain characters have special significance in HTML are translated into these entities.
+            `true` - all characters which have HTML character entity equivalents are translated into these entities. >
+            [, <boolean $double_encode = `true`:
+                `true` - will convert everything.
+                `false` - will not encode existing html entities.
+            ]
+        ]
+) : string
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `htmlentities()` 函数：<https://www.php.net/manual/zh/function.htmlentities.php>
+- PHP `htmlspecialchars()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars.php>
+
+#### 3.8.32) `htmlentities_decode` 方法
+
+转换 HTML 实体为对应的字符。
+
+**描述**
+
+```php
+$STR.htmlentities_decode(
+        <string $string: The input string.>,
+        <'[compat | quotes | noquotes] || substitute || [html401 | xml1 | xhtml | html5]' $flags:
+            'compat' - Will convert double-quotes and leave single-quotes alone.
+            'quotes' - Will convert both double and single quotes.
+            'noquotes' - Will leave both double and single quotes unconverted.
+            'substitute' - Replace invalid code unit sequences with a Unicode Replacement Character U+FFFD or &#FFFD.
+            'html401' - Handle code as HTML 4.01.
+            'xml1' - Handle code as XML 1.
+            'xhtml' - Handle code as XHTML.
+            'html5' - Handle code as HTML 5.
+        >
+        [, <boolean $all = `false`:
+            `false`- only the certain characters have special significance in HTML are translated into these entities.
+            `true` - all characters which have HTML character entity equivalents are translated into these entities. >
+        ]
+): string | bseqence
+```
+
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.html-entity-decode.php>
+- PHP `htmlspecialchars_decode()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars-decode.php>
+
+
+#### 3.8.32) `placeholder` 方法
+
+
+
+**描述**
+
+```php
+$STR.placeholder(
+        <string $data>,
+        <boolean $strict:
+            `true` - throw the `BadEncoding` exception for a bad encoded string;
+            `false` - stops conversion for any error and returns the converted string.
+        >
+): string | bseqence
+```
+
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `placeholder()` 函数：<https://www.php.net/manual/zh/function.placeholder.php>
+
+#### 3.8.30) 错误与异常
+
+在调用`STR` 动态对象方法的过程中，可能产生如下异常：
+
+- `ArgumentMissed`：缺少必要的参数，或传入的参数不足。
+- `WrongDataType`：错误的参数类型。
+- `BadEncoding`：错误编码。
+
 ## 4) 可选动态变量
 
 ### 4.1) `MATH`
@@ -2657,6 +2776,7 @@ $MATH.sqrt(9.0)
 // 示例：求 `9.0` 的平方根，返回 `longdouble` 类型，结果为 `3.0L`。
 $MATH.sqrt_l(9.0)
 ```
+
 #### 4.1.30) 错误与异常
 
 在调用`MATH` 动态对象方法的过程中，可能产生如下异常：
@@ -2667,9 +2787,6 @@ $MATH.sqrt_l(9.0)
 - `Overflow`：计算时产生向上溢出错误。
 - `Underflow`：计算时产生向下溢出错误。
 - `InvalidFloat`：无效浮点数。
-
-
-参照 PHP 数学接口：<https://www.php.net/manual/en/book.math.php>
 
 ### 4.2) `FS`
 
