@@ -187,11 +187,12 @@ Language: Chinese
       * [4.2.19) `realpath` 方法](#4219-realpath-方法)
       * [4.2.20) `rename` 方法](#4220-rename-方法)
       * [4.2.21) `rmdir` 方法](#4221-rmdir-方法)
-      * [4.2.22) `symlink` 方法](#4222-symlink-方法)
-      * [4.2.23) `tempname` 方法](#4223-tempname-方法)
-      * [4.2.24) `touch` 方法](#4224-touch-方法)
-      * [4.2.25) `umask` 方法](#4225-umask-方法)
-      * [4.2.26) `unlink` 方法](#4226-unlink-方法)
+      * [4.2.22) `stat` 方法](#4222-stat-方法)
+      * [4.2.23) `symlink` 方法](#4223-symlink-方法)
+      * [4.2.24) `tempname` 方法](#4224-tempname-方法)
+      * [4.2.25) `touch` 方法](#4225-touch-方法)
+      * [4.2.26) `umask` 方法](#4226-umask-方法)
+      * [4.2.27) `unlink` 方法](#4227-unlink-方法)
    + [4.3) `FILE`](#43-file)
       * [4.3.1) 文本文件](#431-文本文件)
          - [4.3.1.1) `txt.head` 方法](#4311-txthead-方法)
@@ -3557,6 +3558,33 @@ $FS.lstat(
 
 **返回值**
 
+结果由如下对象或其部分表达：
+
+```javascript
+{
+    dev_major: <ulongint: the major ID of device containing file>,
+    dev_minor: <ulongint: the minor ID of device containing file>,
+    inode: <ulongint: inode number>
+    type: <string: file type like 'd', 'b', 's', ...>,
+    mode_digits: <string: file mode like `0644`>,
+    mode_alphas: <string: file mode like `rwxrwxr-x`>,
+    nlink: <ulongint: number of hard links>,
+    uid: <ulongint: the user ID of owner>,
+    gid: <ulongint: the group ID of owner>,
+    rdev_major: <ulongint: the major device ID if it is a special file>,
+    rdev_minor: <ulongint: the minor device ID if it is a special file>,
+    size: <ulongint: total size in bytes>,
+    blksize: <ulongint: block size for filesystem I/O>,
+    blocks: <ulongint: Number of 512B blocks allocated>,
+    atime_sec: <ulongint: time of last acces (seconds since epoch)>,
+    atime_nsec: <ulongint: time of last acces (nanoseconds)>,
+    mtime_sec: <ulongint: time of last modification (seconds since epoch)>,
+    mtime_nsec: <ulongint: time of last modification (nanoseconds)>,
+    ctime_sec: <ulongint: time of last status change (seconds since epoch)>
+    ctime_nsec: <ulongint: time of last status change (nanoseconds)>
+}
+```
+
 **示例**
 
 **参考链接**
@@ -3727,7 +3755,76 @@ $FS.rmdir(
 
 - PHP `rmdir()` 函数：<https://www.php.net/manual/en/function.rmdir.php>
 
-#### 4.2.22) `symlink` 方法
+#### 4.2.22) `stat` 方法
+
+获取一个文件的统计信息。
+
+**描述**
+
+```php
+$FS.stat(
+        <string $filename: path to the file or directory.>
+        [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
+            'dev' - returns ID of device containing the file;
+            'inode' - returns inode number;
+            'type' - returns file type like 'd', 'b', 's', ...;
+            'mode_digits' - returns file mode like `0644`;
+            'mode_alphas' - returns file mode like `rwxrwxr-x`;
+            'nlink' - returns number of hard links;
+            'uid' - returns the user ID of owner;
+            'gid' - returns the group ID of owner;
+            'rdev' - returns the device ID if it is a special file;
+            'size' - returns total size in bytes;
+            'blksize' - returns block size for filesystem I/O;
+            'blocks' - returns number of 512B blocks allocated;
+            'atime' - returns time of last acces;
+            'mtime' - returns time of last modification;
+            'ctime' - returns time of last status change;
+            'all' - returns all above information;
+            'default' - 'type mode_digits uid gid size rdev ctime';
+            >
+        ]
+) : object
+```
+
+**参数**
+
+**返回值**
+
+结果由如下对象或其部分表达：
+
+```javascript
+{
+    dev_major: <ulongint: the major ID of device containing file>,
+    dev_minor: <ulongint: the minor ID of device containing file>,
+    inode: <ulongint: inode number>
+    type: <string: file type like 'd', 'b', 's', ...>,
+    mode_digits: <string: file mode like `0644`>,
+    mode_alphas: <string: file mode like `rwxrwxr-x`>,
+    nlink: <ulongint: number of hard links>,
+    uid: <ulongint: the user ID of owner>,
+    gid: <ulongint: the group ID of owner>,
+    rdev_major: <ulongint: the major device ID if it is a special file>,
+    rdev_minor: <ulongint: the minor device ID if it is a special file>,
+    size: <ulongint: total size in bytes>,
+    blksize: <ulongint: block size for filesystem I/O>,
+    blocks: <ulongint: Number of 512B blocks allocated>,
+    atime_sec: <ulongint: time of last acces (seconds since epoch)>,
+    atime_nsec: <ulongint: time of last acces (nanoseconds)>,
+    mtime_sec: <ulongint: time of last modification (seconds since epoch)>,
+    mtime_nsec: <ulongint: time of last modification (nanoseconds)>,
+    ctime_sec: <ulongint: time of last status change (seconds since epoch)>
+    ctime_nsec: <ulongint: time of last status change (nanoseconds)>
+}
+```
+
+**示例**
+
+**参考链接**
+
+- PHP `stat()` 函数：<https://www.php.net/manual/en/function.stat.php>
+
+#### 4.2.23) `symlink` 方法
 
 创建符号链接。
 
@@ -3750,7 +3847,7 @@ $FS.link(
 
 - PHP `symlink()` 函数：<https://www.php.net/manual/en/function.symlink.php>
 
-#### 4.2.23) `tempname` 方法
+#### 4.2.24) `tempname` 方法
 
 生成唯一的临时文件名称。
 
@@ -3774,7 +3871,7 @@ $FS.tempname(
 - PHP `tempname()` 函数：<https://www.php.net/manual/en/function.tempname.php>
 
 
-#### 4.2.24) `touch` 方法
+#### 4.2.25) `touch` 方法
 
 设置文件的访问和更新时间。
 
@@ -3799,7 +3896,7 @@ $FS.touch(
 
 - PHP `touch()` 函数：<https://www.php.net/manual/en/function.touch.php>
 
-#### 4.2.25) `umask` 方法
+#### 4.2.26) `umask` 方法
 
 改变当前 umask 值。
 
@@ -3821,7 +3918,7 @@ $FS.umask(
 
 - PHP `umask()` 函数：<https://www.php.net/manual/en/function.umask.php>
 
-#### 4.2.26) `unlink` 方法
+#### 4.2.27) `unlink` 方法
 
 移除硬链接。
 
