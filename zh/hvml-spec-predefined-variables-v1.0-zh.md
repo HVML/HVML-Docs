@@ -193,6 +193,8 @@ Language: Chinese
       * [4.2.25) `touch` 方法](#4225-touch-方法)
       * [4.2.26) `umask` 方法](#4226-umask-方法)
       * [4.2.27) `unlink` 方法](#4227-unlink-方法)
+      * [4.2.28) `file_get_contents` 方法](#4228-file_get_contents-方法)
+      * [4.2.29) `file_put_contents` 方法](#4229-file_put_contents-方法)
    + [4.3) `FILE`](#43-file)
       * [4.3.1) 文本文件](#431-文本文件)
          - [4.3.1.1) `txt.head` 方法](#4311-txthead-方法)
@@ -3939,6 +3941,65 @@ $FS.unlink(
 **参考链接**
 
 - PHP `unlink()` 函数：<https://www.php.net/manual/en/function.unlink.php>
+
+#### 4.2.28) `file_get_contents` 方法
+
+从文件中读取整个内容。
+
+**描述**
+
+```php
+$FS.file_get_contents(
+        < string $filename: Path to the file. >
+        < '[binary | string] || [strict | silent]': $flags:
+            `binary` - reads the contents as a byte sequence.
+            `string` - reads the contents as a string in UTF-8.
+            `strict` - throw the `BadEncoding` exception for a bad encoded string.
+            `silent` - stops reading for any error and returns the read data.
+        >
+        [, <longint $offset = 0: The offset where the reading starts. Negative offsets count from the end of the file.>
+            [, <ulongint $length = 0: Maximum length of data read. The default is to read until end of file is reached. >
+            ]
+        ]
+) : string | bsequence | false
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `file_get_contents()` 函数：<https://www.php.net/manual/en/function.file-get-contents.php>
+
+#### 4.2.29) `file_put_contents` 方法
+
+从文件中读取整个内容。
+
+**描述**
+
+```php
+$FS.file_put_contents(
+        < string $filename: Path to the file. >
+        < string | bsequenc $data: The data to write, can be either a string or a byte sequence.
+        < '[append || lock': $flags:
+            `append` - if file `filename` already exists, append the data to the file instead of overwriting it.
+            `lock` - acquires an exclusive lock on the file while proceeding to the writing.
+        >
+) : ulongint | false
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `file_put_contents()` 函数：<https://www.php.net/manual/en/function.file-put-contents.php>
 
 ### 4.3) `FILE`
 
