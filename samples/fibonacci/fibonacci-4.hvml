@@ -18,8 +18,8 @@
                 <init as="last_two" with=1 locally />
 
                 <iterate on 1 by="ADD: LT 2000 BY $!.last_one">
-                    <init at="last_one" with="$1!.last_two" />
-                    <init at="last_two" with="$?" />
+                    <init at="last_one" with="$1!.last_two" locally />
+                    <init at="last_two" with="$?" locally />
 
                     <update on="$3!" at=".count" to="displace" with += 1 />
                     <dt>$%</dt>
