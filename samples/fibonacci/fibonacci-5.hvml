@@ -17,7 +17,7 @@
                 <init as="last_one" with=0 locally />
                 <init as="last_two" with=1 locally />
 
-                <iterate on 1 while="$L.lt($0^, 2000)" with="$MATH.add($0^, $!.last_one)">
+                <iterate on 1 onlyif=$L.lt($0^, 2000) with=$MATH.add($0^, $!.last_one)>
                     <init at="last_one" with="$1!.last_two" locally />
                     <init at="last_two" with="$?" locally />
 
