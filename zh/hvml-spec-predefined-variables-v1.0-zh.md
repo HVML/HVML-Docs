@@ -176,26 +176,27 @@ Language: Chinese
       * [4.2.8) `dirname` 方法](#428-dirname-方法)
       * [4.2.9) `disk_usage` 方法](#429-disk_usage-方法)
       * [4.2.10) `file_exists` 方法](#4210-file_exists-方法)
-      * [4.2.11) `lchgrp` 方法](#4211-lchgrp-方法)
-      * [4.2.12) `lchown` 方法](#4212-lchown-方法)
-      * [4.2.13) `linkinfo` 方法](#4213-linkinfo-方法)
-      * [4.2.14) `lstat` 方法](#4214-lstat-方法)
-      * [4.2.15) `link` 方法](#4215-link-方法)
-      * [4.2.16) `mkdir` 方法](#4216-mkdir-方法)
-      * [4.2.17) `pathinfo` 方法](#4217-pathinfo-方法)
-      * [4.2.18) `readlink` 方法](#4218-readlink-方法)
-      * [4.2.19) `realpath` 方法](#4219-realpath-方法)
-      * [4.2.20) `rename` 方法](#4220-rename-方法)
-      * [4.2.21) `rmdir` 方法](#4221-rmdir-方法)
-      * [4.2.22) `stat` 方法](#4222-stat-方法)
-      * [4.2.23) `symlink` 方法](#4223-symlink-方法)
-      * [4.2.24) `tempname` 方法](#4224-tempname-方法)
-      * [4.2.25) `touch` 方法](#4225-touch-方法)
-      * [4.2.26) `umask` 方法](#4226-umask-方法)
-      * [4.2.27) `unlink` 方法](#4227-unlink-方法)
-      * [4.2.28) `file_get_contents` 方法](#4228-file_get_contents-方法)
-      * [4.2.29) `file_put_contents` 方法](#4229-file_put_contents-方法)
-      * [4.2.30) 错误与异常](#4230-错误与异常)
+      * [4.2.11) `file_is` 方法](#4211-file_is-方法)
+      * [4.2.12) `lchgrp` 方法](#4212-lchgrp-方法)
+      * [4.2.13) `lchown` 方法](#4213-lchown-方法)
+      * [4.2.14) `linkinfo` 方法](#4214-linkinfo-方法)
+      * [4.2.15) `lstat` 方法](#4215-lstat-方法)
+      * [4.2.16) `link` 方法](#4216-link-方法)
+      * [4.2.17) `mkdir` 方法](#4217-mkdir-方法)
+      * [4.2.18) `pathinfo` 方法](#4218-pathinfo-方法)
+      * [4.2.19) `readlink` 方法](#4219-readlink-方法)
+      * [4.2.20) `realpath` 方法](#4220-realpath-方法)
+      * [4.2.21) `rename` 方法](#4221-rename-方法)
+      * [4.2.22) `rmdir` 方法](#4222-rmdir-方法)
+      * [4.2.23) `stat` 方法](#4223-stat-方法)
+      * [4.2.24) `symlink` 方法](#4224-symlink-方法)
+      * [4.2.25) `tempname` 方法](#4225-tempname-方法)
+      * [4.2.26) `touch` 方法](#4226-touch-方法)
+      * [4.2.27) `umask` 方法](#4227-umask-方法)
+      * [4.2.28) `unlink` 方法](#4228-unlink-方法)
+      * [4.2.29) `file_get_contents` 方法](#4229-file_get_contents-方法)
+      * [4.2.30) `file_put_contents` 方法](#4230-file_put_contents-方法)
+      * [4.2.31) 错误与异常](#4231-错误与异常)
    + [4.3) `FILE`](#43-file)
       * [4.3.1) 文本文件](#431-文本文件)
          - [4.3.1.1) `txt.head` 方法](#4311-txthead-方法)
@@ -3237,8 +3238,8 @@ $FS.list($path, "*.txt; *.md")
     mode_digits: <string: file mode like `0644`>,
     mode_alphas: <string: file mode like `rwxrwxr-x`>,
     nlink: <ulongint: number of hard links>,
-    uid: <ulongint: the user ID of owner>,
-    gid: <ulongint: the group ID of owner>,
+    uid: <number: the user ID of owner>,
+    gid: <number: the group ID of owner>,
     rdev_major: <ulongint: the major device ID if it is a special file>,
     rdev_minor: <ulongint: the minor device ID if it is a special file>,
     size: <ulongint: total size in bytes>,
@@ -3346,7 +3347,7 @@ $FS.chmod(
 
 #### 4.2.6) `chown` 方法
 
-改变文件的所有者。
+改变文件的所有者用户。
 
 **描述**
 
@@ -3476,7 +3477,45 @@ $FS.file_exists(
 
 - PHP `file_exists()` 函数：<https://www.php.net/manual/en/function.file-exists.php>
 
-#### 4.2.11) `lchgrp` 方法
+#### 4.2.11) `file_is` 方法
+
+判断一个文件名是否为指定的类型。
+
+**描述**
+
+```php
+$FS.file_is(
+        <string $filename: the path to a file or directory.>
+        <'[ dir | file | symlink | socket | pipe | block | char ] || [ executable | exe ] || [readable | read] || [writable write]' $which = 'file readable':
+            'dir' - a directory.
+            'file' - a regular file.
+            'symlink' - a symbolic link.
+            'socket' - a unix socket file.
+            'pipe' - a named pipe file or just a pipe file.
+            'block' - a block device file.
+            'char' - a character device file.
+            'executable'/'exe' - is executable.
+            'readable'/'read' - is readable.
+            'writable'/'write' - is writable. >
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `is_dir()` 函数：<https://www.php.net/manual/en/function.is_dir.php>
+- PHP `is_file()` 函数：<https://www.php.net/manual/en/function.is_file.php>
+- PHP `is_link()` 函数：<https://www.php.net/manual/en/function.is_link.php>
+- PHP `is_executable()` 函数：<https://www.php.net/manual/en/function.is_executable.php>
+- PHP `is_readable()` 函数：<https://www.php.net/manual/en/function.is_readable.php>
+- PHP `is_writable()` 函数：<https://www.php.net/manual/en/function.is_writable.php>
+
+#### 4.2.12) `lchgrp` 方法
 
 改变符号链接的所有者组。
 
@@ -3499,9 +3538,9 @@ $FS.lchgrp(
 
 - PHP `lchgrp()` 函数：<https://www.php.net/manual/en/function.lchgrp.php>
 
-#### 4.2.12) `lchown` 方法
+#### 4.2.13) `lchown` 方法
 
-改变符号链接的所有者。
+改变符号链接的所有者用户。
 
 **描述**
 
@@ -3522,7 +3561,7 @@ $FS.lchown(
 
 - PHP `lchown()` 函数：<https://www.php.net/manual/en/function.lchown.php>
 
-#### 4.2.13) `linkinfo` 方法
+#### 4.2.14) `linkinfo` 方法
 
 获取链接信息。
 
@@ -3544,7 +3583,7 @@ $FS.linkinfo(
 
 - PHP `linkinfo()` 函数：<https://www.php.net/manual/en/function.linkinfo.php>
 
-#### 4.2.14) `lstat` 方法
+#### 4.2.15) `lstat` 方法
 
 获取一个文件或符号链接的统计信息。
 
@@ -3590,14 +3629,14 @@ $FS.lstat(
     type: <string: file type like 'd', 'b', 's', ...>,
     mode_digits: <string: file mode like `0644`>,
     mode_alphas: <string: file mode like `rwxrwxr-x`>,
-    nlink: <ulongint: number of hard links>,
-    uid: <ulongint: the user ID of owner>,
-    gid: <ulongint: the group ID of owner>,
+    nlink: <number: number of hard links>,
+    uid: <numer: the user ID of owner>,
+    gid: <number: the group ID of owner>,
     rdev_major: <ulongint: the major device ID if it is a special file>,
     rdev_minor: <ulongint: the minor device ID if it is a special file>,
     size: <ulongint: total size in bytes>,
     blksize: <ulongint: block size for filesystem I/O>,
-    blocks: <ulongint: Number of 512B blocks allocated>,
+    blocks: <ulongint: number of 512B blocks allocated>,
     atime_sec: <ulongint: time of last acces (seconds since Epoch)>,
     atime_nsec: <ulongint: time of last acces (nanoseconds since `atime_sec`)>,
     mtime_sec: <ulongint: time of last modification (seconds since Epoch)>,
@@ -3613,7 +3652,7 @@ $FS.lstat(
 
 - PHP `lstat()` 函数：<https://www.php.net/manual/en/function.lstat.php>
 
-#### 4.2.15) `link` 方法
+#### 4.2.16) `link` 方法
 
 创建硬链接。
 
@@ -3636,7 +3675,7 @@ $FS.link(
 
 - PHP `link()` 函数：<https://www.php.net/manual/en/function.link.php>
 
-#### 4.2.16) `mkdir` 方法
+#### 4.2.17) `mkdir` 方法
 
 创建目录。
 
@@ -3662,7 +3701,7 @@ $FS.mkdir(
 
 - PHP `mkdir()` 函数：<https://www.php.net/manual/en/function.mkdir.php>
 
-#### 4.2.17) `pathinfo` 方法
+#### 4.2.18) `pathinfo` 方法
 
 获取文件路径信息。
 
@@ -3688,7 +3727,7 @@ $FS.pathinfo(
 
 - PHP `pathinfo()` 函数：<https://www.php.net/manual/en/function.pathinfo.php>
 
-#### 4.2.18) `readlink` 方法
+#### 4.2.19) `readlink` 方法
 
 读取符号链接的内容。
 
@@ -3710,7 +3749,7 @@ $FS.readlink(
 
 - PHP `readlink()` 函数：<https://www.php.net/manual/en/function.readlink.php>
 
-#### 4.2.19) `realpath` 方法
+#### 4.2.20) `realpath` 方法
 
 返回规范化的绝对路径名。
 
@@ -3732,7 +3771,7 @@ $FS.realpath(
 
 - PHP `realpath()` 函数：<https://www.php.net/manual/en/function.realpath.php>
 
-#### 4.2.20) `rename` 方法
+#### 4.2.21) `rename` 方法
 
 重命名文件或目录。
 
@@ -3755,7 +3794,7 @@ $FS.rename(
 
 - PHP `rename()` 函数：<https://www.php.net/manual/en/function.rename.php>
 
-#### 4.2.21) `rmdir` 方法
+#### 4.2.22) `rmdir` 方法
 
 移除目录。
 
@@ -3777,7 +3816,7 @@ $FS.rmdir(
 
 - PHP `rmdir()` 函数：<https://www.php.net/manual/en/function.rmdir.php>
 
-#### 4.2.22) `stat` 方法
+#### 4.2.23) `stat` 方法
 
 获取一个文件的统计信息。
 
@@ -3846,7 +3885,7 @@ $FS.stat(
 
 - PHP `stat()` 函数：<https://www.php.net/manual/en/function.stat.php>
 
-#### 4.2.23) `symlink` 方法
+#### 4.2.24) `symlink` 方法
 
 创建符号链接。
 
@@ -3869,7 +3908,7 @@ $FS.link(
 
 - PHP `symlink()` 函数：<https://www.php.net/manual/en/function.symlink.php>
 
-#### 4.2.24) `tempname` 方法
+#### 4.2.25) `tempname` 方法
 
 生成唯一的临时文件名称。
 
@@ -3893,7 +3932,7 @@ $FS.tempname(
 - PHP `tempname()` 函数：<https://www.php.net/manual/en/function.tempname.php>
 
 
-#### 4.2.25) `touch` 方法
+#### 4.2.26) `touch` 方法
 
 设置文件的访问和更新时间。
 
@@ -3918,7 +3957,7 @@ $FS.touch(
 
 - PHP `touch()` 函数：<https://www.php.net/manual/en/function.touch.php>
 
-#### 4.2.26) `umask` 方法
+#### 4.2.27) `umask` 方法
 
 改变当前 umask 值。
 
@@ -3940,7 +3979,7 @@ $FS.umask(
 
 - PHP `umask()` 函数：<https://www.php.net/manual/en/function.umask.php>
 
-#### 4.2.27) `unlink` 方法
+#### 4.2.28) `unlink` 方法
 
 移除硬链接。
 
@@ -3962,7 +4001,7 @@ $FS.unlink(
 
 - PHP `unlink()` 函数：<https://www.php.net/manual/en/function.unlink.php>
 
-#### 4.2.28) `file_get_contents` 方法
+#### 4.2.29) `file_get_contents` 方法
 
 从文件中读取整个内容。
 
@@ -3994,7 +4033,7 @@ $FS.file_get_contents(
 
 - PHP `file_get_contents()` 函数：<https://www.php.net/manual/en/function.file-get-contents.php>
 
-#### 4.2.29) `file_put_contents` 方法
+#### 4.2.30) `file_put_contents` 方法
 
 从文件中读取整个内容。
 
@@ -4021,7 +4060,7 @@ $FS.file_put_contents(
 
 - PHP `file_put_contents()` 函数：<https://www.php.net/manual/en/function.file-put-contents.php>
 
-#### 4.2.30) 错误与异常
+#### 4.2.31) 错误与异常
 
 在调用`FS` 动态对象方法的过程中，可能产生如下异常：
 
