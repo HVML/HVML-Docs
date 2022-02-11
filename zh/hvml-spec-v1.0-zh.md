@@ -2484,7 +2484,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ##### 2.5.7.2) 不使用迭代执行器
 
-我们也可使用 `with` 属性直接定义迭代结果的计算表达式，而不使用 `by` 属性定义迭代执行器。此时，我们可使用 `onlyif` 属性或者 `while` 属性定义在获得迭代结果之前判断开始新的迭代，或者在获得迭代结果后判断是否终止迭代的条件表达式。
+我们也可使用 `with` 属性直接定义迭代结果的计算表达式，而不使用 `by` 属性定义迭代执行器。此时，我们可使用 `onlyif` 属性和/或 `while` 属性定义在获得迭代结果之前判断是否开始新的迭代的条件表达式，或者在获得迭代结果后判断是否终止迭代的条件表达式。
 
 在不使用迭代执行器时，`iterate` 元素的属性或者上下文变量，应该按照如下顺序处理：
 
@@ -2499,27 +2499,27 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
    1. 对 `with` 属性定义的表达式求值，将结果设置到 `$0?` 上。
 1. 每次迭代后：
    1. 对 `while` 属性定义的表达式求值，若结果为 `false`，则终止迭代，否则继续迭代。
-   1. `$0%` 增长 1。
+   1. `$0%` 增加 1。
 
 如下示例读取特定目录下的全部目录项：
 
 ```html
-        <choose on=$FS.opendir($REQUEST.dir) >
-            <except raw>
-                <li>Exception when calling '$FS.opendir($REQUEST.dir)'</li>
-            </except>
+    <choose on=$FS.opendir($REQUEST.dir) >
+        <except raw>
+            <li>Exception when calling '$FS.opendir($REQUEST.dir)'</li>
+        </except>
 
-            <iterate on=$? with=$FS.readdir($0^) while=$0? >
-                <li>$?.type: $?.name</li>
-            </iterate>
-        </choose>
+        <iterate on=$? with=$FS.readdir($0^) while=$0? >
+            <li>$?.type: $?.name</li>
+        </iterate>
+    </choose>
 ```
 
 如下示例生成小于 100 的偶数数列：
 
 ```html
-    <init as="evenNumbers" with=[0, ] >
-        <iterate on=$?[0] onlyif=$L.lt($0<, 100) with=$MATH.add($0<, 2) nosetotail>
+    <init as="evenNumbers" with=[0,] >
+        <iterate on=$?[0] onlyif=$L.lt($0<,100) with=$MATH.add($0<,2) nosetotail>
             <update on="$evenNumbers" to="append" with="$?">
         </iterate>
     </init>
