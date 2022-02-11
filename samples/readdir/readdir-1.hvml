@@ -24,6 +24,8 @@
 
                             <iterate on=$? with=$FS.readdir($0^) while=$0? >
                                 <li>$?.type: $?.name</li>
+
+                                <init at="count" with += 1 />
                             </iterate>
                         </choose>
                     </ol>
