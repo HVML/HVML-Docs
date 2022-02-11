@@ -303,8 +303,8 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
         <archedata name="item_user">
             {
-                "id": "$?.attr.data-value", "avatar": "$?.content[0].attr.src",
-                "name": "$?.children[1].textContent", "region": "$?.attr.data-region"
+                "id": "$?.attr[data-value]", "avatar": "$?.content[0].attr.src",
+                "name": "$?.children[1].textContent", "region": "$?.attr[data-region]"
             },
         </archedata>
 
@@ -370,7 +370,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
         </send>
 
         <observe on=".avatar" for="click">
-            <load from="user.hvml" with="{'id': $@.attr['data-value']}" as="userProfile" in="_modal" />
+            <load from="user.hvml" with="{'id': $@.attr[data-value]}" as="userProfile" in="_modal" />
         </observe>
     </body>
 </hvml>
@@ -1043,8 +1043,8 @@ HVML 定义了两种模板标签，用于定义可以插入 DOM 文档中的 XML
 
     <archedata name="item_user">
         {
-            "id": "$?.attr.data-value", "avatar": "$?.children[0].attr.src",
-            "name": "$?.children[1].children[0].textContent", "region": "$?.attr.data-region"
+            "id": "$?.attr[data-value]", "avatar": "$?.children[0].attr.src",
+            "name": "$?.children[1].children[0].textContent", "region": "$?.attr[data-region]"
         }
     </archedata>
 
@@ -2411,7 +2411,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
         <update on="p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
         <catch for="NoData">
-            <update on="p" at="textContent" with='You forget to define the \$locales/\$global variables!' />
+            <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
         </catch>
         <catch for="NoSuchKey">
             <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
@@ -2476,7 +2476,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```
     <iterate on="$users" in="#the-user-list" by="RANGE: FROM 0 ADVANCE 2">
-        <update on=" [id=user-$?.id] span" at="attr.class" with ~= "text-* text-info" />
+        <update on="> [id=user-$?.id] span" at="attr.class" with ~= "text-* text-info" />
     </iterate>
 ```
 
@@ -2771,25 +2771,25 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <observe on="$databus" for="event:$?">
         <test on="$?.level" in="#the-header">
             <match for="GE 100" exclusively>
-                <update on="img.mobile-status" at="attr.src" with="/battery-level-full.png" />
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-full.png" />
             </match>
             <match for="GT 90" exclusively>
-                <update on="img.mobile-status" at="attr.src" with="/battery-level-90.png" />
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-90.png" />
             </match>
             <match for="GT 70" exclusively>
-                <update on="img.mobile-status" at="attr.src" with="/battery-level-70.png" />
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-70.png" />
             </match>
             <match for="GT 50" exclusively>
-                <update on="img.mobile-status" at="attr.src" with="/battery-level-50.png" />
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-50.png" />
             </match>
             <match for="GT 30" exclusively>
-                <update on="img.mobile-status" at="attr.src" with="/battery-level-30.png" />
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-30.png" />
             </match>
             <match for="GT 10" exclusively>
-                <update on="img.mobile-status" at="attr.src" with="/battery-level-10.png" />
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-10.png" />
             </match>
             <match for="ANY">
-                <update on="img.mobile-status" at="attr.src" with="/battery-level-low.png" />
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-low.png" />
             </match>
         </test>
         <except>
@@ -2840,8 +2840,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
         <archedata name="item_user">
             {
-                "id": "$?.attr.data-value", "avatar": "$?.content[0].attr.src",
-                "name": "$?.content[1].textContent", "region": "$?.attr.data-region"
+                "id": "$?.attr[data-value]", "avatar": "$?.content[0].attr.src",
+                "name": "$?.content[1].textContent", "region": "$?.attr[data-region]"
             },
         </archedata>
 
@@ -3837,8 +3837,8 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 ```html
         <archedata name="item_user">
             {
-                "id": "$?.attr.data-value", "avatar": "$?.content[0].attr.src",
-                "name": "$?.content[1].textContent", "region": "$?.attr.data-region"
+                "id": "$?.attr[data-value]", "avatar": "$?.content[0].attr.src",
+                "name": "$?.content[1].textContent", "region": "$?.attr[data-region]"
             },
         </archedata>
 
@@ -4665,8 +4665,8 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
    - `/=`：在最终数据中按正则表达式匹配一个词元，并使用第二个词元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with /= "/^text/ text-info"` 后，将修改为 `foo text-info`。
    - `%=`：在最终数据中精确匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with %= "text-warning text-info"` 后，将修改为 `foo text-info`。
    - `~=`：在最终数据中按指定的通配符模式匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with ~= "text-* text-info"` 后，将修改为 `foo text-info`。
-   - `^=`：在最终数据的头部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `at="attr.data-value" with ^= "C"` 后，将修改为：`Cab`。
-   - `$=`：在最终数据的尾部添加指定的属性值。比如，原有的 `attr.data-value` 的属性值为 `ab`，使用 `at="attr.data-value" with $= "C"` 后，将修改为：`abC`。
+   - `^=`：在最终数据的头部添加指定的属性值。比如，原有的 `attr[data-value]` 的属性值为 `ab`，使用 `at="attr[data-value]" with ^= "C"` 后，将修改为：`Cab`。
+   - `$=`：在最终数据的尾部添加指定的属性值。比如，原有的 `attr[data-value]` 的属性值为 `ab`，使用 `at="attr[data-value]" with $= "C"` 后，将修改为：`abC`。
 1. 当 `with` 属性的属性值是数值型数据，且修改动作为 `displace` 时：
    - `+=`：将初始的最终数据做数值化处理，然后加上指定的属性值并用结果替代最终数据。
    - `-=`：将初始的最终数据做数值化处理，然后减去指定的属性值并用结果替代最终数据。
