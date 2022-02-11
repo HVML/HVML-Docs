@@ -1,4 +1,4 @@
-<!DOCTYPE hvml>
+<!DOCTYPE hvml SYSTEM 'v: MATH'>
 <hvml target="html" lang="en">
     <head>
         <title>Fibonacci Numbers</title>

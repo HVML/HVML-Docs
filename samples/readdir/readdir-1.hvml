@@ -1,4 +1,4 @@
-<!DOCTYPE hvml system "v: FS">
+<!DOCTYPE hvml SYSTEM "v: FS">
 <hvml target="html" lang="en">
     <head>
         <title>Read Directroy Entries</title>
@@ -25,7 +25,7 @@
                             <iterate on=$? with=$FS.readdir($0^) while=$0? >
                                 <li>$?.type: $?.name</li>
 
-                                <init at="count" with += 1 />
+                                <update on="$4!" at=".count" with += 1 />
                             </iterate>
                         </choose>
                     </ol>
