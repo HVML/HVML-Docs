@@ -196,7 +196,11 @@ Language: Chinese
       * [4.2.28) `unlink` 方法](#4228-unlink-方法)
       * [4.2.29) `file_get_contents` 方法](#4229-file_get_contents-方法)
       * [4.2.30) `file_put_contents` 方法](#4230-file_put_contents-方法)
-      * [4.2.31) 错误与异常](#4231-错误与异常)
+      * [4.2.31) `opendir` 方法](#4231-opendir-方法)
+      * [4.2.32) `readdir` 方法](#4232-readdir-方法)
+      * [4.2.33) `rewinddir` 方法](#4233-rewinddir-方法)
+      * [4.2.34) `closedir` 方法](#4234-closedir-方法)
+      * [4.2.35) 错误与异常](#4235-错误与异常)
    + [4.3) `FILE`](#43-file)
       * [4.3.1) 文本文件](#431-文本文件)
          - [4.3.1.1) `txt.head` 方法](#4311-txthead-方法)
@@ -4060,7 +4064,107 @@ $FS.file_put_contents(
 
 - PHP `file_put_contents()` 函数：<https://www.php.net/manual/en/function.file-put-contents.php>
 
-#### 4.2.31) 错误与异常
+#### 4.2.31) `opendir` 方法
+
+打开一个目录。
+
+**描述**
+
+```php
+$FS.opendir(
+        < string $pathname: Path to the directory. >
+) : specific
+```
+
+**参数**
+
+**返回值**
+
+一个原生实体，可用于 `readdir` 或者 `rewinddir` 方法。
+
+**示例**
+
+**参考链接**
+
+- PHP `opendir()` 函数：<https://www.php.net/manual/en/function.opendir.php>
+
+#### 4.2.32) `readdir` 方法
+
+读取下一个目录项。
+
+**描述**
+
+```php
+$FS.readdir(
+        < specific $dir: an entity returned by opendir. >
+) : object | false
+```
+
+**参数**
+
+**返回值**
+
+如果正确读取了下一个目录项，则返回如下对象：
+
+```php
+{
+    type: <string: file type like 'd' (directory), 'b' (block device), 'c' (character device), 'p' (named pipe, FIFO), 's' (UNIX domain socket), 'r' (regular file), 'l' (symbolic link), 'u' (unknown)>,
+    name: <string: the file name>,
+    inode: <ulongint: inode number>,
+}
+```
+
+**示例**
+
+**参考链接**
+
+- PHP `readdir()` 函数：<https://www.php.net/manual/en/function.readdir.php>
+
+#### 4.2.33) `rewinddir` 方法
+
+重置目录流。
+
+**描述**
+
+```php
+$FS.rewinddir(
+        < specific $dir: an entity returned by opendir. >
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `rewinddir()` 函数：<https://www.php.net/manual/en/function.rewinddir.php>
+
+#### 4.2.34) `closedir` 方法
+
+关闭一个目录。
+
+**描述**
+
+```php
+$FS.closedir(
+        < specific $dir: an entity returned by opendir. >
+) : boolean
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参考链接**
+
+- PHP `closedir()` 函数：<https://www.php.net/manual/en/function.closedir.php>
+
+#### 4.2.35) 错误与异常
 
 在调用`FS` 动态对象方法的过程中，可能产生如下异常：
 
