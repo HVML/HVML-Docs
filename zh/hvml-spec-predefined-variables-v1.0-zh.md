@@ -42,7 +42,11 @@ Language: Chinese
       * [3.2.3) `locale` 方法](#323-locale-方法)
       * [3.2.4) `random` 方法](#324-random-方法)
       * [3.2.5) `time` 方法](#325-time-方法)
-      * [3.2.6) `env` 方法](#326-env-方法)
+      * [3.2.6) `gmtime` 方法](#326-gmtime-方法)
+      * [3.2.7) `mktime` 方法](#327-mktime-方法)
+      * [3.2.8) `timezone` 方法](#328-timezone-方法)
+      * [3.2.9) `fmttime` 方法](#329-fmttime-方法)
+      * [3.2.10) `env` 方法](#3210-env-方法)
    + [3.3) `HVML`](#33-hvml)
       * [3.3.1) `base` 方法](#331-base-方法)
       * [3.3.2) `maxIterationCount` 方法](#332-maxiterationcount-方法)
@@ -458,40 +462,67 @@ $SYSTEM.random(<number: the max value>)
 
 #### 3.2.5) `time` 方法
 
-获取或设置系统时间。主要用法：
+获取或设置系统时间。
+
+**描述**
 
 ```php
-// 原型：获取当前系统时间（自 Epoch 以来的秒数），返回类型为 ulongint。
+$SYSTEM.time : ulongint
+```
+
+获取当前系统时间（自 Epoch 以来的秒数），返回类型为 ulongint。
+
+```php
+$SYSTEM.time(
+        <'atom | cookie | iso8601 | rfc822 | rfc850 | rfc1036 | rfc1036 | rfc1123 | rfc7231 | rfc2822 | rfc3339 | rfc3339-ex | rss | w3c' $format:
+            - `ATOM` - Atom (example: 2005-08-15T15:52:01+00:00)
+            - `COOKIE` - HTTP Cookies (example: Monday, 15-Aug-2005 15:52:01 UTC)
+            - `ISO8601` - Same as 'ATOM' (example: 2005-08-15T15:52:01+00:00)
+            - `RFC822` - RFC 822 (example: Mon, 15 Aug 05 15:52:01 +0000)
+            - `RFC850` - RFC 850 (example: Monday, 15-Aug-05 15:52:01 UTC)
+            - `RFC1036` - RFC 1036 (example: Mon, 15 Aug 05 15:52:01 +0000)
+            - `RFC1123` - RFC 1123 (example: Mon, 15 Aug 2005 15:52:01 +0000)
+            - `RFC7231` - RFC 7231 (since PHP 7.0.19 and 7.1.5) (example: Sat, 30 Apr 2016 17:52:13 GMT)
+            - `RFC2822` - RFC 2822 (example: Mon, 15 Aug 2005 15:52:01 +0000)
+            - `RFC3339` - Same as 'ATOM'
+            - `RFC3339-EXTENDED` - RFC 3339 EXTENDED format (example: 2005-08-15T15:52:01.000+00:00)
+            - `RSS` - RSS (example: Mon, 15 Aug 2005 15:52:01 +0000)
+            - `W3C` - World Wide Web Consortium (example: 2005-08-15T15:52:01+00:00)
+        >
+        [, <number | longint | ulongint | longdouble $seconds: seconds since Epoch>
+            [, <string $timezone>
+            ]
+        ]
+) : string
+```
+
+获得指定时间在给定时区，以给定格式化标准/规范名称（如 ISO8601、RFC850）形式展示的时间字符串。
+
+```php
+$SYSTEM.time(! <number: seconds since Epoch> ) : true | false
+```
+
+设置系统时间，成功返回 true，失败返回 false。
+
+**示例**
+
+```php
 $SYSTEM.time
+    // ulongint: 123456789UL
 
-// 原型：获得当前时间的分解时间（broken-down time），返回类型为对象。
-// 注：返回对象同 POSIX `struct tm` 结构（去除该结构成员的 `tm_` 前缀）。
-$SYSTEM.time.tm
-// 等价于
-$SYSTEM.time('tm')
-
-// 原型：获得当前时间的 ISO 8601 标准字符串（如 `2020-06-24T11:27:05+08:00`）。
 $SYSTEM.time.iso8601
-// 等价于
+    // string: '2020-06-24T11:27:05+08:00'
+
 $SYSTEM.time('iso8601')
+    // string: '2020-06-24T11:27:05+08:00'
 
-// 原型：获得指定时间在给定时区，以给定标准名称（`iso`打头）形式展示的时间字符串
-$SYSTEM.time(<string: ISO/RFC standard name>[, <number | longint | ulongint | longdouble: seconds since Epoch>[, <string: timezone>]])
-
-// 示例：获取当前时间之前一个小时在上海时区（北京标准时间）的 ISO8601 标准字符串
+// 获取当前时间之前一个小时在上海时区（北京标准时间）的 ISO8601 标准字符串
 $SYSTEM.time('ISO8601', $MATH.eval('x - 3600', { x: $SYSTEM.time }), 'Asia/Shanghai')
+    // string: '2020-06-24T11:27:05+08:00'
 
-// 示例：获取当前时间上海时区（北京标准时间）的 RFC822 标准字符串
+// 获取当前时间上海时区（北京标准时间）的 RFC822 标准字符串
 $SYSTEM.time('RFC822', $SYSTEM.time, 'Asia/Shanghai')
-
-// 原型：按照给定的格式字符串格式化时间
-$SYSTEM.time(<string: format string>[, <number | longint | ulongint | longdouble: seconds since Epoch>[, <string: timezone>]])
-
-// 示例：获得类似 `11:27` 的时间字符串
-$SYSTEM.time("The time now is %H:%m")
-
-// 原型：设置系统时间，成功返回 true，失败返回 false
-$SYSTEM.time(! <number: seconds since Epoch> )
+    // string: 'Mon, 15 Aug 05 15:52:01 +0000'
 ```
 
 **参考链接**
@@ -501,7 +532,120 @@ $SYSTEM.time(! <number: seconds since Epoch> )
 - PHP: <https://www.php.net/manual/en/datetime.formats.php>
 - PHP DateTime 类：<https://www.php.net/manual/en/class.datetime.php>
 
-#### 3.2.6) `env` 方法
+#### 3.2.6) `gmtime` 方法
+
+获取分解时间。
+
+**描述**
+
+```php
+$SYSTEM.gmtime: object
+```
+
+获得当前时间当前时区的分解时间（broken-down time），返回类型为对象。
+
+```php
+$SYSTEM.gmtime(
+        [, <number | longint | ulongint | longdouble $seconds: seconds since Epoch>
+            [, <string $timezone>
+            ]
+        ]
+) : object
+```
+
+获得给定时间在指定时区的分解时间（broken-down time），返回类型为对象。
+
+该函数返回的分解时间对象包含如下属性：
+
+```php
+{
+   'sec'    The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.
+   'min'    The number of minutes after the hour, in the range 0 to 59.
+   'hour'   The number of hours past midnight, in the range 0 to 23.
+   'mday'   The day of the month, in the range 1 to 31.
+   'mon'    The number of months since January, in the range 0 to 11.
+   'year'   The number of years since 1900.
+   'wday'   The number of days since Sunday, in the range 0 to 6.
+   'yday'   The number of days since January 1, in the range 0 to 365.
+   'isdst'  A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving  time  is  in  effect, zero if it is not, and negative if the information is not available.
+}
+```
+
+**示例**
+
+```php
+// 获取当前时间在当前时区的分解时间
+$SYSTEM.gmtime
+
+// 获取当前时间之前一个小时在上海时区（北京标准时间）的分解时间
+$SYSTEM.gmtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
+```
+
+#### 3.2.7) `mktime` 方法
+
+将分解时间转换为日历时间（Epoch 以来的秒数）。
+
+**描述**
+
+```php
+$SYSTEM.mktime(
+        <object $tm>
+        [, <string $timezone>
+        ]
+)
+```
+
+转换指定时区（默认为当前时区）的分解时间为日历时间（Epoch 以来的秒数）。
+
+**示例**
+
+#### 3.2.8) `timezone` 方法
+
+获取或设置时区。
+
+**描述**
+
+```php
+$SYSTEM.timezone : string
+```
+
+该方法返回当前时区。
+
+```php
+$SYSTEM.timezone(! <string $timezone> ) : true | false
+```
+
+该方法设置当前时区。
+
+**示例**
+
+#### 3.2.9) `fmttime` 方法
+
+获取或设置时区。
+
+**描述**
+
+```php
+$SYSTEM.fmttime(
+        <string $format: the format string>
+        [, <number | longint | ulongint | longdouble: the calendar time (seconds since Epoch)>
+            [, <string $timezone>
+            ]
+        ]
+) : string | false
+```
+
+该方法按指定的格式格式化一个日历时间。
+
+**示例**
+
+```php
+// 获得类似 `11:27` 的时间字符串
+$SYSTEM.time("It now is %H:%m")
+    // string: 'It now is 11:27'
+```
+
+#### 3.2.10) `env` 方法
 
 获取或设置环境变量。
 
