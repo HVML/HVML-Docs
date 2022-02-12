@@ -494,16 +494,12 @@ $SYSTEM.time("The time now is %H:%m")
 $SYSTEM.time(! <number: seconds since Epoch> )
 ```
 
-参阅资料：
+**参考链接**
 
-- Linux：`$ man 1 date`
-- Linux：`$ man 3 ctime`
-- Linux：`$ man 3 tzset`
-- PHP: https://www.php.net/manual/en/timezones.php
-- PHP: https://www.php.net/manual/en/ref.datetime.php
-- PHP: https://www.php.net/manual/en/datetime.formats.php
-
-有关时间的显示标准，除了 ISO8601 之外，还有 RFC822 等。详细列表可见：<https://www.php.net/manual/en/class.datetime.php>
+- PHP: <https://www.php.net/manual/en/timezones.php>
+- PHP: <https://www.php.net/manual/en/ref.datetime.php>
+- PHP: <https://www.php.net/manual/en/datetime.formats.php>
+- PHP DateTime 类：<https://www.php.net/manual/en/class.datetime.php>
 
 #### 3.2.6) `env` 方法
 
@@ -524,7 +520,7 @@ $SYSTEM.env('HVML_VER', '1.0')
 ```
 
 **讨论**  
-该功能亦可设置为一个 `SYSTEM` 变量上的一个静态属性，初始化时从系统中获取所有环境变量构造为一个对象，程序可使用 `update` 元素修改环境变量。
+该功能亦可设计为一个 `SYSTEM` 变量上的一个静态属性，初始化时从系统中获取所有环境变量构造为一个对象，程序可使用 `update` 元素修改环境变量。
 
 ### 3.3) `HVML`
 
@@ -1200,7 +1196,7 @@ $STR.contains('Hello, world!', '')
 
 **参考链接**
 
-- PHP `str_contains()` 函数：<https://www.php.net/manual/zh/function.str-contains.php>
+- PHP `str_contains()` 函数：<https://www.php.net/manual/en/function.str-contains.php>
 
 #### 3.8.2) `starts_with` 方法
 
@@ -1246,7 +1242,7 @@ $STR.starts_with('Hello, world', '')
 
 **参考链接**
 
-- PHP `str_starts_with()` 函数：<https://www.php.net/manual/zh/function.str-starts-with.php>
+- PHP `str_starts_with()` 函数：<https://www.php.net/manual/en/function.str-starts-with.php>
 
 #### 3.8.3) `ends_with` 方法
 
@@ -1290,7 +1286,7 @@ $STR.ends_with('Hello, world', '')
 
 **参考链接**
 
-- PHP `str_ends_with()` 函数：<https://www.php.net/manual/zh/function.str-ends-with.php>
+- PHP `str_ends_with()` 函数：<https://www.php.net/manual/en/function.str-ends-with.php>
 
 #### 3.8.4) `explode` 方法
 
@@ -1344,7 +1340,7 @@ $STR.explode('中华人民共和国', 2)
 
 **参考链接**
 
-- PHP `explode()` 函数：<https://www.php.net/manual/zh/function.explode.php>
+- PHP `explode()` 函数：<https://www.php.net/manual/en/function.explode.php>
 
 #### 3.8.5) `implode` 方法
 
@@ -1390,7 +1386,7 @@ $STR.implode(['汉', '字'])
 
 **参考链接**
 
-- PHP `implode()` 函数：<https://www.php.net/manual/zh/function.implode.php>
+- PHP `implode()` 函数：<https://www.php.net/manual/en/function.implode.php>
 
 #### 3.8.6) `shuffle` 方法
 
@@ -1421,7 +1417,7 @@ $STR.shuffle('beijing') // string: 'jbienig'
 
 **参考链接**
 
-- PHP `str_shuffle()` 函数：<https://www.php.net/manual/zh/function.str-shuffle.php>
+- PHP `str_shuffle()` 函数：<https://www.php.net/manual/en/function.str-shuffle.php>
 
 #### 3.8.7) `replace` 方法
 
@@ -1474,8 +1470,8 @@ $STR.replace("%body%", "black", "<body text=%BODY%>", true);
 
 **参考链接**
 
-- PHP `str_replace()` 函数：<https://www.php.net/manual/zh/function.str-replace.php>
-- PHP `str_ireplace()` 函数：<https://www.php.net/manual/zh/function.str-ireplace.php>
+- PHP `str_replace()` 函数：<https://www.php.net/manual/en/function.str-replace.php>
+- PHP `str_ireplace()` 函数：<https://www.php.net/manual/en/function.str-ireplace.php>
 
 #### 3.8.8) `format_c` 方法
 
@@ -1624,7 +1620,7 @@ $STR.tolower('Hello, world')
 
 **参考链接**
 
-- PHP `strtolower()` 函数：<https://www.php.net/manual/zh/function.strtolower.php>
+- PHP `strtolower()` 函数：<https://www.php.net/manual/en/function.strtolower.php>
 
 #### 3.8.13) `toupper` 方法
 
@@ -1656,7 +1652,7 @@ $STR.toupper('Hello, world')
 
 **参考链接**
 
-- PHP `strtoupper()` 函数：<https://www.php.net/manual/zh/function.strtoupper.php>
+- PHP `strtoupper()` 函数：<https://www.php.net/manual/en/function.strtoupper.php>
 
 #### 3.8.14) `substr` 方法
 
@@ -1710,7 +1706,7 @@ $STR.substr('abcdef', -3, -1)
 
 **参考链接**
 
-- PHP `substr()` 函数：<https://www.php.net/manual/zh/function.substr.php>
+- PHP `substr()` 函数：<https://www.php.net/manual/en/function.substr.php>
 
 #### 3.8.15) `substr_compare` 方法
 
@@ -1741,7 +1737,7 @@ $STR.substr_compare(
 
 **参考链接**
 
-- PHP `substr_compare()` 函数：<https://www.php.net/manual/zh/function.substr-compare.php>
+- PHP `substr_compare()` 函数：<https://www.php.net/manual/en/function.substr-compare.php>
 
 #### 3.8.16) `substr_count` 方法
 
@@ -1768,7 +1764,7 @@ $STR.substr_count(
 
 **参考链接**
 
-- PHP `substr_count()` 函数：<https://www.php.net/manual/zh/function.substr-count.php>
+- PHP `substr_count()` 函数：<https://www.php.net/manual/en/function.substr-count.php>
 
 #### 3.8.17) `substr_replace` 方法
 
@@ -1795,7 +1791,7 @@ $STR.substr_replace(
 
 **参考链接**
 
-- PHP `substr_replace()` 函数：<https://www.php.net/manual/zh/function.substr-replace.php>
+- PHP `substr_replace()` 函数：<https://www.php.net/manual/en/function.substr-replace.php>
 
 #### 3.8.18) `strstr` 方法
 
@@ -1824,8 +1820,8 @@ $STR.strstr(
 
 **参考链接**
 
-- PHP `strstr()` 函数：<https://www.php.net/manual/zh/function.strstr.php>
-- PHP `stristr()` 函数：<https://www.php.net/manual/zh/function.stristr.php>
+- PHP `strstr()` 函数：<https://www.php.net/manual/en/function.strstr.php>
+- PHP `stristr()` 函数：<https://www.php.net/manual/en/function.stristr.php>
 
 #### 3.8.19) `strpos` 方法
 
@@ -1854,8 +1850,8 @@ $STR.strpos(
 
 **参考链接**
 
-- PHP `strpos()` 函数：<https://www.php.net/manual/zh/function.strpos.php>
-- PHP `stripos()` 函数：<https://www.php.net/manual/zh/function.stripos.php>
+- PHP `strpos()` 函数：<https://www.php.net/manual/en/function.strpos.php>
+- PHP `stripos()` 函数：<https://www.php.net/manual/en/function.stripos.php>
 
 #### 3.8.20) `strpbrk` 方法
 
@@ -1882,7 +1878,7 @@ $STR.strpbrk(
 
 **参考链接**
 
-- PHP `strpbrk()` 函数：<https://www.php.net/manual/zh/function.strpbrk.php>
+- PHP `strpbrk()` 函数：<https://www.php.net/manual/en/function.strpbrk.php>
 
 #### 3.8.21) `split` 方法
 
@@ -1907,7 +1903,7 @@ $STR.split(
 
 **参考链接**
 
-- PHP `str_split()` 函数：<https://www.php.net/manual/zh/function.str-split.php>
+- PHP `str_split()` 函数：<https://www.php.net/manual/en/function.str-split.php>
 
 #### 3.8.22) `chunk_split` 方法
 
@@ -1935,7 +1931,7 @@ $STR.chunk_split(
 
 **参考链接**
 
-- PHP `chunk_split()` 函数：<https://www.php.net/manual/zh/function.chunk-split.php>
+- PHP `chunk_split()` 函数：<https://www.php.net/manual/en/function.chunk-split.php>
 
 #### 3.8.23) `trim` 方法
 
@@ -1963,9 +1959,9 @@ $STR.trim(
 
 **参考链接**
 
-- PHP `trim()` 函数：<https://www.php.net/manual/zh/function.trim.php>
-- PHP `ltrim()` 函数：<https://www.php.net/manual/zh/function.ltrim.php>
-- PHP `rtrim()` 函数：<https://www.php.net/manual/zh/function.rtrim.php>
+- PHP `trim()` 函数：<https://www.php.net/manual/en/function.trim.php>
+- PHP `ltrim()` 函数：<https://www.php.net/manual/en/function.ltrim.php>
+- PHP `rtrim()` 函数：<https://www.php.net/manual/en/function.rtrim.php>
 
 #### 3.8.24) `pad` 方法
 
@@ -1994,7 +1990,7 @@ $STR.pad(
 
 **参考链接**
 
-- PHP `str_pad()` 函数：<https://www.php.net/manual/zh/function.str-pad.php>
+- PHP `str_pad()` 函数：<https://www.php.net/manual/en/function.str-pad.php>
 
 #### 3.8.25) `repeat` 方法
 
@@ -2017,7 +2013,7 @@ $STR.str_repeat(
 
 **参考链接**
 
-- PHP `str_repeat()` 函数：<https://www.php.net/manual/zh/function.str-repeat.php>
+- PHP `str_repeat()` 函数：<https://www.php.net/manual/en/function.str-repeat.php>
 
 #### 3.8.26) `reverse` 方法
 
@@ -2039,7 +2035,7 @@ $STR.strrev(
 
 **参考链接**
 
-- PHP `strrev()` 函数：<https://www.php.net/manual/zh/function.strrev.php>
+- PHP `strrev()` 函数：<https://www.php.net/manual/en/function.strrev.php>
 
 #### 3.8.27) `tokenize` 方法
 
@@ -2062,7 +2058,7 @@ $STR.tokenize(
 
 **参考链接**
 
-- PHP `strtok()` 函数：<https://www.php.net/manual/zh/function.strtok.php>
+- PHP `strtok()` 函数：<https://www.php.net/manual/en/function.strtok.php>
 
 #### 3.8.28) `translate` 方法
 
@@ -2091,13 +2087,13 @@ $STR.translate(
 
 **参考链接**
 
-- PHP `strtr()` 函数：<https://www.php.net/manual/zh/function.strtr.php>
+- PHP `strtr()` 函数：<https://www.php.net/manual/en/function.strtr.php>
 
 #### 3.8.29) `bin2hex` 方法
 
 二进制字符串转换为十六进制。
 
-<https://www.php.net/manual/zh/function.bin2hex.php>
+<https://www.php.net/manual/en/function.bin2hex.php>
 
 **描述**
 
@@ -2125,7 +2121,7 @@ $STR.bin2hex(
 
 **参考链接**
 
-- PHP `bin2hex()` 函数：<https://www.php.net/manual/zh/function.bin2hex.php>
+- PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.bin2hex.php>
 
 #### 3.8.30) `hex2bin` 方法
 
@@ -2153,7 +2149,7 @@ $STR.hex2bin(
 
 **参考链接**
 
-- PHP `bin2hex()` 函数：<https://www.php.net/manual/zh/function.hex2bin.php>
+- PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.hex2bin.php>
 
 #### 3.8.31) `htmlentities_encode` 方法
 
@@ -2195,7 +2191,7 @@ $STR.htmlentities_encode(
 
 **参考链接**
 
-- PHP `htmlentities()` 函数：<https://www.php.net/manual/zh/function.htmlentities.php>
+- PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.htmlentities.php>
 - PHP `htmlspecialchars()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars.php>
 
 #### 3.8.32) `htmlentities_decode` 方法
@@ -2259,7 +2255,7 @@ $STR.crc32(
 
 **参考链接**
 
-- PHP `crc32()` 函数：<https://www.php.net/manual/zh/function.crc32.php>
+- PHP `crc32()` 函数：<https://www.php.net/manual/en/function.crc32.php>
 
 #### 3.8.34) `md5` 方法
 
@@ -2287,7 +2283,7 @@ $STR.md5(
 
 **参考链接**
 
-- PHP `md5()` 函数：<https://www.php.net/manual/zh/function.md5.php>
+- PHP `md5()` 函数：<https://www.php.net/manual/en/function.md5.php>
 
 #### 3.8.35) `sha1` 方法
 
@@ -2315,7 +2311,7 @@ $STR.sha1(
 
 **参考链接**
 
-- PHP `sha1()` 函数：<https://www.php.net/manual/zh/function.sha1.php>
+- PHP `sha1()` 函数：<https://www.php.net/manual/en/function.sha1.php>
 
 
 #### 3.8.36) `rot13` 方法
@@ -2340,7 +2336,7 @@ $STR.rot13(
 
 **参考链接**
 
-- PHP `rot13()` 函数：<https://www.php.net/manual/zh/function.rot13.php>
+- PHP `rot13()` 函数：<https://www.php.net/manual/en/function.rot13.php>
 
 #### 3.8.37) `count_chars` 方法
 
@@ -2368,7 +2364,7 @@ $STR.count_chars(
 
 **参考链接**
 
-- PHP `count_chars()` 函数：<https://www.php.net/manual/zh/function.count-chars.php>
+- PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
 #### 3.8.38) `count_bytes` 方法
 
@@ -2400,7 +2396,7 @@ $STR.count_bytes(
 
 **参考链接**
 
-- PHP `count_chars()` 函数：<https://www.php.net/manual/zh/function.count-chars.php>
+- PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
 #### 3.8.39) `nl2br` 方法
 
@@ -2432,7 +2428,7 @@ $STR.nl2br(
 
 **参考链接**
 
-- PHP `nl2br()` 函数：<https://www.php.net/manual/zh/function.nl2br.php>
+- PHP `nl2br()` 函数：<https://www.php.net/manual/en/function.nl2br.php>
 
 #### 3.8.40) 错误与异常
 
@@ -2448,7 +2444,7 @@ $STR.nl2br(
 
 使用 MIME base64 编码字符串或者字节序列。
 
-<https://www.php.net/manual/zh/function.base64-encode.php>
+<https://www.php.net/manual/en/function.base64-encode.php>
 
 **描述**
 
@@ -2468,7 +2464,7 @@ $URL.base64_encode(
 
 **参考链接**
 
-- PHP `base64_encode()` 函数：<https://www.php.net/manual/zh/function.base64-encode.php>
+- PHP `base64_encode()` 函数：<https://www.php.net/manual/en/function.base64-encode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
 #### 3.9.2) `base64_decode` 方法
@@ -2501,7 +2497,7 @@ $URL.base64_decode(
 
 **参考链接**
 
-- PHP `base64_decode()` 函数：<https://www.php.net/manual/zh/function.base64-decode.php>
+- PHP `base64_decode()` 函数：<https://www.php.net/manual/en/function.base64-decode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
 #### 3.9.3) `urlencode` 方法
@@ -2526,7 +2522,7 @@ $URL.urlencode(
 
 **参考链接**
 
-- PHP `urlencode()` 函数：<https://www.php.net/manual/zh/function.urlencode.php>
+- PHP `urlencode()` 函数：<https://www.php.net/manual/en/function.urlencode.php>
 
 #### 3.9.4) `urldecode` 方法
 
@@ -2550,7 +2546,7 @@ $URL.urldecode(
 
 **参考链接**
 
-- PHP `urldecode()` 函数：<https://www.php.net/manual/zh/function.urldecode.php>
+- PHP `urldecode()` 函数：<https://www.php.net/manual/en/function.urldecode.php>
 
 #### 3.9.5) `rawurlencode` 方法
 
@@ -2574,7 +2570,7 @@ $URL.rawurlencode(
 
 **参考链接**
 
-- PHP `rawurlencode()` 函数：<https://www.php.net/manual/zh/function.rawurlencode.php>
+- PHP `rawurlencode()` 函数：<https://www.php.net/manual/en/function.rawurlencode.php>
 
 #### 3.9.6) `rawurldecode` 方法
 
@@ -2598,7 +2594,7 @@ $URL.rawurldecode(
 
 **参考链接**
 
-- PHP `rawurldecode()` 函数：<https://www.php.net/manual/zh/function.rawurldecode.php>
+- PHP `rawurldecode()` 函数：<https://www.php.net/manual/en/function.rawurldecode.php>
 
 #### 3.9.7) `parse` 方法
 
@@ -2625,7 +2621,7 @@ $URL.parse(
 
 **参考链接**
 
-- PHP `parse()` 函数：<https://www.php.net/manual/zh/function.parse-url.php>
+- PHP `parse()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
 #### 3.9.8) `http_build_query` 方法
 
