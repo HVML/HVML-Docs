@@ -233,7 +233,7 @@ Language: Chinese
 
 本文档遵循的技术规范或术语如下所列：
 
-- HVML（Hybrid Virtual Markup Language），是飞漫软件提出的一种数据驱动的可编程标记语言，其规范见：<https://gitlab.fmsoft.cn/hvml/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md>。HVML 规范文档的如下部分和本文档相关：
+- HVML（Hybrid Virtual Markup Language），是飞漫软件提出的一种数据驱动的可编程标记语言。[HVML 规范文档](hvml-spec-v1.0-zh.md) 的如下部分和本文档相关：
   1. 2.1) 术语及基本原理
   1. 2.2) 规则、表达式及方法的描述语法
 - 解释器（interpreter），指解析并运行 HVML 程序的计算机软件。
@@ -874,7 +874,7 @@ $EJSON.parse(
 
 该变量是一个会话级内置变量，主要用于逻辑运算。
 
-有关任何数据转换为逻辑真假值时的规则，请参阅 [任意数据类型的强制转换规则](https://gitlab.fmsoft.cn/hvml/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md#213-%E4%BB%BB%E6%84%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%BC%BA%E5%88%B6%E8%BD%AC%E6%8D%A2%E8%A7%84%E5%88%99)。
+有关任何数据转换为逻辑真假值时的规则，请参阅 [任意数据类型的强制转换规则](hvml-spec-v1.0-zh.md#213-%E4%BB%BB%E6%84%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%BC%BA%E5%88%B6%E8%BD%AC%E6%8D%A2%E8%A7%84%E5%88%99)。
 
 #### 3.6.1) `not` 方法
 
