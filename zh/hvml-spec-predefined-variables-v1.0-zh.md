@@ -470,24 +470,24 @@ $SYSTEM.random(<number: the max value>)
 $SYSTEM.time : ulongint
 ```
 
-获取当前系统时间（自 Epoch 以来的秒数），返回类型为 ulongint。
+该方法获取当前系统时间（自 Epoch 以来的秒数），返回类型为 ulongint。
 
 ```php
 $SYSTEM.time(
         <'atom | cookie | iso8601 | rfc822 | rfc850 | rfc1036 | rfc1036 | rfc1123 | rfc7231 | rfc2822 | rfc3339 | rfc3339-ex | rss | w3c' $format:
-            - `ATOM` - Atom (example: 2005-08-15T15:52:01+00:00)
-            - `COOKIE` - HTTP Cookies (example: Monday, 15-Aug-2005 15:52:01 UTC)
-            - `ISO8601` - Same as 'ATOM' (example: 2005-08-15T15:52:01+00:00)
-            - `RFC822` - RFC 822 (example: Mon, 15 Aug 05 15:52:01 +0000)
-            - `RFC850` - RFC 850 (example: Monday, 15-Aug-05 15:52:01 UTC)
-            - `RFC1036` - RFC 1036 (example: Mon, 15 Aug 05 15:52:01 +0000)
-            - `RFC1123` - RFC 1123 (example: Mon, 15 Aug 2005 15:52:01 +0000)
-            - `RFC7231` - RFC 7231 (since PHP 7.0.19 and 7.1.5) (example: Sat, 30 Apr 2016 17:52:13 GMT)
-            - `RFC2822` - RFC 2822 (example: Mon, 15 Aug 2005 15:52:01 +0000)
-            - `RFC3339` - Same as 'ATOM'
-            - `RFC3339-EXTENDED` - RFC 3339 EXTENDED format (example: 2005-08-15T15:52:01.000+00:00)
-            - `RSS` - RSS (example: Mon, 15 Aug 2005 15:52:01 +0000)
-            - `W3C` - World Wide Web Consortium (example: 2005-08-15T15:52:01+00:00)
+            - `atom` - Atom (example: 2005-08-15T15:52:01+00:00)
+            - `cookie` - HTTP Cookies (example: Monday, 15-Aug-2005 15:52:01 UTC)
+            - `iso8601` - Same as 'ATOM' (example: 2005-08-15T15:52:01+00:00)
+            - `rfc822` - RFC 822 (example: Mon, 15 Aug 05 15:52:01 +0000)
+            - `rfc850` - RFC 850 (example: Monday, 15-Aug-05 15:52:01 UTC)
+            - `rfc1036` - RFC 1036 (example: Mon, 15 Aug 05 15:52:01 +0000)
+            - `rfc1123` - RFC 1123 (example: Mon, 15 Aug 2005 15:52:01 +0000)
+            - `rfc7231` - RFC 7231 (since PHP 7.0.19 and 7.1.5) (example: Sat, 30 Apr 2016 17:52:13 GMT)
+            - `rfc2822` - RFC 2822 (example: Mon, 15 Aug 2005 15:52:01 +0000)
+            - `rfc3339` - Same as 'ATOM'
+            - `rfc3339-ex` - RFC 3339 EXTENDED format (example: 2005-08-15T15:52:01.000+00:00)
+            - `rss` - RSS (example: Mon, 15 Aug 2005 15:52:01 +0000)
+            - `w3c` - World Wide Web Consortium (example: 2005-08-15T15:52:01+00:00)
         >
         [, <number | longint | ulongint | longdouble $seconds: seconds since Epoch>
             [, <string $timezone>
@@ -496,13 +496,13 @@ $SYSTEM.time(
 ) : string
 ```
 
-获得指定时间在给定时区，以给定格式化标准/规范名称（如 ISO8601、RFC850）形式展示的时间字符串。
+该方法获得指定时间在给定时区，以给定格式化标准/规范名称（如 ISO8601、RFC850）形式展示的时间字符串。
 
 ```php
 $SYSTEM.time(! <number: seconds since Epoch> ) : true | false
 ```
 
-设置系统时间，成功返回 true，失败返回 false。
+该方法设置系统时间，成功返回 true，失败返回 false。
 
 **示例**
 
@@ -517,11 +517,11 @@ $SYSTEM.time('iso8601')
     // string: '2020-06-24T11:27:05+08:00'
 
 // 获取当前时间之前一个小时在上海时区（北京标准时间）的 ISO8601 标准字符串
-$SYSTEM.time('ISO8601', $MATH.eval('x - 3600', { x: $SYSTEM.time }), 'Asia/Shanghai')
+$SYSTEM.time('iso8601', $MATH.eval('x - 3600', { x: $SYSTEM.time }), 'Asia/Shanghai')
     // string: '2020-06-24T11:27:05+08:00'
 
 // 获取当前时间上海时区（北京标准时间）的 RFC822 标准字符串
-$SYSTEM.time('RFC822', $SYSTEM.time, 'Asia/Shanghai')
+$SYSTEM.time('rfc822', $SYSTEM.time, 'Asia/Shanghai')
     // string: 'Mon, 15 Aug 05 15:52:01 +0000'
 ```
 
