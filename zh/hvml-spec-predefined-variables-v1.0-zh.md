@@ -335,7 +335,7 @@ Language: Chinese
 hvml.load ("a.hvml", { "nrUsers" : 10 })
 ```
 
-在 HVML 文档中，我们可使用 `$REQUEST.nrUsers` 来引用上述脚本代码传入的数值（`10`）。
+在 HVML 文档中，我们可使用 `$REQUEST.nrUsers` 或 `$REQUEST['nrUsers']` 来引用上述脚本代码传入的数值（`10`）。
 
 ## 3) 必要动态变量
 
@@ -350,14 +350,14 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 **描述**
 
 ```php
-$SESSION.cwd string | false: Returns the current working directory on success, or `false` on failure.
+$SESSION.cwd string | false: returns the current working directory on success, or `false` on failure.
 ```
 
 该方法获取当前工作路径。
 
 ```php
 $SESSION.cwd(!
-        <string $dir: new path for the current working directory>
+        <string $dir: the new path for the current working directory>
 ) boolean: returns `true` on success or `false` on failure.
 ```
 
@@ -395,16 +395,30 @@ $SESSION.user(!
 ) boolean : returns `true` when the old value was overridden or `false` when a new key-value pair was created.
 ```
 
-该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。
+该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。注意，设置键值为 `undefined` 会执行移除对应键值对的操作。
 
 **示例**
 
 ```php
-// 示例：设置 `userId` 为 `20211104-01`
-$SESSION.user(! 'userId', '20211104-01' )
+// 移除 `userId` 键值对
+$SESSION.user(! 'userId', undefined )
+    // false (assumed that `userId` was not set)
 
-// 示例：获取 `userId` 对应的键值
+// 设置 `userId` 为 `20211104`
+$SESSION.user(! 'userId', '20211104' )
+    // false
+
+// 获取 `userId` 对应的键值
 $SESSION.user('userId')
+    // string: '20211104-01'
+
+// 重置 `userId` 为 `20220213`
+$SESSION.user(! 'userId', '20220213' )
+    // true
+
+// 移除 `userId` 键值对
+$SESSION.user(! 'userId', undefined )
+    // true
 ```
 
 **错误或异常**
@@ -415,77 +429,164 @@ $SESSION.user('userId')
 
 ### 3.2) `SYSTEM`
 
-该变量是会话级内置变量，在初始化解释器实例之后绑定。该变量提供如下接口：
+该变量是一个会话级内置变量，在初始化解释器实例之后绑定。
 
 #### 3.2.1) `uname` 方法
 
-该方法获取系统信息，返回包含有内核名称、版本号等键值对的对象：
+获取系统信息。
+
+**描述**
 
 ```php
-// 原型：获取系统信息
-$SYSTEM.uname: object
-
-// 示例：
-$SYSTEM.uname
+$SYSTEM.uname object : an object contains the following properties:
+    kernel-name         - <string: kernel name (e.g., `Linux`)>
+    kernel-release      - <string: kernel release (e.g., `2.6.28`)>
+    kernel-version      - <string: kernel version>
+    nodename            - <string: the network node hostname>
+    machine             - <string: machine hardware name>
+    processor           - <string: the processor type>
+    hardware-platform   - <string: the hardware platform>
+    operating-system    - <string: the operating system (e.g., `GNU/Linux`)>
 ```
 
-`uname` 方法返回的对象，包含如下键值对：
+该方法获取系统信息，返回包含有内核名称、版本号等键值对的对象。
 
-```javascript
-{
-    kernel-name:    <string: kernel name (e.g., `Linux`)>,
-    kernel-release: <string: kernel release (e.g., `2.6.28`)>,
-    kernel-version: <string: kernel version>,
-    nodename:       <string: the network node hostname>,
-    machine:        <string: machine hardware name>,
-    processor:      <string: the processor type>,
-    hardware-platform:  <string: the hardware platform>,
-    operating-system:   <string: the operating system (e.g., `GNU/Linux`)>,
-}
+**示例**
+
+```php
+$SYSTEM.uname
 ```
 
 #### 3.2.2) `uname_prt` 方法
 
-获取可打印的系统信息，返回字符串：
+获取可打印的系统信息。
+
+返回字符串：
 
 ```php
-// 原型：获取内核名称；默认行为
-$SYSTEM.uname_prt: string
+$SYSTEM.uname_prt string: the kernel name.
+```
 
-// 原型：获取系统指定部分的名称
-$SYSTEM.uname_prt('[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default')
+该方法获取内核名称，返回字符串。
 
-// 示例：获取内核名称及版本号
-// 结果："Linux 5.4.0-80-generic #90-Ubuntu SMP Fri Jul 9 22:49:44 UTC 2021"
+```php
+$SYSTEM.uname_prt(
+        <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which:
+            'kernel-name'       - includes kernel name (e.g., `Linux`)
+            'kernel-release'    - includes kernel release (e.g., `2.6.28`)
+            'kernel-version'    - includes kernel version
+            'nodename'          - includes the network node hostname
+            'machine'           - includes machine hardware name
+            'processor'         - includes the processor type
+            'hardware-platform' - includes the hardware platform
+            'operating-system'  - includes the operating system (e.g., `GNU/Linux`)
+            'all'               - includes all parts
+            'default'           - is equivalent to 'operating-system kernel-name kernel-release kernel-version'
+        )
+```
+
+该方法获取系统指定部分的名称，返回字符串。
+
+**示例**
+
+```php
+// 获取内核名称及版本号
 $SYSTEM.uname_prt('kernel-name kernel-release kernel-version')
+    // string: "Linux 5.4.0-80-generic #90-Ubuntu SMP Fri Jul 9 22:49:44 UTC 2021"
 ```
 
 #### 3.2.3) `locale` 方法
 
-获取或设置 locale。主要用法：
+获取或设置区域（locale）。
+
+**描述**
 
 ```php
-// 原型：获得 `LC_MESSAGES` 的 locale 信息。
+$SYSTEM.locale string : the locale for the messages category.
+```
+
+该方法获得消息分类（messages category）的区域，返回字符串。
+
+```php
+$SYSTEM.locale(
+        < 'ctype | numeric | time | collate | monetary | messages | paper | name | address | telephone | measurement | identification' $category:
+            'ctype'     - Character classification
+            'numeric'   - Formatting of nonmonetary numeric values
+            'time'      - Formatting of date and time values
+            'collate'   - String collation
+            'monetary'  - Formatting of monetary values
+            'messsages' - Localizable natural-language messages
+            'paper'     - ettings related to the standard paper size
+            'name'      - Formatting of salutations for persons
+            'address'   - Formatting of addresses and geography-related items
+            'telephone' - Formats to be used with telephone services
+            'measurement'   - Settings related to measurements (metric versus US customary)
+            'identification'    - Metadata describing the locale
+        >
+) string : the locale like `zh_CN`.
+```
+
+该方法获取指定分类的区域，返回字符串。
+
+```php
+$SYSTEM.locale(!
+        < '[ctype || numeric || time || collate || monetary || messages || paper || name || address || telephone || measurement || identification] | all' $categories:
+            'ctype'     - Character classification
+            'numeric'   - Formatting of nonmonetary numeric values
+            'time'      - Formatting of date and time values
+            'collate'   - String collation
+            'monetary'  - Formatting of monetary values
+            'messsages' - Localizable natural-language messages
+            'paper'     - ettings related to the standard paper size
+            'name'      - Formatting of salutations for persons
+            'address'   - Formatting of addresses and geography-related items
+            'telephone' - Formats to be used with telephone services
+            'measurement'   - Settings related to measurements (metric versus US customary)
+            'identification'    - Metadata describing the locale
+            'all'       - All of the locale categories
+        >,
+        <string $locale: the locale for $categories>
+) : boolean
+```
+
+该方法设置指定分类（单个或多个）的区域。成功时返回 `true`，失败时返回 `false`。注意，某些系统可能不支持特定的区域分类。
+
+**示例**
+
+```php
 $SYSTEM.locale
+    // en_US
 
-// 原型：获取指定分类的 locale 信息
-$SYSTEM.locale('ctype | numeric | time | collate | monetary | messages | paper | name | address | telephone | measurement | identification')
+$SYSTEM.locale(! 'all', 'zh_CN')
+    // true
 
-// 原型：设置指定分类的 locale 信息
-$SYSTEM.locale(! '[ctype || numeric || time || collate || monetary || messages || paper || name || address || telephone || measurement || identification] | all', <string: locale> )
+$SYSTEM.locale
+    // zh_CN
 ```
 
 #### 3.2.4) `random` 方法
 
-获取随机值。主要用法：
+获取随机值。
+
+**描述**
 
 ```php
-// 原型：获取 0 到 MRAND_MAX 之间的随机值
-$SYSTEM.random
-
-// 原型：获得 0 到指定上限之间的随机数。
-$SYSTEM.random(<number: the max value>)
+$SYSTEM.random ulongint: a random between 0 and RAND_MAX.
 ```
+
+该方法获取 0 到 C 标注函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值。
+
+```php
+// 原型：获得 0 到指定上限之间的随机数。
+$SYSTEM.random(
+        <ulongint $max: the max value>
+) : number
+```
+
+该方法获取 0 到指定的最大值之间的一个随机值。
+
+**示例**
+
 
 #### 3.2.5) `time` 方法
 
