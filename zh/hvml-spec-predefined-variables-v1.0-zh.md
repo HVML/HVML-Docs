@@ -53,6 +53,7 @@ Language: Chinese
       * [3.3.2) `maxIterationCount` 方法](#332-maxiterationcount-方法)
       * [3.3.3) `maxRecursionDepth` 方法](#333-maxrecursiondepth-方法)
       * [3.3.4) `timeout` 方法](#334-timeout-方法)
+      * [3.3.5) `attr` 方法](#335-attr-方法)
    + [3.4) `DOC`](#34-doc)
       * [3.4.1) `doctype` 方法](#341-doctype-方法)
       * [3.4.2) `query` 方法](#342-query-方法)
@@ -848,7 +849,7 @@ $SYSTEM.const('HVML_SPEC_VERSION')
 
 ### 3.3) `HVML`
 
-`HVML` 是一个内置的文档级动态变量，该变量用于设置解释器在执行 HVML 程序时一些参数。
+`HVML` 是一个内置的文档级动态变量，该变量用于获取 HVML 程序的基本信息或者设置解释器在执行 HVML 程序时一些参数。
 
 #### 3.3.1) `base` 方法
 
@@ -958,6 +959,39 @@ $HVML.timeout(!
 // 设置超时值为 3.5 秒。
 $HVML.timeout(! 3.5 )
     // numer: 3.5
+```
+
+#### 3.3.5) `attr` 方法
+
+该方法获取或设置 HVML 程序的属性。
+
+**描述**
+
+```php
+$HVML.attr(
+        <string $attr_name: the attribute name>
+) string | undefined : the attribute value
+```
+
+该方法获取 HVML 程序的属性值（亦即 `hvml` 标签定义的属性值）。当前，HVML 规范定义有如下两个属性：
+
+- `target`：目标标记语言，如 `html`。
+- `lang`：语言，如 `en`。
+
+```php
+$HVML.attr(!
+        <string $attr_name: the attribute name>,
+        <string $attr_value: the new attribute value>
+) true | false : `true` for changed the attribute, otherwise `false`.
+```
+
+该方法设置 HVML 程序的属性值。
+
+**示例**
+
+```php
+$HVML.attr(! 'lang', 'zh' )
+    // boolean: true
 ```
 
 ### 3.4) `DOC`
