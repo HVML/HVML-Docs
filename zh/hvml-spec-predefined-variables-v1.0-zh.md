@@ -347,13 +347,23 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 获取或设置当前工作路径。
 
-```php
-// 原型：获取当前工作路径
-$SESSION.cwd: string
+**描述**
 
-// 原型：改变当前工作路径
-$SESSION.cwd(! <string: new path for the current working directory> ): boolean
+```php
+$SESSION.cwd string | false: Returns the current working directory on success, or `false` on failure.
 ```
+
+该方法获取当前工作路径。
+
+```php
+$SESSION.cwd(!
+        <string $dir: new path for the current working directory>
+) boolean: returns `true` on success or `false` on failure.
+```
+
+该方法改变当前工作路径。
+
+**错误或异常**
 
 该方法可能产生的异常：
 
@@ -368,19 +378,36 @@ $SESSION.cwd(! <string: new path for the current working directory> ): boolean
 
 获取或设置用户键值对。
 
+**描述**
+
 ```php
-// 原型：获取指定键名对应的键值；未设置时抛出异常 `NoSuchKey`
-$SESSION.user( <string: the user defined key name> ): any
+$SESSION.user(
+        <string $key: the user defined key name>
+) any | undefined : the variant value corresponding to the key name $key.
+```
 
-// 原型：设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。
-$SESSION.user(! <string: the user defined key name>, <any: the new variant value> ): boolean
+该方法获取指定键名对应的键值；未设置时抛出异常 `NoSuchKey`。
 
+```php
+$SESSION.user(!
+        <string $key: the user defined key name>,
+        <any $value: the new variant value>
+) boolean : returns `true` when the old value was overridden or `false` when a new key-value pair was created.
+```
+
+该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。
+
+**示例**
+
+```php
 // 示例：设置 `userId` 为 `20211104-01`
 $SESSION.user(! 'userId', '20211104-01' )
 
 // 示例：获取 `userId` 对应的键值
 $SESSION.user('userId')
 ```
+
+**错误或异常**
 
 该方法可能产生的异常：
 

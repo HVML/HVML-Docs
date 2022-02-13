@@ -1686,7 +1686,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
    1. 使用一对中括号（`[ ]`）对多个关键词进行分组。
    1. 不使用前置的参数类型 `string`。
 1. 参数中使用的关键词由不包含空格和控制字符的可打印字符组成；参数中需要传递多个关键词时，使用单个或者多个 ASCII 空白字符分隔。
-1. 返回值的类型，在方法后添加冒号描述，可能返回多种类型时，使用 `|` 符号。
+1. 方法的返回值类型，在右括号（`)`）之后描述；可能返回多种类型时，使用 `|` 符号分隔。可选地，在类型名称后添加冒号（`:`）以及对返回值的简要描述信息。
 1. 可选地，我们对必须包含的参数或语法单元，包含在两个尖括号（`< >`）中描述；对可选的参数或语法单元，包含在两个中括号（`[ ]`）中描述。
 1. 在参数描述中使用 `true`、`false`、`null` 等 JSON 关键词时，使用 '\`' 包围。
 
@@ -1702,7 +1702,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 $EJSON.numberify(
         any $data,
         'number | longint | ulongint | longdouble' $subtype = 'number': the number subtype to return
-) : number | longint | ulongint | longdouble
+) number | longint | ulongint | longdouble : the numberified data.
 ```
 
 或，
@@ -1714,7 +1714,7 @@ $EJSON.numberify(
         [,
             <'number | longint | ulongint | longdouble' $subtype = 'number': the number subtype to return>
         ]
-) : number | longint | ulongint | longdouble
+) number | longint | ulongint | longdouble : the numberified data.
 ```
 
 以上语法亦可用于描述对象的属性，如：
