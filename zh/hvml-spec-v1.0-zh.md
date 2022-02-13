@@ -1734,7 +1734,7 @@ $EJSON.numberify(
 
 #### 2.3.1) `hvml` 标签
 
-`hvml` 标签定义一个 HVML 文档或程序。`hvml` 标签支持如下属性：
+`hvml` 标签定义一个 HVML 文档（或 HVML 程序）。`hvml` 标签支持如下属性：
 
 - `target`：定义 HVML 文档的目标标记语言，取 `html`、 `xml` 等值。
 - `lang`： 定义语言信息，如 `en`、 `zh` 等；在解释器内部，当需要利用 Unicode 定义的语言规则进行大小写转换或者字符串比较时使用。
