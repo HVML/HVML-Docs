@@ -461,8 +461,6 @@ $SYSTEM.uname
 
 获取可打印的系统信息。
 
-返回字符串：
-
 ```php
 $SYSTEM.uname_prt string: the kernel name.
 ```
@@ -574,12 +572,12 @@ $SYSTEM.locale
 $SYSTEM.random ulongint: a random between 0 and RAND_MAX.
 ```
 
-该方法获取 0 到 C 标注函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值。
+该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值。
 
 ```php
 // 原型：获得 0 到指定上限之间的随机数。
 $SYSTEM.random(
-        <ulongint $max: the max value>
+        <real $max: the max value>
 ) : number
 ```
 
