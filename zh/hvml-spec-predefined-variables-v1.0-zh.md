@@ -547,7 +547,7 @@ $SYSTEM.locale(!
             'all'       - All of the locale categories
         >,
         <string $locale: the locale for $categories>
-) : boolean
+) boolean
 ```
 
 该方法设置指定分类（单个或多个）的区域。成功时返回 `true`，失败时返回 `false`。注意，某些系统可能不支持特定的区域分类。
@@ -581,7 +581,7 @@ $SYSTEM.random ulongint: a random between 0 and RAND_MAX.
 // 原型：获得 0 到指定上限之间的随机数。
 $SYSTEM.random(
         <real $max: the max value>
-) : number
+) number
 ```
 
 该方法获取 0 到指定的最大值之间的一个随机值。
@@ -685,7 +685,7 @@ $SYSTEM.gmtime(
             [, <string $timezone>
             ]
         ]
-) : object
+) object
 ```
 
 获得给定时间在指定时区的分解时间（broken-down time），返回类型为对象。
@@ -747,7 +747,7 @@ $SYSTEM.timezone : string
 该方法返回当前时区。
 
 ```php
-$SYSTEM.timezone(! <string $timezone> ) : true | false
+$SYSTEM.timezone(! <string $timezone> ) true | false
 ```
 
 该方法设置当前时区。
@@ -767,7 +767,7 @@ $SYSTEM.fmttime(
             [, <string $timezone>
             ]
         ]
-) : string | false
+) string | false
 ```
 
 该方法按指定的格式格式化一个日历时间。
@@ -797,21 +797,9 @@ $SYSTEM.env(! <string: the environment name>, <string: the value> )
 
 该方法设置指定的环境变量，返回布尔数据，指明是否覆盖了已有环境变量。
 
-注意，如下环境变量应由所有 HVML 解释器定义：
-
-- `HVML_SPEC_VERSION`: HVML 规范版本号，如 `1.0`。
-- `HVML_SPEC_RELEASE`: HVML 规范版本号，如 `硕鼠`。
-- `HVML_INTRPR_NAME`: HVML 解释器的名称，如 `PurC`。
-- `HVML_INTRPR_VERSION`: HVML 解释器的版本名称，如 `0.5.0`。
-- `HVML_INTRPR_RELEASE`: HVML 解释器的发布名称，如 `立春`。
-
 **示例**
 
 ```php
-// 获取环境变量 `HVML_SPEC_VER` 的值
-$SYSTEM.env('HVML_SPEC_VER')
-    // string: '1.0'
-
 // 设置环境变量 `LOGNAME` 的值
 $SYSTEM.env(! 'LOGNAME', 'tom' )
     // boolean: true
@@ -1125,7 +1113,7 @@ $DOC.query("#foo").attr(! "bar", "qux")
 
 ```php
 // 原型
-$EJSON.type( <any> ): string
+$EJSON.type( <any> ) string
 ```
 
 #### 3.5.2) `count` 方法
@@ -1134,7 +1122,7 @@ $EJSON.type( <any> ): string
 
 ```php
 // 原型
-$EJSON.count( <any> ): number
+$EJSON.count( <any> ) number
 ```
 
 #### 3.5.3) `numberify` 方法
@@ -1143,7 +1131,7 @@ $EJSON.count( <any> ): number
 
 ```php
 // 原型
-$EJSON.numberify( <any> ): number
+$EJSON.numberify( <any> ) number
 ```
 
 #### 3.5.4) `booleanize` 方法
@@ -1152,7 +1140,7 @@ $EJSON.numberify( <any> ): number
 
 ```php
 // 原型
-$EJSON.booleanize( <any> ): boolean
+$EJSON.booleanize( <any> ) boolean
 ```
 
 #### 3.5.5) `stringify` 方法
@@ -1161,7 +1149,7 @@ $EJSON.booleanize( <any> ): boolean
 
 ```php
 // 原型
-$EJSON.stringify( <any> ): string
+$EJSON.stringify( <any> ) string
 ```
 
 #### 3.5.6) `serialize` 方法
@@ -1187,7 +1175,7 @@ $EJSON.serialize(
             'bseq-base64' -
            >
         ]
-): string
+) string
 ```
 
 #### 3.5.7) `sort` 方法
@@ -1205,7 +1193,7 @@ $EJSON.sort(
             `case` - comparing members as strings case-sensitively;
             `caseless` - comparing members as strings case-insensitively. >
         ]
-) : boolean
+) boolean
 ```
 
 #### 3.5.8) `shuffle` 方法
@@ -1223,7 +1211,7 @@ $EJSON.shuffle(
             `case` - comparing members as strings case-sensitively;
             `caseless` - comparing members as strings case-insensitively. >
         ]
-) : boolean
+) boolean
 ```
 
 #### 3.5.9) `compare` 方法
@@ -1245,7 +1233,7 @@ $EJSON.compare(
             `case`: comparing as strings case-sensitively;
             `caseless`: comparing as strings case-insensitively. >
         ]
-) : number
+) number
 ```
 
 #### 3.5.10) `parse` 方法
@@ -1265,7 +1253,7 @@ $EJSON.parse(
                `false` - all EJSON expressions will be ignored. >
             ]
         ]
-) : any
+) any
 ```
 
 ### 3.6) `L`
@@ -1568,7 +1556,7 @@ $STR.contains(
             `false` - performs a case-sensitive check;
             `true` - performs a case-insensitive check.>
         ]
-) : boolean
+) boolean
 ```
 
 判断字符串 `haystack` 中是否包含字符串 `needle`，执行
@@ -1614,7 +1602,7 @@ $STR.starts_with(
             `false` - performs a case-sensitive check;
             `true` - performs a case-insensitive check.>
         ]
-) : boolean
+) boolean
 ```
 
 判断字符串 `haystack` 是否以子字符串 `needle` 开头。
@@ -1658,7 +1646,7 @@ $STR.ends_with(
             `false` - performs a case-sensitive check;
             `true` - performs a case-insensitive check.>
         ]
-) : boolean
+) boolean
 ```
 
 判断字符串 `haystack` 是否以子字符串 `needle` 结尾。
@@ -1702,7 +1690,7 @@ $STR.explode(
         [, <string $separator: the boundary string = ''>
             [, <longint $limit = 0>]
         ]
-) : array
+) array
 ```
 
 此函数返回由字符串组成的数组，每个元素都是 `string` 的一个子串，它们被字符串 `separator` 作为边界点分隔出来。
@@ -1754,7 +1742,7 @@ $STR.explode('中华人民共和国', 2)
 $STR.implode(
         <array $pieces: The array to implode>
         [, <string $separator: the boundary string = ''>]
-) : string
+) string
 ```
 
 使用 `separator` 将数组 `pieces` 的成员字符串化后串接为新的字符串。
@@ -1797,7 +1785,7 @@ $STR.implode(['汉', '字'])
 **描述**
 
 ```php
-$STR.shuffle(<string $string: the input string to shuffle>) : string
+$STR.shuffle(<string $string: the input string to shuffle>) string
 ```
 
 该函数在输入字符串 `string` 的基础上，返回一个新的随机排列的字符串。
@@ -1836,7 +1824,7 @@ $STR.replace(
             `false` - performs case-sensitive replacements;
             `true` - performs case-insensitive replacements.>
         ]
-) : string | array
+) string | array
 ```
 
 该函数返回一个字符串或者数组，该字符串或数组是将 `subject` 中全部的 `search` 都被 `replace` 替换之后的结果。
@@ -1886,13 +1874,13 @@ $STR.format_c(
         [, <boolean | number | longint | ulongint | longdouble | string>
             [, ...]
         ]
-) : string
+) string
 
 // 原型
 $STR.format_c(
         <string: C format string>,
         <array>
-) : string
+) string
 
 // 示例
 $STR.format_c('Tom is %d years old, while Jerry is %d years old.', 9, 7)
@@ -1908,13 +1896,13 @@ $STR.format_c('Tom is %d years old, while Jerry is %d years old.', 9, 7)
 
 ```php
 // 原型
-$STR.format_p(<string: string contains placeholders>, <array>) : string
+$STR.format_p(<string: string contains placeholders>, <array>) string
 
 // 示例
 $STR.format_p('There are two boys: {0} and {1}', ['Tom', 'Jerry'])
 
 // 原型
-$STR.format_p(<string: string contains placeholders>, <object>) : string
+$STR.format_p(<string: string contains placeholders>, <object>) string
 
 // 示例
 $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry' })
@@ -1933,7 +1921,7 @@ $STR.join(
         [, <string $str3>
             [, ...]
         ]
-) : string
+) string
 ```
 
 将所有参数（至少两个）做字符串化处理后串接成新的字符串。
@@ -1966,7 +1954,7 @@ $STR.join('hello', ' ', 'world')    // string: 'hello world'
 **描述**
 
 ```php
-$STR.length(<string $string>) : ulongint
+$STR.length(<string $string>) ulongint
 ```
 
 获得字符串 `string` 中字符的个数。
@@ -1999,7 +1987,7 @@ $STR.length('中国')
 
 ```php
 // 原型：将字符串 `s` 全部转换为小写，并返回转换后的字符串；返回值为 `string` 类型
-$STR.tolower(<string $string>) : string
+$STR.tolower(<string $string>) string
 ```
 
 将字符串 `string` 中的所有字符转换为小写，并返回转换后的字符串。
@@ -2031,7 +2019,7 @@ $STR.tolower('Hello, world')
 **描述**
 
 ```php
-$STR.toupper(<string $string>) : string
+$STR.toupper(<string $string>) string
 ```
 
 将字符串 `string` 中的所有字符转换为大写，并返回转换后的字符串。
@@ -2063,7 +2051,7 @@ $STR.toupper('Hello, world')
 **描述**
 
 ```php
-$STR.substr(<string $string>, <real $offset>[, <real $length>]) : string
+$STR.substr(<string $string>, <real $offset>[, <real $length>]) string
 ```
 
 返回字符串 `string` 中由 `offset` 和 `length` 参数指定的子字符串。
@@ -2128,7 +2116,7 @@ $STR.substr_compare(
             `true` - performs a case-insensitive comparison.>
         ]
     ]
-) : number
+) number
 ```
 
 **参数**
@@ -2155,7 +2143,7 @@ $STR.substr_count(
         [, <real $length = 0>
         ]
     ]
-): ulongint
+) ulongint
 ```
 
 **参数**
@@ -2182,7 +2170,7 @@ $STR.substr_replace(
     [,
         <array|real $length = 0>
     ]
-): string|array
+) string|array
 ```
 
 **参数**
@@ -2211,7 +2199,7 @@ $STR.strstr(
                 `true` - performs a case-insensitive check.>
             ]
         ]
-) : string|false
+)  string | false
 ```
 
 **参数**
@@ -2241,7 +2229,7 @@ $STR.strpos(
                 `true` - performs a case-insensitive check.>
             ]
         ]
-) : ulongint|false
+) ulongint | false
 ```
 
 **参数**
@@ -2269,7 +2257,7 @@ $STR.strpbrk(
             `false` - performs a case-sensitive check;
             `true` - performs a case-insensitive check.>
         ]
-) : string|false
+) string | false
 ```
 
 **参数**
@@ -2294,7 +2282,7 @@ $STR.split(
         [,
             <real $length = 1>
         ]
-) : array
+) array
 ```
 
 **参数**
@@ -2322,7 +2310,7 @@ $STR.chunk_split(
                 <string $separator = "\r\n">
             ]
         ]
-) : string
+) string
 ```
 
 **参数**
@@ -2350,7 +2338,7 @@ $STR.trim(
                 <string $characters = " \n\r\t\v\x00">
             ]
         ]
-): string
+) string
 ```
 
 **参数**
@@ -2381,7 +2369,7 @@ $STR.pad(
             <string $pad_type 'left | right | both' = 'right'>
         ]
     ]
-): string
+) string
 ```
 
 **参数**
@@ -2404,7 +2392,7 @@ $STR.pad(
 $STR.str_repeat(
         <string $string>,
         <real $times>
-): string
+) string
 ```
 
 **参数**
@@ -2426,7 +2414,7 @@ $STR.str_repeat(
 ```php
 $STR.strrev(
         <string $string>
-): string
+) string
 ```
 
 **参数**
@@ -2449,7 +2437,7 @@ $STR.strrev(
 $STR.tokenize(
         <string $string>,
         <string $delimiters>
-): array
+) array
 ```
 
 **参数**
@@ -2473,12 +2461,12 @@ $STR.translate(
     <string $string>,
     <string $from>,
     <string $to>
-): string
+) string
 
 $STR.translate(
     <string $string>,
     <object $from_to_pairs>,
-): string
+) string
 ```
 
 **参数**
@@ -2510,7 +2498,7 @@ $STR.bin2hex(
             `true` - throw the `BadEncoding` exception for a bad encoded string;
             `false` - stops conversion for any error and returns the converted string.
         >
-): string
+) string
 ```
 
 该函数将输入的二进制字符串 `data` 转换为十六进制字符串。
@@ -2538,7 +2526,7 @@ $STR.hex2bin(
             `true` - throw the `BadEncoding` exception for a bad encoded string;
             `false` - stops conversion for any error and returns the converted string.
         >
-): string
+) string
 ```
 
 该函数将输入的十六进制字符串 `data` 转换为二进制字符串。
@@ -2582,7 +2570,7 @@ $STR.htmlentities_encode(
                 `false` - will not encode existing html entities.
             ]
         ]
-) : string
+) string
 ```
 
 **参数**
@@ -2619,7 +2607,7 @@ $STR.htmlentities_decode(
             `false`- only the certain characters have special significance in HTML are translated into these entities.
             `true` - all characters which have HTML character entity equivalents are translated into these entities. >
         ]
-): string | bseqence
+) string | bseqence
 ```
 
 
@@ -2644,7 +2632,7 @@ $STR.htmlentities_decode(
 ```php
 $STR.crc32(
         < string | bsequence $data>
-): ulongint
+) ulongint
 ```
 
 
@@ -2672,7 +2660,7 @@ $STR.md5(
             `true` - the md5 digest is returned as a binary sequence with a length of 16.
             `false` - the md5 digest is returned as a 32-character hexadecimal number.
         >
-): string | bsequence
+) string | bsequence
 ```
 
 
@@ -2700,7 +2688,7 @@ $STR.sha1(
             `true` - the sha1 digest is returned in a raw binary sequence with a length of 20.
             `false` - the sha1 digest is returned as a 40-character hexadecimal number.
         >
-): string | bsequence
+) string | bsequence
 ```
 
 
@@ -2725,7 +2713,7 @@ $STR.sha1(
 ```php
 $STR.rot13(
         <string $string>
-): string
+) string
 ```
 
 
@@ -2753,7 +2741,7 @@ $STR.count_chars(
             'object' - returns an object with the character as key and the frequency of every character as value.
             'string' - returns a string containing all unique characters. >
         ]
-): object | string
+) object | string
 ```
 
 
@@ -2785,7 +2773,7 @@ $STR.count_bytes(
             'bytes-not-appeared' - a binary sequence containing all not used bytes is returned.
             >
         ]
-) : object | bsequence
+) object | bsequence
 ```
 
 
@@ -2817,7 +2805,7 @@ $STR.nl2br(
             `true` - use 'br'.
             `false` - use 'BR'.
         ]
-) : object | bsequence
+) object | bsequence
 ```
 
 
@@ -2853,7 +2841,7 @@ $STR.nl2br(
 ```php
 $URL.base64_encode(
         <string|bsequence $data>
-): string
+) string
 ```
 
 该函数将输入字符串或者二进制序列 `data` 按照 Base64 进行编码。
@@ -2886,7 +2874,7 @@ $URL.base64_decode(
             `true` - throw the `BadEncoding` exception for a bad encoded string;
             `false` - stops conversion for any error and returns the converted string.
         >
-): string | bseqence
+) string | bseqence
 ```
 
 该函数将输入字符串 `data` 按照 Base64 进行解码。若 `utf8` 为 `true`，则按照 UTF-8 编码字符串进行解码，否则解码为一个二进制序列。若 `strict` 为 `true`，则遇到错误编码或者不正确的 UTF-8 字符时，会抛出 `BadEncoding` 异常；若 `strict` 为 `false`，将忽略错误停止解码并返回已经解码的字符串或二进制序列。
@@ -2911,7 +2899,7 @@ $URL.base64_decode(
 ```php
 $URL.urlencode(
         <string $str: the string to be encoded>
-) : string
+) string
 ```
 
 
@@ -2935,7 +2923,7 @@ $URL.urlencode(
 ```php
 $URL.urldecode(
         <string $str: the string to be decoded.>
-): string
+) string
 ```
 
 
@@ -2959,7 +2947,7 @@ $URL.urldecode(
 ```php
 $URL.rawurlencode(
         <string $str: the string to be encoded>
-): string
+) string
 ```
 
 
@@ -2983,7 +2971,7 @@ $URL.rawurlencode(
 ```php
 $URL.rawurldecode(
         <string $str: the string to be decoded>
-): string
+) string
 ```
 
 
@@ -3011,7 +2999,7 @@ $URL.parse(
         [,
             <'all | [scheme || host || port || user || password || path || query || fragment]' $components = 'all': the components want to parse.>
         ]
-) : object | string
+) object | string
 ```
 
 
@@ -3042,7 +3030,7 @@ $URL.http_build_query(
             ]
         ]
     ]
-) : string
+) string
 ```
 
 
@@ -3102,11 +3090,11 @@ $MATH.e_l
 ```php
 // 原型
 // 根据传入的关键词或自定义常数名称返回指定常数，返回类型为 `number`
-$MATH.const( ['e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)'] | <string: a user-defined const name>) : number
+$MATH.const( <'e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)'] > <string: a user-defined const name>) number
 
 // 原型
 // 根据传入的关键词或自定义常数名称返回指定常数，返回类型为 `longdouble`
-$MATH.const_l( ['e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)'] | <string: a user-defined const name>) : longdouble
+$MATH.const_l( <'e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)'> | <string: a user-defined const name>) longdouble
 
 // 示例：获取 log2e 值，即：1.4426950408889634074
 $MATH.const('log2e')
@@ -3122,7 +3110,7 @@ $MATH.const_l('1/sqrt(2)')
 ```php
 // 原型
 // 设置自定义常数
-$MATH.const(! <string: a user-defined const name>, <number: the constant>[, <longdouble: the constant>] ) : boolean
+$MATH.const(! <string: a user-defined const name>, <number: the constant>[, <longdouble: the constant>] ) boolean
 
 // 示例：设置 c（真空光速）为 299792458
 $MATH.const(! 'c', 299792458)
@@ -3144,7 +3132,7 @@ $MATH.const(! 'G0', 6.67e-11)
 
 ```php
 // 原型：求两个实数的和，返回指定类型的数值；默认为 `number`
-$MATH.add(<real>, <real>[, 'number | longint | ulongint | longdouble']) : number | longint | ulongint | longdouble
+$MATH.add(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
 // 示例：求 (1.4 + 0.7) 默认返回 `number` 类型，结果为 `2.1`。
 $MATH.add(1.4, 0.7)
@@ -3159,7 +3147,7 @@ $MATH.add(1.4, 0.7, 'longint')
 
 ```php
 // 原型：求两个实数的差，返回指定类型的数值；默认为 `number`
-$MATH.sub(<real>, <real>[, 'number | longint | ulongint | longdouble']) : number | longint | ulongint | longdouble
+$MATH.sub(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
 // 示例：求 (1.4 - 0.7) 默认返回 `number` 类型，结果为 `0.7`。
 $MATH.sub(1.4, 0.7)
@@ -3174,7 +3162,7 @@ $MATH.sub(1.4, 0.7, 'longint')
 
 ```php
 // 原型：求两个实数的积，返回指定类型的数值；默认为 `number`
-$MATH.mul(<real>, <real>[, 'number | longint | ulongint | longdouble']) : number | longint | ulongint | longdouble
+$MATH.mul(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
 // 示例：求 (1.4 * 0.7) 默认返回 `number` 类型，结果为 `0.98`。
 $MATH.mul(1.4, 0.7)
@@ -3189,7 +3177,7 @@ $MATH.mul(1.4, 0.7, 'longint')
 
 ```php
 // 原型：求两个实数的商，返回指定类型的数值；默认为 `number`
-$MATH.div(<real>, <real>[, 'number | longint | ulongint | longdouble']) : number | longint | ulongint | longdouble
+$MATH.div(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
 // 示例：求 (1.4 / 0.7) 默认返回 `number` 类型，结果为 `2.0`。
 $MATH.div(1.4, 0.7)
@@ -3204,7 +3192,7 @@ $MATH.div(1.4, 0.7, 'longint')
 
 ```php
 // 原型
-$MATH.eval(<string: a four arithmetic expressions>[, <object: parameter map>]) : number
+$MATH.eval(<string: a four arithmetic expressions>[, <object: parameter map>]) number
 
 // 示例1：求解 (500 + 10) * (700 + 30)
 $MATH.eval("(500 + 10) * (700 + 30)")
@@ -3216,7 +3204,7 @@ $MATH.eval("2 * pi * r", { pi: $MATH.pi, r: $r })
 $MATH.eval("pi * r * r", { pi: $MATH.pi, r: $MATH.sqrt(2) })
 
 // 原型：eval_l 的 long double 版本
-$MATH.eval_l(<string: a four arithmetic expressions>[, <object: parameter map>]) : longdouble
+$MATH.eval_l(<string: a four arithmetic expressions>[, <object: parameter map>]) longdouble
 
 ```
 
@@ -3226,10 +3214,10 @@ $MATH.eval_l(<string: a four arithmetic expressions>[, <object: parameter map>])
 
 ```php
 // 原型：求角度的正弦值，角度为弧度值；返回值为 `number` 类型
-$MATH.sin(<number | longint | ulongint | longdouble>) : number
+$MATH.sin(<number | longint | ulongint | longdouble>) number
 
 // 原型：求角度的正弦值，角度为弧度值；返回值为 `longdouble` 类型
-$MATH.sin_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.sin_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 (pi/4) 的正弦值，返回 `number` 类型，结果为 `0.707107`。
 $MATH.sin($MATH.const('pi/4'))
@@ -3244,10 +3232,10 @@ $MATH.sin_l($MATH.const('pi/4'))
 
 ```php
 // 原型：求角度的余弦值，角度为弧度值；返回值为 `number` 类型
-$MATH.cos(<number | longint | ulongint | longdouble>) : number
+$MATH.cos(<number | longint | ulongint | longdouble>) number
 
 // 原型：求角度的余弦值，角度为弧度值；返回值为 `longdouble` 类型
-$MATH.cos_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.cos_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 (pi/4) 的余弦值，返回 `number` 类型，结果为 `0.707107`。
 $MATH.cos($MATH.const('pi/4'))
@@ -3262,10 +3250,10 @@ $MATH.cos_l($MATH.const('pi/4'))
 
 ```php
 // 原型：求角度的正切值，角度为弧度值；返回值为 `number` 类型
-$MATH.tan(<number | longint | ulongint | longdouble>) : number
+$MATH.tan(<number | longint | ulongint | longdouble>) number
 
 // 原型：求角度的正切值，角度为弧度值；返回值为 `longdouble` 类型
-$MATH.tan_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.tan_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 (pi/4) 的正切值，返回 `number` 类型，结果为 `1.0`。
 $MATH.tan($MATH.const('pi/4'))
@@ -3280,10 +3268,10 @@ $MATH.tan_l($MATH.const('pi/4'))
 
 ```php
 // 原型：求数值的双曲正弦值；返回值为 `number` 类型
-$MATH.sinh(<number | longint | ulongint | longdouble>) : number
+$MATH.sinh(<number | longint | ulongint | longdouble>) number
 
 // 原型：求数值的双曲正弦值；返回值为 `longdouble` 类型
-$MATH.sinh_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.sinh_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `1.0` 的双曲正弦值，返回 `number` 类型，结果为 `1.175201`。
 $MATH.sinh(1.0)
@@ -3298,10 +3286,10 @@ $MATH.sinh_l(1.0)
 
 ```php
 // 原型：求数值的双曲余弦值；返回值为 `number` 类型
-$MATH.cosh(<number | longint | ulongint | longdouble>) : number
+$MATH.cosh(<number | longint | ulongint | longdouble>) number
 
 // 原型：求数值的双曲余弦值；返回值为 `longdouble` 类型
-$MATH.cosh_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.cosh_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `1.0` 的双曲余弦值，返回 `number` 类型，结果为 `1.543081`。
 $MATH.cosh(1.0)
@@ -3316,10 +3304,10 @@ $MATH.cosh_l(1.0)
 
 ```php
 // 原型：求数值的双曲正切值；返回值为 `number` 类型
-$MATH.tanh(<number | longint | ulongint | longdouble>) : number
+$MATH.tanh(<number | longint | ulongint | longdouble>) number
 
 // 原型：求数值的双曲正切值；返回值为 `longdouble` 类型
-$MATH.tanh_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.tanh_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `1.0` 的双曲正切值，返回 `number` 类型，结果为 `0.761594`。
 $MATH.tan(1.0)
@@ -3334,10 +3322,10 @@ $MATH.tan_l(1.0)
 
 ```php
 // 原型：求数值的反正弦值，获得对应角度的弧度值；返回值为 `number` 类型
-$MATH.asin(<number | longint | ulongint | longdouble>) : number
+$MATH.asin(<number | longint | ulongint | longdouble>) number
 
 // 原型：求数值的反正弦值，获得对应角度的弧度值；返回值为 `longdouble` 类型
-$MATH.asin_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.asin_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `0.707107` 的反正弦值，返回 `number` 类型，结果为 `0.785398`。
 $MATH.asin(0.707107)
@@ -3352,10 +3340,10 @@ $MATH.asin_l(0.707107)
 
 ```php
 // 原型：求数值的反余弦值，获得对应角度的弧度值；返回值为 `number` 类型
-$MATH.acos(<number | longint | ulongint | longdouble>) : number
+$MATH.acos(<number | longint | ulongint | longdouble>) number
 
 // 原型：求数值的反余弦值，获得对应角度的弧度值；返回值为 `longdouble` 类型
-$MATH.acos_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.acos_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `0.707107` 的反余弦值，返回 `number` 类型，结果为 `0.785398`。
 $MATH.acos(0.707107)
@@ -3370,10 +3358,10 @@ $MATH.acos_l(0.707107)
 
 ```php
 // 原型：求数值的反正切值，获得对应角度的弧度值；返回值为 `number` 类型
-$MATH.atan(<number | longint | ulongint | longdouble>) : number
+$MATH.atan(<number | longint | ulongint | longdouble>) number
 
 // 原型：求数值的反正切值，获得对应角度的弧度值；返回值为 `longdouble` 类型
-$MATH.atan_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.atan_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `1.0` 的反正切值，返回 `number` 类型，结果为 `0.785398`。
 $MATH.atan(1.0)
@@ -3388,10 +3376,10 @@ $MATH.atan_l(1.0)
 
 ```php
 // 原型：求数值的反双曲正弦值；返回值为 `number` 类型
-$MATH.asinh(<number | longint | ulongint | longdouble>) : number
+$MATH.asinh(<number | longint | ulongint | longdouble>) number
 
 // 原型：求数值的反双曲正弦值；返回值为 `longdouble` 类型
-$MATH.asinh_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.asinh_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `1.0` 的反双曲正弦值，返回 `number` 类型，结果为 `0.881374`。
 $MATH.asin(1.0)
@@ -3406,10 +3394,10 @@ $MATH.asin_l(1.0)
 
 ```php
 // 原型：求数值的反双曲余弦值；返回值为 `number` 类型
-$MATH.acosh(<number | longint | ulongint | longdouble>) : number
+$MATH.acosh(<number | longint | ulongint | longdouble>) number
 
 // 原型：求数值的反双曲余弦值；返回值为 `longdouble` 类型
-$MATH.acosh_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.acosh_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `1.0` 的反双曲余弦值，返回 `number` 类型，结果为 `0.0`。
 $MATH.acos(1.0)
@@ -3424,10 +3412,10 @@ $MATH.acos_l(1.0)
 
 ```php
 // 原型：求数值的反双曲正切值；返回值为 `number` 类型
-$MATH.atanh(<number | longint | ulongint | longdouble>) : number
+$MATH.atanh(<number | longint | ulongint | longdouble>) number
 
 // 原型：求数值的反双曲正切值；返回值为 `longdouble` 类型
-$MATH.atanh_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.atanh_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `0.5` 的反双曲正切值，返回 `number` 类型，结果为 `0.549306`。
 $MATH.atanh(0.5)
@@ -3442,10 +3430,10 @@ $MATH.atanh_l(0.5)
 
 ```php
 // 原型：求两值相除的余数；返回值为 `number` 类型
-$MATH.fmod(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>) : number
+$MATH.fmod(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>) number
 
 // 原型：求两值相除的余数；返回值为 `longdouble` 类型
-$MATH.fmod_l(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>) : longdouble
+$MATH.fmod_l(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `(4.5/2.0)` 的余数，返回 `number` 类型，结果为 `0.5`。
 $MATH.fmod(4.5, 2.0)
@@ -3460,7 +3448,7 @@ $MATH.fmod_l(4.5, 2.0)
 
 ```php
 // 原型：求数值的绝对值；返回值类型为传入参数值类型
-$MATH.fabs(<number | longint | ulongint | longdouble>) : number | longint | ulongint | longdouble
+$MATH.fabs(<number | longint | ulongint | longdouble>) number | longint | ulongint | longdouble
 
 // 示例：求 `-2.5L` 的绝对值，返回 `longdouble` 类型，结果为 `2.5L`。
 $MATH.fabs(-2.5L)
@@ -3473,10 +3461,10 @@ $MATH.fabs(-2.5L)
 
 ```php
 // 原型：求数值的自然对数；返回值为 `number` 类型
-$MATH.log(<number | longint | ulongint | longdouble>) : number
+$MATH.log(<number | longint | ulongint | longdouble>) number
 
 // 原型：求数值的自然对数；返回值为 `longdouble` 类型
-$MATH.log_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.log_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `e` 的自然对数，返回 `number` 类型，结果为 `1.0`。
 $MATH.log($MATH.const('e'))
@@ -3491,10 +3479,10 @@ $MATH.log_l($MATH.const('e'))
 
 ```php
 // 原型：求数值以 `10` 为底的对数；返回值为 `number` 类型
-$MATH.log10(<number | longint | ulongint | longdouble>) : number
+$MATH.log10(<number | longint | ulongint | longdouble>) number
 
 // 原型：求数值以 `10` 为底的对数；返回值为 `longdouble` 类型
-$MATH.log10_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.log10_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `10.0` 以 `10` 为底的对数，返回 `number` 类型，结果为 `1.0`。
 $MATH.log10(10.0)
@@ -3509,10 +3497,10 @@ $MATH.log10i_l(10.0)
 
 ```php
 // 原型：求 `x` 的 `y` 次幂；返回值为 `number` 类型
-$MATH.pow(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y) : number
+$MATH.pow(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y) number
 
 // 原型：求 `x` 的 `y` 次幂；返回值为 `longdouble` 类型
-$MATH.pow_l(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y) : longdouble
+$MATH.pow_l(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y) longdouble
 
 // 示例：求 `3.0` 的 `2.0` 次幂，返回 `number` 类型，结果为 `9.0`。
 $MATH.pow(3.0, 2.0)
@@ -3527,10 +3515,10 @@ $MATH.pow_l(3.0, 2.0)
 
 ```php
 // 原型：求 `e` 的 `x` 次幂；返回值为 `number` 类型
-$MATH.exp(<number | longint | ulongint | longdouble> x) : number
+$MATH.exp(<number | longint | ulongint | longdouble> x) number
 
 // 原型：求 `e` 的 `x` 次幂；返回值为 `longdouble` 类型
-$MATH.exp_l(<number | longint | ulongint | longdouble> x) : longdouble
+$MATH.exp_l(<number | longint | ulongint | longdouble> x) longdouble
 
 // 示例：求 `e` 的 `1.0` 次幂，返回 `number` 类型，结果为 `2.718282`。
 $MATH.exp(1.0)
@@ -3545,10 +3533,10 @@ $MATH.exp_l(1.0)
 
 ```php
 // 原型：计算向下取整的数值；返回值为 `number` 类型
-$MATH.floor(<number | longint | ulongint | longdouble>) : number
+$MATH.floor(<number | longint | ulongint | longdouble>) number
 
 // 原型：计算向下取整的数值；返回值为 `longdouble` 类型
-$MATH.floor_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.floor_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `-2.3` 向下取整数值，返回 `number` 类型，结果为 `-3.0`。
 $MATH.floor(-2.3)
@@ -3563,10 +3551,10 @@ $MATH.floor_l(-2.3)
 
 ```php
 // 原型：计算向上取整的数值；返回值为 `number` 类型
-$MATH.ceil(<number | longint | ulongint | longdouble>) : number
+$MATH.ceil(<number | longint | ulongint | longdouble>) number
 
 // 原型：计算向上取整的数值；返回值为 `longdouble` 类型
-$MATH.ceil_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.ceil_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `-2.3` 向上取整数值，返回 `number` 类型，结果为 `-2.0`。
 $MATH.ceil(-2.3)
@@ -3581,10 +3569,10 @@ $MATH.ceil_l(-2.3)
 
 ```php
 // 原型：计算数值的平方根；返回值为 `number` 类型
-$MATH.sqrt(<number | longint | ulongint | longdouble>) : number
+$MATH.sqrt(<number | longint | ulongint | longdouble>) number
 
 // 原型：计算数值的平方根；返回值为 `longdouble` 类型
-$MATH.sqrt_l(<number | longint | ulongint | longdouble>) : longdouble
+$MATH.sqrt_l(<number | longint | ulongint | longdouble>) longdouble
 
 // 示例：求 `9.0` 的平方根，返回 `number` 类型，结果为 `3.0`。
 $MATH.sqrt(9.0)
@@ -3688,7 +3676,7 @@ $FS.basename(
         [,
             <string $suffix = '': if the name component ends in `suffix` this will also be cut off.>
         ]
-) : string
+) string
 ```
 
 **参数**
@@ -3711,7 +3699,7 @@ $FS.basename(
 $FS.chgrp(
         <string $filename: path to the file.>,
         <string | number $group: A group name or a group identifier.>
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -3734,7 +3722,7 @@ $FS.chgrp(
 $FS.chmod(
         <string $filename: path to the file.>,
         <string $permissions: the permission string like '0644' or 'u+rwx,go+rx'.>
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -3757,7 +3745,7 @@ $FS.chmod(
 $FS.chown(
         <string $filename: path to the file.>,
         <string | number $user: A user name or a user identifier.>
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -3780,7 +3768,7 @@ $FS.chown(
 $FS.copy(
         <string $from: path to the source file.>,
         <string $to: The destination path.>
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -3805,7 +3793,7 @@ $FS.dirname(
         [,
             <real $levels = 1: The number of parent directories to go up.>
         ]
-) : string
+) string
 ```
 
 **参数**
@@ -3827,7 +3815,7 @@ $FS.dirname(
 ```php
 $FS.disk_usage(
         <string $directory: A directory of the filesystem or disk partition.>
-) : object
+) object
 ```
 
 **参数**
@@ -3866,7 +3854,7 @@ $FS.disk_usage(
 ```php
 $FS.file_exists(
         <string $filename: path to the file or directory.>
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -3899,7 +3887,7 @@ $FS.file_is(
             'executable'/'exe' - is executable.
             'readable'/'read' - is readable.
             'writable'/'write' - is writable. >
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -3927,7 +3915,7 @@ $FS.file_is(
 $FS.lchgrp(
         <string $filename: path to the symlink.>,
         <string | number $group: A group name or a group identifier.>
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -3950,7 +3938,7 @@ $FS.lchgrp(
 $FS.lchown(
         <string $filename: path to the symlink.>,
         <string | number $user: A user name or a user identifier.>
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -3972,7 +3960,7 @@ $FS.lchown(
 ```php
 $FS.linkinfo(
         <string $path: path to the link.>
-) : number | false
+) number | false
 ```
 
 **参数**
@@ -4014,7 +4002,7 @@ $FS.lstat(
             'default' - 'type mode_digits uid gid size rdev ctime';
             >
         ]
-) : object
+) object
 ```
 
 **参数**
@@ -4064,7 +4052,7 @@ $FS.lstat(
 $FS.link(
         < string $target: Target of the link. >,
         < string $link: The link name. >
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -4090,7 +4078,7 @@ $FS.mkdir(
             [, < boolean $recursive = `false`: Allows the creation of nested directories specified in `directory`. >
             ]
         ]
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -4116,7 +4104,7 @@ $FS.pathinfo(
             < '[dirname || basename || extension || filename] | all' $flags = 'all': Specifies the elements to be returned.
             >
         ]
-) : object | string
+) object | string
 ```
 
 **参数**
@@ -4138,7 +4126,7 @@ $FS.pathinfo(
 ```php
 $FS.readlink(
         < string $path: The symbolic link path. >
-) : string | false
+) string | false
 ```
 
 **参数**
@@ -4160,7 +4148,7 @@ $FS.readlink(
 ```php
 $FS.realpath(
         < string $path: The path being checked. >
-) : string | false
+) string | false
 ```
 
 **参数**
@@ -4183,7 +4171,7 @@ $FS.realpath(
 $FS.rename(
         < string $from: The old name. >
         < string $to: The new name. >
-) : string | false
+) string | false
 ```
 
 **参数**
@@ -4205,7 +4193,7 @@ $FS.rename(
 ```php
 $FS.rmdir(
         < string $directory: The directory path. >
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -4247,7 +4235,7 @@ $FS.stat(
             'default' - 'type mode_digits uid gid size rdev ctime';
             >
         ]
-) : object
+) object
 ```
 
 **参数**
@@ -4297,7 +4285,7 @@ $FS.stat(
 $FS.link(
         < string $target: Target of the link. >,
         < string $link: The link name. >
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -4320,7 +4308,7 @@ $FS.link(
 $FS.tempname(
         < string $directory: The directory where the temporary filename will be created. >
         < string $prefix: The prefix of the generated temporary filename. >
-) : string | false
+) string | false
 ```
 
 **参数**
@@ -4346,7 +4334,7 @@ $FS.touch(
         [, <real $mtime = 0: The modification time, if it is 0 or negative, use the current system time. >
             [, <real $atime = 0: The access time, if it is 0 or negative, use `mtime`. > ]
         ]
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -4368,7 +4356,7 @@ $FS.touch(
 ```php
 $FS.umask(
         [ string $mask = '': The new umask. ]
-) : string
+) string
 ```
 
 **参数**
@@ -4390,7 +4378,7 @@ $FS.umask(
 ```php
 $FS.unlink(
         < string $filename: Path to the file. >
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -4422,7 +4410,7 @@ $FS.file_get_contents(
             [, <ulongint $length = 0: Maximum length of data read. The default is to read until end of file is reached. >
             ]
         ]
-) : string | bsequence | false
+) string | bsequence | false
 ```
 
 **参数**
@@ -4449,7 +4437,7 @@ $FS.file_put_contents(
             `append` - if file `filename` already exists, append the data to the file instead of overwriting it.
             `lock` - acquires an exclusive lock on the file while proceeding to the writing.
         >
-) : ulongint | false
+) ulongint | false
 ```
 
 **参数**
@@ -4471,7 +4459,7 @@ $FS.file_put_contents(
 ```php
 $FS.opendir(
         < string $pathname: Path to the directory. >
-) : specific
+) specific
 ```
 
 **参数**
@@ -4495,7 +4483,7 @@ $FS.opendir(
 ```php
 $FS.readdir(
         < specific $dir: an entity returned by opendir. >
-) : object | false
+) object | false
 ```
 
 **参数**
@@ -4527,7 +4515,7 @@ $FS.readdir(
 ```php
 $FS.rewinddir(
         < specific $dir: an entity returned by opendir. >
-) : boolean
+) boolean
 ```
 
 **参数**
@@ -4549,7 +4537,7 @@ $FS.rewinddir(
 ```php
 $FS.closedir(
         < specific $dir: an entity returned by opendir. >
-) : boolean
+) boolean
 ```
 
 **参数**
