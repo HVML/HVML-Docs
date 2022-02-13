@@ -47,6 +47,7 @@ Language: Chinese
       * [3.2.8) `timezone` 方法](#328-timezone-方法)
       * [3.2.9) `fmttime` 方法](#329-fmttime-方法)
       * [3.2.10) `env` 方法](#3210-env-方法)
+      * [3.2.11) `const` 方法](#3211-const-方法)
    + [3.3) `HVML`](#33-hvml)
       * [3.3.1) `base` 方法](#331-base-方法)
       * [3.3.2) `maxIterationCount` 方法](#332-maxiterationcount-方法)
@@ -480,7 +481,8 @@ $SYSTEM.uname_prt(
             'operating-system'  - includes the operating system (e.g., `GNU/Linux`)
             'all'               - includes all parts
             'default'           - is equivalent to 'operating-system kernel-name kernel-release kernel-version'
-        )
+        >
+) string: the string concatenated the desired system information parts together.
 ```
 
 该方法获取系统指定部分的名称，返回字符串。
@@ -588,15 +590,15 @@ $SYSTEM.random(
 
 #### 3.2.5) `time` 方法
 
-获取或设置系统时间。
+获取或设置日历时间（calendar time）。
 
 **描述**
 
 ```php
-$SYSTEM.time : ulongint
+$SYSTEM.time ulongint: the calendar time (seconds since Epoch)
 ```
 
-该方法获取当前系统时间（自 Epoch 以来的秒数），返回类型为 ulongint。
+该方法获取当前日历时间（自 Epoch 以来的秒数），返回值类型为 `ulongint`。
 
 ```php
 $SYSTEM.time(
@@ -619,16 +621,22 @@ $SYSTEM.time(
             [, <string $timezone>
             ]
         ]
-) : string
+) string : a date and time string in the given time format $format and the time zone $timezone for the specified time $seconds.
 ```
 
 该方法获得指定时间在给定时区，以给定格式化标准/规范名称（如 ISO8601、RFC850）形式展示的时间字符串。
 
 ```php
-$SYSTEM.time(! <number: seconds since Epoch> ) : true | false
+$SYSTEM.time(!
+        <number $seconds: seconds since Epoch>
+) true | false
 ```
 
-该方法设置系统时间，成功返回 true，失败返回 false。
+该方法设置系统的日历时间。成功时返回 `true`，失败时返回 `false`。
+
+**错误或异常**
+
+
 
 **示例**
 
@@ -775,22 +783,68 @@ $SYSTEM.time("It now is %H:%m")
 
 获取或设置环境变量。
 
+**描述**
+
 ```php
-// 原型：获取指定环境变量的值（字符串）；未设置时返回 `undefined`
 $SYSTEM.env( <string: the environment name> )
+```
+该方法获取指定环境变量的值（字符串）；未设置时返回 `undefined`。
 
-// 原型：设置指定环境变量，返回布尔数据，指明是否覆盖了已有环境变量
+```php
 $SYSTEM.env(! <string: the environment name>, <string: the value> )
-
-// 示例：获取环境变量 `LOGNAME` 的值
-$SYSTEM.env('LONGNAME')
-
-// 示例：设置环境变量 `HVML_VER` 的值
-$SYSTEM.env('HVML_VER', '1.0')
 ```
 
-**讨论**  
-该功能亦可设计为一个 `SYSTEM` 变量上的一个静态属性，初始化时从系统中获取所有环境变量构造为一个对象，程序可使用 `update` 元素修改环境变量。
+该方法设置指定的环境变量，返回布尔数据，指明是否覆盖了已有环境变量。
+
+注意，如下环境变量应由所有 HVML 解释器定义：
+
+- `HVML_SPEC_VERSION`: HVML 规范版本号，如 `1.0`。
+- `HVML_SPEC_RELEASE`: HVML 规范版本号，如 `硕鼠`。
+- `HVML_INTRPR_NAME`: HVML 解释器的名称，如 `PurC`。
+- `HVML_INTRPR_VERSION`: HVML 解释器的版本名称，如 `0.5.0`。
+- `HVML_INTRPR_RELEASE`: HVML 解释器的发布名称，如 `立春`。
+
+**示例**
+
+```php
+// 获取环境变量 `HVML_SPEC_VER` 的值
+$SYSTEM.env('HVML_SPEC_VER')
+    // string: '1.0'
+
+// 设置环境变量 `LOGNAME` 的值
+$SYSTEM.env(! 'LOGNAME', 'tom' )
+    // boolean: true
+```
+
+#### 3.2.11) `const` 方法
+
+获取系统常量。
+
+**描述**
+
+```php
+$SYSTEM.const(
+        <string $name: the constant name>
+) any : the constant value
+```
+
+该方法获取指定常量的值；未设置时返回 `undefined`。
+
+注意，如下常量应由所有 HVML 解释器定义：
+
+- `HVML_SPEC_VERSION`: HVML 规范版本号，如 `1.0`。
+- `HVML_SPEC_RELEASE`: HVML 规范版本号，如 `硕鼠`。
+- `HVML_INTRPR_NAME`: HVML 解释器的名称，如 `PurC`。
+- `HVML_INTRPR_VERSION`: HVML 解释器的版本名称，如 `0.5.0`。
+- `HVML_INTRPR_RELEASE`: HVML 解释器的发布名称，如 `立春`。
+
+**示例**
+
+```php
+// 获取常量 `HVML_SPEC_VER` 的值
+$SYSTEM.const('HVML_SPEC_VERSION')
+    // string: '1.0'
+```
 
 ### 3.3) `HVML`
 
@@ -798,17 +852,27 @@ $SYSTEM.env('HVML_VER', '1.0')
 
 #### 3.3.1) `base` 方法
 
-该方法获取或设置 HVML 程序的根 URL。
+该方法获取或设置 HVML 程序的基础 URL。
 
 ```php
-// 原型，返回字符串，如 `file:///app/com.example.foo/hvml`
-$HVML.base: string
+$HVML.base string: the base URL.
+```
 
-// 原型，设置 HVML 程序的根 URL，返回设置后的值。
-$HVML.base(! <string, new base URL> ): string
+该方法返回当前的基础 URL，如 `file:///app/com.example.foo/hvml`。
 
-// 示例：
-$HVML.base(! "https://foo.example.com/app/hvml" )
+```php
+$HVML.base(!
+        <string $new_url: the new base URL>
+) string | false: the new base URL normalized from $new_url or `false` for invalid $new_url.
+```
+
+该方法设置 HVML 程序的基础 URL 为预期值，返回正规化处理后的基础 URL。若传递的 `$new_url` 不是合法的或不支持的 URL，则返回 `false`。
+
+**示例**
+
+```php
+$HVML.base(! "https://foo.example.com//app/hvml/" )
+    // string: 'https://foo.example.com/app/hvml'
 ```
 
 #### 3.3.2) `maxIterationCount` 方法
@@ -817,14 +881,25 @@ $HVML.base(! "https://foo.example.com/app/hvml" )
 
 默认值为 64 位无符号整数的最大值：`2 ^ 64 - 1`。
 
+**描述**
+
 ```php
-// 原型，返回当前值
-$HVML.maxIterationCount: ulongint
+$HVML.maxIterationCount ulongint: the current maximal iteration count.
+```
 
-// 原型，设置最大迭代次数值，返回设置后的值。当传入无效值（如零）时，不做改变。
-$HVML.maxIterationCount(! <ulongint, new maximal interation count> ): ulongint
+该方法返回当前的最大迭代次数值。
 
-// 示例：
+```php
+$HVML.maxIterationCount(!
+        <ulongint $new_value: the new maximal interation count>
+) ulongint : the new maximal iteration count.
+```
+
+设置最大迭代次数值并返回设置后的值。当传入无效值（比如零）时，不做改变。
+
+**示例**
+
+```php
 $HVML.maxIterationCount(! 10000UL )
 ```
 
@@ -834,14 +909,24 @@ $HVML.maxIterationCount(! 10000UL )
 
 默认值为 16 位无符号整数的最大值：`2 ^ 16 - 1`（65535）。
 
+**描述**
+
 ```php
 // 原型，返回当前值
-$HVML.maxRecursionDepth: ulongint
+$HVML.maxRecursionDepth ulongint: the current maximal recursion depth value.
+```
 
-// 原型，设置最大递归深度值，返回设置后的值。当传入无效值（如零）时，不做改变。
-$HVML.maxRecursionDepth(! <ulongint, new maximal recursion depth> ): ulongint
+```php
+$HVML.maxRecursionDepth(!
+        <ulongint $new_value: new maximal recursion depth>
+) ulongint : the new maximal recursion depth value.
+```
 
-// 示例：
+该方法设置最大递归深度值，返回设置后的值。当传入无效值（比如零）时，不做改变。
+
+**示例**
+
+```php
 $HVML.maxRecursionDepth(! 10000UL )
 ```
 
@@ -851,15 +936,28 @@ $HVML.maxRecursionDepth(! 10000UL )
 
 默认值为 10.0。
 
+**描述**
+
 ```php
-// 原型，返回当前超时值
-$HVML.timeout: number
+$HVML.timeout number : the current timeout value (in seconds)
+```
 
-// 原型，设置超时值，返回设置后的值。当传入无效值（如零或者负数）时，不做改变。
-$HVML.timeout(! <number, new timeout value> ): number
+该方法返回当前超时值。
 
-// 示例：设置超时值魏 3.5 秒。
+```php
+$HVML.timeout(!
+        <number $new_timeout: the new timeout value (in seconds)>
+) number : the new timeout value
+```
+
+该方法设置超时值，并返回设置后的值。当传入无效值（如零或者负数）时，不做改变。
+
+**示**
+
+```php
+// 设置超时值为 3.5 秒。
 $HVML.timeout(! 3.5 )
+    // numer: 3.5
 ```
 
 ### 3.4) `DOC`
