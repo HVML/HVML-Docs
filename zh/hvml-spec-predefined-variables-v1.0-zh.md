@@ -471,7 +471,7 @@ $SYSTEM.uname_prt string: the kernel name.
 
 该方法获取内核名称，返回字符串。
 
-```shell
+```bash
 $SYSTEM.uname_prt(
         <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which:
             'kernel-name'       - includes kernel name (e.g., `Linux`)
@@ -492,7 +492,7 @@ $SYSTEM.uname_prt(
 
 **示例**
 
-```php
+```javascript
 // 获取内核名称及版本号
 $SYSTEM.uname_prt('kernel-name kernel-release kernel-version')
     // string: "Linux 5.4.0-80-generic #90-Ubuntu SMP Fri Jul 9 22:49:44 UTC 2021"
