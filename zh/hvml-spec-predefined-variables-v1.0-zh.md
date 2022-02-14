@@ -610,19 +610,19 @@ $SYSTEM.time ulongint: `the calendar time (seconds since Epoch)`
 ```javascript
 $SYSTEM.time(
         <'atom | cookie | iso8601 | rfc822 | rfc850 | rfc1036 | rfc1036 | rfc1123 | rfc7231 | rfc2822 | rfc3339 | rfc3339-ex | rss | w3c' $format:
-            - 'atom'- `Atom (example: 2005-08-15T15:52:01+00:00)`
-            - 'cookie'- `HTTP Cookies (example: Monday, 15-Aug-2005 15:52:01 UTC)`
-            - 'iso8601'- `Same as 'ATOM' (example: 2005-08-15T15:52:01+00:00)`
-            - 'rfc822'- `RFC 822 (example: Mon, 15 Aug 05 15:52:01 +0000)`
-            - 'rfc850'- `RFC 850 (example: Monday, 15-Aug-05 15:52:01 UTC)`
-            - 'rfc1036'- `RFC 1036 (example: Mon, 15 Aug 05 15:52:01 +0000)`
-            - 'rfc1123'- `RFC 1123 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
-            - 'rfc7231'- `RFC 7231 (since PHP 7.0.19 and 7.1.5) (example: Sat, 30 Apr 2016 17:52:13 GMT)`
-            - 'rfc2822'- `RFC 2822 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
-            - 'rfc3339'- `Same as 'ATOM'`
-            - 'rfc3339-ex'- `RFC 3339 EXTENDED format (example: 2005-08-15T15:52:01.000+00:00)`
-            - 'rss'- `RSS (example: Mon, 15 Aug 2005 15:52:01 +0000)`
-            - 'w3c'- `World Wide Web Consortium (example: 2005-08-15T15:52:01+00:00)`
+            'atom'      - `Atom (example: 2005-08-15T15:52:01+00:00)`
+            'cookie'    - `HTTP Cookies (example: Monday, 15-Aug-2005 15:52:01 UTC)`
+            'iso8601'   - `Same as 'ATOM' (example: 2005-08-15T15:52:01+00:00)`
+            'rfc822'    - `RFC 822 (example: Mon, 15 Aug 05 15:52:01 +0000)`
+            'rfc850'    - `RFC 850 (example: Monday, 15-Aug-05 15:52:01 UTC)`
+            'rfc1036'   - `RFC 1036 (example: Mon, 15 Aug 05 15:52:01 +0000)`
+            'rfc1123'   - `RFC 1123 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
+            'rfc7231'   - `RFC 7231 (since PHP 7.0.19 and 7.1.5) (example: Sat, 30 Apr 2016 17:52:13 GMT)`
+            'rfc2822'   - `RFC 2822 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
+            'rfc3339'   - `Same as 'ATOM'`
+            'rfc3339-ex'- `RFC 3339 EXTENDED format (example: 2005-08-15T15:52:01.000+00:00)`
+            'rss'       - `RSS (example: Mon, 15 Aug 2005 15:52:01 +0000)`
+            'w3c'       - `World Wide Web Consortium (example: 2005-08-15T15:52:01+00:00)`
         >
         [, <number | longint | ulongint | longdouble $seconds: `seconds since Epoch`>
             [, <string $timezone>
@@ -708,7 +708,7 @@ $SYSTEM.gmtime(
    'year':  <number: `The number of years since 1900.`>
    'wday':  <number: `The number of days since Sunday, in the range 0 to 6.`>
    'yday':  <number: `The number of days since January 1, in the range 0 to 365.`>
-   'isdst'  <number: `A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving time is in effect, zero if it is not, and negative if the information is not available.`>
+   'isdst':  <number: `A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving time is in effect, zero if it is not, and negative if the information is not available.`>
 }
 ```
 
