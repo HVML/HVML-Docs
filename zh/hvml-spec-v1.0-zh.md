@@ -1686,7 +1686,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
    - `string = 'auto'`。
 1. 可选地，在参数类型（及形参名称）之后使用 `:` 描述其用途。如：
    - `number $seconds: seconds since epoch`。
-   - `boolean $case_insensitivity = false: performs a case-sensitive (false) or a case-insensitive (true) check.`。
+   - `boolean $case_insensitivity = false: /* performs a case-sensitive (false) or a case-insensitive (true) check. */`。
    - `string: locale category`。
 1. 可使用如下类型别名：
    1. `any`：任意类型。
@@ -1704,7 +1704,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 1. 参数中使用的关键词由不包含空格和控制字符的可打印字符组成；参数中需要传递多个关键词时，使用单个或者多个 ASCII 空白字符分隔。
 1. 方法的返回值类型，在右括号（`)`）之后描述；可能返回多种类型时，使用 `|` 符号分隔。可选地，在类型名称后添加冒号（`:`）以及对返回值的简要描述信息。
 1. 可选地，我们对必须包含的参数或语法单元，包含在两个尖括号（`< >`）中描述；对可选的参数或语法单元，包含在两个中括号（`[ ]`）中描述。
-1. 在参数描述中使用 `true`、`false`、`null` 等 JSON 关键词时，使用 '\`' 包围。
+1. 使用反引号（\`）包围描述性语句，或使用 C 语言注释符号。
 
 上述语法中的第五条，示例如下：
 
@@ -1713,24 +1713,24 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 
 比如我们使用如下的语法描述 `EJSON.numberify` 方法的接口：
 
-```php
+```javascript
 // 对给定的数据做数值化，返回指定的实数类型，默认为 `number`。
 $EJSON.numberify(
         any $data,
-        'number | longint | ulongint | longdouble' $subtype = 'number': the number subtype to return
-) number | longint | ulongint | longdouble : the numberified data.
+        'number | longint | ulongint | longdouble' $subtype = 'number': `the number subtype to return.`
+) number | longint | ulongint | longdouble : `the numberified data.`
 ```
 
 或，
 
-```php
+```javascript
 // 对给定的数据做数值化，返回指定的实数类型，默认为 `number`。
 $EJSON.numberify(
         <any $data>
         [,
-            <'number | longint | ulongint | longdouble' $subtype = 'number': the number subtype to return>
+            <'number | longint | ulongint | longdouble' $subtype = 'number': `the number subtype to return.`>
         ]
-) number | longint | ulongint | longdouble : the numberified data.
+) number | longint | ulongint | longdouble : `the numberified data.`
 ```
 
 以上语法亦可用于描述对象的属性，如：
