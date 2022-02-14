@@ -274,11 +274,12 @@ Language: Chinese
 
 用于描述一个定时器对象的属性如下：
 
-```
+```javascript
 {
-    id: <string: the timer identifier, the key with unique restriction>,
-    interval: <string: the interval of the timer in milliseconds>,
-    active: <string: activated or not>,
+    id: <string: `the timer identifier, the key with unique restriction`>,
+    interval: <string: `the interval of the timer in milliseconds`>,
+    active: <string: `activated or not`>,
+    once: <boolean: `once or periodically`>
 }
 ```
 
@@ -354,15 +355,15 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 **描述**
 
 ```javascript
-$SESSION.cwd string | false: returns the current working directory on success, or `false` on failure.
+$SESSION.cwd string | false: `returns the current working directory on success, or @false on failure.`
 ```
 
 该方法获取当前工作路径。
 
 ```javascript
 $SESSION.cwd(!
-        <string $dir: the new path for the current working directory>
-) boolean: returns `true` on success or `false` on failure.
+        <string $dir: `the new path for the current working directory.`>
+) boolean: `returns @true on success or @false on failure`.
 ```
 
 该方法改变当前工作路径。
@@ -386,17 +387,17 @@ $SESSION.cwd(!
 
 ```javascript
 $SESSION.user(
-        <string $key: the user defined key name>
-) any | undefined : the variant value corresponding to the key name $key.
+        <string $key: `the user defined key name`>
+) any | undefined : `the variant value corresponding to the key name $key`.
 ```
 
 该方法获取指定键名对应的键值；未设置时抛出异常 `NoSuchKey`。
 
 ```javascript
 $SESSION.user(!
-        <string $key: the user defined key name>,
-        <any $value: the new variant value>
-) boolean : returns `true` when the old value was overridden or `false` when a new key-value pair was created.
+        <string $key: `the user defined key name`>,
+        <any $value: `the new variant value`>
+) boolean : `returns @true when the old value was overridden or @false when a new key-value pair was created.`
 ```
 
 该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。注意，设置键值为 `undefined` 会执行移除对应键值对的操作。
@@ -450,7 +451,7 @@ $SYSTEM.uname object : an object contains the following properties:
     'machine'             - <string: `machine hardware name`>
     'processor'           - <string: `the processor type`>
     'hardware-platform'   - <string: `the hardware platform`>
-    'operating-system'    - <string: [the operating system (e.g., 'GNU/Linux')] />
+    'operating-system'    - <string: `the operating system (e.g., 'GNU/Linux')` />
 ```
 
 该方法获取系统信息，返回包含有内核名称、版本号等键值对的对象。
@@ -474,18 +475,18 @@ $SYSTEM.uname_prt string: the kernel name.
 ```javascript
 $SYSTEM.uname_prt(
         <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which:
-            'kernel-name'       - includes kernel name (e.g., `Linux`)
-            'kernel-release'    - includes kernel release (e.g., `2.6.28`)
-            'kernel-version'    - includes kernel version
-            'nodename'          - includes the network node hostname
-            'machine'           - includes machine hardware name
-            'processor'         - includes the processor type
-            'hardware-platform' - includes the hardware platform
-            'operating-system'  - includes the operating system (e.g., `GNU/Linux`)
-            'all'               - includes all parts
-            'default'           - is equivalent to 'operating-system kernel-name kernel-release kernel-version'
+            'kernel-name'       - `includes kernel name (e.g., 'Linux')`
+            'kernel-release'    - `includes kernel release (e.g., '2.6.28')`
+            'kernel-version'    - `includes kernel version`
+            'nodename'          - `includes the network node hostname`
+            'machine'           - `includes machine hardware name`
+            'processor'         - `includes the processor type`
+            'hardware-platform' - `includes the hardware platform`
+            'operating-system'  - `includes the operating system (e.g., 'GNU/Linux')`
+            'all'               - `includes all parts`
+            'default'           - `is equivalent to 'operating-system kernel-name kernel-release kernel-version'`
         >
-) string: the string concatenated the desired system information parts together.
+) string: `the string concatenated the desired system information parts together.`
 ```
 
 该方法获取系统指定部分的名称，返回字符串。
@@ -505,7 +506,7 @@ $SYSTEM.uname_prt('kernel-name kernel-release kernel-version')
 **描述**
 
 ```javascript
-$SYSTEM.locale string : the locale for the messages category.
+$SYSTEM.locale string : `the locale for the messages category.`
 ```
 
 该方法获得消息分类（messages category）的区域，返回字符串。
@@ -526,10 +527,13 @@ $SYSTEM.locale(
             'measurement'   - `Settings related to measurements (metric versus US customary)`
             'identification'    - `Metadata describing the locale`
         >
-) string : the locale like `zh_CN`.
+) string : `the locale like 'zh_CN'.`
 ```
 
 该方法获取指定分类的区域，返回字符串。
+
+**注意**
+在 HVML 中，表示区域的字符串始终使用 `en_US`、`zh_CN` 这种形式。
 
 ```javascript
 $SYSTEM.locale(!
@@ -548,7 +552,7 @@ $SYSTEM.locale(!
             'identification'    - `Metadata describing the locale`
             'all'       - `All of the locale categories`
         >,
-        <string $locale: the locale for $categories>
+        <string $locale: `the locale for $categories`>
 ) boolean
 ```
 
@@ -574,7 +578,7 @@ $SYSTEM.locale
 **描述**
 
 ```javascript
-$SYSTEM.random ulongint: a random between 0 and RAND_MAX.
+$SYSTEM.random ulongint: `a random between 0 and RAND_MAX.`
 ```
 
 该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值。
@@ -582,7 +586,7 @@ $SYSTEM.random ulongint: a random between 0 and RAND_MAX.
 ```javascript
 // 原型：获得 0 到指定上限之间的随机数。
 $SYSTEM.random(
-        <real $max: the max value>
+        <real $max: `the max value`>
 ) number
 ```
 
@@ -598,7 +602,7 @@ $SYSTEM.random(
 **描述**
 
 ```javascript
-$SYSTEM.time ulongint: the calendar time (seconds since Epoch)
+$SYSTEM.time ulongint: `the calendar time (seconds since Epoch)`
 ```
 
 该方法获取当前日历时间（自 Epoch 以来的秒数），返回值类型为 `ulongint`。
@@ -606,32 +610,32 @@ $SYSTEM.time ulongint: the calendar time (seconds since Epoch)
 ```javascript
 $SYSTEM.time(
         <'atom | cookie | iso8601 | rfc822 | rfc850 | rfc1036 | rfc1036 | rfc1123 | rfc7231 | rfc2822 | rfc3339 | rfc3339-ex | rss | w3c' $format:
-            - `atom` - Atom (example: 2005-08-15T15:52:01+00:00)
-            - `cookie` - HTTP Cookies (example: Monday, 15-Aug-2005 15:52:01 UTC)
-            - `iso8601` - Same as 'ATOM' (example: 2005-08-15T15:52:01+00:00)
-            - `rfc822` - RFC 822 (example: Mon, 15 Aug 05 15:52:01 +0000)
-            - `rfc850` - RFC 850 (example: Monday, 15-Aug-05 15:52:01 UTC)
-            - `rfc1036` - RFC 1036 (example: Mon, 15 Aug 05 15:52:01 +0000)
-            - `rfc1123` - RFC 1123 (example: Mon, 15 Aug 2005 15:52:01 +0000)
-            - `rfc7231` - RFC 7231 (since PHP 7.0.19 and 7.1.5) (example: Sat, 30 Apr 2016 17:52:13 GMT)
-            - `rfc2822` - RFC 2822 (example: Mon, 15 Aug 2005 15:52:01 +0000)
-            - `rfc3339` - Same as 'ATOM'
-            - `rfc3339-ex` - RFC 3339 EXTENDED format (example: 2005-08-15T15:52:01.000+00:00)
-            - `rss` - RSS (example: Mon, 15 Aug 2005 15:52:01 +0000)
-            - `w3c` - World Wide Web Consortium (example: 2005-08-15T15:52:01+00:00)
+            - 'atom'- `Atom (example: 2005-08-15T15:52:01+00:00)`
+            - 'cookie'- `HTTP Cookies (example: Monday, 15-Aug-2005 15:52:01 UTC)`
+            - 'iso8601'- `Same as 'ATOM' (example: 2005-08-15T15:52:01+00:00)`
+            - 'rfc822'- `RFC 822 (example: Mon, 15 Aug 05 15:52:01 +0000)`
+            - 'rfc850'- `RFC 850 (example: Monday, 15-Aug-05 15:52:01 UTC)`
+            - 'rfc1036'- `RFC 1036 (example: Mon, 15 Aug 05 15:52:01 +0000)`
+            - 'rfc1123'- `RFC 1123 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
+            - 'rfc7231'- `RFC 7231 (since PHP 7.0.19 and 7.1.5) (example: Sat, 30 Apr 2016 17:52:13 GMT)`
+            - 'rfc2822'- `RFC 2822 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
+            - 'rfc3339'- `Same as 'ATOM'`
+            - 'rfc3339-ex'- `RFC 3339 EXTENDED format (example: 2005-08-15T15:52:01.000+00:00)`
+            - 'rss'- `RSS (example: Mon, 15 Aug 2005 15:52:01 +0000)`
+            - 'w3c'- `World Wide Web Consortium (example: 2005-08-15T15:52:01+00:00)`
         >
-        [, <number | longint | ulongint | longdouble $seconds: seconds since Epoch>
+        [, <number | longint | ulongint | longdouble $seconds: `seconds since Epoch`>
             [, <string $timezone>
             ]
         ]
-) string : a date and time string in the given time format $format and the time zone $timezone for the specified time $seconds.
+) string : `a date and time string in the given time format $format and the time zone $timezone for the specified time $seconds.`
 ```
 
 该方法获得指定时间在给定时区，以给定格式化标准/规范名称（如 ISO8601、RFC850）形式展示的时间字符串。
 
 ```javascript
 $SYSTEM.time(!
-        <number $seconds: seconds since Epoch>
+        <number $seconds: `seconds since Epoch`>
 ) true | false
 ```
 
@@ -683,7 +687,7 @@ $SYSTEM.gmtime: object
 
 ```javascript
 $SYSTEM.gmtime(
-        [, <number | longint | ulongint | longdouble $seconds: seconds since Epoch>
+        [, <number | longint | ulongint | longdouble $seconds: `seconds since Epoch`>
             [, <string $timezone>
             ]
         ]
@@ -696,15 +700,15 @@ $SYSTEM.gmtime(
 
 ```javascript
 {
-   'sec'    The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.
-   'min'    The number of minutes after the hour, in the range 0 to 59.
-   'hour'   The number of hours past midnight, in the range 0 to 23.
-   'mday'   The day of the month, in the range 1 to 31.
-   'mon'    The number of months since January, in the range 0 to 11.
-   'year'   The number of years since 1900.
-   'wday'   The number of days since Sunday, in the range 0 to 6.
-   'yday'   The number of days since January 1, in the range 0 to 365.
-   'isdst'  A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving  time  is  in  effect, zero if it is not, and negative if the information is not available.
+   'sec':   <number: `The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.`>
+   'min':   <number: `The number of minutes after the hour, in the range 0 to 59.`>
+   'hour':  <number: `The number of hours past midnight, in the range 0 to 23.`>
+   'mday':  <number: `The day of the month, in the range 1 to 31.`>
+   'mon':   <number: `The number of months since January, in the range 0 to 11.`>
+   'year':  <number: `The number of years since 1900.`>
+   'wday':  <number: `The number of days since Sunday, in the range 0 to 6.`>
+   'yday':  <number: `The number of days since January 1, in the range 0 to 365.`>
+   'isdst'  <number: `A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving time is in effect, zero if it is not, and negative if the information is not available.`>
 }
 ```
 
@@ -764,8 +768,8 @@ $SYSTEM.timezone(! <string $timezone> ) true | false
 
 ```javascript
 $SYSTEM.fmttime(
-        <string $format: the format string>
-        [, <number | longint | ulongint | longdouble: the calendar time (seconds since Epoch)>
+        <string $format: `the format string`>
+        [, <number | longint | ulongint | longdouble: `the calendar time (seconds since Epoch)`>
             [, <string $timezone>
             ]
         ]
@@ -789,12 +793,18 @@ $SYSTEM.time("It now is %H:%m")
 **描述**
 
 ```javascript
-$SYSTEM.env( <string: the environment name> )
+$SYSTEM.env(
+        <string: `the environment variable name`>
+) string | undefined
 ```
+
 该方法获取指定环境变量的值（字符串）；未设置时返回 `undefined`。
 
 ```javascript
-$SYSTEM.env(! <string: the environment name>, <string: the value> )
+$SYSTEM.env(!
+        <string: `the environment variable name`>,
+        <string: `the value`>
+) boolean : `returns @true when the old value was overridden or @false when a new environment variable was created.`
 ```
 
 该方法设置指定的环境变量，返回布尔数据，指明是否覆盖了已有环境变量。
@@ -815,8 +825,8 @@ $SYSTEM.env(! 'LOGNAME', 'tom' )
 
 ```javascript
 $SYSTEM.const(
-        <string $name: the constant name>
-) any : the constant value
+        <string $name: `the constant name`>
+) any : `the constant value`
 ```
 
 该方法获取指定常量的值；未设置时返回 `undefined`。
@@ -846,15 +856,15 @@ $SYSTEM.const('HVML_SPEC_VERSION')
 该方法获取或设置 HVML 程序的基础 URL。
 
 ```javascript
-$HVML.base string: the base URL.
+$HVML.base string: `the base URL.`
 ```
 
 该方法返回当前的基础 URL，如 `file:///app/com.example.foo/hvml`。
 
 ```javascript
 $HVML.base(!
-        <string $new_url: the new base URL>
-) string | false: the new base URL normalized from $new_url or `false` for invalid $new_url.
+        <string $new_url: `the new base URL`>
+) string | false: `the new base URL normalized from $new_url or `false` for invalid $new_url.`
 ```
 
 该方法设置 HVML 程序的基础 URL 为预期值，返回正规化处理后的基础 URL。若传递的 `$new_url` 不是合法的或不支持的 URL，则返回 `false`。
@@ -875,15 +885,15 @@ $HVML.base(! "https://foo.example.com//app/hvml/" )
 **描述**
 
 ```javascript
-$HVML.maxIterationCount ulongint: the current maximal iteration count.
+$HVML.maxIterationCount ulongint: `the current maximal iteration count.`
 ```
 
 该方法返回当前的最大迭代次数值。
 
 ```javascript
 $HVML.maxIterationCount(!
-        <ulongint $new_value: the new maximal interation count>
-) ulongint : the new maximal iteration count.
+        <ulongint $new_value: `the new maximal interation count`>
+) ulongint : `the new maximal iteration count.`
 ```
 
 设置最大迭代次数值并返回设置后的值。当传入无效值（比如零）时，不做改变。
@@ -904,13 +914,13 @@ $HVML.maxIterationCount(! 10000UL )
 
 ```javascript
 // 原型，返回当前值
-$HVML.maxRecursionDepth ulongint: the current maximal recursion depth value.
+$HVML.maxRecursionDepth ulongint: `the current maximal recursion depth value.`
 ```
 
 ```javascript
 $HVML.maxRecursionDepth(!
-        <ulongint $new_value: new maximal recursion depth>
-) ulongint : the new maximal recursion depth value.
+        <ulongint $new_value: `new maximal recursion depth`>
+) ulongint : `the new maximal recursion depth value.`
 ```
 
 该方法设置最大递归深度值，返回设置后的值。当传入无效值（比如零）时，不做改变。
@@ -930,15 +940,15 @@ $HVML.maxRecursionDepth(! 10000UL )
 **描述**
 
 ```javascript
-$HVML.timeout number : the current timeout value (in seconds)
+$HVML.timeout number : `the current timeout value (in seconds)`
 ```
 
 该方法返回当前超时值。
 
 ```javascript
 $HVML.timeout(!
-        <number $new_timeout: the new timeout value (in seconds)>
-) number : the new timeout value
+        <number $new_timeout: `the new timeout value (in seconds)`>
+) number : `the new timeout value`
 ```
 
 该方法设置超时值，并返回设置后的值。当传入无效值（如零或者负数）时，不做改变。
@@ -959,8 +969,8 @@ $HVML.timeout(! 3.5 )
 
 ```javascript
 $HVML.attr(
-        <string $attr_name: the attribute name>
-) string | undefined : the attribute value
+        <string $attr_name: `the attribute name`>
+) string | undefined : `the attribute value`
 ```
 
 该方法获取 HVML 程序的属性值（亦即 `hvml` 标签定义的属性值）。当前，HVML 规范定义有如下两个属性：
@@ -970,9 +980,9 @@ $HVML.attr(
 
 ```javascript
 $HVML.attr(!
-        <string $attr_name: the attribute name>,
-        <string $attr_value: the new attribute value>
-) true | false : `true` for changed the attribute, otherwise `false`.
+        <string $attr_name: `the attribute name>`,
+        <string $attr_value: `the new attribute value`>
+) true | false : `@true for changed the attribute, otherwise @false.`
 ```
 
 该方法设置 HVML 程序的属性值。
@@ -993,19 +1003,16 @@ $HVML.attr(! 'lang', 'zh' )
 该方法返回文档类型，字符串。
 
 ```javascript
-// 原型，返回字符串，如 `html`
+$DOC.doctype string : `the target DOCTYPE, such as 'html'`
+```
+
+该方法返回目标文档的文档类型；字符串，如 `html`。
+
+**示例**
+
+```javascript
 $DOC.doctype
-
-// 原型，获取 DOCTYPE 标签定义的 SYSTEM 标志符字符串
-$DOC.doctype.system
-$DOC.doctype("system")
-
-// 原型，获取 DOCTYPE 标签定义的 PUBLIC 标志符字符串
-$DOC.doctype.public
-$DOC.doctype("public")
-
-// 示例：
-$DOC.doctype
+    // html
 ```
 
 #### 3.4.2) `query` 方法
