@@ -278,8 +278,7 @@ Language: Chinese
 {
     id: <string: `the timer identifier, the key with unique restriction`>,
     interval: <string: `the interval of the timer in milliseconds`>,
-    active: <string: `activated or not`>,
-    once: <boolean: `once or periodically`>
+    active: <string: `activated or not`>
 }
 ```
 
