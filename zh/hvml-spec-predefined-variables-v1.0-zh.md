@@ -443,14 +443,14 @@ $SESSION.user(! 'userId', undefined )
 
 ```javascript
 $SYSTEM.uname object : an object contains the following properties:
-    kernel-name         - <string: kernel name (e.g., `Linux`)>
-    kernel-release      - <string: kernel release (e.g., `2.6.28`)>
-    kernel-version      - <string: kernel version>
-    nodename            - <string: the network node hostname>
-    machine             - <string: machine hardware name>
-    processor           - <string: the processor type>
-    hardware-platform   - <string: the hardware platform>
-    operating-system    - <string: the operating system (e.g., `GNU/Linux`)>
+    'kernel-name'         - <string: `kernel name (e.g., 'Linux')`>
+    'kernel-release'      - <string: `kernel release (e.g., '2.6.28')`>
+    'kernel-version'      - <string: `kernel version`>
+    'nodename'            - <string: `the network node hostname`>
+    'machine'             - <string: `machine hardware name`>
+    'processor'           - <string: `the processor type`>
+    'hardware-platform'   - <string: `the hardware platform`>
+    'operating-system'    - <string: `the operating system (e.g., 'GNU/Linux')`>
 ```
 
 该方法获取系统信息，返回包含有内核名称、版本号等键值对的对象。
@@ -513,18 +513,18 @@ $SYSTEM.locale string : the locale for the messages category.
 ```javascript
 $SYSTEM.locale(
         < 'ctype | numeric | time | collate | monetary | messages | paper | name | address | telephone | measurement | identification' $category:
-            'ctype'     - Character classification
-            'numeric'   - Formatting of nonmonetary numeric values
-            'time'      - Formatting of date and time values
-            'collate'   - String collation
-            'monetary'  - Formatting of monetary values
-            'messsages' - Localizable natural-language messages
-            'paper'     - ettings related to the standard paper size
-            'name'      - Formatting of salutations for persons
-            'address'   - Formatting of addresses and geography-related items
-            'telephone' - Formats to be used with telephone services
-            'measurement'   - Settings related to measurements (metric versus US customary)
-            'identification'    - Metadata describing the locale
+            'ctype'     - `Character classification`
+            'numeric'   - `Formatting of nonmonetary numeric values`
+            'time'      - `Formatting of date and time values`
+            'collate'   - `String collation`
+            'monetary'  - `Formatting of monetary values`
+            'messsages' - `Localizable natural-language messages`
+            'paper'     - `ettings related to the standard paper size`
+            'name'      - `Formatting of salutations for persons`
+            'address'   - `Formatting of addresses and geography-related items`
+            'telephone' - `Formats to be used with telephone services`
+            'measurement'   - `Settings related to measurements (metric versus US customary)`
+            'identification'    - `Metadata describing the locale`
         >
 ) string : the locale like `zh_CN`.
 ```
@@ -534,19 +534,19 @@ $SYSTEM.locale(
 ```javascript
 $SYSTEM.locale(!
         < '[ctype || numeric || time || collate || monetary || messages || paper || name || address || telephone || measurement || identification] | all' $categories:
-            'ctype'     - Character classification
-            'numeric'   - Formatting of nonmonetary numeric values
-            'time'      - Formatting of date and time values
-            'collate'   - String collation
-            'monetary'  - Formatting of monetary values
-            'messsages' - Localizable natural-language messages
-            'paper'     - ettings related to the standard paper size
-            'name'      - Formatting of salutations for persons
-            'address'   - Formatting of addresses and geography-related items
-            'telephone' - Formats to be used with telephone services
-            'measurement'   - Settings related to measurements (metric versus US customary)
-            'identification'    - Metadata describing the locale
-            'all'       - All of the locale categories
+            'ctype'     - `Character classification`
+            'numeric'   - `Formatting of nonmonetary numeric values`
+            'time'      - `Formatting of date and time values`
+            'collate'   - `String collation`
+            'monetary'  - `Formatting of monetary values`
+            'messsages' - `Localizable natural-language messages`
+            'paper'     - `ettings related to the standard paper size`
+            'name'      - `Formatting of salutations for persons`
+            'address'   - `Formatting of addresses and geography-related items`
+            'telephone' - `Formats to be used with telephone services`
+            'measurement'   - `Settings related to measurements (metric versus US customary)`
+            'identification'    - `Metadata describing the locale`
+            'all'       - `All of the locale categories`
         >,
         <string $locale: the locale for $categories>
 ) boolean
