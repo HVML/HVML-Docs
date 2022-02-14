@@ -782,8 +782,8 @@ $SYSTEM.fmttime(
 
 ```javascript
 // 获得类似 `11:27` 的时间字符串
-$SYSTEM.time("It now is %H:%m")
-    // string: 'It now is 11:27'
+$SYSTEM.time("It is %H:%m now")
+    // string: 'It is 11:27 now'
 ```
 
 #### 3.2.10) `env` 方法
