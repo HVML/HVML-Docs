@@ -353,13 +353,13 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 **描述**
 
-```php
+```javascript
 $SESSION.cwd string | false: returns the current working directory on success, or `false` on failure.
 ```
 
 该方法获取当前工作路径。
 
-```php
+```javascript
 $SESSION.cwd(!
         <string $dir: the new path for the current working directory>
 ) boolean: returns `true` on success or `false` on failure.
@@ -384,7 +384,7 @@ $SESSION.cwd(!
 
 **描述**
 
-```php
+```javascript
 $SESSION.user(
         <string $key: the user defined key name>
 ) any | undefined : the variant value corresponding to the key name $key.
@@ -392,7 +392,7 @@ $SESSION.user(
 
 该方法获取指定键名对应的键值；未设置时抛出异常 `NoSuchKey`。
 
-```php
+```javascript
 $SESSION.user(!
         <string $key: the user defined key name>,
         <any $value: the new variant value>
@@ -403,7 +403,7 @@ $SESSION.user(!
 
 **示例**
 
-```php
+```javascript
 // 移除 `userId` 键值对
 $SESSION.user(! 'userId', undefined )
     // false (assumed that `userId` was not set)
@@ -441,7 +441,7 @@ $SESSION.user(! 'userId', undefined )
 
 **描述**
 
-```php
+```javascript
 $SYSTEM.uname object : an object contains the following properties:
     kernel-name         - <string: kernel name (e.g., `Linux`)>
     kernel-release      - <string: kernel release (e.g., `2.6.28`)>
@@ -457,7 +457,7 @@ $SYSTEM.uname object : an object contains the following properties:
 
 **示例**
 
-```php
+```javascript
 $SYSTEM.uname
 ```
 
@@ -465,7 +465,7 @@ $SYSTEM.uname
 
 获取可打印的系统信息。
 
-```php
+```javascript
 $SYSTEM.uname_prt string: the kernel name.
 ```
 
@@ -504,13 +504,13 @@ $SYSTEM.uname_prt('kernel-name kernel-release kernel-version')
 
 **描述**
 
-```php
+```javascript
 $SYSTEM.locale string : the locale for the messages category.
 ```
 
 该方法获得消息分类（messages category）的区域，返回字符串。
 
-```php
+```javascript
 $SYSTEM.locale(
         < 'ctype | numeric | time | collate | monetary | messages | paper | name | address | telephone | measurement | identification' $category:
             'ctype'     - Character classification
@@ -531,7 +531,7 @@ $SYSTEM.locale(
 
 该方法获取指定分类的区域，返回字符串。
 
-```php
+```javascript
 $SYSTEM.locale(!
         < '[ctype || numeric || time || collate || monetary || messages || paper || name || address || telephone || measurement || identification] | all' $categories:
             'ctype'     - Character classification
@@ -556,7 +556,7 @@ $SYSTEM.locale(!
 
 **示例**
 
-```php
+```javascript
 $SYSTEM.locale
     // en_US
 
@@ -573,13 +573,13 @@ $SYSTEM.locale
 
 **描述**
 
-```php
+```javascript
 $SYSTEM.random ulongint: a random between 0 and RAND_MAX.
 ```
 
 该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值。
 
-```php
+```javascript
 // 原型：获得 0 到指定上限之间的随机数。
 $SYSTEM.random(
         <real $max: the max value>
@@ -597,13 +597,13 @@ $SYSTEM.random(
 
 **描述**
 
-```php
+```javascript
 $SYSTEM.time ulongint: the calendar time (seconds since Epoch)
 ```
 
 该方法获取当前日历时间（自 Epoch 以来的秒数），返回值类型为 `ulongint`。
 
-```php
+```javascript
 $SYSTEM.time(
         <'atom | cookie | iso8601 | rfc822 | rfc850 | rfc1036 | rfc1036 | rfc1123 | rfc7231 | rfc2822 | rfc3339 | rfc3339-ex | rss | w3c' $format:
             - `atom` - Atom (example: 2005-08-15T15:52:01+00:00)
@@ -629,7 +629,7 @@ $SYSTEM.time(
 
 该方法获得指定时间在给定时区，以给定格式化标准/规范名称（如 ISO8601、RFC850）形式展示的时间字符串。
 
-```php
+```javascript
 $SYSTEM.time(!
         <number $seconds: seconds since Epoch>
 ) true | false
@@ -643,7 +643,7 @@ $SYSTEM.time(!
 
 **示例**
 
-```php
+```javascript
 $SYSTEM.time
     // ulongint: 123456789UL
 
@@ -675,13 +675,13 @@ $SYSTEM.time('rfc822', $SYSTEM.time, 'Asia/Shanghai')
 
 **描述**
 
-```php
+```javascript
 $SYSTEM.gmtime: object
 ```
 
 获得当前时间当前时区的分解时间（broken-down time），返回类型为对象。
 
-```php
+```javascript
 $SYSTEM.gmtime(
         [, <number | longint | ulongint | longdouble $seconds: seconds since Epoch>
             [, <string $timezone>
@@ -694,7 +694,7 @@ $SYSTEM.gmtime(
 
 该函数返回的分解时间对象包含如下属性：
 
-```php
+```javascript
 {
    'sec'    The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.
    'min'    The number of minutes after the hour, in the range 0 to 59.
@@ -710,7 +710,7 @@ $SYSTEM.gmtime(
 
 **示例**
 
-```php
+```javascript
 // 获取当前时间在当前时区的分解时间
 $SYSTEM.gmtime
 
@@ -724,7 +724,7 @@ $SYSTEM.gmtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
 
 **描述**
 
-```php
+```javascript
 $SYSTEM.mktime(
         <object $tm>
         [, <string $timezone>
@@ -742,13 +742,13 @@ $SYSTEM.mktime(
 
 **描述**
 
-```php
+```javascript
 $SYSTEM.timezone : string
 ```
 
 该方法返回当前时区。
 
-```php
+```javascript
 $SYSTEM.timezone(! <string $timezone> ) true | false
 ```
 
@@ -762,7 +762,7 @@ $SYSTEM.timezone(! <string $timezone> ) true | false
 
 **描述**
 
-```php
+```javascript
 $SYSTEM.fmttime(
         <string $format: the format string>
         [, <number | longint | ulongint | longdouble: the calendar time (seconds since Epoch)>
@@ -776,7 +776,7 @@ $SYSTEM.fmttime(
 
 **示例**
 
-```php
+```javascript
 // 获得类似 `11:27` 的时间字符串
 $SYSTEM.time("It now is %H:%m")
     // string: 'It now is 11:27'
@@ -788,12 +788,12 @@ $SYSTEM.time("It now is %H:%m")
 
 **描述**
 
-```php
+```javascript
 $SYSTEM.env( <string: the environment name> )
 ```
 该方法获取指定环境变量的值（字符串）；未设置时返回 `undefined`。
 
-```php
+```javascript
 $SYSTEM.env(! <string: the environment name>, <string: the value> )
 ```
 
@@ -801,7 +801,7 @@ $SYSTEM.env(! <string: the environment name>, <string: the value> )
 
 **示例**
 
-```php
+```javascript
 // 设置环境变量 `LOGNAME` 的值
 $SYSTEM.env(! 'LOGNAME', 'tom' )
     // boolean: true
@@ -813,7 +813,7 @@ $SYSTEM.env(! 'LOGNAME', 'tom' )
 
 **描述**
 
-```php
+```javascript
 $SYSTEM.const(
         <string $name: the constant name>
 ) any : the constant value
@@ -831,7 +831,7 @@ $SYSTEM.const(
 
 **示例**
 
-```php
+```javascript
 // 获取常量 `HVML_SPEC_VER` 的值
 $SYSTEM.const('HVML_SPEC_VERSION')
     // string: '1.0'
@@ -845,13 +845,13 @@ $SYSTEM.const('HVML_SPEC_VERSION')
 
 该方法获取或设置 HVML 程序的基础 URL。
 
-```php
+```javascript
 $HVML.base string: the base URL.
 ```
 
 该方法返回当前的基础 URL，如 `file:///app/com.example.foo/hvml`。
 
-```php
+```javascript
 $HVML.base(!
         <string $new_url: the new base URL>
 ) string | false: the new base URL normalized from $new_url or `false` for invalid $new_url.
@@ -861,7 +861,7 @@ $HVML.base(!
 
 **示例**
 
-```php
+```javascript
 $HVML.base(! "https://foo.example.com//app/hvml/" )
     // string: 'https://foo.example.com/app/hvml'
 ```
@@ -874,13 +874,13 @@ $HVML.base(! "https://foo.example.com//app/hvml/" )
 
 **描述**
 
-```php
+```javascript
 $HVML.maxIterationCount ulongint: the current maximal iteration count.
 ```
 
 该方法返回当前的最大迭代次数值。
 
-```php
+```javascript
 $HVML.maxIterationCount(!
         <ulongint $new_value: the new maximal interation count>
 ) ulongint : the new maximal iteration count.
@@ -890,7 +890,7 @@ $HVML.maxIterationCount(!
 
 **示例**
 
-```php
+```javascript
 $HVML.maxIterationCount(! 10000UL )
 ```
 
@@ -902,12 +902,12 @@ $HVML.maxIterationCount(! 10000UL )
 
 **描述**
 
-```php
+```javascript
 // 原型，返回当前值
 $HVML.maxRecursionDepth ulongint: the current maximal recursion depth value.
 ```
 
-```php
+```javascript
 $HVML.maxRecursionDepth(!
         <ulongint $new_value: new maximal recursion depth>
 ) ulongint : the new maximal recursion depth value.
@@ -917,7 +917,7 @@ $HVML.maxRecursionDepth(!
 
 **示例**
 
-```php
+```javascript
 $HVML.maxRecursionDepth(! 10000UL )
 ```
 
@@ -929,13 +929,13 @@ $HVML.maxRecursionDepth(! 10000UL )
 
 **描述**
 
-```php
+```javascript
 $HVML.timeout number : the current timeout value (in seconds)
 ```
 
 该方法返回当前超时值。
 
-```php
+```javascript
 $HVML.timeout(!
         <number $new_timeout: the new timeout value (in seconds)>
 ) number : the new timeout value
@@ -945,7 +945,7 @@ $HVML.timeout(!
 
 **示**
 
-```php
+```javascript
 // 设置超时值为 3.5 秒。
 $HVML.timeout(! 3.5 )
     // numer: 3.5
@@ -957,7 +957,7 @@ $HVML.timeout(! 3.5 )
 
 **描述**
 
-```php
+```javascript
 $HVML.attr(
         <string $attr_name: the attribute name>
 ) string | undefined : the attribute value
@@ -968,7 +968,7 @@ $HVML.attr(
 - `target`：目标标记语言，如 `html`。
 - `lang`：语言，如 `en`。
 
-```php
+```javascript
 $HVML.attr(!
         <string $attr_name: the attribute name>,
         <string $attr_value: the new attribute value>
@@ -979,7 +979,7 @@ $HVML.attr(!
 
 **示例**
 
-```php
+```javascript
 $HVML.attr(! 'lang', 'zh' )
     // boolean: true
 ```
@@ -992,7 +992,7 @@ $HVML.attr(! 'lang', 'zh' )
 
 该方法返回文档类型，字符串。
 
-```php
+```javascript
 // 原型，返回字符串，如 `html`
 $DOC.doctype
 
@@ -1093,7 +1093,7 @@ $DOC.doctype
 
 通常在这些键名上会设定有相应的获取器或设置器函数，于是即可实现 HVML 规范中要求的表达式：
 
-```php
+```javascript
 // <div id="foo" bar="baz">
 
 // 获取 id 为 foo 的元素上的属性 `bar` 的值：
@@ -1113,7 +1113,7 @@ $DOC.query("#foo").attr(! "bar", "qux")
 
 该方法返回数据的类型名称，字符串。
 
-```php
+```javascript
 // 原型
 $EJSON.type( <any> ) string
 ```
@@ -1122,7 +1122,7 @@ $EJSON.type( <any> ) string
 
 该方法返回数据的数据项个数，数值。
 
-```php
+```javascript
 // 原型
 $EJSON.count( <any> ) number
 ```
@@ -1131,7 +1131,7 @@ $EJSON.count( <any> ) number
 
 该方法对给定的数据做数值化处理，返回一个数值。
 
-```php
+```javascript
 // 原型
 $EJSON.numberify( <any> ) number
 ```
@@ -1140,7 +1140,7 @@ $EJSON.numberify( <any> ) number
 
 该方法对给定的数据做布尔化处理，返回布尔值（`true` 或者 `false`）。
 
-```php
+```javascript
 // 原型
 $EJSON.booleanize( <any> ) boolean
 ```
@@ -1149,7 +1149,7 @@ $EJSON.booleanize( <any> ) boolean
 
 该方法对给定的数据做字符串化处理，返回字符串。
 
-```php
+```javascript
 // 原型
 $EJSON.stringify( <any> ) string
 ```
@@ -1158,7 +1158,7 @@ $EJSON.stringify( <any> ) string
 
 该方法对给定的数据做序列化处理，返回字符串。
 
-```php
+```javascript
 // 原型
 $EJSON.serialize(
         <any $data>
@@ -1184,7 +1184,7 @@ $EJSON.serialize(
 
 该方法对给定的数组或者集合做排序。
 
-```php
+```javascript
 // 原型
 $EJSON.sort(
         < array | set >,
@@ -1202,7 +1202,7 @@ $EJSON.sort(
 
 该方法随机打乱给定数组或者集合的成员顺序。
 
-```php
+```javascript
 // 原型
 $EJSON.shuffle(
         < array | set >,
@@ -1224,7 +1224,7 @@ $EJSON.shuffle(
 - 小于 0 表示第一个数据小于第二个数据；
 - 大于 0 表示第一个数据大于第二个数据。
 
-```php
+```javascript
 // 原型
 $EJSON.compare(
         < any: the first data >,
@@ -1244,7 +1244,7 @@ $EJSON.compare(
 
 **描述**
 
-```php
+```javascript
 $EJSON.parse(
         < string: $string: the string to be parsed. >
         [, < boolean $strict_json = `false`:
@@ -1268,7 +1268,7 @@ $EJSON.parse(
 
 逻辑取反操作。
 
-```php
+```javascript
 // 原型：逻辑取反的结果，返回 true 或 false
 $L.not(<any>)
 
@@ -1280,7 +1280,7 @@ $L.not( false )
 
 逻辑与运算。
 
-```php
+```javascript
 // 原型：两个或以上数据执行逻辑与操作，返回 true 或 false
 $L.and(<any>, <any>[, <any>[, ...]])
 
@@ -1292,7 +1292,7 @@ $L.and( false, true )
 
 逻辑或运算。
 
-```php
+```javascript
 // 原型：两个或以上数据执行逻辑或操作，返回 true 或 false
 $L.or(<any>, <any>[, <any>[, ...]])
 
@@ -1304,7 +1304,7 @@ $L.or( false, true )
 
 逻辑亦或运算。
 
-```php
+```javascript
 // 原型：两个数据执行逻辑亦或操作，返回 true 或 false
 $L.xor(<any>, <any>)
 
@@ -1316,7 +1316,7 @@ $L.xor( false, true )
 
 对比两个数据在数值上是否相等，返回 `true` 或 `false`。
 
-```php
+```javascript
 // 原型：
 $L.eq(<any>, <any>)
 
@@ -1328,7 +1328,7 @@ $L.eq("1", 1)
 
 对比两个数据在数值上是否不相等，返回 `true` 或 `false`。
 
-```php
+```javascript
 // 原型
 $L.ne(<any>, <any>)
 
@@ -1340,7 +1340,7 @@ $L.ne("1", 2)
 
 对比第一个数据在数值上是否大于第二个数据，返回 `true` 或 `false`。
 
-```php
+```javascript
 // 原型
 $L.gt(<any>, <any>)
 
@@ -1352,7 +1352,7 @@ $L.gt("2", 1)
 
 对比第一个数据在数值上是否大于或等于第二个数据，返回 `true` 或 `false`。
 
-```php
+```javascript
 // 原型
 $L.ge(<any>, <any>)
 
@@ -1364,7 +1364,7 @@ $L.ge("2", 2)
 
 对比第一个数据在数值上是否小于第二个数据，返回 `true` 或 `false`。
 
-```php
+```javascript
 // 原型：
 $L.lt(<any>, <any>)
 
@@ -1376,7 +1376,7 @@ $L.lt("1", 2)
 
 对比第一个数据在数值上是否小于或等于第二个数据，返回 `true` 或 `false`。
 
-```php
+```javascript
 // 原型
 $L.le(<any>, <any>)
 
@@ -1388,7 +1388,7 @@ $L.lt("1", 2)
 
 对比两个数据的字符串形式是否相等或匹配，返回 `true` 或 `false`。
 
-```php
+```javascript
 // 原型
 $L.streq("case | caseless | wildcard | regexp", <any>, <any>)
 
@@ -1410,7 +1410,7 @@ $L.streq("reg", "^zh", "zh_CN")
 
 对比两个数据的字符串形式是否不相等或不匹配，返回 `true` 或 `false`。
 
-```php
+```javascript
 // 原型：
 $L.strne("case | caseless | wildcard | regexp", <any>, <any>)
 
@@ -1426,7 +1426,7 @@ $L.strne("case", "zh_CN", "zh_cn")
 
 对比第一个数据的字符串形式是否大于第二个数据的字符串形式，返回 `true` 或 `false`。
 
-```php
+```javascript
 // 原型
 $L.strgt("case | caseless", <any>, <any>)
 
@@ -1442,7 +1442,7 @@ $L.strgt("case", 'A', 'Z')
 
 对比第一个数据的字符串形式是否大于或等于第二个数据的字符串形式，返回 `true` 或 `false`。
 
-```php
+```javascript
 // 原型
 $L.strge("case | caseless", <any>, <any>)
 
@@ -1458,7 +1458,7 @@ $L.strge("caseless", "abc", "ABC")
 
 对比第一个数据的字符串形式是否小于第二个数据的字符串形式，返回 `true` 或 `false`。
 
-```php
+```javascript
 // 原型
 $L.strlt("case | caseless", <any>, <any>)
 
@@ -1474,7 +1474,7 @@ $L.strlt("case", "Z", "A")
 
 对比第一个数据的字符串形式是否小于或等于第二个数据的字符串形式，返回 `true` 或 `false`。
 
-```php
+```javascript
 // 原型
 $L.strle("case | caseless", <any>, <any>)
 
@@ -1490,7 +1490,7 @@ $L.strle("caseless", "abc", "ABC")
 
 对参数化的逻辑运算表达式求值。
 
-```php
+```javascript
 // 原型：
 $L.eval(<string: logical expression>, <object: the parameter map>)
 
@@ -1531,7 +1531,7 @@ $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) }
 
 #### 3.7.2) `get` 方法
 
-```php
+```javascript
 // 原型
 $T.get(<string: original text>)
 
@@ -1550,7 +1550,7 @@ $T.get('Hello, world!')
 
 **描述**
 
-```php
+```javascript
 $STR.contains(
         <string $haystack: the string to search in>,
         <string $needle: the substring to search for in the haystack>
@@ -1578,7 +1578,7 @@ $STR.contains(
 
 **示例**
 
-```php
+```javascript
 $STR.contains('Hello, world!', 'world')
     // boolean: true
 
@@ -1596,7 +1596,7 @@ $STR.contains('Hello, world!', '')
 
 **描述**
 
-```php
+```javascript
 $STR.starts_with(
         <string haystack: the string to search in.>,
         <string needle: the substring to search for in the haystack.>
@@ -1624,7 +1624,7 @@ $STR.starts_with(
 
 **示例**
 
-```php
+```javascript
 $STR.starts_with('Hello, world', 'hello', true)
     // boolean: true
 
@@ -1640,7 +1640,7 @@ $STR.starts_with('Hello, world', '')
 
 用于判断一个字符串是否以给定的字符串结尾。
 
-```php
+```javascript
 $STR.ends_with(
         <string haystack: the string to search in>,
         <string needle: the substring to search for in the haystack>
@@ -1668,7 +1668,7 @@ $STR.ends_with(
 
 **示例**
 
-```php
+```javascript
 $STR.ends_with('Hello, world', 'World', true)
     // boolean: true
 
@@ -1686,7 +1686,7 @@ $STR.ends_with('Hello, world', '')
 
 **描述**
 
-```php
+```javascript
 $STR.explode(
         <string $string: the input string to explode>
         [, <string $separator: the boundary string = ''>
@@ -1716,7 +1716,7 @@ $STR.explode(
 
 **示例**
 
-```php
+```javascript
 $STR.explode('beijing:shanghai:guangzhou', ':')
     // array: ['beijing', 'shanghai', 'guangzhou']
 
@@ -1740,7 +1740,7 @@ $STR.explode('中华人民共和国', 2)
 
 **描述**
 
-```php
+```javascript
 $STR.implode(
         <array $pieces: The array to implode>
         [, <string $separator: the boundary string = ''>]
@@ -1762,7 +1762,7 @@ $STR.implode(
 
 **示例**
 
-```php
+```javascript
 $STR.implode(['beijing', 'shanghai', 'guangzhou'], ', ')
     // string: 'beijing, shanghai, guangzhou'
 
@@ -1786,7 +1786,7 @@ $STR.implode(['汉', '字'])
 
 **描述**
 
-```php
+```javascript
 $STR.shuffle(<string $string: the input string to shuffle>) string
 ```
 
@@ -1803,7 +1803,7 @@ $STR.shuffle(<string $string: the input string to shuffle>) string
 
 **示例**
 
-```php
+```javascript
 $STR.shuffle('beijing') // string: 'jbienig'
 ```
 
@@ -1817,7 +1817,7 @@ $STR.shuffle('beijing') // string: 'jbienig'
 
 **描述**
 
-```php
+```javascript
 $STR.replace(
         <string | array $search>,
         <string | array $replace>,
@@ -1852,7 +1852,7 @@ search 的替换值。一个数组可以被用来指定多重替换。
 
 **示例**
 
-```php
+```javascript
 $STR.replace("%BODY%", "black", "<body text=%BODY%>");
     // string: '<body text=black>'
 
@@ -1869,7 +1869,7 @@ $STR.replace("%body%", "black", "<body text=%BODY%>", true);
 
 格式化数值及字符串数据，使用 C 格式化字符表述方法。
 
-```php
+```javascript
 // 原型
 $STR.format_c(
         <string: C format string>
@@ -1896,7 +1896,7 @@ $STR.format_c('Tom is %d years old, while Jerry is %d years old.', 9, 7)
 
 使用对象表达要格式化的数据时，占位符用 `{name}`、`{id}` 等表示。
 
-```php
+```javascript
 // 原型
 $STR.format_p(<string: string contains placeholders>, <array>) string
 
@@ -1916,7 +1916,7 @@ $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 
 
 **描述**
 
-```php
+```javascript
 $STR.join(
         <string $str1>,
         <string $str2>
@@ -1943,7 +1943,7 @@ $STR.join(
 
 **示例**
 
-```php
+```javascript
 $STR.join('hello', ' ', 'world')    // string: 'hello world'
 ```
 
@@ -1955,7 +1955,7 @@ $STR.join('hello', ' ', 'world')    // string: 'hello world'
 
 **描述**
 
-```php
+```javascript
 $STR.length(<string $string>) ulongint
 ```
 
@@ -1972,7 +1972,7 @@ $STR.length(<string $string>) ulongint
 
 **示例**
 
-```php
+```javascript
 // 获得字符串 `中国` 的长度
 $STR.length('中国')
     // ulongint: 2
@@ -1987,7 +1987,7 @@ $STR.length('中国')
 
 **描述**
 
-```php
+```javascript
 // 原型：将字符串 `s` 全部转换为小写，并返回转换后的字符串；返回值为 `string` 类型
 $STR.tolower(<string $string>) string
 ```
@@ -2005,7 +2005,7 @@ $STR.tolower(<string $string>) string
 
 **示例**
 
-```php
+```javascript
 $STR.tolower('Hello, world')
     // string: 'hello, world'
 ```
@@ -2020,7 +2020,7 @@ $STR.tolower('Hello, world')
 
 **描述**
 
-```php
+```javascript
 $STR.toupper(<string $string>) string
 ```
 
@@ -2037,7 +2037,7 @@ $STR.toupper(<string $string>) string
 
 **示例**
 
-```php
+```javascript
 $STR.toupper('Hello, world')
     // string: 'HELLO, WORLD'
 ```
@@ -2052,7 +2052,7 @@ $STR.toupper('Hello, world')
 
 **描述**
 
-```php
+```javascript
 $STR.substr(<string $string>, <real $offset>[, <real $length>]) string
 ```
 
@@ -2078,7 +2078,7 @@ $STR.substr(<string $string>, <real $offset>[, <real $length>]) string
 
 **示例**
 
-```php
+```javascript
 // 返回字符串 `abcdef` 从第 `0` 个字符开始，最多包含 `10` 个字符的子字符串
 $STR.substr('abcdef', 0, 10)
     // string: 'abcdef'
@@ -2106,7 +2106,7 @@ $STR.substr('abcdef', -3, -1)
 
 **描述**
 
-```php
+```javascript
 $STR.substr_compare(
     <string $str1>,
     <string $str2>,
@@ -2137,7 +2137,7 @@ $STR.substr_compare(
 
 **描述**
 
-```php
+```javascript
 $STR.substr_count(
     <string $haystack>,
     <string $needle>
@@ -2164,7 +2164,7 @@ $STR.substr_count(
 
 **描述**
 
-```php
+```javascript
 $STR.substr_replace(
     <array|string $string>,
     <array|string $replace>,
@@ -2191,7 +2191,7 @@ $STR.substr_replace(
 
 **描述**
 
-```php
+```javascript
 $STR.strstr(
         <string $haystack>,
         <string $needle>
@@ -2221,7 +2221,7 @@ $STR.strstr(
 
 **描述**
 
-```php
+```javascript
 $STR.strpos(
         <string $haystack>,
         <string $needle>
@@ -2251,7 +2251,7 @@ $STR.strpos(
 
 **描述**
 
-```php
+```javascript
 $STR.strpbrk(
         <string $string>,
         <string $characters>
@@ -2278,7 +2278,7 @@ $STR.strpbrk(
 
 **描述**
 
-```php
+```javascript
 $STR.split(
         <string $string>
         [,
@@ -2303,7 +2303,7 @@ $STR.split(
 
 **描述**
 
-```php
+```javascript
 $STR.chunk_split(
         <string $string>
         [,
@@ -2331,7 +2331,7 @@ $STR.chunk_split(
 
 **描述**
 
-```php
+```javascript
 $STR.trim(
         <string $string>
         [,
@@ -2361,7 +2361,7 @@ $STR.trim(
 
 **描述**
 
-```php
+```javascript
 $STR.pad(
     <string $string>,
     <real $length>,
@@ -2390,7 +2390,7 @@ $STR.pad(
 
 **描述**
 
-```php
+```javascript
 $STR.str_repeat(
         <string $string>,
         <real $times>
@@ -2413,7 +2413,7 @@ $STR.str_repeat(
 
 **描述**
 
-```php
+```javascript
 $STR.strrev(
         <string $string>
 ) string
@@ -2489,7 +2489,7 @@ $STR.translate(
 
 **描述**
 
-```php
+```javascript
 $STR.bin2hex(
         <string $data>,
         <boolean $uppercase:
@@ -2521,7 +2521,7 @@ $STR.bin2hex(
 
 **描述**
 
-```php
+```javascript
 $STR.hex2bin(
         <string $data>,
         <boolean $strict:
@@ -2549,7 +2549,7 @@ $STR.hex2bin(
 
 **描述**
 
-```php
+```javascript
 $STR.htmlentities_encode(
         <string $string: The input string.>,
         <'[compat | quotes | noquotes] || [ignore | substitute | disallowed] || [html401 | xml1 | xhtml | html5]' $flags:
@@ -2592,7 +2592,7 @@ $STR.htmlentities_encode(
 
 **描述**
 
-```php
+```javascript
 $STR.htmlentities_decode(
         <string $string: The input string.>,
         <'[compat | quotes | noquotes] || substitute || [html401 | xml1 | xhtml | html5]' $flags:
@@ -2631,7 +2631,7 @@ $STR.htmlentities_decode(
 
 **描述**
 
-```php
+```javascript
 $STR.crc32(
         < string | bsequence $data>
 ) ulongint
@@ -2655,7 +2655,7 @@ $STR.crc32(
 
 **描述**
 
-```php
+```javascript
 $STR.md5(
         < string | bsequence $data >,
         < boolean $binary = `false`:
@@ -2683,7 +2683,7 @@ $STR.md5(
 
 **描述**
 
-```php
+```javascript
 $STR.sha1(
         < string | bsequence $data >,
         < boolean $binary = `false`:
@@ -2712,7 +2712,7 @@ $STR.sha1(
 
 **描述**
 
-```php
+```javascript
 $STR.rot13(
         <string $string>
 ) string
@@ -2736,7 +2736,7 @@ $STR.rot13(
 
 **描述**
 
-```php
+```javascript
 $STR.count_chars(
         < string $string: the examined string. >
         [, < 'object | string' $mode = 'object':
@@ -2764,7 +2764,7 @@ $STR.count_chars(
 
 **描述**
 
-```php
+```javascript
 $STR.count_bytes(
         < string | bsequence $data: the examined data. >
         [, < 'object-all | object-appeared | object-not-appeared | string-appeared | string-not-appeared' $mode = 'object-all':
@@ -2796,7 +2796,7 @@ $STR.count_bytes(
 
 **描述**
 
-```php
+```javascript
 $STR.nl2br(
         < string $string: the input string. >
         [, < boolean $is_xhtml = `true`:
@@ -2840,7 +2840,7 @@ $STR.nl2br(
 
 **描述**
 
-```php
+```javascript
 $URL.base64_encode(
         <string|bsequence $data>
 ) string
@@ -2865,7 +2865,7 @@ $URL.base64_encode(
 
 **描述**
 
-```php
+```javascript
 $URL.base64_decode(
         <string $data>,
         <boolean $utf8:
@@ -2898,7 +2898,7 @@ $URL.base64_decode(
 
 **描述**
 
-```php
+```javascript
 $URL.urlencode(
         <string $str: the string to be encoded>
 ) string
@@ -2922,7 +2922,7 @@ $URL.urlencode(
 
 **描述**
 
-```php
+```javascript
 $URL.urldecode(
         <string $str: the string to be decoded.>
 ) string
@@ -2946,7 +2946,7 @@ $URL.urldecode(
 
 **描述**
 
-```php
+```javascript
 $URL.rawurlencode(
         <string $str: the string to be encoded>
 ) string
@@ -2970,7 +2970,7 @@ $URL.rawurlencode(
 
 **描述**
 
-```php
+```javascript
 $URL.rawurldecode(
         <string $str: the string to be decoded>
 ) string
@@ -2995,7 +2995,7 @@ $URL.rawurldecode(
 
 **描述**
 
-```php
+```javascript
 $URL.parse(
         <string $url: the URL to parse.>,
         [,
@@ -3021,7 +3021,7 @@ $URL.parse(
 
 **描述**
 
-```php
+```javascript
 $URL.http_build_query(
     < object | array $query_data >
     [, < string $numeric_prefix = '': the numeric prefix for the argument names if `query_data` is an array. >
@@ -3061,7 +3061,7 @@ $URL.http_build_query(
 
 该方法用于获得给定精度的 PI 值：
 
-```php
+```javascript
 // 原型
 // 始终返回 3.14159265358979323846
 $MATH.pi
@@ -3075,7 +3075,7 @@ $MATH.pi_l
 
 该方法用于获得给定精度的 e（自然常数，欧拉数）值：
 
-```php
+```javascript
 // 原型
 // 始终返回 2.718281828459045
 $MATH.e
@@ -3089,7 +3089,7 @@ $MATH.e_l
 
 这两个方法的获取器用于获得预定义和自定义数学常数：
 
-```php
+```javascript
 // 原型
 // 根据传入的关键词或自定义常数名称返回指定常数，返回类型为 `number`
 $MATH.const( <'e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)'] > <string: a user-defined const name>) number
@@ -3109,7 +3109,7 @@ $MATH.const_l('1/sqrt(2)')
 
 这两个方法的设置器用于设置自定义的数学常数：
 
-```php
+```javascript
 // 原型
 // 设置自定义常数
 $MATH.const(! <string: a user-defined const name>, <number: the constant>[, <longdouble: the constant>] ) boolean
@@ -3132,7 +3132,7 @@ $MATH.const(! 'G0', 6.67e-11)
 
 求两个实数的和。
 
-```php
+```javascript
 // 原型：求两个实数的和，返回指定类型的数值；默认为 `number`
 $MATH.add(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
@@ -3147,7 +3147,7 @@ $MATH.add(1.4, 0.7, 'longint')
 
 求两个实数的差。
 
-```php
+```javascript
 // 原型：求两个实数的差，返回指定类型的数值；默认为 `number`
 $MATH.sub(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
@@ -3162,7 +3162,7 @@ $MATH.sub(1.4, 0.7, 'longint')
 
 求两个实数的积。
 
-```php
+```javascript
 // 原型：求两个实数的积，返回指定类型的数值；默认为 `number`
 $MATH.mul(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
@@ -3177,7 +3177,7 @@ $MATH.mul(1.4, 0.7, 'longint')
 
 求两个实数的商。
 
-```php
+```javascript
 // 原型：求两个实数的商，返回指定类型的数值；默认为 `number`
 $MATH.div(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
@@ -3192,7 +3192,7 @@ $MATH.div(1.4, 0.7, 'longint')
 
 这两个方法用于求解参数化四则运算表达式，`eval` 方法返回 `number` 类型的结果数据，`eval_l` 方法返回 `longdouble` 类型的结果数据。
 
-```php
+```javascript
 // 原型
 $MATH.eval(<string: a four arithmetic expressions>[, <object: parameter map>]) number
 
@@ -3214,7 +3214,7 @@ $MATH.eval_l(<string: a four arithmetic expressions>[, <object: parameter map>])
 
 用于计算角度的正弦值。原型如下：
 
-```php
+```javascript
 // 原型：求角度的正弦值，角度为弧度值；返回值为 `number` 类型
 $MATH.sin(<number | longint | ulongint | longdouble>) number
 
@@ -3232,7 +3232,7 @@ $MATH.sin_l($MATH.const('pi/4'))
 
 用于计算角度的余弦值。原型如下：
 
-```php
+```javascript
 // 原型：求角度的余弦值，角度为弧度值；返回值为 `number` 类型
 $MATH.cos(<number | longint | ulongint | longdouble>) number
 
@@ -3250,7 +3250,7 @@ $MATH.cos_l($MATH.const('pi/4'))
 
 用于计算角度的正切值。原型如下：
 
-```php
+```javascript
 // 原型：求角度的正切值，角度为弧度值；返回值为 `number` 类型
 $MATH.tan(<number | longint | ulongint | longdouble>) number
 
@@ -3268,7 +3268,7 @@ $MATH.tan_l($MATH.const('pi/4'))
 
 用于计算数值的双曲正弦值。原型如下：
 
-```php
+```javascript
 // 原型：求数值的双曲正弦值；返回值为 `number` 类型
 $MATH.sinh(<number | longint | ulongint | longdouble>) number
 
@@ -3286,7 +3286,7 @@ $MATH.sinh_l(1.0)
 
 用于计算数值的双曲余弦值。原型如下：
 
-```php
+```javascript
 // 原型：求数值的双曲余弦值；返回值为 `number` 类型
 $MATH.cosh(<number | longint | ulongint | longdouble>) number
 
@@ -3304,7 +3304,7 @@ $MATH.cosh_l(1.0)
 
 用于计算数值的双曲正切值。原型如下：
 
-```php
+```javascript
 // 原型：求数值的双曲正切值；返回值为 `number` 类型
 $MATH.tanh(<number | longint | ulongint | longdouble>) number
 
@@ -3322,7 +3322,7 @@ $MATH.tan_l(1.0)
 
 用于计算数值的反正弦值。原型如下：
 
-```php
+```javascript
 // 原型：求数值的反正弦值，获得对应角度的弧度值；返回值为 `number` 类型
 $MATH.asin(<number | longint | ulongint | longdouble>) number
 
@@ -3340,7 +3340,7 @@ $MATH.asin_l(0.707107)
 
 用于计算数值的反余弦值。原型如下：
 
-```php
+```javascript
 // 原型：求数值的反余弦值，获得对应角度的弧度值；返回值为 `number` 类型
 $MATH.acos(<number | longint | ulongint | longdouble>) number
 
@@ -3358,7 +3358,7 @@ $MATH.acos_l(0.707107)
 
 用于计算数值的反正切值。原型如下：
 
-```php
+```javascript
 // 原型：求数值的反正切值，获得对应角度的弧度值；返回值为 `number` 类型
 $MATH.atan(<number | longint | ulongint | longdouble>) number
 
@@ -3376,7 +3376,7 @@ $MATH.atan_l(1.0)
 
 用于计算数值的反双曲正弦值。原型如下：
 
-```php
+```javascript
 // 原型：求数值的反双曲正弦值；返回值为 `number` 类型
 $MATH.asinh(<number | longint | ulongint | longdouble>) number
 
@@ -3394,7 +3394,7 @@ $MATH.asin_l(1.0)
 
 用于计算数值的反双曲余弦值。原型如下：
 
-```php
+```javascript
 // 原型：求数值的反双曲余弦值；返回值为 `number` 类型
 $MATH.acosh(<number | longint | ulongint | longdouble>) number
 
@@ -3412,7 +3412,7 @@ $MATH.acos_l(1.0)
 
 用于计算数值的反双曲正切值。原型如下：
 
-```php
+```javascript
 // 原型：求数值的反双曲正切值；返回值为 `number` 类型
 $MATH.atanh(<number | longint | ulongint | longdouble>) number
 
@@ -3430,7 +3430,7 @@ $MATH.atanh_l(0.5)
 
 用于计算两值相除的余数。原型如下：
 
-```php
+```javascript
 // 原型：求两值相除的余数；返回值为 `number` 类型
 $MATH.fmod(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>) number
 
@@ -3448,7 +3448,7 @@ $MATH.fmod_l(4.5, 2.0)
 
 用于计算数值的绝对值。原型如下：
 
-```php
+```javascript
 // 原型：求数值的绝对值；返回值类型为传入参数值类型
 $MATH.fabs(<number | longint | ulongint | longdouble>) number | longint | ulongint | longdouble
 
@@ -3461,7 +3461,7 @@ $MATH.fabs(-2.5L)
 
 用于计算数值的自然对数。原型如下：
 
-```php
+```javascript
 // 原型：求数值的自然对数；返回值为 `number` 类型
 $MATH.log(<number | longint | ulongint | longdouble>) number
 
@@ -3479,7 +3479,7 @@ $MATH.log_l($MATH.const('e'))
 
 用于计算数值以 `10` 为底的对数。原型如下：
 
-```php
+```javascript
 // 原型：求数值以 `10` 为底的对数；返回值为 `number` 类型
 $MATH.log10(<number | longint | ulongint | longdouble>) number
 
@@ -3497,7 +3497,7 @@ $MATH.log10i_l(10.0)
 
 用于计算 `x` 的 `y` 次幂。原型如下：
 
-```php
+```javascript
 // 原型：求 `x` 的 `y` 次幂；返回值为 `number` 类型
 $MATH.pow(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y) number
 
@@ -3515,7 +3515,7 @@ $MATH.pow_l(3.0, 2.0)
 
 用于计算 `e` 的 `x` 次幂。原型如下：
 
-```php
+```javascript
 // 原型：求 `e` 的 `x` 次幂；返回值为 `number` 类型
 $MATH.exp(<number | longint | ulongint | longdouble> x) number
 
@@ -3533,7 +3533,7 @@ $MATH.exp_l(1.0)
 
 用于计算数值的向下取整数值。原型如下：
 
-```php
+```javascript
 // 原型：计算向下取整的数值；返回值为 `number` 类型
 $MATH.floor(<number | longint | ulongint | longdouble>) number
 
@@ -3551,7 +3551,7 @@ $MATH.floor_l(-2.3)
 
 用于计算数值的向上取整数值。原型如下：
 
-```php
+```javascript
 // 原型：计算向上取整的数值；返回值为 `number` 类型
 $MATH.ceil(<number | longint | ulongint | longdouble>) number
 
@@ -3569,7 +3569,7 @@ $MATH.ceil_l(-2.3)
 
 用于计算数值的平方根。原型如下：
 
-```php
+```javascript
 // 原型：计算数值的平方根；返回值为 `number` 类型
 $MATH.sqrt(<number | longint | ulongint | longdouble>) number
 
@@ -3607,7 +3607,7 @@ $MATH.sqrt_l(9.0)
 
 该方法用于列出指定路径下的目录项，返回对象数组。原型及主要用法如下：
 
-```php
+```javascript
 // 原型
 $FS.list(<string: path>[, <string: the list of semicolon separated name filters>])
 
@@ -3650,7 +3650,7 @@ $FS.list($path, "*.txt; *.md")
 
 该方法用于列出指定路径下的目录项信息，返回经过格式化的字符串数组。原型及主要用法如下：
 
-```php
+```javascript
 // 原型
 $FS.list_prt(<string: path>[, <string: the list of semicolon separated name filters>[, '[mode || nlink || uid || gid || size || blksize || atime || ctime || mtime || name] | all | default']])
 
@@ -3672,7 +3672,7 @@ $FS.list_prt($path, "*.txt; *.md", "mode nlink uid gid size blksize atime ctime 
 
 **描述**
 
-```php
+```javascript
 $FS.basename(
         <string $path: a path.>
         [,
@@ -3697,7 +3697,7 @@ $FS.basename(
 
 **描述**
 
-```php
+```javascript
 $FS.chgrp(
         <string $filename: path to the file.>,
         <string | number $group: A group name or a group identifier.>
@@ -3720,7 +3720,7 @@ $FS.chgrp(
 
 **描述**
 
-```php
+```javascript
 $FS.chmod(
         <string $filename: path to the file.>,
         <string $permissions: the permission string like '0644' or 'u+rwx,go+rx'.>
@@ -3743,7 +3743,7 @@ $FS.chmod(
 
 **描述**
 
-```php
+```javascript
 $FS.chown(
         <string $filename: path to the file.>,
         <string | number $user: A user name or a user identifier.>
@@ -3766,7 +3766,7 @@ $FS.chown(
 
 **描述**
 
-```php
+```javascript
 $FS.copy(
         <string $from: path to the source file.>,
         <string $to: The destination path.>
@@ -3789,7 +3789,7 @@ $FS.copy(
 
 **描述**
 
-```php
+```javascript
 $FS.dirname(
         <string $path: a path.>
         [,
@@ -3814,7 +3814,7 @@ $FS.dirname(
 
 **描述**
 
-```php
+```javascript
 $FS.disk_usage(
         <string $directory: A directory of the filesystem or disk partition.>
 ) object
@@ -3826,7 +3826,7 @@ $FS.disk_usage(
 
 返回值为如下所示对象：
 
-```php
+```javascript
 {
     free_blocks: <ulongint>,
     free_inodes: <ulongint>,
@@ -3853,7 +3853,7 @@ $FS.disk_usage(
 
 **描述**
 
-```php
+```javascript
 $FS.file_exists(
         <string $filename: path to the file or directory.>
 ) boolean
@@ -3875,7 +3875,7 @@ $FS.file_exists(
 
 **描述**
 
-```php
+```javascript
 $FS.file_is(
         <string $filename: the path to a file or directory.>
         <'[ dir | file | symlink | socket | pipe | block | char ] || [ executable | exe ] || [readable | read] || [writable write]' $which = 'file readable':
@@ -3913,7 +3913,7 @@ $FS.file_is(
 
 **描述**
 
-```php
+```javascript
 $FS.lchgrp(
         <string $filename: path to the symlink.>,
         <string | number $group: A group name or a group identifier.>
@@ -3936,7 +3936,7 @@ $FS.lchgrp(
 
 **描述**
 
-```php
+```javascript
 $FS.lchown(
         <string $filename: path to the symlink.>,
         <string | number $user: A user name or a user identifier.>
@@ -3959,7 +3959,7 @@ $FS.lchown(
 
 **描述**
 
-```php
+```javascript
 $FS.linkinfo(
         <string $path: path to the link.>
 ) number | false
@@ -3981,7 +3981,7 @@ $FS.linkinfo(
 
 **描述**
 
-```php
+```javascript
 $FS.lstat(
         <string $filename: path to the file or directory.>
         [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
@@ -4050,7 +4050,7 @@ $FS.lstat(
 
 **描述**
 
-```php
+```javascript
 $FS.link(
         < string $target: Target of the link. >,
         < string $link: The link name. >
@@ -4073,7 +4073,7 @@ $FS.link(
 
 **描述**
 
-```php
+```javascript
 $FS.mkdir(
         < string $directory: The directory path. >
         [, < string $permissions = '0777': The permissions are '0777' by default, which means the widest possible access. >
@@ -4099,7 +4099,7 @@ $FS.mkdir(
 
 **描述**
 
-```php
+```javascript
 $FS.pathinfo(
         < string $path: The path to be parsed. >
         [,
@@ -4125,7 +4125,7 @@ $FS.pathinfo(
 
 **描述**
 
-```php
+```javascript
 $FS.readlink(
         < string $path: The symbolic link path. >
 ) string | false
@@ -4147,7 +4147,7 @@ $FS.readlink(
 
 **描述**
 
-```php
+```javascript
 $FS.realpath(
         < string $path: The path being checked. >
 ) string | false
@@ -4169,7 +4169,7 @@ $FS.realpath(
 
 **描述**
 
-```php
+```javascript
 $FS.rename(
         < string $from: The old name. >
         < string $to: The new name. >
@@ -4192,7 +4192,7 @@ $FS.rename(
 
 **描述**
 
-```php
+```javascript
 $FS.rmdir(
         < string $directory: The directory path. >
 ) boolean
@@ -4214,7 +4214,7 @@ $FS.rmdir(
 
 **描述**
 
-```php
+```javascript
 $FS.stat(
         <string $filename: path to the file or directory.>
         [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
@@ -4283,7 +4283,7 @@ $FS.stat(
 
 **描述**
 
-```php
+```javascript
 $FS.link(
         < string $target: Target of the link. >,
         < string $link: The link name. >
@@ -4306,7 +4306,7 @@ $FS.link(
 
 **描述**
 
-```php
+```javascript
 $FS.tempname(
         < string $directory: The directory where the temporary filename will be created. >
         < string $prefix: The prefix of the generated temporary filename. >
@@ -4330,7 +4330,7 @@ $FS.tempname(
 
 **描述**
 
-```php
+```javascript
 $FS.touch(
         < string $filename: Path to the file. >
         [, <real $mtime = 0: The modification time, if it is 0 or negative, use the current system time. >
@@ -4355,7 +4355,7 @@ $FS.touch(
 
 **描述**
 
-```php
+```javascript
 $FS.umask(
         [ string $mask = '': The new umask. ]
 ) string
@@ -4377,7 +4377,7 @@ $FS.umask(
 
 **描述**
 
-```php
+```javascript
 $FS.unlink(
         < string $filename: Path to the file. >
 ) boolean
@@ -4399,7 +4399,7 @@ $FS.unlink(
 
 **描述**
 
-```php
+```javascript
 $FS.file_get_contents(
         < string $filename: Path to the file. >
         < '[binary | string] || [strict | silent]': $flags:
@@ -4431,7 +4431,7 @@ $FS.file_get_contents(
 
 **描述**
 
-```php
+```javascript
 $FS.file_put_contents(
         < string $filename: Path to the file. >
         < string | bsequenc $data: The data to write, can be either a string or a byte sequence.
@@ -4458,7 +4458,7 @@ $FS.file_put_contents(
 
 **描述**
 
-```php
+```javascript
 $FS.opendir(
         < string $pathname: Path to the directory. >
 ) specific
@@ -4482,7 +4482,7 @@ $FS.opendir(
 
 **描述**
 
-```php
+```javascript
 $FS.readdir(
         < specific $dir: an entity returned by opendir. >
 ) object | false
@@ -4494,7 +4494,7 @@ $FS.readdir(
 
 如果正确读取了下一个目录项，则返回如下对象：
 
-```php
+```javascript
 {
     type: <string: file type like 'd' (directory), 'b' (block device), 'c' (character device), 'p' (named pipe, FIFO), 's' (UNIX domain socket), 'r' (regular file), 'l' (symbolic link), 'u' (unknown)>,
     name: <string: the file name>,
@@ -4514,7 +4514,7 @@ $FS.readdir(
 
 **描述**
 
-```php
+```javascript
 $FS.rewinddir(
         < specific $dir: an entity returned by opendir. >
 ) boolean
@@ -4536,7 +4536,7 @@ $FS.rewinddir(
 
 **描述**
 
-```php
+```javascript
 $FS.closedir(
         < specific $dir: an entity returned by opendir. >
 ) boolean
@@ -4587,7 +4587,7 @@ $FS.closedir(
 
 该方法读取文本文件的前几行，并返回一个字符串数组。
 
-```php
+```javascript
 // 原型
 $FILE.txt.head(<string: file name>[, <number: number of lines>])
 
@@ -4605,7 +4605,7 @@ $FILE.txt.head($file, -5)
 
 该方法读取文本文件的后几行，并返回一个字符串数组。
 
-```php
+```javascript
 // 原型
 $FILE.txt.tail(<string: file name>[, <number: number of lines>])
 
@@ -4625,7 +4625,7 @@ $FILE.txt.tail($file, -5)
 
 该方法读取二进制文件的前几字节，并返回一个字节序列。
 
-```php
+```javascript
 // 原型
 $FILE.bin.head(<string: file name>[, <number: number of bytes>])
 
@@ -4643,7 +4643,7 @@ $FILE.bin.head($file, -5)
 
 该方法读取二进制文件的后几字节，并返回一个字节序列。
 
-```php
+```javascript
 // 原型
 $FILE.bin.tail(<string: file name>[, <number: number of bytes>])
 
