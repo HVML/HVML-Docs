@@ -450,7 +450,7 @@ $SYSTEM.uname object : an object contains the following properties:
     'machine'             - <string: `machine hardware name`>
     'processor'           - <string: `the processor type`>
     'hardware-platform'   - <string: `the hardware platform`>
-    'operating-system'    - <string: /* the operating system (e.g., 'GNU/Linux') */>
+    'operating-system'    - <string: [the operating system (e.g., 'GNU/Linux')] />
 ```
 
 该方法获取系统信息，返回包含有内核名称、版本号等键值对的对象。
