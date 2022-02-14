@@ -444,14 +444,14 @@ $SESSION.user(! 'userId', undefined )
 
 ```javascript
 $SYSTEM.uname object : an object contains the following properties:
-    'kernel-name'         - <string: `kernel name (e.g., 'Linux')`>
-    'kernel-release'      - <string: `kernel release (e.g., '2.6.28')`>
-    'kernel-version'      - <string: `kernel version`>
-    'nodename'            - <string: `the network node hostname`>
-    'machine'             - <string: `machine hardware name`>
-    'processor'           - <string: `the processor type`>
-    'hardware-platform'   - <string: `the hardware platform`>
-    'operating-system'    - <string: `the operating system (e.g., 'GNU/Linux')` />
+    'kernel-name'         - < string: `kernel name (e.g., 'Linux')` >
+    'kernel-release'      - < string: `kernel release (e.g., '2.6.28')` >
+    'kernel-version'      - < string: `kernel version` >
+    'nodename'            - < string: `the network node hostname` >
+    'machine'             - < string: `machine hardware name` >
+    'processor'           - < string: `the processor type` >
+    'hardware-platform'   - < string: `the hardware platform` >
+    'operating-system'    - < string: `the operating system (e.g., 'GNU/Linux')` >
 ```
 
 该方法获取系统信息，返回包含有内核名称、版本号等键值对的对象。
