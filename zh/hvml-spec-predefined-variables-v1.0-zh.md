@@ -24,7 +24,9 @@ Language: Chinese
 
 [//]:# (START OF TOC)
 
-- [1) 背景](#1-背景)
+- [1) 介绍](#1-介绍)
+   + [1.1) 规范及术语](#11-规范及术语)
+   + [1.2) 撰写要求](#12-撰写要求)
 - [2) 非动态变量](#2-非动态变量)
    + [2.1) `TIMERS`](#21-timers)
       * [2.1.1) 批量新增定时器](#211-批量新增定时器)
@@ -233,9 +235,11 @@ Language: Chinese
 
 [//]:# (END OF TOC)
 
-## 1) 背景
+## 1) 介绍
 
 本文档是 HVML 规范的一部分，用于详细定义 HVML 解释器必须支持或者可选支持的预定义变量。
+
+### 1.1) 规范及术语
 
 本文档遵循的技术规范或术语如下所列：
 
@@ -260,11 +264,24 @@ Language: Chinese
 1. 会话级变量。指该变量对应的数据对当前实例中的所有 HVML 程序可见。也就是说，同一会话中的不同程序对应同一个数据副本。
 1. 程序级变量。指该变量对应的数据仅对当前实例中的单个 HVML 程序可见。也就是说，不同的程序有一个自己的数据副本。
 
-**注意**  
-某些方法可返回 `false` 标记错误。此等情形仅出现在当前动作元素设置有 `silently` 副词属性，且仅遇到可忽略异常的情况下。
-
 **约定**  
 解释器可自行实现全局变量，作为约定，解释器自行实现的全局变量，其名称应以 ASCII U+005F LOW LINE（`_`）打头，使用全大写字母并添加解释器前缀。如 `_PURC_VAR`。而一般的变量，使用全小写字母。
+
+### 1.2) 撰写要求
+
+对一个方法的描述应包含如下部分（section）：
+
+- `描述`（Description；必需）：首先按 [HVML 规范 - 2.2.4) 动态对象方法的描述语法](/zh/hvml-spec-v1.0-zh.md#224-动态对象方法的描述语法) 定义的语法给出方法的原型，其中包括对参数（形参）和返回值的简短描述。然后给出对该方法用途的简短描述。
+- `参数`（Parameters；可选）。必要时给出对该方法参数的完整描述。
+- `返回值`（Return Value；可选）。必要时给出对该方法返回值的完整描述。
+- `异常`（Exceptions；必需）。列出此方法可能抛出的异常。
+- `示例`（Examples；必需）。
+- `参见`（See Also；可选）。列出相关的外部链接。
+- `备注`（Notes；可选）。
+
+某些方法可返回 `false`、`undefined` 等值标记错误。此等情形仅出现在当前动作元素设置有 `silently` 副词属性，且仅遇到可忽略异常的情况下。当一个方法在设置有 `silently` 副词属性的元素中被调用时，我们称该方法被要求“静默求值（evaluate silently）”。对支持静默求值的方法，对其用途的描述参照如下形式：
+
+> 该方法改变当前的工作路径。成功时返回 `true`；失败时抛出异常，或在静默求值时，对可忽略异常返回 `false`。
 
 ## 2) 非动态变量
 
@@ -357,7 +374,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 $SESSION.cwd string | false: `returns the current working directory on success, or @false on failure.`
 ```
 
-该方法获取当前工作路径。
+该方法获取当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
 
 ```javascript
 $SESSION.cwd(!
@@ -365,9 +382,9 @@ $SESSION.cwd(!
 ) boolean: `returns @true on success or @false on failure`.
 ```
 
-该方法改变当前工作路径。
+该方法改变当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
 
-**错误或异常**
+**异常**
 
 该方法可能产生的异常：
 
@@ -390,7 +407,7 @@ $SESSION.user(
 ) any | undefined : `the variant value corresponding to the key name $key`.
 ```
 
-该方法获取指定键名对应的键值；未设置时抛出异常 `NoSuchKey`。
+该方法获取指定键名对应的键值。当指定的键名未被设置时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `undefined`。
 
 ```javascript
 $SESSION.user(!
@@ -400,6 +417,12 @@ $SESSION.user(!
 ```
 
 该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。注意，设置键值为 `undefined` 会执行移除对应键值对的操作。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `NoSuchKey`
 
 **示例**
 
@@ -424,12 +447,6 @@ $SESSION.user(! 'userId', '20220213' )
 $SESSION.user(! 'userId', undefined )
     // true
 ```
-
-**错误或异常**
-
-该方法可能产生的异常：
-
-- `NoSuchKey`
 
 ### 3.2) `SYSTEM`
 
@@ -459,6 +476,7 @@ $SYSTEM.uname object : an object contains the following properties:
 
 ```javascript
 $SYSTEM.uname
+    // object
 ```
 
 #### 3.2.2) `uname_prt` 方法
@@ -640,8 +658,7 @@ $SYSTEM.time(!
 
 该方法设置系统的日历时间。成功时返回 `true`，失败时返回 `false`。
 
-**错误或异常**
-
+**异常**
 
 
 **示例**
@@ -665,7 +682,7 @@ $SYSTEM.time('rfc822', $SYSTEM.time, 'Asia/Shanghai')
     // string: 'Mon, 15 Aug 05 15:52:01 +0000'
 ```
 
-**参考链接**
+**参见**
 
 - PHP: <https://www.php.net/manual/en/timezones.php>
 - PHP: <https://www.php.net/manual/en/ref.datetime.php>
@@ -1592,7 +1609,7 @@ $STR.contains('Hello, world!', '')
     // boolean: true
 ```
 
-**参考链接**
+**参见**
 
 - PHP `str_contains()` 函数：<https://www.php.net/manual/en/function.str-contains.php>
 
@@ -1638,7 +1655,7 @@ $STR.starts_with('Hello, world', '')
     // boolean: true
 ```
 
-**参考链接**
+**参见**
 
 - PHP `str_starts_with()` 函数：<https://www.php.net/manual/en/function.str-starts-with.php>
 
@@ -1682,7 +1699,7 @@ $STR.ends_with('Hello, world', '')
     // boolean: true
 ```
 
-**参考链接**
+**参见**
 
 - PHP `str_ends_with()` 函数：<https://www.php.net/manual/en/function.str-ends-with.php>
 
@@ -1736,7 +1753,7 @@ $STR.explode('中华人民共和国', 2)
     // array: ['中', '华']
 ```
 
-**参考链接**
+**参见**
 
 - PHP `explode()` 函数：<https://www.php.net/manual/en/function.explode.php>
 
@@ -1782,7 +1799,7 @@ $STR.implode(['汉', '字'])
     // string: '汉字'
 ```
 
-**参考链接**
+**参见**
 
 - PHP `implode()` 函数：<https://www.php.net/manual/en/function.implode.php>
 
@@ -1813,7 +1830,7 @@ $STR.shuffle(<string $string: the input string to shuffle>) string
 $STR.shuffle('beijing') // string: 'jbienig'
 ```
 
-**参考链接**
+**参见**
 
 - PHP `str_shuffle()` 函数：<https://www.php.net/manual/en/function.str-shuffle.php>
 
@@ -1866,7 +1883,7 @@ $STR.replace("%body%", "black", "<body text=%BODY%>", true);
     // string: '<body text=black>'
 ```
 
-**参考链接**
+**参见**
 
 - PHP `str_replace()` 函数：<https://www.php.net/manual/en/function.str-replace.php>
 - PHP `str_ireplace()` 函数：<https://www.php.net/manual/en/function.str-ireplace.php>
@@ -1953,7 +1970,7 @@ $STR.join(
 $STR.join('hello', ' ', 'world')    // string: 'hello world'
 ```
 
-**参考链接**
+**参见**
 
 #### 3.8.11) `length` 方法
 
@@ -1984,7 +2001,7 @@ $STR.length('中国')
     // ulongint: 2
 ```
 
-**参考链接**
+**参见**
 
 
 #### 3.8.12) `tolower` 方法
@@ -2016,7 +2033,7 @@ $STR.tolower('Hello, world')
     // string: 'hello, world'
 ```
 
-**参考链接**
+**参见**
 
 - PHP `strtolower()` 函数：<https://www.php.net/manual/en/function.strtolower.php>
 
@@ -2048,7 +2065,7 @@ $STR.toupper('Hello, world')
     // string: 'HELLO, WORLD'
 ```
 
-**参考链接**
+**参见**
 
 - PHP `strtoupper()` 函数：<https://www.php.net/manual/en/function.strtoupper.php>
 
@@ -2102,7 +2119,7 @@ $STR.substr('abcdef', -3, -1)
     // string: 'de'
 ```
 
-**参考链接**
+**参见**
 
 - PHP `substr()` 函数：<https://www.php.net/manual/en/function.substr.php>
 
@@ -2133,7 +2150,7 @@ $STR.substr_compare(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `substr_compare()` 函数：<https://www.php.net/manual/en/function.substr-compare.php>
 
@@ -2160,7 +2177,7 @@ $STR.substr_count(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `substr_count()` 函数：<https://www.php.net/manual/en/function.substr-count.php>
 
@@ -2187,7 +2204,7 @@ $STR.substr_replace(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `substr_replace()` 函数：<https://www.php.net/manual/en/function.substr-replace.php>
 
@@ -2216,7 +2233,7 @@ $STR.strstr(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `strstr()` 函数：<https://www.php.net/manual/en/function.strstr.php>
 - PHP `stristr()` 函数：<https://www.php.net/manual/en/function.stristr.php>
@@ -2246,7 +2263,7 @@ $STR.strpos(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `strpos()` 函数：<https://www.php.net/manual/en/function.strpos.php>
 - PHP `stripos()` 函数：<https://www.php.net/manual/en/function.stripos.php>
@@ -2274,7 +2291,7 @@ $STR.strpbrk(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `strpbrk()` 函数：<https://www.php.net/manual/en/function.strpbrk.php>
 
@@ -2299,7 +2316,7 @@ $STR.split(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `str_split()` 函数：<https://www.php.net/manual/en/function.str-split.php>
 
@@ -2327,7 +2344,7 @@ $STR.chunk_split(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `chunk_split()` 函数：<https://www.php.net/manual/en/function.chunk-split.php>
 
@@ -2355,7 +2372,7 @@ $STR.trim(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `trim()` 函数：<https://www.php.net/manual/en/function.trim.php>
 - PHP `ltrim()` 函数：<https://www.php.net/manual/en/function.ltrim.php>
@@ -2386,7 +2403,7 @@ $STR.pad(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `str_pad()` 函数：<https://www.php.net/manual/en/function.str-pad.php>
 
@@ -2409,7 +2426,7 @@ $STR.str_repeat(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `str_repeat()` 函数：<https://www.php.net/manual/en/function.str-repeat.php>
 
@@ -2431,7 +2448,7 @@ $STR.strrev(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `strrev()` 函数：<https://www.php.net/manual/en/function.strrev.php>
 
@@ -2454,7 +2471,7 @@ $STR.tokenize(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `strtok()` 函数：<https://www.php.net/manual/en/function.strtok.php>
 
@@ -2483,7 +2500,7 @@ $STR.translate(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `strtr()` 函数：<https://www.php.net/manual/en/function.strtr.php>
 
@@ -2517,7 +2534,7 @@ $STR.bin2hex(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.bin2hex.php>
 
@@ -2545,7 +2562,7 @@ $STR.hex2bin(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.hex2bin.php>
 
@@ -2587,7 +2604,7 @@ $STR.htmlentities_encode(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.htmlentities.php>
 - PHP `htmlspecialchars()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars.php>
@@ -2626,7 +2643,7 @@ $STR.htmlentities_decode(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.html-entity-decode.php>
 - PHP `htmlspecialchars_decode()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars-decode.php>
@@ -2651,7 +2668,7 @@ $STR.crc32(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `crc32()` 函数：<https://www.php.net/manual/en/function.crc32.php>
 
@@ -2679,7 +2696,7 @@ $STR.md5(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `md5()` 函数：<https://www.php.net/manual/en/function.md5.php>
 
@@ -2707,7 +2724,7 @@ $STR.sha1(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `sha1()` 函数：<https://www.php.net/manual/en/function.sha1.php>
 
@@ -2732,7 +2749,7 @@ $STR.rot13(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `rot13()` 函数：<https://www.php.net/manual/en/function.rot13.php>
 
@@ -2760,7 +2777,7 @@ $STR.count_chars(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
@@ -2792,7 +2809,7 @@ $STR.count_bytes(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
@@ -2824,7 +2841,7 @@ $STR.nl2br(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `nl2br()` 函数：<https://www.php.net/manual/en/function.nl2br.php>
 
@@ -2860,7 +2877,7 @@ $URL.base64_encode(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `base64_encode()` 函数：<https://www.php.net/manual/en/function.base64-encode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
@@ -2893,7 +2910,7 @@ $URL.base64_decode(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `base64_decode()` 函数：<https://www.php.net/manual/en/function.base64-decode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
@@ -2918,7 +2935,7 @@ $URL.urlencode(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `urlencode()` 函数：<https://www.php.net/manual/en/function.urlencode.php>
 
@@ -2942,7 +2959,7 @@ $URL.urldecode(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `urldecode()` 函数：<https://www.php.net/manual/en/function.urldecode.php>
 
@@ -2966,7 +2983,7 @@ $URL.rawurlencode(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `rawurlencode()` 函数：<https://www.php.net/manual/en/function.rawurlencode.php>
 
@@ -2990,7 +3007,7 @@ $URL.rawurldecode(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `rawurldecode()` 函数：<https://www.php.net/manual/en/function.rawurldecode.php>
 
@@ -3017,7 +3034,7 @@ $URL.parse(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `parse()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
@@ -3049,7 +3066,7 @@ $URL.http_build_query(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `http_build_query()` 函数：<https://www.php.net/manual/en/function.http-build-query.php>
 - [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
@@ -3693,7 +3710,7 @@ $FS.basename(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `basename()` 函数：<https://www.php.net/manual/en/function.basename.php>
 
@@ -3716,7 +3733,7 @@ $FS.chgrp(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `chgrp()` 函数：<https://www.php.net/manual/en/function.chgrp.php>
 
@@ -3739,7 +3756,7 @@ $FS.chmod(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `chmod()` 函数：<https://www.php.net/manual/en/function.chmod.php>
 
@@ -3762,7 +3779,7 @@ $FS.chown(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `chown()` 函数：<https://www.php.net/manual/en/function.chown.php>
 
@@ -3785,7 +3802,7 @@ $FS.copy(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `copy()` 函数：<https://www.php.net/manual/en/function.copy.php>
 
@@ -3810,7 +3827,7 @@ $FS.dirname(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `dirname()` 函数：<https://www.php.net/manual/en/function.dirname.php>
 
@@ -3848,7 +3865,7 @@ $FS.disk_usage(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `disk_free_space()` 函数：<https://www.php.net/manual/en/function.disk-free-space.php>
 - PHP `disk_total_space()` 函数：<https://www.php.net/manual/en/function.disk-total-space.php>
@@ -3871,7 +3888,7 @@ $FS.file_exists(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `file_exists()` 函数：<https://www.php.net/manual/en/function.file-exists.php>
 
@@ -3904,7 +3921,7 @@ $FS.file_is(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `is_dir()` 函数：<https://www.php.net/manual/en/function.is_dir.php>
 - PHP `is_file()` 函数：<https://www.php.net/manual/en/function.is_file.php>
@@ -3932,7 +3949,7 @@ $FS.lchgrp(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `lchgrp()` 函数：<https://www.php.net/manual/en/function.lchgrp.php>
 
@@ -3955,7 +3972,7 @@ $FS.lchown(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `lchown()` 函数：<https://www.php.net/manual/en/function.lchown.php>
 
@@ -3977,7 +3994,7 @@ $FS.linkinfo(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `linkinfo()` 函数：<https://www.php.net/manual/en/function.linkinfo.php>
 
@@ -4046,7 +4063,7 @@ $FS.lstat(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `lstat()` 函数：<https://www.php.net/manual/en/function.lstat.php>
 
@@ -4069,7 +4086,7 @@ $FS.link(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `link()` 函数：<https://www.php.net/manual/en/function.link.php>
 
@@ -4095,7 +4112,7 @@ $FS.mkdir(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `mkdir()` 函数：<https://www.php.net/manual/en/function.mkdir.php>
 
@@ -4121,7 +4138,7 @@ $FS.pathinfo(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `pathinfo()` 函数：<https://www.php.net/manual/en/function.pathinfo.php>
 
@@ -4143,7 +4160,7 @@ $FS.readlink(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `readlink()` 函数：<https://www.php.net/manual/en/function.readlink.php>
 
@@ -4165,7 +4182,7 @@ $FS.realpath(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `realpath()` 函数：<https://www.php.net/manual/en/function.realpath.php>
 
@@ -4188,7 +4205,7 @@ $FS.rename(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `rename()` 函数：<https://www.php.net/manual/en/function.rename.php>
 
@@ -4210,7 +4227,7 @@ $FS.rmdir(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `rmdir()` 函数：<https://www.php.net/manual/en/function.rmdir.php>
 
@@ -4279,7 +4296,7 @@ $FS.stat(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `stat()` 函数：<https://www.php.net/manual/en/function.stat.php>
 
@@ -4302,7 +4319,7 @@ $FS.link(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `symlink()` 函数：<https://www.php.net/manual/en/function.symlink.php>
 
@@ -4325,7 +4342,7 @@ $FS.tempname(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `tempname()` 函数：<https://www.php.net/manual/en/function.tempname.php>
 
@@ -4351,7 +4368,7 @@ $FS.touch(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `touch()` 函数：<https://www.php.net/manual/en/function.touch.php>
 
@@ -4373,7 +4390,7 @@ $FS.umask(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `umask()` 函数：<https://www.php.net/manual/en/function.umask.php>
 
@@ -4395,7 +4412,7 @@ $FS.unlink(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `unlink()` 函数：<https://www.php.net/manual/en/function.unlink.php>
 
@@ -4427,7 +4444,7 @@ $FS.file_get_contents(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `file_get_contents()` 函数：<https://www.php.net/manual/en/function.file-get-contents.php>
 
@@ -4454,7 +4471,7 @@ $FS.file_put_contents(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `file_put_contents()` 函数：<https://www.php.net/manual/en/function.file-put-contents.php>
 
@@ -4478,7 +4495,7 @@ $FS.opendir(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `opendir()` 函数：<https://www.php.net/manual/en/function.opendir.php>
 
@@ -4510,7 +4527,7 @@ $FS.readdir(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `readdir()` 函数：<https://www.php.net/manual/en/function.readdir.php>
 
@@ -4532,7 +4549,7 @@ $FS.rewinddir(
 
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `rewinddir()` 函数：<https://www.php.net/manual/en/function.rewinddir.php>
 
@@ -4548,13 +4565,15 @@ $FS.closedir(
 ) boolean
 ```
 
-**参数**
+
 
 **返回值**
 
+**异常**
+
 **示例**
 
-**参考链接**
+**参见**
 
 - PHP `closedir()` 函数：<https://www.php.net/manual/en/function.closedir.php>
 
