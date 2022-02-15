@@ -13,7 +13,13 @@ This repository contains some articles, guides, and documents about HVML.
 
 ### Specifications
 
+当前版本：
+
 - [HVML 规范（V1.0）](zh/hvml-spec-v1.0-zh.md)
+- [HVML 预定义变量（V1.0）](zh/hvml-spec-predefined-variables-v1.0-zh.md)
+
+老的版本：
+
 - [HVML 规范（V0.9）](zh/hvml-spec-v0.9-zh.md)
 
 ### Designs
