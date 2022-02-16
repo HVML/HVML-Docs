@@ -1738,14 +1738,14 @@ $EJSON.numberify(
 
 以上语法亦可用于描述对象的属性，如：
 
-```
+```javascript
     {
-        "messageType": <string: the type of this message, such as `event`, `result`, `change`, and an implementation defined message type.>,
-        "messageSubType": <string: the sub type of this message, optional>,
-        "source": <any: the variant generating this message>,
-        "time": <number: the time when this message fired>,
-        "signature": <string: optional signature>,
-        "payload" : <object: the payload of this message>
+        "messageType": <string: `the type of this message, such as 'event', 'result', 'change', and an implementation defined message type.`>,
+        "messageSubType": <string: `the sub type of this message, optional`>,
+        "source": <any: `the variant generating this message`>,
+        "time": <number: `the time when this message fired`>,
+        "signature": <string: `optional signature`>,
+        "payload" : <object: `the payload of this message`>
     }
 ```
 
