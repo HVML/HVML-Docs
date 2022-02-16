@@ -1828,7 +1828,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 本质上，`error` 标签定义的内容设置了 `ERROR` 变量对应 `type` 键名的键值，故而如下两个标签的功能是一样的：
 
-```hvml
+```html
     <error type="SegFault">
         <p>Out of memory!</p>
     </error>
@@ -1846,7 +1846,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 本质上，`except` 标签定义的内容设置了 `EXCEPT` 变量对应 `type` 键名的键值，故而如下两个标签的功能是一样的：
 
-```hvml
+```html
     <except>
         <p>There is an uncaught exception.</p>
     </except>
