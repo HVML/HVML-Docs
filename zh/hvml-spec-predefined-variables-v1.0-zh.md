@@ -3645,27 +3645,27 @@ $FS.list($path, "*.txt; *.md")
 
 ```javascript
 {
-    name: <string: name of the file (directory entry)>,
-    dev_major: <ulongint: the major ID of device containing file>,
-    dev_minor: <ulongint: the minor ID of device containing file>,
-    inode: <ulongint: inode number>
-    type: <string: file type like 'd', 'b', 's', ...>,
-    mode_digits: <string: file mode like `0644`>,
-    mode_alphas: <string: file mode like `rwxrwxr-x`>,
-    nlink: <ulongint: number of hard links>,
-    uid: <number: the user ID of owner>,
-    gid: <number: the group ID of owner>,
-    rdev_major: <ulongint: the major device ID if it is a special file>,
-    rdev_minor: <ulongint: the minor device ID if it is a special file>,
-    size: <ulongint: total size in bytes>,
-    blksize: <ulongint: block size for filesystem I/O>,
-    blocks: <ulongint: Number of 512B blocks allocated>,
-    atime_sec: <ulongint: time of last acces (seconds since Epoch)>,
-    atime_nsec: <ulongint: time of last acces (nanoseconds since `atime_sec`)>,
-    mtime_sec: <ulongint: time of last modification (seconds since Epoch)>,
-    mtime_nsec: <ulongint: time of last modification (nanoseconds since `mtime_sec`)>,
-    ctime_sec: <ulongint: time of last status change (seconds since Epoch)>
-    ctime_nsec: <ulongint: time of last status change (nanoseconds since `ctime_sec`)>
+    'name': <string: `name of the file (directory entry')`>,
+    'dev_major': <ulongint: `the major ID of device containing file`>,
+    'dev_minor': <ulongint: `the minor ID of device containing file`>,
+    'inode': <ulongint: `inode numbe`r>
+    'type': <string: `file type like 'd', 'b', 's', ...`>,
+    'mode_digits': <string: `file mode like `0644``>,
+    'mode_alphas': <string: `file mode like `rwxrwxr-x``>,
+    'nlink': <ulongint: `number of hard links`>,
+    'uid': <number: `the user ID of owner`>,
+    'gid': <number: `the group ID of owner`>,
+    'rdev_major': <ulongint: `the major device ID if it is a special file`>,
+    'rdev_minor': <ulongint: `the minor device ID if it is a special file`>,
+    'size': <ulongint: `total size in bytes`>,
+    'blksize': <ulongint: `block size for filesystem I/O`>,
+    'blocks': <ulongint: `Number of 512B blocks allocated`>,
+    'atime_sec': <ulongint: `time of last acces (seconds since Epoch)`>,
+    'atime_nsec': <ulongint: `time of last acces (nanoseconds since 'atime_sec')`>,
+    'mtime_sec': <ulongint: `time of last modification (seconds since Epoch)`>,
+    'mtime_nsec': <ulongint: `time of last modification (nanoseconds since 'mtime_sec')`>,
+    'ctime_sec': <ulongint: `time of last status change (seconds since Epoch`)>
+    'ctime_nsec': <ulongint: `time of last status change (nanoseconds since 'ctime_sec'`)>
 }
 ```
 
@@ -3745,8 +3745,8 @@ $FS.chgrp(
 
 ```javascript
 $FS.chmod(
-        <string $filename: path to the file.>,
-        <string $permissions: the permission string like '0644' or 'u+rwx,go+rx'.>
+        <string $filename: `path to the file.`>,
+        <string $permissions: `the permission string like '0644' or 'u+rwx,go+rx'.`>
 ) boolean
 ```
 
@@ -3768,8 +3768,8 @@ $FS.chmod(
 
 ```javascript
 $FS.chown(
-        <string $filename: path to the file.>,
-        <string | number $user: A user name or a user identifier.>
+        <string $filename: `path to the file`.>,
+        <string | number $user: `A user name or a user identifier.`>
 ) boolean
 ```
 
@@ -3791,8 +3791,8 @@ $FS.chown(
 
 ```javascript
 $FS.copy(
-        <string $from: path to the source file.>,
-        <string $to: The destination path.>
+        <string $from: `path to the source file.`>,
+        <string $to: `The destination path.`>
 ) boolean
 ```
 
@@ -3814,9 +3814,9 @@ $FS.copy(
 
 ```javascript
 $FS.dirname(
-        <string $path: a path.>
+        <string $path: `a path.`>
         [,
-            <real $levels = 1: The number of parent directories to go up.>
+            <real $levels = 1: `The number of parent directories to go up.`>
         ]
 ) string
 ```
@@ -3839,7 +3839,7 @@ $FS.dirname(
 
 ```javascript
 $FS.disk_usage(
-        <string $directory: A directory of the filesystem or disk partition.>
+        <string $directory: `A directory of the filesystem or disk partition.`>
 ) object
 ```
 
@@ -3851,15 +3851,15 @@ $FS.disk_usage(
 
 ```javascript
 {
-    free_blocks: <ulongint>,
-    free_inodes: <ulongint>,
+    'free_blocks': <ulongint: `the number of free blocks`>,
+    'free_inodes': <ulongint: `the number of free inodes`>,
 
-    total_blocks: <ulongint>,
-    total_inodes: <ulongint>,
+    'total_blocks': <ulongint: `the number of total blocks`>,
+    'total_inodes': <ulongint: `the number of total inodes`>,
 
-    mount_point: <string: the mount point of the file system>,
-    dev_majar: <ulongint: the majar device ID>,
-    dev_minor: <ulongint: the minor device ID>,
+    'mount_point': <string: `the mount point of the file system`>,
+    'dev_majar': <ulongint: `the majar device ID`>,
+    'dev_minor': <ulongint: `the minor device ID`>,
 }
 ```
 
@@ -3878,7 +3878,7 @@ $FS.disk_usage(
 
 ```javascript
 $FS.file_exists(
-        <string $filename: path to the file or directory.>
+        <string $filename: `path to the file or directory.`>
 ) boolean
 ```
 
@@ -3900,18 +3900,19 @@ $FS.file_exists(
 
 ```javascript
 $FS.file_is(
-        <string $filename: the path to a file or directory.>
+        <string $filename: `the path to a file or directory.`>
         <'[ dir | file | symlink | socket | pipe | block | char ] || [ executable | exe ] || [readable | read] || [writable write]' $which = 'file readable':
-            'dir' - a directory.
-            'file' - a regular file.
-            'symlink' - a symbolic link.
-            'socket' - a unix socket file.
-            'pipe' - a named pipe file or just a pipe file.
-            'block' - a block device file.
-            'char' - a character device file.
-            'executable'/'exe' - is executable.
-            'readable'/'read' - is readable.
-            'writable'/'write' - is writable. >
+            'dir' - `a directory.`
+            'file' - `a regular file.`
+            'symlink' - `a symbolic link.`
+            'socket' - `a unix socket file.`
+            'pipe' - ``a named pipe file or just a pipe file.``
+            'block' - `a block device file.`
+            'char' - `a character device file.`
+            'executable'/'exe' - `is executable.`
+            'readable'/'read' - `is readable.`
+            'writable'/'write' - `is writable.`
+       >
 ) boolean
 ```
 
@@ -3938,8 +3939,8 @@ $FS.file_is(
 
 ```javascript
 $FS.lchgrp(
-        <string $filename: path to the symlink.>,
-        <string | number $group: A group name or a group identifier.>
+        <string $filename: `The path to the symlink.`>,
+        <string | number $group: `A group name or a group identifier.`>
 ) boolean
 ```
 
@@ -3961,8 +3962,8 @@ $FS.lchgrp(
 
 ```javascript
 $FS.lchown(
-        <string $filename: path to the symlink.>,
-        <string | number $user: A user name or a user identifier.>
+        <string $filename: `The path to the symlink.`>,
+        <string | number $user: `A user name or a user identifier.`>
 ) boolean
 ```
 
@@ -3984,7 +3985,7 @@ $FS.lchown(
 
 ```javascript
 $FS.linkinfo(
-        <string $path: path to the link.>
+        <string $path: 'The path to the link.`>
 ) number | false
 ```
 
@@ -4006,25 +4007,25 @@ $FS.linkinfo(
 
 ```javascript
 $FS.lstat(
-        <string $filename: path to the file or directory.>
+        <string $filename: `The path to the file or directory.`>
         [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
-            'dev' - returns ID of device containing the file;
-            'inode' - returns inode number;
-            'type' - returns file type like 'd', 'b', 's', ...;
-            'mode_digits' - returns file mode like `0644`;
-            'mode_alphas' - returns file mode like `rwxrwxr-x`;
-            'nlink' - returns number of hard links;
-            'uid' - returns the user ID of owner;
-            'gid' - returns the group ID of owner;
-            'rdev' - returns the device ID if it is a special file;
-            'size' - returns total size in bytes;
-            'blksize' - returns block size for filesystem I/O;
-            'blocks' - returns number of 512B blocks allocated;
-            'atime' - returns time of last acces;
-            'mtime' - returns time of last modification;
-            'ctime' - returns time of last status change;
-            'all' - returns all above information;
-            'default' - 'type mode_digits uid gid size rdev ctime';
+            'dev' - `returns ID of device containing the file.`
+            'inode' - `returns inode number.`
+            'type' - `returns file type like 'd', 'b', or 's'.`
+            'mode_digits' - `returns file mode like '0644'.`
+            'mode_alphas' - `returns file mode like 'rwxrwxr-x'.`
+            'nlink' - `returns number of hard links.`
+            'uid' - `returns the user ID of owner.`
+            'gid' - `returns the group ID of owner.`
+            'rdev' - `returns the device ID if it is a special file.`
+            'size' - `returns total size in bytes.`
+            'blksize' - `returns block size for filesystem I/O.`
+            'blocks' - `returns number of 512B blocks allocated.`
+            'atime' - `returns time of last acces.`
+            'mtime' - `returns time of last modification.`
+            'ctime' - `returns time of last status change.`
+            'all' - `returns all above information.`
+            'default' - 'type mode_digits uid gid size rdev ctime'
             >
         ]
 ) object
@@ -4038,26 +4039,26 @@ $FS.lstat(
 
 ```javascript
 {
-    dev_major: <ulongint: the major ID of device containing file>,
-    dev_minor: <ulongint: the minor ID of device containing file>,
-    inode: <ulongint: inode number>
-    type: <string: file type like 'd', 'b', 's', ...>,
-    mode_digits: <string: file mode like `0644`>,
-    mode_alphas: <string: file mode like `rwxrwxr-x`>,
-    nlink: <number: number of hard links>,
-    uid: <numer: the user ID of owner>,
-    gid: <number: the group ID of owner>,
-    rdev_major: <ulongint: the major device ID if it is a special file>,
-    rdev_minor: <ulongint: the minor device ID if it is a special file>,
-    size: <ulongint: total size in bytes>,
-    blksize: <ulongint: block size for filesystem I/O>,
-    blocks: <ulongint: number of 512B blocks allocated>,
-    atime_sec: <ulongint: time of last acces (seconds since Epoch)>,
-    atime_nsec: <ulongint: time of last acces (nanoseconds since `atime_sec`)>,
-    mtime_sec: <ulongint: time of last modification (seconds since Epoch)>,
-    mtime_nsec: <ulongint: time of last modification (nanoseconds since `mtime_sec`)>,
-    ctime_sec: <ulongint: time of last status change (seconds since Epoch)>
-    ctime_nsec: <ulongint: time of last status change (nanoseconds since `ctime_sec`)>
+    'dev_major': <ulongint: `the major ID of device containing file`>,
+    'dev_minor': <ulongint: `the minor ID of device containing file`>,
+    'inode': <ulongint: `inode numbe`r>
+    'type': <string: `file type like 'd', 'b', or 's'`>,
+    'mode_digits': <string: `file mode like '0644'`>,
+    'mode_alphas': <string: `file mode like 'rwxrwxr-x'`>,
+    'nlink': <number: `number of hard links`>,
+    'uid': <numer: `the user ID of owner`>,
+    'gid': <number: `the group ID of owner`>,
+    'rdev_major': <ulongint: `the major device ID if it is a special file`>,
+    'rdev_minor': <ulongint: `the minor device ID if it is a special file`>,
+    'size': <ulongint: `total size in bytes`>,
+    'blksize': <ulongint: `block size for filesystem I/O`>,
+    'blocks': <ulongint: `number of 512B blocks allocated`>,
+    'atime_sec': <ulongint: `time of last acces (seconds since Epoch)`>,
+    'atime_nsec': <ulongint: `time of last acces (nanoseconds since 'atime_sec')`>,
+    'mtime_sec': <ulongint: `time of last modification (seconds since Epoch)`>,
+    'mtime_nsec': <ulongint: `time of last modification (nanoseconds since 'mtime_sec')`>,
+    'ctime_sec': <ulongint: `time of last status change (seconds since Epoch`)>
+    'ctime_nsec': <ulongint: `time of last status change (nanoseconds since 'ctime_sec'`)>
 }
 ```
 
@@ -4075,8 +4076,8 @@ $FS.lstat(
 
 ```javascript
 $FS.link(
-        < string $target: Target of the link. >,
-        < string $link: The link name. >
+        < string $target: `Target of the link.` >,
+        < string $link: `The link name.` >
 ) boolean
 ```
 
@@ -4098,9 +4099,9 @@ $FS.link(
 
 ```javascript
 $FS.mkdir(
-        < string $directory: The directory path. >
-        [, < string $permissions = '0777': The permissions are '0777' by default, which means the widest possible access. >
-            [, < boolean $recursive = `false`: Allows the creation of nested directories specified in `directory`. >
+        < string $directory: `The directory path.` >
+        [, < string $permissions = '0777': `The permissions are '0777' by default, which means the widest possible access.` >
+            [, < boolean $recursive = `false`: `Allows the creation of nested directories specified in $directory.` >
             ]
         ]
 ) boolean
@@ -4124,9 +4125,9 @@ $FS.mkdir(
 
 ```javascript
 $FS.pathinfo(
-        < string $path: The path to be parsed. >
+        < string $path: `The path to be parsed.` >
         [,
-            < '[dirname || basename || extension || filename] | all' $flags = 'all': Specifies the elements to be returned.
+            < '[dirname || basename || extension || filename] | all' $flags = 'all': `Specifies the elements to be returned`.
             >
         ]
 ) object | string
@@ -4150,7 +4151,7 @@ $FS.pathinfo(
 
 ```javascript
 $FS.readlink(
-        < string $path: The symbolic link path. >
+        < string $path: `The symbolic link path.` >
 ) string | false
 ```
 
@@ -4172,7 +4173,7 @@ $FS.readlink(
 
 ```javascript
 $FS.realpath(
-        < string $path: The path being checked. >
+        < string $path: `The path being checked.` >
 ) string | false
 ```
 
@@ -4194,8 +4195,8 @@ $FS.realpath(
 
 ```javascript
 $FS.rename(
-        < string $from: The old name. >
-        < string $to: The new name. >
+        < string $from: `The old name.` >
+        < string $to: `The new name.` >
 ) string | false
 ```
 
@@ -4217,7 +4218,7 @@ $FS.rename(
 
 ```javascript
 $FS.rmdir(
-        < string $directory: The directory path. >
+        < string $directory: `The directory path.` >
 ) boolean
 ```
 
@@ -4239,25 +4240,25 @@ $FS.rmdir(
 
 ```javascript
 $FS.stat(
-        <string $filename: path to the file or directory.>
+        <string $filename: `The path to the file or directory.`>
         [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
-            'dev' - returns ID of device containing the file;
-            'inode' - returns inode number;
-            'type' - returns file type like 'd', 'b', 's', ...;
-            'mode_digits' - returns file mode like `0644`;
-            'mode_alphas' - returns file mode like `rwxrwxr-x`;
-            'nlink' - returns number of hard links;
-            'uid' - returns the user ID of owner;
-            'gid' - returns the group ID of owner;
-            'rdev' - returns the device ID if it is a special file;
-            'size' - returns total size in bytes;
-            'blksize' - returns block size for filesystem I/O;
-            'blocks' - returns number of 512B blocks allocated;
-            'atime' - returns time of last acces;
-            'mtime' - returns time of last modification;
-            'ctime' - returns time of last status change;
-            'all' - returns all above information;
-            'default' - 'type mode_digits uid gid size rdev ctime';
+            'dev' - `returns ID of device containing the file.`
+            'inode' - `returns inode number.`
+            'type' - `returns file type like 'd', 'b', or 's'.`
+            'mode_digits' - `returns file mode like '0644';`
+            'mode_alphas' - `returns file mode like 'rwxrwxr-x';`
+            'nlink' - `returns number of hard links.`
+            'uid' - `returns the user ID of owner.`
+            'gid' - `returns the group ID of owner.`
+            'rdev' - `returns the device ID if it is a special file.`
+            'size' - `returns total size in bytes.`
+            'blksize' - `returns block size for filesystem I/O.`
+            'blocks' - `returns number of 512B blocks allocated.`
+            'atime' - `returns time of last acces.`
+            'mtime' - `returns time of last modification.`
+            'ctime' - `returns time of last status change.`
+            'all' - `returns all above information.`
+            'default' - 'type mode_digits uid gid size rdev ctime'
             >
         ]
 ) object
