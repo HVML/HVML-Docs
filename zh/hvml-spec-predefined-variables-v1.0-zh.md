@@ -412,11 +412,11 @@ $SESSION.user(
 ```javascript
 $SESSION.user(!
         <string $key: `the user defined key name`>,
-        <any $value: `the new variant value`>
+        <any | undefined $value: `the new variant value`>
 ) boolean : `returns @true when the old value was overridden or @false when a new key-value pair was created.`
 ```
 
-该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。注意，设置键值为 `undefined` 会执行移除对应键值对的操作。
+该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。注意，传入键值为 `undefined` 会执行移除对应键值对的操作。当移除一个并不存在的键值对时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `false`。
 
 **异常**
 
@@ -476,7 +476,18 @@ $SYSTEM.uname object : an object contains the following properties:
 
 ```javascript
 $SYSTEM.uname
-    // object
+    /* object:
+       {
+            'kernel-name':      'Linux',
+            'kernel-release':   '5.4.0-99-generic',
+            'kernel-version'    '#112-Ubuntu SMP Thu Feb 3 13:50:55 UTC 2022',
+            'nodename'          'magicBook',
+            'machine'           'x86_64',
+            'processor'         'x86_64',
+            'hardware-platform' 'x86_64',
+            'operating-system'  'GNU/Linux'
+       }
+    */
 ```
 
 #### 3.2.2) `uname_prt` 方法
@@ -484,7 +495,7 @@ $SYSTEM.uname
 获取可打印的系统信息。
 
 ```javascript
-$SYSTEM.uname_prt string: the kernel name.
+$SYSTEM.uname_prt string: `the kernel name.`
 ```
 
 该方法获取内核名称，返回字符串。
