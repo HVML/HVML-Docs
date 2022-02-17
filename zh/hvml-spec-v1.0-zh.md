@@ -1687,9 +1687,9 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
    - `boolean $case_insensitivity = false`。
    - `string`。
    - `string = 'auto'`。
-1. 可选地，在参数类型（及形参名称）之后使用 `:` 描述其用途。如：
-   - `number $seconds: seconds since epoch`。
-   - `boolean $case_insensitivity = false: /* performs a case-sensitive (false) or a case-insensitive (true) check. */`。
+1. 可选地，在参数类型（及形参名称）之后添加冒号 U+003A（`:`）并在在 U+0060（\`）包围中描述其用途。如：
+   - `number $seconds: /* seconds since epoch */`。
+   - `boolean $case_insensitivity = false: \`performs a case-sensitive (@false) or a case-insensitive (@true) check.\` `。
    - `string: locale category`。
 1. 可使用如下类型别名：
    1. `any`：任意类型。
@@ -1705,8 +1705,8 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
    1. 使用一对中括号（`[ ]`）对多个关键词进行分组。
    1. 不使用前置的参数类型 `string`。
 1. 参数中使用的关键词由不包含空格和控制字符的可打印字符组成；参数中需要传递多个关键词时，使用单个或者多个 ASCII 空白字符分隔。
-1. 方法的返回值类型，在右括号（`)`）之后描述；可能返回多种类型时，使用 `|` 符号分隔。可选地，在类型名称后添加冒号（`:`）以及对返回值的简要描述信息。
-1. 可选地，我们对必须包含的参数或语法单元，包含在两个尖括号（`< >`）中描述；对可选的参数或语法单元，包含在两个中括号（`[ ]`）中描述。
+1. 方法的返回值类型，在右括号 U+0029（`)`）之后描述；可能返回多种类型时，使用 `|` 符号分隔。可选地，在类型名称后添加冒号（`:`）以及对返回值的简要描述信息。
+1. 可选地，我们对必须包含的参数或语法单元，包含在一对尖括号（`< >`）中描述；对可选的参数或语法单元，包含在一对中括号（`[ ]`）中描述。
 1. 使用反引号 U+0060（\`）包围描述性语句，或使用 C 语言注释符号。若在其中包含 `true` 等关键词，使用 U+0040（@ ）前导符号。
 
 上述语法中的第五条，示例如下：
