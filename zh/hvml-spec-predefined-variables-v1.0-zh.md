@@ -470,7 +470,11 @@ $SYSTEM.uname object : an object contains the following properties:
     'operating-system'    - < string: `the operating system (e.g., 'GNU/Linux')` >
 ```
 
-该方法获取系统信息，返回包含有内核名称、版本号等键值对的对象。
+该方法获取系统信息，返回包含有内核名称、版本号等键值对的对象。注意，对某些不支持的系统特征，将返回空字符串。
+
+**异常**
+
+（无）
 
 **示例**
 
@@ -502,7 +506,7 @@ $SYSTEM.uname_prt string: `the kernel name.`
 
 ```javascript
 $SYSTEM.uname_prt(
-        <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which:
+        <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which = 'default':
             'kernel-name'       - `includes kernel name (e.g., 'Linux')`
             'kernel-release'    - `includes kernel release (e.g., '2.6.28')`
             'kernel-version'    - `includes kernel version`
@@ -512,16 +516,24 @@ $SYSTEM.uname_prt(
             'hardware-platform' - `includes the hardware platform`
             'operating-system'  - `includes the operating system (e.g., 'GNU/Linux')`
             'all'               - `includes all parts`
-            'default'           - `is equivalent to 'operating-system kernel-name kernel-release kernel-version'`
+            'default'           - `is equivalent to 'kernel-name'`
         >
 ) string: `the string concatenated the desired system information parts together.`
 ```
 
-该方法获取系统指定部分的名称，返回字符串。
+该方法返回多个指定特征的特征值，用空格分隔，串接为一个字符串返回。注意，对某些不支持的系统特征，按对应的特征值为空字符串处理。
+
+**异常**
+
+（无）
 
 **示例**
 
 ```javascript
+// 获取内核名称
+$SYSTEM.uname_prt
+    // string: 'Linux'
+
 // 获取内核名称及版本号
 $SYSTEM.uname_prt('kernel-name kernel-release kernel-version')
     // string: "Linux 5.4.0-80-generic #90-Ubuntu SMP Fri Jul 9 22:49:44 UTC 2021"
@@ -541,24 +553,24 @@ $SYSTEM.locale string : `the locale for the messages category.`
 
 ```javascript
 $SYSTEM.locale(
-        < 'ctype | numeric | time | collate | monetary | messages | paper | name | address | telephone | measurement | identification' $category:
+        < 'ctype | numeric | time | collate | monetary | messages | paper | name | address | telephone | measurement | identification' $category = 'messages':
             'ctype'     - `Character classification`
             'numeric'   - `Formatting of nonmonetary numeric values`
             'time'      - `Formatting of date and time values`
             'collate'   - `String collation`
             'monetary'  - `Formatting of monetary values`
             'messsages' - `Localizable natural-language messages`
-            'paper'     - `ettings related to the standard paper size`
-            'name'      - `Formatting of salutations for persons`
-            'address'   - `Formatting of addresses and geography-related items`
-            'telephone' - `Formats to be used with telephone services`
-            'measurement'   - `Settings related to measurements (metric versus US customary)`
-            'identification'    - `Metadata describing the locale`
+            'paper'     - `Settings related to the standard paper size (*)`
+            'name'      - `Formatting of salutations for persons (*)`
+            'address'   - `Formatting of addresses and geography-related items (*)`
+            'telephone' - `Formats to be used with telephone services (*)`
+            'measurement'   - `Settings related to measurements (metric versus US customary) (*)`
+            'identification'    - `Metadata describing the locale (*)`
         >
-) string : `the locale like 'zh_CN'.`
+) string | undefined : `the locale like 'zh_CN'.`
 ```
 
-该方法获取指定分类的区域，返回字符串。
+该方法获取指定分类的区域，返回字符串。某些平台可能不支持特定的区域分类，比如姓名（`name`）分类。对不支持的区域分类，该函数将抛出 `Unsupported` 异常，或静默求值时返回 `undefined`。
 
 **注意**  
 在 HVML 中，表示区域的字符串始终使用 `en_US`、`zh_CN` 这种形式。
@@ -572,19 +584,23 @@ $SYSTEM.locale(!
             'collate'   - `String collation`
             'monetary'  - `Formatting of monetary values`
             'messsages' - `Localizable natural-language messages`
-            'paper'     - `ettings related to the standard paper size`
-            'name'      - `Formatting of salutations for persons`
-            'address'   - `Formatting of addresses and geography-related items`
-            'telephone' - `Formats to be used with telephone services`
-            'measurement'   - `Settings related to measurements (metric versus US customary)`
-            'identification'    - `Metadata describing the locale`
+            'paper'     - `Settings related to the standard paper size (*)`
+            'name'      - `Formatting of salutations for persons (*)`
+            'address'   - `Formatting of addresses and geography-related items (*)`
+            'telephone' - `Formats to be used with telephone services (*)`
+            'measurement'   - `Settings related to measurements (metric versus US customary) (*)`
+            'identification'    - `Metadata describing the locale (*)`
             'all'       - `All of the locale categories`
         >,
         <string $locale: `the locale for $categories`>
-) boolean
+) true | false
 ```
 
-该方法设置指定分类（单个或多个）的区域。成功时返回 `true`，失败时返回 `false`。注意，某些系统可能不支持特定的区域分类。
+该方法设置指定分类（单个或多个）的区域。成功时返回 `true`，失败时返回 `false`。某些平台可能不支持特定的区域分类，比如姓名（`name`）分类。对不支持的区域分类，该函数将抛出 `Unsupported` 异常，或在静默求值时返回 `false`。
+
+**异常**
+
+- `Unsupported`：不支持的区域分类。
 
 **示例**
 
@@ -609,19 +625,36 @@ $SYSTEM.locale
 $SYSTEM.random ulongint: `a random between 0 and RAND_MAX.`
 ```
 
-该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值。
+该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值（`ulongint`）。
 
 ```javascript
 // 原型：获得 0 到指定上限之间的随机数。
 $SYSTEM.random(
         <real $max: `the max value`>
-) number
+) real: `A random real number between 0 and $max. The type of return value will be same as the type of $max.`
 ```
 
-该方法获取 0 到指定的最大值之间的一个随机值。
+该方法获取 0 到指定的最大值之间的一个随机值。返回值的类型同参数 `$max` 的类型。
+
+**异常**
+
+（无）
 
 **示例**
 
+```javascript
+$SYSTEM.random
+    // ulongint: 88
+
+$SYSTEM.random(1)
+    // number: 0.789
+
+$SYSTEM.random(1000L)
+    // longint: 492L
+
+$SYSTEM.random(-10FL)
+    // longdouble: -8.96987678FL
+```
 
 #### 3.2.5) `time` 方法
 
@@ -671,6 +704,7 @@ $SYSTEM.time(!
 
 **异常**
 
+（无）
 
 **示例**
 
