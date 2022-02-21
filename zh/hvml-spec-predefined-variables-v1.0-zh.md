@@ -1140,36 +1140,6 @@ $DOC.doctype
 1. `.removeClass(! <string: className> )`：移除元素汇集中所有元素的指定类名。
 1. `.removeClass(! <array: classNames> )`：移除元素汇集中所有元素在数组中的所有类名。
 
-类似地，在单个元素实体上，我们可就如下键名获得对应的获取器：
-
-1. `.attr( <string: attributeName> )`：获取元素的指定属性值。
-1. `.prop( <string: propertyName> )`：获取元素的指定状态值。
-1. `.style( <string: styleName> )`：获取元素的指定样式值。
-1. `.content()`：获取元素的内容（字符串，按目标标记语言序列化）。
-1. `.textContent()`：获得元素（含子元素）的文本内容。
-1. `.jsonContent()`：获得元素（含子元素）的数据内容，多个内容形成数组。
-1. `.val()`：获得元素的当前值。
-1. `.hasClass( <string: className> )`：判断元素是否被赋予指定的类名。
-
-在单个元素实体上，我们可就如下键名获得对应的设置器：
-
-1. `.attr(! <string: attributeName>, <string: value> )`：设置元素的属性值。
-1. `.attr(! <object: attributes> )`：使用对象信息设置元素的多个属性值。
-1. `.prop(! <string: propertyName>, <any: value> )`：设置元素的状态值。
-1. `.prop(! <object: properties> )`：使用对象信息设置元素的多个状态值。
-1. `.style(! <string: styleName>, <string: value> )`：设置元素的样式值。
-1. `.style(! <object: styles> )`：使用对象信息设置元素的样式值。
-1. `.content(! <string: content> )`：设置元素的内容。
-1. `.textContent(! <string: content> )`：用于设置元素的文本内容，将移除可能的子元素。
-1. `.jsonContent(! <any: content> )`：用于设置元素的数据内容，将移除可能的子元素。
-1. `.val(! <string: newValue>)`：设置元素的当前值。
-1. `.addClass(! <string: className> )`：添加指定的类名。
-1. `.addClass(! <array: classNames> )`：从数组中添加指定的类名。
-1. `.removeAttr(! <string: attributeName> )`：移除元素的指定属性。
-1. `.removeClass(! )`：移除元素的所有类名。
-1. `.removeClass(! <string: className> )`：移除元素的指定类名。
-1. `.removeClass(! <array: classNames> )`：移除元素在数组中的所有类名。
-
 如此实现后，HVML 动作元素中通过 CSS 选择器引用元素时，如：
 
 ```html
