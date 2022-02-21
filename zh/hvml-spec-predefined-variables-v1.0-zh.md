@@ -4843,6 +4843,7 @@ $FILE.bin.tail($file, -5)
 
 #### BRC) 220201
 
+1. 移除了单个元素实体，全部使用元素汇集实体。
 1. 移除了 `$STR.strlen` 方法。
 1. 变更了 `$STR.implode`、`$STR.explode` 方法的接口。
 1. `$STR.strcat` 方法更名为 `$STR.join`，并增强了接口。
