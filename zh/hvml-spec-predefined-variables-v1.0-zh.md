@@ -628,7 +628,6 @@ $SYSTEM.random ulongint: `a random between 0 and RAND_MAX.`
 该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值（`ulongint`）。
 
 ```javascript
-// 原型：获得 0 到指定上限之间的随机数。
 $SYSTEM.random(
         <real $max: `the max value`>
 ) real: `A random real number between 0 and $max. The type of return value will be same as the type of $max.`
@@ -636,15 +635,33 @@ $SYSTEM.random(
 
 该方法获取 0 到指定的最大值之间的一个随机值。返回值的类型同参数 `$max` 的类型。
 
+```javascript
+$SYSTEM.random(!
+        <real $seed: `the random seed`>
+        [, <number $complexity： `a number equal or greater than 8 to indicates how sophisticated the random number generator it should use - the larger, the better the random numbers will be.>
+        ]
+) boolean: `@true for success, @false otherwise.`
+```
+
+该方法设置随机数发生器的种子（`$seed`）和/或复杂度（`$complexity`）。该方法在成功时返回 `true`；失败时抛出异常，或在静默求值时，对可忽略异常返回 `false`。
+
 **异常**
 
-（无）
+`InvalidValue`：传入了无效参数，比如过小的 `$complexity` 值。
 
 **示例**
 
 ```javascript
+// 使用当前系统日历时间设置随机数种子。
+$SYSTEM.randome(! $SYSTEM.time )
+    // true
+
+// 使用当前系统日历时间设置随机数种子，设置随机数发生器的复杂度为最高级。
+$SYSTEM.randome(! $SYSTEM.time, 256 )
+    // true
+
 $SYSTEM.random
-    // ulongint: 88
+    // ulongint: 88UL
 
 $SYSTEM.random(1)
     // number: 0.789
@@ -655,6 +672,12 @@ $SYSTEM.random(1000L)
 $SYSTEM.random(-10FL)
     // longdouble: -8.96987678FL
 ```
+
+**参见**
+
+- C 标准函数：`random_r()`
+- C 标准函数：`srandom_r()`
+- C 标准函数：`initstate_r()`
 
 #### 3.2.5) `time` 方法
 
