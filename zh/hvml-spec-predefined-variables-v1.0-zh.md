@@ -48,8 +48,9 @@ Language: Chinese
       * [3.2.7) `mktime` 方法](#327-mktime-方法)
       * [3.2.8) `timezone` 方法](#328-timezone-方法)
       * [3.2.9) `fmttime` 方法](#329-fmttime-方法)
-      * [3.2.10) `env` 方法](#3210-env-方法)
-      * [3.2.11) `const` 方法](#3211-const-方法)
+      * [3.2.10) `fmtgmtime` 方法](#3210-fmtgmtime-方法)
+      * [3.2.11) `env` 方法](#3211-env-方法)
+      * [3.2.12) `const` 方法](#3212-const-方法)
    + [3.3) `HVML`](#33-hvml)
       * [3.3.1) `base` 方法](#331-base-方法)
       * [3.3.2) `maxIterationCount` 方法](#332-maxiterationcount-方法)
@@ -379,7 +380,7 @@ $SESSION.cwd string | false: `returns the current working directory on success, 
 ```javascript
 $SESSION.cwd(!
         <string $dir: `the new path for the current working directory.`>
-) boolean: `returns @true on success or @false on failure`.
+) boolean: `returns @true on success or @false on failure.`
 ```
 
 该方法改变当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
@@ -404,7 +405,7 @@ $SESSION.cwd(!
 ```javascript
 $SESSION.user(
         <string $key: `the user defined key name`>
-) any | undefined : `the variant value corresponding to the key name $key`.
+) any | undefined : `the variant value corresponding to the key name $key.`
 ```
 
 该方法获取指定键名对应的键值。当指定的键名未被设置时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `undefined`。
@@ -459,15 +460,16 @@ $SESSION.user(! 'userId', undefined )
 **描述**
 
 ```javascript
-$SYSTEM.uname object : an object contains the following properties:
-    'kernel-name'         - < string: `kernel name (e.g., 'Linux')` >
-    'kernel-release'      - < string: `kernel release (e.g., '2.6.28')` >
-    'kernel-version'      - < string: `kernel version` >
-    'nodename'            - < string: `the network node hostname` >
-    'machine'             - < string: `machine hardware name` >
-    'processor'           - < string: `the processor type` >
-    'hardware-platform'   - < string: `the hardware platform` >
-    'operating-system'    - < string: `the operating system (e.g., 'GNU/Linux')` >
+$SYSTEM.uname object :
+    `an object contains the following properties:`
+        'kernel-name'         - < string: `kernel name (e.g., 'Linux')` >
+        'kernel-release'      - < string: `kernel release (e.g., '2.6.28')` >
+        'kernel-version'      - < string: `kernel version` >
+        'nodename'            - < string: `the network node hostname` >
+        'machine'             - < string: `machine hardware name` >
+        'processor'           - < string: `the processor type` >
+        'hardware-platform'   - < string: `the hardware platform` >
+        'operating-system'    - < string: `the operating system (e.g., 'GNU/Linux')` >
 ```
 
 该方法获取系统信息，返回包含有内核名称、版本号等键值对的对象。注意，对某些不支持的系统特征，将返回空字符串。
@@ -638,7 +640,7 @@ $SYSTEM.random(
 ```javascript
 $SYSTEM.random(!
         <real $seed: `the random seed`>
-        [, <number $complexity： `a number equal or greater than 8 to indicates how sophisticated the random number generator it should use - the larger, the better the random numbers will be.>
+        [, <number $complexity: `a number equal or greater than 8 to indicates how sophisticated the random number generator it should use - the larger, the better the random numbers will be.>
         ]
 ) boolean: `@true for success, @false otherwise.`
 ```
@@ -656,7 +658,7 @@ $SYSTEM.random(!
 $SYSTEM.randome(! $SYSTEM.time )
     // true
 
-// 使用当前系统日历时间设置随机数种子，设置随机数发生器的复杂度为最高级。
+// 使用当前系统日历时间设置随机数种子，并设置随机数发生器的复杂度为最高。
 $SYSTEM.randome(! $SYSTEM.time, 256 )
     // true
 
@@ -712,10 +714,10 @@ $SYSTEM.time(
             [, <string $timezone>
             ]
         ]
-) string : `a date and time string in the given time format $format and the time zone $timezone for the specified time $seconds.`
+) string : `a date and time string in the given time format $format and the time zone $timezone for the specified calendar time $seconds.`
 ```
 
-该方法获得指定时间在给定时区，以给定格式化标准/规范名称（如 ISO8601、RFC850）形式展示的时间字符串。
+该方法获得指定日历时间在给定时区，以给定格式化标准/规范名称（如 ISO8601、RFC850）形式展示的时间字符串。
 
 ```javascript
 $SYSTEM.time(!
@@ -764,10 +766,11 @@ $SYSTEM.time('rfc822', $SYSTEM.time, 'Asia/Shanghai')
 **描述**
 
 ```javascript
-$SYSTEM.gmtime: object
+$SYSTEM.gmtime object : `An object representing the current broken-down time in the default timezone.`
 ```
 
-获得当前时间当前时区的分解时间（broken-down time），返回类型为对象。
+获得当前时间在默认时区的分解时间（broken-down time），返回类型为对象。
+
 
 ```javascript
 $SYSTEM.gmtime(
@@ -780,7 +783,7 @@ $SYSTEM.gmtime(
 
 获得给定时间在指定时区的分解时间（broken-down time），返回类型为对象。
 
-该函数返回的分解时间对象包含如下属性：
+上述方法返回的分解时间对象包含如下属性：
 
 ```javascript
 {
@@ -806,6 +809,10 @@ $SYSTEM.gmtime
 $SYSTEM.gmtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
 ```
 
+**参见**
+
+- C 标准函数：`gmtime_r()`
+
 #### 3.2.7) `mktime` 方法
 
 将分解时间转换为日历时间（Epoch 以来的秒数）。
@@ -817,12 +824,16 @@ $SYSTEM.mktime(
         <object $tm>
         [, <string $timezone>
         ]
-)
+) ulongint : `seconds since Epoch.`
 ```
 
 转换指定时区（默认为当前时区）的分解时间为日历时间（Epoch 以来的秒数）。
 
 **示例**
+
+**参见**
+
+- C 标准函数：`mktime_r()`
 
 #### 3.2.8) `timezone` 方法
 
@@ -844,9 +855,13 @@ $SYSTEM.timezone(! <string $timezone> ) true | false
 
 **示例**
 
+**参见**
+
+- C 标准函数：`tzset()`
+
 #### 3.2.9) `fmttime` 方法
 
-获取或设置时区。
+格式化日历时间。
 
 **描述**
 
@@ -860,17 +875,50 @@ $SYSTEM.fmttime(
 ) string | false
 ```
 
-该方法按指定的格式格式化一个日历时间。
+该方法按指定的格式格式化一个日历时间，返回字符串。
 
 **示例**
 
 ```javascript
 // 获得类似 `11:27` 的时间字符串
-$SYSTEM.time("It is %H:%m now")
+$SYSTEM.fmttime("It is %H:%m now")
     // string: 'It is 11:27 now'
 ```
 
-#### 3.2.10) `env` 方法
+**参见**
+
+- C 标准函数：`strftime()`
+- C 标准函数：`strptime()`
+
+#### 3.2.10) `fmtgmtime` 方法
+
+格式化分解时间。
+
+**描述**
+
+```javascript
+$SYSTEM.fmtgmtime(
+        <string $format: `the format string`>,
+        <object $gmtime: `the broken-down time object returned by gmtime()`
+) string | false
+```
+
+该方法按指定的格式格式化一个日历时间，返回字符串。
+
+**示例**
+
+```javascript
+// 获得类似 `08:55` 的时间字符串
+$SYSTEM.fmtgmtime("It is %H:%m now in Asia/Shanghai", $SYSTEM.gmtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai'))
+    // string: 'It is 08:55 now in Asia/Shanghai'
+```
+
+**参见**
+
+- C 标准函数：`strftime()`
+- C 标准函数：`strptime()`
+
+#### 3.2.11) `env` 方法
 
 获取或设置环境变量。
 
@@ -901,7 +949,7 @@ $SYSTEM.env(! 'LOGNAME', 'tom' )
     // boolean: true
 ```
 
-#### 3.2.11) `const` 方法
+#### 3.2.12) `const` 方法
 
 获取系统常量。
 
@@ -951,7 +999,7 @@ $HVML.base(!
 ) string | false: `the new base URL normalized from $new_url or `false` for invalid $new_url.`
 ```
 
-该方法设置 HVML 程序的基础 URL 为预期值，返回正规化处理后的基础 URL。若传递的 `$new_url` 不是合法的或不支持的 URL，则返回 `false`。
+该方法设置 HVML 程序的基础 URL 为预期值，返回正规化处理后的基础 URL。若传递的 `$new_url` 不是合法的或不支持的 URL，则抛出异常；或在静默求值时，对可忽略异常返回 `false`。
 
 **示例**
 
