@@ -37,24 +37,26 @@ Language: Chinese
 - [3) 必要动态变量](#3-必要动态变量)
    + [3.1) `SESSION`](#31-session)
       * [3.1.1) `cwd` 方法](#311-cwd-方法)
-      * [3.1.2) `user` 方法](#312-user-方法)
+      * [3.1.2) `user_obj` 静态属性](#312-user_obj-静态属性)
+      * [3.1.3) `user` 方法](#313-user-方法)
+      * [3.1.4) `env` 方法](#314-env-方法)
    + [3.2) `SYSTEM`](#32-system)
-      * [3.2.1) `uname` 方法](#321-uname-方法)
-      * [3.2.2) `uname_prt` 方法](#322-uname_prt-方法)
-      * [3.2.3) `locale` 方法](#323-locale-方法)
-      * [3.2.4) `random` 方法](#324-random-方法)
-      * [3.2.5) `time` 方法](#325-time-方法)
-      * [3.2.6) `gmtime` 方法](#326-gmtime-方法)
-      * [3.2.7) `mktime` 方法](#327-mktime-方法)
-      * [3.2.8) `timezone` 方法](#328-timezone-方法)
-      * [3.2.9) `fmttime` 方法](#329-fmttime-方法)
-      * [3.2.10) `fmtgmtime` 方法](#3210-fmtgmtime-方法)
-      * [3.2.11) `env` 方法](#3211-env-方法)
-      * [3.2.12) `const` 方法](#3212-const-方法)
+      * [3.2.1) `const_obj` 静态属性](#321-const_obj-静态属性)
+      * [3.2.2) `const` 方法](#322-const-方法)
+      * [3.2.3) `uname` 方法](#323-uname-方法)
+      * [3.2.4) `uname_prt` 方法](#324-uname_prt-方法)
+      * [3.2.5) `locale` 方法](#325-locale-方法)
+      * [3.2.6) `random` 方法](#326-random-方法)
+      * [3.2.7) `time` 方法](#327-time-方法)
+      * [3.2.8) `gmtime` 方法](#328-gmtime-方法)
+      * [3.2.9) `mktime` 方法](#329-mktime-方法)
+      * [3.2.10) `timezone` 方法](#3210-timezone-方法)
+      * [3.2.11) `fmttime` 方法](#3211-fmttime-方法)
+      * [3.2.12) `fmtgmtime` 方法](#3212-fmtgmtime-方法)
    + [3.3) `HVML`](#33-hvml)
       * [3.3.1) `base` 方法](#331-base-方法)
-      * [3.3.2) `maxIterationCount` 方法](#332-maxiterationcount-方法)
-      * [3.3.3) `maxRecursionDepth` 方法](#333-maxrecursiondepth-方法)
+      * [3.3.2) `max_iteration_count` 方法](#332-max_iteration_count-方法)
+      * [3.3.3) `max_recursion_depth` 方法](#333-max_recursion_depth-方法)
       * [3.3.4) `timeout` 方法](#334-timeout-方法)
       * [3.3.5) `attr` 方法](#335-attr-方法)
    + [3.4) `DOC`](#34-doc)
@@ -396,7 +398,36 @@ $SESSION.cwd(!
 - `NotDesiredEntity`
 - `OSFailure`
 
-#### 3.1.2) `user` 方法
+#### 3.1.2) `user_obj` 静态属性
+
+`user_obj` 是 `SESSION` 的一个静态属性，用来定义用户自定义键值对，初始为一个空对象。程序可使用 `update` 元素设置其内容：
+
+```html
+<!DOCTYPE hvml>
+<hvml target="html">
+    <head>
+        <update on="$SESSION.user_obj" to="displace">
+            {
+                "AUTHOR": "Vincent Wei",
+            }
+        </update>
+    </head>
+
+    <body>
+        ...
+    </body>
+</hvml>
+```
+
+由于 `$SESSION` 是会话级变量，故而可以在当前会话的另一个 HVML 程序中观察该数据上的变化：
+
+```html
+    <observe on="$SESSION.user_obj" for="change:AUTHOR" in="#theStatusBar">
+        ...
+    </observe>
+```
+
+#### 3.1.3) `user` 方法
 
 获取或设置用户键值对。
 
@@ -418,6 +449,8 @@ $SESSION.user(!
 ```
 
 该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。注意，传入键值为 `undefined` 会执行移除对应键值对的操作。当移除一个并不存在的键值对时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `false`。
+
+_注意_，`user` 的获取器和设置器本质上访问的是 `$SESSION` 的 `user_obj` 静态属性。
 
 **异常**
 
@@ -449,11 +482,101 @@ $SESSION.user(! 'userId', undefined )
     // true
 ```
 
+#### 3.1.4) `env` 方法
+
+获取或设置系统环境变量。
+
+**描述**
+
+```javascript
+$SESSION.env(
+        <string: `the environment variable name`>
+) string | undefined
+```
+
+该方法获取指定环境变量的值（字符串）；未设置时返回 `undefined`。
+
+```javascript
+$SESSION.env(!
+        <string: `the environment variable name`>,
+        <string: `the value`>
+) boolean : `returns @true when the old value was overridden or @false when a new environment variable was created.`
+```
+
+该方法设置指定的环境变量，返回布尔数据，指明是否覆盖了已有环境变量。
+
+**示例**
+
+```javascript
+// 设置环境变量 `LOGNAME` 的值
+$SESSION.env(! 'LOGNAME', 'tom' )
+    // boolean: true
+```
+
 ### 3.2) `SYSTEM`
 
 该变量是一个会话级内置变量，在初始化解释器实例之后绑定。
 
-#### 3.2.1) `uname` 方法
+#### 3.2.1) `const_obj` 静态属性
+
+`const_obj` 是 `$SYSTEM` 的一个静态属性，用来定义系统常量值，程序只可增加但不可删除或修改已有键值对：
+
+```html
+<!DOCTYPE hvml>
+<hvml target="html">
+    <head>
+        <update on="$SYSTEM.const_obj" to="merge">
+            {
+                "HVML_INTRPR_AUTHOR": "FMSoft",
+            }
+        </update>
+    </head>
+
+    <body>
+        ...
+    </body>
+</hvml>
+```
+
+由于 `$SYSTEM` 是会话级变量，故而可以在当前会话的另一个 HVML 程序中观察该数据上的变化：
+
+```html
+    <observe on="$SYSTEM.const_obj" for="change:grown" in="#theStatusBar">
+        ...
+    </observe>
+```
+
+#### 3.2.2) `const` 方法
+
+获取系统常量。
+
+**描述**
+
+```javascript
+$SYSTEM.const(
+        <string $name: `the constant name`>
+) any : `the constant value`
+```
+
+该方法获取指定常量的值；未设置时返回 `undefined`。
+
+注意，如下常量应由所有 HVML 解释器定义：
+
+- `HVML_SPEC_VERSION`: HVML 规范版本号，如 `1.0`。
+- `HVML_SPEC_RELEASE`: HVML 规范版本号，如 `硕鼠`。
+- `HVML_INTRPR_NAME`: HVML 解释器的名称，如 `PurC`。
+- `HVML_INTRPR_VERSION`: HVML 解释器的版本名称，如 `0.5.0`。
+- `HVML_INTRPR_RELEASE`: HVML 解释器的发布名称，如 `立春`。
+
+**示例**
+
+```javascript
+// 获取常量 `HVML_SPEC_VER` 的值
+$SYSTEM.const('HVML_SPEC_VERSION')
+    // string: '1.0'
+```
+
+#### 3.2.3) `uname` 方法
 
 获取系统信息。
 
@@ -496,7 +619,7 @@ $SYSTEM.uname
     */
 ```
 
-#### 3.2.2) `uname_prt` 方法
+#### 3.2.4) `uname_prt` 方法
 
 获取可打印的系统信息。
 
@@ -541,7 +664,7 @@ $SYSTEM.uname_prt('kernel-name kernel-release kernel-version')
     // string: "Linux 5.4.0-80-generic #90-Ubuntu SMP Fri Jul 9 22:49:44 UTC 2021"
 ```
 
-#### 3.2.3) `locale` 方法
+#### 3.2.5) `locale` 方法
 
 获取或设置区域（locale）。
 
@@ -617,7 +740,7 @@ $SYSTEM.locale
     // zh_CN
 ```
 
-#### 3.2.4) `random` 方法
+#### 3.2.6) `random` 方法
 
 获取随机值。
 
@@ -681,7 +804,7 @@ $SYSTEM.random(-10FL)
 - C 标准函数：`srandom_r()`
 - C 标准函数：`initstate_r()`
 
-#### 3.2.5) `time` 方法
+#### 3.2.7) `time` 方法
 
 获取或设置日历时间（calendar time）。
 
@@ -759,7 +882,7 @@ $SYSTEM.time('rfc822', $SYSTEM.time, 'Asia/Shanghai')
 - PHP: <https://www.php.net/manual/en/datetime.formats.php>
 - PHP DateTime 类：<https://www.php.net/manual/en/class.datetime.php>
 
-#### 3.2.6) `gmtime` 方法
+#### 3.2.8) `gmtime` 方法
 
 获取分解时间。
 
@@ -813,7 +936,7 @@ $SYSTEM.gmtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
 
 - C 标准函数：`gmtime_r()`
 
-#### 3.2.7) `mktime` 方法
+#### 3.2.9) `mktime` 方法
 
 将分解时间转换为日历时间（Epoch 以来的秒数）。
 
@@ -835,7 +958,7 @@ $SYSTEM.mktime(
 
 - C 标准函数：`mktime_r()`
 
-#### 3.2.8) `timezone` 方法
+#### 3.2.10) `timezone` 方法
 
 获取或设置时区。
 
@@ -859,7 +982,7 @@ $SYSTEM.timezone(! <string $timezone> ) true | false
 
 - C 标准函数：`tzset()`
 
-#### 3.2.9) `fmttime` 方法
+#### 3.2.11) `fmttime` 方法
 
 格式化日历时间。
 
@@ -890,7 +1013,7 @@ $SYSTEM.fmttime("It is %H:%m now")
 - C 标准函数：`strftime()`
 - C 标准函数：`strptime()`
 
-#### 3.2.10) `fmtgmtime` 方法
+#### 3.2.12) `fmtgmtime` 方法
 
 格式化分解时间。
 
@@ -917,67 +1040,6 @@ $SYSTEM.fmtgmtime("It is %H:%m now in Asia/Shanghai", $SYSTEM.gmtime($MATH.sub($
 
 - C 标准函数：`strftime()`
 - C 标准函数：`strptime()`
-
-#### 3.2.11) `env` 方法
-
-获取或设置环境变量。
-
-**描述**
-
-```javascript
-$SYSTEM.env(
-        <string: `the environment variable name`>
-) string | undefined
-```
-
-该方法获取指定环境变量的值（字符串）；未设置时返回 `undefined`。
-
-```javascript
-$SYSTEM.env(!
-        <string: `the environment variable name`>,
-        <string: `the value`>
-) boolean : `returns @true when the old value was overridden or @false when a new environment variable was created.`
-```
-
-该方法设置指定的环境变量，返回布尔数据，指明是否覆盖了已有环境变量。
-
-**示例**
-
-```javascript
-// 设置环境变量 `LOGNAME` 的值
-$SYSTEM.env(! 'LOGNAME', 'tom' )
-    // boolean: true
-```
-
-#### 3.2.12) `const` 方法
-
-获取系统常量。
-
-**描述**
-
-```javascript
-$SYSTEM.const(
-        <string $name: `the constant name`>
-) any : `the constant value`
-```
-
-该方法获取指定常量的值；未设置时返回 `undefined`。
-
-注意，如下常量应由所有 HVML 解释器定义：
-
-- `HVML_SPEC_VERSION`: HVML 规范版本号，如 `1.0`。
-- `HVML_SPEC_RELEASE`: HVML 规范版本号，如 `硕鼠`。
-- `HVML_INTRPR_NAME`: HVML 解释器的名称，如 `PurC`。
-- `HVML_INTRPR_VERSION`: HVML 解释器的版本名称，如 `0.5.0`。
-- `HVML_INTRPR_RELEASE`: HVML 解释器的发布名称，如 `立春`。
-
-**示例**
-
-```javascript
-// 获取常量 `HVML_SPEC_VER` 的值
-$SYSTEM.const('HVML_SPEC_VERSION')
-    // string: '1.0'
-```
 
 ### 3.3) `HVML`
 
@@ -1008,7 +1070,7 @@ $HVML.base(! "https://foo.example.com//app/hvml/" )
     // string: 'https://foo.example.com/app/hvml'
 ```
 
-#### 3.3.2) `maxIterationCount` 方法
+#### 3.3.2) `max_iteration_count` 方法
 
 该方法获取或设置 HVML 程序在执行 `iterate` 动作元素时的最大迭代次数，用于检测可能的死循环。
 
@@ -1017,13 +1079,13 @@ $HVML.base(! "https://foo.example.com//app/hvml/" )
 **描述**
 
 ```javascript
-$HVML.maxIterationCount ulongint: `the current maximal iteration count.`
+$HVML.max_iteration_count ulongint: `the current maximal iteration count.`
 ```
 
 该方法返回当前的最大迭代次数值。
 
 ```javascript
-$HVML.maxIterationCount(!
+$HVML.max_iteration_count(!
         <ulongint $new_value: `the new maximal interation count`>
 ) ulongint : `the new maximal iteration count.`
 ```
@@ -1033,10 +1095,10 @@ $HVML.maxIterationCount(!
 **示例**
 
 ```javascript
-$HVML.maxIterationCount(! 10000UL )
+$HVML.max_iteration_count(! 10000UL )
 ```
 
-#### 3.3.3) `maxRecursionDepth` 方法
+#### 3.3.3) `max_recursion_depth` 方法
 
 该方法获取或设置 HVML 程序在递归执行某个功能时的最大递归深度，以防止栈溢出。
 
@@ -1046,11 +1108,11 @@ $HVML.maxIterationCount(! 10000UL )
 
 ```javascript
 // 原型，返回当前值
-$HVML.maxRecursionDepth ulongint: `the current maximal recursion depth value.`
+$HVML.max_recursion_depth ulongint: `the current maximal recursion depth value.`
 ```
 
 ```javascript
-$HVML.maxRecursionDepth(!
+$HVML.max_recursion_depth(!
         <ulongint $new_value: `new maximal recursion depth`>
 ) ulongint : `the new maximal recursion depth value.`
 ```
@@ -1060,7 +1122,7 @@ $HVML.maxRecursionDepth(!
 **示例**
 
 ```javascript
-$HVML.maxRecursionDepth(! 10000UL )
+$HVML.max_recursion_depth(! 10000UL )
 ```
 
 #### 3.3.4) `timeout` 方法
