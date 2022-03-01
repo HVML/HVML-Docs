@@ -57,7 +57,7 @@ Language: Chinese
       * [3.3.1) `base` 方法](#331-base-方法)
       * [3.3.2) `max_iteration_count` 方法](#332-max_iteration_count-方法)
       * [3.3.3) `max_recursion_depth` 方法](#333-max_recursion_depth-方法)
-      * [3.3.4) `timeout` 方法](#334-timeout-方法)
+      * [3.3.4) `timeout_val` 方法](#334-timeout_val-方法)
       * [3.3.5) `attr` 方法](#335-attr-方法)
    + [3.4) `DOC`](#34-doc)
       * [3.4.1) `doctype` 方法](#341-doctype-方法)
@@ -264,8 +264,9 @@ Language: Chinese
 
 按变量对应数据的作用域，可分为：
 
-1. 会话级变量。指该变量对应的数据对当前实例中的所有 HVML 程序可见。也就是说，同一会话中的不同程序对应同一个数据副本。
-1. 程序级变量。指该变量对应的数据仅对当前实例中的单个 HVML 程序可见。也就是说，不同的程序有一个自己的数据副本。
+1. 全局级变量。指该变量对应的数据对当前系统中的所有解释器实例可见。也就是说，同一系统中的不同解释器实例对应同一个数据副本。
+1. 会话级变量。指该变量对应的数据对当前解释器实例中的所有 HVML 程序可见。也就是说，同一会话中的不同程序对应同一个数据副本。
+1. 程序级变量。指该变量对应的数据仅对当前解释器实例中的单个 HVML 程序可见。也就是说，不同的 HVML 程序有一个自己的数据副本。
 
 **约定**  
 解释器可自行实现全局变量，作为约定，解释器自行实现的全局变量，其名称应以 ASCII U+005F LOW LINE（`_`）打头，使用全大写字母并添加解释器前缀。如 `_PURC_VAR`。而一般的变量，使用全小写字母。
@@ -515,11 +516,13 @@ $SESSION.env(! 'LOGNAME', 'tom' )
 
 ### 3.2) `SYSTEM`
 
-该变量是一个会话级内置变量，在初始化解释器实例之后绑定。
+该变量是一个全局级内置变量，在初始化解释器系统之后绑定。
+
+注意，如果特定的解释器实现不支持在多个解释器实例之间共享数据，则可将该变量实现为会话级变量，在初始化解释器实例之后绑定。
 
 #### 3.2.1) `const_obj` 静态属性
 
-`const_obj` 是 `$SYSTEM` 的一个静态属性，用来定义系统常量值，程序只可增加但不可删除或修改已有键值对：
+`const_obj` 是 `$SYSTEM` 的一个静态属性，用来定义系统常量值，程序只可增加但不可删除或修改已有的键值对：
 
 ```html
 <!DOCTYPE hvml>
@@ -538,7 +541,7 @@ $SESSION.env(! 'LOGNAME', 'tom' )
 </hvml>
 ```
 
-由于 `$SYSTEM` 是会话级变量，故而可以在当前会话的另一个 HVML 程序中观察该数据上的变化：
+由于 `$SYSTEM` 是系统级（或会话级）变量，故而可以在当前当前系统（或当前会话）的另一个 HVML 程序中观察该数据上的变化：
 
 ```html
     <observe on="$SYSTEM.const_obj" for="change:grown" in="#theStatusBar">
@@ -558,7 +561,7 @@ $SYSTEM.const(
 ) any : `the constant value`
 ```
 
-该方法获取指定常量的值；未设置时返回 `undefined`。
+该方法获取指定常量的值。成功时返回对应的数据；失败时将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `undefined`。
 
 注意，如下常量应由所有 HVML 解释器定义：
 
@@ -567,6 +570,10 @@ $SYSTEM.const(
 - `HVML_INTRPR_NAME`: HVML 解释器的名称，如 `PurC`。
 - `HVML_INTRPR_VERSION`: HVML 解释器的版本名称，如 `0.5.0`。
 - `HVML_INTRPR_RELEASE`: HVML 解释器的发布名称，如 `立春`。
+
+**异常**
+
+- `NoSuchKey`：可忽略异常。
 
 **示例**
 
@@ -697,9 +704,6 @@ $SYSTEM.locale(
 
 该方法获取指定分类的区域，返回字符串。某些平台可能不支持特定的区域分类，比如姓名（`name`）分类。对不支持的区域分类，该函数将抛出 `Unsupported` 异常，或静默求值时返回 `undefined`。
 
-**注意**  
-在 HVML 中，表示区域的字符串始终使用 `en_US`、`zh_CN` 这种形式。
-
 ```javascript
 $SYSTEM.locale(!
         < '[ctype || numeric || time || collate || monetary || messages || paper || name || address || telephone || measurement || identification] | all' $categories:
@@ -725,7 +729,12 @@ $SYSTEM.locale(!
 
 **异常**
 
-- `Unsupported`：不支持的区域分类。
+- `Unsupported`：不支持的区域分类。可忽略异常。
+
+**注意**
+
+1. 在 HVML 中，表示区域的字符串始终使用 `en_US`、`zh_CN` 这种形式。
+1. 对特定区域的修改，将在 `$SYSTEM` 变量上产生 `change:locale/<category>` 事件。
 
 **示例**
 
@@ -1125,22 +1134,22 @@ $HVML.max_recursion_depth(!
 $HVML.max_recursion_depth(! 10000UL )
 ```
 
-#### 3.3.4) `timeout` 方法
+#### 3.3.4) `timeout_val` 方法
 
-该方法获取或设置 HVML 程序在通过数据获取器获取数据或者建立长串接、发送请求时的超时值（单位：秒）。
+该方法获取或设置 HVML 程序在通过数据获取器获取数据或者建立长连接、发送请求时的超时值（单位：秒）。
 
 默认值为 10.0。
 
 **描述**
 
 ```javascript
-$HVML.timeout number : `the current timeout value (in seconds)`
+$HVML.timeout_val number : `the current timeout value (in seconds)`
 ```
 
 该方法返回当前超时值。
 
 ```javascript
-$HVML.timeout(!
+$HVML.timeout_val(!
         <number $new_timeout: `the new timeout value (in seconds)`>
 ) number : `the new timeout value`
 ```
@@ -1151,7 +1160,7 @@ $HVML.timeout(!
 
 ```javascript
 // 设置超时值为 3.5 秒。
-$HVML.timeout(! 3.5 )
+$HVML.timeout_val(! 3.5 )
     // numer: 3.5
 ```
 
