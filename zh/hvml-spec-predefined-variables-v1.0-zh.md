@@ -35,115 +35,116 @@ Language: Chinese
       * [2.1.4) 修改特定定时器的属性](#214-修改特定定时器的属性)
    + [2.2) `REQUEST`](#22-request)
 - [3) 必要动态变量](#3-必要动态变量)
-   + [3.1) `SESSION`](#31-session)
-      * [3.1.1) `cwd` 方法](#311-cwd-方法)
-      * [3.1.2) `user_obj` 静态属性](#312-user_obj-静态属性)
-      * [3.1.3) `user` 方法](#313-user-方法)
-      * [3.1.4) `env` 方法](#314-env-方法)
-   + [3.2) `SYSTEM`](#32-system)
-      * [3.2.1) `const_obj` 静态属性](#321-const_obj-静态属性)
-      * [3.2.2) `const` 方法](#322-const-方法)
-      * [3.2.3) `uname` 方法](#323-uname-方法)
-      * [3.2.4) `uname_prt` 方法](#324-uname_prt-方法)
-      * [3.2.5) `locale` 方法](#325-locale-方法)
-      * [3.2.6) `random` 方法](#326-random-方法)
-      * [3.2.7) `time` 方法](#327-time-方法)
-      * [3.2.8) `gmtime` 方法](#328-gmtime-方法)
-      * [3.2.9) `mktime` 方法](#329-mktime-方法)
-      * [3.2.10) `timezone` 方法](#3210-timezone-方法)
-      * [3.2.11) `fmttime` 方法](#3211-fmttime-方法)
-      * [3.2.12) `fmtgmtime` 方法](#3212-fmtgmtime-方法)
-   + [3.3) `HVML`](#33-hvml)
-      * [3.3.1) `base` 方法](#331-base-方法)
-      * [3.3.2) `max_iteration_count` 方法](#332-max_iteration_count-方法)
-      * [3.3.3) `max_recursion_depth` 方法](#333-max_recursion_depth-方法)
-      * [3.3.4) `timeout_val` 方法](#334-timeout_val-方法)
-      * [3.3.5) `attr` 方法](#335-attr-方法)
-   + [3.4) `DOC`](#34-doc)
-      * [3.4.1) `doctype` 方法](#341-doctype-方法)
-      * [3.4.2) `query` 方法](#342-query-方法)
-   + [3.5) `EJSON`](#35-ejson)
-      * [3.5.1) `type` 方法](#351-type-方法)
-      * [3.5.2) `count` 方法](#352-count-方法)
-      * [3.5.3) `numberify` 方法](#353-numberify-方法)
-      * [3.5.4) `booleanize` 方法](#354-booleanize-方法)
-      * [3.5.5) `stringify` 方法](#355-stringify-方法)
-      * [3.5.6) `serialize` 方法](#356-serialize-方法)
-      * [3.5.7) `sort` 方法](#357-sort-方法)
-      * [3.5.8) `shuffle` 方法](#358-shuffle-方法)
-      * [3.5.9) `compare` 方法](#359-compare-方法)
-      * [3.5.10) `parse` 方法](#3510-parse-方法)
-   + [3.6) `L`](#36-l)
-      * [3.6.1) `not` 方法](#361-not-方法)
-      * [3.6.2) `and` 方法](#362-and-方法)
-      * [3.6.3) `or` 方法](#363-or-方法)
-      * [3.6.4) `xor` 方法](#364-xor-方法)
-      * [3.6.5) `eq` 方法](#365-eq-方法)
-      * [3.6.6) `ne` 方法](#366-ne-方法)
-      * [3.6.7) `gt` 方法](#367-gt-方法)
-      * [3.6.8) `ge` 方法](#368-ge-方法)
-      * [3.6.9) `lt` 方法](#369-lt-方法)
-      * [3.6.10) `le` 方法](#3610-le-方法)
-      * [3.6.11) `streq` 方法](#3611-streq-方法)
-      * [3.6.12) `strne` 方法](#3612-strne-方法)
-      * [3.6.13) `strgt` 方法](#3613-strgt-方法)
-      * [3.6.14) `strge` 方法](#3614-strge-方法)
-      * [3.6.15) `strlt` 方法](#3615-strlt-方法)
-      * [3.6.16) `strle` 方法](#3616-strle-方法)
-      * [3.6.17) `eval` 方法](#3617-eval-方法)
-   + [3.7) `T`](#37-t)
-      * [3.7.1) `map` 静态属性](#371-map-静态属性)
-      * [3.7.2) `get` 方法](#372-get-方法)
-   + [3.8) `STR`](#38-str)
-      * [3.8.1) `contains` 方法](#381-contains-方法)
-      * [3.8.2) `starts_with` 方法](#382-starts_with-方法)
-      * [3.8.3) `ends_with` 方法](#383-ends_with-方法)
-      * [3.8.4) `explode` 方法](#384-explode-方法)
-      * [3.8.5) `implode` 方法](#385-implode-方法)
-      * [3.8.6) `shuffle` 方法](#386-shuffle-方法)
-      * [3.8.7) `replace` 方法](#387-replace-方法)
-      * [3.8.8) `format_c` 方法](#388-format_c-方法)
-      * [3.8.9) `format_p` 方法](#389-format_p-方法)
-      * [3.8.10) `join` 方法](#3810-join-方法)
-      * [3.8.11) `length` 方法](#3811-length-方法)
-      * [3.8.12) `tolower` 方法](#3812-tolower-方法)
-      * [3.8.13) `toupper` 方法](#3813-toupper-方法)
-      * [3.8.14) `substr` 方法](#3814-substr-方法)
-      * [3.8.15) `substr_compare` 方法](#3815-substr_compare-方法)
-      * [3.8.16) `substr_count` 方法](#3816-substr_count-方法)
-      * [3.8.17) `substr_replace` 方法](#3817-substr_replace-方法)
-      * [3.8.18) `strstr` 方法](#3818-strstr-方法)
-      * [3.8.19) `strpos` 方法](#3819-strpos-方法)
-      * [3.8.20) `strpbrk` 方法](#3820-strpbrk-方法)
-      * [3.8.21) `split` 方法](#3821-split-方法)
-      * [3.8.22) `chunk_split` 方法](#3822-chunk_split-方法)
-      * [3.8.23) `trim` 方法](#3823-trim-方法)
-      * [3.8.24) `pad` 方法](#3824-pad-方法)
-      * [3.8.25) `repeat` 方法](#3825-repeat-方法)
-      * [3.8.26) `reverse` 方法](#3826-reverse-方法)
-      * [3.8.27) `tokenize` 方法](#3827-tokenize-方法)
-      * [3.8.28) `translate` 方法](#3828-translate-方法)
-      * [3.8.29) `bin2hex` 方法](#3829-bin2hex-方法)
-      * [3.8.30) `hex2bin` 方法](#3830-hex2bin-方法)
-      * [3.8.31) `htmlentities_encode` 方法](#3831-htmlentities_encode-方法)
-      * [3.8.32) `htmlentities_decode` 方法](#3832-htmlentities_decode-方法)
-      * [3.8.33) `crc32` 方法](#3833-crc32-方法)
-      * [3.8.34) `md5` 方法](#3834-md5-方法)
-      * [3.8.35) `sha1` 方法](#3835-sha1-方法)
-      * [3.8.36) `rot13` 方法](#3836-rot13-方法)
-      * [3.8.37) `count_chars` 方法](#3837-count_chars-方法)
-      * [3.8.38) `count_bytes` 方法](#3838-count_bytes-方法)
-      * [3.8.39) `nl2br` 方法](#3839-nl2br-方法)
-      * [3.8.40) 错误与异常](#3840-错误与异常)
-   + [3.9) `URL`](#39-url)
-      * [3.9.1) `base64_encode` 方法](#391-base64_encode-方法)
-      * [3.9.2) `base64_decode` 方法](#392-base64_decode-方法)
-      * [3.9.3) `urlencode` 方法](#393-urlencode-方法)
-      * [3.9.4) `urldecode` 方法](#394-urldecode-方法)
-      * [3.9.5) `rawurlencode` 方法](#395-rawurlencode-方法)
-      * [3.9.6) `rawurldecode` 方法](#396-rawurldecode-方法)
-      * [3.9.7) `parse` 方法](#397-parse-方法)
-      * [3.9.8) `http_build_query` 方法](#398-http_build_query-方法)
+   + [3.1) `SYSTEM`](#31-system)
+      * [3.1.1) `const` 方法](#311-const-方法)
+      * [3.1.2) `uname` 方法](#312-uname-方法)
+      * [3.1.3) `uname_prt` 方法](#313-uname_prt-方法)
+      * [3.1.4) `locale` 方法](#314-locale-方法)
+      * [3.1.5) `time` 方法](#315-time-方法)
+      * [3.1.6) `timezone` 方法](#316-timezone-方法)
+   + [3.2) `SESSION`](#32-session)
+      * [3.2.1) `cwd` 方法](#321-cwd-方法)
+      * [3.2.2) `user_obj` 静态属性](#322-user_obj-静态属性)
+      * [3.2.3) `user` 方法](#323-user-方法)
+      * [3.2.4) `env` 方法](#324-env-方法)
+      * [3.2.5) `random` 方法](#325-random-方法)
+   + [3.3) `DATETIME`](#33-datetime)
+      * [3.3.1) `time_prt` 方法](#331-time_prt-方法)
+      * [3.3.2) `gmtime` 方法](#332-gmtime-方法)
+      * [3.3.3) `mktime` 方法](#333-mktime-方法)
+      * [3.3.4) `fmttime` 方法](#334-fmttime-方法)
+      * [3.3.5) `fmtgmtime` 方法](#335-fmtgmtime-方法)
+   + [3.4) `HVML`](#34-hvml)
+      * [3.4.1) `base` 方法](#341-base-方法)
+      * [3.4.2) `max_iteration_count` 方法](#342-max_iteration_count-方法)
+      * [3.4.3) `max_recursion_depth` 方法](#343-max_recursion_depth-方法)
+      * [3.4.4) `timeout_val` 方法](#344-timeout_val-方法)
+      * [3.4.5) `attr` 方法](#345-attr-方法)
+   + [3.5) `DOC`](#35-doc)
+      * [3.5.1) `doctype` 方法](#351-doctype-方法)
+      * [3.5.2) `query` 方法](#352-query-方法)
+   + [3.6) `EJSON`](#36-ejson)
+      * [3.6.1) `type` 方法](#361-type-方法)
+      * [3.6.2) `count` 方法](#362-count-方法)
+      * [3.6.3) `numberify` 方法](#363-numberify-方法)
+      * [3.6.4) `booleanize` 方法](#364-booleanize-方法)
+      * [3.6.5) `stringify` 方法](#365-stringify-方法)
+      * [3.6.6) `serialize` 方法](#366-serialize-方法)
+      * [3.6.7) `sort` 方法](#367-sort-方法)
+      * [3.6.8) `shuffle` 方法](#368-shuffle-方法)
+      * [3.6.9) `compare` 方法](#369-compare-方法)
+      * [3.6.10) `parse` 方法](#3610-parse-方法)
+   + [3.7) `L`](#37-l)
+      * [3.7.1) `not` 方法](#371-not-方法)
+      * [3.7.2) `and` 方法](#372-and-方法)
+      * [3.7.3) `or` 方法](#373-or-方法)
+      * [3.7.4) `xor` 方法](#374-xor-方法)
+      * [3.7.5) `eq` 方法](#375-eq-方法)
+      * [3.7.6) `ne` 方法](#376-ne-方法)
+      * [3.7.7) `gt` 方法](#377-gt-方法)
+      * [3.7.8) `ge` 方法](#378-ge-方法)
+      * [3.7.9) `lt` 方法](#379-lt-方法)
+      * [3.7.10) `le` 方法](#3710-le-方法)
+      * [3.7.11) `streq` 方法](#3711-streq-方法)
+      * [3.7.12) `strne` 方法](#3712-strne-方法)
+      * [3.7.13) `strgt` 方法](#3713-strgt-方法)
+      * [3.7.14) `strge` 方法](#3714-strge-方法)
+      * [3.7.15) `strlt` 方法](#3715-strlt-方法)
+      * [3.7.16) `strle` 方法](#3716-strle-方法)
+      * [3.7.17) `eval` 方法](#3717-eval-方法)
+   + [3.8) `T`](#38-t)
+      * [3.8.1) `map` 静态属性](#381-map-静态属性)
+      * [3.8.2) `get` 方法](#382-get-方法)
+   + [3.9) `STR`](#39-str)
+      * [3.9.1) `contains` 方法](#391-contains-方法)
+      * [3.9.2) `starts_with` 方法](#392-starts_with-方法)
+      * [3.9.3) `ends_with` 方法](#393-ends_with-方法)
+      * [3.9.4) `explode` 方法](#394-explode-方法)
+      * [3.9.5) `implode` 方法](#395-implode-方法)
+      * [3.9.6) `shuffle` 方法](#396-shuffle-方法)
+      * [3.9.7) `replace` 方法](#397-replace-方法)
+      * [3.9.8) `format_c` 方法](#398-format_c-方法)
+      * [3.9.9) `format_p` 方法](#399-format_p-方法)
+      * [3.9.10) `join` 方法](#3910-join-方法)
+      * [3.9.11) `length` 方法](#3911-length-方法)
+      * [3.9.12) `tolower` 方法](#3912-tolower-方法)
+      * [3.9.13) `toupper` 方法](#3913-toupper-方法)
+      * [3.9.14) `substr` 方法](#3914-substr-方法)
+      * [3.9.15) `substr_compare` 方法](#3915-substr_compare-方法)
+      * [3.9.16) `substr_count` 方法](#3916-substr_count-方法)
+      * [3.9.17) `substr_replace` 方法](#3917-substr_replace-方法)
+      * [3.9.18) `strstr` 方法](#3918-strstr-方法)
+      * [3.9.19) `strpos` 方法](#3919-strpos-方法)
+      * [3.9.20) `strpbrk` 方法](#3920-strpbrk-方法)
+      * [3.9.21) `split` 方法](#3921-split-方法)
+      * [3.9.22) `chunk_split` 方法](#3922-chunk_split-方法)
+      * [3.9.23) `trim` 方法](#3923-trim-方法)
+      * [3.9.24) `pad` 方法](#3924-pad-方法)
+      * [3.9.25) `repeat` 方法](#3925-repeat-方法)
+      * [3.9.26) `reverse` 方法](#3926-reverse-方法)
+      * [3.9.27) `tokenize` 方法](#3927-tokenize-方法)
+      * [3.9.28) `translate` 方法](#3928-translate-方法)
+      * [3.9.29) `bin2hex` 方法](#3929-bin2hex-方法)
+      * [3.9.30) `hex2bin` 方法](#3930-hex2bin-方法)
+      * [3.9.31) `htmlentities_encode` 方法](#3931-htmlentities_encode-方法)
+      * [3.9.32) `htmlentities_decode` 方法](#3932-htmlentities_decode-方法)
+      * [3.9.33) `crc32` 方法](#3933-crc32-方法)
+      * [3.9.34) `md5` 方法](#3934-md5-方法)
+      * [3.9.35) `sha1` 方法](#3935-sha1-方法)
+      * [3.9.36) `rot13` 方法](#3936-rot13-方法)
+      * [3.9.37) `count_chars` 方法](#3937-count_chars-方法)
+      * [3.9.38) `count_bytes` 方法](#3938-count_bytes-方法)
+      * [3.9.39) `nl2br` 方法](#3939-nl2br-方法)
+      * [3.9.40) 错误与异常](#3940-错误与异常)
+   + [3.10) `URL`](#310-url)
+      * [3.10.1) `base64_encode` 方法](#3101-base64_encode-方法)
+      * [3.10.2) `base64_decode` 方法](#3102-base64_decode-方法)
+      * [3.10.3) `urlencode` 方法](#3103-urlencode-方法)
+      * [3.10.4) `urldecode` 方法](#3104-urldecode-方法)
+      * [3.10.5) `rawurlencode` 方法](#3105-rawurlencode-方法)
+      * [3.10.6) `rawurldecode` 方法](#3106-rawurldecode-方法)
+      * [3.10.7) `parse` 方法](#3107-parse-方法)
+      * [3.10.8) `http_build_query` 方法](#3108-http_build_query-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -231,9 +232,11 @@ Language: Chinese
          - [4.3.3.9) `stream.seek` 方法](#4339-streamseek-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
-      * [RC1) 220301](#rc1-220301)
+      * [RC1) 220401](#rc1-220401)
       * [BRC) 220201](#brc-220201)
    + [附.2) 贡献者榜单](#附2-贡献者榜单)
+   + [附.3) 废弃的内容](#附3-废弃的内容)
+      * [`const_obj` 静态属性](#const_obj-静态属性)
    + [附.3) 商标声明](#附3-商标声明)
 
 [//]:# (END OF TOC)
@@ -364,192 +367,11 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ## 3) 必要动态变量
 
-### 3.1) `SESSION`
+### 3.1) `SYSTEM`
 
-该变量是一个会话级内置变量，解释器在创建一个新的会话时，会自动创建并绑定。该变量主要用于会话相关的信息，并提供给用户在当前会话的不同 HVML 程序之间共享数据的机制。该变量提供如下接口：
+该变量是一个全局级内置变量，在初始化解释器系统之后创建对应的原生实体，然后构建对应的动态变体绑定到每个解释器实例上。
 
-#### 3.1.1) `cwd` 方法
-
-获取或设置当前工作路径。
-
-**描述**
-
-```javascript
-$SESSION.cwd string | false: `returns the current working directory on success, or @false on failure.`
-```
-
-该方法获取当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
-
-```javascript
-$SESSION.cwd(!
-        <string $dir: `the new path for the current working directory.`>
-) boolean: `returns @true on success or @false on failure.`
-```
-
-该方法改变当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
-
-**异常**
-
-该方法可能产生的异常：
-
-- `AccessDenied`
-- `IOFailure`
-- `TooMany`
-- `TooLong`
-- `NotDesiredEntity`
-- `OSFailure`
-
-#### 3.1.2) `user_obj` 静态属性
-
-`user_obj` 是 `SESSION` 的一个静态属性，用来定义用户自定义键值对，初始为一个空对象。程序可使用 `update` 元素设置其内容：
-
-```html
-<!DOCTYPE hvml>
-<hvml target="html">
-    <head>
-        <update on="$SESSION.user_obj" to="displace">
-            {
-                "AUTHOR": "Vincent Wei",
-            }
-        </update>
-    </head>
-
-    <body>
-        ...
-    </body>
-</hvml>
-```
-
-由于 `$SESSION` 是会话级变量，故而可以在当前会话的另一个 HVML 程序中观察该数据上的变化：
-
-```html
-    <observe on="$SESSION.user_obj" for="change:AUTHOR" in="#theStatusBar">
-        ...
-    </observe>
-```
-
-#### 3.1.3) `user` 方法
-
-获取或设置用户键值对。
-
-**描述**
-
-```javascript
-$SESSION.user(
-        <string $key: `the user defined key name`>
-) any | undefined : `the variant value corresponding to the key name $key.`
-```
-
-该方法获取指定键名对应的键值。当指定的键名未被设置时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `undefined`。
-
-```javascript
-$SESSION.user(!
-        <string $key: `the user defined key name`>,
-        <any | undefined $value: `the new variant value`>
-) boolean : `returns @true when the old value was overridden or @false when a new key-value pair was created.`
-```
-
-该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。注意，传入键值为 `undefined` 会执行移除对应键值对的操作。当移除一个并不存在的键值对时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `false`。
-
-_注意_，`user` 的获取器和设置器本质上访问的是 `$SESSION` 的 `user_obj` 静态属性。
-
-**异常**
-
-该方法可能产生的异常：
-
-- `NoSuchKey`
-
-**示例**
-
-```javascript
-// 移除 `userId` 键值对
-$SESSION.user(! 'userId', undefined )
-    // false (assumed that `userId` was not set)
-
-// 设置 `userId` 为 `20211104`
-$SESSION.user(! 'userId', '20211104' )
-    // false
-
-// 获取 `userId` 对应的键值
-$SESSION.user('userId')
-    // string: '20211104-01'
-
-// 重置 `userId` 为 `20220213`
-$SESSION.user(! 'userId', '20220213' )
-    // true
-
-// 移除 `userId` 键值对
-$SESSION.user(! 'userId', undefined )
-    // true
-```
-
-#### 3.1.4) `env` 方法
-
-获取或设置系统环境变量。
-
-**描述**
-
-```javascript
-$SESSION.env(
-        <string: `the environment variable name`>
-) string | undefined
-```
-
-该方法获取指定环境变量的值（字符串）；未设置时返回 `undefined`。
-
-```javascript
-$SESSION.env(!
-        <string: `the environment variable name`>,
-        <string: `the value`>
-) boolean : `returns @true when the old value was overridden or @false when a new environment variable was created.`
-```
-
-该方法设置指定的环境变量，返回布尔数据，指明是否覆盖了已有环境变量。
-
-**示例**
-
-```javascript
-// 设置环境变量 `LOGNAME` 的值
-$SESSION.env(! 'LOGNAME', 'tom' )
-    // boolean: true
-```
-
-### 3.2) `SYSTEM`
-
-该变量是一个全局级内置变量，在初始化解释器系统之后绑定。
-
-注意，如果特定的解释器实现不支持在多个解释器实例之间共享数据，则可将该变量实现为会话级变量，在初始化解释器实例之后绑定。
-
-#### 3.2.1) `const_obj` 静态属性
-
-`const_obj` 是 `$SYSTEM` 的一个静态属性，用来定义系统常量值，程序只可增加但不可删除或修改已有的键值对：
-
-```html
-<!DOCTYPE hvml>
-<hvml target="html">
-    <head>
-        <update on="$SYSTEM.const_obj" to="merge">
-            {
-                "HVML_INTRPR_AUTHOR": "FMSoft",
-            }
-        </update>
-    </head>
-
-    <body>
-        ...
-    </body>
-</hvml>
-```
-
-由于 `$SYSTEM` 是系统级（或会话级）变量，故而可以在当前当前系统（或当前会话）的另一个 HVML 程序中观察该数据上的变化：
-
-```html
-    <observe on="$SYSTEM.const_obj" for="change:grown" in="#theStatusBar">
-        ...
-    </observe>
-```
-
-#### 3.2.2) `const` 方法
+#### 3.1.1) `const` 方法
 
 获取系统常量。
 
@@ -583,7 +405,7 @@ $SYSTEM.const('HVML_SPEC_VERSION')
     // string: '1.0'
 ```
 
-#### 3.2.3) `uname` 方法
+#### 3.1.2) `uname` 方法
 
 获取系统信息。
 
@@ -626,7 +448,7 @@ $SYSTEM.uname
     */
 ```
 
-#### 3.2.4) `uname_prt` 方法
+#### 3.1.3) `uname_prt` 方法
 
 获取可打印的系统信息。
 
@@ -671,7 +493,7 @@ $SYSTEM.uname_prt('kernel-name kernel-release kernel-version')
     // string: "Linux 5.4.0-80-generic #90-Ubuntu SMP Fri Jul 9 22:49:44 UTC 2021"
 ```
 
-#### 3.2.5) `locale` 方法
+#### 3.1.4) `locale` 方法
 
 获取或设置区域（locale）。
 
@@ -749,7 +571,231 @@ $SYSTEM.locale
     // zh_CN
 ```
 
-#### 3.2.6) `random` 方法
+#### 3.1.5) `time` 方法
+
+获取或设置日历时间（calendar time）。
+
+**描述**
+
+```javascript
+$SYSTEM.time ulongint: `the calendar time (seconds since Epoch)`
+```
+
+该方法获取当前日历时间（自 Epoch 以来的秒数），返回值类型为 `ulongint`。
+
+```javascript
+$SYSTEM.time(!
+        <number $seconds: `seconds since Epoch`>
+) true | false
+```
+
+该方法设置系统的日历时间。成功时返回 `true`，失败时抛出 `AccessDenied` 异常，静默求值时返回 `false`。
+
+**异常**
+
+- `AccessDenied`：当前会话的所有者没有权限设置系统日历时间时，将抛出该异常。
+
+**注意**
+
+1. 对日历时间的修改，将在 `$SYSTEM` 变量上产生 `change:time` 事件。
+
+**示例**
+
+```javascript
+$SYSTEM.time
+    // ulongint: 123456789UL
+```
+
+**参见**
+
+- PHP: <https://www.php.net/manual/en/ref.datetime.php>
+- PHP: <https://www.php.net/manual/en/datetime.formats.php>
+- PHP DateTime 类：<https://www.php.net/manual/en/class.datetime.php>
+
+#### 3.1.6) `timezone` 方法
+
+获取或设置时区。
+
+**描述**
+
+```javascript
+$SYSTEM.timezone : string
+```
+
+该方法返回当前时区。
+
+```javascript
+$SYSTEM.timezone(! <string $timezone> ) true | false
+```
+
+该方法设置当前时区。
+
+**异常**
+
+- `AccessDenied`：当前会话的所有者没有权限改变系统时区时，将抛出该异常。
+
+**注意**
+
+1. 对系统时区的修改，将在 `$SYSTEM` 变量上产生 `change:timezone` 事件。
+
+**示例**
+
+**参见**
+
+- C 标准函数：`tzset()`
+- PHP: <https://www.php.net/manual/en/timezones.php>
+
+### 3.2) `SESSION`
+
+该变量是一个会话级内置变量，解释器在创建一个新的会话时，会自动创建并绑定。该变量主要用于会话相关的信息，并提供给用户在当前会话的不同 HVML 程序之间共享数据的机制。
+
+#### 3.2.1) `cwd` 方法
+
+获取或设置当前工作路径。
+
+**描述**
+
+```javascript
+$SESSION.cwd string | false: `returns the current working directory on success, or @false on failure.`
+```
+
+该方法获取当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
+
+```javascript
+$SESSION.cwd(!
+        <string $dir: `the new path for the current working directory.`>
+) boolean: `returns @true on success or @false on failure.`
+```
+
+该方法改变当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `AccessDenied`
+- `IOFailure`
+- `TooMany`
+- `TooLong`
+- `NotDesiredEntity`
+- `OSFailure`
+
+#### 3.2.2) `user_obj` 静态属性
+
+`user_obj` 是 `SESSION` 的一个静态属性，用来定义用户自定义键值对，初始为一个空对象。程序可使用 `update` 元素设置其内容：
+
+```html
+<!DOCTYPE hvml>
+<hvml target="html">
+    <head>
+        <update on="$SESSION.user_obj" to="displace">
+            {
+                "AUTHOR": "Vincent Wei",
+            }
+        </update>
+    </head>
+
+    <body>
+        ...
+    </body>
+</hvml>
+```
+
+由于 `$SESSION` 是会话级变量，故而可以在当前会话的另一个 HVML 程序中观察该数据上的变化：
+
+```html
+    <observe on="$SESSION.user_obj" for="change:AUTHOR" in="#theStatusBar">
+        ...
+    </observe>
+```
+
+#### 3.2.3) `user` 方法
+
+获取或设置用户键值对。
+
+**描述**
+
+```javascript
+$SESSION.user(
+        <string $key: `the user defined key name`>
+) any | undefined : `the variant value corresponding to the key name $key.`
+```
+
+该方法获取指定键名对应的键值。当指定的键名未被设置时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `undefined`。
+
+```javascript
+$SESSION.user(!
+        <string $key: `the user defined key name`>,
+        <any | undefined $value: `the new variant value`>
+) boolean : `returns @true when the old value was overridden or @false when a new key-value pair was created.`
+```
+
+该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。注意，传入键值为 `undefined` 会执行移除对应键值对的操作。当移除一个并不存在的键值对时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `false`。
+
+_注意_，`user` 的获取器和设置器本质上访问的是 `$SESSION` 的 `user_obj` 静态属性。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `NoSuchKey`
+
+**示例**
+
+```javascript
+// 移除 `userId` 键值对
+$SESSION.user(! 'userId', undefined )
+    // false (assumed that `userId` was not set)
+
+// 设置 `userId` 为 `20211104`
+$SESSION.user(! 'userId', '20211104' )
+    // false
+
+// 获取 `userId` 对应的键值
+$SESSION.user('userId')
+    // string: '20211104-01'
+
+// 重置 `userId` 为 `20220213`
+$SESSION.user(! 'userId', '20220213' )
+    // true
+
+// 移除 `userId` 键值对
+$SESSION.user(! 'userId', undefined )
+    // true
+```
+
+#### 3.2.4) `env` 方法
+
+获取或设置系统环境变量。
+
+**描述**
+
+```javascript
+$SESSION.env(
+        <string: `the environment variable name`>
+) string | undefined
+```
+
+该方法获取指定环境变量的值（字符串）；未设置时返回 `undefined`。
+
+```javascript
+$SESSION.env(!
+        <string: `the environment variable name`>,
+        <string: `the value`>
+) boolean : `returns @true when the old value was overridden or @false when a new environment variable was created.`
+```
+
+该方法设置指定的环境变量，返回布尔数据，指明是否覆盖了已有环境变量。
+
+**示例**
+
+```javascript
+// 设置环境变量 `LOGNAME` 的值
+$SESSION.env(! 'LOGNAME', 'tom' )
+    // boolean: true
+```
+
+#### 3.2.5) `random` 方法
 
 获取随机值。
 
@@ -813,20 +859,16 @@ $SYSTEM.random(-10FL)
 - C 标准函数：`srandom_r()`
 - C 标准函数：`initstate_r()`
 
-#### 3.2.7) `time` 方法
+### 3.3) `DATETIME`
 
-获取或设置日历时间（calendar time）。
+#### 3.3.1) `time_prt` 方法
+
+以给定的格式化规范/标准获得时间字符串。
 
 **描述**
 
 ```javascript
-$SYSTEM.time ulongint: `the calendar time (seconds since Epoch)`
-```
-
-该方法获取当前日历时间（自 Epoch 以来的秒数），返回值类型为 `ulongint`。
-
-```javascript
-$SYSTEM.time(
+$DATETIME.time_prt(
         <'atom | cookie | iso8601 | rfc822 | rfc850 | rfc1036 | rfc1036 | rfc1123 | rfc7231 | rfc2822 | rfc3339 | rfc3339-ex | rss | w3c' $format:
             'atom'      - `Atom (example: 2005-08-15T15:52:01+00:00)`
             'cookie'    - `HTTP Cookies (example: Monday, 15-Aug-2005 15:52:01 UTC)`
@@ -851,14 +893,6 @@ $SYSTEM.time(
 
 该方法获得指定日历时间在给定时区，以给定格式化标准/规范名称（如 ISO8601、RFC850）形式展示的时间字符串。
 
-```javascript
-$SYSTEM.time(!
-        <number $seconds: `seconds since Epoch`>
-) true | false
-```
-
-该方法设置系统的日历时间。成功时返回 `true`，失败时返回 `false`。
-
 **异常**
 
 （无）
@@ -866,21 +900,18 @@ $SYSTEM.time(!
 **示例**
 
 ```javascript
-$SYSTEM.time
-    // ulongint: 123456789UL
-
-$SYSTEM.time.iso8601
+$DATETIME.time_prt.iso8601
     // string: '2020-06-24T11:27:05+08:00'
 
-$SYSTEM.time('iso8601')
+$DATETIME.time_prt('iso8601')
     // string: '2020-06-24T11:27:05+08:00'
 
 // 获取当前时间之前一个小时在上海时区（北京标准时间）的 ISO8601 标准字符串
-$SYSTEM.time('iso8601', $MATH.eval('x - 3600', { x: $SYSTEM.time }), 'Asia/Shanghai')
+$DATETIME.time_prt('iso8601', $MATH.eval('x - 3600', { x: $SYSTEM.time }), 'Asia/Shanghai')
     // string: '2020-06-24T11:27:05+08:00'
 
 // 获取当前时间上海时区（北京标准时间）的 RFC822 标准字符串
-$SYSTEM.time('rfc822', $SYSTEM.time, 'Asia/Shanghai')
+$DATETIME.time_prt('rfc822', $SYSTEM.time, 'Asia/Shanghai')
     // string: 'Mon, 15 Aug 05 15:52:01 +0000'
 ```
 
@@ -891,21 +922,21 @@ $SYSTEM.time('rfc822', $SYSTEM.time, 'Asia/Shanghai')
 - PHP: <https://www.php.net/manual/en/datetime.formats.php>
 - PHP DateTime 类：<https://www.php.net/manual/en/class.datetime.php>
 
-#### 3.2.8) `gmtime` 方法
+#### 3.3.2) `gmtime` 方法
 
 获取分解时间。
 
 **描述**
 
 ```javascript
-$SYSTEM.gmtime object : `An object representing the current broken-down time in the default timezone.`
+$DATETIME.gmtime object : `An object representing the current broken-down time in the default timezone.`
 ```
 
 获得当前时间在默认时区的分解时间（broken-down time），返回类型为对象。
 
 
 ```javascript
-$SYSTEM.gmtime(
+$DATETIME.gmtime(
         [, <number | longint | ulongint | longdouble $seconds: `seconds since Epoch`>
             [, <string $timezone>
             ]
@@ -935,24 +966,24 @@ $SYSTEM.gmtime(
 
 ```javascript
 // 获取当前时间在当前时区的分解时间
-$SYSTEM.gmtime
+$DATETIME.gmtime
 
 // 获取当前时间之前一个小时在上海时区（北京标准时间）的分解时间
-$SYSTEM.gmtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
+$DATETIME.gmtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
 ```
 
 **参见**
 
 - C 标准函数：`gmtime_r()`
 
-#### 3.2.9) `mktime` 方法
+#### 3.3.3) `mktime` 方法
 
 将分解时间转换为日历时间（Epoch 以来的秒数）。
 
 **描述**
 
 ```javascript
-$SYSTEM.mktime(
+$DATETIME.mktime(
         <object $tm>
         [, <string $timezone>
         ]
@@ -967,38 +998,14 @@ $SYSTEM.mktime(
 
 - C 标准函数：`mktime_r()`
 
-#### 3.2.10) `timezone` 方法
-
-获取或设置时区。
-
-**描述**
-
-```javascript
-$SYSTEM.timezone : string
-```
-
-该方法返回当前时区。
-
-```javascript
-$SYSTEM.timezone(! <string $timezone> ) true | false
-```
-
-该方法设置当前时区。
-
-**示例**
-
-**参见**
-
-- C 标准函数：`tzset()`
-
-#### 3.2.11) `fmttime` 方法
+#### 3.3.4) `fmttime` 方法
 
 格式化日历时间。
 
 **描述**
 
 ```javascript
-$SYSTEM.fmttime(
+$DATETIME.fmttime(
         <string $format: `the format string`>
         [, <number | longint | ulongint | longdouble: `the calendar time (seconds since Epoch)`>
             [, <string $timezone>
@@ -1013,7 +1020,7 @@ $SYSTEM.fmttime(
 
 ```javascript
 // 获得类似 `11:27` 的时间字符串
-$SYSTEM.fmttime("It is %H:%m now")
+$DATETIME.fmttime("It is %H:%m now")
     // string: 'It is 11:27 now'
 ```
 
@@ -1022,14 +1029,14 @@ $SYSTEM.fmttime("It is %H:%m now")
 - C 标准函数：`strftime()`
 - C 标准函数：`strptime()`
 
-#### 3.2.12) `fmtgmtime` 方法
+#### 3.3.5) `fmtgmtime` 方法
 
 格式化分解时间。
 
 **描述**
 
 ```javascript
-$SYSTEM.fmtgmtime(
+$DATETIME.fmtgmtime(
         <string $format: `the format string`>,
         <object $gmtime: `the broken-down time object returned by gmtime()`
 ) string | false
@@ -1041,7 +1048,7 @@ $SYSTEM.fmtgmtime(
 
 ```javascript
 // 获得类似 `08:55` 的时间字符串
-$SYSTEM.fmtgmtime("It is %H:%m now in Asia/Shanghai", $SYSTEM.gmtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai'))
+$DATETIME.fmtgmtime("It is %H:%m now in Asia/Shanghai", $DATETIME.gmtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai'))
     // string: 'It is 08:55 now in Asia/Shanghai'
 ```
 
@@ -1050,11 +1057,11 @@ $SYSTEM.fmtgmtime("It is %H:%m now in Asia/Shanghai", $SYSTEM.gmtime($MATH.sub($
 - C 标准函数：`strftime()`
 - C 标准函数：`strptime()`
 
-### 3.3) `HVML`
+### 3.4) `HVML`
 
 `HVML` 是一个内置的程序级动态变量，该变量用于获取 HVML 程序的基本信息或者设置解释器在执行 HVML 程序时一些参数。
 
-#### 3.3.1) `base` 方法
+#### 3.4.1) `base` 方法
 
 该方法获取或设置 HVML 程序的基础 URL。
 
@@ -1079,7 +1086,7 @@ $HVML.base(! "https://foo.example.com//app/hvml/" )
     // string: 'https://foo.example.com/app/hvml'
 ```
 
-#### 3.3.2) `max_iteration_count` 方法
+#### 3.4.2) `max_iteration_count` 方法
 
 该方法获取或设置 HVML 程序在执行 `iterate` 动作元素时的最大迭代次数，用于检测可能的死循环。
 
@@ -1107,7 +1114,7 @@ $HVML.max_iteration_count(!
 $HVML.max_iteration_count(! 10000UL )
 ```
 
-#### 3.3.3) `max_recursion_depth` 方法
+#### 3.4.3) `max_recursion_depth` 方法
 
 该方法获取或设置 HVML 程序在递归执行某个功能时的最大递归深度，以防止栈溢出。
 
@@ -1134,7 +1141,7 @@ $HVML.max_recursion_depth(!
 $HVML.max_recursion_depth(! 10000UL )
 ```
 
-#### 3.3.4) `timeout_val` 方法
+#### 3.4.4) `timeout_val` 方法
 
 该方法获取或设置 HVML 程序在通过数据获取器获取数据或者建立长连接、发送请求时的超时值（单位：秒）。
 
@@ -1164,7 +1171,7 @@ $HVML.timeout_val(! 3.5 )
     // numer: 3.5
 ```
 
-#### 3.3.5) `attr` 方法
+#### 3.4.5) `attr` 方法
 
 该方法获取或设置 HVML 程序的属性。
 
@@ -1197,11 +1204,11 @@ $HVML.attr(! 'lang', 'zh' )
     // boolean: true
 ```
 
-### 3.4) `DOC`
+### 3.5) `DOC`
 
 `DOC` 是一个内置的程序级动态变量，该变量用于访问 HVML 程序生成的 eDOM 树中的元素。
 
-#### 3.4.1) `doctype` 方法
+#### 3.5.1) `doctype` 方法
 
 该方法返回文档类型，字符串。
 
@@ -1218,7 +1225,7 @@ $DOC.doctype
     // html
 ```
 
-#### 3.4.2) `query` 方法
+#### 3.5.2) `query` 方法
 
 使用 CSS 选择器查询目标文档上的元素汇集（collection）。
 
@@ -1285,11 +1292,11 @@ $DOC.query("#foo").attr(! "bar", "qux")
 
 参阅：<https://api.jquery.com/category/attributes/>
 
-### 3.5) `EJSON`
+### 3.6) `EJSON`
 
 该动态变量为会话级内置变量，用于返回数据的类型、成员个数等信息。
 
-#### 3.5.1) `type` 方法
+#### 3.6.1) `type` 方法
 
 该方法返回数据的类型名称，字符串。
 
@@ -1298,7 +1305,7 @@ $DOC.query("#foo").attr(! "bar", "qux")
 $EJSON.type( <any> ) string
 ```
 
-#### 3.5.2) `count` 方法
+#### 3.6.2) `count` 方法
 
 该方法返回数据的数据项个数，数值。
 
@@ -1307,7 +1314,7 @@ $EJSON.type( <any> ) string
 $EJSON.count( <any> ) number
 ```
 
-#### 3.5.3) `numberify` 方法
+#### 3.6.3) `numberify` 方法
 
 该方法对给定的数据做数值化处理，返回一个数值。
 
@@ -1316,7 +1323,7 @@ $EJSON.count( <any> ) number
 $EJSON.numberify( <any> ) number
 ```
 
-#### 3.5.4) `booleanize` 方法
+#### 3.6.4) `booleanize` 方法
 
 该方法对给定的数据做布尔化处理，返回布尔值（`true` 或者 `false`）。
 
@@ -1325,7 +1332,7 @@ $EJSON.numberify( <any> ) number
 $EJSON.booleanize( <any> ) boolean
 ```
 
-#### 3.5.5) `stringify` 方法
+#### 3.6.5) `stringify` 方法
 
 该方法对给定的数据做字符串化处理，返回字符串。
 
@@ -1334,7 +1341,7 @@ $EJSON.booleanize( <any> ) boolean
 $EJSON.stringify( <any> ) string
 ```
 
-#### 3.5.6) `serialize` 方法
+#### 3.6.6) `serialize` 方法
 
 该方法对给定的数据做序列化处理，返回字符串。
 
@@ -1360,7 +1367,7 @@ $EJSON.serialize(
 ) string
 ```
 
-#### 3.5.7) `sort` 方法
+#### 3.6.7) `sort` 方法
 
 该方法对给定的数组或者集合做排序。
 
@@ -1378,7 +1385,7 @@ $EJSON.sort(
 ) boolean
 ```
 
-#### 3.5.8) `shuffle` 方法
+#### 3.6.8) `shuffle` 方法
 
 该方法随机打乱给定数组或者集合的成员顺序。
 
@@ -1396,7 +1403,7 @@ $EJSON.shuffle(
 ) boolean
 ```
 
-#### 3.5.9) `compare` 方法
+#### 3.6.9) `compare` 方法
 
 该方法对给定两个数据做对比，返回数值：
 
@@ -1418,7 +1425,7 @@ $EJSON.compare(
 ) number
 ```
 
-#### 3.5.10) `parse` 方法
+#### 3.6.10) `parse` 方法
 
 解析 JSON/EJSON 字符串，返回 EJSON 数据。
 
@@ -1438,13 +1445,13 @@ $EJSON.parse(
 ) any
 ```
 
-### 3.6) `L`
+### 3.7) `L`
 
 该变量是一个会话级内置变量，主要用于逻辑运算。
 
 有关任何数据转换为逻辑真假值时的规则，请参阅 [HVML 1.0 规范 - 2.1.4) 任意数据类型的强制转换规则](hvml-spec-v1.0-zh.md#214-%E4%BB%BB%E6%84%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%BC%BA%E5%88%B6%E8%BD%AC%E6%8D%A2%E8%A7%84%E5%88%99)。
 
-#### 3.6.1) `not` 方法
+#### 3.7.1) `not` 方法
 
 逻辑取反操作。
 
@@ -1456,7 +1463,7 @@ $L.not(<any>)
 $L.not( false )
 ```
 
-#### 3.6.2) `and` 方法
+#### 3.7.2) `and` 方法
 
 逻辑与运算。
 
@@ -1468,7 +1475,7 @@ $L.and(<any>, <any>[, <any>[, ...]])
 $L.and( false, true )
 ```
 
-#### 3.6.3) `or` 方法
+#### 3.7.3) `or` 方法
 
 逻辑或运算。
 
@@ -1480,7 +1487,7 @@ $L.or(<any>, <any>[, <any>[, ...]])
 $L.or( false, true )
 ```
 
-#### 3.6.4) `xor` 方法
+#### 3.7.4) `xor` 方法
 
 逻辑亦或运算。
 
@@ -1492,7 +1499,7 @@ $L.xor(<any>, <any>)
 $L.xor( false, true )
 ```
 
-#### 3.6.5) `eq` 方法
+#### 3.7.5) `eq` 方法
 
 对比两个数据在数值上是否相等，返回 `true` 或 `false`。
 
@@ -1504,7 +1511,7 @@ $L.eq(<any>, <any>)
 $L.eq("1", 1)
 ```
 
-#### 3.6.6) `ne` 方法
+#### 3.7.6) `ne` 方法
 
 对比两个数据在数值上是否不相等，返回 `true` 或 `false`。
 
@@ -1516,7 +1523,7 @@ $L.ne(<any>, <any>)
 $L.ne("1", 2)
 ```
 
-#### 3.6.7) `gt` 方法
+#### 3.7.7) `gt` 方法
 
 对比第一个数据在数值上是否大于第二个数据，返回 `true` 或 `false`。
 
@@ -1528,7 +1535,7 @@ $L.gt(<any>, <any>)
 $L.gt("2", 1)
 ```
 
-#### 3.6.8) `ge` 方法
+#### 3.7.8) `ge` 方法
 
 对比第一个数据在数值上是否大于或等于第二个数据，返回 `true` 或 `false`。
 
@@ -1540,7 +1547,7 @@ $L.ge(<any>, <any>)
 $L.ge("2", 2)
 ```
 
-#### 3.6.9) `lt` 方法
+#### 3.7.9) `lt` 方法
 
 对比第一个数据在数值上是否小于第二个数据，返回 `true` 或 `false`。
 
@@ -1552,7 +1559,7 @@ $L.lt(<any>, <any>)
 $L.lt("1", 2)
 ```
 
-#### 3.6.10) `le` 方法
+#### 3.7.10) `le` 方法
 
 对比第一个数据在数值上是否小于或等于第二个数据，返回 `true` 或 `false`。
 
@@ -1564,7 +1571,7 @@ $L.le(<any>, <any>)
 $L.lt("1", 2)
 ```
 
-#### 3.6.11) `streq` 方法
+#### 3.7.11) `streq` 方法
 
 对比两个数据的字符串形式是否相等或匹配，返回 `true` 或 `false`。
 
@@ -1586,7 +1593,7 @@ $L.streq("reg", "^zh", "zh_CN")
 
 对非字符串类型的数据，字符串化后做对比。
 
-#### 3.6.12) `strne` 方法
+#### 3.7.12) `strne` 方法
 
 对比两个数据的字符串形式是否不相等或不匹配，返回 `true` 或 `false`。
 
@@ -1602,7 +1609,7 @@ $L.strne("case", "zh_CN", "zh_cn")
 
 对非字符串类型的数据，字符串化后做对比。
 
-#### 3.6.13) `strgt` 方法
+#### 3.7.13) `strgt` 方法
 
 对比第一个数据的字符串形式是否大于第二个数据的字符串形式，返回 `true` 或 `false`。
 
@@ -1618,7 +1625,7 @@ $L.strgt("case", 'A', 'Z')
 
 对非字符串类型的数据，字符串化后做对比。
 
-#### 3.6.14) `strge` 方法
+#### 3.7.14) `strge` 方法
 
 对比第一个数据的字符串形式是否大于或等于第二个数据的字符串形式，返回 `true` 或 `false`。
 
@@ -1634,7 +1641,7 @@ $L.strge("caseless", "abc", "ABC")
 
 对非字符串类型的数据，字符串化后做对比。
 
-#### 3.6.15) `strlt` 方法
+#### 3.7.15) `strlt` 方法
 
 对比第一个数据的字符串形式是否小于第二个数据的字符串形式，返回 `true` 或 `false`。
 
@@ -1650,7 +1657,7 @@ $L.strlt("case", "Z", "A")
 
 对非字符串类型的数据，字符串化后做对比。
 
-#### 3.6.16) `strle` 方法
+#### 3.7.16) `strle` 方法
 
 对比第一个数据的字符串形式是否小于或等于第二个数据的字符串形式，返回 `true` 或 `false`。
 
@@ -1666,7 +1673,7 @@ $L.strle("caseless", "abc", "ABC")
 
 对非字符串类型的数据，字符串化后做对比。
 
-#### 3.6.17) `eval` 方法
+#### 3.7.17) `eval` 方法
 
 对参数化的逻辑运算表达式求值。
 
@@ -1678,13 +1685,13 @@ $L.eval(<string: logical expression>, <object: the parameter map>)
 $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) })
 ```
 
-### 3.7) `T`
+### 3.8) `T`
 
 该变量是一个程序级内置变量，主要用于文本的本地化替代。
 
 - `get`：一个动态方法，用于返回替代字符串。
 
-#### 3.7.1) `map` 静态属性
+#### 3.8.1) `map` 静态属性
 
 `map` 是 `T` 的一个静态属性，用来定义字符串映射表，初始为空对象。程序可使用 `update` 元素设置其内容：
 
@@ -1709,7 +1716,7 @@ $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) }
 </hvml>
 ```
 
-#### 3.7.2) `get` 方法
+#### 3.8.2) `get` 方法
 
 ```javascript
 // 原型
@@ -1720,11 +1727,11 @@ $T.get(<string: original text>)
 $T.get('Hello, world!')
 ```
 
-### 3.8) `STR`
+### 3.9) `STR`
 
 `STR` 是一个内置的动态变量，该变量用于实现常见的字符串操作。
 
-#### 3.8.1) `contains` 方法
+#### 3.9.1) `contains` 方法
 
 判断一个字符串中是否包含给定的子字符串。
 
@@ -1770,7 +1777,7 @@ $STR.contains('Hello, world!', '')
 
 - PHP `str_contains()` 函数：<https://www.php.net/manual/en/function.str-contains.php>
 
-#### 3.8.2) `starts_with` 方法
+#### 3.9.2) `starts_with` 方法
 
 用于判断一个字符串是否以给定的字符串开头。
 
@@ -1816,7 +1823,7 @@ $STR.starts_with('Hello, world', '')
 
 - PHP `str_starts_with()` 函数：<https://www.php.net/manual/en/function.str-starts-with.php>
 
-#### 3.8.3) `ends_with` 方法
+#### 3.9.3) `ends_with` 方法
 
 用于判断一个字符串是否以给定的字符串结尾。
 
@@ -1860,7 +1867,7 @@ $STR.ends_with('Hello, world', '')
 
 - PHP `str_ends_with()` 函数：<https://www.php.net/manual/en/function.str-ends-with.php>
 
-#### 3.8.4) `explode` 方法
+#### 3.9.4) `explode` 方法
 
 使用指定的子字符串分隔一个字符串。
 
@@ -1914,7 +1921,7 @@ $STR.explode('中华人民共和国', 2)
 
 - PHP `explode()` 函数：<https://www.php.net/manual/en/function.explode.php>
 
-#### 3.8.5) `implode` 方法
+#### 3.9.5) `implode` 方法
 
 将一个数组的成员串接为一个新的字符串。使用指定的字符串串接字符串数组中的字符串。
 
@@ -1960,7 +1967,7 @@ $STR.implode(['汉', '字'])
 
 - PHP `implode()` 函数：<https://www.php.net/manual/en/function.implode.php>
 
-#### 3.8.6) `shuffle` 方法
+#### 3.9.6) `shuffle` 方法
 
 随机打乱一个字符串。
 
@@ -1991,7 +1998,7 @@ $STR.shuffle('beijing') // string: 'jbienig'
 
 - PHP `str_shuffle()` 函数：<https://www.php.net/manual/en/function.str-shuffle.php>
 
-#### 3.8.7) `replace` 方法
+#### 3.9.7) `replace` 方法
 
 子字符串替换。
 
@@ -2045,7 +2052,7 @@ $STR.replace("%body%", "black", "<body text=%BODY%>", true);
 - PHP `str_replace()` 函数：<https://www.php.net/manual/en/function.str-replace.php>
 - PHP `str_ireplace()` 函数：<https://www.php.net/manual/en/function.str-ireplace.php>
 
-#### 3.8.8) `format_c` 方法
+#### 3.9.8) `format_c` 方法
 
 格式化数值及字符串数据，使用 C 格式化字符表述方法。
 
@@ -2068,7 +2075,7 @@ $STR.format_c(
 $STR.format_c('Tom is %d years old, while Jerry is %d years old.', 9, 7)
 ```
 
-#### 3.8.9) `format_p` 方法
+#### 3.9.9) `format_p` 方法
 
 使用占位符格式化任意数据，使用 eJSON 串行化输出格式。
 
@@ -2090,7 +2097,7 @@ $STR.format_p(<string: string contains placeholders>, <object>) string
 $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry' })
 ```
 
-#### 3.8.10) `join` 方法
+#### 3.9.10) `join` 方法
 
 用于串接两个或更多个字符串。
 
@@ -2129,7 +2136,7 @@ $STR.join('hello', ' ', 'world')    // string: 'hello world'
 
 **参见**
 
-#### 3.8.11) `length` 方法
+#### 3.9.11) `length` 方法
 
 用于获得字符串的长度（字符为单位）。
 
@@ -2161,7 +2168,7 @@ $STR.length('中国')
 **参见**
 
 
-#### 3.8.12) `tolower` 方法
+#### 3.9.12) `tolower` 方法
 
 将字符串转换为小写。
 
@@ -2194,7 +2201,7 @@ $STR.tolower('Hello, world')
 
 - PHP `strtolower()` 函数：<https://www.php.net/manual/en/function.strtolower.php>
 
-#### 3.8.13) `toupper` 方法
+#### 3.9.13) `toupper` 方法
 
 将字符串转换为大写。
 
@@ -2226,7 +2233,7 @@ $STR.toupper('Hello, world')
 
 - PHP `strtoupper()` 函数：<https://www.php.net/manual/en/function.strtoupper.php>
 
-#### 3.8.14) `substr` 方法
+#### 3.9.14) `substr` 方法
 
 返回字符串的子串。
 
@@ -2280,7 +2287,7 @@ $STR.substr('abcdef', -3, -1)
 
 - PHP `substr()` 函数：<https://www.php.net/manual/en/function.substr.php>
 
-#### 3.8.15) `substr_compare` 方法
+#### 3.9.15) `substr_compare` 方法
 
 安全比较字符串（从指定的偏移位置开始比较指定的长度）
 
@@ -2311,7 +2318,7 @@ $STR.substr_compare(
 
 - PHP `substr_compare()` 函数：<https://www.php.net/manual/en/function.substr-compare.php>
 
-#### 3.8.16) `substr_count` 方法
+#### 3.9.16) `substr_count` 方法
 
 计算子字符串出现的次数。
 
@@ -2338,7 +2345,7 @@ $STR.substr_count(
 
 - PHP `substr_count()` 函数：<https://www.php.net/manual/en/function.substr-count.php>
 
-#### 3.8.17) `substr_replace` 方法
+#### 3.9.17) `substr_replace` 方法
 
 在子字符串中做替换。
 
@@ -2365,7 +2372,7 @@ $STR.substr_replace(
 
 - PHP `substr_replace()` 函数：<https://www.php.net/manual/en/function.substr-replace.php>
 
-#### 3.8.18) `strstr` 方法
+#### 3.9.18) `strstr` 方法
 
 返回在目标字符串中，以指定字符串起始或结尾的子字符串。
 
@@ -2395,7 +2402,7 @@ $STR.strstr(
 - PHP `strstr()` 函数：<https://www.php.net/manual/en/function.strstr.php>
 - PHP `stristr()` 函数：<https://www.php.net/manual/en/function.stristr.php>
 
-#### 3.8.19) `strpos` 方法
+#### 3.9.19) `strpos` 方法
 
 返回在目标字符串中指定字符串第一次或者最后一次出现的位置。
 
@@ -2425,7 +2432,7 @@ $STR.strpos(
 - PHP `strpos()` 函数：<https://www.php.net/manual/en/function.strpos.php>
 - PHP `stripos()` 函数：<https://www.php.net/manual/en/function.stripos.php>
 
-#### 3.8.20) `strpbrk` 方法
+#### 3.9.20) `strpbrk` 方法
 
 在目标字符串中查找从一组字符的任何一个字符开始或结尾的子字符串。
 
@@ -2452,7 +2459,7 @@ $STR.strpbrk(
 
 - PHP `strpbrk()` 函数：<https://www.php.net/manual/en/function.strpbrk.php>
 
-#### 3.8.21) `split` 方法
+#### 3.9.21) `split` 方法
 
 将字符串按给定的长度切分成子字符串数组。
 
@@ -2477,7 +2484,7 @@ $STR.split(
 
 - PHP `str_split()` 函数：<https://www.php.net/manual/en/function.str-split.php>
 
-#### 3.8.22) `chunk_split` 方法
+#### 3.9.22) `chunk_split` 方法
 
 将字符串按给定的小块长度和分隔符切分，生成一个新的字符串。
 
@@ -2505,7 +2512,7 @@ $STR.chunk_split(
 
 - PHP `chunk_split()` 函数：<https://www.php.net/manual/en/function.chunk-split.php>
 
-#### 3.8.23) `trim` 方法
+#### 3.9.23) `trim` 方法
 
 删除字符串开头、结尾或两者处的空白字符（或其他字符）。
 
@@ -2535,7 +2542,7 @@ $STR.trim(
 - PHP `ltrim()` 函数：<https://www.php.net/manual/en/function.ltrim.php>
 - PHP `rtrim()` 函数：<https://www.php.net/manual/en/function.rtrim.php>
 
-#### 3.8.24) `pad` 方法
+#### 3.9.24) `pad` 方法
 
 使用另一个字符串填充字符串为指定长度。
 
@@ -2564,7 +2571,7 @@ $STR.pad(
 
 - PHP `str_pad()` 函数：<https://www.php.net/manual/en/function.str-pad.php>
 
-#### 3.8.25) `repeat` 方法
+#### 3.9.25) `repeat` 方法
 
 重复一个字符串。
 
@@ -2587,7 +2594,7 @@ $STR.str_repeat(
 
 - PHP `str_repeat()` 函数：<https://www.php.net/manual/en/function.str-repeat.php>
 
-#### 3.8.26) `reverse` 方法
+#### 3.9.26) `reverse` 方法
 
 反转一个字符串。
 
@@ -2609,7 +2616,7 @@ $STR.strrev(
 
 - PHP `strrev()` 函数：<https://www.php.net/manual/en/function.strrev.php>
 
-#### 3.8.27) `tokenize` 方法
+#### 3.9.27) `tokenize` 方法
 
 使用给定的词元分隔符分隔字符串，返回分隔后的词元数组。
 
@@ -2632,7 +2639,7 @@ $STR.tokenize(
 
 - PHP `strtok()` 函数：<https://www.php.net/manual/en/function.strtok.php>
 
-#### 3.8.28) `translate` 方法
+#### 3.9.28) `translate` 方法
 
 转换指定子字符串。
 
@@ -2661,7 +2668,7 @@ $STR.translate(
 
 - PHP `strtr()` 函数：<https://www.php.net/manual/en/function.strtr.php>
 
-#### 3.8.29) `bin2hex` 方法
+#### 3.9.29) `bin2hex` 方法
 
 二进制字符串转换为十六进制。
 
@@ -2695,7 +2702,7 @@ $STR.bin2hex(
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.bin2hex.php>
 
-#### 3.8.30) `hex2bin` 方法
+#### 3.9.30) `hex2bin` 方法
 
 十六进制字符串转换为二进制。
 
@@ -2723,7 +2730,7 @@ $STR.hex2bin(
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.hex2bin.php>
 
-#### 3.8.31) `htmlentities_encode` 方法
+#### 3.9.31) `htmlentities_encode` 方法
 
 转换字符为 HTML 实体。
 
@@ -2766,7 +2773,7 @@ $STR.htmlentities_encode(
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.htmlentities.php>
 - PHP `htmlspecialchars()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars.php>
 
-#### 3.8.32) `htmlentities_decode` 方法
+#### 3.9.32) `htmlentities_decode` 方法
 
 转换 HTML 实体为对应的字符。
 
@@ -2805,7 +2812,7 @@ $STR.htmlentities_decode(
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.html-entity-decode.php>
 - PHP `htmlspecialchars_decode()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars-decode.php>
 
-#### 3.8.33) `crc32` 方法
+#### 3.9.33) `crc32` 方法
 
 计算一个字符串或二进制序列的 CRC32 多项式。
 
@@ -2829,7 +2836,7 @@ $STR.crc32(
 
 - PHP `crc32()` 函数：<https://www.php.net/manual/en/function.crc32.php>
 
-#### 3.8.34) `md5` 方法
+#### 3.9.34) `md5` 方法
 
 计算一个字符串或者二进制序列的 MD5 散列值。
 
@@ -2857,7 +2864,7 @@ $STR.md5(
 
 - PHP `md5()` 函数：<https://www.php.net/manual/en/function.md5.php>
 
-#### 3.8.35) `sha1` 方法
+#### 3.9.35) `sha1` 方法
 
 计算一个字符串或者二进制序列的 SHA1 散列值。
 
@@ -2886,7 +2893,7 @@ $STR.sha1(
 - PHP `sha1()` 函数：<https://www.php.net/manual/en/function.sha1.php>
 
 
-#### 3.8.36) `rot13` 方法
+#### 3.9.36) `rot13` 方法
 
 对字符串执行 ROT13 转换。
 
@@ -2910,7 +2917,7 @@ $STR.rot13(
 
 - PHP `rot13()` 函数：<https://www.php.net/manual/en/function.rot13.php>
 
-#### 3.8.37) `count_chars` 方法
+#### 3.9.37) `count_chars` 方法
 
 统计字符串中的字符出现次数。
 
@@ -2938,7 +2945,7 @@ $STR.count_chars(
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
-#### 3.8.38) `count_bytes` 方法
+#### 3.9.38) `count_bytes` 方法
 
 统计字符串或二进制字节序中的各个字节（0...255）出现的次数。
 
@@ -2970,7 +2977,7 @@ $STR.count_bytes(
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
-#### 3.8.39) `nl2br` 方法
+#### 3.9.39) `nl2br` 方法
 
 在字符串所有换行符之前插入 HTML 换行标记。
 
@@ -3002,7 +3009,7 @@ $STR.nl2br(
 
 - PHP `nl2br()` 函数：<https://www.php.net/manual/en/function.nl2br.php>
 
-#### 3.8.40) 错误与异常
+#### 3.9.40) 错误与异常
 
 在调用`STR` 动态对象方法的过程中，可能产生如下异常：
 
@@ -3010,9 +3017,9 @@ $STR.nl2br(
 - `WrongDataType`：错误的参数类型。
 - `BadEncoding`：错误编码。
 
-### 3.9) `URL`
+### 3.10) `URL`
 
-#### 3.9.1) `base64_encode` 方法
+#### 3.10.1) `base64_encode` 方法
 
 使用 MIME base64 编码字符串或者字节序列。
 
@@ -3039,7 +3046,7 @@ $URL.base64_encode(
 - PHP `base64_encode()` 函数：<https://www.php.net/manual/en/function.base64-encode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.9.2) `base64_decode` 方法
+#### 3.10.2) `base64_decode` 方法
 
 解码使用 MIME base64 编码的字符串。
 
@@ -3072,7 +3079,7 @@ $URL.base64_decode(
 - PHP `base64_decode()` 函数：<https://www.php.net/manual/en/function.base64-decode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.9.3) `urlencode` 方法
+#### 3.10.3) `urlencode` 方法
 
 编码 URL 字符串。
 
@@ -3096,7 +3103,7 @@ $URL.urlencode(
 
 - PHP `urlencode()` 函数：<https://www.php.net/manual/en/function.urlencode.php>
 
-#### 3.9.4) `urldecode` 方法
+#### 3.10.4) `urldecode` 方法
 
 解码已编码的 URL 字符串。
 
@@ -3120,7 +3127,7 @@ $URL.urldecode(
 
 - PHP `urldecode()` 函数：<https://www.php.net/manual/en/function.urldecode.php>
 
-#### 3.9.5) `rawurlencode` 方法
+#### 3.10.5) `rawurlencode` 方法
 
 按照 RFC 3986 对 URL 进行编码。
 
@@ -3144,7 +3151,7 @@ $URL.rawurlencode(
 
 - PHP `rawurlencode()` 函数：<https://www.php.net/manual/en/function.rawurlencode.php>
 
-#### 3.9.6) `rawurldecode` 方法
+#### 3.10.6) `rawurldecode` 方法
 
 对已编码的 URL 字符串进行解码。
 
@@ -3168,7 +3175,7 @@ $URL.rawurldecode(
 
 - PHP `rawurldecode()` 函数：<https://www.php.net/manual/en/function.rawurldecode.php>
 
-#### 3.9.7) `parse` 方法
+#### 3.10.7) `parse` 方法
 
 解析 URL，返回其组成部分。
 
@@ -3195,7 +3202,7 @@ $URL.parse(
 
 - PHP `parse()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
-#### 3.9.8) `http_build_query` 方法
+#### 3.10.8) `http_build_query` 方法
 
 生成 URL 编码的查询字符串。
 
@@ -4958,7 +4965,7 @@ $FILE.bin.tail($file, -5)
 
 ### 附.1) 修订记录
 
-#### RC1) 220301
+#### RC1) 220401
 
 #### BRC) 220201
 
@@ -4972,11 +4979,44 @@ $FILE.bin.tail($file, -5)
 1. 调整了 `$FS.list` 方法的返回对象格式。
 1. 新增 `$URL` 动态对象及其方法。
 1. 为 `$FS` 新增大量方法。
+1. 将 `$SYSTEM` 调整为全局级动态变量。
+1. 将 `$SYSTEM` 中的 `random` 方法调整到 `SESSION` 变量，将时间格式化相关的方法调整到新的 `$DATETIME` 变量。
 
 ### 附.2) 贡献者榜单
 
 本榜单顺序按贡献时间由早到晚排列：
 
+
+### 附.3) 废弃的内容
+
+#### `const_obj` 静态属性
+
+`const_obj` 是 `$SYSTEM` 的一个静态属性，用来定义系统常量值，程序只可增加但不可删除或修改已有的键值对：
+
+```html
+<!DOCTYPE hvml>
+<hvml target="html">
+    <head>
+        <update on="$SYSTEM.const_obj" to="merge">
+            {
+                "HVML_INTRPR_AUTHOR": "FMSoft",
+            }
+        </update>
+    </head>
+
+    <body>
+        ...
+    </body>
+</hvml>
+```
+
+由于 `$SYSTEM` 是系统级（或会话级）变量，故而可以在当前当前系统（或当前会话）的另一个 HVML 程序中观察该数据上的变化：
+
+```html
+    <observe on="$SYSTEM.const_obj" for="change:grown" in="#theStatusBar">
+        ...
+    </observe>
+```
 
 ### 附.3) 商标声明
 
