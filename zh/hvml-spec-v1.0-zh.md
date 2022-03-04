@@ -5,7 +5,7 @@ Version: 1.0-RC2
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Mar. 1, 2022  
+Last Modified Date: Apr. 1, 2022  
 Status: Release Candidate  
 Language: Chinese
 
@@ -138,7 +138,7 @@ Language: Chinese
 - [5) 总结](#5-总结)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
-      * [RC2) 220301](#rc2-220301)
+      * [RC2) 220401](#rc2-220401)
          - [RC2.1) 用户自定义临时变量的初始化和重置方法](#rc21-用户自定义临时变量的初始化和重置方法)
          - [RC2.2) 调整动态对象方法的描述语法](#rc22-调整动态对象方法的描述语法)
          - [RC2.3) 上下文变量的增强和调整](#rc23-上下文变量的增强和调整)
@@ -5312,7 +5312,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
 
-#### RC2) 220301
+#### RC2) 220401
 
 ##### RC2.1) 用户自定义临时变量的初始化和重置方法
 
