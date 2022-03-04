@@ -222,14 +222,17 @@ Language: Chinese
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
       * [4.3.3) 流式读写](#433-流式读写)
          - [4.3.3.1) 二进制结构表示法](#4331-二进制结构表示法)
-         - [4.3.3.2) `stream.open` 方法](#4332-streamopen-方法)
-         - [4.3.3.3) `stream.readstruct` 方法](#4333-streamreadstruct-方法)
-         - [4.3.3.4) `stream.writestruct` 方法](#4334-streamwritestruct-方法)
-         - [4.3.3.5) `stream.readlines` 方法](#4335-streamreadlines-方法)
-         - [4.3.3.6) `stream.writelines` 方法](#4336-streamwritelines-方法)
-         - [4.3.3.7) `stream.readbytes` 方法](#4337-streamreadbytes-方法)
-         - [4.3.3.8) `stream.writebytes` 方法](#4338-streamwritebytes-方法)
-         - [4.3.3.9) `stream.seek` 方法](#4339-streamseek-方法)
+         - [4.3.3.2) `stream.stdin` 静态属性](#4332-streamstdin-静态属性)
+         - [4.3.3.3) `stream.stdout` 静态属性](#4333-streamstdout-静态属性)
+         - [4.3.3.4) `stream.stderr` 静态属性](#4334-streamstderr-静态属性)
+         - [4.3.3.5) `stream.open` 方法](#4335-streamopen-方法)
+         - [4.3.3.6) `stream.readstruct` 方法](#4336-streamreadstruct-方法)
+         - [4.3.3.7) `stream.writestruct` 方法](#4337-streamwritestruct-方法)
+         - [4.3.3.8) `stream.readlines` 方法](#4338-streamreadlines-方法)
+         - [4.3.3.9) `stream.writelines` 方法](#4339-streamwritelines-方法)
+         - [4.3.3.10) `stream.readbytes` 方法](#43310-streamreadbytes-方法)
+         - [4.3.3.11) `stream.writebytes` 方法](#43311-streamwritebytes-方法)
+         - [4.3.3.12) `stream.seek` 方法](#43312-streamseek-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RC1) 220401](#rc1-220401)
@@ -4909,35 +4912,54 @@ $FILE.bin.tail($file, -5)
 
 该结构一共 140 字节。
 
-##### 4.3.3.2) `stream.open` 方法
+##### 4.3.3.2) `stream.stdin` 静态属性
+
+这是一个静态属性，其值可用于流式读写的其他读写接口，对应 C 语言标准输入。
+
+##### 4.3.3.3) `stream.stdout` 静态属性
+
+这是一个静态属性，其值可用于流式读写的其他读写接口，对应 C 语言标准输出。
+
+**示例**
+
+```
+// 将内核名称（如 `Linux`）输出到标准输出。
+$FILE.stream.writelines($FILE.stream.stdout, $SYSTEM.uname_prt('kernel-name'))
+```
+
+##### 4.3.3.4) `stream.stderr` 静态属性
+
+这是一个静态属性，其值可用于流式读写的其他读写接口，对应 C 语言标准错误。
+
+##### 4.3.3.5) `stream.open` 方法
 
 打开文件作为流，返回一个代表流对象的原生实体值。注意，流的关闭将在最终释放对应的数据时自动进行。
 
-##### 4.3.3.3) `stream.readstruct` 方法
+##### 4.3.3.6) `stream.readstruct` 方法
 
 从二进制流中读取一个二进制结构，并转换为适当的数据。
 
-##### 4.3.3.4) `stream.writestruct` 方法
+##### 4.3.3.7) `stream.writestruct` 方法
 
 将多个数据按照指定的结构格式写入二进制流。
 
-##### 4.3.3.5) `stream.readlines` 方法
+##### 4.3.3.8) `stream.readlines` 方法
 
 从文本流中读取给定行数，返回字符串数组。
 
-##### 4.3.3.6) `stream.writelines` 方法
+##### 4.3.3.9) `stream.writelines` 方法
 
 将字符串写入文本流中。
 
-##### 4.3.3.7) `stream.readbytes` 方法
+##### 4.3.3.10) `stream.readbytes` 方法
 
 从二进制或文本流中读取一个字节序列，返回一个字节序列。
 
-##### 4.3.3.8) `stream.writebytes` 方法
+##### 4.3.3.11) `stream.writebytes` 方法
 
 将一个字节序列写入流。
 
-##### 4.3.3.9) `stream.seek` 方法
+##### 4.3.3.12) `stream.seek` 方法
 
 在二进制或文本流中执行定位操作。
 
@@ -4981,6 +5003,7 @@ $FILE.bin.tail($file, -5)
 1. 为 `$FS` 新增大量方法。
 1. 将 `$SYSTEM` 调整为全局级动态变量。
 1. 将 `$SYSTEM` 中的 `random` 方法调整到 `SESSION` 变量，将时间格式化相关的方法调整到新的 `$DATETIME` 变量。
+1. 添加 `$FILE.stream.stdin`, `$FILE.stream.stdout` 以及 `$FILE.stream.stderr` 三个静态属性，用于返回代表标准输入、标准输出和标准错误的流式读写实体。
 
 ### 附.2) 贡献者榜单
 
