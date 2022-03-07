@@ -5093,6 +5093,11 @@ $FILE.stream.writelines($FILE.stream.stdout, $SYSTEM.uname_prt('kernel-name'))
 1. 将 `$SYSTEM` 调整为全局级动态变量。
 1. 将 `$SYSTEM` 中的 `random` 方法调整到 `SESSION` 变量，将时间格式化相关的方法调整到新的 `$DATETIME` 变量。
 1. 添加 `$FILE.stream.stdin`, `$FILE.stream.stdout` 以及 `$FILE.stream.stderr` 三个静态属性，用于返回代表标准输入、标准输出和标准错误的流式读写实体。
+1. 在 `$SYSTEM` 中增加 `random_sequence` 方法。
+1. 将 `$SESSION` 中的 `env` 和 `cwd` 方法转移到 `$SYSTEM` 方法。
+1. 在二进制格式表示法中增加 `utf16` 和 `utf32` 两种编码。
+1. 增强 `$EJSON.numberify` 和 `$EJSON.stringify` 可使用二进制格式表示法转换一个字节序列。
+1. 增强元素汇集原生实体的方法，使之可以生成指定元素汇集的子集。
 
 ### 附.2) 贡献者榜单
 
