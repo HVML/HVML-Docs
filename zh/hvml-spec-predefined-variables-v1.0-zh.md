@@ -26,7 +26,8 @@ Language: Chinese
 
 - [1) 介绍](#1-介绍)
    + [1.1) 规范及术语](#11-规范及术语)
-   + [1.2) 撰写要求](#12-撰写要求)
+   + [1.2) 二进制格式表示法](#12-二进制格式表示法)
+   + [1.3) 撰写要求](#13-撰写要求)
 - [2) 非动态变量](#2-非动态变量)
    + [2.1) `TIMERS`](#21-timers)
       * [2.1.1) 批量新增定时器](#211-批量新增定时器)
@@ -44,6 +45,7 @@ Language: Chinese
       * [3.1.6) `timezone` 方法](#316-timezone-方法)
       * [3.1.7) `cwd` 方法](#317-cwd-方法)
       * [3.1.8) `env` 方法](#318-env-方法)
+      * [3.1.9) `random_sequence` 方法](#319-random_sequence-方法)
    + [3.2) `SESSION`](#32-session)
       * [3.2.1) `user_obj` 静态属性](#321-user_obj-静态属性)
       * [3.2.2) `user` 方法](#322-user-方法)
@@ -221,18 +223,17 @@ Language: Chinese
          - [4.3.2.1) `bin.head` 方法](#4321-binhead-方法)
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
       * [4.3.3) 流式读写](#433-流式读写)
-         - [4.3.3.1) 二进制结构表示法](#4331-二进制结构表示法)
-         - [4.3.3.2) `stream.stdin` 静态属性](#4332-streamstdin-静态属性)
-         - [4.3.3.3) `stream.stdout` 静态属性](#4333-streamstdout-静态属性)
-         - [4.3.3.4) `stream.stderr` 静态属性](#4334-streamstderr-静态属性)
-         - [4.3.3.5) `stream.open` 方法](#4335-streamopen-方法)
-         - [4.3.3.6) `stream.readstruct` 方法](#4336-streamreadstruct-方法)
-         - [4.3.3.7) `stream.writestruct` 方法](#4337-streamwritestruct-方法)
-         - [4.3.3.8) `stream.readlines` 方法](#4338-streamreadlines-方法)
-         - [4.3.3.9) `stream.writelines` 方法](#4339-streamwritelines-方法)
-         - [4.3.3.10) `stream.readbytes` 方法](#43310-streamreadbytes-方法)
-         - [4.3.3.11) `stream.writebytes` 方法](#43311-streamwritebytes-方法)
-         - [4.3.3.12) `stream.seek` 方法](#43312-streamseek-方法)
+         - [4.3.3.1) `stream.stdin` 静态属性](#4331-streamstdin-静态属性)
+         - [4.3.3.2) `stream.stdout` 静态属性](#4332-streamstdout-静态属性)
+         - [4.3.3.3) `stream.stderr` 静态属性](#4333-streamstderr-静态属性)
+         - [4.3.3.4) `stream.open` 方法](#4334-streamopen-方法)
+         - [4.3.3.5) `stream.readstruct` 方法](#4335-streamreadstruct-方法)
+         - [4.3.3.6) `stream.writestruct` 方法](#4336-streamwritestruct-方法)
+         - [4.3.3.7) `stream.readlines` 方法](#4337-streamreadlines-方法)
+         - [4.3.3.8) `stream.writelines` 方法](#4338-streamwritelines-方法)
+         - [4.3.3.9) `stream.readbytes` 方法](#4339-streamreadbytes-方法)
+         - [4.3.3.10) `stream.writebytes` 方法](#43310-streamwritebytes-方法)
+         - [4.3.3.11) `stream.seek` 方法](#43311-streamseek-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RC1) 220401](#rc1-220401)
@@ -277,7 +278,68 @@ Language: Chinese
 **约定**  
 解释器可自行实现全局变量，作为约定，解释器自行实现的全局变量，其名称应以 ASCII U+005F LOW LINE（`_`）打头，使用全大写字母并添加解释器前缀。如 `_PURC_VAR`。而一般的变量，使用全小写字母。
 
-### 1.2) 撰写要求
+### 1.2) 二进制格式表示法
+
+为配合 FILE 的流式读写方法（`readstruct`、`writestruct`）以及字节序列的数值化，我们定义了一种二进制格式表示法。
+
+我们用一个字符串表示一个二进制结构中的各个构成部分，多个构成部分之间使用空白字符（空格、制表符、换行符等）分隔，每个构成部分使用一个类型字符串表示其类型，如果是大于一个字节的整数或浮点数，其后紧跟可选的 `le` 或者 `be` 表示小头（little endian）或者大头（big endian）。
+
+如，`i32le s128 f64`，表示一个结构，其中前 4 个字节是一个 32 位整数，小头存储，紧接着是一个 128 字节的字符串，最后 8 字节是一个 64 位浮点数。该结构一共 140 字节。
+
+下表给出了本表示法支持的各种结构构成部分之类型标记：
+
+| 类型               |  表示方法   | 对应的 HVML 数据类型         |
+| ----------------   |  --------   | ---------------------------- |
+| 1 字节整数         |  i8         | longint    |
+| 2 字节整数         |  i16        | longint    |
+| 4 字节整数         |  i32        | longint    |
+| 8 字节整数         |  i64        | longint    |
+| 1 字节无符号整数   |  u8         | ulongint   |
+| 2 字节无符号整数   |  u16        | ulongint   |
+| 4 字节无符号整数   |  u32        | ulongint   |
+| 8 字节无符号整数   |  u64        | ulongint   |
+| 2 字节浮点型       |  f16        | number     |
+| 4 字节浮点型       |  f32        | number     |
+| 8 字节浮点型       |  f64        | number     |
+| 12 字节浮点型      |  f96        | longdouble |
+| 16 字节长双精度    |  f128       | longdouble |
+| 字节序列           |  `b<SIZE>`  | bsequence；SIZE 指定字节数量。 |
+| 字符串             |  `s[SIZE]`  | string；SIZE 可选：指定字节数量，未指定时，到空字符（`\0`）为止。|
+| 填白               |  `p<SIZE>`  | 无，将跳过指定数量的字节；SIZE 指定字节数量。     |
+
+对 8 位以上整数或浮点数，使用如下可选后缀表示大小头：
+
+| 类型 | 类型标志 |
+| ---- | -------- |
+| 小头 | le       |
+| 大头 | be       |
+
+注：
+- 未指定时，默认跟随当前架构
+
+不同类型的表示方法：
+
+| 类型     | 表示方法           | 备注                                         | 举例              |
+| -------- | ------------------ | -------------------------------------------- | ----------------- |
+| 数值类型 | 类型 + 大、小头    | 如不标大、小头，跟随当前架构                 | u16、u32be、u64le |
+| 字节序列 | 类型 + 长度        |                                              | b234              |
+| 字符串   | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度             | s、s123           |
+
+注：
+- 不区分大小写；
+- 字符串仅支持 UTF-8 编码。非 UTF-8 编码的字符串，应使用字节序列处理。
+
+我们使用多个构成部分组成的字符串来表示一个结构，不同构成部分之间使用空白字符分隔。
+
+如，`i32le s128 f64`，表示一个结构的构成部分依次如下：
+
+1. 其中前 4 个字节是一个 32 位整数，小头存储；
+1. 紧接着是一个 128 字节的字符串；
+1. 最后 8 字节是一个 64 位浮点数。
+
+该结构一共 140 字节。
+
+### 1.3) 撰写要求
 
 对一个方法的描述应包含如下部分（section）：
 
@@ -737,6 +799,36 @@ $SYSTEM.env(! 'LOGNAME', 'tom' )
     // boolean: true
 ```
 
+#### 3.1.9) `random_sequence` 方法
+
+从内核获取指定的随机数据，可用于随机数发生器的种子或加密用途。
+
+**描述**
+
+```javascript
+$SYSTEM.random_sequence(
+        <numer $length: `the length of the random byte sequence`>
+) bsequence
+```
+
+该方法从内核获取指定长度的随机数据，可用于随机数发生器的种子或加密用途。该方法返回字节序列或抛出异常；静默求值时，返回空的字节序列。
+
+**异常**
+
+- `InvalidValue`：`$length` 无效的长度。
+
+**示例**
+
+```javascript
+// 从内核获得随机数据用于当前会话的随机数发生器种子。
+$SESSION.random(! $EJSON.numberify($SYSTEM.random_sequence(4), 'u32') )
+    // boolean: true
+```
+
+**参见**
+
+- Linux 特有接口：`getrandom()`
+
 ### 3.2) `SESSION`
 
 该变量是一个会话级内置变量，解释器在创建一个新的会话时，会自动创建并绑定。该变量主要用于会话相关的信息，并提供给用户在当前会话的不同 HVML 程序之间共享数据的机制。
@@ -832,13 +924,13 @@ $SESSION.user(! 'userId', undefined )
 **描述**
 
 ```javascript
-$SYSTEM.random ulongint: `a random between 0 and RAND_MAX.`
+$SESSION.random ulongint: `a random between 0 and RAND_MAX.`
 ```
 
 该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值（`ulongint`）。
 
 ```javascript
-$SYSTEM.random(
+$SESSION.random(
         <real $max: `the max value`>
 ) real: `A random real number between 0 and $max. The type of return value will be same as the type of $max.`
 ```
@@ -846,7 +938,7 @@ $SYSTEM.random(
 该方法获取 0 到指定的最大值之间的一个随机值。返回值的类型同参数 `$max` 的类型。
 
 ```javascript
-$SYSTEM.random(!
+$SESSION.random(!
         <real $seed: `the random seed`>
         [, <number $complexity: `a number equal or greater than 8 to indicates how sophisticated the random number generator it should use - the larger, the better the random numbers will be.>
         ]
@@ -863,23 +955,23 @@ $SYSTEM.random(!
 
 ```javascript
 // 使用当前系统日历时间设置随机数种子。
-$SYSTEM.randome(! $SYSTEM.time )
+$SESSION.randome(! $SYSTEM.time )
     // true
 
 // 使用当前系统日历时间设置随机数种子，并设置随机数发生器的复杂度为最高。
-$SYSTEM.randome(! $SYSTEM.time, 256 )
+$SESSION.randome(! $SYSTEM.time, 256 )
     // true
 
-$SYSTEM.random
+$SESSION.random
     // ulongint: 88UL
 
-$SYSTEM.random(1)
+$SESSION.random(1)
     // number: 0.789
 
-$SYSTEM.random(1000L)
+$SESSION.random(1000L)
     // longint: 492L
 
-$SYSTEM.random(-10FL)
+$SESSION.random(-10FL)
     // longdouble: -8.96987678FL
 ```
 
@@ -1353,6 +1445,16 @@ $EJSON.count( <any> ) number
 // 原型
 $EJSON.numberify( <any> ) number
 ```
+
+该方法对任意数据做数值化处理，始终返回 `number`。
+
+```javascript
+$EJSON.numberify( <bsequece $bytes>,
+        <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128' $binary_format: `the binary format and/or endianness; see binary format notation`>
+) longint | ulongint | number | longdouble
+```
+
+该方法将给定的二进制字节序列按指定的格式转换为对应的实数类型。
 
 #### 3.6.4) `booleanize` 方法
 
@@ -3817,7 +3919,7 @@ $MATH.sqrt_l(9.0)
 `FS` 是一个可装载的动态变量，该变量用于实现常见的文件系统操作。
 
 **注意**  
-当指定的路径以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前会话维护的当前工作路径信息（同 `$SESSION.cwd`）。
+当指定的路径以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前当前工作路径信息（同 `$SYSTEM.cwd`）。
 
 该变量提供如下接口：
 
@@ -4879,72 +4981,11 @@ $FILE.bin.tail($file, -5)
 ```
 #### 4.3.3) 流式读写
 
-##### 4.3.3.1) 二进制结构表示法
-
-为配合 FILE 的流式读写方法（`readstruct`、`writestruct`），我们定义了一种二进制结构表示法。
-
-我们用一个字符串表示一个二进制结构中的各个构成部分，多个构成部分之间使用空白字符（空格、制表符、换行符等）分隔，每个构成部分使用一个类型字符串表示其类型，如果是大于一个字节的整数或浮点数，其后紧跟可选的 `le` 或者 `be` 表示小头（little endian）或者大头（big endian）。
-
-如，`i32le s128 f64`，表示一个结构，其中前 4 个字节是一个 32 位整数，小头存储，紧接着是一个 128 字节的字符串，最后 8 字节是一个 64 位浮点数。该结构一共 140 字节。
-
-下表给出了本表示法支持的各种结构构成部分之类型标记：
-
-| 类型               |  表示方法   | 对应的 HVML 数据类型         |
-| ----------------   |  --------   | ---------------------------- |
-| 1 字节整数         |  i8         | longint    |
-| 2 字节整数         |  i16        | longint    |
-| 4 字节整数         |  i32        | longint    |
-| 8 字节整数         |  i64        | longint    |
-| 1 字节无符号整数   |  u8         | ulongint   |
-| 2 字节无符号整数   |  u16        | ulongint   |
-| 4 字节无符号整数   |  u32        | ulongint   |
-| 8 字节无符号整数   |  u64        | ulongint   |
-| 2 字节浮点型       |  f16        | number     |
-| 4 字节浮点型       |  f32        | number     |
-| 8 字节浮点型       |  f64        | number     |
-| 12 字节浮点型      |  f96        | longdouble |
-| 16 字节长双精度    |  f128       | longdouble |
-| 字节序列           |  `b<SIZE>`  | bsequence；SIZE 指定字节数量。 |
-| 字符串             |  `s[SIZE]`  | string；SIZE 可选：指定字节数量，未指定时，到空字符（`\0`）为止。|
-| 填白               |  `p<SIZE>`  | 无，将跳过指定数量的字节；SIZE 指定字节数量。     |
-
-对 8 位以上整数或浮点数，使用如下可选后缀表示大小头：
-
-| 类型 | 类型标志 |
-| ---- | -------- |
-| 小头 | le       |
-| 大头 | be       |
-
-注：
-- 未指定时，默认跟随当前架构
-
-不同类型的表示方法：
-
-| 类型     | 表示方法           | 备注                                         | 举例              |
-| -------- | ------------------ | -------------------------------------------- | ----------------- |
-| 数值类型 | 类型 + 大、小头    | 如不标大、小头，跟随当前架构                 | u16、u32be、u64le |
-| 字节序列 | 类型 + 长度        |                                              | b234              |
-| 字符串   | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度             | s、s123           |
-
-注：
-- 不区分大小写；
-- 字符串仅支持 UTF-8 编码。非 UTF-8 编码的字符串，应使用字节序列处理。
-
-我们使用多个构成部分组成的字符串来表示一个结构，不同构成部分之间使用空白字符分隔。
-
-如，`i32le s128 f64`，表示一个结构的构成部分依次如下：
-
-1. 其中前 4 个字节是一个 32 位整数，小头存储；
-1. 紧接着是一个 128 字节的字符串；
-1. 最后 8 字节是一个 64 位浮点数。
-
-该结构一共 140 字节。
-
-##### 4.3.3.2) `stream.stdin` 静态属性
+##### 4.3.3.1) `stream.stdin` 静态属性
 
 这是一个静态属性，其值可用于流式读写的其他读写接口，对应 C 语言标准输入。
 
-##### 4.3.3.3) `stream.stdout` 静态属性
+##### 4.3.3.2) `stream.stdout` 静态属性
 
 这是一个静态属性，其值可用于流式读写的其他读写接口，对应 C 语言标准输出。
 
@@ -4955,39 +4996,39 @@ $FILE.bin.tail($file, -5)
 $FILE.stream.writelines($FILE.stream.stdout, $SYSTEM.uname_prt('kernel-name'))
 ```
 
-##### 4.3.3.4) `stream.stderr` 静态属性
+##### 4.3.3.3) `stream.stderr` 静态属性
 
 这是一个静态属性，其值可用于流式读写的其他读写接口，对应 C 语言标准错误。
 
-##### 4.3.3.5) `stream.open` 方法
+##### 4.3.3.4) `stream.open` 方法
 
 打开文件作为流，返回一个代表流对象的原生实体值。注意，流的关闭将在最终释放对应的数据时自动进行。
 
-##### 4.3.3.6) `stream.readstruct` 方法
+##### 4.3.3.5) `stream.readstruct` 方法
 
 从二进制流中读取一个二进制结构，并转换为适当的数据。
 
-##### 4.3.3.7) `stream.writestruct` 方法
+##### 4.3.3.6) `stream.writestruct` 方法
 
 将多个数据按照指定的结构格式写入二进制流。
 
-##### 4.3.3.8) `stream.readlines` 方法
+##### 4.3.3.7) `stream.readlines` 方法
 
 从文本流中读取给定行数，返回字符串数组。
 
-##### 4.3.3.9) `stream.writelines` 方法
+##### 4.3.3.8) `stream.writelines` 方法
 
 将字符串写入文本流中。
 
-##### 4.3.3.10) `stream.readbytes` 方法
+##### 4.3.3.9) `stream.readbytes` 方法
 
 从二进制或文本流中读取一个字节序列，返回一个字节序列。
 
-##### 4.3.3.11) `stream.writebytes` 方法
+##### 4.3.3.10) `stream.writebytes` 方法
 
 将一个字节序列写入流。
 
-##### 4.3.3.12) `stream.seek` 方法
+##### 4.3.3.11) `stream.seek` 方法
 
 在二进制或文本流中执行定位操作。
 
