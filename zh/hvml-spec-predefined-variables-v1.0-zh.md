@@ -286,6 +286,8 @@ Language: Chinese
 
 如，`i32le s128 f64`，表示一个结构，其中前 4 个字节是一个 32 位整数，小头存储，紧接着是一个 128 字节的字符串，最后 8 字节是一个 64 位浮点数。该结构一共 140 字节。
 
+在对字节序列执行数值化操作时，我们通过单个关键词来指定字节序列的二进制格式，比如 `i32le` 表示小头存储的 32 位有符号整数。
+
 下表给出了本表示法支持的各种结构构成部分之类型标记：
 
 | 类型               |  表示方法   | 对应的 HVML 数据类型         |
@@ -304,7 +306,9 @@ Language: Chinese
 | 12 字节浮点型      |  f96        | longdouble |
 | 16 字节长双精度    |  f128       | longdouble |
 | 字节序列           |  `b<SIZE>`  | bsequence；SIZE 指定字节数量。 |
-| 字符串             |  `s[SIZE]`  | string；SIZE 可选：指定字节数量，未指定时，到空字符（`\0`）为止。|
+| UTF-8编码的字符串  |  `s[SIZE]`       | string；SIZE 可选：指定字节数量，未指定时，到空字符（`\0`）为止。|
+| UTF-16编码的字符串 |  `utf16-[SIZE]`   | string；SIZE 可选：指定字节数量，未指定时，到空字符（`\0`）为止。|
+| UTF-32编码的字符串 |  `utf32-[SIZE]`   | string；SIZE 可选：指定字节数量，未指定时，到空字符（`\0`）为止。|
 | 填白               |  `p<SIZE>`  | 无，将跳过指定数量的字节；SIZE 指定字节数量。     |
 
 对 8 位以上整数或浮点数，使用如下可选后缀表示大小头：
@@ -319,17 +323,18 @@ Language: Chinese
 
 不同类型的表示方法：
 
-| 类型     | 表示方法           | 备注                                         | 举例              |
-| -------- | ------------------ | -------------------------------------------- | ----------------- |
-| 数值类型 | 类型 + 大、小头    | 如不标大、小头，跟随当前架构                 | u16、u32be、u64le |
-| 字节序列 | 类型 + 长度        |                                              | b234              |
-| 字符串   | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度             | s、s123           |
+| 类型              | 表示方法           | 备注                                                                     | 举例              |
+| --------          | ------------------ | --------------------------------------------                             | ----------------- |
+| 数值类型          | 类型 + 大、小头    | 如不标大、小头，跟随当前架构                                             | u16、u32be、u64le |
+| 字节序列          | 类型 + 长度        |                                                                          | b234              |
+| UTF-8 编码字符串  | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 字节）          | s、s123           |
+| UTF-16 编码字符串 | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 六位整数）      | utf16、utf16-120  |
+| UTF-32 编码字符串 | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 三十二位整数）  | utf32、utf32-120  |
 
 注：
-- 不区分大小写；
-- 字符串仅支持 UTF-8 编码。非 UTF-8 编码的字符串，应使用字节序列处理。
 
-我们使用多个构成部分组成的字符串来表示一个结构，不同构成部分之间使用空白字符分隔。
+- 二进制格式关键词区分大小写。
+- 我们使用多个构成部分组成的字符串来表示一个结构，不同构成部分之间使用空白字符分隔。
 
 如，`i32le s128 f64`，表示一个结构的构成部分依次如下：
 
@@ -1450,7 +1455,7 @@ $EJSON.numberify( <any> ) number
 
 ```javascript
 $EJSON.numberify( <bsequece $bytes>,
-        <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128' $binary_format: `the binary format and/or endianness; see binary format notation`>
+        <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128' $binary_format: `the binary format and/or endianness; see Binary Format Notation`>
 ) longint | ulongint | number | longdouble
 ```
 
@@ -1473,6 +1478,21 @@ $EJSON.booleanize( <any> ) boolean
 // 原型
 $EJSON.stringify( <any> ) string
 ```
+
+该方法对任意数据做字符串化处理，始终返回 `string`。
+
+```javascript
+$EJSON.stringify( <bsequece $bytes>,
+        <'s[bytes_length] | utf16[-<bytes_length>] | utf32[-<bytes_length>]' $binary_format: `the binary format and/or length; see Binary Format Notation`>
+) string
+```
+
+该方法将给定的二进制字节序列按指定的格式（编码及长度）转换为对应的字符串。返回字符串，
+包含错误编码时，抛出 `BadEncoding` 异常；或者在静默求值时，返回已正确转换的字符串。
+
+**异常**
+
+- `BadEncoding`：错误编码。可忽略异常。
 
 #### 3.6.6) `serialize` 方法
 
