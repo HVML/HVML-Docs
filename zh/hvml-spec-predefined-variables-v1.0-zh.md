@@ -42,12 +42,12 @@ Language: Chinese
       * [3.1.4) `locale` 方法](#314-locale-方法)
       * [3.1.5) `time` 方法](#315-time-方法)
       * [3.1.6) `timezone` 方法](#316-timezone-方法)
+      * [3.1.7) `cwd` 方法](#317-cwd-方法)
+      * [3.1.8) `env` 方法](#318-env-方法)
    + [3.2) `SESSION`](#32-session)
-      * [3.2.1) `cwd` 方法](#321-cwd-方法)
-      * [3.2.2) `user_obj` 静态属性](#322-user_obj-静态属性)
-      * [3.2.3) `user` 方法](#323-user-方法)
-      * [3.2.4) `env` 方法](#324-env-方法)
-      * [3.2.5) `random` 方法](#325-random-方法)
+      * [3.2.1) `user_obj` 静态属性](#321-user_obj-静态属性)
+      * [3.2.2) `user` 方法](#322-user-方法)
+      * [3.2.3) `random` 方法](#323-random-方法)
    + [3.3) `DATETIME`](#33-datetime)
       * [3.3.1) `time_prt` 方法](#331-time_prt-方法)
       * [3.3.2) `gmtime` 方法](#332-gmtime-方法)
@@ -374,6 +374,11 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 该变量是一个全局级内置变量，在初始化解释器系统之后创建对应的原生实体，然后构建对应的动态变体绑定到每个解释器实例上。
 
+注意如下实现要求：
+
+- `$SYSTEM` 对应的原生变体应考虑多线程（解释器以进程方式运行，每个解释器实例对应一个线程）情形下的公共资源访问保护。
+- 在一个会话中调用 `$SYSTEM` 的设置器方法，可能产生 `change` 事件，解释器应该将该事件广播到所有会话中。
+
 #### 3.1.1) `const` 方法
 
 获取系统常量。
@@ -648,24 +653,20 @@ $SYSTEM.timezone(! <string $timezone> ) true | false
 - C 标准函数：`tzset()`
 - PHP: <https://www.php.net/manual/en/timezones.php>
 
-### 3.2) `SESSION`
+#### 3.1.7) `cwd` 方法
 
-该变量是一个会话级内置变量，解释器在创建一个新的会话时，会自动创建并绑定。该变量主要用于会话相关的信息，并提供给用户在当前会话的不同 HVML 程序之间共享数据的机制。
-
-#### 3.2.1) `cwd` 方法
-
-获取或设置当前工作路径。
+获取或设置当前工作路径。当前工作路径
 
 **描述**
 
 ```javascript
-$SESSION.cwd string | false: `returns the current working directory on success, or @false on failure.`
+$SYSTEM.cwd string | false: `returns the current working directory on success, or @false on failure.`
 ```
 
 该方法获取当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
 
 ```javascript
-$SESSION.cwd(!
+$SYSTEM.cwd(!
         <string $dir: `the new path for the current working directory.`>
 ) boolean: `returns @true on success or @false on failure.`
 ```
@@ -674,16 +675,73 @@ $SESSION.cwd(!
 
 **异常**
 
-该方法可能产生的异常：
+该方法可能产生的异常，均为可忽略异常：
 
-- `AccessDenied`
-- `IOFailure`
-- `TooMany`
-- `TooLong`
-- `NotDesiredEntity`
-- `OSFailure`
+- `InvalidValue`：传入的目录字符串含有底层操作系统不支持的非法字符。
+- `EntityNotFound`：指定的目录不存在。
+- `AccessDenied`：无访问权限。
+- `TooMany`：太长的符号链接跳转。
+- `TooLong`：太长的目录名。
+- `IOFailure`：输入输出错误。
+- `OSFailure`：其他操作系统错误。
 
-#### 3.2.2) `user_obj` 静态属性
+**注意**
+
+1. 对当前工作路径的修改，将在 `$SYSTEM` 变量上产生 `change:cwd` 事件。
+
+**参见**
+
+- C 标准函数：`chdir()`, `getcwd()`
+
+#### 3.1.8) `env` 方法
+
+获取或设置系统环境变量。
+
+**描述**
+
+```javascript
+$SYSTEM.env(
+        <string: `the environment variable name`>
+) string | undefined
+```
+
+该方法获取指定环境变量的值（字符串）；未设置时抛出 `NoSuchKey` 异常，静默求值时返回 `undefined`。
+
+```javascript
+$SYSTEM.env(!
+        <string: `the environment variable name`>,
+        <string: `the value`>
+) boolean : `returns @true when the old value was overridden or @false when a new environment variable was created.`
+```
+
+该方法设置指定的环境变量，返回布尔数据，指明是否覆盖了已有环境变量。
+
+**异常**
+
+该方法可能产生的异常，均为可忽略异常：
+
+- `InvalidValue`：非法的环境变量名称。
+- `NoSuchKey`：不存在指定的环境变量。
+
+**注意**
+
+1. 新增特定的环境变量，将在 `$SYSTEM` 变量上产生 `change:envGrown` 事件，事件参数为一个对象，包含以新增环境变量名称为键，对应值为键值的键值对。
+1. 对特定环境变量的修改，将在 `$SYSTEM` 变量上产生 `change:env` 事件，事件参数为一个对象，包含以修改的环境变量名称为键，对应值为键值的键值对。
+1. 删除特定的环境变量，将在 `$SYSTEM` 变量上产生 `change:envShrunk` 事件，事件参数为被移除的环境变量名称。
+
+**示例**
+
+```javascript
+// 设置环境变量 `LOGNAME` 的值
+$SYSTEM.env(! 'LOGNAME', 'tom' )
+    // boolean: true
+```
+
+### 3.2) `SESSION`
+
+该变量是一个会话级内置变量，解释器在创建一个新的会话时，会自动创建并绑定。该变量主要用于会话相关的信息，并提供给用户在当前会话的不同 HVML 程序之间共享数据的机制。
+
+#### 3.2.1) `user_obj` 静态属性
 
 `user_obj` 是 `SESSION` 的一个静态属性，用来定义用户自定义键值对，初始为一个空对象。程序可使用 `update` 元素设置其内容：
 
@@ -712,7 +770,7 @@ $SESSION.cwd(!
     </observe>
 ```
 
-#### 3.2.3) `user` 方法
+#### 3.2.2) `user` 方法
 
 获取或设置用户键值对。
 
@@ -767,38 +825,7 @@ $SESSION.user(! 'userId', undefined )
     // true
 ```
 
-#### 3.2.4) `env` 方法
-
-获取或设置系统环境变量。
-
-**描述**
-
-```javascript
-$SESSION.env(
-        <string: `the environment variable name`>
-) string | undefined
-```
-
-该方法获取指定环境变量的值（字符串）；未设置时返回 `undefined`。
-
-```javascript
-$SESSION.env(!
-        <string: `the environment variable name`>,
-        <string: `the value`>
-) boolean : `returns @true when the old value was overridden or @false when a new environment variable was created.`
-```
-
-该方法设置指定的环境变量，返回布尔数据，指明是否覆盖了已有环境变量。
-
-**示例**
-
-```javascript
-// 设置环境变量 `LOGNAME` 的值
-$SESSION.env(! 'LOGNAME', 'tom' )
-    // boolean: true
-```
-
-#### 3.2.5) `random` 方法
+#### 3.2.3) `random` 方法
 
 获取随机值。
 
@@ -1240,7 +1267,8 @@ $DOC.doctype
 在元素汇集实体上，我们可以就如下键名获得对应的获取器：
 
 1. `.count()`：获取元素汇集中元素的个数。
-1. `.at( <real: index> )`：获取指定索引值上的元素实体。
+1. `.sub( <real: offset>, <real: length )`：以偏移量及长度为依据在给定的元素汇集中选择元素，形成新的元素汇集。
+1. `.select( <string: CSS selector )`：以 CSS 选择器在给定的元素汇集中的选择元素，形成一个新的元素汇集。
 1. `.attr( <string: attributeName> )`：获取元素汇集中第一个元素的指定属性值。
 1. `.prop( <string: propertyName> )`：获取元素汇集中第一个元素的指定状态值。
 1. `.style( <string: styleName> )`：获取元素汇集中第一个元素的指定样式值。
