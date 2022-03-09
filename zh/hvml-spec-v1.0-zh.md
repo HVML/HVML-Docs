@@ -726,8 +726,9 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 `$HVML` 是一个动态对象，该对象表述的是 HVML 文档本身，用以设置一些 HVML 程序内部使用的参数。比如：
 
 1. `$HVML.base`：获取或设置 HVML 程序的默认 URL 位置（类似 HTML 的 `base` 标签）。
-1. `$HVML.maxIterationCount`：获取或设置 HVML 程序在执行 `iteration` 元素时的最大迭代次数；用于检测可能的死循环。
-1. `$HVML.maxRecursionDepth`：获取或设置 HVML 程序在递归执行某个功能时的最大递归深度，以防止栈溢出。
+1. `$HVML.max_iteration_count`：获取或设置 HVML 程序在执行 `iteration` 元素时的最大迭代次数；用于检测可能的死循环。
+1. `$HVML.max_recursion_depth`：获取或设置 HVML 程序在递归执行某个功能时的最大递归深度，以防止栈溢出。
+1. `$HVML.max_embedded_levels`：获取或设置 HVML 程序在解析或者处理嵌套的容器数据时，允许的最大嵌套层级。
 
 元素汇集应该实现为集合，这样，可以在元素汇集上执行迭代或者其他集合支持的操作，如合并、相交等。
 
