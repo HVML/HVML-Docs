@@ -60,8 +60,9 @@ Language: Chinese
       * [3.4.1) `base` 方法](#341-base-方法)
       * [3.4.2) `max_iteration_count` 方法](#342-max_iteration_count-方法)
       * [3.4.3) `max_recursion_depth` 方法](#343-max_recursion_depth-方法)
-      * [3.4.4) `timeout_val` 方法](#344-timeout_val-方法)
-      * [3.4.5) `attr` 方法](#345-attr-方法)
+      * [3.4.4) `max_embedded_levels` 方法](#344-max_embedded_levels-方法)
+      * [3.4.5) `timeout_val` 方法](#345-timeout_val-方法)
+      * [3.4.6) `attr` 方法](#346-attr-方法)
    + [3.5) `DOC`](#35-doc)
       * [3.5.1) `doctype` 方法](#351-doctype-方法)
       * [3.5.2) `query` 方法](#352-query-方法)
@@ -1268,7 +1269,34 @@ $HVML.max_recursion_depth(!
 $HVML.max_recursion_depth(! 10000UL )
 ```
 
-#### 3.4.4) `timeout_val` 方法
+#### 3.4.4) `max_embedded_levels` 方法
+
+该方法获取或设置解析 eJSON 数据或者处理容器数据时，允许的最大嵌套层级。
+
+默认值为 32。
+
+**描述**
+
+```javascript
+// 原型，返回当前值
+$HVML.max_embedded_levels ulongint: `the current maximal embedded levels.`
+```
+
+```javascript
+$HVML.max_embedded_levels(!
+        <ulongint $new_value: `new maximal embedded levels`>
+) ulongint : `the new maximal embedded levels.`
+```
+
+该方法设置最大允许的容器数据嵌套层级，返回设置后的值。当传入无效值（比如零）时，不做改变。
+
+**示例**
+
+```javascript
+$HVML.max_embedded_levels(! 64UL )
+```
+
+#### 3.4.5) `timeout_val` 方法
 
 该方法获取或设置 HVML 程序在通过数据获取器获取数据或者建立长连接、发送请求时的超时值（单位：秒）。
 
@@ -1298,7 +1326,7 @@ $HVML.timeout_val(! 3.5 )
     // numer: 3.5
 ```
 
-#### 3.4.5) `attr` 方法
+#### 3.4.6) `attr` 方法
 
 该方法获取或设置 HVML 程序的属性。
 
