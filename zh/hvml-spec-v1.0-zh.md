@@ -144,6 +144,8 @@ Language: Chinese
          - [RC2.3) 上下文变量的增强和调整](#rc23-上下文变量的增强和调整)
          - [RC2.4) `iterate` 元素的增强](#rc24-iterate-元素的增强)
          - [RC2.5) 调整第一章的内容](#rc25-调整第一章的内容)
+         - [RC2.6) 异常相关增强](#rc26-异常相关增强)
+         - [RC2.7) 可命名一个 `observe`](#rc27-可命名一个-observe)
       * [RC1) 220209](#rc1-220209)
          - [RC1.1) 上下文变量的调整](#rc11-上下文变量的调整)
          - [RC1.2) `init` 标签的增强](#rc12-init-标签的增强)
@@ -2919,11 +2921,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 </hvml>
 ```
 
-当我们要解除在某个特定数据或者元素之上的观察时，使用 `forget` 标签。也就是说，`forget` 是 `observe` 的反操作。
+当我们要解除在某个特定数据或者元素之上对某个事件的观察时，使用 `forget` 标签。也就是说，`forget` 是 `observe` 的反操作。
 
 ```html
     <forget on="#the-user-list" for="change:content" />
 ```
+
+需要注意的是，由于我们可以在 HVML 程序多个不同位置使用 `observe` 观察同一事件，故而 `forget` 将移除所有匹配的被观察事件上的观察。
 
 在 HVML 代码中，除了被动等待事件的发生之外，代码也可以直接使用 `fire` 标签主动地激发一个事件：
 
@@ -2942,6 +2946,39 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 ```
 
 `fire` 元素将把 `with` 属性指定的数据作为事件数据包的 `payload` 进行处理，并根据 `on` 属性指定的元素或者数据确定事件的源，`for` 属性值作为事件名称打包事件数据包，并将事件加入到事件队列中。
+
+对同一个事件，我们可以在 HVML 程序的多个地方进行观察并执行不同的动作。当我们需要撤销特定的观察时，可以在 `observe` 标签中使用 `as` 属性为这个观察命名（关联到某个全局变量），之后使用 `init` 将该变量重置为 `undefine` 即可移除这个观察：
+
+```html
+    <choose on="$TIMERS" by="FILTER: AS 'foo'">
+        <update on="$?" at=".active" with="yes" />
+    </choose>
+
+    ...
+
+    <init as="updateTimes">
+        0
+    </init>
+
+    <observe as="opsPerSecond" on="$TIMERS" for="expired:foo" in="#the-header" >
+        <update on="$updateTimes" with+="1" />
+        <test on="$updateTimes">
+            <match for="GE 10">
+                <!-- remove the observer -->
+                <init at="opsPerSecond" with="undefined" />
+
+                <!-- remove the variable -->
+                <init at="updateTimes" with="undefined" />
+            </match>
+
+            <match for="ANY">
+                <update on="> span.local-time" at="textContent" with="$SYSTEM.time('%H:%m')" />
+            </match>
+        </test>
+    </observe>
+
+    </observe>
+```
 
 #### 2.5.11) `request` 标签
 
@@ -5369,13 +5406,21 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 ##### RC2.6) 异常相关增强
 
-新增 `Unsupported` 异常（可忽略）。
+新增 `Unsupported` 异常。
 
 明确了可忽略异常和不可忽略异常，以及如何处理 `silently` 副词属性。
 
 相关章节：
 
 - [2.1.11) 错误和异常的处理](#2111-错误和异常的处理)
+
+##### RC2.7) 可命名一个 `observe`
+
+可使用 `observe` 命名一个观察，以便可以移除一个特定的观察。
+
+相关章节：
+
+- [2.5.10) `observe`、 `forget` 和 `fire` 标签](#2510-observe-forget-和-fire-标签)
 
 #### RC1) 220209
 
