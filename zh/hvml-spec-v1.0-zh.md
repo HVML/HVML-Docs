@@ -146,6 +146,8 @@ Language: Chinese
          - [RC2.5) 调整第一章的内容](#rc25-调整第一章的内容)
          - [RC2.6) 异常相关增强](#rc26-异常相关增强)
          - [RC2.7) 可命名一个 `observe`](#rc27-可命名一个-observe)
+         - [RC2.8) 增强 `request`](#rc28-增强-request)
+         - [RC2.9) 调整介词属性](#rc29-调整介词属性)
       * [RC1) 220209](#rc1-220209)
          - [RC1.1) 上下文变量的调整](#rc11-上下文变量的调整)
          - [RC1.2) `init` 标签的增强](#rc12-init-标签的增强)
@@ -655,9 +657,9 @@ male:true
 
 和不可变数据相反，可变数据的含义是，我们可以在运行时改变这个数据的值。本质上，可变数据都是容器类数据，也就是数组、对象和集合。我们改变这些数据的值，本质上改变的是这些数据所包含的内容，比如删除其中的一个数据项。
 
-在 HVML 中，我们可以在可变数据上使用 `update`、 `erase`、 `clear` 等标签执行更新、删除或者清除操作，这些操作本质上修改的是其中的数据项。
+在 HVML 中，我们可以在可变数据上使用 `update`、 `clear`、 `erase` 等标签执行更新、清空或移除操作，这些操作本质上修改的是其中的数据项。
 
-我们也可以在原生实体上执行更新、删除或者清除操作，但这种情况下，操作的是原生实体代表的内部数据，而不是原生实体本身。
+我们也可以在原生实体上执行更新、清空或者移除操作，但这种情况下，操作的是原生实体代表的内部数据，而不是原生实体本身。比如，对一个代表目录项的原生实体，在其上执行 `clear` 操作，将清空该目录项中的所有的文件和子目录，而在其上执行 `erase` 操作，将移除这个目录项。
 
 HVML 不提供任何操作可以用来改变不可变数据，但开发者可以使用 `init` 标签重置一个变量为其他数据。
 
@@ -672,12 +674,13 @@ HVML 不提供任何操作可以用来改变不可变数据，但开发者可以
 
 在 HVML 中，当我们引用变量时，我们使用 `$` 前缀，比如 `$global`、 `$users`、 `$?` 等。当我们要指代普通的 `$` 字符时，我们使用 `\` 做转义字符。
 
-`$global`、 `$users` 这种变量称为命名变量（named variables），又分为全局变量或者局部变量。`$?` 这类使用特殊字符的变量称为上下文变量（context variables），根据 HVML 解释器的解析上下文确定其值。
+`$global`、 `$users` 这种变量称为命名变量（named variables），又分为静态（static）命名变量和局部（local）命名变量；`$?` 这类使用特殊字符的变量称为上下文变量（context variables），根据 HVML 解释器的运行上下文（执行栈）确定其值。
 
-在 HVML 解释器中，命名变量和上下文变量管理机制不同：
+在 HVML 中，上下文变量和命名变量的管理机制不同：
 
-1. 命名变量是静态的、全局的，和 vDOM 树中的某个元素节点关联。
-1. 上下文变量存在于 HVML 程序的执行栈上，是临时的。
+1. 上下文变量存在于 HVML 程序的执行栈上，是局部的、临时的，随着相应栈帧的弹出而自动销毁。
+1. 静态命名变量是静态的，全局存在的，和 vDOM 树中的某个元素节点关联。除非在 `init` 动作中使用 `undefined` 值重置一个静态命名变量，否则该变量会一直存在。
+1. 局部命名变量本质上就是一个特殊的上下文变量。在根据命名变量的名称查找对应的数据时，优先在当前执行栈中查找，然后再在当前 vDOM 位置的父元素以及祖先元素中查找。
 
 HVML 定义的上下文变量罗列如下：
 
@@ -881,7 +884,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 - 按照指定的数据项唯一性判断条件，具有唯一值的元素在集合中只能有一项。
 - 我们可以在集合上执行合并、相交、相减等集合特有的操作。
 
-当我们需要定义集合时，使用 `init` 标签的 `uniquely` 副词属性，必要时，通过 `via` 属性值指定唯一性判断条件。
+当我们需要定义集合时，使用 `init` 标签的 `uniquely` 副词属性，必要时，通过 `against` 属性值指定唯一性判断条件。
 
 我们按如下规则判断两个数据项是否相等：
 
@@ -913,10 +916,10 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 针对字典，我们可以定义使用某个特定的键值作为唯一性判断条件。比如我们通常使用 `id` 来表示数据项的唯一标识符。这个定义类似关系数据库中的主键（primary key）。
 
-我们使用 `init` 标签的 `via` 属性值来定义字典的唯一性键名。当使用多个键名作为唯一性条件时，使用空格分隔。比如：
+我们使用 `init` 标签的 `by` 属性值来定义字典的唯一性键名。当使用多个键名作为唯一性条件时，使用空格分隔。比如：
 
 ```html
-    <init as="users" uniquely via="id">
+    <init as="users" uniquely by="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
@@ -927,7 +930,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 上面的示例代码定义了一个使用 `id` 键名作为唯一性判断条件的集合。假如用来初始化这个集合的字典数组中多一项 `id` 为 `2` 的数据项，则之前 `id` 为 `2` 的数据项会被后来 `id` 为 `2` 的数据项覆盖。比如，
 
 ```html
-    <init as="users" uniquely via="id">
+    <init as="users" uniquely by="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
@@ -1054,6 +1057,7 @@ HVML 解释器按照固定的策略将 DOM 子树（文档片段）视作一个�
 - 当我们在一个元素上获得 `content[<index>]` 键名的键值时，相当于获得这个元素第 `<index>` 个子元素的文本表达；在设置该键名的键值时，相当于使用文本表达来创建该元素的内容或者子元素（替换掉原有子元素）。
 - 我们可以使用 `attr.class` 这样的复合键名来引用一个元素的特定属性。引用一个未定义的属性时，按属性值为 `undefined` 值对待。
 - 我们可以使用 `style.width` 这样的复合键名来引用一个元素的特定 CSS 属性。引用一个未定义的 CSS 属性时，按属性值为 `undefined` 值对待。
+- 我们可以使用 `prop.src` 这样的复合键名来引用一个元素的动态属性（property）。引用一个未定义的动态属性时，按属性值按 `undefined` 对待。
 
 注：目前只有 SGML 支持用数据作为元素的内容，即 `jsonContent`。
 
@@ -1128,7 +1132,7 @@ HVML 定义有如下几个基本的动作标签，用于操作数据或者元素
 - `init` 标签用来初始化或重置一个变量。
 - `update` 标签用来在指定的元素、元素汇集或者容器数据上执行更新操作。
 - `clear` 标签用来在指定元素或者容器数据上执行清空操作，通常意味者删除当前元素或者数据的所有子元素或者数据项。
-- `erase` 标签用来清除指定的元素、元素属性或容器中的数据项。
+- `erase` 标签用来移除指定的元素、元素属性或容器中的数据项。
 - `test` 标签定义在一个元素节点或者数据项上执行测试动作，用于实现依赖数据值的条件操作。
 - `match` 标签用来定义 `test` 元素的子元素，以定义一个匹配分支。
 - `iterate` 标签用来定义在一个可迭代数据或者元素上的迭代动作。
@@ -1156,7 +1160,7 @@ HVML 定义有如下几个基本的动作标签，用于操作数据或者元素
 
 HVML 还定义有如下一些动作标签：
 
-- `request` 标签用于向一个外部数据源发出一个请求以获得结果数据。
+- `request` 标签用于向一个外部数据源或者目标文档位置发出一个请求并获得结果数据。
 - `connect` 标签用于连接到一个指定的外部数据源，并绑定一个变量名。
 - `send` 标签用来在指定的长连接上发出一个消息。
 - `disconnect` 标签用于显式关闭一个先前建立的外部数据源连接。
@@ -1297,15 +1301,15 @@ HVML 还定义有如下一些动作标签：
 
 针对动作标签，HVML 定义了如下几个介词（如 `on`、 `in`、 `to` 等）属性，用于定义执行动作时依赖的数据（或元素）及其集合。如：
 
-- `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URL，如 `tcp://foo.com:2345`、 `unix:///var/run/hibus.sock`。
+- `at`：在 `request` 和 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URL，如 `tcp://foo.com:2345`、 `unix:///var/run/hibus.sock`。
 - `from`：在 `init`、 `update`、 `load` 等动作元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URL。
 - `on`：用于定义执行动作所依赖的数据、元素或元素汇集。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`$?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
 - `in`：用于定义执行操作的目标文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。
 - `for`：在 `observe`、 `forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的消息类型；在 `match` 标签中，用于定义匹配条件；在 `connect` 标签中，用于定义协议或用途。
 - `as`：用于定义 `init`、 `connect`、 `bind`、 `load` 等元素绑定的变量名称、程序名称等。
-- `with`：用于定义执行操作时的源数据；在 `init`、 `request`、 `send` 元素中定义发送请求或消息时的参数；在 `iterate` 元素中定义迭代结果的求值表达式。
+- `with`：在 `init`、 `request`、 `send` 元素中定义发送请求或消息时的参数；在 `iterate` 元素中定义不使用执行器时迭代结果的求值表达式。
 - `to`：用于在 `update` 标签中定义具体的更新动作，比如表示追加的 `append`，表示替换的 `displace` 等。
-- `by`：主要用于定义执行测试、选择、迭代、归约操作时的脚本程序类或函数名称，分别称为选择器、迭代器或归约器，并统称为执行器（executor）。HVML 允许解释器支持内建（built-in）执行器。对简单的数据处理，可直接使用内置执行器，在复杂的数据处理情形中，可使用外部程序定义的类或者函数。在 HVML 中，我们使用如下前缀来表示不同的执行器类型：
+- `by`：还可用于定义执行测试、选择、迭代、归约操作时的脚本程序类或函数名称，分别称为选择器、迭代器或归约器，并统称为执行器（executor）。HVML 允许解释器支持内建（built-in）执行器。对简单的数据处理，可直接使用内置执行器，在复杂的数据处理情形中，可使用外部程序定义的类或者函数。在 HVML 中，我们使用如下前缀来表示不同的执行器类型：
    - `CLASS: ` 表示使用外部程序定义的类作为执行器。
    - `FUNC: ` 表示使用外部程序定义的函数作为执行器。
    - `KEY: ` 表示使用某个键名或多个指定的键名返回对应的键值数据项，是一种内建的迭代器或选择器。
@@ -1313,8 +1317,8 @@ HVML 还定义有如下一些动作标签：
    - `TRAVEL: ` 表示使用指定的遍历方式遍历树状结构，是一种内建的迭代器或选择器。
    - `SQL: ` 表示在结构化数据上执行 SQL 查询，从而实现复杂的选择、迭代以及归约操作。
    - 其他针对字符串和数值的内建执行器，见本文档 [2.6.1) 内建执行器](#261-内建执行器) 小节。
-- `via`：主要用于定义执行自定义选择、迭代、归约执行器时的过滤参数；亦用于在 `request`、 `send` 元素中指定请求方法（如 `GET`、 `POST`、 `DELETE` 等），或在 `init` 元素中用于指定集合的唯一性条件。
-- `via`：主要用于定义执行自定义选择、迭代、归约执行器时的过滤参数；亦用于在 `request`、 `send` 元素中指定请求方法（如 `GET`、 `POST`、 `DELETE` 等），或在 `init` 元素中用于指定集合的唯一性条件。
+- `via`：用于在 `init`、 `request`、 `send` 元素中指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
+- `against`：在 `init` 元素中用于指定集合的唯一性键值，在 `sort` 元素中用于指定排序依据。
 - `onlyif` 和 `while`：在 `iterate` 中，用于定义在产生迭代结果前和产生迭代结果后判断是否继续迭代的条件表达式。
 
 #### 2.1.13) 副词属性
@@ -1332,7 +1336,7 @@ HVML 还定义有如下一些动作标签：
 - `ascendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为升序；可简写为 `asc`。
 - `descendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为降序；可简写为 `desc`。
 - `silently`：在动作元素中，用于指定忽略执行当前元素时的可忽略异常；在骨架元素中使用 `hvml:silently` 属性。
-- `locally`：在 `init` 等定义变量的动作元素中，用于指定变量是全局的还是局部的；所有布局变量，将在用户自定义的上下文变量中维护。
+- `locally`：在 `init` 等定义变量的动作元素中，用于指定变量是全局的还是局部的；所有局部变量，在用户自定义的上下文变量中维护。
 - `nosetotail`：在 `iterate` 动作元素中，用于将上次迭代的结果作为下次迭代的输入。
 
 注意：在 HVML 中，我们无需为副词属性赋值。
@@ -1396,8 +1400,8 @@ HVML 还定义有如下一些动作标签：
 
 变量的引用规则如下：
 
-- 在 `archetype` 以及 `archedata` 标签定义的文档片段模板或者数据模板中，我们可以就属性值、文本内容引用上下文变量以及全局命名变量。此时，上下文变量由引用该模板的动作标签定义。
-- 在 HVML 动作标签中，我们可以就属性值、文本内容引用上下文变量以及全局命名变量。此时，上下文变量由引用该模板的动作标签定义。
+- 在 `archetype` 以及 `archedata` 标签定义的文档片段模板或者数据模板中，我们可以就属性值、文本内容引用上下文变量以及命名变量。此时，上下文变量由引用该模板的动作标签定义。
+- 在 HVML 动作标签中，我们可以就属性值、文本内容引用上下文变量以及命名变量。此时，上下文变量由引用该模板的动作标签定义。
 - 在使用目标标签语言定义的元素中，可以使用命名变量定义其属性值以及文本或数据内容。
 
 #### 2.1.15) JSON 求值表达式
@@ -1869,7 +1873,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```html
     <!-- init a set with an object array -->
-    <init as="users" uniquely via="id">
+    <init as="users" uniquely against="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
@@ -1903,7 +1907,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```html
     <!-- init a set with an object array -->
-    <init as="users" uniquely via="id">
+    <init as="users" uniquely against="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
@@ -1928,15 +1932,18 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当我们在 `init` 标签中使用 `locally` 副词属性时，将操作父栈帧或者祖先栈帧中用户自定义的上下文变量 `$!`：
 
-- `$!` 应被定义为 `undefined` 或者一个对象。新增用户自定义临时变量，意味着在这个对象中增加一个新的键值对，键名为该临时变量的名称，而键值为该临时变量的值。
+- 初始时时，`$!` 应被定义一个空对象。新增用户自定义的临时变量，意味着在这个对象中增加一个新的键值对，键名为该临时变量的名称，而键值为该临时变量的值。
 - 使用 `as` 属性时，将初始化或覆盖父栈帧中用户自定义的上下文变量 `$!` 中指定的键值对。
 - 使用 `at` 属性时，将向上遍历祖先栈帧，找到第一个匹配的临时变量，然后重置其键值。
-- 访问当前父栈帧或者祖先栈帧中的临时变量时，使用 `$[N]!.<name of the temp. variable>` 表达式。
-- 作为一个限制，临时变量不能异步获得，也就是说，`locally` 副词属性不能和 `asynchronously` 副词属性同时使用。
+- 访问当前父栈帧或者祖先栈帧中的临时变量时，可使用 `$[N]!.<name of the temp. variable>` 表达式。
+- 为使用方便，也可以用 `$<name of the temp. variable>` 表达式来访问局部变量：
+   1. 基于名称查询命名变量时，将向上遍历祖先栈帧，找到第一个匹配的临时变量；
+   1. 若没有找到，从当前 vDOM 位置的父元素开始，在祖先元素节点中查找对应的静态命名变量。
+- 作为一个限制，临时变量不能异步初始化，也就是说，`locally` 副词属性不能和 `asynchronously` 副词属性同时使用。
 
 #### 2.5.2) `update` 标签
 
-`update` 标签用于使用一个源数据（source data）修改一个目标数据（destination data）。目标数据应该是可变数据或者一个可在其上执行更新动作的原生实体数据，比如一个数组、一个对象、数组或对象的一个特定数据项、一个集合、一个数据汇集或者一个目标文档位置（即一个元素或元素汇集）。
+`update` 标签用于使用一个源数据（source data）修改一个目标数据（destination data）。目标数据应该是可变数据或者一个可在其上执行更新动作的原生实体数据，比如一个数组、一个对象、数组或对象的一个特定数据项、一个集合、一个数据汇集或者一个目标文档位置（即一个元素汇集）。
 
 该标签支持如下属性：
 
@@ -1955,6 +1962,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
    - `subtract`：在集合（目标数据）上执行相减操作，作用于集合，相当于求差集；源数据可为数组或集合。
    - `xor`：在集合上（目标数据）上执行异或操作，作用于集合，相当于并集和交集之差；源数据可为数组或集合。
    - `overwrite`：在集合（目标数据）上匹配给定的键值并更新其他键值，作用于基于唯一性键值的对象集合，源数据可为对象、数组或集合。
+   - `call`：当目标数据是元素汇集时，表示在元素汇集上调用由 `at` 属性指定的方法，其参数由 `with` 属性指定。
 1. `from` 属性指定修改操作源数据的外部数据源，如 URL；此时，使用 `with` 属性指定请求参数。
 1. 当未定义 `from` 属性时，`with` 属性指定修改操作使用的源数据；当定义有 `from` 属性时，`with` 属性指定请求参数。
 1. `via` 属性指定获得外部数据源的方法，如 `GET`、`POST` 等，仅在指定 `from` 时有效。
@@ -2094,7 +2102,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 当目标数据是对象、数组、集合，且具有 `individually` 副词属性时，`update` 标签设定的更新动作，将作用于数组中所有的数据项在指定位置上的数据。如，
 
 ```html
-    <init as="users" uniquely via="id">
+    <init as="users" uniquely against="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
@@ -2142,7 +2150,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 下面的代码定义了一个 `$users` 变量作为集合（使用 `id` 作为唯一性键名），并定义了一个 `$new_users` 对象数组：
 
 ```html
-    <init as="users" uniquely via="id">
+    <init as="users" uniquely against="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
@@ -2642,7 +2650,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 - `on` 属性指定要操作的数据。
 - `by` 属性指定执行器；若指定了执行器，则对执行器产生的数据序列执行排序操作，若没有指定执行器，则对 `on` 属性指定的数据（必须为数组）执行排序操作。
-- `via` 属性指定排序的依据；当要排序的数组或者数据序列由对象组成时，该属性指定参与排序的单个或者多个键名。
+- `against` 属性指定排序的依据；当要排序的数组或者数据序列由对象组成时，该属性指定参与排序的单个或者多个键名。
 - 使用 `ascendingly` 和 `descendingly` 副词属性指定使用升序还是降序排列。
 - 使用 `casesensitively` 和 `caseinsensitively` 副词属性指定按照字符串排序时是否对大小写敏感。
 
@@ -2657,7 +2665,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             ]
         </init>
 
-        <sort on="$users" ascendingly via="id" />
+        <sort on="$users" ascendingly against="id" />
 ```
 
 结果为：
@@ -2686,21 +2694,21 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```html
         <choose on="$?.regions" by="KEY: ALL FOR KV">
-            <sort on="$?" descendingly via="v">
+            <sort on="$?" descendingly against="v">
                 ...
             </sort>
         </choose>
 ```
 
-注意，在第一种用法（即使用 `by` 属性指定执行器的情况）中，`via="v"` 的排序条件将被隐含指定，无需显式指定。
+注意，在第一种用法（即使用 `by` 属性指定执行器的情况）中，`against="v"` 的排序条件将被隐含指定，无需显式指定。
 
 #### 2.5.10) `observe`、 `forget` 和 `fire` 标签
 
 `observe` 标签用于观察特定变量或数据上的状态变化，并在指定的事件到来时，执行该标签定义的操作组。
 
-我们使用 `observe` 的 `at` 属性指定一个要观察的命名变量之名称，使用 `on` 属性指定一项要观察的数据。`at` 属性的优先级高于 `on` 属性。
+我们使用 `observe` 的 `at` 属性指定一个要观察的静态命名变量之名称，使用 `on` 属性指定一项要观察的数据。`at` 属性的优先级高于 `on` 属性。注意，我们不能观察一个局部命名变量或者上下文变量。
 
-当我们观察一个命名变量时，我们可以观察这个命名变量对应的数据是否已经就绪，或者在获取数据的过程是否发生了错误，或者这个命名变量上的数据是否已经被销毁等等。
+当我们观察一个静态命名变量时，我们可以观察这个命名变量对应的数据是否已经就绪，或者在获取数据的过程是否发生了错误，或者这个命名变量上的数据是否已经被销毁等等。
 
 下面的代码从远程服务器上获得当前的用户信息，但使用异步请求：
 
@@ -2728,14 +2736,14 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当我们观察到 `users` 变量上的 `change:attached` 事件之后，表明数据已经就绪，此时，即可执行 `observe` 定义的操作组：清空 `#user-list` 中的内容，然后迭代 `$users` 数组的成员，使用模板 `$user_item` 生成文档片段追加到 `#user-list` 当中。
 
-我们可以跟踪处理命名变量上的如下事件：
+我们可以跟踪处理静态命名变量上的如下事件：
 
-- `change:attached`：表示命名变量上的数据从初始的 `undefined` 变化为有效数据。
+- `change:attached`：表示静态命名变量上的数据从初始的 `undefined` 变化为有效数据。
 - `change:displaced`：表示先前关联到该变量上的数据被置换为新的数据，比如使用 `init` 重置该变量，或者先前发起的异步请求操作成功获得了有效数据。
 - `change:detached`：表示先前关联到该变量上的有效数据被取消关联，其值被重置为 `undefined`，比如先前发起的异步请求操作失败，未能获得有效数据的情形。
 - `except:<exceptionName>`：表示在获取该变量对应的数据时出现异常，可能是请求出错，也可能是解析出错。具体信息，由事件的子类型给出。
 
-注意：当我们尝试使用一个尚未关联到有效数据的命名变量时，将产生 `NotReady` 异常。
+注意：当我们尝试使用一个尚未关联到有效数据的静态命名变量时，将产生 `NotReady` 异常。
 
 当我们观察一项数据时，我们可获得该数据产生的事件或者数据本身上的变化。比如，我们可监听来自长连接的事件，异步请求的返回值，或者获得长连接上调用远程过程后返回的结果，亦可用来监听某些内部数据产生的事件，比如 `$TIMERS` 数据产生的定时器到期事件，等等。
 
@@ -2797,7 +2805,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 - 当来自`$databus`（由 `on` 属性值指定）上的数据包类型为 `event:$?`（由 `for` 属性值指定），这里的 `$?` 是 `send` 返回的唯一性标识字符串（相当于事件标志符），执行 `observe` 定义的操作组。
 - `observe` 元素的子元素 `update` 元素定义了具体的更新操作：由 `by` 介词属性定义的脚本函数 `on_battery_changed` 完成，该更新操作限定在 `in` 介词属性定义的 `#the-header` 元素节点中。
 
-注意，当 `observe` 观察到了来自特定数据源上的数据包时，其结果数据为该事件数据包中的 `payload` 数据；若没有通过 `for` 属性和 `via` 指定具体要观察的数据包类型以及过滤条件时，则结果数据为整个数据包。
+注意，当 `observe` 观察到了来自特定数据源上的数据包时，其结果数据为该事件数据包中的 `payload` 数据；若没有通过 `for` 属性和 `with` 指定具体要观察的数据包类型以及过滤条件时，则结果数据为整个数据包。
 
 在简单情形下，我们也可以不使用脚本程序，直接使用 `update` 标签来定义更新操作。比如，我们要在状态栏上显示当前的 WiFi 名称或者移动网络的运营商名称：
 
@@ -2982,15 +2990,42 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 #### 2.5.11) `request` 标签
 
-`request` 标签定义一个在指定 URL 上的同步或异步请求。使用 `request` 元素时，我们使用 `on` 属性指定 URL，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）。`init` 元素提供类似的功能，但区别在于，`request` 可支持异步请求，而 `request` 不支持内嵌 JSON 数据为内容。
+`request` 标签在外部数据源上发出一个同步或者异步的请求。
+
+从外部数据源中获取数据时，我们使用 `at` 属性指定 URL，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）：
 
 ```html
-    <request on="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
+    <request at="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
         <observe on="$foo" for="result">
             ...
         </observe>
     </request>
 ```
+
+我们也可以使用 `request` 标签在一个目标文档位置上发起一个方法调用请求，比如，操控 HTML 的 `video` 元素快速跳转到指定的位置：
+
+```html
+    <video id="my-video" width="320" height="240" autoplay muted>
+        <source src="movie.mp4" type="video/mp4">
+        <source src="movie.ogg" type="video/ogg">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- request on="$DOC.query('#my-video')" to="fastSeek" with="5.30" -->
+    <request on="#my-video" to="fastSeek" with="5.30" />
+```
+
+此时，我们使用如下三个属性：
+
+- `on` 属性，指定目标文档位置。
+- `to` 属性，指定要调用的方法名称。
+- `with` 属性，指定调用方法的参数。
+
+为了异步观察请求的执行结果，我们可使用 `as` 属性为该请求定义一个静态命名变量，并使用 `observe` 标签观察其结果。因此，我们在该标签中可使用如下副词属性：
+
+- `synchronously` 属性，用来指定是否同步等待请求的执行结果，是默认值。
+- `asynchronously` 属性，用来指定是否异步等待执行结果。
+
 
 #### 2.5.12) `connect`、 `send` 和 `disconnect` 标签
 
@@ -3982,7 +4017,7 @@ SQL 执行器通过 `GROUP BY` 分句，可用于归约。
 - `CLASS: <ClassName>`：表示使用 `<ClassName>` 类作为执行器。目前可用于 `choose`、 `iterate`、 `reduce` 三个动作元素。
 - `FUNC: <FuncName>`：表示使用 `<FuncName>` 函数作为执行器。目前仅用于 `update` 动作元素。
 
-在 `choose`、 `iterate`、 `reduce` 以及 `update` 四个动作元素中使用外部执行器时，可使用 `via` 属性指定一个过滤参数。
+在 `choose`、 `iterate`、 `reduce` 以及 `update` 四个动作元素中使用外部执行器时，可使用 `with` 属性指定一个过滤参数。
 
 使用外部执行器时，HVML 应用的主程序需要实现相应的类或者函数。本文档以 Python 语言为例，说明各个外部执行器的实现方法。对于不同于 Python 的脚本语言，比如 C/C++、JavaScript、Lua 等，可参考 Python 的实现进行处理。
 
@@ -3995,7 +4030,7 @@ class HVMLChooser (object):
     def __init__ (self):
         pass
 
-    def choose (self, on_value, via_value):
+    def choose (self, on_value, with_value):
         return None
 
     def map (self, cloned_item, in_value):
@@ -4019,7 +4054,7 @@ class HVMLChooser (object):
     <body>
         ...
 
-        <choose on='$TIMERS' by="CLASS: CTimer" via="foo">
+        <choose on='$TIMERS' by="CLASS: CTimer" with="foo">
             <update on="$?" at=".active" with="yes" />
         </choose>
 
@@ -4028,16 +4063,16 @@ class HVMLChooser (object):
     </body>
 ```
 
-则 `CTimer` 的实现非常简单——从 `on` 属性指定的数组中查找 `id` 为 `via` 属性值（这里是 `foo`）数组单元，若有，则返回这个数组单元，否则返回 `None`。
+则 `CTimer` 的实现非常简单——从 `on` 属性指定的数组中查找 `id` 为 `with` 属性值（这里是 `foo`）数组单元，若有，则返回这个数组单元，否则返回 `None`。
 
 ```python
 class CTimer (HVMLChooser):
     def __init__ (self):
         pass
 
-    def choose (self, on_value, via_value):
+    def choose (self, on_value, with_value):
         for t in on_value:
-            if via_value == t['id']
+            if with_value == t['id']
                 return t
         return None
 
@@ -4054,7 +4089,7 @@ class CTimer (HVMLChooser):
 
 ```python
 class HVMLIterator:
-    def __init__ (self, on_value, via_value):
+    def __init__ (self, on_value, with_value):
         pass
 
     # implement this method to iterate the data.
@@ -4108,7 +4143,7 @@ class HVMLIterator:
 
 ```python
 class IUser (HVMLIterator):
-    def __init__ (self, on_data, via_value):
+    def __init__ (self, on_data, with_value):
         self.on_data = on_data
         self.i = 0;
         self.n = len (on_data)
@@ -4144,7 +4179,7 @@ class IUser (HVMLIterator):
 
 ```python
 class HVMLReducer:
-    def __init__ (self, on_value, via_value):
+    def __init__ (self, on_value, with_value):
         pass
 
     # implement this method to reduce the data.
@@ -4161,7 +4196,7 @@ class HVMLReducer:
 
 ```python
 class RUserRegionStats (HVMLReducer):
-    def __init__ (self, on_value, via_value):
+    def __init__ (self, on_value, with_value):
         self.data = on_value
         self.stats = {}
         self.stats.count = 0
@@ -4188,19 +4223,19 @@ class RUserRegionStats (HVMLReducer):
 外部函数主要用于 `update` 标签以完成复杂的更新操作，所有的事件处理函数之原型为：
 
 ```python
-def event_handler (on_value, via_value, root_in_scope):
+def event_handler (on_value, with_value, root_in_scope):
 ```
 
 其中，
 
 - `on_value` 是 `update` 元素之 `on` 属性的值。
-- `via_value` 是 `update` 元素之 `via` 属性的值。
+- `with_value` 是 `update` 元素之 `with` 属性的值。
 - `root_in_scope` 是 `update` 元素之 `in` 属性确定的当前操作范围。
 
 比如针对电池电量的改变事件，其 `payload` 如 2.8) 所示包含 `level` 和 `charging` 两个键值对，分别表示当前电量百分比以及是否在充电中。因此，其对应的执行器可实现为：
 
 ```python
-def on_battery_changed (on_value, via_value, root_in_scope):
+def on_battery_changed (on_value, with_value, root_in_scope):
     if on_value.level == 100:
         root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-full.png'
     elif on_value.level > 90:
@@ -4639,7 +4674,7 @@ SYSTEM 标识符字符串的格式如下：
 > In the following example, the `uniquely` attribute is given with the empty attribute syntax:
 
 ```html
-    <init as="foo" uniquely via="id">
+    <init as="foo" uniquely against="id">
 ```
 
 如果一个使用空属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
@@ -4657,7 +4692,7 @@ SYSTEM 标识符字符串的格式如下：
 > In the following example, the value attribute is given with the unquoted attribute value syntax:
 
 ```html
-    <init as=foo uniquely via=id>
+    <init as=foo uniquely against=id>
 ```
 
 如果一个使用无引号属性语法的属性之后跟随另一个属性，或者随后是起始标签语法第 6 步中提到的可选 U+002F SOLIDUS 字符（`/`），则必须使用 ASCII 空白字符来分隔这两个东西。
@@ -4675,7 +4710,7 @@ SYSTEM 标识符字符串的格式如下：
 > In the following example, the type attribute is given with the single-quoted attribute value syntax:
 
 ```html
-    <init as='foo' uniquely via='id'>
+    <init as='foo' uniquely against='id'>
 ```
 
 如果一个使用单引号属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
@@ -4773,7 +4808,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 注意，动作元素的介词属性，通常会被解释器视作字符串，或被串行化为字符串使用，但存在如下例外：
 
 - 所有动作元素的 `on` 和 `with` 属性，若赋值操作符（=）被忽略且使用无引号属性值语法，或者使用其他语法情形下，以 `[`、 `{`、 `$` 打头时，将被视作一个表达式处理；否则按字符串处理。
-- `choose`、 `iterate`、 `reduce` 和 `update` 元素的 `via` 属性，若赋值操作符（=）被忽略且使用无引号属性值语法，或者使用其他语法情形下，以 `[`、 `{`、 `$` 打头时，将被视作一个表达式处理；否则按字符串处理。
+- ~~`choose`、 `iterate`、 `reduce` 和 `update` 元素的 `with` 属性，若赋值操作符（=）被忽略且使用无引号属性值语法，或者使用其他语法情形下，以 `[`、 `{`、 `$` 打头时，将被视作一个表达式处理；否则按字符串处理。~~
 - `iterate` 元素的 `onlyif` 和 `while` 属性，若赋值操作符（=）被忽略且使用无引号属性值语法，或者使用其他语法情形下，以 `[`、 `{`、 `$` 打头时，将被视作一个表达式处理；否则按字符串处理。
 
 如：
@@ -5245,7 +5280,7 @@ CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被�
             { "cmdLine": "ls $fileInfo.curr_path" }
         <init>
 
-        <request on="lcmd:///bin/ls" with="$lcmdParams" via="GET">
+        <request at="lcmd:///bin/ls" with="$lcmdParams" via="GET">
             <iterate on="$?" in="#entries" by="RANGE: 0">
                 <update on="$@" to="append" with="$dir_entry" />
             </iterate>
@@ -5354,9 +5389,12 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 使用 `locally` 表示创建或重置一个临时变量。
 可在 `init` 标签的 `as` 或者 `at` 中指定临时变量的名称。
+局部命名变量可直接使用其名称来引用，相比静态变量，具有较高的名称查找优先级。
+明确区分静态命名变量和局部命名变量。
 
 相关章节：
 
+- [2.1.6) 变量](#216-变量)
 - [2.5.1) `init` 标签](#251-init-标签)
 - [2.1.13) 副词属性](#2113-副词属性)
 
@@ -5421,6 +5459,27 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 相关章节：
 
 - [2.5.10) `observe`、 `forget` 和 `fire` 标签](#2510-observe-forget-和-fire-标签)
+
+##### RC2.8) 增强 `request`
+
+可使用 `request` 要求目标文档位置（元素汇集）执行一个方法。
+
+相关章节：
+
+- [2.5.11) `request` 标签](#2511-request-标签)
+
+##### RC2.9) 调整介词属性
+
+使用 `against` 定义 `init` 中集合的唯一性键值以及 `sort` 中的排序依据。`via` 属性只用于定义请求的方法。
+
+使用 `with` 属性定义针对外部执行器的过滤数据，不再使用 `via` 属性。
+
+相关章节：
+
+- [2.1.12) 介词属性](#2112-介词属性)
+- [2.5.1) `init` 标签](#251-init-标签)
+- [2.5.9) `sort` 标签](#259-sort-标签)
+- [2.6.2) 外部执行器](#262-外部执行器)
 
 #### RC1) 220209
 
