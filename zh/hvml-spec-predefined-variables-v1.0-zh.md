@@ -214,8 +214,7 @@ Language: Chinese
       * [4.2.31) `opendir` 方法](#4231-opendir-方法)
       * [4.2.32) `readdir` 方法](#4232-readdir-方法)
       * [4.2.33) `rewinddir` 方法](#4233-rewinddir-方法)
-      * [4.2.34) `closedir` 方法](#4234-closedir-方法)
-      * [4.2.35) 错误与异常](#4235-错误与异常)
+      * [4.2.34) 错误与异常](#4234-错误与异常)
    + [4.3) `FILE`](#43-file)
       * [4.3.1) 文本文件](#431-文本文件)
          - [4.3.1.1) `txt.head` 方法](#4311-txthead-方法)
@@ -4830,8 +4829,12 @@ $FS.file_put_contents(
 ```javascript
 $FS.opendir(
         < string $pathname: Path to the directory. >
-) specific
+) entity
 ```
+
+该方法打开指定的路径，用于读取其中的目录项，返回的数据对应一个原生实体，可在随后的 `readdir` 中使用。
+
+注意，打开的路径将在释放原生实体时自动进行，故而不需要 `closedir` 方法。
 
 **参数**
 
@@ -4899,31 +4902,7 @@ $FS.rewinddir(
 
 - PHP `rewinddir()` 函数：<https://www.php.net/manual/en/function.rewinddir.php>
 
-#### 4.2.34) `closedir` 方法
-
-关闭一个目录。
-
-**描述**
-
-```javascript
-$FS.closedir(
-        < specific $dir: an entity returned by opendir. >
-) boolean
-```
-
-
-
-**返回值**
-
-**异常**
-
-**示例**
-
-**参见**
-
-- PHP `closedir()` 函数：<https://www.php.net/manual/en/function.closedir.php>
-
-#### 4.2.35) 错误与异常
+#### 4.2.34) 错误与异常
 
 在调用`FS` 动态对象方法的过程中，可能产生如下异常：
 
@@ -5031,11 +5010,11 @@ $FILE.bin.tail($file, -5)
 
 ##### 4.3.3.1) `stream.stdin` 静态属性
 
-这是一个静态属性，其值可用于流式读写的其他读写接口，对应 C 语言标准输入。
+这是一个静态属性，对应一个原生实体，其值可用于流式读写的读取接口，是 C 语言标准输入的封装。
 
 ##### 4.3.3.2) `stream.stdout` 静态属性
 
-这是一个静态属性，其值可用于流式读写的其他读写接口，对应 C 语言标准输出。
+这是一个静态属性，对应一个原生实体，其值可用于流式读写的写入接口，是 C 语言标准输出的封装。
 
 **示例**
 
@@ -5046,11 +5025,11 @@ $FILE.stream.writelines($FILE.stream.stdout, $SYSTEM.uname_prt('kernel-name'))
 
 ##### 4.3.3.3) `stream.stderr` 静态属性
 
-这是一个静态属性，其值可用于流式读写的其他读写接口，对应 C 语言标准错误。
+这是一个静态属性，其对应一个原生实体，值可用于流式读写的写入接口，是 C 语言标准错误的封装。
 
 ##### 4.3.3.4) `stream.open` 方法
 
-打开文件作为流，返回一个代表流对象的原生实体值。注意，流的关闭将在最终释放对应的数据时自动进行。
+打开文件作为流，返回一个代表流对象的原生实体值。注意，流的关闭将在最终释放对应的数据时自动进行，故而不需要 `close` 方法。
 
 ##### 4.3.3.5) `stream.readstruct` 方法
 
