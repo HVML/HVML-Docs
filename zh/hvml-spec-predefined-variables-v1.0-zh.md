@@ -7,6 +7,7 @@ Category: Language Specification
 Creation Date: Nov. 1, 2021  
 Last Modified Date: Feb. 9, 2022  
 Status: Proposal  
+ReleaseName: 硕鼠
 Language: Chinese
 
 *Copyright Notice*
@@ -463,6 +464,8 @@ $SYSTEM.const(
 
 - `HVML_SPEC_VERSION`: HVML 规范版本号，如 `1.0`。
 - `HVML_SPEC_RELEASE`: HVML 规范版本号，如 `硕鼠`。
+- `HVML_PREDEF_VARS_SPEC_VERSION`: HVML 预定义变量规范版本号，如 `1.0`。
+- `HVML_PREDEF_VARS_SPEC_RELEASE`: HVML 预定义变量规范版本号，如 `硕鼠`。
 - `HVML_INTRPR_NAME`: HVML 解释器的名称，如 `PurC`。
 - `HVML_INTRPR_VERSION`: HVML 解释器的版本名称，如 `0.5.0`。
 - `HVML_INTRPR_RELEASE`: HVML 解释器的发布名称，如 `立春`。

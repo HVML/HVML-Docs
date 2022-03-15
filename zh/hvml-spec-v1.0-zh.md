@@ -7,6 +7,7 @@ Category: Language Specification
 Creation Date: July, 2020  
 Last Modified Date: Apr. 1, 2022  
 Status: Release Candidate  
+ReleaseName: 硕鼠
 Language: Chinese
 
 *Copyright Notice*
