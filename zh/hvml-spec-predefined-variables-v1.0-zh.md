@@ -42,10 +42,11 @@ Language: Chinese
       * [3.1.3) `uname_prt` 方法](#313-uname_prt-方法)
       * [3.1.4) `locale` 方法](#314-locale-方法)
       * [3.1.5) `time` 方法](#315-time-方法)
-      * [3.1.6) `timezone` 方法](#316-timezone-方法)
-      * [3.1.7) `cwd` 方法](#317-cwd-方法)
-      * [3.1.8) `env` 方法](#318-env-方法)
-      * [3.1.9) `random_sequence` 方法](#319-random_sequence-方法)
+      * [3.1.6) `time_us` 方法](#316-time_us-方法)
+      * [3.1.7) `timezone` 方法](#317-timezone-方法)
+      * [3.1.8) `cwd` 方法](#318-cwd-方法)
+      * [3.1.9) `env` 方法](#319-env-方法)
+      * [3.1.10) `random_sequence` 方法](#3110-random_sequence-方法)
    + [3.2) `SESSION`](#32-session)
       * [3.2.1) `user_obj` 静态属性](#321-user_obj-静态属性)
       * [3.2.2) `user` 方法](#322-user-方法)
@@ -439,11 +440,9 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ### 3.1) `SYSTEM`
 
-该变量是一个全局级内置变量，在初始化解释器系统之后创建对应的原生实体，然后构建对应的动态变体绑定到每个解释器实例上。
+该变量是一个全局级内置变量，需要注意如下实现要求：
 
-注意如下实现要求：
-
-- `$SYSTEM` 对应的原生变体应考虑多线程（解释器以进程方式运行，每个解释器实例对应一个线程）情形下的公共资源访问保护。
+- `$SYSTEM` 的实现应考虑多线程（解释器以进程方式运行，每个解释器实例对应一个线程）情形下的公共资源访问保护。
 - 在一个会话中调用 `$SYSTEM` 的设置器方法，可能产生 `change` 事件，解释器应该将该事件广播到所有会话中。
 
 #### 3.1.1) `const` 方法
@@ -660,15 +659,15 @@ $SYSTEM.time ulongint: `the calendar time (seconds since Epoch)`
 
 ```javascript
 $SYSTEM.time(!
-        <number $seconds: `seconds since Epoch`>
+        <number | longint | ulongint | longdouble $seconds: `seconds since Epoch`>
 ) true | false
 ```
 
-该方法设置系统的日历时间。成功时返回 `true`，失败时抛出 `AccessDenied` 异常，静默求值时返回 `false`。
+该方法设置系统的日历时间（若使用浮点数，可用小数部分表示微秒值）。成功时返回 `true`，失败时抛出 `AccessDenied` 异常，静默求值时返回 `false`。
 
 **异常**
 
-- `AccessDenied`：当前会话的所有者没有权限设置系统日历时间时，将抛出该异常。
+- `AccessDenied`：当前会话的所有者没有权限设置系统时间时，将抛出该异常。
 
 **注意**
 
@@ -683,11 +682,67 @@ $SYSTEM.time
 
 **参见**
 
+- C 标准函数：`gettimeofday()`、`settimeofday()`
 - PHP: <https://www.php.net/manual/en/ref.datetime.php>
 - PHP: <https://www.php.net/manual/en/datetime.formats.php>
 - PHP DateTime 类：<https://www.php.net/manual/en/class.datetime.php>
 
-#### 3.1.6) `timezone` 方法
+#### 3.1.6) `time_us` 方法
+
+获取或设置具有微秒精度的系统时间。
+
+**描述**
+
+```javascript
+$SYSTEM.time_us object :
+    `An object representing the number of seconds and microseconds since Epoch:`
+        'sec'           - < ulongint: `seconds since Epoch` >
+        'usec'          - < ulongint: `microseconds` >
+```
+
+该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为对象。
+
+```javascript
+$SYSTEM.time_us(!
+        <number | longint | ulongint | longdouble $sec: `seconds since Epoch`>,
+        <number | longint | ulongint | longdouble $usec: `microseconds`>
+) true | false
+```
+
+该方法使用两个实数（分别表示自 Epoch 用来的秒数以及微秒数）设置系统的日历时间。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
+
+```javascript
+$SYSTEM.time_us(!
+        <object $time_with_us: `An object representing the number of seconds and microseconds since since Epoch`>
+) true | false
+```
+
+该方法使用表示系统时间的对象设置系统时间。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
+
+**异常**
+
+- `InvalidValue`：传入无效参数，如大于 100,000 或小于 0 的微秒值。
+- `AccessDenied`：当运行解释器的所有者没有权限设置系统时间时，将抛出该异常。
+
+**注意**
+
+1. 对系统时间的修改，将在 `$SYSTEM` 变量上产生 `change:time` 事件。
+
+**示例**
+
+```javascript
+$SYSTEM.time
+    // ulongint: 123456789UL
+```
+
+**参见**
+
+- C 标准函数：`gettimeofday()`、`settimeofday()`
+- PHP: <https://www.php.net/manual/en/ref.datetime.php>
+- PHP: <https://www.php.net/manual/en/datetime.formats.php>
+- PHP DateTime 类：<https://www.php.net/manual/en/class.datetime.php>
+
+#### 3.1.7) `timezone` 方法
 
 获取或设置时区。
 
@@ -703,11 +758,11 @@ $SYSTEM.timezone : string
 $SYSTEM.timezone(! <string $timezone> ) true | false
 ```
 
-该方法设置当前时区。
+该方法设置当前时区。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
 
 **异常**
 
-- `AccessDenied`：当前会话的所有者没有权限改变系统时区时，将抛出该异常。
+- `InvalidValue`：无效的时区字符串。
 
 **注意**
 
@@ -720,9 +775,9 @@ $SYSTEM.timezone(! <string $timezone> ) true | false
 - C 标准函数：`tzset()`
 - PHP: <https://www.php.net/manual/en/timezones.php>
 
-#### 3.1.7) `cwd` 方法
+#### 3.1.8) `cwd` 方法
 
-获取或设置当前工作路径。当前工作路径
+获取或设置当前工作路径。
 
 **描述**
 
@@ -760,7 +815,7 @@ $SYSTEM.cwd(!
 
 - C 标准函数：`chdir()`, `getcwd()`
 
-#### 3.1.8) `env` 方法
+#### 3.1.9) `env` 方法
 
 获取或设置系统环境变量。
 
@@ -792,9 +847,9 @@ $SYSTEM.env(!
 
 **注意**
 
-1. 新增特定的环境变量，将在 `$SYSTEM` 变量上产生 `change:envGrown` 事件，事件参数为一个对象，包含以新增环境变量名称为键，对应值为键值的键值对。
+1. 新增特定的环境变量，将在 `$SYSTEM` 变量上产生 `change:env/grown` 事件，事件参数为一个对象，包含以新增环境变量名称为键，对应值为键值的键值对。
 1. 对特定环境变量的修改，将在 `$SYSTEM` 变量上产生 `change:env` 事件，事件参数为一个对象，包含以修改的环境变量名称为键，对应值为键值的键值对。
-1. 删除特定的环境变量，将在 `$SYSTEM` 变量上产生 `change:envShrunk` 事件，事件参数为被移除的环境变量名称。
+1. 删除特定的环境变量，将在 `$SYSTEM` 变量上产生 `change:env/shrunk` 事件，事件参数为被移除的环境变量名称。
 
 **示例**
 
@@ -804,7 +859,7 @@ $SYSTEM.env(! 'LOGNAME', 'tom' )
     // boolean: true
 ```
 
-#### 3.1.9) `random_sequence` 方法
+#### 3.1.10) `random_sequence` 方法
 
 从内核获取指定的随机数据，可用于随机数发生器的种子或加密用途。
 
