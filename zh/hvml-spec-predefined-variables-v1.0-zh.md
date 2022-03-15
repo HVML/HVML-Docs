@@ -63,8 +63,7 @@ Language: Chinese
       * [3.4.2) `max_iteration_count` 方法](#342-max_iteration_count-方法)
       * [3.4.3) `max_recursion_depth` 方法](#343-max_recursion_depth-方法)
       * [3.4.4) `max_embedded_levels` 方法](#344-max_embedded_levels-方法)
-      * [3.4.5) `timeout_val` 方法](#345-timeout_val-方法)
-      * [3.4.6) `attr` 方法](#346-attr-方法)
+      * [3.4.5) `timeout` 方法](#345-timeout-方法)
    + [3.5) `DOC`](#35-doc)
       * [3.5.1) `doctype` 方法](#351-doctype-方法)
       * [3.5.2) `query` 方法](#352-query-方法)
@@ -1320,6 +1319,12 @@ $HVML.max_recursion_depth(!
 
 该方法设置最大递归深度值，返回设置后的值。当传入无效值（比如零）时，不做改变。
 
+**异常**
+
+该方法可能产生的异常：
+
+- `InvalidValue`：0 或者超过 16 位无符号整数的最大值。
+
 **示例**
 
 ```javascript
@@ -1330,7 +1335,7 @@ $HVML.max_recursion_depth(! 10000UL )
 
 该方法获取或设置解析 eJSON 数据或者处理容器数据时，允许的最大嵌套层级。
 
-默认值为 32。
+默认值为 64。
 
 **描述**
 
@@ -1347,13 +1352,19 @@ $HVML.max_embedded_levels(!
 
 该方法设置最大允许的容器数据嵌套层级，返回设置后的值。当传入无效值（比如零）时，不做改变。
 
+**异常**
+
+该方法可能产生的异常：
+
+- `InvalidValue`：0 或者超过 16 位无符号整数的最大值。
+
 **示例**
 
 ```javascript
 $HVML.max_embedded_levels(! 64UL )
 ```
 
-#### 3.4.5) `timeout_val` 方法
+#### 3.4.5) `timeout` 方法
 
 该方法获取或设置 HVML 程序在通过数据获取器获取数据或者建立长连接、发送请求时的超时值（单位：秒）。
 
@@ -1362,13 +1373,13 @@ $HVML.max_embedded_levels(! 64UL )
 **描述**
 
 ```javascript
-$HVML.timeout_val number : `the current timeout value (in seconds)`
+$HVML.timeout number : `the current timeout value (in seconds)`
 ```
 
 该方法返回当前超时值。
 
 ```javascript
-$HVML.timeout_val(!
+$HVML.timeout(!
         <number $new_timeout: `the new timeout value (in seconds)`>
 ) number : `the new timeout value`
 ```
@@ -1379,41 +1390,8 @@ $HVML.timeout_val(!
 
 ```javascript
 // 设置超时值为 3.5 秒。
-$HVML.timeout_val(! 3.5 )
+$HVML.timeout(! 3.5 )
     // numer: 3.5
-```
-
-#### 3.4.6) `attr` 方法
-
-该方法获取或设置 HVML 程序的属性。
-
-**描述**
-
-```javascript
-$HVML.attr(
-        <string $attr_name: `the attribute name`>
-) string | undefined : `the attribute value`
-```
-
-该方法获取 HVML 程序的属性值（亦即 `hvml` 标签定义的属性值）。当前，HVML 规范定义有如下两个属性：
-
-- `target`：目标标记语言，如 `html`。
-- `lang`：语言，如 `en`。
-
-```javascript
-$HVML.attr(!
-        <string $attr_name: `the attribute name>`,
-        <string $attr_value: `the new attribute value`>
-) true | false : `@true for changed the attribute, otherwise @false.`
-```
-
-该方法设置 HVML 程序的属性值。
-
-**示例**
-
-```javascript
-$HVML.attr(! 'lang', 'zh' )
-    // boolean: true
 ```
 
 ### 3.5) `DOC`
