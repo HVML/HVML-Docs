@@ -706,8 +706,8 @@ $SYSTEM.time_us object :
 
 ```javascript
 $SYSTEM.time_us(!
-        <number | longint | ulongint | longdouble $sec: `seconds since Epoch`>,
-        <number | longint | ulongint | longdouble $usec: `microseconds`>
+        <real $sec: `seconds since Epoch`>,
+        <real $usec: `microseconds`>
 ) true | false
 ```
 
@@ -834,8 +834,8 @@ $SYSTEM.env(
 ```javascript
 $SYSTEM.env(!
         <string: `the environment variable name`>,
-        <string: `the value`>
-) boolean : `returns @true when the old value was overridden or @false when a new environment variable was created.`
+        <string | undefined: `the value`>
+) true | false: `returns @true on success, otherwise @false if evaluated silently`
 ```
 
 该方法设置指定的环境变量，返回布尔数据，指明是否覆盖了已有环境变量。
@@ -870,14 +870,15 @@ $SYSTEM.env(! 'LOGNAME', 'tom' )
 ```javascript
 $SYSTEM.random_sequence(
         <numer $length: `the length of the random byte sequence`>
-) bsequence
+) bsequence | false
 ```
 
-该方法从内核获取指定长度的随机数据，可用于随机数发生器的种子或加密用途。该方法返回字节序列或抛出异常；静默求值时，返回空的字节序列。
+该方法从内核获取指定长度的随机数据，可用于随机数发生器的种子或加密用途。该方法返回指定长度的字节序列或抛出异常；静默求值时，返回 `false`。
 
 **异常**
 
-- `InvalidValue`：`$length` 无效的长度。
+- `InvalidValue`：`$length` 无效的长度；长度需大于 0 小于等于 256。
+- `NotSupported`：不支持。
 
 **示例**
 
@@ -1263,6 +1264,12 @@ $HVML.base(!
 
 该方法设置 HVML 程序的基础 URL 为预期值，返回正规化处理后的基础 URL。若传递的 `$new_url` 不是合法的或不支持的 URL，则抛出异常；或在静默求值时，对可忽略异常返回 `false`。
 
+**异常**
+
+该方法可能产生的异常：
+
+- `InvalidValue`：无效的 URL 字符串。
+
 **示例**
 
 ```javascript
@@ -1286,11 +1293,17 @@ $HVML.max_iteration_count ulongint: `the current maximal iteration count.`
 
 ```javascript
 $HVML.max_iteration_count(!
-        <ulongint $new_value: `the new maximal interation count`>
-) ulongint : `the new maximal iteration count.`
+        <real $new_value: `the new maximal interation count`>
+) ulongint | false : `the new maximal iteration count.`
 ```
 
-设置最大迭代次数值并返回设置后的值。当传入无效值（比如零）时，不做改变。
+设置最大迭代次数值并返回设置后的值。当传入无效值（比如零）时抛出异常；或在静默求值时，对可忽略异常返回 `false`。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `InvalidValue`：无效值，可忽略异常。
 
 **示例**
 
@@ -1313,17 +1326,17 @@ $HVML.max_recursion_depth ulongint: `the current maximal recursion depth value.`
 
 ```javascript
 $HVML.max_recursion_depth(!
-        <ulongint $new_value: `new maximal recursion depth`>
-) ulongint : `the new maximal recursion depth value.`
+        <real $new_value: `new maximal recursion depth`>
+) ulongint | false: `the new maximal recursion depth value.`
 ```
 
-该方法设置最大递归深度值，返回设置后的值。当传入无效值（比如零）时，不做改变。
+该方法设置最大递归深度值，返回设置后的值。当传入无效值时抛出异常；或在静默求值时，对可忽略异常返回 `false`。
 
 **异常**
 
 该方法可能产生的异常：
 
-- `InvalidValue`：0 或者超过 16 位无符号整数的最大值。
+- `InvalidValue`：无效值，可忽略异常。
 
 **示例**
 
@@ -1346,17 +1359,17 @@ $HVML.max_embedded_levels ulongint: `the current maximal embedded levels.`
 
 ```javascript
 $HVML.max_embedded_levels(!
-        <ulongint $new_value: `new maximal embedded levels`>
-) ulongint : `the new maximal embedded levels.`
+        <real $new_value: `new maximal embedded levels`>
+) ulongint | false: `the new maximal embedded levels.`
 ```
 
-该方法设置最大允许的容器数据嵌套层级，返回设置后的值。当传入无效值（比如零）时，不做改变。
+该方法设置最大允许的容器数据嵌套层级，返回设置后的值。当传入无效值时抛出异常；或在静默求值时，对可忽略异常返回 `false`。
 
 **异常**
 
 该方法可能产生的异常：
 
-- `InvalidValue`：0 或者超过 16 位无符号整数的最大值。
+- `InvalidValue`：0 或者超过 16 位无符号整数最大值。
 
 **示例**
 
@@ -1381,12 +1394,18 @@ $HVML.timeout number : `the current timeout value (in seconds)`
 ```javascript
 $HVML.timeout(!
         <number $new_timeout: `the new timeout value (in seconds)`>
-) number : `the new timeout value`
+) number | false: `the new timeout value`
 ```
 
-该方法设置超时值，并返回设置后的值。当传入无效值（如零或者负数）时，不做改变。
+该方法设置超时值，并返回设置后的值。当传入无效值时，抛出异常；或在静默求值时，对可忽略异常返回 `false`。
 
-**示**
+**异常**
+
+该方法可能产生的异常：
+
+- `InvalidValue`：无效超时值。可忽略异常。
+
+**示例**
 
 ```javascript
 // 设置超时值为 3.5 秒。
