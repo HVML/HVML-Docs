@@ -632,19 +632,20 @@ $SYSTEM.locale(!
 **注意**
 
 1. 在 HVML 中，表示区域的字符串始终使用 `en_US`、`zh_CN` 这种形式。
+1. 在 HVML 应用框架中，要求始终使用 UTF-8 编码。
 1. 对特定区域的修改，将在 `$SYSTEM` 变量上产生 `change:locale/<category>` 事件。
 
 **示例**
 
 ```javascript
 $SYSTEM.locale
-    // en_US
+    // string: "en_US"
 
 $SYSTEM.locale(! 'all', 'zh_CN')
-    // true
+    // boolean: true
 
 $SYSTEM.locale
-    // zh_CN
+    // string: "zh_CN"
 ```
 
 #### 3.1.5) `time` 方法
@@ -757,20 +758,38 @@ $SYSTEM.timezone : string
 该方法返回当前时区。
 
 ```javascript
-$SYSTEM.timezone(! <string $timezone> ) true | false
+$SYSTEM.timezone(!
+        <string $timezone: `new timezone`>
+        [<boolean $permanently = false: `change timezone permanently and globally or temporarily and locally`>]
+) true | false
 ```
 
 该方法设置当前时区。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
 
+HVML 始终使用类似 `Asia/Shanghai` 这样的字符串来表示时区。实质上，这个字符串是 POSIX 系统保存时区信息的文件路径，比如对 `Asia/Shanghai`，其时区信息通常保存在 `/usr/share/zoneinfo/Asia/Shanghai` 文件中。
+
 **异常**
 
 - `InvalidValue`：无效的时区字符串。
+- `AccessDenied`：当前会话的所有者没有权限持久更改系统时区。
 
 **注意**
 
 1. 对系统时区的修改，将在 `$SYSTEM` 变量上产生 `change:timezone` 事件。
+1. 系统时区的全局、持久修改，可能需要重新启动操作系统。
 
 **示例**
+
+```javascript
+$SYSTEM.timezone
+    // string: "Asia/Shanghai"
+
+$SYSTEM.timezone(! 'America/New_York' )
+    // true
+
+$SYSTEM.timezone
+    // string: "America/New_York"
+```
 
 **参见**
 
