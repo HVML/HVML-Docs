@@ -48,10 +48,10 @@ Language: Chinese
       * [3.1.8) `cwd` 方法](#318-cwd-方法)
       * [3.1.9) `env` 方法](#319-env-方法)
       * [3.1.10) `random_sequence` 方法](#3110-random_sequence-方法)
+      * [3.1.11) `random` 方法](#3111-random-方法)
    + [3.2) `SESSION`](#32-session)
       * [3.2.1) `user_obj` 静态属性](#321-user_obj-静态属性)
       * [3.2.2) `user` 方法](#322-user-方法)
-      * [3.2.3) `random` 方法](#323-random-方法)
    + [3.3) `DATETIME`](#33-datetime)
       * [3.3.1) `time_prt` 方法](#331-time_prt-方法)
       * [3.3.2) `gmtime` 方法](#332-gmtime-方法)
@@ -662,14 +662,15 @@ $SYSTEM.time ulongint: `the calendar time (seconds since Epoch)`
 
 ```javascript
 $SYSTEM.time(!
-        <number | longint | ulongint | longdouble $seconds: `seconds since Epoch`>
+        <real $seconds: `seconds since Epoch`>
 ) true | false
 ```
 
-该方法设置系统的日历时间（若使用浮点数，可用小数部分表示微秒值）。成功时返回 `true`，失败时抛出 `AccessDenied` 异常，静默求值时返回 `false`。
+该方法设置系统时间，整数部分表示自 Epoch 以来的秒数，小数部分表示微秒数。成功时返回 `true`，失败时抛出 `AccessDenied` 异常，静默求值时返回 `false`。
 
 **异常**
 
+- `InvalidValue`：传入无效参数，如负值或者大于 100,000 或小于 0 的微秒值。
 - `AccessDenied`：当前会话的所有者没有权限设置系统时间时，将抛出该异常。
 
 **注意**
@@ -697,8 +698,16 @@ $SYSTEM.time
 **描述**
 
 ```javascript
-$SYSTEM.time_us object :
-    `An object representing the number of seconds and microseconds since Epoch:`
+$SYSTEM.time_us longdouble :
+    `A long double number representing the number of seconds (integral part) and microseconds (fractional part) since Epoch:`
+```
+
+该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为对象。
+
+```javascript
+$SYSTEM.time_us(
+        <boolean $float = true: `indicate the return type: @true for long double number, @false for object.`>
+) longdouble | object: `An long double numer or object representing the number of seconds and microseconds since Epoch:`
         'sec'           - < ulongint: `seconds since Epoch` >
         'usec'          - < ulongint: `microseconds` >
 ```
@@ -706,17 +715,15 @@ $SYSTEM.time_us object :
 该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为对象。
 
 ```javascript
-$SYSTEM.time_us(!
-        <real $sec: `seconds since Epoch`>,
-        <real $usec: `microseconds`>
+$SYSTEM.time_us(! <real $sec_us: `seconds with microseconds since Epoch`>)
 ) true | false
 ```
 
-该方法使用两个实数（分别表示自 Epoch 用来的秒数以及微秒数）设置系统的日历时间。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
+该方法用一个实数（整数部分表示自 Epoch 以来的秒数，小数部分表示微秒数）设置系统时间。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
 
 ```javascript
 $SYSTEM.time_us(!
-        <object $time_with_us: `An object representing the number of seconds and microseconds since since Epoch`>
+        <object $time_with_us: `An object representing the number of seconds and microseconds since Epoch`>
 ) true | false
 ```
 
@@ -724,7 +731,7 @@ $SYSTEM.time_us(!
 
 **异常**
 
-- `InvalidValue`：传入无效参数，如大于 100,000 或小于 0 的微秒值。
+- `InvalidValue`：传入无效参数，如负值或者大于 100,000 或小于 0 的微秒值。
 - `AccessDenied`：当运行解释器的所有者没有权限设置系统时间时，将抛出该异常。
 
 **注意**
@@ -752,7 +759,7 @@ $SYSTEM.time
 **描述**
 
 ```javascript
-$SYSTEM.timezone : string
+$SYSTEM.timezone : string | false
 ```
 
 该方法返回当前时区。
@@ -760,7 +767,7 @@ $SYSTEM.timezone : string
 ```javascript
 $SYSTEM.timezone(!
         <string $timezone: `new timezone`>
-        [<boolean $permanently = false: `change timezone permanently and globally or temporarily and locally`>]
+        [, <boolean $permanently = false: `change timezone permanently and globally or temporarily and locally.`> ]
 ) true | false
 ```
 
@@ -911,6 +918,70 @@ $SESSION.random(! $EJSON.numberify($SYSTEM.random_sequence(4), 'u32') )
 
 - Linux 特有接口：`getrandom()`
 
+#### 3.1.11) `random` 方法
+
+获取随机值。
+
+**描述**
+
+```javascript
+$SYSTEM.random ulongint: `a random between 0 and RAND_MAX.`
+```
+
+该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值（`ulongint`）。
+
+```javascript
+$SYSTEM.random(
+        <real $max: `the max value`>
+) real: `A random real number between 0 and $max. The type of return value will be same as the type of $max.`
+```
+
+该方法获取 0 到指定的最大值之间的一个随机值。返回值的类型同参数 `$max` 的类型。
+
+```javascript
+$SYSTEM.random(!
+        <real $seed: `the random seed`>
+        [, <number $complexity: `a number equal or greater than 8 to indicates how sophisticated the random number generator it should use - the larger, the better the random numbers will be.>
+        ]
+) boolean: `@true for success, @false otherwise.`
+```
+
+该方法设置随机数发生器的种子（`$seed`）和/或复杂度（`$complexity`）。该方法在成功时返回 `true`；失败时抛出异常，或在静默求值时，对可忽略异常返回 `false`。
+
+**异常**
+
+`InvalidValue`：传入了无效参数，比如过小的 `$complexity` 值。
+
+**示例**
+
+```javascript
+// 使用当前系统日历时间设置随机数种子。
+$SYSTEM.randome(! $SYSTEM.time )
+    // true
+
+// 使用当前系统日历时间设置随机数种子，并设置随机数发生器的复杂度为最高。
+$SYSTEM.randome(! $SYSTEM.time, 256 )
+    // true
+
+$SYSTEM.random
+    // ulongint: 88UL
+
+$SYSTEM.random(1)
+    // number: 0.789
+
+$SYSTEM.random(1000L)
+    // longint: 492L
+
+$SYSTEM.random(-10FL)
+    // longdouble: -8.96987678FL
+```
+
+**参见**
+
+- C 标准函数：`random_r()`
+- C 标准函数：`srandom_r()`
+- C 标准函数：`initstate_r()`
+
 ### 3.2) `SESSION`
 
 该变量是一个会话级内置变量，解释器在创建一个新的会话时，会自动创建并绑定。该变量主要用于会话相关的信息，并提供给用户在当前会话的不同 HVML 程序之间共享数据的机制。
@@ -998,70 +1069,6 @@ $SESSION.user(! 'userId', '20220213' )
 $SESSION.user(! 'userId', undefined )
     // true
 ```
-
-#### 3.2.3) `random` 方法
-
-获取随机值。
-
-**描述**
-
-```javascript
-$SESSION.random ulongint: `a random between 0 and RAND_MAX.`
-```
-
-该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值（`ulongint`）。
-
-```javascript
-$SESSION.random(
-        <real $max: `the max value`>
-) real: `A random real number between 0 and $max. The type of return value will be same as the type of $max.`
-```
-
-该方法获取 0 到指定的最大值之间的一个随机值。返回值的类型同参数 `$max` 的类型。
-
-```javascript
-$SESSION.random(!
-        <real $seed: `the random seed`>
-        [, <number $complexity: `a number equal or greater than 8 to indicates how sophisticated the random number generator it should use - the larger, the better the random numbers will be.>
-        ]
-) boolean: `@true for success, @false otherwise.`
-```
-
-该方法设置随机数发生器的种子（`$seed`）和/或复杂度（`$complexity`）。该方法在成功时返回 `true`；失败时抛出异常，或在静默求值时，对可忽略异常返回 `false`。
-
-**异常**
-
-`InvalidValue`：传入了无效参数，比如过小的 `$complexity` 值。
-
-**示例**
-
-```javascript
-// 使用当前系统日历时间设置随机数种子。
-$SESSION.randome(! $SYSTEM.time )
-    // true
-
-// 使用当前系统日历时间设置随机数种子，并设置随机数发生器的复杂度为最高。
-$SESSION.randome(! $SYSTEM.time, 256 )
-    // true
-
-$SESSION.random
-    // ulongint: 88UL
-
-$SESSION.random(1)
-    // number: 0.789
-
-$SESSION.random(1000L)
-    // longint: 492L
-
-$SESSION.random(-10FL)
-    // longdouble: -8.96987678FL
-```
-
-**参见**
-
-- C 标准函数：`random_r()`
-- C 标准函数：`srandom_r()`
-- C 标准函数：`initstate_r()`
 
 ### 3.3) `DATETIME`
 
