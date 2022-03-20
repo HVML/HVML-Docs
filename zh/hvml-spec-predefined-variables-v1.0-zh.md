@@ -1096,7 +1096,7 @@ $DATETIME.time_prt(
             'rss'       - `RSS (example: Mon, 15 Aug 2005 15:52:01 +0000)`
             'w3c'       - `World Wide Web Consortium (example: 2005-08-15T15:52:01+00:00)`
         >
-        [, <number | longint | ulongint | longdouble $seconds: `seconds since Epoch`>
+        [, <null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for current calendar time.`>
             [, <string $timezone>
             ]
         ]
@@ -1208,7 +1208,7 @@ $DATETIME.localtime object : `An object representing the current broken-down tim
 
 ```javascript
 $DATETIME.localtime(
-        [, <number | longint | ulongint | longdouble $seconds: `seconds since Epoch`>
+        [, <null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for the current calendar time.`>
             [, <string $timezone>
             ]
         ]
@@ -1280,7 +1280,7 @@ $DATETIME.mktime(
 ```javascript
 $DATETIME.fmttime(
         <string $format: `the format string`>
-        [, <number | longint | ulongint | longdouble: `the calendar time (seconds since Epoch)`>
+        [, <null | number | longint | ulongint | longdouble: `the calendar time (seconds since Epoch); @null for the current calendar time.`>
             [, <string $timezone>
             ]
         ]
@@ -1301,7 +1301,7 @@ $DATETIME.fmttime(
 
 ```javascript
 // 获得类似 `11:27` 的时间字符串
-$DATETIME.fmttime("It is %H:%m now")
+$DATETIME.fmttime("It is %H:%M now")
     // string: 'It is 11:27 now'
 ```
 
@@ -1328,7 +1328,7 @@ $DATETIME.fmtbdtime(
 
 ```javascript
 // 获得类似 `08:55` 的时间字符串
-$DATETIME.fmtbdtime("It is %H:%m now in Asia/Shanghai", $DATETIME.localtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai'))
+$DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai'))
     // string: 'It is 08:55 now in Asia/Shanghai'
 ```
 
