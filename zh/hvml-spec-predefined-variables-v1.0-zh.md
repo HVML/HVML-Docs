@@ -54,10 +54,11 @@ Language: Chinese
       * [3.2.2) `user` 方法](#322-user-方法)
    + [3.3) `DATETIME`](#33-datetime)
       * [3.3.1) `time_prt` 方法](#331-time_prt-方法)
-      * [3.3.2) `gmtime` 方法](#332-gmtime-方法)
-      * [3.3.3) `mktime` 方法](#333-mktime-方法)
-      * [3.3.4) `fmttime` 方法](#334-fmttime-方法)
-      * [3.3.5) `fmtgmtime` 方法](#335-fmtgmtime-方法)
+      * [3.3.2) `utctime` 方法](#332-utctime-方法)
+      * [3.3.3) `localtime` 方法](#333-localtime-方法)
+      * [3.3.4) `mktime` 方法](#334-mktime-方法)
+      * [3.3.5) `fmttime` 方法](#335-fmttime-方法)
+      * [3.3.6) `fmtbdtime` 方法](#336-fmtbdtime-方法)
    + [3.4) `HVML`](#34-hvml)
       * [3.4.1) `base` 方法](#341-base-方法)
       * [3.4.2) `max_iteration_count` 方法](#342-max_iteration_count-方法)
@@ -910,7 +911,7 @@ $SYSTEM.random_sequence(
 
 ```javascript
 // 从内核获得随机数据用于当前会话的随机数发生器种子。
-$SESSION.random(! $EJSON.numberify($SYSTEM.random_sequence(4), 'u32') )
+$SYSTEM.random(! $EJSON.numberify($SYSTEM.random_sequence(4), 'u32') )
     // boolean: true
 ```
 
@@ -925,15 +926,15 @@ $SESSION.random(! $EJSON.numberify($SYSTEM.random_sequence(4), 'u32') )
 **描述**
 
 ```javascript
-$SYSTEM.random ulongint: `a random between 0 and RAND_MAX.`
+$SYSTEM.random longint: `a random between 0 and RAND_MAX.`
 ```
 
-该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值（`ulongint`）。
+该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值（`longint`）。
 
 ```javascript
 $SYSTEM.random(
         <real $max: `the max value`>
-) real: `A random real number between 0 and $max. The type of return value will be same as the type of $max.`
+) real | false: `A random real number between 0 and $max. The type of return value will be same as the type of $max.`
 ```
 
 该方法获取 0 到指定的最大值之间的一个随机值。返回值的类型同参数 `$max` 的类型。
@@ -1080,7 +1081,7 @@ $SESSION.user(! 'userId', undefined )
 
 ```javascript
 $DATETIME.time_prt(
-        <'atom | cookie | iso8601 | rfc822 | rfc850 | rfc1036 | rfc1036 | rfc1123 | rfc7231 | rfc2822 | rfc3339 | rfc3339-ex | rss | w3c' $format:
+        <'atom | cookie | iso8601 | rfc822 | rfc850 | rfc1036 | rfc1036 | rfc1123 | rfc7231 | rfc2822 | rfc3339 | rfc3339-ex | rss | w3c' $format = 'iso8601':
             'atom'      - `Atom (example: 2005-08-15T15:52:01+00:00)`
             'cookie'    - `HTTP Cookies (example: Monday, 15-Aug-2005 15:52:01 UTC)`
             'iso8601'   - `Same as 'ATOM' (example: 2005-08-15T15:52:01+00:00)`
@@ -1099,18 +1100,24 @@ $DATETIME.time_prt(
             [, <string $timezone>
             ]
         ]
-) string : `a date and time string in the given time format $format and the time zone $timezone for the specified calendar time $seconds.`
+) string | false: `a date and time string in the given time format $format and the time zone $timezone for the specified calendar time $seconds.`
 ```
 
 该方法获得指定日历时间在给定时区，以给定格式化标准/规范名称（如 ISO8601、RFC850）形式展示的时间字符串。
 
 **异常**
 
-（无）
+该方法可能产生如下可忽略异常：
+
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：非法数据，如不正确的格式规范名称、时间或者时区名称等。
 
 **示例**
 
 ```javascript
+$DATETIME.time_prt
+    // string: '2020-06-24T11:27:05+08:00'
+
 $DATETIME.time_prt.iso8601
     // string: '2020-06-24T11:27:05+08:00'
 
@@ -1133,21 +1140,74 @@ $DATETIME.time_prt('rfc822', $SYSTEM.time, 'Asia/Shanghai')
 - PHP: <https://www.php.net/manual/en/datetime.formats.php>
 - PHP DateTime 类：<https://www.php.net/manual/en/class.datetime.php>
 
-#### 3.3.2) `gmtime` 方法
+#### 3.3.2) `utctime` 方法
 
-获取分解时间。
+获取当前系统时间的 UTC 分解时间。
 
 **描述**
 
 ```javascript
-$DATETIME.gmtime object : `An object representing the current broken-down time in the default timezone.`
+$DATETIME.utctime object : `An object representing the current broken-down time in UTC.`
 ```
 
-获得当前时间在默认时区的分解时间（broken-down time），返回类型为对象。
+获取当前系统时间的 UTC（协调世界时）分解时间（broken-down time），返回类型为对象。
 
 
 ```javascript
-$DATETIME.gmtime(
+$DATETIME.utctime(<number | longint | ulongint | longdouble $seconds: `seconds since Epoch`>
+) object
+```
+
+获得给定时间的 UTC 分解时间（broken-down time），返回类型为对象。
+
+上述方法返回的分解时间对象包含如下属性：
+
+```javascript
+{
+   'usec':  <number: `The number of microseconds after the second, in the range 0 to 999,999.`>
+   'sec':   <number: `The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.`>
+   'min':   <number: `The number of minutes after the hour, in the range 0 to 59.`>
+   'hour':  <number: `The number of hours past midnight, in the range 0 to 23.`>
+   'mday':  <number: `The day of the month, in the range 1 to 31.`>
+   'mon':   <number: `The number of months since January, in the range 0 to 11.`>
+   'year':  <number: `The number of years since 1900.`>
+   'wday':  <number: `The number of days since Sunday, in the range 0 to 6.`>
+   'yday':  <number: `The number of days since January 1, in the range 0 to 365.`>
+   'isdst': <number: `A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving time is in effect, zero if it is not, and negative if the information is not available.`>
+}
+```
+
+**示例**
+
+```javascript
+// 获取当前时间在当前时区的分解时间
+$DATETIME.utctime
+    // object
+
+// 获取当前时间之前一个小时的分解时间
+$DATETIME.utctime($MATH.sub($SYSTEM.time, 3600))
+    // object
+```
+
+**参见**
+
+- C 标准函数：`gmtime_r()`
+
+#### 3.3.3) `localtime` 方法
+
+获取指定时区的分解时间。
+
+**描述**
+
+```javascript
+$DATETIME.localtime object : `An object representing the current broken-down time in the current timezone.`
+```
+
+获得当前时间在当前时区的分解时间（broken-down time），返回类型为对象。
+
+
+```javascript
+$DATETIME.localtime(
         [, <number | longint | ulongint | longdouble $seconds: `seconds since Epoch`>
             [, <string $timezone>
             ]
@@ -1161,6 +1221,7 @@ $DATETIME.gmtime(
 
 ```javascript
 {
+   'usec':  <number: `The number of microseconds after the second, in the range 0 to 999,999.`>
    'sec':   <number: `The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.`>
    'min':   <number: `The number of minutes after the hour, in the range 0 to 59.`>
    'hour':  <number: `The number of hours past midnight, in the range 0 to 23.`>
@@ -1177,17 +1238,18 @@ $DATETIME.gmtime(
 
 ```javascript
 // 获取当前时间在当前时区的分解时间
-$DATETIME.gmtime
+$DATETIME.localtime
+    // object
 
 // 获取当前时间之前一个小时在上海时区（北京标准时间）的分解时间
-$DATETIME.gmtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
+$DATETIME.localtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
 ```
 
 **参见**
 
-- C 标准函数：`gmtime_r()`
+- C 标准函数：`localtime_r()`
 
-#### 3.3.3) `mktime` 方法
+#### 3.3.4) `mktime` 方法
 
 将分解时间转换为日历时间（Epoch 以来的秒数）。
 
@@ -1209,7 +1271,7 @@ $DATETIME.mktime(
 
 - C 标准函数：`mktime_r()`
 
-#### 3.3.4) `fmttime` 方法
+#### 3.3.5) `fmttime` 方法
 
 格式化日历时间。
 
@@ -1227,6 +1289,14 @@ $DATETIME.fmttime(
 
 该方法按指定的格式格式化一个日历时间，返回字符串。
 
+该方法使用的格式化修饰符同 C 标准函数 `strftime()`，但有如下例外或增强：
+
+1. 不支持 GNU 的扩展修饰符，如 `_` 等。
+1. `strftime()` 表示时区差异时，仅支持 `+0200` 这种输出形式，为支持 `+02:00` 这种形式，可在格式化字符串中使用 `{%z:}`。
+1. `strftime()` 不支持毫秒，为支持毫秒，可使用 `{m}`。
+1. 当格式字符串以 `{UTC}` 打头时，表示使用不将日历时间按当前时区转换为本地时间，而始终以协调世界时（UTC）格式化。
+1. 当格式字符串中需要表示字面的 `{` 和 `}` 符号时，前置转义字符 `\`。
+
 **示例**
 
 ```javascript
@@ -1238,35 +1308,33 @@ $DATETIME.fmttime("It is %H:%m now")
 **参见**
 
 - C 标准函数：`strftime()`
-- C 标准函数：`strptime()`
 
-#### 3.3.5) `fmtgmtime` 方法
+#### 3.3.6) `fmtbdtime` 方法
 
 格式化分解时间。
 
 **描述**
 
 ```javascript
-$DATETIME.fmtgmtime(
+$DATETIME.fmtbdtime(
         <string $format: `the format string`>,
-        <object $gmtime: `the broken-down time object returned by gmtime()`
+        <object $bdtime: `the broken-down time object returned by utctime() or localtime()`
 ) string | false
 ```
 
-该方法按指定的格式格式化一个日历时间，返回字符串。
+该方法按指定的格式格式化一个分解时间，返回字符串。
 
 **示例**
 
 ```javascript
 // 获得类似 `08:55` 的时间字符串
-$DATETIME.fmtgmtime("It is %H:%m now in Asia/Shanghai", $DATETIME.gmtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai'))
+$DATETIME.fmtbdtime("It is %H:%m now in Asia/Shanghai", $DATETIME.localtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai'))
     // string: 'It is 08:55 now in Asia/Shanghai'
 ```
 
 **参见**
 
 - C 标准函数：`strftime()`
-- C 标准函数：`strptime()`
 
 ### 3.4) `HVML`
 
