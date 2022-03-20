@@ -1129,7 +1129,7 @@ $DATETIME.time_prt('iso8601', $MATH.eval('x - 3600', { x: $SYSTEM.time }), 'Asia
     // string: '2020-06-24T11:27:05+08:00'
 
 // 获取当前时间上海时区（北京标准时间）的 RFC822 标准字符串
-$DATETIME.time_prt('rfc822', $SYSTEM.time, 'Asia/Shanghai')
+$DATETIME.time_prt('rfc822', null, 'Asia/Shanghai')
     // string: 'Mon, 15 Aug 05 15:52:01 +0000'
 ```
 
@@ -1150,15 +1150,14 @@ $DATETIME.time_prt('rfc822', $SYSTEM.time, 'Asia/Shanghai')
 $DATETIME.utctime object : `An object representing the current broken-down time in UTC.`
 ```
 
-获取当前系统时间的 UTC（协调世界时）分解时间（broken-down time），返回类型为对象。
-
+获取当前日历时间的 UTC（协调世界时）分解时间（broken-down time），返回类型为对象。
 
 ```javascript
-$DATETIME.utctime(<number | longint | ulongint | longdouble $seconds: `seconds since Epoch`>
+$DATETIME.utctime(<null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for the current calendar time.`>
 ) object
 ```
 
-获得给定时间的 UTC 分解时间（broken-down time），返回类型为对象。
+获得给定日历时间的 UTC 分解时间（broken-down time），返回类型为对象。
 
 上述方法返回的分解时间对象包含如下属性：
 
@@ -1303,6 +1302,10 @@ $DATETIME.fmttime(
 // 获得类似 `11:27` 的时间字符串
 $DATETIME.fmttime("It is %H:%M now")
     // string: 'It is 11:27 now'
+
+// 获得类似 `11:27` 的时间字符串
+$DATETIME.fmttime("现在是中国标准时间 %H:%M", null, 'Asia/Shanghai')
+    // string: '现在是中国标准时间 11:27'
 ```
 
 **参见**
