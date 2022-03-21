@@ -774,7 +774,15 @@ $SYSTEM.timezone(!
 
 该方法设置当前时区。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
 
-HVML 始终使用类似 `Asia/Shanghai` 这样的字符串来表示时区。实质上，这个字符串是 POSIX 系统保存时区信息的文件路径，比如对 `Asia/Shanghai`，其时区信息通常保存在 `/usr/share/zoneinfo/Asia/Shanghai` 文件中。
+HVML 推荐使用类似 `Asia/Shanghai` 这样的字符串来表示时区。实质上，这个字符串是 POSIX 系统保存时区信息的文件路径，比如对 `Asia/Shanghai`，其时区信息通常保存在 `/usr/share/zoneinfo/Asia/Shanghai` 文件或 `/var/db/timezone/zoneinfo/Asia/Shanghai` 中。也支持如下特别的时区名称：
+
+- `PRC`：中国标准时间，即北京时间，同 `Asia/Shanghai`。
+- `Hongkong`：香港时间，同 `Asia/Hong_Kong`。
+- `UTC`：协调世界时，同 `Etc/UTC`。
+- `UCT`：协调世界时的另一个名称，同 `Etc/UTC`。
+- `Greenwich`：格林威治时间，同 `Etc/GM`。
+- `GMT`：格林威治时间的简称，同 `Etc/GMT`。
+- `posixrules`：POSIX 默认时区规则，同 `America/New_York`。
 
 **异常**
 
@@ -1173,6 +1181,7 @@ $DATETIME.utctime(<null | number | longint | ulongint | longdouble $seconds: `se
    'wday':  <number: `The number of days since Sunday, in the range 0 to 6.`>
    'yday':  <number: `The number of days since January 1, in the range 0 to 365.`>
    'isdst': <number: `A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving time is in effect, zero if it is not, and negative if the information is not available.`>
+   'tz':    <string: `The timezone name.`>
 }
 ```
 
@@ -1230,6 +1239,7 @@ $DATETIME.localtime(
    'wday':  <number: `The number of days since Sunday, in the range 0 to 6.`>
    'yday':  <number: `The number of days since January 1, in the range 0 to 365.`>
    'isdst':  <number: `A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving time is in effect, zero if it is not, and negative if the information is not available.`>
+   'tz':    <string: `The timezone name.`>
 }
 ```
 
@@ -1255,14 +1265,10 @@ $DATETIME.localtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
 **描述**
 
 ```javascript
-$DATETIME.mktime(
-        <object $tm>
-        [, <string $timezone>
-        ]
-) ulongint : `seconds since Epoch.`
+$DATETIME.mktime(<object $tm>) ulongint : `seconds since Epoch.`
 ```
 
-转换指定时区（默认为当前时区）的分解时间为日历时间（Epoch 以来的秒数）。
+转换分解时间为日历时间（Epoch 以来的秒数）。
 
 **示例**
 
@@ -1321,7 +1327,7 @@ $DATETIME.fmttime("现在是中国标准时间 %H:%M", null, 'Asia/Shanghai')
 ```javascript
 $DATETIME.fmtbdtime(
         <string $format: `the format string`>,
-        <object $bdtime: `the broken-down time object returned by utctime() or localtime()`
+        <null | object $bdtime: `the broken-down time object returned by utctime() or localtime(); @null for the current calendar time in current timzone.`
 ) string | false
 ```
 
