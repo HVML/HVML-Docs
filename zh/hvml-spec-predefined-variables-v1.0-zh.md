@@ -79,6 +79,9 @@ Language: Chinese
       * [3.6.8) `shuffle` 方法](#368-shuffle-方法)
       * [3.6.9) `compare` 方法](#369-compare-方法)
       * [3.6.10) `parse` 方法](#3610-parse-方法)
+      * [3.6.11) `is_equal` 方法](#3611-is_equal-方法)
+      * [3.6.12) `cast_to_real` 方法](#3612-cast_to_real-方法)
+      * [3.6.13) `clone` 方法](#3613-clone-方法)
    + [3.7) `L`](#37-l)
       * [3.7.1) `not` 方法](#371-not-方法)
       * [3.7.2) `and` 方法](#372-and-方法)
@@ -1638,14 +1641,6 @@ $EJSON.numberify( <any> ) number
 
 该方法对任意数据做数值化处理，始终返回 `number`。
 
-```javascript
-$EJSON.numberify( <bsequece $bytes>,
-        <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128' $binary_format: `the binary format and/or endianness; see Binary Format Notation`>
-) longint | ulongint | number | longdouble
-```
-
-该方法将给定的二进制字节序列按指定的格式转换为对应的实数类型。
-
 #### 3.6.4) `booleanize` 方法
 
 该方法对给定的数据做布尔化处理，返回布尔值（`true` 或者 `false`）。
@@ -1781,6 +1776,41 @@ $EJSON.parse(
             ]
         ]
 ) any
+```
+
+#### 3.6.11) `is_equal` 方法
+
+该方法判断给定的两个数据是否完全相等，返回 boolean。
+
+```javascript
+// 原型
+$EJSON.is_equal(
+        < any: the first data >,
+        < any: the second data >
+) boolean
+```
+
+#### 3.6.12) `cast_to_real` 方法
+
+该方法对给定的二进制序列按指定的实数类型（和大小头顺序）转换为实数，返回对应的实数类型。
+
+```javascript
+$EJSON.cast_to_real( <bsequece $bytes>,
+        <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128' $binary_format: `the binary format and/or endianness; see Binary Format Notation`>
+) longint | ulongint | number | longdouble
+```
+
+该方法将给定的二进制字节序列按指定的格式转换为对应的实数类型。
+
+#### 3.6.13) `clone` 方法
+
+该方法克隆一个容器。当我们需要将集合中作为唯一性键值的容器添加到其他容器时，首先要克隆一个。
+
+```javascript
+// 原型
+$EJSON.clone(
+        < container: the data >
+) container
 ```
 
 ### 3.7) `L`
