@@ -1265,10 +1265,10 @@ $DATETIME.localtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
 **描述**
 
 ```javascript
-$DATETIME.mktime(<object $tm>) ulongint : `seconds since Epoch.`
+$DATETIME.mktime(<object $tm>) longdoubl : `seconds (including microseconds) since Epoch.`
 ```
 
-转换分解时间为日历时间（Epoch 以来的秒数）。
+转换分解时间为日历时间（Epoch 以来的秒数），返回值类型为 longdouble。
 
 **示例**
 
