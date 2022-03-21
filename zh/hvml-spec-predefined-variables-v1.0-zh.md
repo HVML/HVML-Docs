@@ -703,7 +703,7 @@ $SYSTEM.time_us longdouble :
     `A long double number representing the number of seconds (integral part) and microseconds (fractional part) since Epoch:`
 ```
 
-该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为对象。
+该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值 longdouble 数值，小数部分为微秒值。
 
 ```javascript
 $SYSTEM.time_us(
@@ -713,7 +713,7 @@ $SYSTEM.time_us(
         'usec'          - < ulongint: `microseconds` >
 ```
 
-该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为对象。
+该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为 longdouble 数值或包含 `sec` 和 `usec` 两个属性的对象。
 
 ```javascript
 $SYSTEM.time_us(! <real $sec_us: `seconds with microseconds since Epoch`>)
