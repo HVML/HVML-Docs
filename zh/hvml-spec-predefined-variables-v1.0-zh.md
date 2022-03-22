@@ -79,8 +79,8 @@ Language: Chinese
       * [3.6.8) `shuffle` 方法](#368-shuffle-方法)
       * [3.6.9) `compare` 方法](#369-compare-方法)
       * [3.6.10) `parse` 方法](#3610-parse-方法)
-      * [3.6.11) `is_equal` 方法](#3611-is_equal-方法)
-      * [3.6.12) `cast_to_real` 方法](#3612-cast_to_real-方法)
+      * [3.6.11) `isequal` 方法](#3611-isequal-方法)
+      * [3.6.12) `fetchreal` 方法](#3612-fetchreal-方法)
       * [3.6.13) `clone` 方法](#3613-clone-方法)
    + [3.7) `L`](#37-l)
       * [3.7.1) `not` 方法](#371-not-方法)
@@ -1507,9 +1507,11 @@ $HVML.timeout(!
 
 **异常**
 
-该方法可能产生的异常：
+该方法可能产生的异常，均为可忽略异常：
 
-- `InvalidValue`：无效超时值。可忽略异常。
+- `ArgumentMissed`：设置器中未指定参数。
+- `WrongDataType`：设置器中指定了非实数类参数类型。
+- `InvalidValue`：无效超时值。
 
 **示例**
 
@@ -1614,40 +1616,118 @@ $DOC.query("#foo").attr(! "bar", "qux")
 
 #### 3.6.1) `type` 方法
 
-该方法返回数据的类型名称，字符串。
+返回数据的类型名称。
+
+**描述**
 
 ```javascript
 // 原型
-$EJSON.type( <any> ) string
+$EJSON.type(
+        [ <any $data> ]
+) string
+```
+
+该方法返回给定数据的类型名称，字符串。若未指定数据，按 `undefined` 处理。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```javascript
+$EJSON.type
+    // string: `undefined`
+
+$EJSON.type( 3.5 )
+    // string: `number`
 ```
 
 #### 3.6.2) `count` 方法
 
-该方法返回数据的数据项个数，数值。
+返回数据的子数据项个数。
+
+**描述**
 
 ```javascript
 // 原型
-$EJSON.count( <any> ) number
+$EJSON.count(
+        [ <any $data> ]
+) number
+```
+
+该方法返回数据的子数据项个数，返回值为数值类型。未指定数据时，按 `undefined` 处理。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```javascript
+$EJSON.count
+    // number: 0
+
+$EJSON.count(! 3.5 )
+    // number: 1.0
+
+$EJSON.count(! [ 1.0, 2.0 ] )
+    // number: 2
 ```
 
 #### 3.6.3) `numberify` 方法
 
-该方法对给定的数据做数值化处理，返回一个数值。
+对给定数据做数值化处理。
+
+**描述**
 
 ```javascript
 // 原型
-$EJSON.numberify( <any> ) number
+$EJSON.numberify(
+        [ <any $data> ]
+) number
 ```
 
-该方法对任意数据做数值化处理，始终返回 `number`。
+该方法对任意数据做数值化处理，返回一个数值。未指定数据时，按 `undefined` 处理。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```javascript
+$EJSON.numberify(! "1.0" )
+    // number: 1.0
+
+$EJSON.numberify
+    // number: 0
+```
 
 #### 3.6.4) `booleanize` 方法
 
-该方法对给定的数据做布尔化处理，返回布尔值（`true` 或者 `false`）。
+对给定的数据做布尔化处理。
+
+**描述**
 
 ```javascript
 // 原型
-$EJSON.booleanize( <any> ) boolean
+$EJSON.booleanize(
+        [ <any $data> ]
+) boolean
+```
+
+该方法对给定的数据做布尔化处理，返回布尔值。未指定数据时，按 `undefined` 处理。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```javascript
+$EJSON.booleanize
+    // boolean: false
 ```
 
 #### 3.6.5) `stringify` 方法
@@ -1778,25 +1858,26 @@ $EJSON.parse(
 ) any
 ```
 
-#### 3.6.11) `is_equal` 方法
+#### 3.6.11) `isequal` 方法
 
-该方法判断给定的两个数据是否完全相等，返回 boolean。
+该方法判断给定的两个数据是否完全相等（类型一致且值相等），返回布尔型。
 
 ```javascript
 // 原型
-$EJSON.is_equal(
+$EJSON.isequal(
         < any: the first data >,
         < any: the second data >
 ) boolean
 ```
 
-#### 3.6.12) `cast_to_real` 方法
+#### 3.6.12) `fetchreal` 方法
 
-该方法对给定的二进制序列按指定的实数类型（和大小头顺序）转换为实数，返回对应的实数类型。
+该方法在给定的二进制序列的指定位置，按指定的实数类型（以及大小头顺序）提取实数，返回相应的实数类型。
 
 ```javascript
-$EJSON.cast_to_real( <bsequece $bytes>,
-        <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128' $binary_format: `the binary format and/or endianness; see Binary Format Notation`>
+$EJSON.fetchreal( <bsequece $bytes>,
+        <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128 ...' $binary_format: `the binary format and/or endianness; see Binary Format Notation`>
+        [, < real $offset = 0: `the offset in the byte sequence.` > ]
 ) longint | ulongint | number | longdouble
 ```
 
@@ -4426,7 +4507,7 @@ $FS.file_exists(
 
 #### 4.2.11) `file_is` 方法
 
-判断一个文件名是否为指定的类型。
+判断一个文件是否为指定的类型。
 
 **描述**
 
