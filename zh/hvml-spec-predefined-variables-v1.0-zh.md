@@ -80,8 +80,9 @@ Language: Chinese
       * [3.6.9) `compare` 方法](#369-compare-方法)
       * [3.6.10) `parse` 方法](#3610-parse-方法)
       * [3.6.11) `isequal` 方法](#3611-isequal-方法)
-      * [3.6.12) `fetchreal` 方法](#3612-fetchreal-方法)
-      * [3.6.13) `clone` 方法](#3613-clone-方法)
+      * [3.6.12) `fetchstr` 方法](#3612-fetchstr-方法)
+      * [3.6.13) `fetchreal` 方法](#3613-fetchreal-方法)
+      * [3.6.14) `clone` 方法](#3614-clone-方法)
    + [3.7) `L`](#37-l)
       * [3.7.1) `not` 方法](#371-not-方法)
       * [3.7.2) `and` 方法](#372-and-方法)
@@ -659,10 +660,10 @@ $SYSTEM.locale
 **描述**
 
 ```javascript
-$SYSTEM.time ulongint: `the calendar time (seconds since Epoch)`
+$SYSTEM.time longint: `the calendar time (seconds since Epoch)`
 ```
 
-该方法获取当前日历时间（自 Epoch 以来的秒数），返回值类型为 `ulongint`。
+该方法获取当前日历时间（自 Epoch 以来的秒数），返回值类型为 `longint`。
 
 ```javascript
 $SYSTEM.time(!
@@ -685,7 +686,7 @@ $SYSTEM.time(!
 
 ```javascript
 $SYSTEM.time
-    // ulongint: 123456789UL
+    // longint: 123456789L
 ```
 
 **参见**
@@ -745,8 +746,8 @@ $SYSTEM.time_us(!
 **示例**
 
 ```javascript
-$SYSTEM.time
-    // ulongint: 123456789UL
+$SYSTEM.time_us
+    // longdouble: 123456789.456789
 ```
 
 **参见**
@@ -976,7 +977,7 @@ $SYSTEM.randome(! $SYSTEM.time, 256 )
     // true
 
 $SYSTEM.random
-    // ulongint: 88UL
+    // longint: 8899L
 
 $SYSTEM.random(1)
     // number: 0.789
@@ -1268,7 +1269,7 @@ $DATETIME.localtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
 **描述**
 
 ```javascript
-$DATETIME.mktime(<object $tm>) longdoubl : `seconds (including microseconds) since Epoch.`
+$DATETIME.mktime(<object $tm>) longdouble : `seconds (including microseconds) since Epoch.`
 ```
 
 转换分解时间为日历时间（Epoch 以来的秒数），返回值类型为 longdouble。
@@ -1741,19 +1742,6 @@ $EJSON.stringify( <any> ) string
 
 该方法对任意数据做字符串化处理，始终返回 `string`。
 
-```javascript
-$EJSON.stringify( <bsequece $bytes>,
-        <'s[bytes_length] | utf16[-<bytes_length>] | utf32[-<bytes_length>]' $binary_format: `the binary format and/or length; see Binary Format Notation`>
-) string
-```
-
-该方法将给定的二进制字节序列按指定的格式（编码及长度）转换为对应的字符串。返回字符串，
-包含错误编码时，抛出 `BadEncoding` 异常；或者在静默求值时，返回已正确转换的字符串。
-
-**异常**
-
-- `BadEncoding`：错误编码。可忽略异常。
-
 #### 3.6.6) `serialize` 方法
 
 该方法对给定的数据做序列化处理，返回字符串。
@@ -1870,7 +1858,26 @@ $EJSON.isequal(
 ) boolean
 ```
 
-#### 3.6.12) `fetchreal` 方法
+#### 3.6.12) `fetchstr` 方法
+
+```javascript
+$EJSON.fetchstr( <bsequece $bytes>,
+        < 'utf8 | utf16 | utf32' $encoding: `the binary format and/or length; see Binary Format Notation.` >,
+        < real $length: `the length in bytes.` >
+        [, < real $offset: `the offset in the byte sequence.` > ]
+) string
+```
+
+该方法将给定的二进制字节序列按指定的编码及长度转换为对应的字符串，返回字符串。包含错误编码时，将抛出 `BadEncoding` 异常；或者在静默求值时，返回已正确转换的字符串。
+
+**异常**
+
+该方法可能抛出如下异常：
+
+- `BadEncoding`：错误编码。
+- `InvalidValue`：错误的长度或者偏移量值。
+
+#### 3.6.13) `fetchreal` 方法
 
 该方法在给定的二进制序列的指定位置，按指定的实数类型（以及大小头顺序）提取实数，返回相应的实数类型。
 
@@ -1878,12 +1885,18 @@ $EJSON.isequal(
 $EJSON.fetchreal( <bsequece $bytes>,
         <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128 ...' $binary_format: `the binary format and/or endianness; see Binary Format Notation`>
         [, < real $offset = 0: `the offset in the byte sequence.` > ]
-) longint | ulongint | number | longdouble
+) real | false
 ```
 
 该方法将给定的二进制字节序列按指定的格式转换为对应的实数类型。
 
-#### 3.6.13) `clone` 方法
+**异常**
+
+该方法可能抛出如下异常：
+
+- `InvalidValue`：错误偏移量值。
+
+#### 3.6.14) `clone` 方法
 
 该方法克隆一个容器。当我们需要将集合中作为唯一性键值的容器添加到其他容器时，首先要克隆一个。
 
