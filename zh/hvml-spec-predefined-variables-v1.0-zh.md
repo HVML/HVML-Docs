@@ -1772,7 +1772,7 @@ $EJSON.stringify(123)
 // 原型
 $EJSON.serialize(
         <any $data>
-        [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || [ plain | spaced | pretty | pretty_tab] || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64]' $options = `real-json runtime-null plain bseq-hex-string`:
+        [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || not-escape-slash' $options = `real-json runtime-null plain bseq-hex-string`:
             'real-json'         - `use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON number.`
             'real-ejson'        - `use EJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
             'runtime-null'      - `treat all EJSON-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
@@ -1786,6 +1786,8 @@ $EJSON.serialize(
             'bseq-bin'          - `using binary form to serialize binary sequence.`
             'bseq-bin-dots'     - `use binary form to serialize binary sequence and use dots to seperate the binary digits per four digits. e.g., b1100.1010.`
             'bseq-base64'       - `use Base64 to serialize binary sequence.`
+            'no-trailing-zero'  - `drop trailing zero for float values.`
+            'not-escape-slash'  - `do not escape the forward slashes ('/').`
            >
         ]
 ) string
@@ -1797,9 +1799,7 @@ $EJSON.serialize(
 
 该方法可能产生如下异常：
 
-- `InvalidValue`：错误的格式化关键词。可忽略异常。
 - `MemoryFailure`：内存分配失败。不可忽略异常。
-- `TooSmall`：过小的缓冲区。不可忽略异常。
 
 **示例**
 
@@ -1831,29 +1831,37 @@ $EJSON.sort(
 
 #### 3.6.8) `shuffle` 方法
 
-该方法随机打乱给定数组或者集合的成员顺序。
+随机打乱给定数组或者集合的成员顺序。
+
+**描述**
 
 ```javascript
-// 原型
 $EJSON.shuffle(
-        < array | set >,
-        < 'asc | desc ' = 'asc': sorting ascendingly or descendingly >
-        [, < 'auto | number | case | caseless' = 'auto':
-            `auto` - comparing members automatically;
-            `number` - comparing members as numbers;
-            `case` - comparing members as strings case-sensitively;
-            `caseless` - comparing members as strings case-insensitively. >
-        ]
-) boolean
+        < array | set $data >,
+) true | false
+```
+
+该方法随机打乱给定数组或者集合的成员顺序。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `ArgumentMissed`：缺少必要参数。可忽略异常，返回 `false`。
+- `WrongDataType`：错误数据类型。可忽略异常，返回 `false`。
+
+**示例**
+
+```js
+$EJSON.shuffle([1, 2, 3, 4, 5])
+    // boolean: true
 ```
 
 #### 3.6.9) `compare` 方法
 
-该方法对给定两个数据做对比，返回数值：
+比较两个数据。
 
-- 等于 0 表示两个数据相等；
-- 小于 0 表示第一个数据小于第二个数据；
-- 大于 0 表示第一个数据大于第二个数据。
+**描述**
 
 ```javascript
 // 原型
@@ -1866,7 +1874,27 @@ $EJSON.compare(
             `case`: comparing as strings case-sensitively;
             `caseless`: comparing as strings case-insensitively. >
         ]
-) number
+) number | undefined
+```
+
+该方法对给定两个数据做对比，返回数值：
+
+- 等于 0 表示两个数据相等；
+- 小于 0 表示第一个数据小于第二个数据；
+- 大于 0 表示第一个数据大于第二个数据。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `MemoryFailure`：内存分配失败。不可忽略异常。
+- `ArgumentMissed`：缺少必要参数。可忽略异常，返回 `undefined`。
+
+**示例**
+
+```js
+$EJSON.compare(1, "1")
+    // number: 0
 ```
 
 #### 3.6.10) `parse` 方法
@@ -1886,22 +1914,53 @@ $EJSON.parse(
                `false` - all EJSON expressions will be ignored. >
             ]
         ]
-) any
+) any | undefined
 ```
+
+该方法解析 JSON/EJSON 字符串，返回 EJSON 数据。
+
+该方法可能产生如下异常：
+
+- `MemoryFailure`：内存分配失败。不可忽略异常。
+- `ArgumentMissed`：缺少必要参数。可忽略异常，返回 `undefined`。
 
 #### 3.6.11) `isequal` 方法
 
-该方法判断给定的两个数据是否完全相等（类型一致且值相等），返回布尔型。
+判断两个数据是否完全相等。
 
-```javascript
+**描述**
+
+```js
 // 原型
 $EJSON.isequal(
         < any: the first data >,
         < any: the second data >
-) boolean
+) boolean | undefined
+```
+
+该方法判断给定的两个数据是否完全相等（类型一致且值相等），返回布尔型。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `ArgumentMissed`：缺少必要参数。可忽略异常，返回 `undefined`。
+
+**示例**
+
+```js
+#EJSON.isequal(false, 0)
+    // boolean: false
+
+#EJSON.isequal(false, false)
+    // boolean: true
 ```
 
 #### 3.6.12) `fetchstr` 方法
+
+从二进制字节序列中抽取指定编码的字符串。
+
+**描述**
 
 ```javascript
 $EJSON.fetchstr( <bsequece $bytes>,
@@ -1920,6 +1979,14 @@ $EJSON.fetchstr( <bsequece $bytes>,
 - `BadEncoding`：错误编码。
 - `InvalidValue`：错误的长度或者偏移量值。
 
+**示例**
+
+```js
+// UTF8: 北京上海
+$EJSON.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8', 3, 3 )
+    // string: "京"
+```
+
 #### 3.6.13) `fetchreal` 方法
 
 该方法在给定的二进制序列的指定位置，按指定的实数类型（以及大小头顺序）提取实数，返回相应的实数类型。
@@ -1928,7 +1995,7 @@ $EJSON.fetchstr( <bsequece $bytes>,
 $EJSON.fetchreal( <bsequece $bytes>,
         <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128 ...' $binary_format: `the binary format and/or endianness; see Binary Format Notation`>
         [, < real $offset = 0: `the offset in the byte sequence.` > ]
-) real | false
+) real | undefined
 ```
 
 该方法将给定的二进制字节序列按指定的格式转换为对应的实数类型。
@@ -1938,6 +2005,13 @@ $EJSON.fetchreal( <bsequece $bytes>,
 该方法可能抛出如下异常：
 
 - `InvalidValue`：错误偏移量值。
+
+**示例**
+
+```js
+$EJSON.fetchreal( bx0087, 'i16le', 0 )
+    // number: 0x8700
+```
 
 ### 3.7) `L`
 
