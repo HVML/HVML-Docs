@@ -1653,7 +1653,7 @@ $EJSON.type( 3.5 )
 // 原型
 $EJSON.count(
         [ <any $data> ]
-) number
+) ulongint
 ```
 
 该方法返回数据的子数据项个数，返回值为数值类型。未指定数据时，按 `undefined` 处理。
@@ -1666,13 +1666,13 @@ $EJSON.count(
 
 ```javascript
 $EJSON.count
-    // number: 0
+    // ulongint: 0
 
 $EJSON.count(! 3.5 )
-    // number: 1.0
+    // ulongint: 1
 
 $EJSON.count(! [ 1.0, 2.0 ] )
-    // number: 2
+    // ulongint: 2
 ```
 
 #### 3.6.3) `numberify` 方法
@@ -1732,39 +1732,83 @@ $EJSON.booleanize
 
 #### 3.6.5) `stringify` 方法
 
-该方法对给定的数据做字符串化处理，返回字符串。
+对给定的数据做字符串化处理。
+
+**描述**
 
 ```javascript
 // 原型
-$EJSON.stringify( <any> ) string
+$EJSON.stringify(
+        <any $data>
+) string
 ```
 
-该方法对任意数据做字符串化处理，始终返回 `string`。
+该方法对任意数据做字符串化处理，返回字符串。未指定数据时，按 `undefined` 处理。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `MemoryFailure`：内存分配失败。不可忽略异常。
+- `TooSmall`：过小的缓冲区。不可忽略异常。
+
+**示例**
+
+```javascript
+$EJSON.stringify
+    // string: 'undefined'
+
+$EJSON.stringify(123)
+    // string: '123'
+```
 
 #### 3.6.6) `serialize` 方法
 
-该方法对给定的数据做序列化处理，返回字符串。
+对给定的数据做字符串化处理。
+
+**描述**
 
 ```javascript
 // 原型
 $EJSON.serialize(
         <any $data>
-        [, < '[json | ejson] || [ ignore | placeholder ] || [ plain | spaced | pretty | pretty_tab] || [bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64]' $options = `json ignore spaced bseq-hex`:
-            'json' -
-            'ejson' -
-            'ignore' -
-            'placeholder' -
-            'plain' -
-            'spaced' -
-            'pretty' -
-            'pretty-tab' -
-            'bseq-hex' -
-            'bseq-bin' -
-            'bseq-bin-dots' -
-            'bseq-base64' -
+        [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || [ plain | spaced | pretty | pretty_tab] || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64]' $options = `real-json runtime-null plain bseq-hex-string`:
+            'real-json'         - `use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON number.`
+            'real-ejson'        - `use EJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
+            'runtime-null'      - `treat all EJSON-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
+            'runtime-string'    - `use string placehodlers for EJSON-specific runtime types: "<undefined>", "<dynamic>", and "<native>".`
+            'plain'             - `do not use any extra formatting characters (whitespace, newline, or tab).`
+            'spaced'            - `use minimal space characters to format the output.`
+            'pretty'            - `use two-space to beautify the output.`
+            'pretty-tab'        - `use tab instead of two-space to beautify the output.`
+            'bseq-hex-string'   - `serialize binary sequence as hexadecimal string, e.g. "A0B0C0567890".`
+            'bseq-hex'          - `using hexadecimal form to serialize binary sequence.`
+            'bseq-bin'          - `using binary form to serialize binary sequence.`
+            'bseq-bin-dots'     - `use binary form to serialize binary sequence and use dots to seperate the binary digits per four digits. e.g., b1100.1010.`
+            'bseq-base64'       - `use Base64 to serialize binary sequence.`
            >
         ]
 ) string
+```
+
+该方法对给定的数据做序列化处理，返回字符串。未指定数据时，按 `undefined` 处理以及默认的格式化要求处理。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `InvalidValue`：错误的格式化关键词。可忽略异常。
+- `MemoryFailure`：内存分配失败。不可忽略异常。
+- `TooSmall`：过小的缓冲区。不可忽略异常。
+
+**示例**
+
+```javascript
+$EJSON.serialize
+    // string: 'null'
+
+$EJSON.serialize("123")
+    // string: '"123"'
 ```
 
 #### 3.6.7) `sort` 方法
