@@ -82,7 +82,6 @@ Language: Chinese
       * [3.6.11) `isequal` 方法](#3611-isequal-方法)
       * [3.6.12) `fetchstr` 方法](#3612-fetchstr-方法)
       * [3.6.13) `fetchreal` 方法](#3613-fetchreal-方法)
-      * [3.6.14) `clone` 方法](#3614-clone-方法)
    + [3.7) `L`](#37-l)
       * [3.7.1) `not` 方法](#371-not-方法)
       * [3.7.2) `and` 方法](#372-and-方法)
@@ -1895,17 +1894,6 @@ $EJSON.fetchreal( <bsequece $bytes>,
 该方法可能抛出如下异常：
 
 - `InvalidValue`：错误偏移量值。
-
-#### 3.6.14) `clone` 方法
-
-该方法克隆一个容器。当我们需要将集合中作为唯一性键值的容器添加到其他容器时，首先要克隆一个。
-
-```javascript
-// 原型
-$EJSON.clone(
-        < container: the data >
-) container
-```
 
 ### 3.7) `L`
 
