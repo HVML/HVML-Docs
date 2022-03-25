@@ -310,38 +310,38 @@ Language: Chinese
 | 8 字节浮点型       |  f64        | number     |
 | 12 字节浮点型      |  f96        | longdouble |
 | 16 字节长双精度    |  f128       | longdouble |
-| 字节序列           |  `b:<SIZE>`          | bsequence；SIZE 指定字节数量。 |
+| 字节序列           |  `bytes:<SIZE>`      | bsequence；SIZE 指定字节数量。 |
 | UTF-8编码的字符串  |  `utf8[:<SIZE>]`     | string；SIZE 可选：指定字节数量，未指定时，到空字符（0x00）为止。|
 | UTF-16编码的字符串 |  `utf16[:<SIZE>]`    | string；SIZE 可选：指定字节数量，未指定时，到空字符（连续两个 0x00 字节）为止。|
 | UTF-32编码的字符串 |  `utf32[:<SIZE>]`    | string；SIZE 可选：指定字节数量，未指定时，到空字符（连续四个 0x00 字节）为止。|
-| 填白               |  `p:<SIZE>`  | 无，将跳过指定数量的字节；SIZE 指定字节数量。     |
+| 填白               |  `padding:<SIZE>`    | 无，将跳过指定数量的字节；SIZE 指定字节数量。     |
 
-对 8 位以上整数或浮点数，使用如下可选后缀表示大小头：
+对 8 位以上整数、浮点数以及 UTF-16、UTF-32 编码，使用如下可选后缀表示大小头：
 
 | 类型 | 类型标志 |
 | ---- | -------- |
 | 小头 | le       |
 | 大头 | be       |
 
-注：
-- 未指定时，默认跟随当前架构
+未指定时，默认跟随当前架构。
 
 不同类型的表示方法：
 
-| 类型              | 表示方法           | 备注                                                                     | 举例              |
-| --------          | ------------------ | --------------------------------------------                             | ----------------- |
-| 数值类型          | 类型 + 大、小头    | 如不标大、小头，跟随当前架构                                             | u16、u32be、u64le |
-| 字节序列          | 类型 + 长度        |                                                                          | b:234             |
-| UTF-8 编码字符串  | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 字节）          | utf8、utf8:123    |
+| 类型              | 表示方法           | 备注                                                                     | 举例                  |
+| --------          | ------------------ | --------------------------------------------                             | -----------------     |
+| 数值类型          | 类型 + 大、小头    | 如不标大、小头，则跟随当前架构                                           | u16、u32be、u64le     |
+| 字节序列          | 类型 + 长度        |                                                                          | bytes:234             |
+| UTF-8 编码字符串  | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 字节）          | utf8、utf8:123        |
 | UTF-16 编码字符串 | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 六位整数）      | utf16、utf16:120  |
-| UTF-32 编码字符串 | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 三十二位整数）  | utf32、utf32:120  |
+| UTF-32 编码字符串 | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 三十二位整数）  | utf32be、utf32be:120  |
 
-注：
+注意：
 
 - 二进制格式关键词区分大小写。
+- 字节序列以及字符串长度均以字节为单位。
 - 我们使用多个构成部分组成的字符串来表示一个结构，不同构成部分之间使用空白字符分隔。
 
-如，`i32le s128 f64`，表示一个结构的构成部分依次如下：
+如，`i32le utf8:128 f64`，表示一个结构的构成部分依次如下：
 
 1. 其中前 4 个字节是一个 32 位整数，小头存储；
 1. 紧接着是一个 128 字节的字符串；
@@ -1813,12 +1813,13 @@ $EJSON.serialize("123")
 
 #### 3.6.7) `sort` 方法
 
-该方法对给定的数组或者集合做排序。
+对数组或者集合执行排序。
+
+**描述**
 
 ```javascript
-// 原型
 $EJSON.sort(
-        < array | set >,
+        < array | set $data >,
         < 'asc | desc' = 'asc': sorting ascendingly or descendingly >
         [, < 'auto | number | case | caseless' = 'auto':
             `auto` - comparing members automatically;
@@ -1826,7 +1827,25 @@ $EJSON.sort(
             `case` - comparing members as strings case-sensitively;
             `caseless` - comparing members as strings case-insensitively. >
         ]
-) boolean
+) $data | false
+```
+
+该方法对给定的数组或者集合做排序，返回数据本身。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```js
+
+$EJSON.sort([3, 4, 1, 0], 'asc')
+    // array: [0, 1, 3, 4]
 ```
 
 #### 3.6.8) `shuffle` 方法
@@ -1838,23 +1857,23 @@ $EJSON.sort(
 ```javascript
 $EJSON.shuffle(
         < array | set $data >,
-) true | false
+) $data | false
 ```
 
-该方法随机打乱给定数组或者集合的成员顺序。
+该方法随机打乱给定数组或者集合的成员顺序，返回数据本身。
 
 **异常**
 
 该方法可能产生如下异常：
 
-- `ArgumentMissed`：缺少必要参数。可忽略异常，返回 `false`。
-- `WrongDataType`：错误数据类型。可忽略异常，返回 `false`。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回 `false`。
 
 **示例**
 
 ```js
 $EJSON.shuffle([1, 2, 3, 4, 5])
-    // boolean: true
+    // array: [4, 3, 2, 5, 1]
 ```
 
 #### 3.6.9) `compare` 方法
@@ -1887,8 +1906,9 @@ $EJSON.compare(
 
 该方法可能产生如下异常：
 
-- `MemoryFailure`：内存分配失败。不可忽略异常。
-- `ArgumentMissed`：缺少必要参数。可忽略异常，返回 `undefined`。
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
 
 **示例**
 
@@ -1906,13 +1926,9 @@ $EJSON.compare(1, "1")
 ```javascript
 $EJSON.parse(
         < string: $string: the string to be parsed. >
-        [, < boolean $strict_json = `false`:
-           `true` - the string to be parsed should be in strict JSON format.
-           `false` - the string to be parsed should be in EJSON format. >
-            [, < boolean $evalute_expressions = `false`:
-               `true` - will evaluate the EJSON expressions when parsing the string.
-               `false` - all EJSON expressions will be ignored. >
-            ]
+        [, < boolean $evalute_expressions = `false`:
+           `true` - will evaluate the EJSON expressions when parsing the string.
+           `false` - all EJSON expressions will be ignored. >
         ]
 ) any | undefined
 ```
@@ -1921,8 +1937,8 @@ $EJSON.parse(
 
 该方法可能产生如下异常：
 
-- `MemoryFailure`：内存分配失败。不可忽略异常。
-- `ArgumentMissed`：缺少必要参数。可忽略异常，返回 `undefined`。
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
 
 #### 3.6.11) `isequal` 方法
 
@@ -1964,13 +1980,24 @@ $EJSON.isequal(
 
 ```javascript
 $EJSON.fetchstr( <bsequece $bytes>,
-        < 'utf8 | utf16 | utf32' $encoding: `the binary format and/or length; see Binary Format Notation.` >,
-        < real $length: `the length in bytes.` >
-        [, < real $offset: `the offset in the byte sequence.` > ]
+        < 'utf8 | utf16 | utf32 | utf16le | utf32le | utf16be | utf32be' $encoding: `the encoding; see Binary Format Notation.` >,
+        < null | real $length: `the length to decode in bytes.` >
+        [, < real $offset = 0: `the offset in the byte sequence.` > ]
 ) string
 ```
 
 该方法将给定的二进制字节序列按指定的编码及长度转换为对应的字符串，返回字符串。包含错误编码时，将抛出 `BadEncoding` 异常；或者在静默求值时，返回已正确转换的字符串。
+
+**参数**
+
+- `bytes`  
+待处理的二进制字节序列。
+- `encoding`  
+指定字符编码。
+- `length`  
+指定解码长度（字节为单位）。取 `null` 时表示遇到终止字符为止。对 UTF-8 编码，遇到 `\0` 字节为止；对 UTF-16 编码，遇到两个连续的 `\0` 字节为止；对 UTF-32 编码，遇到四个连续的 `\0` 字节为止。
+- `offset`  
+指定解码起始位置（字节为单位）。可为负值，-1 表示最后一个字节，-2 表示倒数第二个字节，以此类推。
 
 **异常**
 
@@ -1983,8 +2010,8 @@ $EJSON.fetchstr( <bsequece $bytes>,
 
 ```js
 // UTF8: 北京上海
-$EJSON.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8', 3, 3 )
-    // string: "京"
+$EJSON.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8', 6, -6 )
+    // string: "上海"
 ```
 
 #### 3.6.13) `fetchreal` 方法
@@ -2004,13 +2031,14 @@ $EJSON.fetchreal( <bsequece $bytes>,
 
 该方法可能抛出如下异常：
 
-- `InvalidValue`：错误偏移量值。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：错误偏移量值；可忽略异常，静默求值时视同 0。
 
 **示例**
 
 ```js
-$EJSON.fetchreal( bx0087, 'i16le', 0 )
-    // number: 0x8700
+$EJSON.fetchreal( bx0a00, 'i16le', 0 )
+    // longint: 10L
 ```
 
 ### 3.7) `L`
