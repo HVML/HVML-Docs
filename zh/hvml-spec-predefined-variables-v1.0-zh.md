@@ -1697,7 +1697,7 @@ $EJSON.numberify(
 **示例**
 
 ```javascript
-$EJSON.numberify(! "1.0" )
+$EJSON.numberify( "1.0" )
     // number: 1.0
 
 $EJSON.numberify
@@ -1925,20 +1925,28 @@ $EJSON.compare(1, "1")
 
 ```javascript
 $EJSON.parse(
-        < string: $string: the string to be parsed. >
-        [, < boolean $evalute_expressions = `false`:
-           `true` - will evaluate the EJSON expressions when parsing the string.
-           `false` - all EJSON expressions will be ignored. >
-        ]
+        < string: $string: the JSON/EJSON string to be parsed. >
 ) any | undefined
 ```
 
 该方法解析 JSON/EJSON 字符串，返回 EJSON 数据。
 
+**异常**
+
 该方法可能产生如下异常：
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
 - `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+
+**示例**
+
+```js
+#EJSON.parse("false")
+    // boolean: false
+
+#EJSON.parse("[]")
+    // array: []
+```
 
 #### 3.6.11) `isequal` 方法
 
