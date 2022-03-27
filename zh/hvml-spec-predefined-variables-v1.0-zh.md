@@ -2361,116 +2361,241 @@ $L.le("1", 2)
 
 #### 3.7.11) `streq` 方法
 
-对比两个数据的字符串形式是否相等或匹配，返回 `true` 或 `false`。
+对比两个数据的字符串形式是否相等或匹配。
 
-```javascript
-// 原型
-$L.streq("case | caseless | wildcard | reg", <any>, <any>)
+**描述**
 
-// 示例：返回 false
-$L.streq("case", "zh_CN", "zh_CN")
-
-// 示例：返回 true
-$L.streq("wildcard", "zh_*", "zh_CN")
-
-// 示例：返回 true
-$L.streq("reg", "^zh", "zh_CN")
+```js
+$L.streq("case | caseless | wildcard | reg",
+        <any>,
+        <any>
+) boolean | undefined
 ```
+
+对比两个数据的字符串形式是否相等或匹配，返回 `true` 或 `false`。
 
 第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写、通配符模式匹配、正则表达式匹配），其后的两个参数用来传递两个字符串。使用通配符和正则表达式时，第一个参数用于指定通配符模式字符串或者正则表达式。
 
 对非字符串类型的数据，字符串化后做对比。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `ArgumentMissed`：未给定参数。可忽略；静默求值时，返回 `undefined`。
+- `WrongDataType`：错误的参数类型。可忽略；静默求值时，返回 `undefined`。
+- `InvalidValue`：错误的参数。可忽略；静默求值时，返回 `undefined`。
+
+**示例**
+
+```js
+$L.streq("case", "zh_cn", "zh_CN")
+    // boolean: false
+
+$L.streq("wildcard", "zh_*", "zh_CN")
+    // boolean: true
+
+$L.streq("reg", "^zh", "zh_CN")
+    // boolean: true
+```
 
 #### 3.7.12) `strne` 方法
 
-对比两个数据的字符串形式是否不相等或不匹配，返回 `true` 或 `false`。
+对比两个数据的字符串形式是否不相等或不匹配。
+
+**描述**
 
 ```js
-// 原型：
-$L.strne("case | caseless | wildcard | reg", <any>, <any>)
-
-// 示例：返回 true
-$L.strne("case", "zh_CN", "zh_cn")
+$L.strne("case | caseless | wildcard | reg",
+        <any>,
+        <any>
+) boolean | undefined
 ```
+
+对比两个数据的字符串形式是否不相等或不匹配，返回 `true` 或 `false`。
 
 第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写、通配符模式匹配、正则表达式匹配），其后的两个参数用来传递两个字符串。使用通配符和正则表达式时，第一个参数用于指定通配符模式字符串或者正则表达式。
 
 对非字符串类型的数据，字符串化后做对比。
 
+**异常**
+
+该方法可能产生如下异常：
+
+- `ArgumentMissed`：未给定参数。可忽略；静默求值时，返回 `undefined`。
+- `WrongDataType`：错误的参数类型。可忽略；静默求值时，返回 `undefined`。
+- `InvalidValue`：错误的参数。可忽略；静默求值时，返回 `undefined`。
+
+**示例**
+
+```js
+$L.strne("case", "zh_cn", "zh_CN")
+    // boolean: true
+
+$L.strne("wildcard", "zh_*", "zh_CN")
+    // boolean: false
+
+$L.strne("reg", "^zh", "zh_CN")
+    // boolean: false
+```
+
 #### 3.7.13) `strgt` 方法
+
+对比第一个数据的字符串形式是否大于第二个数据的字符串形式。
+
+**描述**
+
+```js
+$L.strgt("case | caseless",
+        <any>,
+        <any>
+) boolean | undefined
+```
 
 对比第一个数据的字符串形式是否大于第二个数据的字符串形式，返回 `true` 或 `false`。
 
-```js
-// 原型
-$L.strgt("case | caseless", <any>, <any>)
-
-// 示例：返回 true
-$L.strgt("case", 'A', 'Z')
-```
-
-第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写），其后的两个参数用来传递两个字符串。
+第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写），其后的两个参数用来传递两个数据。
 
 对非字符串类型的数据，字符串化后做对比。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `ArgumentMissed`：未给定参数。可忽略；静默求值时，返回 `undefined`。
+- `WrongDataType`：错误的参数类型。可忽略；静默求值时，返回 `undefined`。
+- `InvalidValue`：错误的参数。可忽略；静默求值时，返回 `undefined`。
+
+**示例**
+
+```
+$L.strgt("case", 'A', 'Z')
+    // boolean: false
+```
 
 #### 3.7.14) `strge` 方法
 
-对比第一个数据的字符串形式是否大于或等于第二个数据的字符串形式，返回 `true` 或 `false`。
+对比第一个数据的字符串形式是否大于或等于第二个数据的字符串形式。
+
+**描述**
 
 ```js
-// 原型
-$L.strge("case | caseless", <any>, <any>)
-
-// 示例：返回 true
-$L.strge("caseless", "abc", "ABC")
+$L.strge("case | caseless",
+        <any>,
+        <any>
+) boolean | undefined
 ```
 
-第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写），其后的两个参数用来传递两个字符串。
+对比第一个数据的字符串形式是否大于或等于第二个数据的字符串形式，返回 `true` 或 `false`。
+
+第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写），其后的两个参数用来传递两个数据。
 
 对非字符串类型的数据，字符串化后做对比。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `ArgumentMissed`：未给定参数。可忽略；静默求值时，返回 `undefined`。
+- `WrongDataType`：错误的参数类型。可忽略；静默求值时，返回 `undefined`。
+- `InvalidValue`：错误的参数。可忽略；静默求值时，返回 `undefined`。
+
+**示例**
+
+```
+$L.strge("case", 'A', 'A')
+    // boolean: true
+```
+
 
 #### 3.7.15) `strlt` 方法
 
-对比第一个数据的字符串形式是否小于第二个数据的字符串形式，返回 `true` 或 `false`。
+对比第一个数据的字符串形式是否小于第二个数据的字符串形式。
 
-```javascript
-// 原型
-$L.strlt("case | caseless", <any>, <any>)
+**描述**
 
-// 示例：返回 false
-$L.strlt("case", "Z", "A")
+```js
+$L.strlt("case | caseless",
+        <any>,
+        <any>
+) boolean | undefined
 ```
 
-第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写），其后的两个参数用来传递两个字符串。
+对比第一个数据的字符串形式是否小于第二个数据的字符串形式，返回 `true` 或 `false`。
+
+第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写），其后的两个参数用来传递两个数据。
 
 对非字符串类型的数据，字符串化后做对比。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `ArgumentMissed`：未给定参数。可忽略；静默求值时，返回 `undefined`。
+- `WrongDataType`：错误的参数类型。可忽略；静默求值时，返回 `undefined`。
+- `InvalidValue`：错误的参数。可忽略；静默求值时，返回 `undefined`。
+
+**示例**
+
+```
+$L.strlt("case", 'A', 'Z')
+    // boolean: true
+```
 
 #### 3.7.16) `strle` 方法
 
-对比第一个数据的字符串形式是否小于或等于第二个数据的字符串形式，返回 `true` 或 `false`。
+对比第一个数据的字符串形式是否小于或等于第二个数据的字符串形式。
 
-```javascript
-// 原型
-$L.strle("case | caseless", <any>, <any>)
+**描述**
 
-// 示例：返回 true
-$L.strle("caseless", "abc", "ABC")
+```js
+$L.strle("case | caseless",
+        <any>,
+        <any>
+) boolean | undefined
 ```
 
-第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写），其后的两个参数用来传递两个字符串。
+对比第一个数据的字符串形式是否小于或等于第二个数据的字符串形式，返回 `true` 或 `false`。
+
+第一个参数用来表示字符串的匹配方式（区分大小写、不区分大小写），其后的两个参数用来传递两个数据。
 
 对非字符串类型的数据，字符串化后做对比。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `ArgumentMissed`：未给定参数。可忽略；静默求值时，返回 `undefined`。
+- `WrongDataType`：错误的参数类型。可忽略；静默求值时，返回 `undefined`。
+- `InvalidValue`：错误的参数。可忽略；静默求值时，返回 `undefined`。
+
+**示例**
+
+```
+$L.strle("case", 'A', 'Z')
+    // boolean: true
+```
 
 #### 3.7.17) `eval` 方法
 
 对参数化的逻辑运算表达式求值。
 
-```js
-// 原型：
-$L.eval(<string: logical expression>, <object: the parameter map>)
+**描述**
 
-// 示例
+```js
+$L.eval(
+        <string: `logical expression`>
+        [, <object: `the parameter map`> ]
+) boolean | undefined
+```
+
+该方法可对参数化的逻辑运算表达式进行求值，返回 `true` 或 `false`。
+
+**示例**
+
+```js
 $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) })
+    // boolean: true
 ```
 
 ### 3.8) `T`
