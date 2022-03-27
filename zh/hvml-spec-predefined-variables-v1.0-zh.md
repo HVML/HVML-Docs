@@ -2065,122 +2065,298 @@ $EJSON.fetchreal( bx0a00, 'i16le', 0 )
 
 #### 3.7.1) `not` 方法
 
-逻辑取反操作。
+逻辑取反运算。
 
-```javascript
-// 原型：逻辑取反的结果，返回 true 或 false
+**描述**
+
+```js
 $L.not(<any>)
+```
 
-// 示例：false 取反，返回 true
+该方法对给定的数据做布尔化处理，然后执行逻辑取反运算，返回 `true` 或 `false`。若没有传递参数，则视作 `undefined`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$L.not
+    // boolean: true
+
 $L.not( false )
+    // boolean: true
 ```
 
 #### 3.7.2) `and` 方法
 
 逻辑与运算。
 
-```javascript
-// 原型：两个或以上数据执行逻辑与操作，返回 true 或 false
-$L.and(<any>, <any>[, <any>[, ...]])
+**描述**
 
-// 示例：false 和 true 的与操作，返回 false
+```javascript
+$L.and(<any>, <any>[, <any>[, ...]])
+```
+
+该方法对给定的两个或以上数据做布尔化处理，然后执行逻辑与运算，返回 `true` 或 `false`。若缺失前两个参数或之一，则视作 `undefined`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$L.and
+    // boolean: false
+
+$L.and( true )
+    // boolean: false
+
 $L.and( false, true )
+    // boolean: false
+
+$L.and( 1, 2, 3 )
+    // boolean: true
 ```
 
 #### 3.7.3) `or` 方法
 
 逻辑或运算。
 
-```javascript
-// 原型：两个或以上数据执行逻辑或操作，返回 true 或 false
-$L.or(<any>, <any>[, <any>[, ...]])
+**描述**
 
-// 示例：false 和 true 的或操作，返回 true
+```js
+$L.or(<any>, <any>[, <any>[, ...]])
+```
+
+该方法对给定的两个或以上数据做布尔化处理，然后执行逻辑或运算，返回 `true` 或 `false`。若缺失前两个参数或之一，则视作 `undefined`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$L.or
+    // boolean: false
+
+$L.or( true )
+    // boolean: true
+
 $L.or( false, true )
+    // boolean: true
 ```
 
 #### 3.7.4) `xor` 方法
 
 逻辑亦或运算。
 
-```javascript
-// 原型：两个数据执行逻辑亦或操作，返回 true 或 false
-$L.xor(<any>, <any>)
+**描述**
 
-// 示例：false 和 true 的或或操作，返回 true
+```js
+$L.xor(<any>, <any>)
+```
+
+该方法对给定的两个数据做布尔化处理，然后执行逻辑亦或运算，返回 `true` 或 `false`。若缺失前两个参数或之一，则视作 `undefined`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$L.xor
+    // boolean: false
+
+$L.xor( true )
+    // boolean: true
+
 $L.xor( false, true )
+    // boolean: true
 ```
 
 #### 3.7.5) `eq` 方法
 
-对比两个数据在数值上是否相等，返回 `true` 或 `false`。
+对比两个数据在数值上是否相等。
 
-```javascript
-// 原型：
+**描述**
+
+```js
 $L.eq(<any>, <any>)
+```
 
-// 示例：返回 true
+该方法对比两个数据在数值上是否相等，返回 `true` 或 `false`。若缺失前两个参数或之一，则视作 `undefined`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$L.eq
+    // boolean: true
+
+$L.eq(false)
+    // boolean: true
+
 $L.eq("1", 1)
+    // boolean: true
 ```
 
 #### 3.7.6) `ne` 方法
 
-对比两个数据在数值上是否不相等，返回 `true` 或 `false`。
+对比两个数据在数值上是否不相等。
 
-```javascript
-// 原型
+**描述**
+
+```js
 $L.ne(<any>, <any>)
+```
 
-// 示例：返回 true
+该方法对比两个数据在数值上是否不相等，返回 `true` 或 `false`。若缺失前两个参数或之一，则视作 `undefined`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$L.ne
+    // boolean: false
+
+$L.ne(true)
+    // boolean: true
+
 $L.ne("1", 2)
+    // boolean: true
 ```
 
 #### 3.7.7) `gt` 方法
 
-对比第一个数据在数值上是否大于第二个数据，返回 `true` 或 `false`。
+对比第一个数据在数值上是否大于第二个数据。
 
-```javascript
-// 原型
+**描述**
+
+```js
 $L.gt(<any>, <any>)
+```
 
-// 示例：返回 true
+该方法对比第一个数据在数值上是否大于第二个数据，返回 `true` 或 `false`。若缺失前两个参数或之一，则视作 `undefined`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$L.gt
+    // boolean: false
+
+$L.gt(true)
+    // boolean: true
+
 $L.gt("2", 1)
+    // boolean: true
 ```
 
 #### 3.7.8) `ge` 方法
 
-对比第一个数据在数值上是否大于或等于第二个数据，返回 `true` 或 `false`。
+对比第一个数据在数值上是否大于或等于第二个数据。
 
-```javascript
-// 原型
+**描述**
+
+```js
 $L.ge(<any>, <any>)
+```
 
-// 示例：返回 true
+该方法对比第一个数据在数值上是否大于或等于第二个数据，返回 `true` 或 `false`。若缺失前两个参数或之一，则视作 `undefined`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$L.ge
+    // boolean: true
+
+$L.ge(true)
+    // boolean: true
+
+$L.ge(false)
+    // boolean: true
+
 $L.ge("2", 2)
+    // boolean: true
 ```
 
 #### 3.7.9) `lt` 方法
 
-对比第一个数据在数值上是否小于第二个数据，返回 `true` 或 `false`。
+对比第一个数据在数值上是否小于第二个数据。
 
-```javascript
-// 原型：
+**描述**
+
+```js
 $L.lt(<any>, <any>)
+```
 
-// 示例：返回 true
-$L.lt("1", 2)
+该方法对比第一个数据在数值上是否小于第二个数据，返回 `true` 或 `false`。若缺失前两个参数或之一，则视作 `undefined`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$L.lt
+    // boolean: false
+
+$L.lt(true)
+    // boolean: false
+
+$L.lt("2", 1)
+    // boolean: false
 ```
 
 #### 3.7.10) `le` 方法
 
-对比第一个数据在数值上是否小于或等于第二个数据，返回 `true` 或 `false`。
+对比第一个数据在数值上是否小于或等于第二个数据。
 
-```javascript
-// 原型
+**描述**
+
+```js
 $L.le(<any>, <any>)
+```
 
-// 示例：返回 true
-$L.lt("1", 2)
+该方法对比第一个数据在数值上是否小于或等于第二个数据，返回 `true` 或 `false`。若缺失前两个参数或之一，则视作 `undefined`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$L.le
+    // boolean: true
+
+$L.le(true)
+    // boolean: false
+
+$L.le(false)
+    // boolean: true
+
+$L.le("1", 2)
+    // boolean: true
 ```
 
 #### 3.7.11) `streq` 方法
@@ -2189,7 +2365,7 @@ $L.lt("1", 2)
 
 ```javascript
 // 原型
-$L.streq("case | caseless | wildcard | regexp", <any>, <any>)
+$L.streq("case | caseless | wildcard | reg", <any>, <any>)
 
 // 示例：返回 false
 $L.streq("case", "zh_CN", "zh_CN")
@@ -2209,9 +2385,9 @@ $L.streq("reg", "^zh", "zh_CN")
 
 对比两个数据的字符串形式是否不相等或不匹配，返回 `true` 或 `false`。
 
-```javascript
+```js
 // 原型：
-$L.strne("case | caseless | wildcard | regexp", <any>, <any>)
+$L.strne("case | caseless | wildcard | reg", <any>, <any>)
 
 // 示例：返回 true
 $L.strne("case", "zh_CN", "zh_cn")
@@ -2225,7 +2401,7 @@ $L.strne("case", "zh_CN", "zh_cn")
 
 对比第一个数据的字符串形式是否大于第二个数据的字符串形式，返回 `true` 或 `false`。
 
-```javascript
+```js
 // 原型
 $L.strgt("case | caseless", <any>, <any>)
 
@@ -2241,7 +2417,7 @@ $L.strgt("case", 'A', 'Z')
 
 对比第一个数据的字符串形式是否大于或等于第二个数据的字符串形式，返回 `true` 或 `false`。
 
-```javascript
+```js
 // 原型
 $L.strge("case | caseless", <any>, <any>)
 
@@ -2289,7 +2465,7 @@ $L.strle("caseless", "abc", "ABC")
 
 对参数化的逻辑运算表达式求值。
 
-```javascript
+```js
 // 原型：
 $L.eval(<string: logical expression>, <object: the parameter map>)
 
