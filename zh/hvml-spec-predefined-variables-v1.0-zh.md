@@ -7,7 +7,7 @@ Category: Language Specification
 Creation Date: Nov. 1, 2021  
 Last Modified Date: Feb. 9, 2022  
 Status: Proposal  
-ReleaseName: 硕鼠
+ReleaseName: 硕鼠  
 Language: Chinese
 
 *Copyright Notice*
@@ -1772,7 +1772,7 @@ $EJSON.stringify(123)
 // 原型
 $EJSON.serialize(
         <any $data>
-        [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || not-escape-slash' $options = `real-json runtime-null plain bseq-hex-string`:
+        [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape' $options = `real-json runtime-null plain bseq-hex-string`:
             'real-json'         - `use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON number.`
             'real-ejson'        - `use EJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
             'runtime-null'      - `treat all EJSON-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
@@ -1787,13 +1787,13 @@ $EJSON.serialize(
             'bseq-bin-dots'     - `use binary form to serialize binary sequence and use dots to seperate the binary digits per four digits. e.g., b1100.1010.`
             'bseq-base64'       - `use Base64 to serialize binary sequence.`
             'no-trailing-zero'  - `drop trailing zero for float values.`
-            'not-escape-slash'  - `do not escape the forward slashes ('/').`
+            'no-slash-escape'   - `do not escape the forward slashes ('/').`
            >
         ]
 ) string
 ```
 
-该方法对给定的数据做序列化处理，返回字符串。未指定数据时，按 `undefined` 处理以及默认的格式化要求处理。
+该方法对给定的数据做序列化处理，返回字符串。未指定数据时，按 `undefined` 以及默认的格式化要求处理。
 
 **异常**
 
@@ -1807,8 +1807,14 @@ $EJSON.serialize(
 $EJSON.serialize
     // string: 'null'
 
+$EJSON.serialize(undefined, 'runtime-string')
+    // string: '"<undefined>"'
+
 $EJSON.serialize("123")
     // string: '"123"'
+
+$EJSON.serialize([1, 2])
+    // string: '[1,2]'
 ```
 
 #### 3.6.7) `sort` 方法
@@ -1820,8 +1826,8 @@ $EJSON.serialize("123")
 ```javascript
 $EJSON.sort(
         < array | set $data >,
-        < 'asc | desc' = 'asc': sorting ascendingly or descendingly >
-        [, < 'auto | number | case | caseless' = 'auto':
+        < 'asc | desc' $method = 'asc': sorting ascendingly or descendingly >
+        [, < 'auto | number | case | caseless' $method = 'auto':
             `auto` - comparing members automatically;
             `number` - comparing members as numbers;
             `case` - comparing members as strings case-sensitively;
@@ -1843,7 +1849,6 @@ $EJSON.sort(
 **示例**
 
 ```js
-
 $EJSON.sort([3, 4, 1, 0], 'asc')
     // array: [0, 1, 3, 4]
 ```
@@ -1988,9 +1993,10 @@ $EJSON.isequal(
 
 ```javascript
 $EJSON.fetchstr( <bsequece $bytes>,
-        < 'utf8 | utf16 | utf32 | utf16le | utf32le | utf16be | utf32be' $encoding: `the encoding; see Binary Format Notation.` >,
-        < null | real $length: `the length to decode in bytes.` >
-        [, < real $offset = 0: `the offset in the byte sequence.` > ]
+        < 'utf8 | utf16 | utf32 | utf16le | utf32le | utf16be | utf32be' $encoding: `the encoding; see Binary Format Notation.` >
+        [, < null | real $length = null: `the length to decode in bytes.` >
+            [, < real $offset = 0: `the offset in the byte sequence.` > ]
+        ]
 ) string
 ```
 
@@ -2003,7 +2009,7 @@ $EJSON.fetchstr( <bsequece $bytes>,
 - `encoding`  
 指定字符编码。
 - `length`  
-指定解码长度（字节为单位）。取 `null` 时表示遇到终止字符为止。对 UTF-8 编码，遇到 `\0` 字节为止；对 UTF-16 编码，遇到两个连续的 `\0` 字节为止；对 UTF-32 编码，遇到四个连续的 `\0` 字节为止。
+指定解码长度（字节为单位）。取 `null` 时表示遇到终止字符为止：对 UTF-8 编码，遇到 `\0` 字节为止；对 UTF-16 编码，遇到两个连续的 `\0` 字节为止；对 UTF-32 编码，遇到四个连续的 `\0` 字节为止。
 - `offset`  
 指定解码起始位置（字节为单位）。可为负值，-1 表示最后一个字节，-2 表示倒数第二个字节，以此类推。
 
@@ -2011,8 +2017,10 @@ $EJSON.fetchstr( <bsequece $bytes>,
 
 该方法可能抛出如下异常：
 
-- `BadEncoding`：错误编码。
-- `InvalidValue`：错误的长度或者偏移量值。
+- `ArgumentMissed`：缺少必要参数。静默求值时返回空字符串。
+- `WrongDataType`：错误的参数类型。静默求值时返回空字符串。
+- `BadEncoding`：错误编码。静默求值时返回空字符串。
+- `InvalidValue`：错误的长度或者偏移量值。静默求值时返回空字符串。
 
 **示例**
 
