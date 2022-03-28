@@ -2652,11 +2652,11 @@ $T.get('Hello, world!')
 
 ```javascript
 $STR.contains(
-        <string $haystack: the string to search in>,
-        <string $needle: the substring to search for in the haystack>
-        [, <boolean $case_insensitivity = `false`:
-            `false` - performs a case-sensitive check;
-            `true` - performs a case-insensitive check.>
+        <string $haystack: `the string to search in` >,
+        <string $needle: `the substring to search for in the haystack` >
+        [, < boolean $case_insensitivity = false:
+            false - `performs a case-sensitive check;`
+            true - `performs a case-insensitive check.` >
         ]
 ) boolean
 ```
