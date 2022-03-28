@@ -3110,7 +3110,7 @@ $STR.join('hello', ' ', 'world')
 ```js
 $STR.nr_chars(
         <string $string>
-) ulongint
+) ulongint | false
 ```
 
 获得字符串 `string` 中字符的个数。
@@ -3123,6 +3123,11 @@ $STR.nr_chars(
 **返回值**
 
 返回值为 `ulongint` 类型，表示字符个数。
+
+**异常**
+
+- `ArgumentMissed`：可忽略异常；静默求值时返回 `false`。
+- `WrongDataType`：可忽略异常；静默求值时返回 `false`。
 
 **示例**
 
@@ -3566,7 +3571,7 @@ $STR.str_repeat(
 **描述**
 
 ```js
-$STR.strrev(
+$STR.reverse(
         <string $string>
 ) string
 ```
