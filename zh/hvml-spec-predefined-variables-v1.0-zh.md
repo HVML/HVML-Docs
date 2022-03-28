@@ -3548,7 +3548,7 @@ $STR.pad(
 **描述**
 
 ```js
-$STR.str_repeat(
+$STR.repeat(
         <string $string>,
         <real $times>
 ) string
@@ -3615,7 +3615,7 @@ $STR.tokenize(
 
 **描述**
 
-```
+```js
 $STR.translate(
     <string $string>,
     <string $from>,
