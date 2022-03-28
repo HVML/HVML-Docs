@@ -114,7 +114,7 @@ Language: Chinese
       * [3.9.8) `format_c` 方法](#398-format_c-方法)
       * [3.9.9) `format_p` 方法](#399-format_p-方法)
       * [3.9.10) `join` 方法](#3910-join-方法)
-      * [3.9.11) `length` 方法](#3911-length-方法)
+      * [3.9.11) `nr_chars` 方法](#3911-nr_chars-方法)
       * [3.9.12) `tolower` 方法](#3912-tolower-方法)
       * [3.9.13) `toupper` 方法](#3913-toupper-方法)
       * [3.9.14) `substr` 方法](#3914-substr-方法)
@@ -143,7 +143,6 @@ Language: Chinese
       * [3.9.37) `count_chars` 方法](#3937-count_chars-方法)
       * [3.9.38) `count_bytes` 方法](#3938-count_bytes-方法)
       * [3.9.39) `nl2br` 方法](#3939-nl2br-方法)
-      * [3.9.40) 错误与异常](#3940-错误与异常)
    + [3.10) `URL`](#310-url)
       * [3.10.1) `base64_encode` 方法](#3101-base64_encode-方法)
       * [3.10.2) `base64_decode` 方法](#3102-base64_decode-方法)
@@ -184,7 +183,6 @@ Language: Chinese
       * [4.1.27) `floor` 和 `floor_l` 方法](#4127-floor-和-floor_l-方法)
       * [4.1.28) `ceil` 和 `ceil_l` 方法](#4128-ceil-和-ceil_l-方法)
       * [4.1.29) `sqrt` 和 `sqrt_l` 方法](#4129-sqrt-和-sqrt_l-方法)
-      * [4.1.30) 错误与异常](#4130-错误与异常)
    + [4.2) `FS`](#42-fs)
       * [4.2.1) `list` 方法](#421-list-方法)
       * [4.2.2) `list_prt` 方法](#422-list_prt-方法)
@@ -4200,7 +4198,14 @@ $URL.http_build_query(
 
 `MATH` 是一个可装载的动态变量，用于实现复杂的数学运算和函数。
 
-该变量提供如下接口：
+在调用`MATH` 动态对象方法的过程中，可能产生如下异常：
+
+- `ArgumentMissed`：缺少必要的参数，或传入的参数不足。
+- `WrongDataType`：错误的参数类型。
+- `ZeroDivision`：被零除错误。
+- `Overflow`：计算时产生向上溢出错误。
+- `Underflow`：计算时产生向下溢出错误。
+- `InvalidFloat`：无效浮点数。
 
 #### 4.1.1) `pi` 方法
 
@@ -4731,17 +4736,6 @@ $MATH.sqrt(9.0)
 // 示例：求 `9.0` 的平方根，返回 `longdouble` 类型，结果为 `3.0L`。
 $MATH.sqrt_l(9.0)
 ```
-
-#### 4.1.30) 错误与异常
-
-在调用`MATH` 动态对象方法的过程中，可能产生如下异常：
-
-- `ArgumentMissed`：缺少必要的参数，或传入的参数不足。
-- `WrongDataType`：错误的参数类型。
-- `ZeroDivision`：被零除错误。
-- `Overflow`：计算时产生向上溢出错误。
-- `Underflow`：计算时产生向下溢出错误。
-- `InvalidFloat`：无效浮点数。
 
 ### 4.2) `FS`
 
