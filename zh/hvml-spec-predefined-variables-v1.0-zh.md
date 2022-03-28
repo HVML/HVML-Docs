@@ -373,7 +373,7 @@ Language: Chinese
 
 用于描述一个定时器对象的属性如下：
 
-```javascript
+```js
 {
     'id': <string: `the timer identifier, the key with unique restriction`>,
     'interval': <string: `the interval of the timer in milliseconds`>,
@@ -455,7 +455,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 **描述**
 
-```javascript
+```js
 $SYSTEM.const(
         <string $name: `the constant name`>
 ) any : `the constant value`
@@ -479,7 +479,7 @@ $SYSTEM.const(
 
 **示例**
 
-```javascript
+```js
 // 获取常量 `HVML_SPEC_VER` 的值
 $SYSTEM.const('HVML_SPEC_VERSION')
     // string: '1.0'
@@ -491,7 +491,7 @@ $SYSTEM.const('HVML_SPEC_VERSION')
 
 **描述**
 
-```javascript
+```js
 $SYSTEM.uname object :
     `an object contains the following properties:`
         'kernel-name'         - < string: `kernel name (e.g., 'Linux')` >
@@ -512,7 +512,7 @@ $SYSTEM.uname object :
 
 **示例**
 
-```javascript
+```js
 $SYSTEM.uname
     /* object:
        {
@@ -532,13 +532,13 @@ $SYSTEM.uname
 
 获取可打印的系统信息。
 
-```javascript
+```js
 $SYSTEM.uname_prt string: `the kernel name.`
 ```
 
 该方法获取内核名称，返回字符串。
 
-```javascript
+```js
 $SYSTEM.uname_prt(
         <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which = 'default':
             'kernel-name'       - `includes kernel name (e.g., 'Linux')`
@@ -563,7 +563,7 @@ $SYSTEM.uname_prt(
 
 **示例**
 
-```javascript
+```js
 // 获取内核名称
 $SYSTEM.uname_prt
     // string: 'Linux'
@@ -579,13 +579,13 @@ $SYSTEM.uname_prt('kernel-name kernel-release kernel-version')
 
 **描述**
 
-```javascript
+```js
 $SYSTEM.locale string : `the locale for the messages category.`
 ```
 
 该方法获得消息分类（messages category）的区域，返回字符串。
 
-```javascript
+```js
 $SYSTEM.locale(
         < 'ctype | numeric | time | collate | monetary | messages | paper | name | address | telephone | measurement | identification' $category = 'messages':
             'ctype'     - `Character classification`
@@ -606,7 +606,7 @@ $SYSTEM.locale(
 
 该方法获取指定分类的区域，返回字符串。某些平台可能不支持特定的区域分类，比如姓名（`name`）分类。对不支持的区域分类，该函数将抛出 `Unsupported` 异常，或静默求值时返回 `undefined`。
 
-```javascript
+```js
 $SYSTEM.locale(!
         < '[ctype || numeric || time || collate || monetary || messages || paper || name || address || telephone || measurement || identification] | all' $categories:
             'ctype'     - `Character classification`
@@ -641,7 +641,7 @@ $SYSTEM.locale(!
 
 **示例**
 
-```javascript
+```js
 $SYSTEM.locale
     // string: "en_US"
 
@@ -658,13 +658,13 @@ $SYSTEM.locale
 
 **描述**
 
-```javascript
+```js
 $SYSTEM.time longint: `the calendar time (seconds since Epoch)`
 ```
 
 该方法获取当前日历时间（自 Epoch 以来的秒数），返回值类型为 `longint`。
 
-```javascript
+```js
 $SYSTEM.time(!
         <real $seconds: `seconds since Epoch`>
 ) true | false
@@ -683,7 +683,7 @@ $SYSTEM.time(!
 
 **示例**
 
-```javascript
+```js
 $SYSTEM.time
     // longint: 123456789L
 ```
@@ -701,14 +701,14 @@ $SYSTEM.time
 
 **描述**
 
-```javascript
+```js
 $SYSTEM.time_us longdouble :
     `A long double number representing the number of seconds (integral part) and microseconds (fractional part) since Epoch:`
 ```
 
 该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值 longdouble 数值，小数部分为微秒值。
 
-```javascript
+```js
 $SYSTEM.time_us(
         <boolean $float = true: `indicate the return type: @true for long double number, @false for object.`>
 ) longdouble | object: `An long double numer or object representing the number of seconds and microseconds since Epoch:`
@@ -718,14 +718,14 @@ $SYSTEM.time_us(
 
 该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为 longdouble 数值或包含 `sec` 和 `usec` 两个属性的对象。
 
-```javascript
+```js
 $SYSTEM.time_us(! <real $sec_us: `seconds with microseconds since Epoch`>)
 ) true | false
 ```
 
 该方法用一个实数（整数部分表示自 Epoch 以来的秒数，小数部分表示微秒数）设置系统时间。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
 
-```javascript
+```js
 $SYSTEM.time_us(!
         <object $time_with_us: `An object representing the number of seconds and microseconds since Epoch`>
 ) true | false
@@ -744,7 +744,7 @@ $SYSTEM.time_us(!
 
 **示例**
 
-```javascript
+```js
 $SYSTEM.time_us
     // longdouble: 123456789.456789
 ```
@@ -762,13 +762,13 @@ $SYSTEM.time_us
 
 **描述**
 
-```javascript
+```js
 $SYSTEM.timezone : string | false
 ```
 
 该方法返回当前时区。
 
-```javascript
+```js
 $SYSTEM.timezone(!
         <string $timezone: `new timezone`>
         [, <boolean $permanently = false: `change timezone permanently and globally or temporarily and locally.`> ]
@@ -799,7 +799,7 @@ HVML 推荐使用类似 `Asia/Shanghai` 这样的字符串来表示时区。实�
 
 **示例**
 
-```javascript
+```js
 $SYSTEM.timezone
     // string: "Asia/Shanghai"
 
@@ -821,13 +821,13 @@ $SYSTEM.timezone
 
 **描述**
 
-```javascript
+```js
 $SYSTEM.cwd string | false: `returns the current working directory on success, or @false on failure.`
 ```
 
 该方法获取当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
 
-```javascript
+```js
 $SYSTEM.cwd(!
         <string $dir: `the new path for the current working directory.`>
 ) boolean: `returns @true on success or @false on failure.`
@@ -861,7 +861,7 @@ $SYSTEM.cwd(!
 
 **描述**
 
-```javascript
+```js
 $SYSTEM.env(
         <string: `the environment variable name`>
 ) string | undefined
@@ -869,7 +869,7 @@ $SYSTEM.env(
 
 该方法获取指定环境变量的值（字符串）；未设置时抛出 `NoSuchKey` 异常，静默求值时返回 `undefined`。
 
-```javascript
+```js
 $SYSTEM.env(!
         <string: `the environment variable name`>,
         <string | undefined: `the value`>
@@ -893,7 +893,7 @@ $SYSTEM.env(!
 
 **示例**
 
-```javascript
+```js
 // 设置环境变量 `LOGNAME` 的值
 $SYSTEM.env(! 'LOGNAME', 'tom' )
     // boolean: true
@@ -905,7 +905,7 @@ $SYSTEM.env(! 'LOGNAME', 'tom' )
 
 **描述**
 
-```javascript
+```js
 $SYSTEM.random_sequence(
         <numer $length: `the length of the random byte sequence`>
 ) bsequence | false
@@ -920,7 +920,7 @@ $SYSTEM.random_sequence(
 
 **示例**
 
-```javascript
+```js
 // 从内核获得随机数据用于当前会话的随机数发生器种子。
 $SYSTEM.random(! $EJSON.numberify($SYSTEM.random_sequence(4), 'u32') )
     // boolean: true
@@ -936,13 +936,13 @@ $SYSTEM.random(! $EJSON.numberify($SYSTEM.random_sequence(4), 'u32') )
 
 **描述**
 
-```javascript
+```js
 $SYSTEM.random longint: `a random between 0 and RAND_MAX.`
 ```
 
 该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值（`longint`）。
 
-```javascript
+```js
 $SYSTEM.random(
         <real $max: `the max value`>
 ) real | false: `A random real number between 0 and $max. The type of return value will be same as the type of $max.`
@@ -950,7 +950,7 @@ $SYSTEM.random(
 
 该方法获取 0 到指定的最大值之间的一个随机值。返回值的类型同参数 `$max` 的类型。
 
-```javascript
+```js
 $SYSTEM.random(!
         <real $seed: `the random seed`>
         [, <number $complexity: `a number equal or greater than 8 to indicates how sophisticated the random number generator it should use - the larger, the better the random numbers will be.>
@@ -966,7 +966,7 @@ $SYSTEM.random(!
 
 **示例**
 
-```javascript
+```js
 // 使用当前系统日历时间设置随机数种子。
 $SYSTEM.randome(! $SYSTEM.time )
     // true
@@ -1033,7 +1033,7 @@ $SYSTEM.random(-10FL)
 
 **描述**
 
-```javascript
+```js
 $SESSION.user(
         <string $key: `the user defined key name`>
 ) any | undefined : `the variant value corresponding to the key name $key.`
@@ -1041,7 +1041,7 @@ $SESSION.user(
 
 该方法获取指定键名对应的键值。当指定的键名未被设置时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `undefined`。
 
-```javascript
+```js
 $SESSION.user(!
         <string $key: `the user defined key name`>,
         <any | undefined $value: `the new variant value`>
@@ -1060,7 +1060,7 @@ _注意_，`user` 的获取器和设置器本质上访问的是 `$SESSION` 的 `
 
 **示例**
 
-```javascript
+```js
 // 移除 `userId` 键值对
 $SESSION.user(! 'userId', undefined )
     // false (assumed that `userId` was not set)
@@ -1090,7 +1090,7 @@ $SESSION.user(! 'userId', undefined )
 
 **描述**
 
-```javascript
+```js
 $DATETIME.time_prt(
         <'atom | cookie | iso8601 | rfc822 | rfc850 | rfc1036 | rfc1036 | rfc1123 | rfc7231 | rfc2822 | rfc3339 | rfc3339-ex | rss | w3c' $format = 'iso8601':
             'atom'      - `Atom (example: 2005-08-15T15:52:01+00:00)`
@@ -1125,7 +1125,7 @@ $DATETIME.time_prt(
 
 **示例**
 
-```javascript
+```js
 $DATETIME.time_prt
     // string: '2020-06-24T11:27:05+08:00'
 
@@ -1157,13 +1157,13 @@ $DATETIME.time_prt('rfc822', null, 'Asia/Shanghai')
 
 **描述**
 
-```javascript
+```js
 $DATETIME.utctime object : `An object representing the current broken-down time in UTC.`
 ```
 
 获取当前日历时间的 UTC（协调世界时）分解时间（broken-down time），返回类型为对象。
 
-```javascript
+```js
 $DATETIME.utctime(<null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for the current calendar time.`>
 ) object
 ```
@@ -1172,7 +1172,7 @@ $DATETIME.utctime(<null | number | longint | ulongint | longdouble $seconds: `se
 
 上述方法返回的分解时间对象包含如下属性：
 
-```javascript
+```js
 {
    'usec':  <number: `The number of microseconds after the second, in the range 0 to 999,999.`>
    'sec':   <number: `The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.`>
@@ -1190,7 +1190,7 @@ $DATETIME.utctime(<null | number | longint | ulongint | longdouble $seconds: `se
 
 **示例**
 
-```javascript
+```js
 // 获取当前时间在当前时区的分解时间
 $DATETIME.utctime
     // object
@@ -1210,14 +1210,14 @@ $DATETIME.utctime($MATH.sub($SYSTEM.time, 3600))
 
 **描述**
 
-```javascript
+```js
 $DATETIME.localtime object : `An object representing the current broken-down time in the current timezone.`
 ```
 
 获得当前时间在当前时区的分解时间（broken-down time），返回类型为对象。
 
 
-```javascript
+```js
 $DATETIME.localtime(
         [, <null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for the current calendar time.`>
             [, <string $timezone>
@@ -1230,7 +1230,7 @@ $DATETIME.localtime(
 
 上述方法返回的分解时间对象包含如下属性：
 
-```javascript
+```js
 {
    'usec':  <number: `The number of microseconds after the second, in the range 0 to 999,999.`>
    'sec':   <number: `The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.`>
@@ -1248,7 +1248,7 @@ $DATETIME.localtime(
 
 **示例**
 
-```javascript
+```js
 // 获取当前时间在当前时区的分解时间
 $DATETIME.localtime
     // object
@@ -1267,7 +1267,7 @@ $DATETIME.localtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
 
 **描述**
 
-```javascript
+```js
 $DATETIME.mktime(<object $tm>) longdouble : `seconds (including microseconds) since Epoch.`
 ```
 
@@ -1285,7 +1285,7 @@ $DATETIME.mktime(<object $tm>) longdouble : `seconds (including microseconds) si
 
 **描述**
 
-```javascript
+```js
 $DATETIME.fmttime(
         <string $format: `the format string`>
         [, <null | number | longint | ulongint | longdouble: `the calendar time (seconds since Epoch); @null for the current calendar time.`>
@@ -1307,7 +1307,7 @@ $DATETIME.fmttime(
 
 **示例**
 
-```javascript
+```js
 // 获得类似 `11:27` 的时间字符串
 $DATETIME.fmttime("It is %H:%M now")
     // string: 'It is 11:27 now'
@@ -1327,7 +1327,7 @@ $DATETIME.fmttime("现在是中国标准时间 %H:%M", null, 'Asia/Shanghai')
 
 **描述**
 
-```javascript
+```js
 $DATETIME.fmtbdtime(
         <string $format: `the format string`>,
         <null | object $bdtime: `the broken-down time object returned by utctime() or localtime(); @null for the current calendar time in current timzone.`
@@ -1338,7 +1338,7 @@ $DATETIME.fmtbdtime(
 
 **示例**
 
-```javascript
+```js
 // 获得类似 `08:55` 的时间字符串
 $DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai'))
     // string: 'It is 08:55 now in Asia/Shanghai'
@@ -1356,13 +1356,13 @@ $DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MAT
 
 该方法获取或设置 HVML 程序的基础 URL。
 
-```javascript
+```js
 $HVML.base string: `the base URL.`
 ```
 
 该方法返回当前的基础 URL，如 `file:///app/com.example.foo/hvml`。
 
-```javascript
+```js
 $HVML.base(!
         <string $new_url: `the new base URL`>
 ) string | false: `the new base URL normalized from $new_url or `false` for invalid $new_url.`
@@ -1378,7 +1378,7 @@ $HVML.base(!
 
 **示例**
 
-```javascript
+```js
 $HVML.base(! "https://foo.example.com//app/hvml/" )
     // string: 'https://foo.example.com/app/hvml'
 ```
@@ -1391,13 +1391,13 @@ $HVML.base(! "https://foo.example.com//app/hvml/" )
 
 **描述**
 
-```javascript
+```js
 $HVML.max_iteration_count ulongint: `the current maximal iteration count.`
 ```
 
 该方法返回当前的最大迭代次数值。
 
-```javascript
+```js
 $HVML.max_iteration_count(!
         <real $new_value: `the new maximal interation count`>
 ) ulongint | false : `the new maximal iteration count.`
@@ -1413,7 +1413,7 @@ $HVML.max_iteration_count(!
 
 **示例**
 
-```javascript
+```js
 $HVML.max_iteration_count(! 10000UL )
 ```
 
@@ -1425,12 +1425,12 @@ $HVML.max_iteration_count(! 10000UL )
 
 **描述**
 
-```javascript
+```js
 // 原型，返回当前值
 $HVML.max_recursion_depth ulongint: `the current maximal recursion depth value.`
 ```
 
-```javascript
+```js
 $HVML.max_recursion_depth(!
         <real $new_value: `new maximal recursion depth`>
 ) ulongint | false: `the new maximal recursion depth value.`
@@ -1446,7 +1446,7 @@ $HVML.max_recursion_depth(!
 
 **示例**
 
-```javascript
+```js
 $HVML.max_recursion_depth(! 10000UL )
 ```
 
@@ -1458,12 +1458,12 @@ $HVML.max_recursion_depth(! 10000UL )
 
 **描述**
 
-```javascript
+```js
 // 原型，返回当前值
 $HVML.max_embedded_levels ulongint: `the current maximal embedded levels.`
 ```
 
-```javascript
+```js
 $HVML.max_embedded_levels(!
         <real $new_value: `new maximal embedded levels`>
 ) ulongint | false: `the new maximal embedded levels.`
@@ -1479,7 +1479,7 @@ $HVML.max_embedded_levels(!
 
 **示例**
 
-```javascript
+```js
 $HVML.max_embedded_levels(! 64UL )
 ```
 
@@ -1491,13 +1491,13 @@ $HVML.max_embedded_levels(! 64UL )
 
 **描述**
 
-```javascript
+```js
 $HVML.timeout number : `the current timeout value (in seconds)`
 ```
 
 该方法返回当前超时值。
 
-```javascript
+```js
 $HVML.timeout(!
         <number $new_timeout: `the new timeout value (in seconds)`>
 ) number | false: `the new timeout value`
@@ -1515,7 +1515,7 @@ $HVML.timeout(!
 
 **示例**
 
-```javascript
+```js
 // 设置超时值为 3.5 秒。
 $HVML.timeout(! 3.5 )
     // numer: 3.5
@@ -1529,7 +1529,7 @@ $HVML.timeout(! 3.5 )
 
 该方法返回文档类型，字符串。
 
-```javascript
+```js
 $DOC.doctype string : `the target DOCTYPE, such as 'html'`
 ```
 
@@ -1537,7 +1537,7 @@ $DOC.doctype string : `the target DOCTYPE, such as 'html'`
 
 **示例**
 
-```javascript
+```js
 $DOC.doctype
     // html
 ```
@@ -1598,7 +1598,7 @@ $DOC.doctype
 
 通常在这些键名上会设定有相应的获取器或设置器函数，于是即可实现 HVML 规范中要求的表达式：
 
-```javascript
+```js
 // <div id="foo" bar="baz">
 
 // 获取 id 为 foo 的元素上的属性 `bar` 的值：
@@ -1620,7 +1620,7 @@ $DOC.query("#foo").attr(! "bar", "qux")
 
 **描述**
 
-```javascript
+```js
 // 原型
 $EJSON.type(
         [ <any $data> ]
@@ -1635,7 +1635,7 @@ $EJSON.type(
 
 **示例**
 
-```javascript
+```js
 $EJSON.type
     // string: `undefined`
 
@@ -1649,7 +1649,7 @@ $EJSON.type( 3.5 )
 
 **描述**
 
-```javascript
+```js
 // 原型
 $EJSON.count(
         [ <any $data> ]
@@ -1664,7 +1664,7 @@ $EJSON.count(
 
 **示例**
 
-```javascript
+```js
 $EJSON.count
     // ulongint: 0
 
@@ -1681,7 +1681,7 @@ $EJSON.count(! [ 1.0, 2.0 ] )
 
 **描述**
 
-```javascript
+```js
 // 原型
 $EJSON.numberify(
         [ <any $data> ]
@@ -1696,7 +1696,7 @@ $EJSON.numberify(
 
 **示例**
 
-```javascript
+```js
 $EJSON.numberify( "1.0" )
     // number: 1.0
 
@@ -1710,7 +1710,7 @@ $EJSON.numberify
 
 **描述**
 
-```javascript
+```js
 // 原型
 $EJSON.booleanize(
         [ <any $data> ]
@@ -1725,7 +1725,7 @@ $EJSON.booleanize(
 
 **示例**
 
-```javascript
+```js
 $EJSON.booleanize
     // boolean: false
 ```
@@ -1736,7 +1736,7 @@ $EJSON.booleanize
 
 **描述**
 
-```javascript
+```js
 // 原型
 $EJSON.stringify(
         <any $data>
@@ -1754,7 +1754,7 @@ $EJSON.stringify(
 
 **示例**
 
-```javascript
+```js
 $EJSON.stringify
     // string: 'undefined'
 
@@ -1768,7 +1768,7 @@ $EJSON.stringify(123)
 
 **描述**
 
-```javascript
+```js
 // 原型
 $EJSON.serialize(
         <any $data>
@@ -1803,7 +1803,7 @@ $EJSON.serialize(
 
 **示例**
 
-```javascript
+```js
 $EJSON.serialize
     // string: 'null'
 
@@ -1823,7 +1823,7 @@ $EJSON.serialize([1, 2])
 
 **描述**
 
-```javascript
+```js
 $EJSON.sort(
         < array | set $data >,
         < 'asc | desc' $method = 'asc': sorting ascendingly or descendingly >
@@ -1859,7 +1859,7 @@ $EJSON.sort([3, 4, 1, 0], 'asc')
 
 **描述**
 
-```javascript
+```js
 $EJSON.shuffle(
         < array | set $data >,
 ) $data | false
@@ -1887,7 +1887,7 @@ $EJSON.shuffle([1, 2, 3, 4, 5])
 
 **描述**
 
-```javascript
+```js
 // 原型
 $EJSON.compare(
         < any: the first data >,
@@ -1928,7 +1928,7 @@ $EJSON.compare(1, "1")
 
 **描述**
 
-```javascript
+```js
 $EJSON.parse(
         < string: $string: the JSON/EJSON string to be parsed. >
 ) any | undefined
@@ -1991,7 +1991,7 @@ $EJSON.isequal(
 
 **描述**
 
-```javascript
+```js
 $EJSON.fetchstr( <bsequece $bytes>,
         < 'utf8 | utf16 | utf32 | utf16le | utf32le | utf16be | utf32be' $encoding: `the encoding; see Binary Format Notation.` >
         [, < null | real $length = null: `the length to decode in bytes.` >
@@ -2034,7 +2034,7 @@ $EJSON.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8', 6, -6 )
 
 该方法在给定的二进制序列的指定位置，按指定的实数类型（以及大小头顺序）提取实数，返回相应的实数类型。
 
-```javascript
+```js
 $EJSON.fetchreal( <bsequece $bytes>,
         <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128 ...' $binary_format: `the binary format and/or endianness; see Binary Format Notation`>
         [, < real $offset = 0: `the offset in the byte sequence.` > ]
@@ -2095,7 +2095,7 @@ $L.not( false )
 
 **描述**
 
-```javascript
+```js
 $L.and(<any>, <any>[, <any>[, ...]])
 ```
 
@@ -2631,7 +2631,7 @@ $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) }
 
 #### 3.8.2) `get` 方法
 
-```javascript
+```js
 // 原型
 $T.get(<string: original text>)
 
@@ -2644,16 +2644,22 @@ $T.get('Hello, world!')
 
 `STR` 是一个内置的动态变量，该变量用于实现常见的字符串操作。
 
+在调用`STR` 动态对象方法的过程中，可能产生如下异常：
+
+- `ArgumentMissed`：缺少必要的参数，或传入的参数不足。
+- `WrongDataType`：错误的参数类型。
+- `BadEncoding`：错误编码。
+
 #### 3.9.1) `contains` 方法
 
 判断一个字符串中是否包含给定的子字符串。
 
 **描述**
 
-```javascript
+```js
 $STR.contains(
-        <string $haystack: `the string to search in` >,
-        <string $needle: `the substring to search for in the haystack` >
+        <string $haystack: `the string to search in.` >,
+        <string $needle: `the substring to search for in the haystack.` >
         [, < boolean $case_insensitivity = false:
             false - `performs a case-sensitive check;`
             true - `performs a case-insensitive check.` >
@@ -2662,6 +2668,11 @@ $STR.contains(
 ```
 
 判断字符串 `haystack` 中是否包含字符串 `needle`，执行
+
+**异常**
+
+- `ArgumentMissed`：可忽略异常；静默求值时返回 `false`。
+- `WrongDataType`：可忽略异常；静默求值时返回 `false`。
 
 **参数**
 
@@ -2678,7 +2689,7 @@ $STR.contains(
 
 **示例**
 
-```javascript
+```js
 $STR.contains('Hello, world!', 'world')
     // boolean: true
 
@@ -2696,13 +2707,13 @@ $STR.contains('Hello, world!', '')
 
 **描述**
 
-```javascript
+```js
 $STR.starts_with(
-        <string haystack: the string to search in.>,
-        <string needle: the substring to search for in the haystack.>
-        [, <boolean $case_insensitivity = `false`:
-            `false` - performs a case-sensitive check;
-            `true` - performs a case-insensitive check.>
+        <string $haystack: `the string to search in.`>,
+        <string $needle: `the substring to search for in the haystack.`>
+        [, <boolean $case_insensitivity = false:
+            false - `performs a case-sensitive check;`
+            true - `performs a case-insensitive check.`>
         ]
 ) boolean
 ```
@@ -2722,9 +2733,14 @@ $STR.starts_with(
 
 如果 `haystack` 以 `needle` 打头，返回 `true`，否则返回 `false`。
 
+**异常**
+
+- `ArgumentMissed`：可忽略异常；静默求值时返回 `false`。
+- `WrongDataType`：可忽略异常；静默求值时返回 `false`。
+
 **示例**
 
-```javascript
+```js
 $STR.starts_with('Hello, world', 'hello', true)
     // boolean: true
 
@@ -2740,13 +2756,13 @@ $STR.starts_with('Hello, world', '')
 
 用于判断一个字符串是否以给定的字符串结尾。
 
-```javascript
+```js
 $STR.ends_with(
-        <string haystack: the string to search in>,
-        <string needle: the substring to search for in the haystack>
-        [, <boolean $case_insensitivity = `false`:
-            `false` - performs a case-sensitive check;
-            `true` - performs a case-insensitive check.>
+        <string $haystack: `the string to search in.`>,
+        <string $needle: `the substring to search for in the haystack.`>
+        [, <boolean $case_insensitivity = false:
+            false - `performs a case-sensitive check;`
+            true - `performs a case-insensitive check.`>
         ]
 ) boolean
 ```
@@ -2766,9 +2782,12 @@ $STR.ends_with(
 
 如果 `haystack` 以 `needle` 结尾，返回 `true`，否则返回 `false`。
 
+- `ArgumentMissed`：可忽略异常；静默求值时返回 `false`。
+- `WrongDataType`：可忽略异常；静默求值时返回 `false`。
+
 **示例**
 
-```javascript
+```js
 $STR.ends_with('Hello, world', 'World', true)
     // boolean: true
 
@@ -2786,11 +2805,11 @@ $STR.ends_with('Hello, world', '')
 
 **描述**
 
-```javascript
+```js
 $STR.explode(
-        <string $string: the input string to explode>
-        [, <string $separator: the boundary string = ''>
-            [, <longint $limit = 0>]
+        <string $string: `the input string to explode.`>
+        [, <string $separator = '': `the boundary string.`>
+            [, <real $limit = 0: `the limitation of members in the result array.`>]
         ]
 ) array
 ```
@@ -2814,9 +2833,14 @@ $STR.explode(
 
 如果 `separator` 为空字符串，将按字符分隔输入字符串。 如果 `separator` 所包含的值在 `string` 中找不到，并且使用了负数的 `limit`，那么会返回一个空数组，否则返回只包含 `string` 单个成员的数组。如果 `separator` 出现在了 `string` 的开头或末尾，将在返回的数组之头部或尾部添加空字符串（`""`）为边界值。
 
+**异常**
+
+- `ArgumentMissed`：可忽略异常；静默求值时返回空数组。
+- `WrongDataType`：可忽略异常；静默求值时返回空数组。
+
 **示例**
 
-```javascript
+```js
 $STR.explode('beijing:shanghai:guangzhou', ':')
     // array: ['beijing', 'shanghai', 'guangzhou']
 
@@ -2826,7 +2850,7 @@ $STR.explode('1, 2, 3, ', ', ')
 $STR.explode('汉字')
     // array: ['汉', '字']
 
-$STR.explode('中华人民共和国', 2)
+$STR.explode('中华人民共和国', '', 2)
     // array: ['中', '华']
 ```
 
@@ -2840,10 +2864,10 @@ $STR.explode('中华人民共和国', 2)
 
 **描述**
 
-```javascript
+```js
 $STR.implode(
-        <array $pieces: The array to implode>
-        [, <string $separator: the boundary string = ''>]
+        <array $pieces: `the array to implode.`>
+        [, <string $separator = '': `the boundary string.`>]
 ) string
 ```
 
@@ -2860,9 +2884,14 @@ $STR.implode(
 
 返回串接后的新字符串。如果数组为空，则返回空字符串。如果 `separator` 为空字符串，则该方法直接串接数组中的各个字符串，各个字符串之间没有分隔符。
 
+**异常**
+
+- `ArgumentMissed`：可忽略异常；静默求值时返回空字符串。
+- `WrongDataType`：可忽略异常；静默求值时返回空字符串。
+
 **示例**
 
-```javascript
+```js
 $STR.implode(['beijing', 'shanghai', 'guangzhou'], ', ')
     // string: 'beijing, shanghai, guangzhou'
 
@@ -2886,8 +2915,10 @@ $STR.implode(['汉', '字'])
 
 **描述**
 
-```javascript
-$STR.shuffle(<string $string: the input string to shuffle>) string
+```js
+$STR.shuffle(
+        <string $string: `the input string to shuffle.`>
+) string
 ```
 
 该函数在输入字符串 `string` 的基础上，返回一个新的随机排列的字符串。
@@ -2901,9 +2932,14 @@ $STR.shuffle(<string $string: the input string to shuffle>) string
 
 该函数返回随机排列后的新字符串。
 
+**异常**
+
+- `ArgumentMissed`：可忽略异常；静默求值时返回空字符串。
+- `WrongDataType`：可忽略异常；静默求值时返回空字符串。
+
 **示例**
 
-```javascript
+```js
 $STR.shuffle('beijing') // string: 'jbienig'
 ```
 
@@ -2917,14 +2953,14 @@ $STR.shuffle('beijing') // string: 'jbienig'
 
 **描述**
 
-```javascript
+```js
 $STR.replace(
         <string | array $search>,
         <string | array $replace>,
         <array | string $subject>
-        [, <boolean $case_insensitivity = `false`:
-            `false` - performs case-sensitive replacements;
-            `true` - performs case-insensitive replacements.>
+        [, <boolean $case_insensitivity = false:
+            false - `performs case-sensitive replacements;`
+            true - `performs case-insensitive replacements.`>
         ]
 ) string | array
 ```
@@ -2940,9 +2976,9 @@ $STR.replace(
 - `search`  
 查找的目标值，也就是 needle。一个数组可以指定多个目标。
 - `replace`  
-search 的替换值。一个数组可以被用来指定多重替换。
+`search` 的替换值。一个数组可以被用来指定多重替换。
 - `subject`  
-执行替换的数组或者字符串，也就是常说的 `haystack`。 如果 `subject` 是一个数组，替换操作将遍历整个 `subject`，返回值也将是一个数组。
+执行替换的数组或者字符串，也就是常说的 `haystack`。如果 `subject` 是一个数组，替换操作将遍历整个 `subject`，返回值也将是一个数组。
 - `case_insensitivity`  
 指定是否忽略大小写（可选）；默认为忽略大小写。
 
@@ -2950,9 +2986,14 @@ search 的替换值。一个数组可以被用来指定多重替换。
 
 该函数返回替换后的数组或者字符串。
 
+**异常**
+
+- `ArgumentMissed`：可忽略异常；静默求值时返回空字符串或者空数组。
+- `WrongDataType`：可忽略异常；静默求值时返回空字符串或者空数组。
+
 **示例**
 
-```javascript
+```js
 $STR.replace("%BODY%", "black", "<body text=%BODY%>");
     // string: '<body text=black>'
 
@@ -2969,45 +3010,59 @@ $STR.replace("%body%", "black", "<body text=%BODY%>", true);
 
 格式化数值及字符串数据，使用 C 格式化字符表述方法。
 
-```javascript
-// 原型
+**描述**
+
+```js
 $STR.format_c(
-        <string: C format string>
-        [, <boolean | number | longint | ulongint | longdouble | string>
+        <string $format: `C format string.`>
+        [, <boolean | number | longint | ulongint | longdouble | string $data>
             [, ...]
         ]
 ) string
+```
 
-// 原型
+该方法使用指定的 C 语言格式化字符串格式化传入的单个或者多个数据。
+
+```js
 $STR.format_c(
-        <string: C format string>,
-        <array>
+        <string $format: `C format string.`>,
+        <array $data>
 ) string
+```
 
-// 示例
+该方法使用指定的 C 语言格式化字符串格式化传入的数组中的数据。
+
+**示例**
+
+```js
 $STR.format_c('Tom is %d years old, while Jerry is %d years old.', 9, 7)
+    // string: 'Tom is 9 years old, while Jerry is 7 years old.'
+
+$STR.format_c('Tom is %d years old, while Jerry is %d years old.', [9, 7])
+    // string: 'Tom is 9 years old, while Jerry is 7 years old.'
 ```
 
 #### 3.9.9) `format_p` 方法
 
-使用占位符格式化任意数据，使用 eJSON 串行化输出格式。
+使用占位符格式化任意数据，对 EJSON 数据，使用字符串化处理后的内容。
+
+```js
+$STR.format_p(
+        <string $format: `string contains placeholders.`>,
+        <array | object $data>
+) string
+```
 
 使用数组表达要格式化的数据时，占位符用 `{0}`、`{1}` 等表示。
 
 使用对象表达要格式化的数据时，占位符用 `{name}`、`{id}` 等表示。
 
-```javascript
-// 原型
-$STR.format_p(<string: string contains placeholders>, <array>) string
-
-// 示例
+```js
 $STR.format_p('There are two boys: {0} and {1}', ['Tom', 'Jerry'])
+    // string: There are two boys: Tom and Jerry'
 
-// 原型
-$STR.format_p(<string: string contains placeholders>, <object>) string
-
-// 示例
 $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry' })
+    // string: There are two boys: Tom and Jerry'
 ```
 
 #### 3.9.10) `join` 方法
@@ -3016,7 +3071,7 @@ $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 
 
 **描述**
 
-```javascript
+```js
 $STR.join(
         <string $str1>,
         <string $str2>
@@ -3043,20 +3098,21 @@ $STR.join(
 
 **示例**
 
-```javascript
-$STR.join('hello', ' ', 'world')    // string: 'hello world'
+```js
+$STR.join('hello', ' ', 'world')
+    // string: 'hello world'
 ```
 
-**参见**
+#### 3.9.11) `nr_chars` 方法
 
-#### 3.9.11) `length` 方法
-
-用于获得字符串的长度（字符为单位）。
+获得字符串的字符数量。
 
 **描述**
 
-```javascript
-$STR.length(<string $string>) ulongint
+```js
+$STR.nr_chars(
+        <string $string>
+) ulongint
 ```
 
 获得字符串 `string` 中字符的个数。
@@ -3072,14 +3128,13 @@ $STR.length(<string $string>) ulongint
 
 **示例**
 
-```javascript
+```js
 // 获得字符串 `中国` 的长度
-$STR.length('中国')
+$STR.nr_chars('中国')
     // ulongint: 2
 ```
 
 **参见**
-
 
 #### 3.9.12) `tolower` 方法
 
@@ -3087,9 +3142,10 @@ $STR.length('中国')
 
 **描述**
 
-```javascript
-// 原型：将字符串 `s` 全部转换为小写，并返回转换后的字符串；返回值为 `string` 类型
-$STR.tolower(<string $string>) string
+```js
+$STR.tolower(
+        <string $string>
+) string
 ```
 
 将字符串 `string` 中的所有字符转换为小写，并返回转换后的字符串。
@@ -3105,7 +3161,7 @@ $STR.tolower(<string $string>) string
 
 **示例**
 
-```javascript
+```js
 $STR.tolower('Hello, world')
     // string: 'hello, world'
 ```
@@ -3120,8 +3176,10 @@ $STR.tolower('Hello, world')
 
 **描述**
 
-```javascript
-$STR.toupper(<string $string>) string
+```js
+$STR.toupper(
+        <string $string>
+) string
 ```
 
 将字符串 `string` 中的所有字符转换为大写，并返回转换后的字符串。
@@ -3137,7 +3195,7 @@ $STR.toupper(<string $string>) string
 
 **示例**
 
-```javascript
+```js
 $STR.toupper('Hello, world')
     // string: 'HELLO, WORLD'
 ```
@@ -3152,8 +3210,12 @@ $STR.toupper('Hello, world')
 
 **描述**
 
-```javascript
-$STR.substr(<string $string>, <real $offset>[, <real $length>]) string
+```js
+$STR.substr(
+        <string $string>,
+        <real $offset>
+        [, <real $length>]
+) string
 ```
 
 返回字符串 `string` 中由 `offset` 和 `length` 参数指定的子字符串。
@@ -3178,7 +3240,7 @@ $STR.substr(<string $string>, <real $offset>[, <real $length>]) string
 
 **示例**
 
-```javascript
+```js
 // 返回字符串 `abcdef` 从第 `0` 个字符开始，最多包含 `10` 个字符的子字符串
 $STR.substr('abcdef', 0, 10)
     // string: 'abcdef'
@@ -3202,20 +3264,20 @@ $STR.substr('abcdef', -3, -1)
 
 #### 3.9.15) `substr_compare` 方法
 
-安全比较字符串（从指定的偏移位置开始比较指定的长度）
+比较子字符串（从指定的偏移位置开始比较指定的长度）。
 
 **描述**
 
-```javascript
+```js
 $STR.substr_compare(
     <string $str1>,
     <string $str2>,
     <real $offset1>,
     <real $offset2>,
     [, <real $length = 0>
-        [, <boolean $case_insensitivity = `false`:
-            `false` - performs a case-sensitive comparison;
-            `true` - performs a case-insensitive comparison.>
+        [, <boolean $case_insensitivity = false:
+            false - `performs a case-sensitive comparison;`
+            true - `performs a case-insensitive comparison.`>
         ]
     ]
 ) number
@@ -3237,7 +3299,7 @@ $STR.substr_compare(
 
 **描述**
 
-```javascript
+```js
 $STR.substr_count(
     <string $haystack>,
     <string $needle>
@@ -3264,7 +3326,7 @@ $STR.substr_count(
 
 **描述**
 
-```javascript
+```js
 $STR.substr_replace(
     <array|string $string>,
     <array|string $replace>,
@@ -3291,14 +3353,14 @@ $STR.substr_replace(
 
 **描述**
 
-```javascript
+```js
 $STR.strstr(
         <string $haystack>,
         <string $needle>
         [, <bool $before_needle = false>
             [, <bool $case_insensitivity = false:
-                `false` - performs a case-sensitive check;
-                `true` - performs a case-insensitive check.>
+                false - `performs a case-sensitive check;`
+                true - `performs a case-insensitive check.`>
             ]
         ]
 )  string | false
@@ -3321,14 +3383,14 @@ $STR.strstr(
 
 **描述**
 
-```javascript
+```js
 $STR.strpos(
         <string $haystack>,
         <string $needle>
         [, <real $offset = 0>
             [, <bool $case_insensitivity = false:
-                `false` - performs a case-sensitive check;
-                `true` - performs a case-insensitive check.>
+                false - `performs a case-sensitive check;`
+                true - `performs a case-insensitive check.`>
             ]
         ]
 ) ulongint | false
@@ -3351,13 +3413,13 @@ $STR.strpos(
 
 **描述**
 
-```javascript
+```js
 $STR.strpbrk(
         <string $string>,
         <string $characters>
         [, <bool $case_insensitivity = false:
-            `false` - performs a case-sensitive check;
-            `true` - performs a case-insensitive check.>
+            false - `performs a case-sensitive check;`
+            true - `performs a case-insensitive check.`>
         ]
 ) string | false
 ```
@@ -3378,12 +3440,10 @@ $STR.strpbrk(
 
 **描述**
 
-```javascript
+```js
 $STR.split(
         <string $string>
-        [,
-            <real $length = 1>
-        ]
+        [, <real $length = 1> ]
 ) array
 ```
 
@@ -3403,7 +3463,7 @@ $STR.split(
 
 **描述**
 
-```javascript
+```js
 $STR.chunk_split(
         <string $string>
         [,
@@ -3431,14 +3491,11 @@ $STR.chunk_split(
 
 **描述**
 
-```javascript
+```js
 $STR.trim(
         <string $string>
-        [,
-            <string $position "left | right | both" = "both">
-            [,
-                <string $characters = " \n\r\t\v\x00">
-            ]
+        [, <string $position "left | right | both" = "both">
+            [, <string $characters = " \n\r\t\v\f"> ]
         ]
 ) string
 ```
@@ -3461,15 +3518,12 @@ $STR.trim(
 
 **描述**
 
-```javascript
+```js
 $STR.pad(
     <string $string>,
     <real $length>,
-    [,
-        <string $pad_string = " ">,
-        [,
-            <string $pad_type 'left | right | both' = 'right'>
-        ]
+    [, <string $pad_string = " ">,
+        [, <string $pad_type 'left | right | both' = 'right'> ]
     ]
 ) string
 ```
@@ -3490,7 +3544,7 @@ $STR.pad(
 
 **描述**
 
-```javascript
+```js
 $STR.str_repeat(
         <string $string>,
         <real $times>
@@ -3513,7 +3567,7 @@ $STR.str_repeat(
 
 **描述**
 
-```javascript
+```js
 $STR.strrev(
         <string $string>
 ) string
@@ -3589,16 +3643,16 @@ $STR.translate(
 
 **描述**
 
-```javascript
+```js
 $STR.bin2hex(
         <string $data>,
         <boolean $uppercase:
-            `true` - use A...F;
-            `false` - use a...f.
+            true - `use A...F;`
+            false - `use a...f.`
         >,
         <boolean $strict:
-            `true` - throw the `BadEncoding` exception for a bad encoded string;
-            `false` - stops conversion for any error and returns the converted string.
+            true - `throw the @BadEncoding exception for a bad encoded string;`
+            false - `stops conversion for any error and returns the converted string.`
         >
 ) string
 ```
@@ -3621,12 +3675,12 @@ $STR.bin2hex(
 
 **描述**
 
-```javascript
+```js
 $STR.hex2bin(
         <string $data>,
         <boolean $strict:
-            `true` - throw the `BadEncoding` exception for a bad encoded string;
-            `false` - stops conversion for any error and returns the converted string.
+            true - `throw the BadEncoding exception for a bad encoded string;`
+            false - `stops conversion for any error and returns the converted string.`
         >
 ) string
 ```
@@ -3649,27 +3703,27 @@ $STR.hex2bin(
 
 **描述**
 
-```javascript
+```js
 $STR.htmlentities_encode(
-        <string $string: The input string.>,
+        <string $string: `The input string.`>,
         <'[compat | quotes | noquotes] || [ignore | substitute | disallowed] || [html401 | xml1 | xhtml | html5]' $flags:
-            'compat' - Will convert double-quotes and leave single-quotes alone.
-            'quotes' - Will convert both double and single quotes.
-            'noquotes' - Will leave both double and single quotes unconverted.
-            'ignore' - Silently discard invalid code unit sequences instead of returning an empty string. Using this flag is discouraged.
-            'substitute' - Replace invalid code unit sequences with a Unicode Replacement Character U+FFFD or &#FFFD.
-            'disallowed' - Replace invalid code points for the given document type with a Unicode Replacement Character U+FFFD or &#FFFD.
-            'html401' - Handle code as HTML 4.01.
-            'xml1' - Handle code as XML 1.
-            'xhtml' - Handle code as XHTML.
-            'html5' - Handle code as HTML 5.
+            'compat'    - `Will convert double-quotes and leave single-quotes alone.`
+            'quotes'    - `Will convert both double and single quotes.`
+            'noquotes'  - `Will leave both double and single quotes unconverted.`
+            'ignore'    - `Silently discard invalid code unit sequences instead of returning an empty string. Using this flag is discouraged.`
+            'substitute' - `Replace invalid code unit sequences with a Unicode Replacement Character U+FFFD or &#FFFD.`
+            'disallowed' - `Replace invalid code points for the given document type with a Unicode Replacement Character U+FFFD or &#FFFD.`
+            'html401'   - `Handle code as HTML 4.01.`
+            'xml1'      - `Handle code as XML 1.`
+            'xhtml'     - `Handle code as XHTML.`
+            'html5'     - `Handle code as HTML 5.`
         >
-        [, <boolean $all = `false`:
-            `false`- only the certain characters have special significance in HTML are translated into these entities.
-            `true` - all characters which have HTML character entity equivalents are translated into these entities. >
-            [, <boolean $double_encode = `true`:
-                `true` - will convert everything.
-                `false` - will not encode existing html entities.
+        [, <boolean $all = false:
+            false- `only the certain characters have special significance in HTML are translated into these entities.`
+            true - `all characters which have HTML character entity equivalents are translated into these entities.`>
+            [, <boolean $double_encode = true:
+                true - `will convert everything.`
+                false - `will not encode existing html entities.`>
             ]
         ]
 ) string
@@ -3692,22 +3746,21 @@ $STR.htmlentities_encode(
 
 **描述**
 
-```javascript
+```js
 $STR.htmlentities_decode(
-        <string $string: The input string.>,
+        <string $string: `The input string.`>,
         <'[compat | quotes | noquotes] || substitute || [html401 | xml1 | xhtml | html5]' $flags:
-            'compat' - Will convert double-quotes and leave single-quotes alone.
-            'quotes' - Will convert both double and single quotes.
-            'noquotes' - Will leave both double and single quotes unconverted.
-            'substitute' - Replace invalid code unit sequences with a Unicode Replacement Character U+FFFD or &#FFFD.
-            'html401' - Handle code as HTML 4.01.
-            'xml1' - Handle code as XML 1.
-            'xhtml' - Handle code as XHTML.
-            'html5' - Handle code as HTML 5.
-        >
-        [, <boolean $all = `false`:
-            `false`- only the certain characters have special significance in HTML are translated into these entities.
-            `true` - all characters which have HTML character entity equivalents are translated into these entities. >
+            'compat'    - `Will convert double-quotes and leave single-quotes alone.`
+            'quotes'    - `Will convert both double and single quotes.`
+            'noquotes'  - `Will leave both double and single quotes unconverted.`
+            'substitute' - `Replace invalid code unit sequences with a Unicode Replacement Character U+FFFD or &#FFFD.`
+            'html401'   - `Handle code as HTML 4.01.`
+            'xml1'      - `Handle code as XML 1.`
+            'xhtml'     - `Handle code as XHTML.`
+            'html5'     - `Handle code as HTML 5.` >
+        [, <boolean $all = false:
+            false- `only the certain characters have special significance in HTML are translated into these entities.`
+            true - `all characters which have HTML character entity equivalents are translated into these entities.` >
         ]
 ) string | bseqence
 ```
@@ -3731,7 +3784,7 @@ $STR.htmlentities_decode(
 
 **描述**
 
-```javascript
+```js
 $STR.crc32(
         < string | bsequence $data>
 ) ulongint
@@ -3755,12 +3808,12 @@ $STR.crc32(
 
 **描述**
 
-```javascript
+```js
 $STR.md5(
         < string | bsequence $data >,
-        < boolean $binary = `false`:
-            `true` - the md5 digest is returned as a binary sequence with a length of 16.
-            `false` - the md5 digest is returned as a 32-character hexadecimal number.
+        < boolean $binary = false:
+            true - `the md5 digest is returned as a binary sequence with a length of 16.`
+            false - `the md5 digest is returned as a 32-character hexadecimal number.`
         >
 ) string | bsequence
 ```
@@ -3783,12 +3836,12 @@ $STR.md5(
 
 **描述**
 
-```javascript
+```js
 $STR.sha1(
         < string | bsequence $data >,
-        < boolean $binary = `false`:
-            `true` - the sha1 digest is returned in a raw binary sequence with a length of 20.
-            `false` - the sha1 digest is returned as a 40-character hexadecimal number.
+        < boolean $binary = false:
+            true - `the sha1 digest is returned in a raw binary sequence with a length of 20.`
+            false - `the sha1 digest is returned as a 40-character hexadecimal number.`
         >
 ) string | bsequence
 ```
@@ -3812,7 +3865,7 @@ $STR.sha1(
 
 **描述**
 
-```javascript
+```js
 $STR.rot13(
         <string $string>
 ) string
@@ -3836,7 +3889,7 @@ $STR.rot13(
 
 **描述**
 
-```javascript
+```js
 $STR.count_chars(
         < string $string: the examined string. >
         [, < 'object | string' $mode = 'object':
@@ -3864,7 +3917,7 @@ $STR.count_chars(
 
 **描述**
 
-```javascript
+```js
 $STR.count_bytes(
         < string | bsequence $data: the examined data. >
         [, < 'object-all | object-appeared | object-not-appeared | string-appeared | string-not-appeared' $mode = 'object-all':
@@ -3896,16 +3949,16 @@ $STR.count_bytes(
 
 **描述**
 
-```javascript
+```js
 $STR.nl2br(
         < string $string: the input string. >
-        [, < boolean $is_xhtml = `true`:
-            `true` - use '<br />'.
-            `false` - use '<br>'.
+        [, < boolean $is_xhtml = true:
+            true - `use '<br />'.`
+            false - `use '<br>'.`
         ]
-        [, < boolean $lowercases = `true`:
-            `true` - use 'br'.
-            `false` - use 'BR'.
+        [, < boolean $lowercases = true:
+            true - `use 'br'.`
+            false - `use 'BR'.`
         ]
 ) object | bsequence
 ```
@@ -3922,14 +3975,6 @@ $STR.nl2br(
 
 - PHP `nl2br()` 函数：<https://www.php.net/manual/en/function.nl2br.php>
 
-#### 3.9.40) 错误与异常
-
-在调用`STR` 动态对象方法的过程中，可能产生如下异常：
-
-- `ArgumentMissed`：缺少必要的参数，或传入的参数不足。
-- `WrongDataType`：错误的参数类型。
-- `BadEncoding`：错误编码。
-
 ### 3.10) `URL`
 
 #### 3.10.1) `base64_encode` 方法
@@ -3940,7 +3985,7 @@ $STR.nl2br(
 
 **描述**
 
-```javascript
+```js
 $URL.base64_encode(
         <string|bsequence $data>
 ) string
@@ -3965,16 +4010,16 @@ $URL.base64_encode(
 
 **描述**
 
-```javascript
+```js
 $URL.base64_decode(
         <string $data>,
         <boolean $utf8:
-            `true` - decode the input Base64 string to a string.
-            `false` - decode the input Base64 string to a binary sequence.
+            true - `decode the input Base64 string to a string.`
+            false - `decode the input Base64 string to a binary sequence.`
         >
         <boolean $strict:
-            `true` - throw the `BadEncoding` exception for a bad encoded string;
-            `false` - stops conversion for any error and returns the converted string.
+            true - `throw the @BadEncoding exception for a bad encoded string;`
+            false - `stops conversion for any error and returns the converted string.`
         >
 ) string | bseqence
 ```
@@ -3998,7 +4043,7 @@ $URL.base64_decode(
 
 **描述**
 
-```javascript
+```js
 $URL.urlencode(
         <string $str: the string to be encoded>
 ) string
@@ -4022,7 +4067,7 @@ $URL.urlencode(
 
 **描述**
 
-```javascript
+```js
 $URL.urldecode(
         <string $str: the string to be decoded.>
 ) string
@@ -4046,7 +4091,7 @@ $URL.urldecode(
 
 **描述**
 
-```javascript
+```js
 $URL.rawurlencode(
         <string $str: the string to be encoded>
 ) string
@@ -4070,7 +4115,7 @@ $URL.rawurlencode(
 
 **描述**
 
-```javascript
+```js
 $URL.rawurldecode(
         <string $str: the string to be decoded>
 ) string
@@ -4095,7 +4140,7 @@ $URL.rawurldecode(
 
 **描述**
 
-```javascript
+```js
 $URL.parse(
         <string $url: the URL to parse.>,
         [,
@@ -4121,7 +4166,7 @@ $URL.parse(
 
 **描述**
 
-```javascript
+```js
 $URL.http_build_query(
     < object | array $query_data >
     [, < string $numeric_prefix = '': the numeric prefix for the argument names if `query_data` is an array. >
@@ -4161,7 +4206,7 @@ $URL.http_build_query(
 
 该方法用于获得给定精度的 PI 值：
 
-```javascript
+```js
 // 原型
 // 始终返回 3.14159265358979323846
 $MATH.pi
@@ -4175,7 +4220,7 @@ $MATH.pi_l
 
 该方法用于获得给定精度的 e（自然常数，欧拉数）值：
 
-```javascript
+```js
 // 原型
 // 始终返回 2.718281828459045
 $MATH.e
@@ -4189,7 +4234,7 @@ $MATH.e_l
 
 这两个方法的获取器用于获得预定义和自定义数学常数：
 
-```javascript
+```js
 // 原型
 // 根据传入的关键词或自定义常数名称返回指定常数，返回类型为 `number`
 $MATH.const( <'e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)'] > <string: a user-defined const name>) number
@@ -4209,10 +4254,14 @@ $MATH.const_l('1/sqrt(2)')
 
 这两个方法的设置器用于设置自定义的数学常数：
 
-```javascript
+```js
 // 原型
 // 设置自定义常数
-$MATH.const(! <string: a user-defined const name>, <number: the constant>[, <longdouble: the constant>] ) boolean
+$MATH.const(!
+        <string: `a user-defined const name`>,
+        <number: the constant>
+        [, <longdouble: the constant>]
+) boolean
 
 // 示例：设置 c（真空光速）为 299792458
 $MATH.const(! 'c', 299792458)
@@ -4232,7 +4281,7 @@ $MATH.const(! 'G0', 6.67e-11)
 
 求两个实数的和。
 
-```javascript
+```js
 // 原型：求两个实数的和，返回指定类型的数值；默认为 `number`
 $MATH.add(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
@@ -4247,7 +4296,7 @@ $MATH.add(1.4, 0.7, 'longint')
 
 求两个实数的差。
 
-```javascript
+```js
 // 原型：求两个实数的差，返回指定类型的数值；默认为 `number`
 $MATH.sub(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
@@ -4262,7 +4311,7 @@ $MATH.sub(1.4, 0.7, 'longint')
 
 求两个实数的积。
 
-```javascript
+```js
 // 原型：求两个实数的积，返回指定类型的数值；默认为 `number`
 $MATH.mul(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
@@ -4277,7 +4326,7 @@ $MATH.mul(1.4, 0.7, 'longint')
 
 求两个实数的商。
 
-```javascript
+```js
 // 原型：求两个实数的商，返回指定类型的数值；默认为 `number`
 $MATH.div(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
@@ -4292,7 +4341,7 @@ $MATH.div(1.4, 0.7, 'longint')
 
 这两个方法用于求解参数化四则运算表达式，`eval` 方法返回 `number` 类型的结果数据，`eval_l` 方法返回 `longdouble` 类型的结果数据。
 
-```javascript
+```js
 // 原型
 $MATH.eval(<string: a four arithmetic expressions>[, <object: parameter map>]) number
 
@@ -4314,7 +4363,7 @@ $MATH.eval_l(<string: a four arithmetic expressions>[, <object: parameter map>])
 
 用于计算角度的正弦值。原型如下：
 
-```javascript
+```js
 // 原型：求角度的正弦值，角度为弧度值；返回值为 `number` 类型
 $MATH.sin(<number | longint | ulongint | longdouble>) number
 
@@ -4332,7 +4381,7 @@ $MATH.sin_l($MATH.const('pi/4'))
 
 用于计算角度的余弦值。原型如下：
 
-```javascript
+```js
 // 原型：求角度的余弦值，角度为弧度值；返回值为 `number` 类型
 $MATH.cos(<number | longint | ulongint | longdouble>) number
 
@@ -4350,7 +4399,7 @@ $MATH.cos_l($MATH.const('pi/4'))
 
 用于计算角度的正切值。原型如下：
 
-```javascript
+```js
 // 原型：求角度的正切值，角度为弧度值；返回值为 `number` 类型
 $MATH.tan(<number | longint | ulongint | longdouble>) number
 
@@ -4368,7 +4417,7 @@ $MATH.tan_l($MATH.const('pi/4'))
 
 用于计算数值的双曲正弦值。原型如下：
 
-```javascript
+```js
 // 原型：求数值的双曲正弦值；返回值为 `number` 类型
 $MATH.sinh(<number | longint | ulongint | longdouble>) number
 
@@ -4386,7 +4435,7 @@ $MATH.sinh_l(1.0)
 
 用于计算数值的双曲余弦值。原型如下：
 
-```javascript
+```js
 // 原型：求数值的双曲余弦值；返回值为 `number` 类型
 $MATH.cosh(<number | longint | ulongint | longdouble>) number
 
@@ -4404,7 +4453,7 @@ $MATH.cosh_l(1.0)
 
 用于计算数值的双曲正切值。原型如下：
 
-```javascript
+```js
 // 原型：求数值的双曲正切值；返回值为 `number` 类型
 $MATH.tanh(<number | longint | ulongint | longdouble>) number
 
@@ -4422,7 +4471,7 @@ $MATH.tan_l(1.0)
 
 用于计算数值的反正弦值。原型如下：
 
-```javascript
+```js
 // 原型：求数值的反正弦值，获得对应角度的弧度值；返回值为 `number` 类型
 $MATH.asin(<number | longint | ulongint | longdouble>) number
 
@@ -4440,7 +4489,7 @@ $MATH.asin_l(0.707107)
 
 用于计算数值的反余弦值。原型如下：
 
-```javascript
+```js
 // 原型：求数值的反余弦值，获得对应角度的弧度值；返回值为 `number` 类型
 $MATH.acos(<number | longint | ulongint | longdouble>) number
 
@@ -4458,7 +4507,7 @@ $MATH.acos_l(0.707107)
 
 用于计算数值的反正切值。原型如下：
 
-```javascript
+```js
 // 原型：求数值的反正切值，获得对应角度的弧度值；返回值为 `number` 类型
 $MATH.atan(<number | longint | ulongint | longdouble>) number
 
@@ -4476,7 +4525,7 @@ $MATH.atan_l(1.0)
 
 用于计算数值的反双曲正弦值。原型如下：
 
-```javascript
+```js
 // 原型：求数值的反双曲正弦值；返回值为 `number` 类型
 $MATH.asinh(<number | longint | ulongint | longdouble>) number
 
@@ -4494,7 +4543,7 @@ $MATH.asin_l(1.0)
 
 用于计算数值的反双曲余弦值。原型如下：
 
-```javascript
+```js
 // 原型：求数值的反双曲余弦值；返回值为 `number` 类型
 $MATH.acosh(<number | longint | ulongint | longdouble>) number
 
@@ -4512,7 +4561,7 @@ $MATH.acos_l(1.0)
 
 用于计算数值的反双曲正切值。原型如下：
 
-```javascript
+```js
 // 原型：求数值的反双曲正切值；返回值为 `number` 类型
 $MATH.atanh(<number | longint | ulongint | longdouble>) number
 
@@ -4530,7 +4579,7 @@ $MATH.atanh_l(0.5)
 
 用于计算两值相除的余数。原型如下：
 
-```javascript
+```js
 // 原型：求两值相除的余数；返回值为 `number` 类型
 $MATH.fmod(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>) number
 
@@ -4548,7 +4597,7 @@ $MATH.fmod_l(4.5, 2.0)
 
 用于计算数值的绝对值。原型如下：
 
-```javascript
+```js
 // 原型：求数值的绝对值；返回值类型为传入参数值类型
 $MATH.fabs(<number | longint | ulongint | longdouble>) number | longint | ulongint | longdouble
 
@@ -4561,7 +4610,7 @@ $MATH.fabs(-2.5L)
 
 用于计算数值的自然对数。原型如下：
 
-```javascript
+```js
 // 原型：求数值的自然对数；返回值为 `number` 类型
 $MATH.log(<number | longint | ulongint | longdouble>) number
 
@@ -4579,7 +4628,7 @@ $MATH.log_l($MATH.const('e'))
 
 用于计算数值以 `10` 为底的对数。原型如下：
 
-```javascript
+```js
 // 原型：求数值以 `10` 为底的对数；返回值为 `number` 类型
 $MATH.log10(<number | longint | ulongint | longdouble>) number
 
@@ -4597,7 +4646,7 @@ $MATH.log10i_l(10.0)
 
 用于计算 `x` 的 `y` 次幂。原型如下：
 
-```javascript
+```js
 // 原型：求 `x` 的 `y` 次幂；返回值为 `number` 类型
 $MATH.pow(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y) number
 
@@ -4615,7 +4664,7 @@ $MATH.pow_l(3.0, 2.0)
 
 用于计算 `e` 的 `x` 次幂。原型如下：
 
-```javascript
+```js
 // 原型：求 `e` 的 `x` 次幂；返回值为 `number` 类型
 $MATH.exp(<number | longint | ulongint | longdouble> x) number
 
@@ -4633,7 +4682,7 @@ $MATH.exp_l(1.0)
 
 用于计算数值的向下取整数值。原型如下：
 
-```javascript
+```js
 // 原型：计算向下取整的数值；返回值为 `number` 类型
 $MATH.floor(<number | longint | ulongint | longdouble>) number
 
@@ -4651,7 +4700,7 @@ $MATH.floor_l(-2.3)
 
 用于计算数值的向上取整数值。原型如下：
 
-```javascript
+```js
 // 原型：计算向上取整的数值；返回值为 `number` 类型
 $MATH.ceil(<number | longint | ulongint | longdouble>) number
 
@@ -4669,7 +4718,7 @@ $MATH.ceil_l(-2.3)
 
 用于计算数值的平方根。原型如下：
 
-```javascript
+```js
 // 原型：计算数值的平方根；返回值为 `number` 类型
 $MATH.sqrt(<number | longint | ulongint | longdouble>) number
 
@@ -4707,7 +4756,7 @@ $MATH.sqrt_l(9.0)
 
 该方法用于列出指定路径下的目录项，返回对象数组。原型及主要用法如下：
 
-```javascript
+```js
 // 原型
 $FS.list(<string: path>[, <string: the list of semicolon separated name filters>])
 
@@ -4720,7 +4769,7 @@ $FS.list($path, "*.txt; *.md")
 
 每个目录项的信息由如下对象表达：
 
-```javascript
+```js
 {
     'name': <string: `name of the file (directory entry')`>,
     'dev_major': <ulongint: `the major ID of device containing file`>,
@@ -4750,7 +4799,7 @@ $FS.list($path, "*.txt; *.md")
 
 该方法用于列出指定路径下的目录项信息，返回经过格式化的字符串数组。原型及主要用法如下：
 
-```javascript
+```js
 // 原型
 $FS.list_prt(<string: path>[, <string: the list of semicolon separated name filters>[, '[mode || nlink || uid || gid || size || blksize || atime || ctime || mtime || name] | all | default']])
 
@@ -4772,7 +4821,7 @@ $FS.list_prt($path, "*.txt; *.md", "mode nlink uid gid size blksize atime ctime 
 
 **描述**
 
-```javascript
+```js
 $FS.basename(
         <string $path: a path.>
         [,
@@ -4797,10 +4846,10 @@ $FS.basename(
 
 **描述**
 
-```javascript
+```js
 $FS.chgrp(
-        <string $filename: path to the file.>,
-        <string | number $group: A group name or a group identifier.>
+        <string $filename: `path to the file.`>,
+        <string | number $group: `A group name or a group identifier.`>
 ) boolean
 ```
 
@@ -4820,7 +4869,7 @@ $FS.chgrp(
 
 **描述**
 
-```javascript
+```js
 $FS.chmod(
         <string $filename: `path to the file.`>,
         <string $permissions: `the permission string like '0644' or 'u+rwx,go+rx'.`>
@@ -4843,7 +4892,7 @@ $FS.chmod(
 
 **描述**
 
-```javascript
+```js
 $FS.chown(
         <string $filename: `path to the file`.>,
         <string | number $user: `A user name or a user identifier.`>
@@ -4866,7 +4915,7 @@ $FS.chown(
 
 **描述**
 
-```javascript
+```js
 $FS.copy(
         <string $from: `path to the source file.`>,
         <string $to: `The destination path.`>
@@ -4889,7 +4938,7 @@ $FS.copy(
 
 **描述**
 
-```javascript
+```js
 $FS.dirname(
         <string $path: `a path.`>
         [,
@@ -4914,7 +4963,7 @@ $FS.dirname(
 
 **描述**
 
-```javascript
+```js
 $FS.disk_usage(
         <string $directory: `A directory of the filesystem or disk partition.`>
 ) object
@@ -4926,7 +4975,7 @@ $FS.disk_usage(
 
 返回值为如下所示对象：
 
-```javascript
+```js
 {
     'free_blocks': <ulongint: `the number of free blocks`>,
     'free_inodes': <ulongint: `the number of free inodes`>,
@@ -4953,7 +5002,7 @@ $FS.disk_usage(
 
 **描述**
 
-```javascript
+```js
 $FS.file_exists(
         <string $filename: `path to the file or directory.`>
 ) boolean
@@ -4975,7 +5024,7 @@ $FS.file_exists(
 
 **描述**
 
-```javascript
+```js
 $FS.file_is(
         <string $filename: `the path to a file or directory.`>
         <'[ dir | file | symlink | socket | pipe | block | char ] || [ executable | exe ] || [readable | read] || [writable write]' $which = 'file readable':
@@ -5014,7 +5063,7 @@ $FS.file_is(
 
 **描述**
 
-```javascript
+```js
 $FS.lchgrp(
         <string $filename: `The path to the symlink.`>,
         <string | number $group: `A group name or a group identifier.`>
@@ -5037,7 +5086,7 @@ $FS.lchgrp(
 
 **描述**
 
-```javascript
+```js
 $FS.lchown(
         <string $filename: `The path to the symlink.`>,
         <string | number $user: `A user name or a user identifier.`>
@@ -5060,7 +5109,7 @@ $FS.lchown(
 
 **描述**
 
-```javascript
+```js
 $FS.linkinfo(
         <string $path: 'The path to the link.`>
 ) number | false
@@ -5082,7 +5131,7 @@ $FS.linkinfo(
 
 **描述**
 
-```javascript
+```js
 $FS.lstat(
         <string $filename: `The path to the file or directory.`>
         [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
@@ -5114,7 +5163,7 @@ $FS.lstat(
 
 结果由如下对象或其部分表达：
 
-```javascript
+```js
 {
     'dev_major': <ulongint: `the major ID of device containing file`>,
     'dev_minor': <ulongint: `the minor ID of device containing file`>,
@@ -5151,7 +5200,7 @@ $FS.lstat(
 
 **描述**
 
-```javascript
+```js
 $FS.link(
         < string $target: `Target of the link.` >,
         < string $link: `The link name.` >
@@ -5174,7 +5223,7 @@ $FS.link(
 
 **描述**
 
-```javascript
+```js
 $FS.mkdir(
         < string $directory: `The directory path.` >
         [, < string $permissions = '0777': `The permissions are '0777' by default, which means the widest possible access.` >
@@ -5200,7 +5249,7 @@ $FS.mkdir(
 
 **描述**
 
-```javascript
+```js
 $FS.pathinfo(
         < string $path: `The path to be parsed.` >
         [,
@@ -5226,7 +5275,7 @@ $FS.pathinfo(
 
 **描述**
 
-```javascript
+```js
 $FS.readlink(
         < string $path: `The symbolic link path.` >
 ) string | false
@@ -5248,7 +5297,7 @@ $FS.readlink(
 
 **描述**
 
-```javascript
+```js
 $FS.realpath(
         < string $path: `The path being checked.` >
 ) string | false
@@ -5270,7 +5319,7 @@ $FS.realpath(
 
 **描述**
 
-```javascript
+```js
 $FS.rename(
         < string $from: `The old name.` >
         < string $to: `The new name.` >
@@ -5293,7 +5342,7 @@ $FS.rename(
 
 **描述**
 
-```javascript
+```js
 $FS.rmdir(
         < string $directory: `The directory path.` >
 ) boolean
@@ -5315,7 +5364,7 @@ $FS.rmdir(
 
 **描述**
 
-```javascript
+```js
 $FS.stat(
         <string $filename: `The path to the file or directory.`>
         [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
@@ -5347,7 +5396,7 @@ $FS.stat(
 
 结果由如下对象或其部分表达：
 
-```javascript
+```js
 {
     dev_major: <ulongint: the major ID of device containing file>,
     dev_minor: <ulongint: the minor ID of device containing file>,
@@ -5384,7 +5433,7 @@ $FS.stat(
 
 **描述**
 
-```javascript
+```js
 $FS.link(
         < string $target: Target of the link. >,
         < string $link: The link name. >
@@ -5407,7 +5456,7 @@ $FS.link(
 
 **描述**
 
-```javascript
+```js
 $FS.tempname(
         < string $directory: The directory where the temporary filename will be created. >
         < string $prefix: The prefix of the generated temporary filename. >
@@ -5431,7 +5480,7 @@ $FS.tempname(
 
 **描述**
 
-```javascript
+```js
 $FS.touch(
         < string $filename: Path to the file. >
         [, <real $mtime = 0: The modification time, if it is 0 or negative, use the current system time. >
@@ -5456,7 +5505,7 @@ $FS.touch(
 
 **描述**
 
-```javascript
+```js
 $FS.umask(
         [ string $mask = '': The new umask. ]
 ) string
@@ -5478,7 +5527,7 @@ $FS.umask(
 
 **描述**
 
-```javascript
+```js
 $FS.unlink(
         < string $filename: Path to the file. >
 ) boolean
@@ -5500,7 +5549,7 @@ $FS.unlink(
 
 **描述**
 
-```javascript
+```js
 $FS.file_get_contents(
         < string $filename: Path to the file. >
         < '[binary | string] || [strict | silent]': $flags:
@@ -5532,7 +5581,7 @@ $FS.file_get_contents(
 
 **描述**
 
-```javascript
+```js
 $FS.file_put_contents(
         < string $filename: Path to the file. >
         < string | bsequenc $data: The data to write, can be either a string or a byte sequence.
@@ -5559,7 +5608,7 @@ $FS.file_put_contents(
 
 **描述**
 
-```javascript
+```js
 $FS.opendir(
         < string $pathname: Path to the directory. >
 ) entity
@@ -5587,7 +5636,7 @@ $FS.opendir(
 
 **描述**
 
-```javascript
+```js
 $FS.readdir(
         < specific $dir: an entity returned by opendir. >
 ) object | false
@@ -5599,7 +5648,7 @@ $FS.readdir(
 
 如果正确读取了下一个目录项，则返回如下对象：
 
-```javascript
+```js
 {
     type: <string: file type like 'd' (directory), 'b' (block device), 'c' (character device), 'p' (named pipe, FIFO), 's' (UNIX domain socket), 'r' (regular file), 'l' (symbolic link), 'u' (unknown)>,
     name: <string: the file name>,
@@ -5619,7 +5668,7 @@ $FS.readdir(
 
 **描述**
 
-```javascript
+```js
 $FS.rewinddir(
         < specific $dir: an entity returned by opendir. >
 ) boolean
@@ -5670,7 +5719,7 @@ $FS.rewinddir(
 
 该方法读取文本文件的前几行，并返回一个字符串数组。
 
-```javascript
+```js
 // 原型
 $FILE.txt.head(<string: file name>[, <number: number of lines>])
 
@@ -5688,7 +5737,7 @@ $FILE.txt.head($file, -5)
 
 该方法读取文本文件的后几行，并返回一个字符串数组。
 
-```javascript
+```js
 // 原型
 $FILE.txt.tail(<string: file name>[, <number: number of lines>])
 
@@ -5708,7 +5757,7 @@ $FILE.txt.tail($file, -5)
 
 该方法读取二进制文件的前几字节，并返回一个字节序列。
 
-```javascript
+```js
 // 原型
 $FILE.bin.head(<string: file name>[, <number: number of bytes>])
 
@@ -5726,7 +5775,7 @@ $FILE.bin.head($file, -5)
 
 该方法读取二进制文件的后几字节，并返回一个字节序列。
 
-```javascript
+```js
 // 原型
 $FILE.bin.tail(<string: file name>[, <number: number of bytes>])
 
