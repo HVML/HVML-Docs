@@ -2502,7 +2502,7 @@ $L.strge("case | caseless",
 
 **示例**
 
-```
+```js
 $L.strge("case", 'A', 'A')
     // boolean: true
 ```
@@ -2537,7 +2537,7 @@ $L.strlt("case | caseless",
 
 **示例**
 
-```
+```js
 $L.strlt("case", 'A', 'Z')
     // boolean: true
 ```
@@ -2571,7 +2571,7 @@ $L.strle("case | caseless",
 
 **示例**
 
-```
+```js
 $L.strle("case", 'A', 'Z')
     // boolean: true
 ```
