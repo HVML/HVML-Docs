@@ -3071,9 +3071,9 @@ $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 
 
 ```js
 $STR.join(
-        <string $str1>,
-        <string $str2>
-        [, <string $str3>
+        <any $data1>,
+        <any $data2>
+        [, <any $data3>
             [, ...]
         ]
 ) string
@@ -3083,12 +3083,12 @@ $STR.join(
 
 **参数**
 
-- `str1`  
-第一个输入字符串。
-- `str2`  
-第二个输入字符串。
-- `str3`  
-第三个输入字符串。
+- `data1`  
+第一项数据。
+- `data2`  
+第二项数据。
+- `data3`  
+第三项数据。
 
 **返回值**
 
@@ -3099,6 +3099,9 @@ $STR.join(
 ```js
 $STR.join('hello', ' ', 'world')
     // string: 'hello world'
+
+$STR.join(1, ', ', 2, ', ', 3)
+    // string: '1, 2, 3'
 ```
 
 #### 3.9.11) `nr_chars` 方法
