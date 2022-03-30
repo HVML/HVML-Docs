@@ -1604,9 +1604,15 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 一个合法的 JSON 表达式（`json_evaluation_expression`）需要符合如下的语法规则，且可递归使用：
 
 ```
-    <json_evaluation_expression>: '$'<json_variable_addressing_expression> | '{$'<json_variable_addressing_expression>'}' | '{{$'<json_variable_addressing_expression>'}}'
+    <json_evaluation_expression>:
+        '$'<json_variable_addressing_expression>
+        '{$'<json_variable_addressing_expression>'}'
+        '{{' [ws] <complex_json_evaluation_expression> [ws] '}}'
 
     <extended_json>: 见本文档“3.1.3.2) 扩展 JSON 语法”，其中的 JSON value 可以是一个 JSON 求值表达式。
+
+    <complex_json_evaluation_expression>:
+        <json_evaluation_expression> | <extended_json> [[ws] < ';' | '&&' | '||' > [ws] <json_evaluation_expression> | <extended_json>, ...]
 
     <json_variable_addressing_expression>: <literal_variable_name>[<json_addressing_expression>, ...]
        <literal_variable_name>: 用于直接引用一个已命名的 JSON 数据。
@@ -4313,7 +4319,7 @@ def on_battery_changed (on_value, with_value, root_in_scope):
     </p>
 ```
 
-当变量 `$message` 的值被其他 HVML 代码修改时，对应的 HTML 代码将自动更新，而无需使用 `observe` 元素来显式指定相关操作。如果使用 `observe`，则对应的 HVML 代码为：
+当变量 `$message` 的值被其他 HVML 代码修改时，对应的 HTML 文档将自动更新，而无需使用 `observe` 元素来显式指定相关操作。如果使用 `observe`，则对应的 HVML 代码为：
 
 ```html
     <init as="message">
@@ -4329,7 +4335,9 @@ def on_battery_changed (on_value, with_value, root_in_scope):
     </p>
 ```
 
-为支持响应式处理，HVML 提供一个语法糖，我们可使用 `{{ }}` 双大括号来标记某个骨架元素的 `textContent` 包含的特定 JSON 求值表达式是响应式的，如：
+~~HVML 提供一个语法糖，我们可使用 `{{ }}` 双大括号来标记某个骨架元素的 `textContent` 包含的特定 JSON 求值表达式是响应式的，如：~~
+
+在 HVML 提供的表达式绑定能力支持下，响应式处理的支持变得异常简单。我们只需在外部标签中使用 `hvml:responsively` 副词属性，即可标记该元素的内容是响应式的：
 
 ```html
     <init as="user_name">
@@ -4340,8 +4348,8 @@ def on_battery_changed (on_value, with_value, root_in_scope):
         "hello, "
     </init>
 
-    <p>
-        {{$hello}}{{$user_name}}
+    <p hvml:responsively>
+        $hello$user_name
     </p>
 
     <input type="text" name="user-name" placeholder="Your Name" value="$user_name" />
@@ -4356,17 +4364,15 @@ def on_battery_changed (on_value, with_value, root_in_scope):
 1. 输入框中的内容将自动同步到 `$user_name` 变量。
 1. `$user_name` 的内容变化，将自动触发输入框之上段落内容的变化。
 
-对响应式标记，HVML 解释器通过为 JSON 求值表达式中的变量增加相应的 `observe` 元素来实现。比如，以上的代码相当于：
+HVML 解释器通过为需要响应式处理的表达式隐式添加绑定关系，并观察绑定后的变量来实现。比如，以上代码相当于：
 
 ```html
     <p>
         $hello$user_name
 
-        <observe on="$hello" for="change">
-            <update on="$@" at="textContent" with="$hello$user_name">
-        </observe>
-        <observe on="$user_name" for="change">
-            <update on="$@" at="textContent" with="$hello$user_name">
+        <bind on="$hello$user_name" as="__p_txtContent">
+        <observe on="$__p_txtContent" for="change">
+            <update on="$@" at="textContent" with="$__p_txtContent.eval">
         </observe>
     </p>
 
@@ -4377,21 +4383,29 @@ def on_battery_changed (on_value, with_value, root_in_scope):
     </observe>
 ```
 
-如此，开发者不需要显式增加 `observe` 标签即可获得相同的响应式处理效果，只需要对相应的表达式增加响应式标记即可。但需要注意的是，HVML 会忽略在上下文变量上使用的响应式标记。
+使用响应式处理后，开发者不需要显式书写 `bind` 和 `observe` 标签即可获得相同的响应式处理效果，只需要在外部标签中增加 `hvml:responsively` 副词属性即可。
 
-另外，我们可以使用 `bind` 标签实现元素属性或内容到变量的响应式处理。
+下面的例子，将用户名称和输入框中输入的姓名绑定在一起；通过响应式处理，当用户改变输入框中的内容时，`p` 元素的文本内容将自动改变。
 
 ```html
     <init as="user_name">
         "Tom"
     </init>
 
-    <p>
-        Hello, {{$user_name}}
+    <p hvml:responsively>
+        Hello, $user_name
     </p>
 
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="$user_name" />
     <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name" />
+```
+
+当我们需要针对外部标签的属性使用响应式处理时，我们使用在属性值的引号前添加 `&`。如：
+
+```html
+    <p style = &'display:$display' hvml:responsively>
+        Hello, $user_name
+    </p>
 ```
 
 ## 3) HVML 语法
