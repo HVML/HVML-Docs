@@ -4370,9 +4370,9 @@ def on_battery_changed (on_value, with_value, root_in_scope):
 
 另外，某些执行器无法处理规则动态变化的情形，比如 SQL 和 TRAVEL 执行器。
 
-### 2.7) 响应式处理
+### 2.7) 响应式更新
 
-所谓响应式（responsive）处理，是指对如下的 HVML 代码：
+所谓响应式（responsive）更新，是指对如下的 HVML 代码：
 
 ```html
     <init as="message">
@@ -4384,23 +4384,9 @@ def on_battery_changed (on_value, with_value, root_in_scope):
     </p>
 ```
 
-当变量 `$message` 的值被其他 HVML 代码修改时，对应的 HTML 文档将自动更新，而无需使用 `observe` 元素来显式指定相关操作。如果使用 `observe`，则对应的 HVML 代码为：
+当变量 `$message` 的值被其他 HVML 代码修改时，对应的 HTML 文档将自动更新，而无需使用 `observe` 等元素。
 
-```html
-    <init as="message">
-        "hello, world"
-    </init>
-
-    <p>
-        $message
-
-        <observe on="$message" for="change">
-            <update on="$@" at="textContent" with="$message">
-        </observe>
-    </p>
-```
-
-在 HVML 提供的表达式绑定能力支持下，响应式处理的支持变得异常简单。我们只需在外部标签中使用 `hvml:responsively` 副词属性，即可标记该元素的内容是响应式的：
+在 HVML 提供的表达式绑定能力支持下，响应式处理的支持变得异常简单。我们只需在外部标签中使用 `hvml:responsively` 副词属性，即可标记该元素的文本内容是响应式的：
 
 ```html
     <init as="user_name">
@@ -4463,7 +4449,7 @@ HVML 解释器通过为需要响应式处理的表达式隐式添加绑定关系
     <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name" />
 ```
 
-当我们需要针对外部标签的属性使用响应式处理时，我们在属性值的引号前添加 `&`。如：
+当我们需要针对骨架元素的属性使用响应式更新时，我们在属性值的引号前添加 `&`。如：
 
 ```html
     <p style = &'display:$display' hvml:responsively>
