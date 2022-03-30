@@ -4749,8 +4749,9 @@ $MATH.sqrt_l(9.0)
 
 `FS` 是一个可装载的动态变量，该变量用于实现常见的文件系统操作。
 
-**注意**  
-当指定的路径以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前当前工作路径信息（同 `$SYSTEM.cwd`）。
+**注意**
+
+当指定的路径以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前工作路径信息（同 `$SYSTEM.cwd`）。
 
 该变量提供如下接口：
 
@@ -4760,13 +4761,11 @@ $MATH.sqrt_l(9.0)
 
 ```js
 // 原型
-$FS.list(<string: path>[, <string: the list of semicolon separated name filters>])
-
-// 示例：列出指定路径下的所有目录项。
-$FS.list($path)
-
-// 示例：列出名称符合给定两种通配符的目录项
-$FS.list($path, "*.txt; *.md")
+$FS.list(
+        [ <string $path: `the path to list`>
+            [, <string $filters: `the list of semicolon separated name filters.`> ]
+        ]
+) array
 ```
 
 每个目录项的信息由如下对象表达：
@@ -4795,6 +4794,22 @@ $FS.list($path, "*.txt; *.md")
     'ctime_sec': <ulongint: `time of last status change (seconds since Epoch`)>
     'ctime_nsec': <ulongint: `time of last status change (nanoseconds since 'ctime_sec'`)>
 }
+```
+
+**示例**
+
+```js
+// 列出当前工作目录下所有目录项
+$FS.list
+    // array
+
+// 列出当前工作目录下所有匹配 `*.conf` 的目录项
+$FS.list("", '*.conf')
+    // array
+
+// 列出名称符合给定两种通配符的目录项
+$FS.list('/etc', "*.txt; *.md")
+    // array
 ```
 
 #### 4.2.2) `list_prt` 方法

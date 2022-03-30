@@ -149,6 +149,10 @@ Language: Chinese
          - [RC2.7) 可命名一个 `observe`](#rc27-可命名一个-observe)
          - [RC2.8) 增强 `request`](#rc28-增强-request)
          - [RC2.9) 调整介词属性](#rc29-调整介词属性)
+         - [RC2.10) 调整响应式处理的语法](#rc210-调整响应式处理的语法)
+         - [RC2.11) 增强 `bind` 标签](#rc211-增强-bind-标签)
+         - [RC2.12) CJSONEE](#rc212-cjsonee)
+         - [RC2.13) 调整布尔化规则](#rc213-调整布尔化规则)
       * [RC1) 220209](#rc1-220209)
          - [RC1.1) 上下文变量的调整](#rc11-上下文变量的调整)
          - [RC1.2) `init` 标签的增强](#rc12-init-标签的增强)
@@ -977,6 +981,22 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
 之后，我们就可以使用 `$reciprocal_of_sqrt_2.eval_const` 来获得 2 的平方根之倒数，而且只需要计算一次。
 
+我们也可以使用使用 `bind` 标签的内容来定义要绑定的表达式：
+
+```html
+    <bind as="greeting" >Hello, $user_name</bind>
+
+
+    <bind as="greeting" >
+        "Hello, $user_name"
+    </bind>
+
+    <bind as="user_info" >
+        { 'name': $user_name, 'age`: $age }
+    </bind>
+```
+
+
 注意，当表达式在不同的上下文环境中执行时，由于所引用变量的作用域发生了变化，所得到的结果也会出现不同。
 
 我们可以使用 `observe` 标签观察一个绑定了表达式的变量，从而根据变量值的变化做出一些相应的处理。
@@ -1345,6 +1365,7 @@ HVML 还定义有如下一些动作标签：
 - `silently`：在动作元素中，用于指定忽略执行当前元素时的可忽略异常；在骨架元素中使用 `hvml:silently` 属性。
 - `locally`：在 `init` 等定义变量的动作元素中，用于指定变量是全局的还是局部的；所有局部变量，在用户自定义的上下文变量中维护。
 - `nosetotail`：在 `iterate` 动作元素中，用于将上次迭代的结果作为下次迭代的输入。
+- `responsively`：在骨架元素中，用于定义其文本内容是响应式的。
 
 注意：在 HVML 中，我们无需为副词属性赋值。
 
@@ -1643,6 +1664,50 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 ```
 
 需要说明的是，我们允许在使用 `[ ]` 引用数组或者集合的成员时，使用负数作为索引值。当使用负数作为索引值时，其范围是 -1 到数组或集合的成员个数，以最后一个成员为起点。
+
+复合 JSON 求值表达式（complex JSON evaluation expression，缩写为 CJSONEE）是一项重要扩展。CJSONEE 本质上由一个或多个 JSONEE 组成，但带有一定的逻辑控制能力。其效果类似 Unix Shell 命令行中一次执行多条命令时使用分号或者 `&&`、`||` 的效果。如下是一些例子：
+
+```js
+// 调用 $SYSTEM.cwd 将当前工作路径切换到 `/etc` 目录下，然后调用 $FS.list
+// 获得所有目录项对象数组。
+{{ $SYSTEM.cwd(! '/etc'); $FS.list }}
+
+// 尝试改变工作路径到 `/root` 目录下，如果成功则调用 $FS.list 获得该目录下
+// 所有目录项对象数组，否则向标准输出（$FILE.stream.stdout）打印提示信息，
+// 并改变工作路径到 `/` 下，或成功，则获得该目录下所有目录项对象数组，
+// 否则将 `false` 作为该 CJSONEE 的最终求值结果。
+{{
+     $SYSTEM.cwd(! '/root') &&
+        $FS.list ||
+        $FILE.stream.writelines($FILE.stream.stdout,
+                'Cannot change directory to "/root"'); $SYSTEM.cwd(! '/' ) &&
+                    $FS.list || false
+}}
+
+// 尝试改变工作路径到 `/root` 目录下，如果成功则调用 $FS.list_prt 获得该目录下
+// 所有目录项清单（字符串），否则返回提示信息。最终将目录项清单或者错误信息
+// 输出到标准输出。
+{{
+    $FILE.stream.writelines($FILE.stream.stdout, {{
+                $SYSTEM.cwd(! '/root') && $FS.list_prt ||
+                    'Cannot change directory to "/root"''
+            }})
+}}
+```
+
+对 CJSONEE，我们定义如下规则：
+
+1. 对一个 CJSONEE 的求值结果，指该 CJSONEE 中执行求值的最后一个 JSONEE 的结果；所有中间结果将被废弃。
+1. 一个 CJSONEE 中可嵌套另一个 CJSONEE。
+
+处理步骤如下：
+
+1) 将 CJSONEE 中的第一个 JSONEE 设定为当前 JSONEE。
+2) 对当前 JSONEE 求值，形成当前求值结果，然后，
+   - 若其后是 `;`，若存在下个 JSONEE，则将下个 JSONEE 调整为当前 JSONEE 并跳转到第二步；若没有下个 JSONEE，则跳转到第三步。
+   - 若其后是 `&&`，则首先对当前求值结果做布尔化处理，如果是 `true`，则将下个 JSONEE（若有）调整为当前 JSONEE 并跳转到第二步，否则跳转到第三步。
+   - 若其后是 `||`，则首先对当前求值结果做布尔化处理，如果是 `false`，则将下个 JSONEE（若有）调整为当前 JSONEE 并跳转到第二步，否则跳转到第三步。
+3) 将整个 CJSONEE 的求值结果设定为最后执行求值的 JSONEE 的求值结果，废弃其他中间结果。
 
 #### 2.2.3) 常见的被指名词法单元
 
@@ -4335,8 +4400,6 @@ def on_battery_changed (on_value, with_value, root_in_scope):
     </p>
 ```
 
-~~HVML 提供一个语法糖，我们可使用 `{{ }}` 双大括号来标记某个骨架元素的 `textContent` 包含的特定 JSON 求值表达式是响应式的，如：~~
-
 在 HVML 提供的表达式绑定能力支持下，响应式处理的支持变得异常简单。我们只需在外部标签中使用 `hvml:responsively` 副词属性，即可标记该元素的内容是响应式的：
 
 ```html
@@ -4370,9 +4433,9 @@ HVML 解释器通过为需要响应式处理的表达式隐式添加绑定关系
     <p>
         $hello$user_name
 
-        <bind on="$hello$user_name" as="__p_txtContent">
-        <observe on="$__p_txtContent" for="change">
-            <update on="$@" at="textContent" with="$__p_txtContent.eval">
+        <bind as="__p_textContent">$hello$user_name</bind>
+        <observe on="$__p_textContent" for="change">
+            <update on="$@" at="textContent" with="$__p_textContent.eval">
         </observe>
     </p>
 
@@ -4400,7 +4463,7 @@ HVML 解释器通过为需要响应式处理的表达式隐式添加绑定关系
     <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name" />
 ```
 
-当我们需要针对外部标签的属性使用响应式处理时，我们使用在属性值的引号前添加 `&`。如：
+当我们需要针对外部标签的属性使用响应式处理时，我们在属性值的引号前添加 `&`。如：
 
 ```html
     <p style = &'display:$display' hvml:responsively>
@@ -5501,6 +5564,41 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - [2.5.1) `init` 标签](#251-init-标签)
 - [2.5.9) `sort` 标签](#259-sort-标签)
 - [2.6.2) 外部执行器](#262-外部执行器)
+
+##### RC2.10) 调整响应式处理的语法
+
+使用 `responsively` 副词属性定义骨架元素的文本内容为响应式的，不再使用 `{{$...}}` 语法。
+
+使用 `<p style= &'display: $display;' >` 定义骨架元素的属性为响应式的。
+
+相关章节：
+
+- [2.7) 响应式处理](#27-响应式处理)
+- [2.1.13) 副词属性](#2113-副词属性)
+
+##### RC2.11) 增强 `bind` 标签
+
+增强 `bind` 标签，使之支持使用内容来定义要绑定的表达式。
+
+相关章节：
+
+- [2.5.17) `bind` 标签](#2517-bind-标签)
+
+##### RC2.12) CJSONEE
+
+支持 CJSONEE（complex JSON evaluation expression，复合 JSON 求值表达式）。
+
+相关章节：
+
+- [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法)
+
+##### RC2.13) 调整布尔化规则
+
+布尔化时，不再执行数值化处理。
+
+相关章节：
+
+- [2.1.4.2) 布尔化](#2142-布尔化)
 
 #### RC1) 220209
 
