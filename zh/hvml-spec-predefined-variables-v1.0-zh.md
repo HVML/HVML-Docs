@@ -151,7 +151,7 @@ Language: Chinese
       * [3.10.3) `rawurlencode` 方法](#3103-rawurlencode-方法)
       * [3.10.4) `rawurldecode` 方法](#3104-rawurldecode-方法)
       * [3.10.5) `parse` 方法](#3105-parse-方法)
-      * [3.10.6) `build_http_query` 方法](#3106-build_http_query-方法)
+      * [3.10.6) `httpquery` 方法](#3106-httpquery-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -212,12 +212,10 @@ Language: Chinese
       * [4.2.26) `touch` 方法](#4226-touch-方法)
       * [4.2.27) `umask` 方法](#4227-umask-方法)
       * [4.2.28) `unlink` 方法](#4228-unlink-方法)
-      * [4.2.29) `file_get_contents` 方法](#4229-file_get_contents-方法)
-      * [4.2.30) `file_put_contents` 方法](#4230-file_put_contents-方法)
-      * [4.2.31) `opendir` 方法](#4231-opendir-方法)
-      * [4.2.32) `readdir` 方法](#4232-readdir-方法)
-      * [4.2.33) `rewinddir` 方法](#4233-rewinddir-方法)
-      * [4.2.34) 错误与异常](#4234-错误与异常)
+      * [4.2.29) `file_contents` 方法](#4229-file_contents-方法)
+      * [4.2.30) `opendir` 方法](#4230-opendir-方法)
+      * [4.2.31) `readdir` 方法](#4231-readdir-方法)
+      * [4.2.32) `rewinddir` 方法](#4232-rewinddir-方法)
    + [4.3) `FILE`](#43-file)
       * [4.3.1) 文本文件](#431-文本文件)
          - [4.3.1.1) `txt.head` 方法](#4311-txthead-方法)
@@ -4166,14 +4164,14 @@ $URL.parse(
 
 - PHP `parse()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
-#### 3.10.6) `build_http_query` 方法
+#### 3.10.6) `httpquery` 方法
 
 生成 URL 编码的查询字符串。
 
 **描述**
 
 ```js
-$URL.build_http_query(
+$URL.httpquery(
     < object | array $query_data >
     [, < string $numeric_prefix = '': the numeric prefix for the argument names if `query_data` is an array. >
         [, <string $arg_separator = '&': the character used to separate the arguments. >
@@ -4749,11 +4747,23 @@ $MATH.sqrt_l(9.0)
 
 `FS` 是一个可装载的动态变量，该变量用于实现常见的文件系统操作。
 
+在调用`FS` 动态对象方法的过程中，可能产生如下异常：
+
+- `ArgumentMissed`：缺少必要的参数，或传入的参数不足。
+- `WrongDataType`：错误的参数类型。
+- `AccessDenied`：拒绝访问。
+- `IOFailure`：输入输出错误。
+- `TooMany`：表示太多（如符号链接）。
+- `TooLong`：表示太长（如路径名称）。
+- `NotDesiredEntity`：表示传递了一个未预期的实体。
+- `EntityNotFound`：未找到指定的实体（如文件）。
+- `EntityExists`：创建新实体（如文件）时，该实体已存在。
+- `OSFailure`：表示遇到未明确定义的一般性操作系统错误。
+- `BadEncoding`：错误编码。
+
 **注意**
 
 当指定的路径以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前工作路径信息（同 `$SYSTEM.cwd`）。
-
-该变量提供如下接口：
 
 #### 4.2.1) `list` 方法
 
@@ -5560,51 +5570,34 @@ $FS.unlink(
 
 - PHP `unlink()` 函数：<https://www.php.net/manual/en/function.unlink.php>
 
-#### 4.2.29) `file_get_contents` 方法
+#### 4.2.29) `file_contents` 方法
 
-从文件中读取整个内容。
+从文件中读取或者向文件中写入内容。
 
 **描述**
 
 ```js
-$FS.file_get_contents(
-        < string $filename: Path to the file. >
-        < '[binary | string] || [strict | silent]': $flags:
-            `binary` - reads the contents as a byte sequence.
-            `string` - reads the contents as a string in UTF-8.
-            `strict` - throw the `BadEncoding` exception for a bad encoded string.
-            `silent` - stops reading for any error and returns the read data.
+$FS.file_contents(
+        < string $filename: `Path to the file.` >
+        < '[binary | string] || [strict | silent]' $flags:
+            'binary' - `reads the contents as a byte sequence.`
+            'string' - `reads the contents as a string in UTF-8.`
+            'strict' - `throw the `BadEncoding` exception for a bad encoded string.`
+            'silent' - `stops reading for any error and returns the read data.`
         >
-        [, <longint $offset = 0: The offset where the reading starts. Negative offsets count from the end of the file.>
-            [, <ulongint $length = 0: Maximum length of data read. The default is to read until end of file is reached. >
-            ]
+        [, <longint $offset = 0: `The offset where the reading starts. Negative offsets count from the end of the file.` >
+            [, <ulongint $length = 0: `Maximum length of data read. The default is to read until end of file is reached.` > ]
         ]
 ) string | bsequence | false
 ```
 
-**参数**
-
-**返回值**
-
-**示例**
-
-**参见**
-
-- PHP `file_get_contents()` 函数：<https://www.php.net/manual/en/function.file-get-contents.php>
-
-#### 4.2.30) `file_put_contents` 方法
-
-从文件中读取整个内容。
-
-**描述**
-
 ```js
-$FS.file_put_contents(
-        < string $filename: Path to the file. >
-        < string | bsequenc $data: The data to write, can be either a string or a byte sequence.
-        < '[append || lock': $flags:
-            `append` - if file `filename` already exists, append the data to the file instead of overwriting it.
-            `lock` - acquires an exclusive lock on the file while proceeding to the writing.
+$FS.file_contents(!
+        < string $filename: `Path to the file.` >
+        < string | bsequenc $data: `The data to write, can be either a string or a byte sequence.`
+        < 'append || lock': $flags:
+            'append' - `if file $filename already exists, append the data to the file instead of overwriting it.`
+            'lock' - `acquires an exclusive lock on the file while proceeding to the writing.`
         >
 ) ulongint | false
 ```
@@ -5617,9 +5610,10 @@ $FS.file_put_contents(
 
 **参见**
 
+- PHP `file_get_contents()` 函数：<https://www.php.net/manual/en/function.file-get-contents.php>
 - PHP `file_put_contents()` 函数：<https://www.php.net/manual/en/function.file-put-contents.php>
 
-#### 4.2.31) `opendir` 方法
+#### 4.2.30) `opendir` 方法
 
 打开一个目录。
 
@@ -5647,7 +5641,7 @@ $FS.opendir(
 
 - PHP `opendir()` 函数：<https://www.php.net/manual/en/function.opendir.php>
 
-#### 4.2.32) `readdir` 方法
+#### 4.2.31) `readdir` 方法
 
 读取下一个目录项。
 
@@ -5679,7 +5673,7 @@ $FS.readdir(
 
 - PHP `readdir()` 函数：<https://www.php.net/manual/en/function.readdir.php>
 
-#### 4.2.33) `rewinddir` 方法
+#### 4.2.32) `rewinddir` 方法
 
 重置目录流。
 
@@ -5700,22 +5694,6 @@ $FS.rewinddir(
 **参见**
 
 - PHP `rewinddir()` 函数：<https://www.php.net/manual/en/function.rewinddir.php>
-
-#### 4.2.34) 错误与异常
-
-在调用`FS` 动态对象方法的过程中，可能产生如下异常：
-
-- `ArgumentMissed`：缺少必要的参数，或传入的参数不足。
-- `WrongDataType`：错误的参数类型。
-- `AccessDenied`：拒绝访问。
-- `IOFailure`：输入输出错误。
-- `TooMany`：表示太多（如符号链接）。
-- `TooLong`：表示太长（如路径名称）。
-- `NotDesiredEntity`：表示传递了一个未预期的实体。
-- `EntityNotFound`：未找到指定的实体（如文件）。
-- `EntityExists`：创建新实体（如文件）时，该实体已存在。
-- `OSFailure`：表示遇到未明确定义的一般性操作系统错误。
-- `BadEncoding`：错误编码。
 
 ### 4.3) `FILE`
 
