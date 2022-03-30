@@ -225,18 +225,18 @@ Language: Chinese
       * [4.3.2) 二进制文件](#432-二进制文件)
          - [4.3.2.1) `bin.head` 方法](#4321-binhead-方法)
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
-      * [4.3.3) 流式读写](#433-流式读写)
-         - [4.3.3.1) `stream.stdin` 静态属性](#4331-streamstdin-静态属性)
-         - [4.3.3.2) `stream.stdout` 静态属性](#4332-streamstdout-静态属性)
-         - [4.3.3.3) `stream.stderr` 静态属性](#4333-streamstderr-静态属性)
-         - [4.3.3.4) `stream.open` 方法](#4334-streamopen-方法)
-         - [4.3.3.5) `stream.readstruct` 方法](#4335-streamreadstruct-方法)
-         - [4.3.3.6) `stream.writestruct` 方法](#4336-streamwritestruct-方法)
-         - [4.3.3.7) `stream.readlines` 方法](#4337-streamreadlines-方法)
-         - [4.3.3.8) `stream.writelines` 方法](#4338-streamwritelines-方法)
-         - [4.3.3.9) `stream.readbytes` 方法](#4339-streamreadbytes-方法)
-         - [4.3.3.10) `stream.writebytes` 方法](#43310-streamwritebytes-方法)
-         - [4.3.3.11) `stream.seek` 方法](#43311-streamseek-方法)
+   + [4.4) STREAM](#44-stream)
+      * [4.4.1) `stdin` 静态属性](#441-stdin-静态属性)
+      * [4.4.2) `stdout` 静态属性](#442-stdout-静态属性)
+      * [4.4.3) `stderr` 静态属性](#443-stderr-静态属性)
+      * [4.4.4) `open` 方法](#444-open-方法)
+      * [4.4.5) `readstruct` 方法](#445-readstruct-方法)
+      * [4.4.6) `writestruct` 方法](#446-writestruct-方法)
+      * [4.4.7) `readlines` 方法](#447-readlines-方法)
+      * [4.4.8) `writelines` 方法](#448-writelines-方法)
+      * [4.4.9) `readbytes` 方法](#449-readbytes-方法)
+      * [4.4.10) `writebytes` 方法](#4410-writebytes-方法)
+      * [4.4.11) `seek` 方法](#4411-seek-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RC1) 220401](#rc1-220401)
@@ -5725,7 +5725,6 @@ $FS.rewinddir(
 
 - `txt`：提供以文本文件方式读写的接口。
 - `bin`：提供以二进制文件方式读写的接口。
-- `stream`：提供以流方式读写的接口。
 
 **注意**  
 当指定的文件以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前会话维护的当前工作路径信息（同 `$SESSION.cwd`）。
@@ -5805,56 +5804,59 @@ $FILE.bin.tail($file, 5)
 // 示例：读取最前 5 字节之外的所有字节
 $FILE.bin.tail($file, -5)
 ```
-#### 4.3.3) 流式读写
 
-##### 4.3.3.1) `stream.stdin` 静态属性
+### 4.4) STREAM
 
-这是一个静态属性，对应一个原生实体，其值可用于流式读写的读取接口，是 C 语言标准输入的封装。
+`STREAM` 是一个可装载的动态变量，该变量用于实现常见的读写流操作。
 
-##### 4.3.3.2) `stream.stdout` 静态属性
+#### 4.4.1) `stdin` 静态属性
 
-这是一个静态属性，对应一个原生实体，其值可用于流式读写的写入接口，是 C 语言标准输出的封装。
+这是一个静态属性，对应一个原生实体，其值可用于流式读写的读取接口，是 C 语言标准输入流的封装。
+
+#### 4.4.2) `stdout` 静态属性
+
+这是一个静态属性，对应一个原生实体，其值可用于流式读写的写入接口，是 C 语言标准输出流的封装。
 
 **示例**
 
 ```
 // 将内核名称（如 `Linux`）输出到标准输出。
-$FILE.stream.writelines($FILE.stream.stdout, $SYSTEM.uname_prt('kernel-name'))
+$FILE.writelines($FILE.stdout, $SYSTEM.uname_prt('kernel-name'))
 ```
 
-##### 4.3.3.3) `stream.stderr` 静态属性
+#### 4.4.3) `stderr` 静态属性
 
-这是一个静态属性，其对应一个原生实体，值可用于流式读写的写入接口，是 C 语言标准错误的封装。
+这是一个静态属性，其对应一个原生实体，值可用于流式读写的写入接口，是 C 语言标准错误流的封装。
 
-##### 4.3.3.4) `stream.open` 方法
+#### 4.4.4) `open` 方法
 
 打开文件作为流，返回一个代表流对象的原生实体值。注意，流的关闭将在最终释放对应的数据时自动进行，故而不需要 `close` 方法。
 
-##### 4.3.3.5) `stream.readstruct` 方法
+#### 4.4.5) `readstruct` 方法
 
 从二进制流中读取一个二进制结构，并转换为适当的数据。
 
-##### 4.3.3.6) `stream.writestruct` 方法
+#### 4.4.6) `writestruct` 方法
 
 将多个数据按照指定的结构格式写入二进制流。
 
-##### 4.3.3.7) `stream.readlines` 方法
+#### 4.4.7) `readlines` 方法
 
 从文本流中读取给定行数，返回字符串数组。
 
-##### 4.3.3.8) `stream.writelines` 方法
+#### 4.4.8) `writelines` 方法
 
 将字符串写入文本流中。
 
-##### 4.3.3.9) `stream.readbytes` 方法
+#### 4.4.9) `readbytes` 方法
 
 从二进制或文本流中读取一个字节序列，返回一个字节序列。
 
-##### 4.3.3.10) `stream.writebytes` 方法
+#### 4.4.10) `writebytes` 方法
 
 将一个字节序列写入流。
 
-##### 4.3.3.11) `stream.seek` 方法
+#### 4.4.11) `seek` 方法
 
 在二进制或文本流中执行定位操作。
 
@@ -5871,9 +5873,9 @@ $FILE.stream.writelines($FILE.stream.stdout, $SYSTEM.uname_prt('kernel-name'))
     <init as="packages">
     </init>
 
-    <choose on="$FILE.stream.open('mydata.txt', 'b')" to="iterate">
+    <choose on="$STREAM.open('mydata.txt', 'b')" to="iterate">
         <iterate on="$formats" in="$packages" by="RANGE: 0">
-            <update on="$packages" to="append" with="$FILE.stream.readstruct($2, $?)" />
+            <update on="$packages" to="append" with="$STREAM.readstruct($2, $?)" />
         </iterate>
     </choose>
 ```
@@ -5893,10 +5895,11 @@ $FILE.stream.writelines($FILE.stream.stdout, $SYSTEM.uname_prt('kernel-name'))
 1. 为 `$STR` 新增大量方法。
 1. 调整了 `$FS.list` 方法的返回对象格式。
 1. 新增 `$URL` 动态对象及其方法。
+1. 将 `$STREAM` 独立出来。
 1. 为 `$FS` 新增大量方法。
 1. 将 `$SYSTEM` 调整为全局级动态变量。
 1. 将 `$SYSTEM` 中的 `random` 方法调整到 `SESSION` 变量，将时间格式化相关的方法调整到新的 `$DATETIME` 变量。
-1. 添加 `$FILE.stream.stdin`, `$FILE.stream.stdout` 以及 `$FILE.stream.stderr` 三个静态属性，用于返回代表标准输入、标准输出和标准错误的流式读写实体。
+1. 添加 `$STREAM.stdin`, `$STREAM.stdout` 以及 `$STREAM.stderr` 三个静态属性，用于返回代表标准输入、标准输出和标准错误的流式读写实体。
 1. 在 `$SYSTEM` 中增加 `random_sequence` 方法。
 1. 将 `$SESSION` 中的 `env` 和 `cwd` 方法转移到 `$SYSTEM` 方法。
 1. 在二进制格式表示法中增加 `utf16` 和 `utf32` 两种编码。

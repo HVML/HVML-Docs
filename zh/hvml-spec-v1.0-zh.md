@@ -1673,13 +1673,13 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 {{ $SYSTEM.cwd(! '/etc'); $FS.list }}
 
 // 尝试改变工作路径到 `/root` 目录下，如果成功则调用 $FS.list 获得该目录下
-// 所有目录项对象数组，否则向标准输出（$FILE.stream.stdout）打印提示信息，
+// 所有目录项对象数组，否则向标准输出（$STREAM.stdout）打印提示信息，
 // 并改变工作路径到 `/` 下，若成功，则获得该目录下所有目录项对象数组，
 // 否则将 `false` 作为该 CJSONEE 的最终求值结果。
 {{
      $SYSTEM.cwd(! '/root') &&
         $FS.list ||
-        $FILE.stream.writelines($FILE.stream.stdout,
+        $STREAM.writelines($FILE.stream.stdout,
                 'Cannot change directory to "/root"'); $SYSTEM.cwd(! '/' ) &&
                     $FS.list || false
 }}
@@ -1688,7 +1688,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 // 所有目录项清单（字符串），否则返回提示信息。最终将目录项清单或者错误信息
 // 输出到标准输出。
 {{
-    $FILE.stream.writelines($FILE.stream.stdout, {{
+    $STREAM.writelines($FILE.stream.stdout, {{
                 $SYSTEM.cwd(! '/root') && $FS.list_prt ||
                     'Cannot change directory to "/root"''
             }})
