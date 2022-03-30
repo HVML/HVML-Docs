@@ -5884,8 +5884,6 @@ $FILE.stream.writelines($FILE.stream.stdout, $SYSTEM.uname_prt('kernel-name'))
 
 #### RC1) 220401
 
-#### BRC) 220201
-
 1. 移除了单个元素实体，全部使用元素汇集实体。
 1. 移除了 `$STR.strlen` 方法。
 1. 变更了 `$STR.implode`、`$STR.explode` 方法的接口。
@@ -5902,8 +5900,11 @@ $FILE.stream.writelines($FILE.stream.stdout, $SYSTEM.uname_prt('kernel-name'))
 1. 在 `$SYSTEM` 中增加 `random_sequence` 方法。
 1. 将 `$SESSION` 中的 `env` 和 `cwd` 方法转移到 `$SYSTEM` 方法。
 1. 在二进制格式表示法中增加 `utf16` 和 `utf32` 两种编码。
-1. 增强 `$EJSON.numberify` 和 `$EJSON.stringify` 可使用二进制格式表示法转换一个字节序列。
+1. 新增 `$EJSON.fetchstr` 和 `$EJSON.fetchreal`，可使用二进制格式表示法从一个字节序列中抽取实数或者字符串。
 1. 增强元素汇集原生实体的方法，使之可以生成指定元素汇集的子集。
+
+#### BRC) 220201
+
 
 ### 附.2) 贡献者榜单
 
