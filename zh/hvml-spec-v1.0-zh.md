@@ -598,16 +598,17 @@ male:true
 
 字符串化数据的目的，是为了按照字符串对多个数据进行对比、排序等操作。
 
-注意，“字符串化”不同于“序列化”，后者指按照 EJSON 格式化数据。
+注意，“字符串化”不同于“序列化”，后者指按照 JSON 或 EJSON 格式化数据。
 
 ##### 2.1.4.4) 序列化
 
-“序列化（serialize）”指按照 EJSON 格式化任意数据。EJSON 格式，可见本文档 [3.1.3.2) 扩展 JSON 语法](#3132-扩展-json-语法)。
+“序列化（serialize）”指按照 JSON 或者 EJSON 格式化任意数据。EJSON 格式，可见本文档 [3.1.3.2) 扩展 JSON 语法](#3132-扩展-json-语法)。
 
-序列化时，若数据中包含有如下数据，则需做特别处理：
+序列化时，若按照 JSON 格式输出，则对 EJSON 扩展类型的数据，应统一输出为 `null` 或特定格式的字符串。
 
-1. 动态值，统一输出为 `<dynamic>`。
-1. 原生实体，统一输出为 `<native>`。
+1. `undefined`。
+1. 动态值。
+1. 原生实体。
 
 ##### 2.1.4.5) 键值对象
 
@@ -980,22 +981,6 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 ```
 
 之后，我们就可以使用 `$reciprocal_of_sqrt_2.eval_const` 来获得 2 的平方根之倒数，而且只需要计算一次。
-
-我们也可以使用使用 `bind` 标签的内容来定义要绑定的表达式：
-
-```html
-    <bind as="greeting" >Hello, $user_name</bind>
-
-
-    <bind as="greeting" >
-        "Hello, $user_name"
-    </bind>
-
-    <bind as="user_info" >
-        { 'name': $user_name, 'age`: $age }
-    </bind>
-```
-
 
 注意，当表达式在不同的上下文环境中执行时，由于所引用变量的作用域发生了变化，所得到的结果也会出现不同。
 
@@ -3400,6 +3385,12 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             "name": "$currUser.name",
             "region": "$currUser.locale"
         }
+    </bind>
+
+    <bind as="greeting" >Hello, $user_name</bind>
+
+    <bind as="greeting" >
+        "Hello, $user_name"
     </bind>
 ```
 
