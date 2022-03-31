@@ -146,12 +146,12 @@ Language: Chinese
       * [3.9.40) `count_chars` 方法](#3940-count_chars-方法)
       * [3.9.41) `count_bytes` 方法](#3941-count_bytes-方法)
    + [3.10) `URL`](#310-url)
-      * [3.10.1) `urlencode` 方法](#3101-urlencode-方法)
-      * [3.10.2) `urldecode` 方法](#3102-urldecode-方法)
-      * [3.10.3) `rawurlencode` 方法](#3103-rawurlencode-方法)
-      * [3.10.4) `rawurldecode` 方法](#3104-rawurldecode-方法)
-      * [3.10.5) `parse` 方法](#3105-parse-方法)
+      * [3.10.1) `encode` 方法](#3101-encode-方法)
+      * [3.10.2) `decode` 方法](#3102-decode-方法)
+      * [3.10.3) `rawencode` 方法](#3103-rawencode-方法)
+      * [3.10.4) `rawdecode` 方法](#3104-rawdecode-方法)
       * [3.10.6) `httpquery` 方法](#3106-httpquery-方法)
+      * [3.10.5) `parse` 方法](#3105-parse-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -294,19 +294,19 @@ Language: Chinese
 
 | 类型               |  表示方法                    | 对应的 HVML 数据类型         |
 | ----------------   |  --------                    | ---------------------------- |
-| 1 字节整数         |  `i8[:<LENGTH>]`             | longint, longint 数组    |
-| 2 字节整数         |  `i16[le/be][:<LENGTH>]`     | longint, longint 数组    |
-| 4 字节整数         |  `i32[le/be][:<LENGTH>]`     | longint, longint 数组    |
-| 8 字节整数         |  `i64[le/be][:<LENGTH>]`     | longint, longint 数组    |
-| 1 字节无符号整数   |  `u8[:<LENGTH>]`             | ulongint, ulongint 数组   |
-| 2 字节无符号整数   |  `u16[le/be][:<LENGTH>]`     | ulongint, ulongint 数组   |
-| 4 字节无符号整数   |  `u32[le/be][:<LENGTH>]`     | ulongint, ulongint 数组   |
-| 8 字节无符号整数   |  `u64[le/be][:<LENGTH>]`     | ulongint, ulongint 数组   |
-| 2 字节浮点型       |  `f16[le/be][:<LENGTH>]`     | number, number 数组     |
-| 4 字节浮点型       |  `f32[le/be][:<LENGTH>]`     | number, number 数组     |
-| 8 字节浮点型       |  `f64[le/be][:<LENGTH>]`     | number, number 数组     |
-| 12 字节浮点型      |  `f96[le/be][:<LENGTH>]`     | longdouble, longdouble 数组 |
-| 16 字节长双精度    |  `f128[le/be][:<LENGTH>]`    | longdouble, longdouble 数组 |
+| 1 字节整数         |  `i8[:<QUANTITY>]`           | longint, longint 数组    |
+| 2 字节整数         |  `i16[le/be][:<QUANTITY>]`   | longint, longint 数组    |
+| 4 字节整数         |  `i32[le/be][:<QUANTITY>]`   | longint, longint 数组    |
+| 8 字节整数         |  `i64[le/be][:<QUANTITY>]`   | longint, longint 数组    |
+| 1 字节无符号整数   |  `u8[:<QUANTITY>]`           | ulongint, ulongint 数组   |
+| 2 字节无符号整数   |  `u16[le/be][:<QUANTITY>]`   | ulongint, ulongint 数组   |
+| 4 字节无符号整数   |  `u32[le/be][:<QUANTITY>]`   | ulongint, ulongint 数组   |
+| 8 字节无符号整数   |  `u64[le/be][:<QUANTITY>]`   | ulongint, ulongint 数组   |
+| 2 字节浮点型       |  `f16[le/be][:<QUANTITY>]`   | number, number 数组     |
+| 4 字节浮点型       |  `f32[le/be][:<QUANTITY>]`   | number, number 数组     |
+| 8 字节浮点型       |  `f64[le/be][:<QUANTITY>]`   | number, number 数组     |
+| 12 字节浮点型      |  `f96[le/be][:<QUANTITY>]`   | longdouble, longdouble 数组 |
+| 16 字节长双精度    |  `f128[le/be][:<QUANTITY>]`  | longdouble, longdouble 数组 |
 | 字节序列           |  `bytes:<SIZE>`              | bsequence；SIZE 指定字节数量。 |
 | UTF-8编码的字符串  |  `utf8[:<SIZE>]`             | string；SIZE 可选：指定字节数量，未指定时，到空字符（0x00）为止。|
 | UTF-16编码的字符串 |  `utf16[le/be][:<SIZE>]`     | string；SIZE 可选：指定字节数量，未指定时，到空字符（连续两个 0x00 字节）为止。|
@@ -327,7 +327,7 @@ Language: Chinese
 | 类型              | 表示方法              | 备注                                                                      | 举例                  |
 | --------          | ------------------    | --------------------------------------------                              | -----------------     |
 | 数值类型          | 类型 + 大/小头        | 如不标大、小头，则跟随当前架构                                            | u16、u32be、u64le     |
-| 连续数值类型      | 类型 + 大/小头 + 长度 | 如不标大、小头，则跟随当前架构，长度指该类数值的个数                      | u16:10、u32be:10      |
+| 连续数值类型      | 类型 + 大/小头 + 个数 | 如不标大、小头，则跟随当前架构，个数指该类数值的数值，必须大于零          | u16:10、u32be:10      |
 | 字节序列          | 类型 + 长度           |                                                                           | bytes:234             |
 | UTF-8 编码字符串  | 类型 + 长度 / 类型    | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 字节）           | utf8、utf8:123        |
 | UTF-16 编码字符串 | 类型 + 长度 / 类型    | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 六位整数）       | utf16、utf16:120      |
@@ -336,7 +336,7 @@ Language: Chinese
 注意：
 
 - 二进制格式关键词区分大小写。
-- 字节序列以及字符串长度均以字节为单位。
+- 字节序列、填白以及字符串的长度均以字节为单位。
 - 我们使用多个构成部分组成的字符串来表示一个结构，不同构成部分之间使用空白字符分隔。
 
 如，`i32le utf8:128 f64`，表示一个结构的构成部分依次如下：
@@ -2036,23 +2036,28 @@ $EJSON.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8', 6, -6 )
 $EJSON.fetchreal( <bsequece $bytes>,
         <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128 ...' $binary_format: `the binary format and/or endianness; see Binary Format Notation`>
         [, < real $offset = 0: `the offset in the byte sequence.` > ]
-) real | undefined
+) real | array | undefined
 ```
 
 该方法将给定的二进制字节序列按指定的格式转换为对应的实数类型。
+
+该方法支持 `i16[le|be][:<QUANTITY>]` 记法，用于表示实数的大小头以及个数。当指定有效个数时，返回数组。
 
 **异常**
 
 该方法可能抛出如下异常：
 
 - `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回 `undefined`。
-- `InvalidValue`：错误偏移量值；可忽略异常，静默求值时视同 0。
+- `InvalidValue`：错误的偏移量值或超过二进制字节序长度的个数等；可忽略异常，静默求值时返回 `undefined`。
 
 **示例**
 
 ```js
 $EJSON.fetchreal( bx0a00, 'i16le', 0 )
     // longint: 10L
+
+$EJSON.fetchreal( bx0a00, 'i8:2', 0 )
+    // array: [ 10L, 00L ]
 ```
 
 ### 3.7) `L`
@@ -4043,14 +4048,14 @@ $STR.count_bytes(
 
 ### 3.10) `URL`
 
-#### 3.10.1) `urlencode` 方法
+#### 3.10.1) `encode` 方法
 
 编码 URL 字符串。
 
 **描述**
 
 ```js
-$URL.urlencode(
+$URL.encode(
         <string $str: the string to be encoded>
 ) string
 ```
@@ -4067,14 +4072,14 @@ $URL.urlencode(
 
 - PHP `urlencode()` 函数：<https://www.php.net/manual/en/function.urlencode.php>
 
-#### 3.10.2) `urldecode` 方法
+#### 3.10.2) `decode` 方法
 
 解码已编码的 URL 字符串。
 
 **描述**
 
 ```js
-$URL.urldecode(
+$URL.decode(
         <string $str: the string to be decoded.>
 ) string
 ```
@@ -4091,14 +4096,14 @@ $URL.urldecode(
 
 - PHP `urldecode()` 函数：<https://www.php.net/manual/en/function.urldecode.php>
 
-#### 3.10.3) `rawurlencode` 方法
+#### 3.10.3) `rawencode` 方法
 
 按照 RFC 3986 对 URL 进行编码。
 
 **描述**
 
 ```js
-$URL.rawurlencode(
+$URL.rawencode(
         <string $str: the string to be encoded>
 ) string
 ```
@@ -4115,14 +4120,14 @@ $URL.rawurlencode(
 
 - PHP `rawurlencode()` 函数：<https://www.php.net/manual/en/function.rawurlencode.php>
 
-#### 3.10.4) `rawurldecode` 方法
+#### 3.10.4) `rawdecode` 方法
 
 对已编码的 URL 字符串进行解码。
 
 **描述**
 
 ```js
-$URL.rawurldecode(
+$URL.rawdecode(
         <string $str: the string to be decoded>
 ) string
 ```
@@ -4138,33 +4143,6 @@ $URL.rawurldecode(
 **参见**
 
 - PHP `rawurldecode()` 函数：<https://www.php.net/manual/en/function.rawurldecode.php>
-
-#### 3.10.5) `parse` 方法
-
-解析 URL，返回其组成部分。
-
-
-**描述**
-
-```js
-$URL.parse(
-        <string $url: the URL to parse.>,
-        [,
-            <'all | [scheme || host || port || user || password || path || query || fragment]' $components = 'all': the components want to parse.>
-        ]
-) object | string
-```
-
-
-**参数**
-
-**返回值**
-
-**示例**
-
-**参见**
-
-- PHP `parse()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
 #### 3.10.6) `httpquery` 方法
 
@@ -4199,6 +4177,56 @@ $URL.httpquery(
 - PHP `http_build_query()` 函数：<https://www.php.net/manual/en/function.http-build-query.php>
 - [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
 - [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
+
+#### 3.10.5) `parse` 方法
+
+解析 URL，返回其组成部分。
+
+
+**描述**
+
+```js
+$URL.parse(
+        <string $url: the URL to parse.>,
+        [,
+            <'all | [scheme || host || port || user || password || path || query || fragment]' $components = 'all': the components want to parse.>
+        ]
+) object | string
+```
+
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参见**
+
+- PHP `parse_url()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
+
+#### 3.10.5) `assemble` 方法
+
+根据分解 URL 对象组装一个完整的 URL。
+
+
+**描述**
+
+```js
+$URL.assemble(
+        <object $broken_down_url: `the broken-down URL object.`>
+) string
+```
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参见**
+
+- PHP `parse_url()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
 ## 4) 可选动态变量
 
