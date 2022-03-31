@@ -223,7 +223,7 @@ Language: Chinese
       * [4.3.2) 二进制文件](#432-二进制文件)
          - [4.3.2.1) `bin.head` 方法](#4321-binhead-方法)
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
-   + [4.4) STREAM](#44-stream)
+   + [4.4) `STREAM`](#44-stream)
       * [4.4.1) `stdin` 静态属性](#441-stdin-静态属性)
       * [4.4.2) `stdout` 静态属性](#442-stdout-静态属性)
       * [4.4.3) `stderr` 静态属性](#443-stderr-静态属性)
@@ -5783,7 +5783,7 @@ $FILE.bin.tail($file, 5)
 $FILE.bin.tail($file, -5)
 ```
 
-### 4.4) STREAM
+### 4.4) `STREAM`
 
 `STREAM` 是一个可装载的动态变量，该变量用于实现常见的读写流操作。
 
