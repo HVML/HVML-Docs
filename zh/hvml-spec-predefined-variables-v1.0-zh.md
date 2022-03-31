@@ -82,6 +82,11 @@ Language: Chinese
       * [3.6.11) `isequal` 方法](#3611-isequal-方法)
       * [3.6.12) `fetchstr` 方法](#3612-fetchstr-方法)
       * [3.6.13) `fetchreal` 方法](#3613-fetchreal-方法)
+      * [3.6.14) `crc32` 方法](#3614-crc32-方法)
+      * [3.6.15) `md5` 方法](#3615-md5-方法)
+      * [3.6.16) `sha1` 方法](#3616-sha1-方法)
+      * [3.6.17) `pack` 方法](#3617-pack-方法)
+      * [3.6.18) `unpack` 方法](#3618-unpack-方法)
    + [3.7) `L`](#37-l)
       * [3.7.1) `not` 方法](#371-not-方法)
       * [3.7.2) `and` 方法](#372-and-方法)
@@ -135,16 +140,13 @@ Language: Chinese
       * [3.9.29) `htmlentities_encode` 方法](#3929-htmlentities_encode-方法)
       * [3.9.30) `htmlentities_decode` 方法](#3930-htmlentities_decode-方法)
       * [3.9.31) `nl2br` 方法](#3931-nl2br-方法)
-      * [3.9.32) `bin2hex` 方法](#3932-bin2hex-方法)
-      * [3.9.33) `hex2bin` 方法](#3933-hex2bin-方法)
-      * [3.9.34) `crc32` 方法](#3934-crc32-方法)
-      * [3.9.35) `md5` 方法](#3935-md5-方法)
-      * [3.9.36) `sha1` 方法](#3936-sha1-方法)
-      * [3.9.37) `rot13` 方法](#3937-rot13-方法)
-      * [3.9.38) `base64encode` 方法](#3938-base64encode-方法)
-      * [3.9.39) `base64decode` 方法](#3939-base64decode-方法)
-      * [3.9.40) `count_chars` 方法](#3940-count_chars-方法)
-      * [3.9.41) `count_bytes` 方法](#3941-count_bytes-方法)
+      * [3.9.32) `rot13` 方法](#3932-rot13-方法)
+      * [3.9.33) `bin2hex` 方法](#3933-bin2hex-方法)
+      * [3.9.34) `hex2bin` 方法](#3934-hex2bin-方法)
+      * [3.9.35) `base64encode` 方法](#3935-base64encode-方法)
+      * [3.9.36) `base64decode` 方法](#3936-base64decode-方法)
+      * [3.9.37) `count_chars` 方法](#3937-count_chars-方法)
+      * [3.9.38) `count_bytes` 方法](#3938-count_bytes-方法)
    + [3.10) `URL`](#310-url)
       * [3.10.1) `encode` 方法](#3101-encode-方法)
       * [3.10.2) `decode` 方法](#3102-decode-方法)
@@ -2061,6 +2063,155 @@ $EJSON.fetchreal( bx0a00, 'i8:2', 0 )
     // array: [ 10L, 00L ]
 ```
 
+#### 3.6.14) `crc32` 方法
+
+计算一个数据的 CRC32 多项式值。
+
+**描述**
+
+```js
+$EJSON.crc32(
+        < any $data>
+) ulongint
+```
+
+该方法计算任意数据的 CRC32 多项式值。对非字符串或字节序列的数据，该方法基于字符串化之后的数据进行计算。
+
+**示例**
+
+**参见**
+
+- PHP `crc32()` 函数：<https://www.php.net/manual/en/function.crc32.php>
+
+#### 3.6.15) `md5` 方法
+
+计算任意数据的 MD5 散列值。
+
+**描述**
+
+```js
+$EJSON.md5(
+        < any $data >
+        [, < boolean $binary = false:
+            true - `the md5 digest is returned as a binary sequence with a length of 16.`
+            false - `the md5 digest is returned as a 32-character hexadecimal number.` >
+        ]
+) string | bsequence
+```
+
+该方法计算任意数据的 MD5 散列值。对非字符串或字节序列的数据，该方法基于字符串化之后的数据进行计算。
+
+**示例**
+
+**参见**
+
+- PHP `md5()` 函数：<https://www.php.net/manual/en/function.md5.php>
+
+#### 3.6.16) `sha1` 方法
+
+计算任意数据的 SHA1 散列值。
+
+**描述**
+
+```js
+$EJSON.sha1(
+        < any $data >
+        [, < boolean $binary = false:
+            true - `the sha1 digest is returned in a raw binary sequence with a length of 20.`
+            false - `the sha1 digest is returned as a 40-character hexadecimal number.` >
+        ]
+) string | bsequence
+```
+
+该方法计算任意数据的 SHA1 散列值。对非字符串或字节序列的数据，该方法基于字符串化之后的数据进行计算。
+
+**示例**
+
+**参见**
+
+- PHP `sha1()` 函数：<https://www.php.net/manual/en/function.sha1.php>
+
+
+#### 3.6.17) `pack` 方法
+
+将多个数据打包为二进制序列。
+
+**描述**
+
+```js
+$EJSON.pack(
+        <string $format: `the format string; see Binary Format Notation.` >,
+        <real | string | bsequence $first: `the first data.` >
+        [,  <real | string | bsequence $second: `the second data.` >
+            [, <real | string | bsequence $third: `the third data.` >
+                [, ... ]
+            ]
+        ]
+) string
+```
+
+该函数传入的多个实数、字符串或字节序列按照 `$format` 指定的二进制格式打包为字节序列。
+
+```js
+$EJSON.pack(
+        <string $format: `the format string; see Binary Format Notation.` >,
+        <array $data >
+) string
+```
+
+该函数将传入的数组之成员依次按照 `$format` 指定的二进制格式转换为字节序列。
+
+**异常**
+
+该方法可能抛出如下异常：
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字节序列。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时跳过。
+- `BadEncoding`：错误编码；可忽略异常，静默求值时跳过。
+- `InvalidValue`：给定数据超过格式指定的实数范围；可忽略异常，静默求值时跳过。
+
+**示例**
+
+```js
+$EJSON.pack( "i16le i32le", 10, 10)
+    // bsequence: bx0a000a000000
+```
+**参见**
+
+- [1.2) 二进制格式表示法](#12-二进制格式表示法)
+
+#### 3.6.18) `unpack` 方法
+
+将二进制序列分解为多个数据。
+
+**描述**
+
+```js
+$EJSON.unpack(
+        <string $format: `the format string; see Binary Format Notation.` >,
+        <bsequence $data: `the data.`>
+) array
+```
+
+该函数将传入字节序列按照 `$format` 指定的二进制格式分解为多个数据构成的数组。
+
+**异常**
+
+该方法可能抛出如下异常：
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空数组。
+- `InvalidValue`：格式和字节序列不匹配；可忽略异常，静默求值时返回已分解数据。
+
+**示例**
+
+```js
+$EJSON.unpack( "i16le i32le", bx0a000a000000)
+    // array: [10L, 10L]
+```
+**参见**
+
+- [1.2) 二进制格式表示法](#12-二进制格式表示法)
+
 ### 3.7) `L`
 
 该变量是一个会话级内置变量，主要用于逻辑运算。
@@ -3760,150 +3911,7 @@ $STR.nl2br(
 
 - PHP `nl2br()` 函数：<https://www.php.net/manual/en/function.nl2br.php>
 
-#### 3.9.32) `bin2hex` 方法
-
-二进制字符串转换为十六进制。
-
-<https://www.php.net/manual/en/function.bin2hex.php>
-
-**描述**
-
-```js
-$STR.bin2hex(
-        <string $data>,
-        <boolean $uppercase:
-            true - `use A...F;`
-            false - `use a...f.`
-        >,
-        <boolean $strict:
-            true - `throw the @BadEncoding exception for a bad encoded string;`
-            false - `stops conversion for any error and returns the converted string.`
-        >
-) string
-```
-
-该函数将输入的二进制字符串 `data` 转换为十六进制字符串。
-
-**参数**
-
-**返回值**
-
-**示例**
-
-**参见**
-
-- PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.bin2hex.php>
-
-#### 3.9.33) `hex2bin` 方法
-
-十六进制字符串转换为二进制。
-
-**描述**
-
-```js
-$STR.hex2bin(
-        <string $data>,
-        <boolean $strict:
-            true - `throw the BadEncoding exception for a bad encoded string;`
-            false - `stops conversion for any error and returns the converted string.`
-        >
-) string
-```
-
-该函数将输入的十六进制字符串 `data` 转换为二进制字符串。
-
-**参数**
-
-**返回值**
-
-**示例**
-
-**参见**
-
-- PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.hex2bin.php>
-
-#### 3.9.34) `crc32` 方法
-
-计算一个字符串或二进制序列的 CRC32 多项式。
-
-**描述**
-
-```js
-$STR.crc32(
-        < string | bsequence $data>
-) ulongint
-```
-
-
-
-**参数**
-
-**返回值**
-
-**示例**
-
-**参见**
-
-- PHP `crc32()` 函数：<https://www.php.net/manual/en/function.crc32.php>
-
-#### 3.9.35) `md5` 方法
-
-计算一个字符串或者二进制序列的 MD5 散列值。
-
-**描述**
-
-```js
-$STR.md5(
-        < string | bsequence $data >,
-        < boolean $binary = false:
-            true - `the md5 digest is returned as a binary sequence with a length of 16.`
-            false - `the md5 digest is returned as a 32-character hexadecimal number.`
-        >
-) string | bsequence
-```
-
-
-
-**参数**
-
-**返回值**
-
-**示例**
-
-**参见**
-
-- PHP `md5()` 函数：<https://www.php.net/manual/en/function.md5.php>
-
-#### 3.9.36) `sha1` 方法
-
-计算一个字符串或者二进制序列的 SHA1 散列值。
-
-**描述**
-
-```js
-$STR.sha1(
-        < string | bsequence $data >,
-        < boolean $binary = false:
-            true - `the sha1 digest is returned in a raw binary sequence with a length of 20.`
-            false - `the sha1 digest is returned as a 40-character hexadecimal number.`
-        >
-) string | bsequence
-```
-
-
-
-**参数**
-
-**返回值**
-
-**示例**
-
-**参见**
-
-- PHP `sha1()` 函数：<https://www.php.net/manual/en/function.sha1.php>
-
-
-#### 3.9.37) `rot13` 方法
+#### 3.9.32) `rot13` 方法
 
 对字符串执行 ROT13 转换。
 
@@ -3927,7 +3935,80 @@ $STR.rot13(
 
 - PHP `rot13()` 函数：<https://www.php.net/manual/en/function.rot13.php>
 
-#### 3.9.38) `base64encode` 方法
+#### 3.9.33) `bin2hex` 方法
+
+将字符串或者字节序列转换为十六进制字符串表达。
+
+**描述**
+
+```js
+$EJSON.bin2hex(
+        <string | bsequence $data>
+        [, <boolean $uppercase = true:
+            true - `use A...F;`
+            false - `use a...f.` >
+        ]
+) string
+```
+
+该函数将一个字节序列 `data` 转换为十六进制表述的字符串。转换以字节为单位，高四位字节优先。
+
+**异常**
+
+该方法可能抛出如下异常：
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字符串。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字符串。
+
+**示例**
+
+```js
+$EJSON.bin2hex( bb0000.1111.1111.0000)
+    // string: '0FF0'
+```
+
+**参见**
+
+- PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.bin2hex.php>
+
+#### 3.9.34) `hex2bin` 方法
+
+十六进制字符串转换为字节序列。
+
+**描述**
+
+```js
+$EJSON.hex2bin(
+        <string $data>
+        [, <boolean $strict:
+            true - `throw the BadEncoding exception for a bad encoded string.`
+            false - `stops conversion for any error and returns the converted string.` >
+        ]
+) string
+```
+
+该函数将十六进制字符串 `data` 转换为二进制字节序列。
+
+**异常**
+
+该方法可能抛出如下异常：
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字节序列。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字符串。
+- `BadEncoding`：不可识别的十六进制字符串；可忽略异常，静默求值时返回已转换的字符串。
+
+**示例**
+
+```js
+$EJSON.hex2bin( '0FF0' )
+    // bsequence: bb0000.1111.1111.0000
+```
+
+**参见**
+
+- PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.hex2bin.php>
+
+#### 3.9.35) `base64encode` 方法
 
 使用 MIME base64 编码字符串或者字节序列。
 
@@ -3954,7 +4035,7 @@ $URL.base64encode(
 - PHP `base64_encode()` 函数：<https://www.php.net/manual/en/function.base64-encode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.9.39) `base64decode` 方法
+#### 3.9.36) `base64decode` 方法
 
 解码使用 MIME base64 编码的字符串。
 
@@ -3987,7 +4068,7 @@ $URL.base64decode(
 - PHP `base64_decode()` 函数：<https://www.php.net/manual/en/function.base64-decode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.9.40) `count_chars` 方法
+#### 3.9.37) `count_chars` 方法
 
 统计字符串中的字符出现次数。
 
@@ -4015,7 +4096,7 @@ $STR.count_chars(
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
-#### 3.9.41) `count_bytes` 方法
+#### 3.9.38) `count_bytes` 方法
 
 统计字符串或二进制字节序中的各个字节（0...255）出现的次数。
 
