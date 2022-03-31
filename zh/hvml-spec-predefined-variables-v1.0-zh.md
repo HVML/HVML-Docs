@@ -5878,12 +5878,12 @@ $STREAM.open("file://abc.md")
 
 在流中执行定位操作。
 
-使用示例：
+#### 4.4.12) 综合示例
 
 ```html
     <init as="formats">
         [
-            "b2 p2 u32le u32le",
+            "bytes:2 padding:2 u32le u32le",
             "f64le f64le",
         ]
     </init>
