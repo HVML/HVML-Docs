@@ -262,7 +262,7 @@ Language: Chinese
 - 渲染器（renderer），指渲染 HVML 程序生成的目标文档并和用户交互的计算机软件。
 - 会话（session），指一个解释器实例的上下文信息；每个解释器实例对应一个 HVML 会话，每个 HVML 会话运行多个 HVML 程序，对应渲染器中的多个窗口。
 - 静态属性（static property），指一个对象上键值为普通数据的属性，其键值不是动态值。
-- 方法（method），指一个对象上键值为动态值的属性，对应于非动态数据。
+- 方法（method），指一个对象上键值为动态值的属性。
 - 获取器（getter），指一个方法的获取器。调用获取器返回该方法的动态属性值。
 - 设置器（setter），指一个方法的设置器。调用特定方法的设置器，将完成对应属性的设置工作。
 
@@ -295,22 +295,22 @@ Language: Chinese
 | 类型               |  表示方法                    | 对应的 HVML 数据类型         |
 | ----------------   |  --------                    | ---------------------------- |
 | 1 字节整数         |  `i8[:<LENGTH>]`             | longint, longint 数组    |
-| 2 字节整数         |  `i16[le|be][:<LENGTH>]`     | longint, longint 数组    |
-| 4 字节整数         |  `i32[le|be][:<LENGTH>]`     | longint, longint 数组    |
-| 8 字节整数         |  `i64[le|be][:<LENGTH>]`     | longint, longint 数组    |
+| 2 字节整数         |  `i16[le&#124;be][:<LENGTH>]`     | longint, longint 数组    |
+| 4 字节整数         |  `i32[le&#124;be][:<LENGTH>]`     | longint, longint 数组    |
+| 8 字节整数         |  `i64[le&#124;be][:<LENGTH>]`     | longint, longint 数组    |
 | 1 字节无符号整数   |  `u8[:<LENGTH>]`             | ulongint, ulongint 数组   |
-| 2 字节无符号整数   |  `u16[le|be][:<LENGTH>]`     | ulongint, ulongint 数组   |
-| 4 字节无符号整数   |  `u32[le|be][:<LENGTH>]`     | ulongint, ulongint 数组   |
-| 8 字节无符号整数   |  `u64[le|be][:<LENGTH>]`     | ulongint, ulongint 数组   |
-| 2 字节浮点型       |  `f16[le|be][:<LENGTH>]`     | number, number 数组     |
-| 4 字节浮点型       |  `f32[le|be][:<LENGTH>]`     | number, number 数组     |
-| 8 字节浮点型       |  `f64[le|be][:<LENGTH>]`     | number, number 数组     |
-| 12 字节浮点型      |  `f96[le|be][:<LENGTH>]`     | longdouble, longdouble 数组 |
-| 16 字节长双精度    |  `f128[le|be][:<LENGTH>]`    | longdouble, longdouble 数组 |
+| 2 字节无符号整数   |  `u16[le&#124;be][:<LENGTH>]`     | ulongint, ulongint 数组   |
+| 4 字节无符号整数   |  `u32[le&#124;be][:<LENGTH>]`     | ulongint, ulongint 数组   |
+| 8 字节无符号整数   |  `u64[le&#124;be][:<LENGTH>]`     | ulongint, ulongint 数组   |
+| 2 字节浮点型       |  `f16[le&#124;be][:<LENGTH>]`     | number, number 数组     |
+| 4 字节浮点型       |  `f32[le&#124;be][:<LENGTH>]`     | number, number 数组     |
+| 8 字节浮点型       |  `f64[le&#124;be][:<LENGTH>]`     | number, number 数组     |
+| 12 字节浮点型      |  `f96[le&#124;be][:<LENGTH>]`     | longdouble, longdouble 数组 |
+| 16 字节长双精度    |  `f128[le&#124;be][:<LENGTH>]`    | longdouble, longdouble 数组 |
 | 字节序列           |  `bytes:<SIZE>`              | bsequence；SIZE 指定字节数量。 |
 | UTF-8编码的字符串  |  `utf8[:<SIZE>]`             | string；SIZE 可选：指定字节数量，未指定时，到空字符（0x00）为止。|
-| UTF-16编码的字符串 |  `utf16[le|be][:<SIZE>]`     | string；SIZE 可选：指定字节数量，未指定时，到空字符（连续两个 0x00 字节）为止。|
-| UTF-32编码的字符串 |  `utf32[le|be][:<SIZE>]`     | string；SIZE 可选：指定字节数量，未指定时，到空字符（连续四个 0x00 字节）为止。|
+| UTF-16编码的字符串 |  `utf16[le&#124;be][:<SIZE>]`     | string；SIZE 可选：指定字节数量，未指定时，到空字符（连续两个 0x00 字节）为止。|
+| UTF-32编码的字符串 |  `utf32[le&#124;be][:<SIZE>]`     | string；SIZE 可选：指定字节数量，未指定时，到空字符（连续四个 0x00 字节）为止。|
 | 填白               |  `padding:<SIZE>`            | 无，将跳过指定数量的字节；SIZE 指定字节数量。     |
 
 对 8 位以上整数、浮点数以及 UTF-16、UTF-32 编码，使用如下可选后缀表示大小头：
