@@ -295,22 +295,22 @@ Language: Chinese
 | 类型               |  表示方法                    | 对应的 HVML 数据类型         |
 | ----------------   |  --------                    | ---------------------------- |
 | 1 字节整数         |  `i8[:<LENGTH>]`             | longint, longint 数组    |
-| 2 字节整数         |  `i16[le&#124;be][:<LENGTH>]`     | longint, longint 数组    |
-| 4 字节整数         |  `i32[le&#124;be][:<LENGTH>]`     | longint, longint 数组    |
-| 8 字节整数         |  `i64[le&#124;be][:<LENGTH>]`     | longint, longint 数组    |
+| 2 字节整数         |  `i16[le/be][:<LENGTH>]`     | longint, longint 数组    |
+| 4 字节整数         |  `i32[le/be][:<LENGTH>]`     | longint, longint 数组    |
+| 8 字节整数         |  `i64[le/be][:<LENGTH>]`     | longint, longint 数组    |
 | 1 字节无符号整数   |  `u8[:<LENGTH>]`             | ulongint, ulongint 数组   |
-| 2 字节无符号整数   |  `u16[le&#124;be][:<LENGTH>]`     | ulongint, ulongint 数组   |
-| 4 字节无符号整数   |  `u32[le&#124;be][:<LENGTH>]`     | ulongint, ulongint 数组   |
-| 8 字节无符号整数   |  `u64[le&#124;be][:<LENGTH>]`     | ulongint, ulongint 数组   |
-| 2 字节浮点型       |  `f16[le&#124;be][:<LENGTH>]`     | number, number 数组     |
-| 4 字节浮点型       |  `f32[le&#124;be][:<LENGTH>]`     | number, number 数组     |
-| 8 字节浮点型       |  `f64[le&#124;be][:<LENGTH>]`     | number, number 数组     |
-| 12 字节浮点型      |  `f96[le&#124;be][:<LENGTH>]`     | longdouble, longdouble 数组 |
-| 16 字节长双精度    |  `f128[le&#124;be][:<LENGTH>]`    | longdouble, longdouble 数组 |
+| 2 字节无符号整数   |  `u16[le/be][:<LENGTH>]`     | ulongint, ulongint 数组   |
+| 4 字节无符号整数   |  `u32[le/be][:<LENGTH>]`     | ulongint, ulongint 数组   |
+| 8 字节无符号整数   |  `u64[le/be][:<LENGTH>]`     | ulongint, ulongint 数组   |
+| 2 字节浮点型       |  `f16[le/be][:<LENGTH>]`     | number, number 数组     |
+| 4 字节浮点型       |  `f32[le/be][:<LENGTH>]`     | number, number 数组     |
+| 8 字节浮点型       |  `f64[le/be][:<LENGTH>]`     | number, number 数组     |
+| 12 字节浮点型      |  `f96[le/be][:<LENGTH>]`     | longdouble, longdouble 数组 |
+| 16 字节长双精度    |  `f128[le/be][:<LENGTH>]`    | longdouble, longdouble 数组 |
 | 字节序列           |  `bytes:<SIZE>`              | bsequence；SIZE 指定字节数量。 |
 | UTF-8编码的字符串  |  `utf8[:<SIZE>]`             | string；SIZE 可选：指定字节数量，未指定时，到空字符（0x00）为止。|
-| UTF-16编码的字符串 |  `utf16[le&#124;be][:<SIZE>]`     | string；SIZE 可选：指定字节数量，未指定时，到空字符（连续两个 0x00 字节）为止。|
-| UTF-32编码的字符串 |  `utf32[le&#124;be][:<SIZE>]`     | string；SIZE 可选：指定字节数量，未指定时，到空字符（连续四个 0x00 字节）为止。|
+| UTF-16编码的字符串 |  `utf16[le/be][:<SIZE>]`     | string；SIZE 可选：指定字节数量，未指定时，到空字符（连续两个 0x00 字节）为止。|
+| UTF-32编码的字符串 |  `utf32[le/be][:<SIZE>]`     | string；SIZE 可选：指定字节数量，未指定时，到空字符（连续四个 0x00 字节）为止。|
 | 填白               |  `padding:<SIZE>`            | 无，将跳过指定数量的字节；SIZE 指定字节数量。     |
 
 对 8 位以上整数、浮点数以及 UTF-16、UTF-32 编码，使用如下可选后缀表示大小头：
