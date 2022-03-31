@@ -328,7 +328,7 @@ Language: Chinese
 | 数值类型          | 类型 + 大、小头    | 如不标大、小头，则跟随当前架构                                           | u16、u32be、u64le     |
 | 字节序列          | 类型 + 长度        |                                                                          | bytes:234             |
 | UTF-8 编码字符串  | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 字节）          | utf8、utf8:123        |
-| UTF-16 编码字符串 | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 六位整数）      | utf16、utf16:120  |
+| UTF-16 编码字符串 | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 六位整数）      | utf16、utf16:120      |
 | UTF-32 编码字符串 | 类型 + 长度 / 类型 | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 三十二位整数）  | utf32be、utf32be:120  |
 
 注意：
@@ -699,7 +699,7 @@ $SYSTEM.time
 
 ```js
 $SYSTEM.time_us longdouble :
-    `A long double number representing the number of seconds (integral part) and microseconds (fractional part) since Epoch:`
+    `A long double number representing the number of seconds (integral part) and microseconds (fractional part) since Epoch.`
 ```
 
 该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值 longdouble 数值，小数部分为微秒值。
@@ -707,9 +707,9 @@ $SYSTEM.time_us longdouble :
 ```js
 $SYSTEM.time_us(
         <boolean $float = true: `indicate the return type: @true for long double number, @false for object.`>
-) longdouble | object: `An long double numer or object representing the number of seconds and microseconds since Epoch:`
-        'sec'           - < ulongint: `seconds since Epoch` >
-        'usec'          - < ulongint: `microseconds` >
+) longdouble | object: `A long double numer or an object representing the number of seconds and microseconds since Epoch:`
+        'sec'           - < longint: `seconds since Epoch` >
+        'usec'          - < longint: `microseconds` >
 ```
 
 该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为 longdouble 数值或包含 `sec` 和 `usec` 两个属性的对象。
@@ -5808,27 +5808,67 @@ $FILE.writelines($FILE.stdout, $SYSTEM.uname_prt('kernel-name'))
 
 #### 4.4.4) `open` 方法
 
-打开读写流，返回一个代表流对象的原生实体值。注意，流的关闭将在最终释放对应的数据时自动进行，故而不需要 `close` 方法。
+打开流，返回一个代表流的原生实体值。
+
+**描述**
+
+```js
+$STREAM.open(
+        < string $uri: `the URI of the stream.` >
+        [, < string $opts: `the options; the available options vary with the type of stream.` >
+) native | false: `the native entitiy representing the opened stream.`
+```
+
+该方法打开一个流，返回一个代表流的原生实体值。
+
+该方法使用 URI 指定要打开的流的类型和位置，如：
+
+- `file:///etc/passwd`：打开 `/etc/passwd` 文件。
+- `file://Documents/mydata`：打开当前工作路径下的 `Document/mydata` 文件。
+- `pipe:///var/tmp/apipe`：打开一个命名管道。
+- `unix:///var/run/myapp.sock`：打开一个 UNIX 套接字。
+- `winsock://xxx`：打开一个 Windows 套接字。
+- `ws://foo.bar.com:8877`：连接到 foo.bar.com 端口 8877 上的 WebSocket。
+- `wss://foo.bar.com:8877`：使用 SSL 连接到 foo.bar.com 端口 8877 上的 WebSocket。
+
+**异常**
+
+- `ArgumentMissed`：未传入必要参数。
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：传入无效数据。
+- `AccessDenied`：
+
+**注意**
+
+1. 流的关闭将在最终释放对应的原生实体值时自动进行，故而没有对应的 `close` 方法。
+1. 选项字符串随流的类型不同而不同。
+
+**示例**
+
+```js
+$STREAM.open("file://abc.md")
+    // native
+```
 
 #### 4.4.5) `readstruct` 方法
 
-从二进制流中读取一个二进制结构，并转换为适当的数据。
+从流中读取一个二进制结构，并转换为适当的数据。
 
 #### 4.4.6) `writestruct` 方法
 
-将多个数据按照指定的结构格式写入二进制流。
+将多个数据按照指定的结构格式写入流。
 
 #### 4.4.7) `readlines` 方法
 
-从文本流中读取给定行数，返回字符串数组。
+从流中读取给定行数，返回字符串数组。
 
 #### 4.4.8) `writelines` 方法
 
-将字符串写入文本流中。
+将字符串写入流中。
 
 #### 4.4.9) `readbytes` 方法
 
-从二进制或文本流中读取一个字节序列，返回一个字节序列。
+从流中读取一个字节序列，返回一个字节序列。
 
 #### 4.4.10) `writebytes` 方法
 
@@ -5836,7 +5876,7 @@ $FILE.writelines($FILE.stdout, $SYSTEM.uname_prt('kernel-name'))
 
 #### 4.4.11) `seek` 方法
 
-在二进制或文本流中执行定位操作。
+在流中执行定位操作。
 
 使用示例：
 
