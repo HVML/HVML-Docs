@@ -150,8 +150,9 @@ Language: Chinese
       * [3.10.2) `decode` 方法](#3102-decode-方法)
       * [3.10.3) `rawencode` 方法](#3103-rawencode-方法)
       * [3.10.4) `rawdecode` 方法](#3104-rawdecode-方法)
-      * [3.10.6) `httpquery` 方法](#3106-httpquery-方法)
-      * [3.10.5) `parse` 方法](#3105-parse-方法)
+      * [3.10.5) `httpquery` 方法](#3105-httpquery-方法)
+      * [3.10.6) `parse` 方法](#3106-parse-方法)
+      * [3.10.7) `assemble` 方法](#3107-assemble-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -4144,7 +4145,7 @@ $URL.rawdecode(
 
 - PHP `rawurldecode()` 函数：<https://www.php.net/manual/en/function.rawurldecode.php>
 
-#### 3.10.6) `httpquery` 方法
+#### 3.10.5) `httpquery` 方法
 
 生成 URL 编码的查询字符串。
 
@@ -4178,7 +4179,7 @@ $URL.httpquery(
 - [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
 - [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
 
-#### 3.10.5) `parse` 方法
+#### 3.10.6) `parse` 方法
 
 解析 URL，返回其组成部分。
 
@@ -4205,7 +4206,7 @@ $URL.parse(
 
 - PHP `parse_url()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
-#### 3.10.5) `assemble` 方法
+#### 3.10.7) `assemble` 方法
 
 根据分解 URL 对象组装一个完整的 URL。
 
