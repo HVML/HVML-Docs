@@ -2065,23 +2065,36 @@ $EJSON.fetchreal( bx0a00, 'i8:2', 0 )
 
 #### 3.6.14) `crc32` 方法
 
-计算一个数据的 CRC32 多项式值。
+计算任意数据的 CRC32 多项式值。
 
 **描述**
 
 ```js
 $EJSON.crc32(
         < any $data>
-) ulongint
+        < 'CRC-32 | CRC-32/BZIP2 | CRC-32/MPEG-2 | CRC-32/POSIX | CRC-32/XFER' $algo = 'CRC-32': `the name of CRC32 algorithm; use @null for default algorithm.`>
+        < 'longint | binary | uppercase | lowercase' $type = 'binary': `the type of return data:`
+            'ulongint'  - `a ulongint value have the CRC32 checksum.`
+            'binary'    - `a byte sequence (totally 4 bytes).`
+            'uppercase' - `a 8-character hexadecimal string in uppercase letters.`
+            'lowercase' - `a 8-character hexadecimal string in lowercase letters.` >
+) longint | bsequence | string
 ```
 
 该方法计算任意数据的 CRC32 多项式值。对非字符串或字节序列的数据，该方法基于字符串化之后的数据进行计算。
 
 **示例**
 
+```
+$EJSON.crc32('HVML', null, 'uppercase')
+    // string: '849C436F'
+```
+
 **参见**
 
 - PHP `crc32()` 函数：<https://www.php.net/manual/en/function.crc32.php>
+- [CRC 在线计算]<https://crccalc.com/>
+- [Catalogue of parametrised CRC algorithms](https://reveng.sourceforge.io/crc-catalogue/17plus.htm)
 
 #### 3.6.15) `md5` 方法
 
@@ -2092,10 +2105,11 @@ $EJSON.crc32(
 ```js
 $EJSON.md5(
         < any $data >
-        [, < boolean $binary = false:
-            true - `the md5 digest is returned as a binary sequence with a length of 16.`
-            false - `the md5 digest is returned as a 32-character hexadecimal number.` >
-        ]
+        < 'binary | uppercase | lowercase' $type = 'binary': `the type of return data:`
+            'binary'    - `the MD5 digest is returned as a binary sequence (totally 16 bytes).`
+            'uppercase' - `the MD5 digest is returned as a 32-character hexadecimal number in uppercase letters.`
+            'lowercase' - `the MD5 digest is returned as a 32-character hexadecimal number in lowercase letters.`
+        >
 ) string | bsequence
 ```
 
@@ -2116,10 +2130,11 @@ $EJSON.md5(
 ```js
 $EJSON.sha1(
         < any $data >
-        [, < boolean $binary = false:
-            true - `the sha1 digest is returned in a raw binary sequence with a length of 20.`
-            false - `the sha1 digest is returned as a 40-character hexadecimal number.` >
-        ]
+        < 'binary | uppercase | lowercase' $type = 'binary': `the type of return data:`
+            'binary'    - `the MD5 digest is returned as a binary sequence (totally 20 bytes).`
+            'uppercase' - `the MD5 digest is returned as a 40-character hexadecimal number in uppercase letters.`
+            'lowercase' - `the MD5 digest is returned as a 40-character hexadecimal number in lowercase letters.`
+        >
 ) string | bsequence
 ```
 
@@ -2130,7 +2145,6 @@ $EJSON.sha1(
 **参见**
 
 - PHP `sha1()` 函数：<https://www.php.net/manual/en/function.sha1.php>
-
 
 #### 3.6.17) `pack` 方法
 
