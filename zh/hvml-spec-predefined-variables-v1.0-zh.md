@@ -1,12 +1,12 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0  
+Version: 1.0-RC1  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
 Last Modified Date: Apr. 1, 2022  
-Status: Proposal  
+Status: Release Candidate  
 ReleaseName: 硕鼠  
 Language: Chinese
 
