@@ -712,10 +712,12 @@ $SYSTEM.time_us longdouble :
 
 ```js
 $SYSTEM.time_us(
-        <boolean $float = true: `indicate the return type: @true for long double number, @false for object.`>
-) longdouble | object: `A long double numer or an object representing the number of seconds and microseconds since Epoch:`
-        'sec'           - < longint: `seconds since Epoch` >
-        'usec'          - < longint: `microseconds` >
+        [
+            < 'longdouble | object' $return_type = 'longdouble': `indicate the return type: a long double number or an object.`>
+        ]
+) longdouble | object : `A long double numer or an object representing the number of seconds and microseconds since Epoch:`
+        - 'sec': < longint: `seconds since Epoch` >
+        - 'usec': < longint: `microseconds` >
 ```
 
 该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为 longdouble 数值或包含 `sec` 和 `usec` 两个属性的对象。
@@ -737,8 +739,8 @@ $SYSTEM.time_us(!
 
 **异常**
 
-- `InvalidValue`：传入无效参数，如负值或者大于 100,000 或小于 0 的微秒值。
-- `AccessDenied`：当运行解释器的所有者没有权限设置系统时间时，将抛出该异常。
+- `InvalidValue`：获取器被调用时，传入错误参数时（如错误的返回类型），将抛出该异常；静默求值时，返回 `longdouble` 类型的当前事件。设置器被调用时，传入无效参数时（如负值或者大于 100,000 或小于 0 的微秒值）时，将抛出该异常。
+- `AccessDenied`：设置器被调用时，当运行解释器的所有者没有权限设置系统时间时，将抛出该异常。
 
 **注意**
 
@@ -773,7 +775,9 @@ $SYSTEM.timezone : string | false
 ```js
 $SYSTEM.timezone(!
         <string $timezone: `new timezone`>
-        [, <boolean $permanently = false: `change timezone permanently and globally or temporarily and locally.`> ]
+        [,
+            < 'local | global' $permanently = 'local': `change timezone permanently/globally or temporarily/locally.`>
+        ]
 ) true | false
 ```
 
@@ -791,7 +795,7 @@ HVML 推荐使用类似 `Asia/Shanghai` 这样的字符串来表示时区。实�
 
 **异常**
 
-- `InvalidValue`：无效的时区字符串。
+- `InvalidValue`：无效的时区字符串。对无效的选项关键词，静默求值时，将被视作 `local`。
 - `AccessDenied`：当前会话的所有者没有权限持久更改系统时区。
 
 **注意**
@@ -2669,7 +2673,7 @@ $L.le("1", 2)
 **描述**
 
 ```js
-$L.streq("case | caseless | wildcard | reg",
+$L.streq("case | caseless | wildcard | regexp",
         <any>,
         <any>
 ) boolean | undefined
@@ -2698,7 +2702,7 @@ $L.streq("case", "zh_cn", "zh_CN")
 $L.streq("wildcard", "zh_*", "zh_CN")
     // boolean: true
 
-$L.streq("reg", "^zh", "zh_CN")
+$L.streq("regexp", "^zh", "zh_CN")
     // boolean: true
 ```
 
@@ -2709,7 +2713,7 @@ $L.streq("reg", "^zh", "zh_CN")
 **描述**
 
 ```js
-$L.strne("case | caseless | wildcard | reg",
+$L.strne("case | caseless | wildcard | regexp",
         <any>,
         <any>
 ) boolean | undefined
@@ -2738,7 +2742,7 @@ $L.strne("case", "zh_cn", "zh_CN")
 $L.strne("wildcard", "zh_*", "zh_CN")
     // boolean: false
 
-$L.strne("reg", "^zh", "zh_CN")
+$L.strne("regexp", "^zh", "zh_CN")
     // boolean: false
 ```
 
@@ -6028,6 +6032,10 @@ $STREAM.open("file://abc.md")
 ### 附.1) 修订记录
 
 #### RC2) 220501
+
+1. 调整接口，使用字符串选项而非布尔标志
+   - `$SYSTEM.time_us`
+   - `$SYSTEM.timezone`
 
 #### RC1) 220401
 
