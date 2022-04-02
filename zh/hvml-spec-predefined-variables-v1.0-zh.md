@@ -2072,22 +2072,29 @@ $EJSON.fetchreal( bx0a00, 'i8:2', 0 )
 ```js
 $EJSON.crc32(
         < any $data>
-        < 'CRC-32 | CRC-32/BZIP2 | CRC-32/MPEG-2 | CRC-32/POSIX | CRC-32/XFER' $algo = 'CRC-32': `the name of CRC32 algorithm; use @null for default algorithm.`>
-        < 'longint | binary | uppercase | lowercase' $type = 'binary': `the type of return data:`
-            'ulongint'  - `a ulongint value have the CRC32 checksum.`
-            'binary'    - `a byte sequence (totally 4 bytes).`
-            'uppercase' - `a 8-character hexadecimal string in uppercase letters.`
-            'lowercase' - `a 8-character hexadecimal string in lowercase letters.` >
-) longint | bsequence | string
+        < 'CRC-32 | CRC-32/BZIP2 | CRC-32/MPEG-2 | CRC-32/POSIX | CRC-32/XFER | CRC-32/ISCSI | CRC-32C | CRC-32/BASE91-D | CRC-32D | CRC-32/JAMCRC | CRC-32/AIXM | CRC-32Q' $algo = 'CRC-32': `the name of CRC32 algorithm; use @null for default algorithm.`>
+        < 'ulongint | binary | uppercase | lowercase' $type = 'ulongint': `the type of return data:`
+            - 'ulongint': `a unsigned longint value have the CRC32 checksum.`
+            - 'binary': `a byte sequence (totally 4 bytes).`
+            - 'uppercase': `a 8-character hexadecimal string in uppercase letters.`
+            - 'lowercase': `a 8-character hexadecimal string in lowercase letters.` >
+) ulongint | bsequence | string | undefined
 ```
 
 该方法计算任意数据的 CRC32 多项式值。对非字符串或字节序列的数据，该方法基于字符串化之后的数据进行计算。
 
+**异常**
+
+该方法可能抛出如下异常：
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：错误的 CRC32 算法名称；可忽略异常，静默求值时返回 `undefined`。
+
 **示例**
 
 ```
-$EJSON.crc32('HVML', null, 'uppercase')
-    // string: '849C436F'
+$EJSON.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
+    // string: '7AD1CDE5'
 ```
 
 **参见**
