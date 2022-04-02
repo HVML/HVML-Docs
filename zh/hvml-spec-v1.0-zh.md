@@ -3084,13 +3084,35 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 - `on` 属性，指定目标文档位置。
 - `to` 属性，指定要调用的方法名称。
-- `with` 属性，指定调用方法的参数。
+- `with` 属性，指定调用方法的参数。我们也可以使用 `request` 的内容来定义调用方法的参数。
 
 为了异步观察请求的执行结果，我们可使用 `as` 属性为该请求定义一个静态命名变量，并使用 `observe` 标签观察其结果。因此，我们在该标签中可使用如下副词属性：
 
 - `synchronously` 属性，用来指定是否同步等待请求的执行结果，是默认值。
 - `asynchronously` 属性，用来指定是否异步等待执行结果。
 
+在使用 `with` 属性指定调用方法时的参数时，如果方法要求有多个参数，我们可使用数组或者对象来指定参数。使用数组时，数组的成员将依次作为方法的参数使用，使用对象时，将按对象名称设定方法的参数。
+
+比如对如下方法：
+
+```js
+doSomething(<string $foo>, <string $bar>)
+```
+
+以下三种 `with` 属性的传递方法之效果一样的：
+
+```html
+    <request on="#my-video" to="doSomething" with="['value for foo', 'value for bar']" />
+
+    <request on="#my-video" to="doSomething" with="{foo: 'value for foo', bar: 'value for bar'}" />
+
+    <request on="#my-video" to="doSomething">
+        {
+            foo: 'value for foo',
+            bar: 'value for bar'
+        }
+    </request>
+```
 
 #### 2.5.12) `connect`、 `send` 和 `disconnect` 标签
 
