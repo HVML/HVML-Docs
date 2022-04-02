@@ -87,6 +87,10 @@ Language: Chinese
       * [3.6.16) `sha1` 方法](#3616-sha1-方法)
       * [3.6.17) `pack` 方法](#3617-pack-方法)
       * [3.6.18) `unpack` 方法](#3618-unpack-方法)
+      * [3.6.19) `bin2hex` 方法](#3619-bin2hex-方法)
+      * [3.6.20) `hex2bin` 方法](#3620-hex2bin-方法)
+      * [3.6.21) `base64_encode` 方法](#3621-base64_encode-方法)
+      * [3.6.22) `base64_decode` 方法](#3622-base64_decode-方法)
    + [3.7) `L`](#37-l)
       * [3.7.1) `not` 方法](#371-not-方法)
       * [3.7.2) `and` 方法](#372-and-方法)
@@ -141,12 +145,8 @@ Language: Chinese
       * [3.9.30) `htmlentities_decode` 方法](#3930-htmlentities_decode-方法)
       * [3.9.31) `nl2br` 方法](#3931-nl2br-方法)
       * [3.9.32) `rot13` 方法](#3932-rot13-方法)
-      * [3.9.33) `bin2hex` 方法](#3933-bin2hex-方法)
-      * [3.9.34) `hex2bin` 方法](#3934-hex2bin-方法)
-      * [3.9.35) `base64encode` 方法](#3935-base64encode-方法)
-      * [3.9.36) `base64decode` 方法](#3936-base64decode-方法)
-      * [3.9.37) `count_chars` 方法](#3937-count_chars-方法)
-      * [3.9.38) `count_bytes` 方法](#3938-count_bytes-方法)
+      * [3.9.33) `count_chars` 方法](#3933-count_chars-方法)
+      * [3.9.34) `count_bytes` 方法](#3934-count_bytes-方法)
    + [3.10) `URL`](#310-url)
       * [3.10.1) `encode` 方法](#3101-encode-方法)
       * [3.10.2) `decode` 方法](#3102-decode-方法)
@@ -241,6 +241,7 @@ Language: Chinese
       * [4.4.12) 综合示例](#4412-综合示例)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RC2) 220501](#rc2-220501)
       * [RC1) 220401](#rc1-220401)
       * [BRC) 220201](#brc-220201)
    + [附.2) 贡献者榜单](#附2-贡献者榜单)
@@ -2233,6 +2234,132 @@ $EJSON.unpack( "i16le i32le", bx0a000a000000)
 
 - [1.2) 二进制格式表示法](#12-二进制格式表示法)
 
+#### 3.6.19) `bin2hex` 方法
+
+将字符串或者字节序列转换为十六进制字符串表达。
+
+**描述**
+
+```js
+$EJSON.bin2hex(
+        <string | bsequence $data>
+        [, < 'lowercase | uppercase' $options = 'lowercase':
+            - 'lowercase': `use lowercase letters for hexadecimal digits.`
+            - 'uppercase': `use uppercase letters for hexadecimal digits.`
+            >
+        ]
+) string
+```
+
+该函数将一个字节序列 `data` 转换为十六进制表述的字符串。转换以字节为单位，高四位字节优先。
+
+**异常**
+
+该方法可能抛出如下异常：
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字符串。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字符串。
+
+**示例**
+
+```js
+$EJSON.bin2hex( bb0000.1111.1111.0000, 'uppercase')
+    // string: '0FF0'
+```
+
+**参见**
+
+- PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.bin2hex.php>
+
+#### 3.6.20) `hex2bin` 方法
+
+十六进制字符串转换为字节序列。
+
+**描述**
+
+```js
+$EJSON.hex2bin(
+        < string $data >
+) bsequence
+```
+
+该函数将十六进制字符串 `data` 转换为二进制字节序列。
+
+**异常**
+
+该方法可能抛出如下异常：
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字节序列。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字符串。
+- `BadEncoding`：不可识别的十六进制字符串；可忽略异常，静默求值时返回已转换的字符串。
+
+**示例**
+
+```js
+$EJSON.hex2bin( '0FF0' )
+    // bsequence: bb0000.1111.1111.0000
+```
+
+**参见**
+
+- PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.hex2bin.php>
+
+#### 3.6.21) `base64_encode` 方法
+
+使用 MIME base64 编码字符串或者字节序列。
+
+<https://www.php.net/manual/en/function.base64-encode.php>
+
+**描述**
+
+```js
+$URL.base64_encode(
+        < string | bsequence $data >
+) string
+```
+
+该函数将输入字符串或者二进制序列 `data` 按照 Base64 进行编码。
+
+**参数**
+
+**返回值**
+
+**示例**
+
+**参见**
+
+- PHP `base64_encode()` 函数：<https://www.php.net/manual/en/function.base64-encode.php>
+- [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
+
+#### 3.6.22) `base64_decode` 方法
+
+解码使用 MIME base64 编码的字符串。
+
+**描述**
+
+```js
+$URL.base64_decode(
+        <string $data>,
+) bsequence
+```
+
+该函数将输入字符串 `data` 按照 Base64 进行解码。
+
+**异常**
+
+该方法可能抛出如下异常：
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字节序列。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字符串。
+- `BadEncoding`：不可识别的十六进制字符串；可忽略异常，静默求值时返回已转换的字符串。
+
+**示例**
+
+**参见**
+
+- PHP `base64_decode()` 函数：<https://www.php.net/manual/en/function.base64-decode.php>
+- [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
+
 ### 3.7) `L`
 
 该变量是一个会话级内置变量，主要用于逻辑运算。
@@ -3884,10 +4011,8 @@ $STR.htmlentities_decode(
             false- `only the certain characters have special significance in HTML are translated into these entities.`
             true - `all characters which have HTML character entity equivalents are translated into these entities.` >
         ]
-) string | bseqence
+) string | bsequence
 ```
-
-
 
 **参数**
 
@@ -3956,140 +4081,7 @@ $STR.rot13(
 
 - PHP `rot13()` 函数：<https://www.php.net/manual/en/function.rot13.php>
 
-#### 3.9.33) `bin2hex` 方法
-
-将字符串或者字节序列转换为十六进制字符串表达。
-
-**描述**
-
-```js
-$EJSON.bin2hex(
-        <string | bsequence $data>
-        [, <boolean $uppercase = true:
-            true - `use A...F;`
-            false - `use a...f.` >
-        ]
-) string
-```
-
-该函数将一个字节序列 `data` 转换为十六进制表述的字符串。转换以字节为单位，高四位字节优先。
-
-**异常**
-
-该方法可能抛出如下异常：
-
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字符串。
-- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字符串。
-
-**示例**
-
-```js
-$EJSON.bin2hex( bb0000.1111.1111.0000)
-    // string: '0FF0'
-```
-
-**参见**
-
-- PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.bin2hex.php>
-
-#### 3.9.34) `hex2bin` 方法
-
-十六进制字符串转换为字节序列。
-
-**描述**
-
-```js
-$EJSON.hex2bin(
-        <string $data>
-        [, <boolean $strict:
-            true - `throw the BadEncoding exception for a bad encoded string.`
-            false - `stops conversion for any error and returns the converted string.` >
-        ]
-) string
-```
-
-该函数将十六进制字符串 `data` 转换为二进制字节序列。
-
-**异常**
-
-该方法可能抛出如下异常：
-
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字节序列。
-- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字符串。
-- `BadEncoding`：不可识别的十六进制字符串；可忽略异常，静默求值时返回已转换的字符串。
-
-**示例**
-
-```js
-$EJSON.hex2bin( '0FF0' )
-    // bsequence: bb0000.1111.1111.0000
-```
-
-**参见**
-
-- PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.hex2bin.php>
-
-#### 3.9.35) `base64encode` 方法
-
-使用 MIME base64 编码字符串或者字节序列。
-
-<https://www.php.net/manual/en/function.base64-encode.php>
-
-**描述**
-
-```js
-$URL.base64encode(
-        <string|bsequence $data>
-) string
-```
-
-该函数将输入字符串或者二进制序列 `data` 按照 Base64 进行编码。
-
-**参数**
-
-**返回值**
-
-**示例**
-
-**参见**
-
-- PHP `base64_encode()` 函数：<https://www.php.net/manual/en/function.base64-encode.php>
-- [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
-
-#### 3.9.36) `base64decode` 方法
-
-解码使用 MIME base64 编码的字符串。
-
-**描述**
-
-```js
-$URL.base64decode(
-        <string $data>,
-        <boolean $string_or_bsequence:
-            true - `decode the input Base64 string to a string.`
-            false - `decode the input Base64 string to a binary sequence.`
-        >
-        <boolean $strict:
-            true - `throw the @BadEncoding exception for a bad encoded string.`
-            false - `stops conversion for any error and returns the converted string.`
-        >
-) string | bseqence
-```
-
-该函数将输入字符串 `data` 按照 Base64 进行解码。若 `utf8` 为 `true`，则按照 UTF-8 编码字符串进行解码，否则解码为一个二进制序列。若 `strict` 为 `true`，则遇到错误编码或者不正确的 UTF-8 字符时，会抛出 `BadEncoding` 异常；若 `strict` 为 `false`，将忽略错误停止解码并返回已经解码的字符串或二进制序列。
-
-**参数**
-
-**返回值**
-
-**示例**
-
-**参见**
-
-- PHP `base64_decode()` 函数：<https://www.php.net/manual/en/function.base64-decode.php>
-- [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
-
-#### 3.9.37) `count_chars` 方法
+#### 3.9.33) `count_chars` 方法
 
 统计字符串中的字符出现次数。
 
@@ -4117,7 +4109,7 @@ $STR.count_chars(
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
-#### 3.9.38) `count_bytes` 方法
+#### 3.9.34) `count_bytes` 方法
 
 统计字符串或二进制字节序中的各个字节（0...255）出现的次数。
 
@@ -6034,6 +6026,8 @@ $STREAM.open("file://abc.md")
 ## 附录
 
 ### 附.1) 修订记录
+
+#### RC2) 220501
 
 #### RC1) 220401
 
