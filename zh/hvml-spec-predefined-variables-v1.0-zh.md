@@ -6033,9 +6033,13 @@ $STREAM.open("file://abc.md")
 
 #### RC2) 220501
 
-1. 调整接口，使用字符串选项而非布尔标志
+1. 调整接口，使用字符串选项而非布尔标志：
    - `$SYSTEM.time_us`
    - `$SYSTEM.timezone`
+
+1. 使用 `regexp` 关键词替代 `reg`：
+   - `$STR.streq`
+   - `$STR.strne`
 
 #### RC1) 220401
 
