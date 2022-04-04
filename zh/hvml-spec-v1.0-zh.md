@@ -62,6 +62,7 @@ Language: Chinese
       * [2.1.13) 副词属性](#2113-副词属性)
       * [2.1.14) 引用元素或数据](#2114-引用元素或数据)
       * [2.1.15) JSON 求值表达式](#2115-json-求值表达式)
+      * [2.1.16) HVML 程序的运行状态](#2116-hvml-程序的运行状态)
    + [2.2) 规则、表达式及方法的描述语法](#22-规则表达式及方法的描述语法)
       * [2.2.1) 规则描述语法](#221-规则描述语法)
       * [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法)
@@ -93,11 +94,12 @@ Language: Chinese
       * [2.5.10) `observe`、 `forget` 和 `fire` 标签](#2510-observe-forget-和-fire-标签)
       * [2.5.11) `request` 标签](#2511-request-标签)
       * [2.5.12) `connect`、 `send` 和 `disconnect` 标签](#2512-connect-send-和-disconnect-标签)
-      * [2.5.13) `load` 和 `back` 标签](#2513-load-和-back-标签)
+      * [2.5.13) `load` 和 `exit` 标签](#2513-load-和-exit-标签)
       * [2.5.14) `define` 和 `include` 标签](#2514-define-和-include-标签)
       * [2.5.15) `call` 和 `return` 标签](#2515-call-和-return-标签)
       * [2.5.16) `catch` 标签](#2516-catch-标签)
       * [2.5.17) `bind` 标签](#2517-bind-标签)
+      * [2.5.18) `back` 标签](#2518-back-标签)
    + [2.6) 执行器](#26-执行器)
       * [2.6.1) 内建执行器](#261-内建执行器)
          - [2.6.1.1) `KEY` 执行器](#2611-key-执行器)
@@ -140,6 +142,8 @@ Language: Chinese
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RC3) 220501](#rc3-220501)
+         - [RC3.1) `exit` 标签和 `back` 标签](#rc31-exit-标签和-back-标签)
+         - [RC3.2) HVML 程序的运行状态](#rc32-hvml-程序的运行状态)
       * [RC2) 220401](#rc2-220401)
          - [RC2.1) 用户自定义临时变量的初始化和重置方法](#rc21-用户自定义临时变量的初始化和重置方法)
          - [RC2.2) 调整动态对象方法的描述语法](#rc22-调整动态对象方法的描述语法)
@@ -1177,10 +1181,11 @@ HVML 还定义有如下一些动作标签：
 - `connect` 标签用于连接到一个指定的外部数据源，并绑定一个变量名。
 - `send` 标签用来在指定的长连接上发出一个消息。
 - `disconnect` 标签用于显式关闭一个先前建立的外部数据源连接。
-- `load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为请求参数传递到新的 HVML 文档。
-- `back` 标签用于返回到当前会话中的特定 HVML 程序，或者终止当前的模态窗口。
 - `define` 和 `include` 标签用于实现操作组的复制。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作。
 - `call` 和 `return` 标签用于实现类似函数调用的功能。我们可以通过 `call` 同步或者异步调用一个操作组，并在操作组中使用 `return` 返回一个结果。
+- `back` 标签用于回退当前操作到指定的父操作位置。
+- `load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为请求参数传递到新的 HVML 文档。
+- `exit` 标签用于退出当前的 HVML 程序。
 
 #### 2.1.11) 错误和异常的处理
 
@@ -1435,6 +1440,19 @@ HVML 还定义有如下一些动作标签：
 有关属性值的指定语法，见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性) 一节。
 
 JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法) 一节。
+
+#### 2.1.16) HVML 程序的运行状态
+
+一个正确解析并装载的 HVML 程序有如下几种运行状态：
+
+- 等待执行（ready）：表示正等待执行。
+- 隐式退出或者主动退出（exited）：自然执行完所有的动作元素，且没有注册任何观察者；或者执行 `exit` 动作元素主动退出。
+- 因在自身环境中装载其他 HVML 程序而终止（suicided）：自杀。
+- 被强制终止（killed）：被解释器（或其他程序）强制终止。
+- 暂停（stopped）：被调试器暂停。
+- 失败（failed）：由于未捕获的异常而终止。
+
+当我们异步装载另外一个 HVML 程序时，就可以在当前 HVML 程序中观察目标 HVML 程序执行状态的变化。一个 HVML 程序执行状态的变化，通常会被打包成 `status` 事件传递。
 
 ### 2.2) 规则、表达式及方法的描述语法
 
@@ -2852,7 +2870,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 ```json
     {
         "messageType": "event",
-        "messageSubType": "XXXXXX",
+        "name": "XXXXXX",
         "source": <source data>,
         "time": 20200616100207.567,
         "signature": "XXXXX",
@@ -2863,7 +2881,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     }
 ```
 
-其中，`messageType` 字段表示数据包类型；`source` 表示产生此事件的来源数据；`time` 表示此事件产生的系统时间；`signature` 是此事件的内容的签名，可用来验证数据来源的合法性；`payload` 中包含事件关联的数据。在上面这个例子中，事件包含两个信息，一个信息用来表示当前电量百分比，另一个信息表示是否在充电状态。
+其中，`messageType` 字段表示数据包类型；`name` 字段表示事件名称；`source` 表示产生此事件的来源数据；`time` 表示此事件产生的系统时间；`signature` 是此事件的内容的签名，可用来验证数据来源的合法性；`payload` 中包含事件关联的数据。在上面这个例子中，事件包含两个信息，一个信息用来表示当前电量百分比，另一个信息表示是否在充电状态。
 
 当 HVML 代理观察到来自 `$databus` 上的电池变化事件数据包之后，将根据 `observe` 标签定义的观察动作执行相应的操作。在上面的例子中，`observe` 标签所定义的操作及条件解释如下：
 
@@ -3049,8 +3067,6 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             </match>
         </test>
     </observe>
-
-    </observe>
 ```
 
 #### 2.5.11) `request` 标签
@@ -3182,67 +3198,40 @@ doSomething(<string $foo>, <string $bar>)
     </body>
 ```
 
-#### 2.5.13) `load` 和 `back` 标签
+#### 2.5.13) `load` 和 `exit` 标签
 
-`load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为参数传递到新的 HVML 文档。如：
+`load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递到新的 HVML 文档。如：
 
 ```html
     <load from="b.hvml" with="$user" as="userProfile" in="_blank" />
 ```
 
-`load` 元素将装载一个新的 HVML 程序，我们使用 `as` 属性指定这个 HVML 程序的名称，并在 `in` 属性指定的目标窗口中渲染内容：
+`load` 标签支持如下介词属性：
 
-- `_self`：表示不创建窗口，而在当前窗口中渲染新的内容。
-- `_modal`：表示创建一个新的模态窗口并在其中渲染目标文档。
-- `_blank`：表示创建一个新的非模态窗口并在其中渲染目标文档。
-- `_top`：表示在最顶层窗口中渲染新目标文档。
-- `_parent`：表示在父窗口（若存在）中渲染新的目标文档，若没有父窗口，则等同于 `_blank`。
+- `from`：指定的 HVML 程序的 URL。
+- `with`：指定装载对应程序的请求参数。
+- `as`：当我们使用 `async` 副词属性加载该 HVML 程序时，我们可使用该属性将这个程序和一个变量名称绑定，从而可观察该程序的加载和执行状态。
+- `in`：指定渲染器的窗口名称，该 HVML 程序的内容将展示在该窗口中。我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的窗口：
+   - `_self`：表示当前窗口。在当前窗口中渲染新的 HVML 程序，意味着强制终止当前的 HVML 程序，并清空当前的目标文档内容，然后装载新的 HVML 程序。
+   - `_blank`：表示新的空白窗口。
+   - `_top`：表示最顶层窗口。
+   - `_parent`：表示在父窗口（若存在）中渲染新的目标文档，若没有父窗口，则等同于 `_blank`。
 
-`back` 标签用于终止当前的 HVML 程序，关闭当前的渲染窗口，并将返回值返回到指定的目标 HVML 程序。
+`load` 标签支持如下副词属性：
 
-```html
-    <init as="user_info">
-        {
-            "retcode": "ok",
-            "payload": {
-                { "id": "5", "avatar": "/img/avatars/5.png", "name": "Vincent", "region": "en_US" },
-            },
-        }
-    </init>
+- `synchronously`：同步装载。`load` 标签将等待新的 HVML 程序退出，相当于创建一个模态窗口。
+- `ssynchronously`：异步装载。
 
-    <back to="_parent" with="$user_info" />
-```
+当 `from` 属性值指定的 URL 定义有片段（使用`#`符号）时，`load` 元素将尝试装载该 HVML 文档中的另一个本体，即另一个 `body` 子树定义的内容。
 
-使用 `back` 标签时，我们可以使用 `to` 属性指定要返回的目标窗口（`_parent` 是保留名称，用于指代父窗口）。此时，还可以使用 `with` 属性返回一个数据。当前 HVML 程序在模态窗口中渲染时，可观察该程序的 `terminated:success` 事件，然后进行处理。如果当前 HVML 程序不在模态对话框中渲染，则该数据将做为请求数据（对应 `$REQUEST` 内置全局变量）提供给目标返回对应的 HVML 程序，此时，该 HVML 程序会执行一次重新装载操作（类似浏览器刷新页面的功能）。
-
-```html
-    <load from="new_user.hvml" as="newUser" in="_modal">
-        <observe on="$newUser" for="terminated:success" >
-            <test on="$?.retcode">
-                <match for="AS 'ok'" exclusively>
-                    <choose on="$2.payload" in="#the-user-list">
-                        <update on="$@" to="append" with="$user_item" />
-                    </choose>
-                </match>
-            </test>
-        </observe>
-    </load>
-```
-
-以上 HVML 代码中的 `load` 标签装载了用来创建新用户的 HVML 程序作为模态对话框。新的 HVML 程序返回的状态为 `ok` 时，在 `#the-user-list` 中插入了一条新的用户条目。
-
-正常情况下，`load` 元素装载一个 HVML 程序在一个模态窗口中渲染时，其执行结果数据就是新 HVML 程序中 `back` 元素的 `with` 属性值；如果在一个新建的普通窗口中渲染，则正常情况下 `load` 元素的操作结果数据为字符串 `ok`；如果在其他已有的窗口中渲染，则将终止该窗口中运行的 HVML 程序，并在当前窗口中渲染新的 HVML 程序内容。
-
-`back` 元素不产生任何结果数据，故而不能包含子动作元素。
-
-当 `load` 元素的 `from` 属性值以 `#` 打头时，`load` 元素将尝试装载当前 HVML 文档中定义的另一个本体，即另一个 `body` 子树定义的内容。如：
+当我们在当前窗口中渲染新的 HVML 程序时，将忽略同步或者异步副词属性。如下面的代码：
 
 ```html
 <hvml>
     <body>
         ...
 
-        <load from="#errorPage" />
+        <load from="#errorPage" in="_self" />
     </body>
 
     <body id="errorPage">
@@ -3251,7 +3240,67 @@ doSomething(<string $foo>, <string $bar>)
 </hvml>
 ```
 
-装载另一个本体意味着需要清空当前的目标文档内容，并跳转到本文档的另一个本体中重新执行 HVML 程序。
+上述代码中的 `load` 元素对应如下三个步骤：
+
+1. 强制终止当前的 HVML 程序。
+1. 清空当前的目标文档内容。
+1. 重新装载当前 HVML 程序并执行 `#errorPage` 本体定义的操作；或者，跳转到 `#erroPage` 定义的本体中执行操作。
+
+假定我们使用 `load` 标签装载一个用来创建新用户的 HVML 程序，如果使用同步装载方式：
+
+```html
+    <load from="new_user.hvml" in="_blank" synchronously>
+        <test on="$?.status">
+            <match for="AS 'exited'" exclusively>
+                <choose on="$3?.payload" in="#the-user-list">
+                    <update on="$@" to="append" with="$user_item" />
+                </choose>
+            </match>
+        </test>
+    </load>
+```
+
+如果使用异步装载方式，则需要 `as` 属性并使用 `observe` 标签创建一个观察者，用于观察程序的 `terminated`（终止）事件：
+
+```html
+    <load from="new_user.hvml" as="newUser" in="_blank" asynchronously>
+        <observe on="$newUser">
+            <test on="$?.name">
+                <match for="AS 'status:exited'" exclusively>
+                    <choose on="$3?.payload" in="#the-user-list">
+                        <update on="$@" to="append" with="$user_item" />
+                    </choose>
+                </match>
+            </test>
+        </observe>
+    </load>
+```
+
+以上两种实现方式，最终判断装载执行的 HVML 程序的终止状态，如终止状态为 `exited` 时，会在当前目标文档的 `#the-user-list` 中插入一条新的用户条目。
+
+和 `load` 元素配合，我们通常在被装载的程序中使用 `exit` 标签主动退出程序的运行并定义程序的返回数据。如：
+
+```html
+    <init as="user_info">
+        { "id": "5", "avatar": "/img/avatars/5.png", "name": "Vincent", "region": "en_US" },
+    </init>
+
+    <exit with="$user_info" />
+```
+
+上面的代码，使用 `exit` 标签的 `with` 属性定义了一项数据，解释器应将该数据作为该 HVML 程序的返回数据处理。
+
+【待删除——
+
+当前 HVML 程序在模态窗口中渲染时，可观察该程序的 `terminated:success` 事件，然后进行处理。如果当前 HVML 程序不在模态对话框中渲染，则该数据将做为请求数据（对应 `$REQUEST` 内置全局变量）提供给目标返回对应的 HVML 程序，此时，该 HVML 程序会执行一次重新装载操作（类似浏览器刷新页面的功能）。
+
+`exit` 元素不产生任何结果数据，故而不能包含子动作元素。
+
+正常情况下，`load` 元素装载一个 HVML 程序在一个模态窗口中渲染时，其执行结果数据就是新 HVML 程序中 `exit` 元素的 `with` 属性值；如果在一个新建的普通窗口中渲染，则正常情况下 `load` 元素的操作结果数据为字符串 `ok`；如果在其他已有的窗口中渲染，则将终止该窗口中运行的 HVML 程序，并在当前窗口中渲染新的 HVML 程序内容。
+
+`exit` 标签用于终止当前的 HVML 程序，并将返回值返回到指定的目标 HVML 程序。
+
+——待删除】
 
 #### 2.5.14) `define` 和 `include` 标签
 
@@ -3460,6 +3509,86 @@ doSomething(<string $foo>, <string $bar>)
         </observe>
     </bind>
 ```
+
+#### 2.5.18) `back` 标签
+
+`back` 标签用于控制当前的执行栈，以便回退到指定的祖先栈帧。回退后，将从目标栈帧定义的下个执行位置开始执行程序。
+
+`back` 标签只支持如下两种介词属性：
+
+- `to`：用于指定回退位置，支持：
+   - 三种预定义相对栈帧名称：`_parent`、`_grandpa` 和 `forefather`，分别表示父栈帧、祖父栈帧和始祖栈帧。
+   - 数字表示的回退数量。
+- `with`：用于指定一个值，这个值将取代回退后的当前结果数据。
+
+我们也可以使用其内容来定义 `with` 属性的值。
+
+比如我们使用 `iterate` 生成小于 100 的偶数数列时，如果使用 `back` 标签，则可如下编码：
+
+```html
+    <init as="evenNumbers" with=[0,] >
+        <iterate on=$?[0] with=$MATH.add($0<, 2) nosetotail>
+            <test on=$?>
+                <match on="$L.gt($?, 100)" exclusively>
+                    <back to="4" >
+                </match>
+                <match>
+                    <update on="$evenNumbers" to="append" with="$?">
+                </match>
+            </test>
+        </iterate>
+
+        <ol>
+            <iterate on=$evenNumbers by="RANGE: FROM 0">
+                <li>$?</li>
+            </iterate>
+        </ol>
+
+    </init>
+```
+
+以上的代码，当计算出来的偶数大于 `100` 时，将回退到第四个栈帧，到达 `init` 元素对应的栈帧，然后从该栈帧的下个动作元素开始执行，亦即，`ol` 外部元素定义的动作。
+
+为方便处理，`back` 标签将执行静默求值，不产生任何异常。如下是针对错误参数的处理规则：
+
+- 不可识别的 `to` 属性值或者求值失败或者无效的栈帧，一律按 `_forefather` 处理。
+- 未指定 `with` 属性值时，按 `undefined` 处理，不改变目标栈帧的结果值。
+- 若 `with` 属性求值失败，按 `undefined` 处理。
+
+使用 `with` 属性值定义替代目标栈帧结果数据的操作，给程序处理执行逻辑带来了帮助。比如，捕捉到异常时：
+
+```html
+<body>
+    <init as="dirEntries" with=[] />
+
+    <ul>
+        <choose on=$FS.opendir($REQUEST.dir) >
+            <catch for="ANY">
+                <back to="3">
+                    "Exception when calling '$FS.opendir($REQUEST.dir)': $?"
+                </back>
+            </catch>
+
+            <!-- no directory entry if $FS.readdir() returns false -->
+            <iterate on=$? with=$FS.readdir($0^) >
+                <catch for="ANY">
+                    <back to="4">
+                        "Exception when calling '$FS.readdir($REQUEST.dir)': $?"
+                    </back>
+                </catch>
+                <li>$?.type: $?.name</li>
+            </iterate>
+        </choose>
+
+        <test on='$EJSON.type($?)'>
+            <match for="AS 'string'">
+                <li>$2?</li>
+            </match>
+        </test>
+    </ul>
+```
+
+上述代码读取指定目录下的目录项，并捕获可能的异常。当发生异常时，使用 `back` 标签回退到`ul` 对应的栈帧，并修改 `ul` 栈帧的结果数据（`$?`）为一个字符串。回退后，程序开始执行 `test` 标签，判断结果数据的类型。注意 `ul` 作为外部元素，其最初的结果数据为 `undefined`。如果其类型为 `string` 则说明发生了异常，其后的操作将一个 `li` 元素，其中包含异常信息。
 
 ### 2.6) 执行器
 
@@ -5471,13 +5600,35 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 #### RC3) 220501
 
+##### RC3.1) `exit` 标签和 `back` 标签
+
+使用 `exit` 标签退出程序的执行，并定义程序的返回数据。
+
+调整 `back` 标签的功能，用于回退栈帧。
+
+相关章节：
+
+- [2.5.13) `load` 和 `exit` 标签](#2513-load-和-exit-标签)
+- [2.5.18) `back` 标签](#2518-back-标签)
+
+##### RC3.2) HVML 程序的运行状态
+
+定义了 HVML 程序的运行状态：
+
+相关章节：
+
+- [2.1.16) HVML 程序的运行状态](#2116-hvml-程序的运行状态)
+
 #### RC2) 220401
 
 ##### RC2.1) 用户自定义临时变量的初始化和重置方法
 
 使用 `locally` 表示创建或重置一个临时变量。
+
 可在 `init` 标签的 `as` 或者 `at` 中指定临时变量的名称。
+
 局部命名变量可直接使用其名称来引用，相比静态变量，具有较高的名称查找优先级。
+
 明确区分静态命名变量和局部命名变量。
 
 相关章节：
