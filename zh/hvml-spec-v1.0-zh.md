@@ -3526,9 +3526,9 @@ doSomething(<string $foo>, <string $bar>)
 
 ```html
     <init as="evenNumbers" with=[0,] >
-        <iterate on=$?[0] with=$MATH.add($0<, 2) nosetotail>
+        <iterate on=$?[0] with=$MATH.add($0<,2) nosetotail>
             <test on=$?>
-                <match on="$L.gt($?, 100)" exclusively>
+                <match on=$L.gt($?,100) exclusively>
                     <back to="4" >
                 </match>
                 <match>
@@ -3560,7 +3560,7 @@ doSomething(<string $foo>, <string $bar>)
 <body>
     <init as="dirEntries" with=[] />
 
-    <ul id="UL">
+    <ul id="theUL">
         <choose on=$FS.opendir($REQUEST.dir) >
             <catch for="ANY">
                 <back to="3">
@@ -3571,7 +3571,7 @@ doSomething(<string $foo>, <string $bar>)
             <!-- no directory entry if $FS.readdir() returns false -->
             <iterate on=$? with=$FS.readdir($0^) >
                 <catch for="ANY">
-                    <back to="#UL">
+                    <back to="#theUL">
                         "Exception when calling '$FS.readdir($REQUEST.dir)': $?"
                     </back>
                 </catch>
