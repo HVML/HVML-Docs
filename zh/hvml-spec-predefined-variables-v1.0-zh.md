@@ -496,14 +496,14 @@ $SYSTEM.const('HVML_SPEC_VERSION')
 ```js
 $SYSTEM.uname object :
     `an object contains the following properties:`
-        'kernel-name'         - < string: `kernel name (e.g., 'Linux')` >
-        'kernel-release'      - < string: `kernel release (e.g., '2.6.28')` >
-        'kernel-version'      - < string: `kernel version` >
-        'nodename'            - < string: `the network node hostname` >
-        'machine'             - < string: `machine hardware name` >
-        'processor'           - < string: `the processor type` >
-        'hardware-platform'   - < string: `the hardware platform` >
-        'operating-system'    - < string: `the operating system (e.g., 'GNU/Linux')` >
+        - 'kernel-name':        < string: `kernel name (e.g., 'Linux')` >
+        - 'kernel-release':     < string: `kernel release (e.g., '2.6.28')` >
+        - 'kernel-version':     < string: `kernel version` >
+        - 'nodename':           < string: `the network node hostname` >
+        - 'machine':            < string: `machine hardware name` >
+        - 'processor':          < string: `the processor type` >
+        - 'hardware-platform':  < string: `the hardware platform` >
+        - 'operating-system':   < string: `the operating system (e.g., 'GNU/Linux')` >
 ```
 
 该方法获取系统信息，返回包含有内核名称、版本号等键值对的对象。注意，对某些不支持的系统特征，将返回空字符串。
@@ -520,12 +520,12 @@ $SYSTEM.uname
        {
             'kernel-name':      'Linux',
             'kernel-release':   '5.4.0-99-generic',
-            'kernel-version'    '#112-Ubuntu SMP Thu Feb 3 13:50:55 UTC 2022',
-            'nodename'          'magicBook',
-            'machine'           'x86_64',
-            'processor'         'x86_64',
-            'hardware-platform' 'x86_64',
-            'operating-system'  'GNU/Linux'
+            'kernel-version':   '#112-Ubuntu SMP Thu Feb 3 13:50:55 UTC 2022',
+            'nodename':         'magicBook',
+            'machine':          'x86_64',
+            'processor':        'x86_64',
+            'hardware-platform':'x86_64',
+            'operating-system': 'GNU/Linux'
        }
     */
 ```
@@ -543,16 +543,16 @@ $SYSTEM.uname_prt string: `the kernel name.`
 ```js
 $SYSTEM.uname_prt(
         <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which = 'default':
-            'kernel-name'       - `includes kernel name (e.g., 'Linux')`
-            'kernel-release'    - `includes kernel release (e.g., '2.6.28')`
-            'kernel-version'    - `includes kernel version`
-            'nodename'          - `includes the network node hostname`
-            'machine'           - `includes machine hardware name`
-            'processor'         - `includes the processor type`
-            'hardware-platform' - `includes the hardware platform`
-            'operating-system'  - `includes the operating system (e.g., 'GNU/Linux')`
-            'all'               - `includes all parts`
-            'default'           - `is equivalent to 'kernel-name'`
+            - 'kernel-name':        `includes kernel name (e.g., 'Linux')`
+            - 'kernel-release':     `includes kernel release (e.g., '2.6.28')`
+            - 'kernel-version':     `includes kernel version`
+            - 'nodename':           `includes the network node hostname`
+            - 'machine':            `includes machine hardware name`
+            - 'processor':          `includes the processor type`
+            - 'hardware-platform':  `includes the hardware platform`
+            - 'operating-system':   `includes the operating system (e.g., 'GNU/Linux')`
+            - 'all':                `includes all parts`
+            - 'default':            `is equivalent to 'kernel-name'`
         >
 ) string: `the string concatenated the desired system information parts together.`
 ```
@@ -590,18 +590,18 @@ $SYSTEM.locale string : `the locale for the messages category.`
 ```js
 $SYSTEM.locale(
         < 'ctype | numeric | time | collate | monetary | messages | paper | name | address | telephone | measurement | identification' $category = 'messages':
-            'ctype'     - `Character classification`
-            'numeric'   - `Formatting of nonmonetary numeric values`
-            'time'      - `Formatting of date and time values`
-            'collate'   - `String collation`
-            'monetary'  - `Formatting of monetary values`
-            'messsages' - `Localizable natural-language messages`
-            'paper'     - `Settings related to the standard paper size (*)`
-            'name'      - `Formatting of salutations for persons (*)`
-            'address'   - `Formatting of addresses and geography-related items (*)`
-            'telephone' - `Formats to be used with telephone services (*)`
-            'measurement'   - `Settings related to measurements (metric versus US customary) (*)`
-            'identification'    - `Metadata describing the locale (*)`
+            - 'ctype':          `Character classification`
+            - 'numeric':        `Formatting of nonmonetary numeric values`
+            - 'time':           `Formatting of date and time values`
+            - 'collate':        `String collation`
+            - 'monetary':       `Formatting of monetary values`
+            - 'messsages':      `Localizable natural-language messages`
+            - 'paper':          `Settings related to the standard paper size (*)`
+            - 'name':           `Formatting of salutations for persons (*)`
+            - 'address':        `Formatting of addresses and geography-related items (*)`
+            - 'telephone':      `Formats to be used with telephone services (*)`
+            - 'measurement':    `Settings related to measurements (metric versus US customary) (*)`
+            - 'identification': `Metadata describing the locale (*)`
         >
 ) string | undefined : `the locale like 'zh_CN'.`
 ```
@@ -611,19 +611,19 @@ $SYSTEM.locale(
 ```js
 $SYSTEM.locale(!
         < '[ctype || numeric || time || collate || monetary || messages || paper || name || address || telephone || measurement || identification] | all' $categories:
-            'ctype'     - `Character classification`
-            'numeric'   - `Formatting of nonmonetary numeric values`
-            'time'      - `Formatting of date and time values`
-            'collate'   - `String collation`
-            'monetary'  - `Formatting of monetary values`
-            'messsages' - `Localizable natural-language messages`
-            'paper'     - `Settings related to the standard paper size (*)`
-            'name'      - `Formatting of salutations for persons (*)`
-            'address'   - `Formatting of addresses and geography-related items (*)`
-            'telephone' - `Formats to be used with telephone services (*)`
-            'measurement'   - `Settings related to measurements (metric versus US customary) (*)`
-            'identification'    - `Metadata describing the locale (*)`
-            'all'       - `All of the locale categories`
+            - 'ctype':          `Character classification`
+            - 'numeric':        `Formatting of nonmonetary numeric values`
+            - 'time':           `Formatting of date and time values`
+            - 'collate':        `String collation`
+            - 'monetary':       `Formatting of monetary values`
+            - 'messsages':      `Localizable natural-language messages`
+            - 'paper':          `Settings related to the standard paper size (*)`
+            - 'name':           `Formatting of salutations for persons (*)`
+            - 'address':        `Formatting of addresses and geography-related items (*)`
+            - 'telephone':      `Formats to be used with telephone services (*)`
+            - 'measurement':    `Settings related to measurements (metric versus US customary) (*)`
+            - 'identification': `Metadata describing the locale (*)`
+            - 'all':            `All of the locale categories`
         >,
         <string $locale: `the locale for $categories`>
 ) true | false
@@ -1099,19 +1099,19 @@ $SESSION.user(! 'userId', undefined )
 ```js
 $DATETIME.time_prt(
         <'atom | cookie | iso8601 | rfc822 | rfc850 | rfc1036 | rfc1036 | rfc1123 | rfc7231 | rfc2822 | rfc3339 | rfc3339-ex | rss | w3c' $format = 'iso8601':
-            'atom'      - `Atom (example: 2005-08-15T15:52:01+00:00)`
-            'cookie'    - `HTTP Cookies (example: Monday, 15-Aug-2005 15:52:01 UTC)`
-            'iso8601'   - `Same as 'ATOM' (example: 2005-08-15T15:52:01+00:00)`
-            'rfc822'    - `RFC 822 (example: Mon, 15 Aug 05 15:52:01 +0000)`
-            'rfc850'    - `RFC 850 (example: Monday, 15-Aug-05 15:52:01 UTC)`
-            'rfc1036'   - `RFC 1036 (example: Mon, 15 Aug 05 15:52:01 +0000)`
-            'rfc1123'   - `RFC 1123 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
-            'rfc7231'   - `RFC 7231 (since PHP 7.0.19 and 7.1.5) (example: Sat, 30 Apr 2016 17:52:13 GMT)`
-            'rfc2822'   - `RFC 2822 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
-            'rfc3339'   - `Same as 'ATOM'`
-            'rfc3339-ex'- `RFC 3339 EXTENDED format (example: 2005-08-15T15:52:01.000+00:00)`
-            'rss'       - `RSS (example: Mon, 15 Aug 2005 15:52:01 +0000)`
-            'w3c'       - `World Wide Web Consortium (example: 2005-08-15T15:52:01+00:00)`
+            - 'atom':       `Atom (example: 2005-08-15T15:52:01+00:00)`
+            - 'cookie':     `HTTP Cookies (example: Monday, 15-Aug-2005 15:52:01 UTC)`
+            - 'iso8601':    `Same as 'ATOM' (example: 2005-08-15T15:52:01+00:00)`
+            - 'rfc822':     `RFC 822 (example: Mon, 15 Aug 05 15:52:01 +0000)`
+            - 'rfc850':     `RFC 850 (example: Monday, 15-Aug-05 15:52:01 UTC)`
+            - 'rfc1036':    `RFC 1036 (example: Mon, 15 Aug 05 15:52:01 +0000)`
+            - 'rfc1123':    `RFC 1123 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
+            - 'rfc7231':    `RFC 7231 (since PHP 7.0.19 and 7.1.5) (example: Sat, 30 Apr 2016 17:52:13 GMT)`
+            - 'rfc2822':    `RFC 2822 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
+            - 'rfc3339':    `Same as 'ATOM'`
+            - 'rfc3339-ex': `RFC 3339 EXTENDED format (example: 2005-08-15T15:52:01.000+00:00)`
+            - 'rss':        `RSS (example: Mon, 15 Aug 2005 15:52:01 +0000)`
+            - 'w3c':        `World Wide Web Consortium (example: 2005-08-15T15:52:01+00:00)`
         >
         [, <null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for current calendar time.`>
             [, <string $timezone>
@@ -1247,7 +1247,7 @@ $DATETIME.localtime(
    'year':  <number: `The number of years since 1900.`>
    'wday':  <number: `The number of days since Sunday, in the range 0 to 6.`>
    'yday':  <number: `The number of days since January 1, in the range 0 to 365.`>
-   'isdst':  <number: `A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving time is in effect, zero if it is not, and negative if the information is not available.`>
+   'isdst': <number: `A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving time is in effect, zero if it is not, and negative if the information is not available.`>
    'tz':    <string: `The timezone name.`>
 }
 ```
@@ -1779,21 +1779,21 @@ $EJSON.stringify(123)
 $EJSON.serialize(
         <any $data>
         [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape' $options = `real-json runtime-null plain bseq-hex-string`:
-            'real-json'         - `use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON number.`
-            'real-ejson'        - `use EJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
-            'runtime-null'      - `treat all EJSON-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
-            'runtime-string'    - `use string placehodlers for EJSON-specific runtime types: "<undefined>", "<dynamic>", and "<native>".`
-            'plain'             - `do not use any extra formatting characters (whitespace, newline, or tab).`
-            'spaced'            - `use minimal space characters to format the output.`
-            'pretty'            - `use two-space to beautify the output.`
-            'pretty-tab'        - `use tab instead of two-space to beautify the output.`
-            'bseq-hex-string'   - `serialize binary sequence as hexadecimal string, e.g. "A0B0C0567890".`
-            'bseq-hex'          - `using hexadecimal form to serialize binary sequence.`
-            'bseq-bin'          - `using binary form to serialize binary sequence.`
-            'bseq-bin-dots'     - `use binary form to serialize binary sequence and use dots to seperate the binary digits per four digits. e.g., b1100.1010.`
-            'bseq-base64'       - `use Base64 to serialize binary sequence.`
-            'no-trailing-zero'  - `drop trailing zero for float values.`
-            'no-slash-escape'   - `do not escape the forward slashes ('/').`
+            - 'real-json':          `use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON number.`
+            - 'real-ejson':         `use EJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
+            - 'runtime-null':       `treat all EJSON-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
+            - 'runtime-string':     `use string placehodlers for EJSON-specific runtime types: "<undefined>", "<dynamic>", and "<native>".`
+            - 'plain':              `do not use any extra formatting characters (whitespace, newline, or tab).`
+            - 'spaced':             `use minimal space characters to format the output.`
+            - 'pretty':             `use two-space to beautify the output.`
+            - 'pretty-tab':         `use tab instead of two-space to beautify the output.`
+            - 'bseq-hex-string':    `serialize binary sequence as hexadecimal string, e.g. "A0B0C0567890".`
+            - 'bseq-hex':           `using hexadecimal form to serialize binary sequence.`
+            - 'bseq-bin':           `using binary form to serialize binary sequence.`
+            - 'bseq-bin-dots':      `use binary form to serialize binary sequence and use dots to seperate the binary digits per four digits. e.g., b1100.1010.`
+            - 'bseq-base64':        `use Base64 to serialize binary sequence.`
+            - 'no-trailing-zero':   `drop trailing zero for float values.`
+            - 'no-slash-escape':    `do not escape the forward slashes ('/').`
            >
         ]
 ) string
@@ -1834,10 +1834,10 @@ $EJSON.sort(
         < array | set $data >,
         < 'asc | desc' $method = 'asc': sorting ascendingly or descendingly >
         [, < 'auto | number | case | caseless' $method = 'auto':
-            `auto` - comparing members automatically;
-            `number` - comparing members as numbers;
-            `case` - comparing members as strings case-sensitively;
-            `caseless` - comparing members as strings case-insensitively. >
+            - 'auto':       `comparing members automatically;`
+            - 'number':     `comparing members as numbers;`
+            - 'case':       `comparing members as strings case-sensitively;`
+            - 'caseless':   `comparing members as strings case-insensitively.` >
         ]
 ) $data | false
 ```
@@ -1899,10 +1899,10 @@ $EJSON.compare(
         < any: the first data >,
         < any: the second data >
         [, < 'auto | number | case | caseless' = 'auto':
-            `auto`: comparing automatically;
-            `number`: comparing as numbers;
-            `case`: comparing as strings case-sensitively;
-            `caseless`: comparing as strings case-insensitively. >
+            - 'auto':       `comparing automatically;`
+            - 'number':     `comparing as numbers;`
+            - 'case':       `comparing as strings case-sensitively;`
+            - 'caseless':   `comparing as strings case-insensitively.` >
         ]
 ) number | undefined
 ```
@@ -2234,6 +2234,7 @@ $EJSON.unpack(
 $EJSON.unpack( "i16le i32le", bx0a000a000000)
     // array: [10L, 10L]
 ```
+
 **参见**
 
 - [1.2) 二进制格式表示法](#12-二进制格式表示法)
@@ -2310,19 +2311,17 @@ $EJSON.hex2bin( '0FF0' )
 
 #### 3.6.21) `base64_encode` 方法
 
-使用 MIME base64 编码字符串或者字节序列。
-
-<https://www.php.net/manual/en/function.base64-encode.php>
+使用 MIME Base64 编码字符串或者字节序列。
 
 **描述**
 
 ```js
-$URL.base64_encode(
+$EJSON.base64_encode(
         < string | bsequence $data >
 ) string
 ```
 
-该函数将输入字符串或者二进制序列 `data` 按照 Base64 进行编码。
+该函数将给定的字符串或者二进制序列 `data` 按照 Base64 进行编码。
 
 **参数**
 
@@ -2337,12 +2336,12 @@ $URL.base64_encode(
 
 #### 3.6.22) `base64_decode` 方法
 
-解码使用 MIME base64 编码的字符串。
+解码使用 MIME Base64 编码的字符串。
 
 **描述**
 
 ```js
-$URL.base64_decode(
+$EJSON.base64_decode(
         <string $data>,
 ) bsequence
 ```
