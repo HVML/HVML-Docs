@@ -2295,8 +2295,8 @@ $EJSON.hex2bin(
 该方法可能抛出如下异常：
 
 - `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字节序列。
-- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字符串。
-- `BadEncoding`：不可识别的十六进制字符串；可忽略异常，静默求值时返回已转换的字符串。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字节序列。
+- `BadEncoding`：不可识别的十六进制字符串；可忽略异常，静默求值时返回空字节序列。
 
 **示例**
 
@@ -2323,11 +2323,22 @@ $EJSON.base64_encode(
 
 该函数将给定的字符串或者二进制序列 `data` 按照 Base64 进行编码。
 
-**参数**
+**异常**
 
-**返回值**
+该方法可能抛出如下异常：
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字符串。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字符串。
 
 **示例**
+
+```hvml
+$EJSON.base64_encode( bx48564D4C )
+    // string: 'SFZNTA=='
+
+$EJSON.base64_encode('HVML 是全球首款可编程标记语言')
+    // string: 'SFZNTCDmmK/lhajnkIPpppbmrL7lj6/nvJbnqIvmoIforrDor63oqIA='
+```
 
 **参见**
 
@@ -2346,17 +2357,22 @@ $EJSON.base64_decode(
 ) bsequence
 ```
 
-该函数将输入字符串 `data` 按照 Base64 进行解码。
+该函数将输入字符串 `data` 按照 Base64 进行解码，返回解码后的字节序列。
 
 **异常**
 
 该方法可能抛出如下异常：
 
 - `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字节序列。
-- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字符串。
-- `BadEncoding`：不可识别的十六进制字符串；可忽略异常，静默求值时返回已转换的字符串。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字节序列。
+- `BadEncoding`：错误的 Base64 编码；可忽略异常，静默求值时返回空字节序列。
 
 **示例**
+
+```hvml
+$EJSON.base64_decode( 'SFZNTA==' )
+    // bsequence: bx48564D4C
+```
 
 **参见**
 
