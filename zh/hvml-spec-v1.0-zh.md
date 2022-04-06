@@ -291,7 +291,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
    - `C0 控制字符`是范围在 U+0000 NULL 到 U+001F INFORMATION SEPARATOR ONE（含）的码点。
    - `C0 控制字符或空格`指 C0 控制字符或 U+0020 SPACE。
    - `控制字符`是指一个`C0 控制字符`或者范围在 U+007F DELETE 到 U+009F APPLICATION PROGRAM COMMAND（含）的码点。
-   - `ASCII 数字`是范围在 U+0030（`0`） 到 U+0039（`9`）（含）的字符。
+   - `ASCII 数字`是范围在 U+0030（`0`）到 U+0039（`9`）（含）的字符。
    - `ASCII 大写十六进制数字`要么是一个 ASCII 数字，要么是一个范围在 U+0041（`A`）到 U+0046（`F`）（含）的码点。
    - `ASCII 小写十六进制数字`要么是一个 ASCII 数字，要么是一个范围在 U+0061（`a`）到 U+0066（`f`）（含）的码点。
    - `ASCII 十六进制数字`要么是一个 ASCII 大写十六进制数字，要么是一个 ASCII 小写十六进制数字。
@@ -3517,11 +3517,10 @@ doSomething(<string $foo>, <string $bar>)
 `back` 标签只支持如下两种介词属性：
 
 - `to`：用于指定回退位置，支持：
-   - 三种预定义相对栈帧名称：`_parent`、`_grandpa` 和 `forefather`，分别表示父栈帧、祖父栈帧和始祖栈帧。
-   - 数字表示的回退数量。
-- `with`：用于指定一个值，这个值将取代回退后的当前结果数据。
-
-我们也可以使用其内容来定义 `with` 属性的值。
+   - 以下划线（U+005F `_` ）打头的三个预定义相对栈帧名称：`_parent`、`_grandparent` 和 `_ancestor`，分别表示父栈帧、祖父栈帧和始祖栈帧（最顶栈帧）。
+   - 以井字符（U+0023 `#` ）打头的目标栈帧对应元素的标识符，如 `#myAnchor`。
+   - 正整数表示的回退栈帧数量。
+- `with`：用于指定一个值，这个值将取代回退后的上下文变量对应的结果数据。我们也可以使用其内容来定义 `with` 属性的值。
 
 比如我们使用 `iterate` 生成小于 100 的偶数数列时，如果使用 `back` 标签，则可如下编码：
 
@@ -3551,17 +3550,17 @@ doSomething(<string $foo>, <string $bar>)
 
 为方便处理，`back` 标签将执行静默求值，不产生任何异常。如下是针对错误参数的处理规则：
 
-- 不可识别的 `to` 属性值或者求值失败或者无效的栈帧，一律按 `_forefather` 处理。
-- 未指定 `with` 属性值时，按 `undefined` 处理，不改变目标栈帧的结果值。
+- 不可识别的 `to` 属性值或者求值失败或者无效的栈帧，一律按回退到最顶栈帧处理。
+- 未指定 `with` 属性值时，按 `undefined` 处理，不改变回退后的上下文变量。
 - 若 `with` 属性求值失败，按 `undefined` 处理。
 
-使用 `with` 属性值定义替代目标栈帧结果数据的操作，给程序处理执行逻辑带来了帮助。比如，捕捉到异常时：
+使用 `with` 属性值定义可替代回退后上下文变量之结果数据的操作，给程序控制执行逻辑带来了帮助。比如，捕捉到异常时：
 
 ```html
 <body>
     <init as="dirEntries" with=[] />
 
-    <ul>
+    <ul id="UL">
         <choose on=$FS.opendir($REQUEST.dir) >
             <catch for="ANY">
                 <back to="3">
@@ -3572,7 +3571,7 @@ doSomething(<string $foo>, <string $bar>)
             <!-- no directory entry if $FS.readdir() returns false -->
             <iterate on=$? with=$FS.readdir($0^) >
                 <catch for="ANY">
-                    <back to="4">
+                    <back to="#UL">
                         "Exception when calling '$FS.readdir($REQUEST.dir)': $?"
                     </back>
                 </catch>
