@@ -2034,6 +2034,10 @@ $EJSON.fetchstr( <bsequece $bytes>,
 // UTF8: 北京上海
 $EJSON.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8', 6, -6 )
     // string: "上海"
+
+// UTF8: 北京上海
+$EJSON.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8:6' )
+    // string: "北京"
 ```
 
 #### 3.6.13) `fetchreal` 方法
