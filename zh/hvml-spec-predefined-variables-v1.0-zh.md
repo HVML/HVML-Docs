@@ -302,13 +302,13 @@ Language: Chinese
 | 2 字节整数         |  `i16[le/be][:<QUANTITY>]`   | longint, longint 数组    |
 | 4 字节整数         |  `i32[le/be][:<QUANTITY>]`   | longint, longint 数组    |
 | 8 字节整数         |  `i64[le/be][:<QUANTITY>]`   | longint, longint 数组    |
-| 1 字节无符号整数   |  `u8[:<QUANTITY>]`           | ulongint, ulongint 数组   |
-| 2 字节无符号整数   |  `u16[le/be][:<QUANTITY>]`   | ulongint, ulongint 数组   |
-| 4 字节无符号整数   |  `u32[le/be][:<QUANTITY>]`   | ulongint, ulongint 数组   |
-| 8 字节无符号整数   |  `u64[le/be][:<QUANTITY>]`   | ulongint, ulongint 数组   |
-| 2 字节浮点型       |  `f16[le/be][:<QUANTITY>]`   | number, number 数组     |
-| 4 字节浮点型       |  `f32[le/be][:<QUANTITY>]`   | number, number 数组     |
-| 8 字节浮点型       |  `f64[le/be][:<QUANTITY>]`   | number, number 数组     |
+| 1 字节无符号整数   |  `u8[:<QUANTITY>]`           | ulongint, ulongint 数组  |
+| 2 字节无符号整数   |  `u16[le/be][:<QUANTITY>]`   | ulongint, ulongint 数组  |
+| 4 字节无符号整数   |  `u32[le/be][:<QUANTITY>]`   | ulongint, ulongint 数组  |
+| 8 字节无符号整数   |  `u64[le/be][:<QUANTITY>]`   | ulongint, ulongint 数组  |
+| 2 字节浮点型       |  `f16[le/be][:<QUANTITY>]`   | number, number 数组      |
+| 4 字节浮点型       |  `f32[le/be][:<QUANTITY>]`   | number, number 数组      |
+| 8 字节浮点型       |  `f64[le/be][:<QUANTITY>]`   | number, number 数组      |
 | 12 字节浮点型      |  `f96[le/be][:<QUANTITY>]`   | longdouble, longdouble 数组 |
 | 16 字节长双精度    |  `f128[le/be][:<QUANTITY>]`  | longdouble, longdouble 数组 |
 | 字节序列           |  `bytes:<SIZE>`              | bsequence；SIZE 指定字节数量。 |
@@ -333,9 +333,9 @@ Language: Chinese
 | 数值类型          | 类型 + 大/小头        | 如不标大、小头，则跟随当前架构                                            | u16、u32be、u64le     |
 | 连续数值类型      | 类型 + 大/小头 + 个数 | 如不标大、小头，则跟随当前架构，个数指该类数值的数值，必须大于零          | u16:10、u32be:10      |
 | 字节序列          | 类型 + 长度           |                                                                           | bytes:234             |
-| UTF-8 编码字符串  | 类型 + 长度 / 类型    | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 字节）           | utf8、utf8:123        |
-| UTF-16 编码字符串 | 类型 + 长度 / 类型    | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 六位整数）       | utf16、utf16:120      |
-| UTF-32 编码字符串 | 类型 + 长度 / 类型    | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的 0 三十二位整数）   | utf32be、utf32be:120  |
+| UTF-8 编码字符串  | 类型 + 长度 / 类型    | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的字节零）            | utf8、utf8:123        |
+| UTF-16 编码字符串 | 类型 + 长度 / 类型    | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的十六位零）          | utf16、utf16:120      |
+| UTF-32 编码字符串 | 类型 + 长度 / 类型    | 如不标长度，则自动计算字符串长度（数据需包含表示结尾的三十二位零）        | utf32be、utf32be:120  |
 
 注意：
 
@@ -346,7 +346,7 @@ Language: Chinese
 如，`i32le utf8:128 f64`，表示一个结构的构成部分依次如下：
 
 1. 其中前 4 个字节是一个 32 位整数，小头存储；
-1. 紧接着是一个 128 字节的字符串；
+1. 紧接着是一个 128 字节的 UTF-8 编码字符串；
 1. 最后 8 字节是一个 64 位浮点数。
 
 该结构一共 140 字节。
@@ -2176,7 +2176,7 @@ $EJSON.pack(
 ) string
 ```
 
-该函数传入的多个实数、字符串或字节序列按照 `$format` 指定的二进制格式打包为字节序列。
+该函数将传入的多个实数、字符串或字节序列按照 `$format` 指定的二进制格式打包为字节序列。
 
 ```js
 $EJSON.pack(
