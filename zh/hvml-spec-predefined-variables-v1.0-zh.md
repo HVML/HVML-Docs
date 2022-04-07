@@ -2167,41 +2167,52 @@ $EJSON.sha1(
 ```js
 $EJSON.pack(
         <string $format: `the format string; see Binary Format Notation.` >,
-        <real | string | bsequence $first: `the first data.` >
-        [,  <real | string | bsequence $second: `the second data.` >
-            [, <real | string | bsequence $third: `the third data.` >
+        <real | string | bsequence | array $first: `the first data.` >
+        [,  <real | string | bsequence | array $second: `the second data.` >
+            [, <real | string | bsequence | array $third: `the third data.` >
                 [, ... ]
             ]
         ]
 ) string
 ```
 
-该函数将传入的多个实数、字符串或字节序列按照 `$format` 指定的二进制格式打包为字节序列。
+该函数将传入的多个实数、实数数组、字符串或字节序列按照 `$format` 指定的二进制格式打包为字节序列。
 
 ```js
 $EJSON.pack(
-        <string $format: `the format string; see Binary Format Notation.` >,
-        <array $data >
+        < string $format: `the format string; see Binary Format Notation.` >,
+        < array $data >
 ) string
 ```
 
-该函数将传入的数组之成员依次按照 `$format` 指定的二进制格式转换为字节序列。
+当传入两个参数，且第二个参数为数组时，该函数将传入的数组之成员依次按照 `$format` 指定的二进制格式转换为字节序列。
 
 **异常**
 
 该方法可能抛出如下异常：
 
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字节序列。
-- `WrongDataType`：错误数据类型；可忽略异常，静默求值时跳过。
-- `BadEncoding`：错误编码；可忽略异常，静默求值时跳过。
-- `InvalidValue`：给定数据超过格式指定的实数范围；可忽略异常，静默求值时跳过。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回已打包数据。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回已打包数据。
+- `BadEncoding`：错误编码；可忽略异常，静默求值时返回已打包数据。
+- `InvalidValue`：给定数据超过格式指定的实数范围；可忽略异常，静默求值时返回已打包数据。
+
+**备注**
+
+为防止混淆，当使用第一种原型时，应确保第一个参数不是数组，或者传入三个或以上参数。
 
 **示例**
 
 ```js
 $EJSON.pack( "i16le i32le", 10, 10)
     // bsequence: bx0a000a000000
+
+$EJSON.pack( "i16le:2 i32le", [[10, 15], 255])
+    // bsequence: bx0A000F00FF000000
+
+$EJSON.pack( "i16le:2 i32le", [10, 15], 255)
+    // bsequence: bx0A000F00FF000000
 ```
+
 **参见**
 
 - [1.2) 二进制格式表示法](#12-二进制格式表示法)
@@ -2225,7 +2236,7 @@ $EJSON.unpack(
 
 该方法可能抛出如下异常：
 
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空数组。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回已分解数据。
 - `InvalidValue`：格式和字节序列不匹配；可忽略异常，静默求值时返回已分解数据。
 
 **示例**
@@ -5952,7 +5963,7 @@ $FILE.writelines($FILE.stdout, $SYSTEM.uname_prt('kernel-name'))
 
 #### 4.4.4) `open` 方法
 
-打开流，返回一个代表流的原生实体值。
+打开流，返回一个代表流的原生实体值。这个原生实体可以被观察。
 
 **描述**
 
