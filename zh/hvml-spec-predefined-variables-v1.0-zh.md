@@ -28,7 +28,8 @@ Language: Chinese
 - [1) 介绍](#1-介绍)
    + [1.1) 规范及术语](#11-规范及术语)
    + [1.2) 二进制格式表示法](#12-二进制格式表示法)
-   + [1.3) 撰写要求](#13-撰写要求)
+   + [1.3) 格式化修饰符](#13-格式化修饰符)
+   + [1.4) 撰写要求](#14-撰写要求)
 - [2) 非动态变量](#2-非动态变量)
    + [2.1) `TIMERS`](#21-timers)
       * [2.1.1) 批量新增定时器](#211-批量新增定时器)
@@ -121,32 +122,34 @@ Language: Chinese
       * [3.9.6) `shuffle` 方法](#396-shuffle-方法)
       * [3.9.7) `replace` 方法](#397-replace-方法)
       * [3.9.8) `format_c` 方法](#398-format_c-方法)
-      * [3.9.9) `format_p` 方法](#399-format_p-方法)
-      * [3.9.10) `join` 方法](#3910-join-方法)
-      * [3.9.11) `nr_chars` 方法](#3911-nr_chars-方法)
-      * [3.9.12) `tolower` 方法](#3912-tolower-方法)
-      * [3.9.13) `toupper` 方法](#3913-toupper-方法)
-      * [3.9.14) `substr` 方法](#3914-substr-方法)
-      * [3.9.15) `substr_compare` 方法](#3915-substr_compare-方法)
-      * [3.9.16) `substr_count` 方法](#3916-substr_count-方法)
-      * [3.9.17) `substr_replace` 方法](#3917-substr_replace-方法)
-      * [3.9.18) `strstr` 方法](#3918-strstr-方法)
-      * [3.9.19) `strpos` 方法](#3919-strpos-方法)
-      * [3.9.20) `strpbrk` 方法](#3920-strpbrk-方法)
-      * [3.9.21) `split` 方法](#3921-split-方法)
-      * [3.9.22) `chunk_split` 方法](#3922-chunk_split-方法)
-      * [3.9.23) `trim` 方法](#3923-trim-方法)
-      * [3.9.24) `pad` 方法](#3924-pad-方法)
-      * [3.9.25) `repeat` 方法](#3925-repeat-方法)
-      * [3.9.26) `reverse` 方法](#3926-reverse-方法)
-      * [3.9.27) `tokenize` 方法](#3927-tokenize-方法)
-      * [3.9.28) `translate` 方法](#3928-translate-方法)
-      * [3.9.29) `htmlentities_encode` 方法](#3929-htmlentities_encode-方法)
-      * [3.9.30) `htmlentities_decode` 方法](#3930-htmlentities_decode-方法)
-      * [3.9.31) `nl2br` 方法](#3931-nl2br-方法)
-      * [3.9.32) `rot13` 方法](#3932-rot13-方法)
-      * [3.9.33) `count_chars` 方法](#3933-count_chars-方法)
-      * [3.9.34) `count_bytes` 方法](#3934-count_bytes-方法)
+      * [3.9.9) `scan_c` 方法](#399-scan_c-方法)
+      * [3.9.10) `format_p` 方法](#3910-format_p-方法)
+      * [3.9.11) `scan_p` 方法](#3911-scan_p-方法)
+      * [3.9.12) `join` 方法](#3912-join-方法)
+      * [3.9.13) `nr_chars` 方法](#3913-nr_chars-方法)
+      * [3.9.14) `tolower` 方法](#3914-tolower-方法)
+      * [3.9.15) `toupper` 方法](#3915-toupper-方法)
+      * [3.9.16) `substr` 方法](#3916-substr-方法)
+      * [3.9.17) `substr_compare` 方法](#3917-substr_compare-方法)
+      * [3.9.18) `substr_count` 方法](#3918-substr_count-方法)
+      * [3.9.19) `substr_replace` 方法](#3919-substr_replace-方法)
+      * [3.9.20) `strstr` 方法](#3920-strstr-方法)
+      * [3.9.21) `strpos` 方法](#3921-strpos-方法)
+      * [3.9.22) `strpbrk` 方法](#3922-strpbrk-方法)
+      * [3.9.23) `split` 方法](#3923-split-方法)
+      * [3.9.24) `chunk_split` 方法](#3924-chunk_split-方法)
+      * [3.9.25) `trim` 方法](#3925-trim-方法)
+      * [3.9.26) `pad` 方法](#3926-pad-方法)
+      * [3.9.27) `repeat` 方法](#3927-repeat-方法)
+      * [3.9.28) `reverse` 方法](#3928-reverse-方法)
+      * [3.9.29) `tokenize` 方法](#3929-tokenize-方法)
+      * [3.9.30) `translate` 方法](#3930-translate-方法)
+      * [3.9.31) `htmlentities_encode` 方法](#3931-htmlentities_encode-方法)
+      * [3.9.32) `htmlentities_decode` 方法](#3932-htmlentities_decode-方法)
+      * [3.9.33) `nl2br` 方法](#3933-nl2br-方法)
+      * [3.9.34) `rot13` 方法](#3934-rot13-方法)
+      * [3.9.35) `count_chars` 方法](#3935-count_chars-方法)
+      * [3.9.36) `count_bytes` 方法](#3936-count_bytes-方法)
    + [3.10) `URL`](#310-url)
       * [3.10.1) `encode` 方法](#3101-encode-方法)
       * [3.10.2) `decode` 方法](#3102-decode-方法)
@@ -351,7 +354,11 @@ Language: Chinese
 
 该结构一共 140 字节。
 
-### 1.3) 撰写要求
+### 1.3) 格式化修饰符
+
+<https://www.php.net/manual/en/function.sprintf.php>
+
+### 1.4) 撰写要求
 
 对一个方法的描述应包含如下部分（section）：
 
@@ -3345,7 +3352,7 @@ $STR.replace("%body%", "black", "<body text=%BODY%>", true);
 
 #### 3.9.8) `format_c` 方法
 
-格式化数值及字符串数据，使用 C 格式化字符表述方法。
+格式化数值及字符串数据，格式字符串使用类似 C 语言的修饰符（specifier）。
 
 **描述**
 
@@ -3379,9 +3386,36 @@ $STR.format_c('Tom is %d years old, while Jerry is %d years old.', [9, 7])
     // string: 'Tom is 9 years old, while Jerry is 7 years old.'
 ```
 
-#### 3.9.9) `format_p` 方法
+**参见**
 
-使用占位符格式化任意数据，对 EJSON 数据，使用字符串化处理后的内容。
+- PHP `sprintf()` 函数：<https://www.php.net/manual/en/function.sprintf.php>
+
+#### 3.9.9) `scan_c` 方法
+
+根据给定的格式解析指定的字符串，格式字符串使用类似 C 语言的修饰符（specifier）。
+
+```js
+$STR.scanf(
+        <string $string: `The input string being parsed.`>,
+        <string $format: `The interpreted format for string`>
+) array
+```
+
+**示例**
+
+```js
+$STR.scan_c('Tom is 9 years old, while Jerry is 7 years old.',
+        'Tom is %d years old, while Jerry is %d years old.')
+    // array: [9L, 7L]
+```
+
+**参见**
+
+- PHP `sscanf()` 函数：<https://www.php.net/manual/en/function.sscanf.php>
+
+#### 3.9.10) `format_p` 方法
+
+使用占位符格式化任意数据，对 EJSON 数据，使用序列化后的字符串。
 
 ```js
 $STR.format_p(
@@ -3390,19 +3424,62 @@ $STR.format_p(
 ) string
 ```
 
-使用数组表达要格式化的数据时，占位符用 `{0}`、`{1}` 等表示。
+使用数组表达要格式化的数据时，占位符用 `[0]`、`[1]` 等表示。
 
 使用对象表达要格式化的数据时，占位符用 `{name}`、`{id}` 等表示。
 
+要使用多个参数表达要格式化的数据时，占位符用 `#0`、`#1` 等表示。
+
+前置 `\` 符号表示转义。
+
+**示例**
+
 ```js
-$STR.format_p('There are two boys: {0} and {1}', ['Tom', 'Jerry'])
-    // string: There are two boys: Tom and Jerry'
+$STR.format_p('There are two boys: [0] and [1]', ['Tom', 'Jerry'])
+    // string: There are two boys: "Tom" and "Jerry"'
 
 $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry' })
-    // string: There are two boys: Tom and Jerry'
+    // string: There are two boys: "Tom" and "Jerry"'
+
+$STR.format_p('There are two boys: #0 and #1', 'Tom', 'Jerry')
+    // string: There are two boys: "Tom" and "Jerry"'
 ```
 
-#### 3.9.10) `join` 方法
+#### 3.9.11) `scan_p` 方法
+
+根据给定的格式解析指定的字符串，格式字符串使用占位符。
+
+```js
+$STR.scan_p(
+        <string $string: `The input string being parsed.`>,
+        <string $format: `string contains placeholders.`>,
+) array | object | any
+```
+
+要返回数组，占位符用 `[0]`、`[1]` 等表示。
+
+要返回对象，占位符用 `{name}`、`{id}` 等表示。
+
+要返回单个数据，占位符用 `#?` 表示。
+
+前置 `\` 符号表示转义。
+
+**示例**
+
+```js
+$STR.scan_p('There are two boys: "Tom" and "Jerry"',
+        'There are two boys: [0] and [1]')
+    // array: ['Tom', 'Jerry']
+
+$STR.scan_p('There are two boys: "Tom" and "Jerry"',
+        'There are two boys: {name0} and {name1}')
+    // object: { name0: 'Tom', name1: 'Jerry' }
+
+$STR.scan_p('My name is "Tom"', 'My name is #?')
+    // string: 'Tom'
+```
+
+#### 3.9.12) `join` 方法
 
 用于串接两个或更多个字符串。
 
@@ -3443,7 +3520,7 @@ $STR.join(1, ', ', 2, ', ', 3)
     // string: '1, 2, 3'
 ```
 
-#### 3.9.11) `nr_chars` 方法
+#### 3.9.13) `nr_chars` 方法
 
 获得字符串的字符数量。
 
@@ -3481,7 +3558,7 @@ $STR.nr_chars('中国')
 
 **参见**
 
-#### 3.9.12) `tolower` 方法
+#### 3.9.14) `tolower` 方法
 
 将字符串转换为小写。
 
@@ -3515,7 +3592,7 @@ $STR.tolower('Hello, world')
 
 - PHP `strtolower()` 函数：<https://www.php.net/manual/en/function.strtolower.php>
 
-#### 3.9.13) `toupper` 方法
+#### 3.9.15) `toupper` 方法
 
 将字符串转换为大写。
 
@@ -3549,7 +3626,7 @@ $STR.toupper('Hello, world')
 
 - PHP `strtoupper()` 函数：<https://www.php.net/manual/en/function.strtoupper.php>
 
-#### 3.9.14) `substr` 方法
+#### 3.9.16) `substr` 方法
 
 返回字符串的子串。
 
@@ -3607,7 +3684,7 @@ $STR.substr('abcdef', -3, -1)
 
 - PHP `substr()` 函数：<https://www.php.net/manual/en/function.substr.php>
 
-#### 3.9.15) `substr_compare` 方法
+#### 3.9.17) `substr_compare` 方法
 
 比较子字符串（从指定的偏移位置开始比较指定的长度）。
 
@@ -3638,7 +3715,7 @@ $STR.substr_compare(
 
 - PHP `substr_compare()` 函数：<https://www.php.net/manual/en/function.substr-compare.php>
 
-#### 3.9.16) `substr_count` 方法
+#### 3.9.18) `substr_count` 方法
 
 计算子字符串出现的次数。
 
@@ -3665,7 +3742,7 @@ $STR.substr_count(
 
 - PHP `substr_count()` 函数：<https://www.php.net/manual/en/function.substr-count.php>
 
-#### 3.9.17) `substr_replace` 方法
+#### 3.9.19) `substr_replace` 方法
 
 在子字符串中做替换。
 
@@ -3692,7 +3769,7 @@ $STR.substr_replace(
 
 - PHP `substr_replace()` 函数：<https://www.php.net/manual/en/function.substr-replace.php>
 
-#### 3.9.18) `strstr` 方法
+#### 3.9.20) `strstr` 方法
 
 返回在目标字符串中，以指定字符串起始或结尾的子字符串。
 
@@ -3722,7 +3799,7 @@ $STR.strstr(
 - PHP `strstr()` 函数：<https://www.php.net/manual/en/function.strstr.php>
 - PHP `stristr()` 函数：<https://www.php.net/manual/en/function.stristr.php>
 
-#### 3.9.19) `strpos` 方法
+#### 3.9.21) `strpos` 方法
 
 返回在目标字符串中指定字符串第一次或者最后一次出现的位置。
 
@@ -3752,7 +3829,7 @@ $STR.strpos(
 - PHP `strpos()` 函数：<https://www.php.net/manual/en/function.strpos.php>
 - PHP `stripos()` 函数：<https://www.php.net/manual/en/function.stripos.php>
 
-#### 3.9.20) `strpbrk` 方法
+#### 3.9.22) `strpbrk` 方法
 
 在目标字符串中查找从一组字符的任何一个字符开始或结尾的子字符串。
 
@@ -3779,7 +3856,7 @@ $STR.strpbrk(
 
 - PHP `strpbrk()` 函数：<https://www.php.net/manual/en/function.strpbrk.php>
 
-#### 3.9.21) `split` 方法
+#### 3.9.23) `split` 方法
 
 将字符串按给定的长度切分成子字符串数组。
 
@@ -3802,7 +3879,7 @@ $STR.split(
 
 - PHP `str_split()` 函数：<https://www.php.net/manual/en/function.str-split.php>
 
-#### 3.9.22) `chunk_split` 方法
+#### 3.9.24) `chunk_split` 方法
 
 将字符串按给定的小块长度和分隔符切分，生成一个新的字符串。
 
@@ -3830,7 +3907,7 @@ $STR.chunk_split(
 
 - PHP `chunk_split()` 函数：<https://www.php.net/manual/en/function.chunk-split.php>
 
-#### 3.9.23) `trim` 方法
+#### 3.9.25) `trim` 方法
 
 删除字符串开头、结尾或两者处的空白字符（或其他字符）。
 
@@ -3857,7 +3934,7 @@ $STR.trim(
 - PHP `ltrim()` 函数：<https://www.php.net/manual/en/function.ltrim.php>
 - PHP `rtrim()` 函数：<https://www.php.net/manual/en/function.rtrim.php>
 
-#### 3.9.24) `pad` 方法
+#### 3.9.26) `pad` 方法
 
 使用另一个字符串填充字符串为指定长度。
 
@@ -3883,7 +3960,7 @@ $STR.pad(
 
 - PHP `str_pad()` 函数：<https://www.php.net/manual/en/function.str-pad.php>
 
-#### 3.9.25) `repeat` 方法
+#### 3.9.27) `repeat` 方法
 
 重复一个字符串。
 
@@ -3906,7 +3983,7 @@ $STR.repeat(
 
 - PHP `str_repeat()` 函数：<https://www.php.net/manual/en/function.str-repeat.php>
 
-#### 3.9.26) `reverse` 方法
+#### 3.9.28) `reverse` 方法
 
 反转一个字符串。
 
@@ -3928,7 +4005,7 @@ $STR.reverse(
 
 - PHP `strrev()` 函数：<https://www.php.net/manual/en/function.strrev.php>
 
-#### 3.9.27) `tokenize` 方法
+#### 3.9.29) `tokenize` 方法
 
 使用给定的词元分隔符分隔字符串，返回分隔后的词元数组。
 
@@ -3951,7 +4028,7 @@ $STR.tokenize(
 
 - PHP `strtok()` 函数：<https://www.php.net/manual/en/function.strtok.php>
 
-#### 3.9.28) `translate` 方法
+#### 3.9.30) `translate` 方法
 
 转换指定子字符串。
 
@@ -3980,7 +4057,7 @@ $STR.translate(
 
 - PHP `strtr()` 函数：<https://www.php.net/manual/en/function.strtr.php>
 
-#### 3.9.29) `htmlentities_encode` 方法
+#### 3.9.31) `htmlentities_encode` 方法
 
 转换字符为 HTML 实体。
 
@@ -4023,7 +4100,7 @@ $STR.htmlentities_encode(
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.htmlentities.php>
 - PHP `htmlspecialchars()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars.php>
 
-#### 3.9.30) `htmlentities_decode` 方法
+#### 3.9.32) `htmlentities_decode` 方法
 
 转换 HTML 实体为对应的字符。
 
@@ -4059,7 +4136,7 @@ $STR.htmlentities_decode(
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.html-entity-decode.php>
 - PHP `htmlspecialchars_decode()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars-decode.php>
 
-#### 3.9.31) `nl2br` 方法
+#### 3.9.33) `nl2br` 方法
 
 在字符串所有换行符之前插入 HTML 换行标记。
 
@@ -4091,7 +4168,7 @@ $STR.nl2br(
 
 - PHP `nl2br()` 函数：<https://www.php.net/manual/en/function.nl2br.php>
 
-#### 3.9.32) `rot13` 方法
+#### 3.9.34) `rot13` 方法
 
 对字符串执行 ROT13 转换。
 
@@ -4115,7 +4192,7 @@ $STR.rot13(
 
 - PHP `rot13()` 函数：<https://www.php.net/manual/en/function.rot13.php>
 
-#### 3.9.33) `count_chars` 方法
+#### 3.9.35) `count_chars` 方法
 
 统计字符串中的字符出现次数。
 
@@ -4143,7 +4220,7 @@ $STR.count_chars(
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
-#### 3.9.34) `count_bytes` 方法
+#### 3.9.36) `count_bytes` 方法
 
 统计字符串或二进制字节序中的各个字节（0...255）出现的次数。
 
@@ -6074,6 +6151,12 @@ $STREAM.open("file://abc.md")
 1. 使用 `regexp` 关键词替代 `reg`：
    - `$STR.streq`
    - `$STR.strne`
+
+1. 新增方法
+   - `$EJSON.pack`
+   - `$EJSON.unpack`
+   - `$STR.scan_c`
+   - `$STR.scan_p`
 
 #### RC1) 220401
 
