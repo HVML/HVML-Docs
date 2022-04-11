@@ -6051,8 +6051,16 @@ $FILE.writelines($FILE.stdout, $SYSTEM.uname_prt('kernel-name'))
 ```js
 $STREAM.open(
         < string $uri: `the URI of the stream.` >
-        [, < string $opts: `the options; the available options vary with the type of stream.` >
+        [, <'[read || write ] || [block | nonblock] | default' $opt = 'default':
+               - 'read':            `open $uri for read`
+               - 'write':           `open $uri for write`
+               - 'block':           `open $uri in blocking mode`
+               - 'nonblock':        `open $uri in nonblocking mode`
+               - 'default':         `is equivalent to 'read write block'`
+           >
+        ]
 ) native | false: `the native entitiy representing the opened stream.`
+
 ```
 
 该方法打开一个流，返回一个代表流的原生实体值。
