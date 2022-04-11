@@ -6124,12 +6124,11 @@ $FILE.writelines($FILE.stdout, $SYSTEM.uname_prt('kernel-name'))
 ```js
 $STREAM.open(
         < string $uri: `the URI of the stream.` >
-        [, <'[read || write ] || [block | nonblock] | default' $opt = 'default':
+        [, <'[read || write || nonblock] | default' $opt = 'default':
                - 'read':            `open $uri for read`
                - 'write':           `open $uri for write`
-               - 'block':           `open $uri in blocking mode`
                - 'nonblock':        `open $uri in nonblocking mode`
-               - 'default':         `is equivalent to 'read write block'`
+               - 'default':         `is equivalent to 'read write'`
            >
         ]
 ) native | false: `the native entitiy representing the opened stream.`
