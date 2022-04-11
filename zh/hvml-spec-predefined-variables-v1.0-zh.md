@@ -6168,6 +6168,38 @@ $STREAM.writebytes($STREAM.stdout, bx00112233445566778899AABBCCDDEEFF)
 
 在流中执行定位操作。
 
+**描述**
+
+```js
+$STREAM.seek(
+        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < number $offset: `the offset to be set`>,
+        <'set | current | end' $whence :
+               - 'set':           `The $stream offset is set to offset bytes`
+               - 'current':       `The $stream offset is set to its current location plus offset bytes`
+               - 'end':           `The $stream offset is set to the size of the file plus offset bytes.`
+        >
+) number | false
+
+```
+
+**异常**
+
+- `ArgumentMissed`：未传入必要参数。
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：传入无效数据。
+- `AccessDenied`：
+
+**注意**
+
+1. 仅支持 `files://` 类型的流。
+
+**示例**
+
+```js
+$STREAM.seek($stream, 10, 'set')
+```
+
 #### 4.4.12) 综合示例
 
 ```html
