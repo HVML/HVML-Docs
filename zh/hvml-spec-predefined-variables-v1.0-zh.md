@@ -6097,9 +6097,52 @@ $STREAM.open("file://abc.md", "read write")
 
 从流中读取一个二进制结构，并转换为适当的数据。
 
+```js
+$STREAM.readstruct(
+        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < string $format: `the format of the struct`>
+) number | false
+
+```
+
+**异常**
+
+- `ArgumentMissed`：未传入必要参数。
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：传入无效数据。
+- `AccessDenied`：
+
+**示例**
+
+```js
+$STREAM.readstruct($stream, 'u64 S5')
+```
+
 #### 4.4.6) `writestruct` 方法
 
 将多个数据按照指定的结构格式写入流。
+
+```js
+$STREAM.writestruct(
+        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < string $format: `the format of the struct`>,
+        < array $struct: `the data of the struct`>,
+) number | false
+
+```
+
+**异常**
+
+- `ArgumentMissed`：未传入必要参数。
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：传入无效数据。
+- `AccessDenied`：
+
+**示例**
+
+```js
+$STREAM.writestruct($stream, 'u64 S5', [256, "hello"])
+```
 
 #### 4.4.7) `readlines` 方法
 
