@@ -6090,8 +6090,7 @@ $STREAM.open(
 **示例**
 
 ```js
-$STREAM.open("file://abc.md")
-    // native
+$STREAM.open("file://abc.md", "read write")
 ```
 
 #### 4.4.5) `readstruct` 方法
@@ -6114,9 +6113,56 @@ $STREAM.open("file://abc.md")
 
 从流中读取一个字节序列，返回一个字节序列。
 
+**描述**
+
+```js
+$STREAM.readbytes(
+        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < number $length: `the length to read in bytes`>
+) bsequence | false
+
+```
+
+**异常**
+
+- `ArgumentMissed`：未传入必要参数。
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：传入无效数据。
+- `AccessDenied`：
+
+**示例**
+
+```js
+$STREAM.readbytes($STREAM.stdin, 10)
+```
+
+
 #### 4.4.10) `writebytes` 方法
 
 将一个字节序列写入流。
+
+**描述**
+
+```js
+$STREAM.writebytes(
+        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < bsequence $data: ` the byte sequence to write`>
+) number | false
+
+```
+
+**异常**
+
+- `ArgumentMissed`：未传入必要参数。
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：传入无效数据。
+- `AccessDenied`：
+
+**示例**
+
+```js
+$STREAM.writebytes($STREAM.stdout, bx00112233445566778899AABBCCDDEEFF)
+```
 
 #### 4.4.11) `seek` 方法
 
