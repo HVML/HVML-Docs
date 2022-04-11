@@ -6105,9 +6105,55 @@ $STREAM.open("file://abc.md", "read write")
 
 从流中读取给定行数，返回字符串数组。
 
+**描述**
+
+```js
+$STREAM.readlines(
+        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < number $lines: `the number of lines to read`>
+) string | false
+
+```
+
+**异常**
+
+- `ArgumentMissed`：未传入必要参数。
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：传入无效数据。
+- `AccessDenied`：
+
+**示例**
+
+```js
+$STREAM.readlines($stream, 10)
+```
+
 #### 4.4.8) `writelines` 方法
 
 将字符串写入流中。
+
+**描述**
+
+```js
+$STREAM.writelines(
+        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < string $line: `the string to write`>
+) number | false
+
+```
+
+**异常**
+
+- `ArgumentMissed`：未传入必要参数。
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：传入无效数据。
+- `AccessDenied`：
+
+**示例**
+
+```js
+$STREAM.writelines($STREAM.stdout, "This is the string to write")
+```
 
 #### 4.4.9) `readbytes` 方法
 
