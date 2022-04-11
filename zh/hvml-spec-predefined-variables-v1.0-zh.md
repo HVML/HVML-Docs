@@ -2238,10 +2238,12 @@ $EJSON.pack( "i16le:2 i32le", [10, 15], 255)
 $EJSON.unpack(
         <string $format: `the format string; see Binary Format Notation.` >,
         <bsequence $data: `the data.`>
-) array
+) array | real | string | bsequenc
 ```
 
 该函数将传入字节序列按照 `$format` 指定的二进制格式分解为多个数据构成的数组。
+
+当 `$format` 指定的格式字符串包含多个基本数据类型时，该函数返回数组；否则返回单个数据。
 
 **异常**
 
@@ -2255,6 +2257,9 @@ $EJSON.unpack(
 ```js
 $EJSON.unpack( "i16le i32le", bx0a000a000000)
     // array: [10L, 10L]
+
+$EJSON.unpack( "i16le", bx0a000a000000)
+    // longint: 10L
 ```
 
 **参见**
