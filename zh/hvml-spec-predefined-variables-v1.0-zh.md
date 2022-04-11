@@ -6155,8 +6155,7 @@ $STREAM.open(
 **示例**
 
 ```js
-$STREAM.open("file://abc.md")
-    // native
+$STREAM.open("file://abc.md", "read write")
 ```
 
 #### 4.4.5) `readstruct` 方法
@@ -6171,21 +6170,146 @@ $STREAM.open("file://abc.md")
 
 从流中读取给定行数，返回字符串数组。
 
+**描述**
+
+```js
+$STREAM.readlines(
+        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < number $lines: `the number of lines to read`>
+) string | false
+
+```
+
+**异常**
+
+- `ArgumentMissed`：未传入必要参数。
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：传入无效数据。
+- `AccessDenied`：
+
+**示例**
+
+```js
+$STREAM.readlines($stream, 10)
+```
+
 #### 4.4.8) `writelines` 方法
 
 将字符串写入流中。
+
+**描述**
+
+```js
+$STREAM.writelines(
+        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < string $line: `the string to write`>
+) number | false
+
+```
+
+**异常**
+
+- `ArgumentMissed`：未传入必要参数。
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：传入无效数据。
+- `AccessDenied`：
+
+**示例**
+
+```js
+$STREAM.writelines($STREAM.stdout, "This is the string to write")
+```
 
 #### 4.4.9) `readbytes` 方法
 
 从流中读取一个字节序列，返回一个字节序列。
 
+**描述**
+
+```js
+$STREAM.readbytes(
+        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < number $length: `the length to read in bytes`>
+) bsequence | false
+
+```
+
+**异常**
+
+- `ArgumentMissed`：未传入必要参数。
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：传入无效数据。
+- `AccessDenied`：
+
+**示例**
+
+```js
+$STREAM.readbytes($STREAM.stdin, 10)
+```
+
+
 #### 4.4.10) `writebytes` 方法
 
 将一个字节序列写入流。
 
+**描述**
+
+```js
+$STREAM.writebytes(
+        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < bsequence $data: ` the byte sequence to write`>
+) number | false
+
+```
+
+**异常**
+
+- `ArgumentMissed`：未传入必要参数。
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：传入无效数据。
+- `AccessDenied`：
+
+**示例**
+
+```js
+$STREAM.writebytes($STREAM.stdout, bx00112233445566778899AABBCCDDEEFF)
+```
+
 #### 4.4.11) `seek` 方法
 
 在流中执行定位操作。
+
+**描述**
+
+```js
+$STREAM.seek(
+        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < number $offset: `the offset to be set`>,
+        <'set | current | end' $whence :
+               - 'set':           `The $stream offset is set to offset bytes`
+               - 'current':       `The $stream offset is set to its current location plus offset bytes`
+               - 'end':           `The $stream offset is set to the size of the file plus offset bytes.`
+        >
+) number | false
+
+```
+
+**异常**
+
+- `ArgumentMissed`：未传入必要参数。
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：传入无效数据。
+- `AccessDenied`：
+
+**注意**
+
+1. 仅支持 `files://` 类型的流。
+
+**示例**
+
+```js
+$STREAM.seek($stream, 10, 'set')
+```
 
 #### 4.4.12) 综合示例
 
