@@ -153,11 +153,9 @@ Language: Chinese
    + [3.10) `URL`](#310-url)
       * [3.10.1) `encode` 方法](#3101-encode-方法)
       * [3.10.2) `decode` 方法](#3102-decode-方法)
-      * [3.10.3) `rawencode` 方法](#3103-rawencode-方法)
-      * [3.10.4) `rawdecode` 方法](#3104-rawdecode-方法)
-      * [3.10.5) `httpquery` 方法](#3105-httpquery-方法)
-      * [3.10.6) `parse` 方法](#3106-parse-方法)
-      * [3.10.7) `assemble` 方法](#3107-assemble-方法)
+      * [3.10.3) `httpquery` 方法](#3103-httpquery-方法)
+      * [3.10.4) `parse` 方法](#3104-parse-方法)
+      * [3.10.5) `assemble` 方法](#3105-assemble-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -4268,12 +4266,16 @@ $STR.count_bytes(
 ```js
 $URL.encode(
         <string |bsequence $data: the string or the byte sequence to be encoded.>
+        [, <'rfc1738 | rfc3986' $enc_type = 'rfc1738':
+          - 'rfc1738': encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.
+          - 'rfc3986':  encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).
+        ]
 ) string
 ```
 
-该方法用于将字符串或者字节序列中的字节进行编码，以便用于 URL 的请求部分。
+该方法用于将字符串或者字节序列中的字节执行 URL 编码，默认遵循 RFC 1738，即将空格编码为加号（`+`）。
 
-该方法以字节为单位字节处理字符串或者字节序列中的字符而忽略字符串或者字节序列的原始编码形式（如 UTF-8 或者 GB18030），除 `-_.` 之外，所有非字母数字字符都将被替换成百分号（%）后跟两位十六进制数的形式，空格则编码为加号（+）。这种编码方式与网页中的表单使用 `POST` 方法的编码方式一样，同时与媒体类型（MIME） `application/x-www-form-urlencoded` 的编码方式一样。由于历史原因，此编码将空格编码为加号（+），而 RFC 3986 将空格编码为 `%20`。
+URL 编码以字节为单位字节处理字符串或者字节序列中的字符而忽略字符串或者字节序列的原始编码形式（如 UTF-8 或者 GB18030），除 `-_.` 之外，所有非字母数字字符都将被替换成百分号（%）后跟两位十六进制数的形式。由于历史原因，该编码有两种规范。采用 RFC 1738 时，空格会被编码为加号（+），这种编码方式与网页中的表单使用 `POST` 方法的编码方式一样，同时与媒体类型（MIME） `application/x-www-form-urlencoded` 的编码方式一样。而采用 RFC 3986 时，空格会被编码为 `%20`。
 
 该方法返回字符串。
 
@@ -4290,16 +4292,22 @@ $URL.encode(
 ```js
 $URL.encode('HVML: 全球首款可编程标记语言!')
     // string: 'HVML%3A+%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21'
+
+$URL.rawencode('HVML: 全球首款可编程标记语言!', 'rfc3986')
+    // string: 'HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21'
 ```
 
 **参见**
 
 - [`$EJSON.decode` 方法](#3102-decode-方法)
+- [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
+- [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
 - PHP `urlencode()` 函数：<https://www.php.net/manual/en/function.urlencode.php>
+- PHP `rawurlencode()` 函数：<https://www.php.net/manual/en/function.rawurlencode.php>
 
 #### 3.10.2) `decode` 方法
 
-解码已编码的 URL 字符串。
+解码经 URL 编码的字符串。
 
 **描述**
 
@@ -4309,13 +4317,17 @@ $URL.decode(
         [, < 'binary | string' $type = 'string': `the type of return data:`
             - 'binary': `the decoded data returned as a binary sequence.`
             - 'string': `the decoded data returned as a string in UTF-8 encoding.` >
+            [, <'rfc1738 | rfc3986' $enc_type = 'rfc1738':
+              - 'rfc1738': decoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.
+              - 'rfc3986':  decoding is performed according to RFC 3986, and spaces are expected being percent encoded (%20).
+            ]
         ]
 ) string | bseqence
 ```
 
-该方法将媒体类型（MIME）为 `application/x-www-form-urlencoded` 的字符串解码为字符串或者字节序列。这种媒体类型将除 `-_.` 之外的所有非字母数字字符替换成百分号（%）后跟两位十六进制数的形式，空格则编码为加号（+），常用于使用 `POST` 方法提交网页表单内容时。
+该方法将使用 URL 编码的字符串解码为字符串或者字节序列。
 
-由于历史原因，此编码将空格编码为加号（+），而 RFC 3986 将空格编码为 `%20`。
+URL 编码以字节为单位字节处理字符串或者字节序列中的字符而忽略字符串或者字节序列的原始编码形式（如 UTF-8 或者 GB18030），除 `-_.` 之外，所有非字母数字字符都将被替换成百分号（%）后跟两位十六进制数的形式。由于历史原因，该编码有两种规范。采用 RFC 1738 时，空格会被编码为加号（+），这种编码方式与网页中的表单使用 `POST` 方法的编码方式一样，同时与媒体类型（MIME） `application/x-www-form-urlencoded` 的编码方式一样。而采用 RFC 3986 时，空格会被编码为 `%20`。
 
 **异常**
 
@@ -4329,98 +4341,22 @@ $URL.decode(
 **示例**
 
 ```js
-$URL.encode('HVML%3A+%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21')
+$URL.decode('HVML%3A+%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21')
+    // string: 'HVML: 全球首款可编程标记语言!'
+
+$URL.decode('HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21', 'string', 'rfc3986')
     // string: 'HVML: 全球首款可编程标记语言!'
 ```
 
 **参见**
 
 - [`$EJSON.encode` 方法](#3101-encode-方法)
-- PHP `urldecode()` 函数：<https://www.php.net/manual/en/function.urldecode.php>
-
-#### 3.10.3) `rawencode` 方法
-
-按照 RFC 3986 对 URL 进行编码。
-
-**描述**
-
-```js
-$URL.rawencode(
-        <string $str: the string to be encoded>
-) string
-```
-
-该方法将字符串或者字节序列按 RFC 3986 进行编码。
-
-该方法以字节为单位字节处理字符串或者字节序列中的字符而忽略字符串或者字节序列的原始编码形式（如 UTF-8 或者 GB18030），除 `-_.` 之外，所有非字母数字字符都将被替换成百分号（%）后跟两位十六进制数的形式。这种编码方式与媒体类型（MIME） `application/x-www-form-urlencoded` 的编码方式有细微差异：RFC 3986 将空格编码为 `%20`，而后者将空格编码为（+）。
-
-该方法返回字符串。
-
-**异常**
-
-该方法可能产生如下异常：
-
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回空字符串。
-- `WrongDataType`：传入了非字符串或者字节序列类型的数据；可忽略异常，静默求值时返回空字符串。
-
-**示例**
-
-```js
-$URL.rawencode('HVML: 全球首款可编程标记语言!')
-    // string: 'HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21'
-```
-
-**参见**
-
-- [`$EJSON.rawdecode` 方法](#3104-rawdecode-方法)
-- PHP `rawurlencode()` 函数：<https://www.php.net/manual/en/function.rawurlencode.php>
+- [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
 - [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
-
-#### 3.10.4) `rawdecode` 方法
-
-解码按照 RFC 3986 编码的字符串或者字节序列。
-
-**描述**
-
-```js
-$URL.rawdecode(
-        <string $str: the string to be decoded>
-        [, < 'binary | string' $type = 'string': `the type of return data:`
-            - 'binary': `the decoded data returned as a binary sequence.`
-            - 'string': `the decoded data returned as a string in UTF-8 encoding.` >
-        ]
-) string | bsequence
-```
-
-该方法将按照 RFC 3986 编码的字符串解码为字符串或者字节序列。
-
-RFC 3986 定义的这种编码，以字节为单位字节处理字符串或者字节序列中的字符而忽略字符串或者字节序列的原始编码形式（如 UTF-8 或者 GB18030），将除 `-_.` 之外的所有非字母数字字符替换成百分号（%）后跟两位十六进制数的形式。这种编码方式与媒体类型（MIME） `application/x-www-form-urlencoded` 的编码方式有细微差异：RFC 3986 将空格编码为 `%20`，而后者将空格编码为（+）。
-
-该方法不会把加号（'+'）解码为空格，而 `$URL.decode()` 会把加号（'+'）解码为空格。
-
-**异常**
-
-该方法可能产生如下异常：
-
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回空字符串或者空字节序列。
-- `WrongDataType`：传入了不是字符串的数据；可忽略异常，静默求值时返回空字符串或者空字节序列。
-- `BadEncoding`：当 `$type` 为 `string` 时产生，表示解码后的数据不是合法的 UTF-8 编码字符；可忽略异常，静默求值时返回已解码的字符串。
-
-**示例**
-
-```js
-$URL.rawdecode('HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21')
-    // string: 'HVML: 全球首款可编程标记语言!'
-```
-
-**参见**
-
-- [`$EJSON.rawencode` 方法](#3103-rawencode-方法)
+- PHP `urldecode()` 函数：<https://www.php.net/manual/en/function.urldecode.php>
 - PHP `rawurldecode()` 函数：<https://www.php.net/manual/en/function.rawurldecode.php>
 
-#### 3.10.5) `httpquery` 方法
+#### 3.10.3) `httpquery` 方法
 
 生成 URL 编码的查询字符串。
 
@@ -4457,7 +4393,7 @@ $URL.httpquery(
 - [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
 - [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
 
-#### 3.10.6) `parse` 方法
+#### 3.10.4) `parse` 方法
 
 解析 URL，返回其组成部分。
 
@@ -4484,7 +4420,7 @@ $URL.parse(
 
 - PHP `parse_url()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
-#### 3.10.7) `assemble` 方法
+#### 3.10.5) `assemble` 方法
 
 根据分解 URL 对象组装一个完整的 URL。
 
