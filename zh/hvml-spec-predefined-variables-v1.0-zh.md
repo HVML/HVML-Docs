@@ -4431,9 +4431,12 @@ $URL.httpquery(
     < object | array $query_data >
     [, < string $numeric_prefix = '': the numeric prefix for the argument names if `query_data` is an array. >
         [, <string $arg_separator = '&': the character used to separate the arguments. >
-            [, <'rfc1738 | rfc3986' $enc_type = 'rfc1738':
-              'rfc1738' - encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.
-              'rfc3986' - encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).
+            [, <'[json | ejson | string] || [rfc1738 | rfc3986]' $opts = 'string rfc1738':
+              - 'json': serialize the data in JSON.
+              - 'ejson': serialize the data in eJSON.
+              - 'string': stringify the data.
+              - 'rfc1738': encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.
+              - 'rfc3986':  encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).
             ]
         ]
     ]
