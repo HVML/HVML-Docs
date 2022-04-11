@@ -153,9 +153,10 @@ Language: Chinese
    + [3.10) `URL`](#310-url)
       * [3.10.1) `encode` 方法](#3101-encode-方法)
       * [3.10.2) `decode` 方法](#3102-decode-方法)
-      * [3.10.3) `httpquery` 方法](#3103-httpquery-方法)
-      * [3.10.4) `parse` 方法](#3104-parse-方法)
-      * [3.10.5) `assemble` 方法](#3105-assemble-方法)
+      * [3.10.3) `build_query` 方法](#3103-build_query-方法)
+      * [3.10.4) `parse_query` 方法](#3104-parse_query-方法)
+      * [3.10.5) `parse` 方法](#3105-parse-方法)
+      * [3.10.6) `assemble` 方法](#3106-assemble-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -1784,17 +1785,17 @@ $EJSON.stringify(123)
 $EJSON.serialize(
         <any $data>
         [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape' $options = `real-json runtime-null plain bseq-hex-string`:
-            - 'real-json':          `use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON number.`
-            - 'real-ejson':         `use EJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
-            - 'runtime-null':       `treat all EJSON-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
+            - 'real-json':          `use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
+            - 'real-ejson':         `use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
+            - 'runtime-null':       `treat all eJSON-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
             - 'runtime-string':     `use string placehodlers for EJSON-specific runtime types: "<undefined>", "<dynamic>", and "<native>".`
             - 'plain':              `do not use any extra formatting characters (whitespace, newline, or tab).`
             - 'spaced':             `use minimal space characters to format the output.`
             - 'pretty':             `use two-space to beautify the output.`
             - 'pretty-tab':         `use tab instead of two-space to beautify the output.`
             - 'bseq-hex-string':    `serialize binary sequence as hexadecimal string, e.g. "A0B0C0567890".`
-            - 'bseq-hex':           `using hexadecimal form to serialize binary sequence.`
-            - 'bseq-bin':           `using binary form to serialize binary sequence.`
+            - 'bseq-hex':           `use hexadecimal form to serialize binary sequence.`
+            - 'bseq-bin':           `use binary form to serialize binary sequence.`
             - 'bseq-bin-dots':      `use binary form to serialize binary sequence and use dots to seperate the binary digits per four digits. e.g., b1100.1010.`
             - 'bseq-base64':        `use Base64 to serialize binary sequence.`
             - 'no-trailing-zero':   `drop trailing zero for float values.`
@@ -4273,9 +4274,9 @@ $URL.encode(
 ) string
 ```
 
-该方法用于将字符串或者字节序列中的字节执行 URL 编码，默认遵循 RFC 1738，即将空格编码为加号（`+`）。
+该方法用于将字符串或者字节序列中的字节执行 URL 编码，默认遵循 RFC 1738 和 'application/x-www-form-urlencoded' 媒体类型编码方式。
 
-URL 编码以字节为单位字节处理字符串或者字节序列中的字符而忽略字符串或者字节序列的原始编码形式（如 UTF-8 或者 GB18030），除 `-_.` 之外，所有非字母数字字符都将被替换成百分号（%）后跟两位十六进制数的形式。由于历史原因，该编码有两种规范。采用 RFC 1738 时，空格会被编码为加号（+），这种编码方式与网页中的表单使用 `POST` 方法的编码方式一样，同时与媒体类型（MIME） `application/x-www-form-urlencoded` 的编码方式一样。而采用 RFC 3986 时，空格会被编码为 `%20`。
+URL 编码以字节为单位字节处理字符串或者字节序列中的字符而忽略字符串或者字节序列的原始编码形式（如 UTF-8 或者 GB18030），除 `-_.` 之外，所有非字母数字字符都将被替换成百分号（%）后跟两位十六进制数的形式。由于历史原因，该编码有两种形式。采用 RFC 1738 和 'application/x-www-form-urlencoded' 媒体类型编码时，空格会被编码为加号（+），这种编码方式与网页中的表单使用 `POST` 方法的编码方式一样。而采用 RFC 3986 时，空格会被编码为 `%20`。
 
 该方法返回字符串。
 
@@ -4327,7 +4328,7 @@ $URL.decode(
 
 该方法将使用 URL 编码的字符串解码为字符串或者字节序列。
 
-URL 编码以字节为单位字节处理字符串或者字节序列中的字符而忽略字符串或者字节序列的原始编码形式（如 UTF-8 或者 GB18030），除 `-_.` 之外，所有非字母数字字符都将被替换成百分号（%）后跟两位十六进制数的形式。由于历史原因，该编码有两种规范。采用 RFC 1738 时，空格会被编码为加号（+），这种编码方式与网页中的表单使用 `POST` 方法的编码方式一样，同时与媒体类型（MIME） `application/x-www-form-urlencoded` 的编码方式一样。而采用 RFC 3986 时，空格会被编码为 `%20`。
+URL 编码以字节为单位字节处理字符串或者字节序列中的字符而忽略字符串或者字节序列的原始编码形式（如 UTF-8 或者 GB18030），除 `-_.` 之外，所有非字母数字字符都将被替换成百分号（%）后跟两位十六进制数的形式。由于历史原因，该编码有两种形式。采用 RFC 1738 和 'application/x-www-form-urlencoded' 媒体类型编码时，空格会被编码为加号（+），这种编码方式与网页中的表单使用 `POST` 方法的编码方式一样。而采用 RFC 3986 时，空格会被编码为 `%20`。
 
 **异常**
 
@@ -4356,44 +4357,86 @@ $URL.decode('HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7
 - PHP `urldecode()` 函数：<https://www.php.net/manual/en/function.urldecode.php>
 - PHP `rawurldecode()` 函数：<https://www.php.net/manual/en/function.rawurldecode.php>
 
-#### 3.10.3) `httpquery` 方法
+#### 3.10.3) `build_query` 方法
 
 生成 URL 编码的查询字符串。
 
 **描述**
 
 ```js
-$URL.httpquery(
+$URL.build_query(
     < object | array $query_data >
     [, < string $numeric_prefix = '': the numeric prefix for the argument names if `query_data` is an array. >
         [, <string $arg_separator = '&': the character used to separate the arguments. >
-            [, <'[json | ejson | string] || [rfc1738 | rfc3986]' $opts = 'string rfc1738':
-              - 'json': serialize the data in JSON.
-              - 'ejson': serialize the data in eJSON.
-              - 'string': stringify the data.
-              - 'rfc1738': encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.
-              - 'rfc3986':  encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).
+            [, <'[real-json | real-ejson] || [rfc1738 | rfc3986]' $opts = 'real-json rfc1738':
+              - 'real-json':    `use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
+              - 'real-ejson':   `use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
+              - 'rfc1738':      `encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
+              - 'rfc3986':      `encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).`
             ]
         ]
     ]
 ) string
 ```
 
+该方法构造一个可用于 URL 查询部分的字符串，如 `foo=bar&text=HVML%E6%98%AF%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80`。
 
+如果第一个参数是数组，则数组成员会用来指定查询字符串中各参数的键值，对应的键名默认使用数组成员序号，因而最终会生成 `0=bar&1=foo` 这样查询字符串。
 
-**参数**
+如果第一个参数是对象，则使用对象键值对来组成查询字符串中各参数的键名和键值，因而最终会生成 `foo=fou&bar=buz` 这样的查询字符串。
 
-**返回值**
+使用 `$arg_separator` 可指定分隔参数时使用的字符，默认为 `&`；必须为一个 ASCII 字符。
+
+当参数为容器数据时，将使用类似 PHP `http_build_query()` 函数的处理方法。
+
+另外，我们可通过 `$opts` 指定如何处理实数类数据，还可以通过该参数指定编码方法。
+
+**异常**
 
 **示例**
 
 **参见**
 
-- PHP `http_build_query()` 函数：<https://www.php.net/manual/en/function.http-build-query.php>
 - [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
 - [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
+- PHP `http_build_query()` 函数：<https://www.php.net/manual/en/function.http-build-query.php>
 
-#### 3.10.4) `parse` 方法
+#### 3.10.4) `parse_query` 方法
+
+解析 URL 编码的查询字符串。
+
+**描述**
+
+```js
+$URL.parse_query(
+    < string $query_string >
+    [, <string $arg_separator = '&': the character used to separate the arguments. >
+        [, <'[array | object] || [string | binary | auto] || [rfc1738 | rfc3986]' $opts = 'object auto rfc1738':
+          - 'array':    `construct an array with the query string; this will ignore the argument names in the query string.`
+          - 'object':   `construct an object with the query string.`
+          - 'auto':     `the argument values will be decoded as strings first; if failed, decoded into binary sequences.`
+          - 'binary':   `the argument values will be decoded as binary sequences.`
+          - 'string':   `the argument values will be decoded as strings.` >
+          - 'rfc1738':  `the query string is encoded per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
+          - 'rfc3986':  `the query string is encoded according to RFC 3986, and spaces will be percent encoded (%20).`
+        ]
+    ]
+) object
+```
+
+该方法解析一个 URL 查询部分字符串，并使用该字符串中的参数构造一个数组或者对象。
+
+**异常**
+
+**示例**
+
+**参见**
+
+- [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
+- [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
+- PHP `http_build_query()` 函数：<https://www.php.net/manual/en/function.http-build-query.php>
+
+#### 3.10.5) `parse` 方法
 
 解析 URL，返回其组成部分。
 
@@ -4420,7 +4463,7 @@ $URL.parse(
 
 - PHP `parse_url()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
-#### 3.10.5) `assemble` 方法
+#### 3.10.6) `assemble` 方法
 
 根据分解 URL 对象组装一个完整的 URL。
 

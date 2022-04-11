@@ -465,16 +465,19 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
 #### 2.1.2) 基本数据类型
 
-HVML 定义如下基本数据类型：
+HVML 定义如下基本数据项（basic data item）类型：
 
 - 空值（null）。
 - 布尔值（boolean）。用于表示真假逻辑值，可取 `true` 或 `false` 两种值。
 - 数值（number）。用于表达整数或浮点数，一般情况下，等价于 C 语言的 `double` 类型（双精度浮点数）。
 - 字符串（string）。用于表达文本，始终使用 UTF-8 编码。
+
+HVML 定义如下基本容器（basic container）类型：
+
 - 数组（array）。可使用索引引用的多个数据项。
 - 对象（object）。用单个或多个键值对（key-value pair）表示，亦称字典、关联数组等；键值对也常被称作属性（property）。
 
-以上基本数据类型的表达方式兼容 [JSON]。
+基本数据项类型和基本容器类型统称为基本数据类型，其表达方式兼容 [JSON]。
 
 #### 2.1.3) 扩展数据类型
 
@@ -1657,17 +1660,17 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
        '.'<literal_key_name>: 用于引用一个对象的键值。
        '[' [ws] <json_evaluation_expression> | <quoted_key_name> | <literal_integer> [ws] ']': 用于引用一个数组的特定单元或者用于引用一个对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。
 
-    <literal_variable_name>: ['#' <literal_anchor_name> | <literal_positive_integer> ]< '?' | '<' | '@' | '!' | ':' | '=' | '%' > | <literal_token>
+    <literal_variable_name>: ['#' <literal_anchor_name> | <literal_positive_integer> ]< '?' | '<' | '@' | '!' | ':' | '=' | '%' > | <literal_variable_token>
 
-    <literal_anchor_name>: <literal_token>
+    <literal_anchor_name>: <literal_variable_token>
 
-    <literal_key_name>: <literal_token>
+    <literal_key_name>: <literal_variable_token>
 
     <literal_integer>: /^-?\d+$/
 
     <literal_positive_integer>: /^[0-9]*[1-9][0-9]*$/
 
-    <literal_token>: /^[A-Za-z_][A-Za-z0-9_]*$/
+    <literal_variable_token>: /^[A-Za-z_][A-Za-z0-9_]*$/
 
     <quoted_key_name>: '''<literal_char_sequence>''' | '"'<literal_char_sequence>'"'
 
