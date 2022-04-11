@@ -2238,10 +2238,12 @@ $EJSON.pack( "i16le:2 i32le", [10, 15], 255)
 $EJSON.unpack(
         <string $format: `the format string; see Binary Format Notation.` >,
         <bsequence $data: `the data.`>
-) array
+) array | real | string | bsequenc
 ```
 
 该函数将传入字节序列按照 `$format` 指定的二进制格式分解为多个数据构成的数组。
+
+当 `$format` 指定的格式字符串包含多个基本数据类型时，该函数返回数组；否则返回单个数据。
 
 **异常**
 
@@ -2255,6 +2257,9 @@ $EJSON.unpack(
 ```js
 $EJSON.unpack( "i16le i32le", bx0a000a000000)
     // array: [10L, 10L]
+
+$EJSON.unpack( "i16le", bx0a000a000000)
+    // longint: 10L
 ```
 
 **参见**
@@ -4262,20 +4267,34 @@ $STR.count_bytes(
 
 ```js
 $URL.encode(
-        <string $str: the string to be encoded>
+        <string |bsequence $data: the string or the byte sequence to be encoded.>
 ) string
 ```
 
+该方法用于将字符串或者字节序列中的字节进行编码，以便用于 URL 的请求部分。
 
+该方法以字节为单位字节处理字符串或者字节序列中的字符而忽略字符串或者字节序列的原始编码形式（如 UTF-8 或者 GB18030），除 `-_.` 之外，所有非字母数字字符都将被替换成百分号（%）后跟两位十六进制数的形式，空格则编码为加号（+）。这种编码方式与网页中的表单使用 `POST` 方法的编码方式一样，同时与媒体类型（MIME） `application/x-www-form-urlencoded` 的编码方式一样。由于历史原因，此编码将空格编码为加号（+），而 RFC 3986 将空格编码为 `%20`。
 
-**参数**
+该方法返回字符串。
 
-**返回值**
+**异常**
+
+该方法可能产生如下异常：
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回空字符串。
+- `WrongDataType`：传入了不是字符串类型也不是字节序列类型的数据；可忽略异常，静默求值时返回空字符串。
 
 **示例**
 
+```js
+$URL.encode('HVML: 全球首款可编程标记语言!')
+    // string: 'HVML%3A+%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21'
+```
+
 **参见**
 
+- [`$EJSON.decode` 方法](#3102-decode-方法)
 - PHP `urlencode()` 函数：<https://www.php.net/manual/en/function.urlencode.php>
 
 #### 3.10.2) `decode` 方法
@@ -4287,19 +4306,36 @@ $URL.encode(
 ```js
 $URL.decode(
         <string $str: the string to be decoded.>
-) string
+        [, < 'binary | string' $type = 'string': `the type of return data:`
+            - 'binary': `the decoded data returned as a binary sequence.`
+            - 'string': `the decoded data returned as a string in UTF-8 encoding.` >
+        ]
+) string | bseqence
 ```
 
+该方法将媒体类型（MIME）为 `application/x-www-form-urlencoded` 的字符串解码为字符串或者字节序列。这种媒体类型将除 `-_.` 之外的所有非字母数字字符替换成百分号（%）后跟两位十六进制数的形式，空格则编码为加号（+），常用于使用 `POST` 方法提交网页表单内容时。
 
+由于历史原因，此编码将空格编码为加号（+），而 RFC 3986 将空格编码为 `%20`。
 
-**参数**
+**异常**
 
-**返回值**
+该方法可能产生如下异常：
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回空字符串或者空字节序列。
+- `WrongDataType`：传入了不是字符串类型的数据；可忽略异常，静默求值时返回空字符串或者空字节序列。
+- `BadEncoding`：当 `$type` 为 `string` 时产生，表示解码后的数据不是合法的 UTF-8 编码字符；可忽略异常，静默求值时返回已解码的字符串。
 
 **示例**
 
+```js
+$URL.encode('HVML%3A+%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21')
+    // string: 'HVML: 全球首款可编程标记语言!'
+```
+
 **参见**
 
+- [`$EJSON.encode` 方法](#3101-encode-方法)
 - PHP `urldecode()` 函数：<https://www.php.net/manual/en/function.urldecode.php>
 
 #### 3.10.3) `rawencode` 方法
@@ -4314,40 +4350,74 @@ $URL.rawencode(
 ) string
 ```
 
+该方法将字符串或者字节序列按 RFC 3986 进行编码。
 
+该方法以字节为单位字节处理字符串或者字节序列中的字符而忽略字符串或者字节序列的原始编码形式（如 UTF-8 或者 GB18030），除 `-_.` 之外，所有非字母数字字符都将被替换成百分号（%）后跟两位十六进制数的形式。这种编码方式与媒体类型（MIME） `application/x-www-form-urlencoded` 的编码方式有细微差异：RFC 3986 将空格编码为 `%20`，而后者将空格编码为（+）。
 
-**参数**
+该方法返回字符串。
 
-**返回值**
+**异常**
+
+该方法可能产生如下异常：
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回空字符串。
+- `WrongDataType`：传入了非字符串或者字节序列类型的数据；可忽略异常，静默求值时返回空字符串。
 
 **示例**
 
+```js
+$URL.rawencode('HVML: 全球首款可编程标记语言!')
+    // string: 'HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21'
+```
+
 **参见**
 
+- [`$EJSON.rawdecode` 方法](#3104-rawdecode-方法)
 - PHP `rawurlencode()` 函数：<https://www.php.net/manual/en/function.rawurlencode.php>
+- [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
 
 #### 3.10.4) `rawdecode` 方法
 
-对已编码的 URL 字符串进行解码。
+解码按照 RFC 3986 编码的字符串或者字节序列。
 
 **描述**
 
 ```js
 $URL.rawdecode(
         <string $str: the string to be decoded>
-) string
+        [, < 'binary | string' $type = 'string': `the type of return data:`
+            - 'binary': `the decoded data returned as a binary sequence.`
+            - 'string': `the decoded data returned as a string in UTF-8 encoding.` >
+        ]
+) string | bsequence
 ```
 
+该方法将按照 RFC 3986 编码的字符串解码为字符串或者字节序列。
 
+RFC 3986 定义的这种编码，以字节为单位字节处理字符串或者字节序列中的字符而忽略字符串或者字节序列的原始编码形式（如 UTF-8 或者 GB18030），将除 `-_.` 之外的所有非字母数字字符替换成百分号（%）后跟两位十六进制数的形式。这种编码方式与媒体类型（MIME） `application/x-www-form-urlencoded` 的编码方式有细微差异：RFC 3986 将空格编码为 `%20`，而后者将空格编码为（+）。
 
-**参数**
+该方法不会把加号（'+'）解码为空格，而 `$URL.decode()` 会把加号（'+'）解码为空格。
 
-**返回值**
+**异常**
+
+该方法可能产生如下异常：
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回空字符串或者空字节序列。
+- `WrongDataType`：传入了不是字符串的数据；可忽略异常，静默求值时返回空字符串或者空字节序列。
+- `BadEncoding`：当 `$type` 为 `string` 时产生，表示解码后的数据不是合法的 UTF-8 编码字符；可忽略异常，静默求值时返回已解码的字符串。
 
 **示例**
 
+```js
+$URL.rawdecode('HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21')
+    // string: 'HVML: 全球首款可编程标记语言!'
+```
+
 **参见**
 
+- [`$EJSON.rawencode` 方法](#3103-rawencode-方法)
 - PHP `rawurldecode()` 函数：<https://www.php.net/manual/en/function.rawurldecode.php>
 
 #### 3.10.5) `httpquery` 方法
