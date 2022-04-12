@@ -473,13 +473,13 @@ $SYSTEM.const(
 
 注意，如下常量应由所有 HVML 解释器定义：
 
-- `HVML_SPEC_VERSION`: HVML 规范版本号，如 `1.0`。
 - `HVML_SPEC_RELEASE`: HVML 规范版本号，如 `硕鼠`。
-- `HVML_PREDEF_VARS_SPEC_VERSION`: HVML 预定义变量规范版本号，如 `1.0`。
+- `HVML_SPEC_VERSION`: HVML 规范版本号，如 `1.0`。
 - `HVML_PREDEF_VARS_SPEC_RELEASE`: HVML 预定义变量规范版本号，如 `硕鼠`。
+- `HVML_PREDEF_VARS_SPEC_VERSION`: HVML 预定义变量规范版本号，如 `1.0`。
 - `HVML_INTRPR_NAME`: HVML 解释器的名称，如 `PurC`。
-- `HVML_INTRPR_VERSION`: HVML 解释器的版本名称，如 `0.5.0`。
 - `HVML_INTRPR_RELEASE`: HVML 解释器的发布名称，如 `立春`。
+- `HVML_INTRPR_VERSION`: HVML 解释器的版本名称，如 `0.5.0`。
 
 **异常**
 
@@ -539,6 +539,8 @@ $SYSTEM.uname
 #### 3.1.3) `uname_prt` 方法
 
 获取可打印的系统信息。
+
+**描述**
 
 ```js
 $SYSTEM.uname_prt string: `the kernel name.`
@@ -2979,13 +2981,26 @@ $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) }
 
 #### 3.8.2) `get` 方法
 
-```js
-// 原型
-$T.get(<string: original text>)
+**描述**
 
-// 示例：
-// 返回值：`世界，您好！`
+```js
+$T.get(
+        <string $text: `the original text.` >
+) string : `the translated text.`
+```
+
+该方法根据原始文本返回翻译的文本。若 `$T.map` 中没有匹配的文本，则返回原始文本本身。
+
+**异常**
+
+- `ArgumentMissed`：缺少必要的参数；可忽略异常，静默求值时返回空字符串。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回空字符串。
+
+**示例**
+
+```js
 $T.get('Hello, world!')
+    // string: '世界，您好！'
 ```
 
 ### 3.9) `STR`
