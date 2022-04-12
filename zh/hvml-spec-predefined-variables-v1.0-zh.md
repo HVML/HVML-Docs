@@ -643,7 +643,7 @@ $SYSTEM.locale(!
 
 - `Unsupported`：不支持的区域分类。可忽略异常。
 
-**注意**
+**备注**
 
 1. 在 HVML 中，表示区域的字符串始终使用 `en_US`、`zh_CN` 这种形式。
 1. 在 HVML 应用框架中，要求始终使用 UTF-8 编码。
@@ -687,7 +687,7 @@ $SYSTEM.time(!
 - `InvalidValue`：传入无效参数，如负值或者大于 100,000 或小于 0 的微秒值。
 - `AccessDenied`：当前会话的所有者没有权限设置系统时间时，将抛出该异常。
 
-**注意**
+**备注**
 
 1. 对日历时间的修改，将在 `$SYSTEM` 变量上产生 `change:time` 事件。
 
@@ -731,7 +731,8 @@ $SYSTEM.time_us(
 该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为 longdouble 数值或包含 `sec` 和 `usec` 两个属性的对象。
 
 ```js
-$SYSTEM.time_us(! <real $sec_us: `seconds with microseconds since Epoch`>)
+$SYSTEM.time_us(!
+        <real $sec_us: `seconds with microseconds since Epoch`>
 ) true | false
 ```
 
@@ -750,7 +751,7 @@ $SYSTEM.time_us(!
 - `InvalidValue`：获取器被调用时，传入错误参数时（如错误的返回类型），将抛出该异常；静默求值时，返回 `longdouble` 类型的当前事件。设置器被调用时，传入无效参数时（如负值或者大于 100,000 或小于 0 的微秒值）时，将抛出该异常。
 - `AccessDenied`：设置器被调用时，当运行解释器的所有者没有权限设置系统时间时，将抛出该异常。
 
-**注意**
+**备注**
 
 1. 对系统时间的修改，将在 `$SYSTEM` 变量上产生 `change:time` 事件。
 
@@ -806,7 +807,7 @@ HVML 推荐使用类似 `Asia/Shanghai` 这样的字符串来表示时区。实�
 - `InvalidValue`：无效的时区字符串。对无效的选项关键词，静默求值时，将被视作 `local`。
 - `AccessDenied`：当前会话的所有者没有权限持久更改系统时区。
 
-**注意**
+**备注**
 
 1. 对系统时区的修改，将在 `$SYSTEM` 变量上产生 `change:timezone` 事件。
 1. 系统时区的全局、持久修改，可能需要重新启动操作系统。
@@ -861,7 +862,7 @@ $SYSTEM.cwd(!
 - `IOFailure`：输入输出错误。
 - `OSFailure`：其他操作系统错误。
 
-**注意**
+**备注**
 
 1. 对当前工作路径的修改，将在 `$SYSTEM` 变量上产生 `change:cwd` 事件。
 
@@ -899,7 +900,7 @@ $SYSTEM.env(!
 - `InvalidValue`：非法的环境变量名称。
 - `NoSuchKey`：不存在指定的环境变量。
 
-**注意**
+**备注**
 
 1. 新增特定的环境变量，将在 `$SYSTEM` 变量上产生 `change:env/grown` 事件，事件参数为一个对象，包含以新增环境变量名称为键，对应值为键值的键值对。
 1. 对特定环境变量的修改，将在 `$SYSTEM` 变量上产生 `change:env` 事件，事件参数为一个对象，包含以修改的环境变量名称为键，对应值为键值的键值对。
@@ -1178,7 +1179,8 @@ $DATETIME.utctime object : `An object representing the current broken-down time 
 获取当前日历时间的 UTC（协调世界时）分解时间（broken-down time），返回类型为对象。
 
 ```js
-$DATETIME.utctime(<null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for the current calendar time.`>
+$DATETIME.utctime(
+        <null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for the current calendar time.`>
 ) object
 ```
 
@@ -1282,7 +1284,9 @@ $DATETIME.localtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
 **描述**
 
 ```js
-$DATETIME.mktime(<object $tm>) longdouble : `seconds (including microseconds) since Epoch.`
+$DATETIME.mktime(
+        <object $tm>
+) longdouble : `seconds (including microseconds) since Epoch.`
 ```
 
 转换分解时间为日历时间（Epoch 以来的秒数），返回值类型为 longdouble。
@@ -1440,9 +1444,10 @@ $HVML.max_iteration_count(! 10000UL )
 **描述**
 
 ```js
-// 原型，返回当前值
 $HVML.max_recursion_depth ulongint: `the current maximal recursion depth value.`
 ```
+
+该方法返回当前的最大递归深度值。
 
 ```js
 $HVML.max_recursion_depth(!
@@ -1473,9 +1478,10 @@ $HVML.max_recursion_depth(! 10000UL )
 **描述**
 
 ```js
-// 原型，返回当前值
 $HVML.max_embedded_levels ulongint: `the current maximal embedded levels.`
 ```
+
+该方法返回当前的最大容器数据嵌套层级。
 
 ```js
 $HVML.max_embedded_levels(!
@@ -1635,7 +1641,6 @@ $DOC.query("#foo").attr(! "bar", "qux")
 **描述**
 
 ```js
-// 原型
 $EJSON.type(
         [ <any $data> ]
 ) string
@@ -1664,7 +1669,6 @@ $EJSON.type( 3.5 )
 **描述**
 
 ```js
-// 原型
 $EJSON.count(
         [ <any $data> ]
 ) ulongint
@@ -1696,7 +1700,6 @@ $EJSON.count(! [ 1.0, 2.0 ] )
 **描述**
 
 ```js
-// 原型
 $EJSON.numberify(
         [ <any $data> ]
 ) number
@@ -1725,7 +1728,6 @@ $EJSON.numberify
 **描述**
 
 ```js
-// 原型
 $EJSON.booleanize(
         [ <any $data> ]
 ) boolean
@@ -1751,7 +1753,6 @@ $EJSON.booleanize
 **描述**
 
 ```js
-// 原型
 $EJSON.stringify(
         <any $data>
 ) string
@@ -1783,7 +1784,6 @@ $EJSON.stringify(123)
 **描述**
 
 ```js
-// 原型
 $EJSON.serialize(
         <any $data>
         [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape' $options = `real-json runtime-null plain bseq-hex-string`:
@@ -1902,7 +1902,6 @@ $EJSON.shuffle([1, 2, 3, 4, 5])
 **描述**
 
 ```js
-// 原型
 $EJSON.compare(
         < any: the first data >,
         < any: the second data >
@@ -1974,7 +1973,6 @@ $EJSON.parse(
 **描述**
 
 ```js
-// 原型
 $EJSON.isequal(
         < any: the first data >,
         < any: the second data >
@@ -5064,7 +5062,7 @@ $MATH.sqrt_l(9.0)
 - `OSFailure`：表示遇到未明确定义的一般性操作系统错误。
 - `BadEncoding`：错误编码。
 
-**注意**
+**备注**
 
 当指定的路径以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前工作路径信息（同 `$SYSTEM.cwd`）。
 
@@ -5925,7 +5923,7 @@ $FS.file_contents(!
 ```js
 $FS.opendir(
         < string $pathname: Path to the directory. >
-) entity
+) native
 ```
 
 该方法打开指定的路径，用于读取其中的目录项，返回的数据对应一个原生实体，可在随后的 `readdir` 中使用。
@@ -6007,8 +6005,9 @@ $FS.rewinddir(
 - `txt`：提供以文本文件方式读写的接口。
 - `bin`：提供以二进制文件方式读写的接口。
 
-**注意**  
-当指定的文件以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前会话维护的当前工作路径信息（同 `$SESSION.cwd`）。
+**备注**
+
+当指定的文件以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前会话维护的当前工作路径信息（同 `$SYSTEM.cwd`）。
 
 #### 4.3.1) 文本文件
 
@@ -6151,7 +6150,7 @@ $STREAM.open(
 - `InvalidValue`：传入无效数据。
 - `AccessDenied`：
 
-**注意**
+**备注**
 
 1. 流的关闭将在最终释放对应的原生实体值时自动进行，故而没有对应的 `close` 方法。
 1. 选项字符串随流的类型不同而不同。
@@ -6358,7 +6357,7 @@ $STREAM.seek(
 - `InvalidValue`：传入无效数据。
 - `AccessDenied`：
 
-**注意**
+**备注**
 
 1. 仅支持 `files://` 类型的流。
 
