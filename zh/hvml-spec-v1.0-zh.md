@@ -145,6 +145,7 @@ Language: Chinese
          - [RC3.1) `exit` 标签和 `back` 标签](#rc31-exit-标签和-back-标签)
          - [RC3.2) HVML 程序的运行状态](#rc32-hvml-程序的运行状态)
          - [RC3.3) 可使用元素的锚点名称定位祖先栈帧](#rc33-可使用元素的锚点名称定位祖先栈帧)
+         - [RC3.4) `define` 元素的 `from` 属性](#rc34-define-元素的-from-属性)
       * [RC2) 220401](#rc2-220401)
          - [RC2.1) 用户自定义临时变量的初始化和重置方法](#rc21-用户自定义临时变量的初始化和重置方法)
          - [RC2.2) 调整动态对象方法的描述语法](#rc22-调整动态对象方法的描述语法)
@@ -3353,9 +3354,43 @@ doSomething(<string $foo>, <string $bar>)
 
 上面的 HVML 代码，在初始化 `listbox` 时，以及用户点击了 `#goRoot` 或者 `#goHome` 按钮时，使用了 `$fillDirEntries` 定义的操作组。注意，在三次使用 `include` 标签时，通过 `with` 属性传入了不同的参数。
 
-`include` 元素不产生任何结果数据，故而不能包含子动作元素。
+`include` 元素不产生任何结果数据，除 `catch` 外，其中包含的子动作元素将被忽略。
 
-`define` 元素可使用 `from` 属性从指定的 URL 中装载 HVML 片段。
+`define` 元素可使用 `from` 属性从指定的 URL 中装载 HVML 片段。借助此功能，我们可以将具有不同功能的操作组作为公共模块供不同的 HTML 程序使用。另外，当同时使用 `define` 元素的内容和 `from` 属性指定的 HVML 片段定义一个操作组时，该操作组将首先使用内容定义，当正确装载由 `from` 属性定义的 HVML 片段后，该操作组将被装载后的 HVML 整个替换。
+
+比如，我们在 `/module/html/listitems.hvml` 中定义了一个展示数组成员的操作组：
+
+```html
+    <ol>
+        <iterate on="$?" by="RANGE: FROM 0">
+            <li>$?</li>
+        </iterate>
+    </ol>
+```
+
+而默认的操作组向标准输出流写入数组成员：
+
+```html
+    <define as="listitems" from="/module/$HVML.doctype/listitems.hvml">
+        <choose on=$STREAM.writelines($STREAM.stdout,$?) />
+    </define>
+
+    <include on="$listitems" with=['Line #1', 'Line #2'] />
+```
+
+以上代码，当 `define` 元素的 `from` 属性指定的 HVML 片段装载或解析失败时，程序仍然可以正常运行，只是实际的操作效果有所不同。这一能力为我们提供了一项非常灵活的特性：
+
+1. HVML 程序的正常运行，可不依赖于特定的目标标记语言。
+1. 我们可以根据不同的目标标记语言让同一 HVML 程序生成不同的目标文档片段。
+
+当使用 `from` 属性时，`define` 的行为如下：
+
+1. 尝试同步装载 `from` 指定的 HVML 片段，若不成功，则停止装载，继续使用内容定义的操作组。若成功，则，
+1. 尝试解析由已装载的 HVML 片段，若不成功，则停止装载，继续使用内容定义的操作组。若成功，则，
+1. 若解析后的 vDOM 子树不包含任何有效子元素，则停止装载，继续使用内容定义的操作组。否则，
+1. 使用解析后的 vDOM 子树替代 `define` 的内容。
+
+若 `define` 定义的操作组为空，则使用 `include` 或者 `call` 标签引用该操作组时，应抛出 `NoData` 异常。
 
 #### 2.5.15) `call` 和 `return` 标签
 
@@ -5637,6 +5672,14 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 - [2.1.6) 变量](#216-变量)
 - [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法)
+
+##### RC3.4) `define` 元素的 `from` 属性
+
+补充了 `define` 元素的 `from` 属性的处理细节。
+
+相关章节：
+
+- [2.5.14) `define` 和 `include` 标签](#2514-define-和-include-标签)
 
 #### RC2) 220401
 

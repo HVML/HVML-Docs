@@ -288,7 +288,7 @@ Language: Chinese
 
 ### 1.2) 二进制格式表示法
 
-为配合 FILE 的流式读写方法（`readstruct`、`writestruct`）以及字节序列的数值化，我们定义了一种二进制格式表示法。
+为配合 STREAM 要求的流式读写方法（`readstruct`、`writestruct`）以及字节序列的数值化，我们定义了一种二进制格式表示法。
 
 我们用一个字符串表示一个二进制结构中的各个构成部分，多个构成部分之间使用空白字符（空格、制表符、换行符等）分隔，每个构成部分使用一个类型字符串表示其类型，如果是大于一个字节的整数或浮点数，其后紧跟可选的 `le` 或者 `be` 表示小头（little endian）或者大头（big endian）。
 
@@ -6101,7 +6101,7 @@ $FILE.bin.tail($file, -5)
 
 ```
 // 将内核名称（如 `Linux`）输出到标准输出。
-$FILE.writelines($FILE.stdout, $SYSTEM.uname_prt('kernel-name'))
+$STREAM.writelines($STREAM.stdout, $SYSTEM.uname_prt('kernel-name'))
 ```
 
 #### 4.4.3) `stderr` 静态属性
