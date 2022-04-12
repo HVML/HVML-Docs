@@ -6179,7 +6179,7 @@ $STREAM.open("file://abc.md", "read write")
 $STREAM.readstruct(
         < native entity $stream: `the native entitiy representing the opened stream.` >,
         < string $format: `the format of the struct`>
-) number | false
+) array | false
 
 ```
 
@@ -6193,7 +6193,9 @@ $STREAM.readstruct(
 **示例**
 
 ```js
-$STREAM.readstruct($stream, 'u64 S5')
+
+// 示例：读取一个二进制结构
+$STREAM.readstruct($stream, 'i16le i32le')
 ```
 
 #### 4.4.6) `writestruct` 方法
@@ -6203,11 +6205,27 @@ $STREAM.readstruct($stream, 'u64 S5')
 ```js
 $STREAM.writestruct(
         < native entity $stream: `the native entitiy representing the opened stream.` >,
-        < string $format: `the format of the struct`>,
-        < array $struct: `the data of the struct`>,
+        <string $format: `the format string; see Binary Format Notation.` >,
+        <real | string | bsequence | array $first: `the first data.` >
+        [,  <real | string | bsequence | array $second: `the second data.` >
+            [, <real | string | bsequence | array $third: `the third data.` >
+                [, ... ]
+            ]
+        ]
 ) number | false
-
 ```
+
+该函数将传入的多个实数、实数数组、字符串或字节序列按照 `$format` 指定的二进制格式写入流。
+
+```js
+$STREAM.writestruct(
+        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < string $format: `the format string; see Binary Format Notation.` >,
+        < array $data >
+) number | false
+```
+
+当传入三个参数，且第三个参数为数组时，该函数将传入的数组之成员依次按照 `$format` 指定的二进制格式写入流。
 
 **异常**
 
@@ -6219,7 +6237,14 @@ $STREAM.writestruct(
 **示例**
 
 ```js
-$STREAM.writestruct($stream, 'u64 S5', [256, "hello"])
+// 示例: 写入两个数字
+$STREAM.writestruct($stream,  "i16le i32le", 10, 10)
+
+// 示例: 写入一个数组 和 一个数字 (第三个参数为数组)
+$STREAM.writestruct($stream,  "i16le:2 i32le", [[10, 15], 255])
+
+// 示例: 写入一个数组 和 一个数字 (多个参数)
+$STREAM.writestruct($stream,  "i16le:2 i32le", [10, 15], 255)
 ```
 
 #### 4.4.7) `readlines` 方法
@@ -6231,7 +6256,7 @@ $STREAM.writestruct($stream, 'u64 S5', [256, "hello"])
 ```js
 $STREAM.readlines(
         < native entity $stream: `the native entitiy representing the opened stream.` >,
-        < number $lines: `the number of lines to read`>
+        < real $lines: `the number of lines to read`>
 ) string | false
 
 ```
@@ -6246,6 +6271,8 @@ $STREAM.readlines(
 **示例**
 
 ```js
+
+// 示例：读取10行
 $STREAM.readlines($stream, 10)
 ```
 
@@ -6258,7 +6285,7 @@ $STREAM.readlines($stream, 10)
 ```js
 $STREAM.writelines(
         < native entity $stream: `the native entitiy representing the opened stream.` >,
-        < string $line: `the string to write`>
+        < 'string | array' $line: `the data to write`>
 ) number | false
 
 ```
@@ -6273,7 +6300,12 @@ $STREAM.writelines(
 **示例**
 
 ```js
+// 示例: 写入一行文字
 $STREAM.writelines($STREAM.stdout, "This is the string to write")
+
+// 示例: 写入多行文字
+$STREAM.writelines($STREAM.stdout, ["This is the string to write", "Second line"])
+
 ```
 
 #### 4.4.9) `readbytes` 方法
@@ -6285,7 +6317,7 @@ $STREAM.writelines($STREAM.stdout, "This is the string to write")
 ```js
 $STREAM.readbytes(
         < native entity $stream: `the native entitiy representing the opened stream.` >,
-        < number $length: `the length to read in bytes`>
+        < real $length: `the length to read in bytes`>
 ) bsequence | false
 
 ```
@@ -6300,6 +6332,8 @@ $STREAM.readbytes(
 **示例**
 
 ```js
+
+// 示例：读取10个字节
 $STREAM.readbytes($STREAM.stdin, 10)
 ```
 
@@ -6313,7 +6347,7 @@ $STREAM.readbytes($STREAM.stdin, 10)
 ```js
 $STREAM.writebytes(
         < native entity $stream: `the native entitiy representing the opened stream.` >,
-        < bsequence $data: ` the byte sequence to write`>
+        < 'string | bsequence' $data: ` the data to write`>
 ) number | false
 
 ```
@@ -6328,7 +6362,12 @@ $STREAM.writebytes(
 **示例**
 
 ```js
+// 示例: 写入字节序列
 $STREAM.writebytes($STREAM.stdout, bx00112233445566778899AABBCCDDEEFF)
+
+// 示例: 写入字符串
+$STREAM.writebytes($STREAM.stdout, "write string")
+
 ```
 
 #### 4.4.11) `seek` 方法
@@ -6342,9 +6381,10 @@ $STREAM.seek(
         < native entity $stream: `the native entitiy representing the opened stream.` >,
         < number $offset: `the offset to be set`>,
         <'set | current | end' $whence :
-               - 'set':           `The $stream offset is set to offset bytes`
-               - 'current':       `The $stream offset is set to its current location plus offset bytes`
-               - 'end':           `The $stream offset is set to the size of the file plus offset bytes.`
+        <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which = 'default':
+            - 'set':     `The $stream offset is set to offset bytes`
+            - 'current': `The $stream offset is set to its current location plus offset bytes`
+            - 'end':     `The $stream offset is set to the size of the file plus offset bytes.`
         >
 ) number | false
 
@@ -6364,6 +6404,7 @@ $STREAM.seek(
 **示例**
 
 ```js
+// 示例：定位到第10个字节的位置
 $STREAM.seek($stream, 10, 'set')
 ```
 
