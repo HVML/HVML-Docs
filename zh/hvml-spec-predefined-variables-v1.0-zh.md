@@ -6103,9 +6103,12 @@ $FILE.writelines($FILE.stdout, $SYSTEM.uname_prt('kernel-name'))
 ```js
 $STREAM.open(
         < string $uri: `the URI of the stream.` >
-        [, <'[read || write || nonblock] | default' $opt = 'default':
-               - 'read':            `open $uri for read`
-               - 'write':           `open $uri for write`
+        [, <'[read || write || append || create || truncate || nonblock] | default' $opt = 'default':
+               - 'read':            `Open for reading only`
+               - 'write':           `Open for writing only`
+               - 'append':          `Open in append mode.  Before each write, the offset is positioned at the end of the stream`
+               - 'create':          `If $uri does not exist, create it as a regular file`
+               - 'truncate':        `If $uri already  exists and is a regular file and the access mode allows writing it will be truncated to length 0`
                - 'nonblock':        `open $uri in nonblocking mode`
                - 'default':         `is equivalent to 'read write'`
            >
@@ -6137,6 +6140,16 @@ $STREAM.open(
 
 1. 流的关闭将在最终释放对应的原生实体值时自动进行，故而没有对应的 `close` 方法。
 1. 选项字符串随流的类型不同而不同。
+1. 选项字符串与`fopen`对应关系：
+
+| $STREAM.open                 |  fopen    |
+| --------------------------   |  -------- |
+| `read`                       |  `r`      |
+| `write create truncate`      |  `w`      |
+| `write create append`        |  `a`      |
+| `read write`                 |  `r+`     |
+| `read write create truncate` |  `w+`     |
+| `read write create append`   |  `a+`     |
 
 **示例**
 
