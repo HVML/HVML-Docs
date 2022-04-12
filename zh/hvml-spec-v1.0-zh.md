@@ -1780,9 +1780,9 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
    - `string`。
    - `string = 'auto'`。
 1. 可选地，在参数类型（及形参名称）之后添加冒号 U+003A（`:`）并在在 U+0060（\`）包围中描述其用途。如：
-   - `number $seconds: /* seconds since epoch */`。
-   - `boolean $case_insensitivity = false: \`performs a case-sensitive (@false) or a case-insensitive (@true) check.\` `。
-   - `string: locale category`。
+   - number $seconds: /\* seconds since epoch \*/
+   - boolean $case\_insensitivity = false: \`performs a case-sensitive (@false) or a case-insensitive (@true) check.\`
+   - string: locale category
 1. 可使用如下类型别名：
    1. `any`：任意类型。
    1. `specific`：特定类型，尤指原生实体对象。
