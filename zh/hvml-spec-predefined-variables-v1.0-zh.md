@@ -6127,7 +6127,7 @@ $STREAM.open(
                - 'default':         `is equivalent to 'read write'`
            >
         ]
-) native | false: `the native entitiy representing the opened stream.`
+) native | false: `the native representing the opened stream.`
 
 ```
 
@@ -6177,7 +6177,7 @@ $STREAM.open("file://abc.md", "read write")
 
 ```js
 $STREAM.readstruct(
-        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < native $stream: `the native representing the opened stream.` >,
         < string $format: `the format of the struct`>
 ) array | false
 
@@ -6204,7 +6204,7 @@ $STREAM.readstruct($stream, 'i16le i32le')
 
 ```js
 $STREAM.writestruct(
-        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < native $stream: `the native representing the opened stream.` >,
         <string $format: `the format string; see Binary Format Notation.` >,
         <real | string | bsequence | array $first: `the first data.` >
         [,  <real | string | bsequence | array $second: `the second data.` >
@@ -6219,7 +6219,7 @@ $STREAM.writestruct(
 
 ```js
 $STREAM.writestruct(
-        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < native $stream: `the native representing the opened stream.` >,
         < string $format: `the format string; see Binary Format Notation.` >,
         < array $data >
 ) number | false
@@ -6255,7 +6255,7 @@ $STREAM.writestruct($stream,  "i16le:2 i32le", [10, 15], 255)
 
 ```js
 $STREAM.readlines(
-        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < native $stream: `the native representing the opened stream.` >,
         < real $lines: `the number of lines to read`>
 ) string | false
 
@@ -6284,7 +6284,7 @@ $STREAM.readlines($stream, 10)
 
 ```js
 $STREAM.writelines(
-        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < native $stream: `the native representing the opened stream.` >,
         < 'string | array' $line: `the data to write`>
 ) number | false
 
@@ -6316,7 +6316,7 @@ $STREAM.writelines($STREAM.stdout, ["This is the string to write", "Second line"
 
 ```js
 $STREAM.readbytes(
-        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < native $stream: `the native representing the opened stream.` >,
         < real $length: `the length to read in bytes`>
 ) bsequence | false
 
@@ -6346,7 +6346,7 @@ $STREAM.readbytes($STREAM.stdin, 10)
 
 ```js
 $STREAM.writebytes(
-        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < native $stream: `the native representing the opened stream.` >,
         < 'string | bsequence' $data: ` the data to write`>
 ) number | false
 
@@ -6378,7 +6378,7 @@ $STREAM.writebytes($STREAM.stdout, "write string")
 
 ```js
 $STREAM.seek(
-        < native entity $stream: `the native entitiy representing the opened stream.` >,
+        < native $stream: `the native representing the opened stream.` >,
         < number $offset: `the offset to be set`>,
         <'set | current | end' $whence :
         <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which = 'default':
