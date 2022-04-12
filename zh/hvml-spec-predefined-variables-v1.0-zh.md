@@ -6195,7 +6195,7 @@ $STREAM.readstruct(
 
 ```js
 
-# 示例：读取一个二进制结构
+// 示例：读取一个二进制结构
 $STREAM.readstruct($stream, 'i16le i32le')
 ```
 
@@ -6273,7 +6273,7 @@ $STREAM.readlines(
 
 ```js
 
-# 示例：读取10行
+// 示例：读取10行
 $STREAM.readlines($stream, 10)
 ```
 
@@ -6301,10 +6301,10 @@ $STREAM.writelines(
 **示例**
 
 ```js
-# 示例: 写入一行文字
+// 示例: 写入一行文字
 $STREAM.writelines($STREAM.stdout, "This is the string to write")
 
-# 示例: 写入多行文字
+// 示例: 写入多行文字
 $STREAM.writelines($STREAM.stdout, ["This is the string to write", "Second line"])
 
 ```
@@ -6334,7 +6334,7 @@ $STREAM.readbytes(
 
 ```js
 
-# 示例：读取10个字节
+// 示例：读取10个字节
 $STREAM.readbytes($STREAM.stdin, 10)
 ```
 
