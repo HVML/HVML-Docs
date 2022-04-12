@@ -2358,7 +2358,7 @@ $EJSON.base64_encode(
 
 **示例**
 
-```hvml
+```js
 $EJSON.base64_encode( bx48564D4C )
     // string: 'SFZNTA=='
 
@@ -2395,7 +2395,7 @@ $EJSON.base64_decode(
 
 **示例**
 
-```hvml
+```js
 $EJSON.base64_decode( 'SFZNTA==' )
     // bsequence: bx48564D4C
 ```
