@@ -6203,7 +6203,6 @@ $STREAM.open(
 - `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
-- `AccessDenied`：无访问权限。
 
 **备注**
 
@@ -6243,7 +6242,6 @@ $STREAM.readstruct(
 - `ArgumentMissed`：未传入必要参数。
 - `WrongDataType`：错误的数据类型。
 - `InvalidValue`：传入无效数据。
-- `AccessDenied`：无访问权限。
 
 **示例**
 
@@ -6287,7 +6285,6 @@ $STREAM.writestruct(
 - `ArgumentMissed`：未传入必要参数。
 - `WrongDataType`：错误的数据类型。
 - `InvalidValue`：传入无效数据。
-- `AccessDenied`：无访问权限。
 
 **示例**
 
@@ -6321,7 +6318,6 @@ $STREAM.readlines(
 - `ArgumentMissed`：未传入必要参数。
 - `WrongDataType`：错误的数据类型。
 - `InvalidValue`：传入无效数据。
-- `AccessDenied`：无访问权限。
 
 **示例**
 
@@ -6341,25 +6337,28 @@ $STREAM.readlines($stream, 10)
 $STREAM.writelines(
         < native $stream: `the native representing the opened stream.` >,
         < 'string | array' $line: `the data to write`>
-) number | false
+) number | undefined
 
 ```
 
 **异常**
 
-- `ArgumentMissed`：未传入必要参数。
-- `WrongDataType`：错误的数据类型。
-- `InvalidValue`：传入无效数据。
-- `AccessDenied`：无访问权限。
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
 
 **示例**
 
 ```js
-// 示例: 写入一行文字
 $STREAM.writelines($STREAM.stdout, "This is the string to write")
+// 屏幕输出：
+// This is the string to write
 
-// 示例: 写入多行文字
 $STREAM.writelines($STREAM.stdout, ["This is the string to write", "Second line"])
+// 屏幕输出：
+// This is the string to write
+// Second line
 
 ```
 
@@ -6383,7 +6382,6 @@ $STREAM.readbytes(
 - `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
-- `AccessDenied`：无访问权限。
 
 **示例**
 
@@ -6415,7 +6413,6 @@ $STREAM.writebytes(
 - `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
-- `AccessDenied`：无访问权限。
 
 **示例**
 
@@ -6453,7 +6450,6 @@ $STREAM.seek(
 - `ArgumentMissed`：未传入必要参数。
 - `WrongDataType`：错误的数据类型。
 - `InvalidValue`：传入无效数据。
-- `AccessDenied`：无访问权限。
 
 **备注**
 
