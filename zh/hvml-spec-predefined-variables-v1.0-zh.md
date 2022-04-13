@@ -6621,6 +6621,9 @@ $STREAM.seek($stream, 10, 'set')
 
 ![Purring Cat](https://www.fmsoft.cn/application/files/2816/1931/9258/PurringCat256132.jpg)
 
+12) PurC
+
+![PurC](https://www.fmsoft.cn/application/files/5716/2813/0470/PurC256132.jpg)
 
 
 [Beijing FMSoft Technologies Co., Ltd.]: https://www.fmsoft.cn
