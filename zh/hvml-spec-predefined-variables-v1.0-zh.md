@@ -6373,23 +6373,25 @@ $STREAM.writelines($STREAM.stdout, ["This is the string to write", "Second line"
 $STREAM.readbytes(
         < native $stream: `the native representing the opened stream.` >,
         < real $length: `the length to read in bytes`>
-) bsequence | false
+) bsequence | undefined
 
 ```
 
 **异常**
 
-- `ArgumentMissed`：未传入必要参数。
-- `WrongDataType`：错误的数据类型。
-- `InvalidValue`：传入无效数据。
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
 - `AccessDenied`：无访问权限。
 
 **示例**
 
 ```js
 
-// 示例：读取10个字节
+// 文件内容(共12字节):write string
 $STREAM.readbytes($STREAM.stdin, 10)
+// bsequence: bx77726974652073747269
 ```
 
 
