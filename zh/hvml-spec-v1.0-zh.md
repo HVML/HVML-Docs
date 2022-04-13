@@ -3320,7 +3320,7 @@ doSomething(<string $foo>, <string $bar>)
 
 `define` 和 `include` 标签用于实现类似函数调用的功能。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作。在 HVML 中，我们将这组操作简称为操作组。
 
-`define` 标签通过 `as` 属性定义操作组的名称，其中包含了一组动作标签定义的子元素。`include` 元素将切换上下文到 `on` 属性指定的操作组中，`with` 属性传入的参数将作为结果数据供操作组使用。如：
+`define` 标签通过 `as` 属性定义操作组的名称，其中包含了一组动作标签定义的子元素。`include` 元素将切换上下文到 `with` 属性指定的操作组中，`on` 属性传入的参数将作为结果数据供操作组使用。如：
 
 ```html
         <define as="fillDirEntries">
@@ -3332,7 +3332,7 @@ doSomething(<string $foo>, <string $bar>)
         </define>
 
         <listbox id="entries">
-            <include on="$fillDirEntries" with="/home" in="#entries" />
+            <include with="$fillDirEntries" on="/home" in="#entries" />
         </listbox>
 
         <button id="goRoot">
@@ -3345,12 +3345,12 @@ doSomething(<string $foo>, <string $bar>)
 
         <observe on="#goRoot" for="click">
             <clear on="#entries" />
-            <include on="$fillDirEntries" with="/" in="#entries" />
+            <include with="$fillDirEntries" on="/" in="#entries" />
         </observe>
 
         <observe on="#goHome" for="click">
             <clear on="#entries" />
-            <include on="$fillDirEntries" with="/home" in="#entries" />
+            <include with="$fillDirEntries" on="/home" in="#entries" />
         </observe>
 ```
 
@@ -3419,7 +3419,7 @@ doSomething(<string $foo>, <string $bar>)
         <choose on=$STREAM.writelines($STREAM.stdout,$?) />
     </define>
 
-    <include on="$listitems" with=['Line #1', 'Line #2'] />
+    <include with="$listitems" on=['Line #1', 'Line #2'] />
 ```
 
 以上代码，当 `define` 元素的 `from` 属性指定的 HVML 片段装载或解析失败时，程序仍然可以正常运行，只是实际的操作效果有所不同。这一能力为我们提供了一项非常灵活的特性：
@@ -3438,13 +3438,13 @@ doSomething(<string $foo>, <string $bar>)
 
 和 `request` 标签类似，使用 `define` 标签从外部资源装载 HVML 片段时，可使用 `with` 和 `via` 等属性指定查询参数和请求方法。
 
-`include` 元素的 `with` 属性定义的值，将成为 `include` 元素的结果数据，该结果数据会影响 `define` 定义的操作组的行为。另外，我们可以在 `include` 元素中使用 `in` 属性定义目标文档的位置，因此，该属性值也将影响操作组的行为。
+`include` 元素的 `on` 属性定义的值，将成为 `define` 定义的操作组的结果数据。另外，我们可以在 `include` 元素中使用 `in` 属性定义目标文档的位置，因此，该属性值也将影响操作组的行为。
 
 在 `include` 元素中，我们也可以定义子元素，但这些子元素仅在 `include` 产生异常时工作。
 
 #### 2.5.15) `call` 和 `return` 标签
 
-`include` 元素完成的工作本质上是复制指定的操作组到当前的位置，所以和传统编程语言中的函数调用并不相同。如果要获得和函数调用相同的效果，使用 `call` 和 `return` 标签：
+`include` 元素完成的工作相当于复制指定的操作组到当前的位置执行，所以和传统编程语言中的函数调用并不相同。如果要获得和函数调用相同的效果，使用 `call` 和 `return` 标签：
 
 ```html
         <define as="fillDirEntries">
