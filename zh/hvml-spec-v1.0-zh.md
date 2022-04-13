@@ -3318,19 +3318,19 @@ doSomething(<string $foo>, <string $bar>)
 
 `define` 和 `include` 标签用于实现类似函数调用的功能。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作。在 HVML 中，我们将这组操作简称为操作组。
 
-`define` 标签通过 `as` 属性定义操作组的名称，其中包含了一组动作标签定义的子元素。`include` 元素将切换上下文到 `on` 属性指定的操作组中，`with` 属性传入的参数将作为 `define` 的结果数据供子元素使用。如：
+`define` 标签通过 `as` 属性定义操作组的名称，其中包含了一组动作标签定义的子元素。`include` 元素将切换上下文到 `on` 属性指定的操作组中，`with` 属性传入的参数将作为结果数据供操作组使用。如：
 
 ```html
         <define as="fillDirEntries">
             <choose on="$?" by="CLASS: CDirEntries">
-                <iterate on="$?" in="#entries" by="RANGE: FROM 0">
+                <iterate on="$?" by="RANGE: FROM 0">
                     <update on="$@" to="append" with="$dir_entry" />
                 </iterate>
             </choose>
         </define>
 
         <listbox id="entries">
-            <include on="$fillDirEntries" with="/home" />
+            <include on="$fillDirEntries" with="/home" in="#entries" />
         </listbox>
 
         <button id="goRoot">
@@ -3343,18 +3343,60 @@ doSomething(<string $foo>, <string $bar>)
 
         <observe on="#goRoot" for="click">
             <clear on="#entries" />
-            <include on="$fillDirEntries" with="/" />
+            <include on="$fillDirEntries" with="/" in="#entries" />
         </observe>
 
         <observe on="#goHome" for="click">
             <clear on="#entries" />
-            <include on="$fillDirEntries" with="/home" />
+            <include on="$fillDirEntries" with="/home" in="#entries" />
         </observe>
 ```
 
-上面的 HVML 代码，在初始化 `listbox` 时，以及用户点击了 `#goRoot` 或者 `#goHome` 按钮时，使用了 `$fillDirEntries` 定义的操作组。注意，在三次使用 `include` 标签时，通过 `with` 属性传入了不同的参数。
+上面的 HVML 代码，在初始化 `listbox` 时，以及用户点击了 `#goRoot` 或者 `#goHome` 按钮时，使用了 `$fillDirEntries` 定义的操作组。注意，在使用 `include` 标签的三处地方，通过 `with` 属性传入了不同的参数，并使用 `in` 属性指定了目标文档位置。
 
-`include` 元素不产生任何结果数据，除 `catch` 外，其中包含的子动作元素将被忽略。
+以上代码，若不使用 `define` 和 `include`，则相当于：
+
+```html
+        <listbox id="entries">
+            <choose on="/home" in="#entries">
+                <choose on="$?" by="CLASS: CDirEntries">
+                    <iterate on="$?" by="RANGE: FROM 0">
+                        <update on="$@" to="append" with="$dir_entry" />
+                    </iterate>
+                </choose>
+            </choose>
+        </listbox>
+
+        <button id="goRoot">
+            Root
+        </button>
+
+        <button id="goHome">
+            Home
+        </button>
+
+        <observe on="#goRoot" for="click">
+            <clear on="#entries" />
+            <choose on="/" in="#entries">
+                <choose on="$?" by="CLASS: CDirEntries">
+                    <iterate on="$?" by="RANGE: FROM 0">
+                        <update on="$@" to="append" with="$dir_entry" />
+                    </iterate>
+                </choose>
+            </choose>
+        </observe>
+
+        <observe on="#goHome" for="click">
+            <clear on="#entries" />
+            <choose on="/home" in="#entries">
+                <choose on="$?" by="CLASS: CDirEntries">
+                    <iterate on="$?" by="RANGE: FROM 0">
+                        <update on="$@" to="append" with="$dir_entry" />
+                    </iterate>
+                </choose>
+            </choose>
+        </observe>
+```
 
 `define` 元素可使用 `from` 属性从指定的 URL 中装载 HVML 片段。借助此功能，我们可以将具有不同功能的操作组作为公共模块供不同的 HTML 程序使用。另外，当同时使用 `define` 元素的内容和 `from` 属性指定的 HVML 片段定义一个操作组时，该操作组将首先使用内容定义，当正确装载由 `from` 属性定义的 HVML 片段后，该操作组将被装载后的 HVML 整个替换。
 
@@ -3371,7 +3413,7 @@ doSomething(<string $foo>, <string $bar>)
 而默认的操作组向标准输出流写入数组成员：
 
 ```html
-    <define as="listitems" from="/module/$HVML.doctype/listitems.hvml">
+    <define as="listitems" from="/module/$DOC.doctype/listitems.hvml">
         <choose on=$STREAM.writelines($STREAM.stdout,$?) />
     </define>
 
@@ -3391,6 +3433,12 @@ doSomething(<string $foo>, <string $bar>)
 1. 使用解析后的 vDOM 子树替代 `define` 的内容。
 
 若 `define` 定义的操作组为空，则使用 `include` 或者 `call` 标签引用该操作组时，应抛出 `NoData` 异常。
+
+和 `request` 标签类似，使用 `define` 标签从外部资源装载 HVML 片段时，可使用 `with` 和 `via` 等属性指定查询参数和请求方法。
+
+`include` 元素的 `with` 属性定义的值，将成为 `include` 元素的结果数据，该结果数据会影响 `define` 定义的操作组的行为。另外，我们可以在 `include` 元素中使用 `in` 属性定义目标文档的位置，因此，该属性值也将影响操作组的行为。
+
+在 `include` 元素中，我们也可以定义子元素，但这些子元素仅在 `include` 产生异常时工作。
 
 #### 2.5.15) `call` 和 `return` 标签
 
@@ -3435,8 +3483,7 @@ doSomething(<string $foo>, <string $bar>)
 
 `call` 标签和 `include` 标签有如下不同：
 
-- `call` 元素通过 `in` 属性定义的文档操作位置将被操作组的第一个动作元素继承。
-- `call` 元素有返回值，所以可在其中包含其他动作元素做后续操作。
+- `call` 元素有返回值，可通过子元素定义后续操作。
 - `include` 元素会忽略操作组的返回值。
 
 另外，我们可以在 `call` 元素中使用副词属性 `asynchronously`，这样我们可以异步调用耗时的函数，然后使用 `observe` 观察其结果。如：
