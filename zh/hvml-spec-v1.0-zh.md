@@ -6021,6 +6021,10 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 ![Purring Cat](https://www.fmsoft.cn/application/files/2816/1931/9258/PurringCat256132.jpg)
 
+12) PurC
+
+![PurC](https://www.fmsoft.cn/application/files/5716/2813/0470/PurC256132.jpg)
+
 [Beijing FMSoft Technologies Co., Ltd.]: https://www.fmsoft.cn
 [FMSoft Technologies]: https://www.fmsoft.cn
 [HybridOS]: https://hybridos.fmsoft.cn
