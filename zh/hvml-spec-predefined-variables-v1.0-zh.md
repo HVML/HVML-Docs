@@ -6233,22 +6233,26 @@ $STREAM.open("file://abc.md", "read write")
 $STREAM.readstruct(
         < native $stream: `the native representing the opened stream.` >,
         < string $format: `the format of the struct`>
-) array | false
+) array
 
 ```
 
 **异常**
 
-- `ArgumentMissed`：未传入必要参数。
-- `WrongDataType`：错误的数据类型。
-- `InvalidValue`：传入无效数据。
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时空数组。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时空数组。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
 
 **示例**
 
 ```js
 
-// 示例：读取一个二进制结构
+// 文件内容如下(16进制)：0x0a 0x00 0x0a 0x00 0x00 0x00
+
 $STREAM.readstruct($stream, 'i16le i32le')
+// array [10, 10]
+
 ```
 
 #### 4.4.6) `writestruct` 方法
@@ -6310,16 +6314,16 @@ $STREAM.writestruct($stream,  "i16le:2 i32le", [10, 15], 255)
 $STREAM.readlines(
         < native $stream: `the native representing the opened stream.` >,
         < real $lines: `the number of lines to read`>
-) array | undefined
+) array
 
 ```
 
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时空数组。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时空数组。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
 
 **示例**
 
