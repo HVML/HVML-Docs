@@ -6265,7 +6265,7 @@ $STREAM.writestruct(
                 [, ... ]
             ]
         ]
-) number | false
+) ulongint | undefined
 ```
 
 该函数将传入的多个实数、实数数组、字符串或字节序列按照 `$format` 指定的二进制格式写入流。
@@ -6275,28 +6275,29 @@ $STREAM.writestruct(
         < native $stream: `the native representing the opened stream.` >,
         < string $format: `the format string; see Binary Format Notation.` >,
         < array $data >
-) number | false
+) ulongint | undefined
 ```
 
 当传入三个参数，且第三个参数为数组时，该函数将传入的数组之成员依次按照 `$format` 指定的二进制格式写入流。
 
 **异常**
 
-- `ArgumentMissed`：未传入必要参数。
-- `WrongDataType`：错误的数据类型。
-- `InvalidValue`：传入无效数据。
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
 
 **示例**
 
 ```js
-// 示例: 写入两个数字
 $STREAM.writestruct($stream,  "i16le i32le", 10, 10)
+// 写入文件(16进制)：0x0a 0x00 0x0a 0x00 0x00 0x00
 
-// 示例: 写入一个数组 和 一个数字 (第三个参数为数组)
 $STREAM.writestruct($stream,  "i16le:2 i32le", [[10, 15], 255])
+// 写入文件(16进制)：0x0a 0x00 0x0f 0x00 0xff 0x00 0x00 0x00
 
-// 示例: 写入一个数组 和 一个数字 (多个参数)
 $STREAM.writestruct($stream,  "i16le:2 i32le", [10, 15], 255)
+// 写入文件(16进制)：0x0a 0x00 0x0f 0x00 0xff 0x00 0x00 0x00
 ```
 
 #### 4.4.7) `readlines` 方法
