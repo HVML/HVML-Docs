@@ -61,11 +61,13 @@ Language: Chinese
       * [3.3.5) `fmttime` 方法](#335-fmttime-方法)
       * [3.3.6) `fmtbdtime` 方法](#336-fmtbdtime-方法)
    + [3.4) `HVML`](#34-hvml)
-      * [3.4.1) `base` 方法](#341-base-方法)
-      * [3.4.2) `max_iteration_count` 方法](#342-max_iteration_count-方法)
-      * [3.4.3) `max_recursion_depth` 方法](#343-max_recursion_depth-方法)
-      * [3.4.4) `max_embedded_levels` 方法](#344-max_embedded_levels-方法)
-      * [3.4.5) `timeout` 方法](#345-timeout-方法)
+      * [3.4.1) `target` 方法](#341-target-方法)
+      * [3.4.2) `lang` 方法](#342-lang-方法)
+      * [3.4.3) `base` 方法](#343-base-方法)
+      * [3.4.4) `max_iteration_count` 方法](#344-max_iteration_count-方法)
+      * [3.4.5) `max_recursion_depth` 方法](#345-max_recursion_depth-方法)
+      * [3.4.6) `max_embedded_levels` 方法](#346-max_embedded_levels-方法)
+      * [3.4.7) `timeout` 方法](#347-timeout-方法)
    + [3.5) `DOC`](#35-doc)
       * [3.5.1) `doctype` 方法](#351-doctype-方法)
       * [3.5.2) `query` 方法](#352-query-方法)
@@ -1370,7 +1372,59 @@ $DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MAT
 
 `HVML` 是一个内置的程序级动态变量，该变量用于获取 HVML 程序的基本信息或者设置解释器在执行 HVML 程序时一些参数。
 
-#### 3.4.1) `base` 方法
+#### 3.4.1) `target` 方法
+
+获取 HVML 程序的目标文档类型。
+
+**描述**
+
+```js
+$HVML.target string: `the target document type such as 'html'`
+```
+
+获取当前 HVML 程序的目标文档类型，也就是 `hvml` 标签的 `target` 属性值。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$HVML.target
+    // string: 'html'
+```
+
+#### 3.4.2) `lang` 方法
+
+获取 HVML 程序的语言编码。
+
+**描述**
+
+```js
+$HVML.lang string: `the language code such as 'zh'`
+```
+
+获取当前 HVML 程序的语言编码，该语言编码通常由 `hvml` 标签的 `lang` 属性值设定；若未设定，默认使用 `en`（英语）。
+
+**异常**
+
+该方法不产生异常。
+
+**备注**
+
+该函数返回的语言编码符合 ISO639-1 标准。ISO639-1 标准为每个语言赋予两个拉丁字母的编码，比如阿拉伯语（Arabic）的语言编码是 `ar`，中文（Chinese）的语言编码是 `zh`。
+
+**示例**
+
+```js
+$HVML.lang
+    // string: 'zh'
+```
+
+**参见**
+
+#### 3.4.3) `base` 方法
 
 该方法获取或设置 HVML 程序的基础 URL。
 
@@ -1401,7 +1455,7 @@ $HVML.base(! "https://foo.example.com//app/hvml/" )
     // string: 'https://foo.example.com/app/hvml'
 ```
 
-#### 3.4.2) `max_iteration_count` 方法
+#### 3.4.4) `max_iteration_count` 方法
 
 该方法获取或设置 HVML 程序在执行 `iterate` 动作元素时的最大迭代次数，用于检测可能的死循环。
 
@@ -1435,7 +1489,7 @@ $HVML.max_iteration_count(!
 $HVML.max_iteration_count(! 10000UL )
 ```
 
-#### 3.4.3) `max_recursion_depth` 方法
+#### 3.4.5) `max_recursion_depth` 方法
 
 该方法获取或设置 HVML 程序在递归执行某个功能时的最大递归深度，以防止栈溢出。
 
@@ -1469,7 +1523,7 @@ $HVML.max_recursion_depth(!
 $HVML.max_recursion_depth(! 10000UL )
 ```
 
-#### 3.4.4) `max_embedded_levels` 方法
+#### 3.4.6) `max_embedded_levels` 方法
 
 该方法获取或设置解析 eJSON 数据或者处理容器数据时，允许的最大嵌套层级。
 
@@ -1503,7 +1557,7 @@ $HVML.max_embedded_levels(!
 $HVML.max_embedded_levels(! 64UL )
 ```
 
-#### 3.4.5) `timeout` 方法
+#### 3.4.7) `timeout` 方法
 
 该方法获取或设置 HVML 程序在通过数据获取器获取数据或者建立长连接、发送请求时的超时值（单位：秒）。
 
@@ -6451,6 +6505,10 @@ $STREAM.seek($stream, 10, 'set')
    - `$EJSON.unpack`
    - `$STR.scan_c`
    - `$STR.scan_p`
+
+1. 新增方法
+   - `$HVML.target`
+   - `$HVML.lang`
 
 #### RC1) 220401
 
