@@ -6181,7 +6181,7 @@ $STREAM.open(
                - 'default':         `is equivalent to 'read write'`
            >
         ]
-) native | false: `the native representing the opened stream.`
+) native | undefined
 
 ```
 
@@ -6199,10 +6199,10 @@ $STREAM.open(
 
 **异常**
 
-- `ArgumentMissed`：未传入必要参数。
-- `WrongDataType`：错误的数据类型。
-- `InvalidValue`：传入无效数据。
-- `AccessDenied`：
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
 
 **备注**
 
@@ -6242,7 +6242,6 @@ $STREAM.readstruct(
 - `ArgumentMissed`：未传入必要参数。
 - `WrongDataType`：错误的数据类型。
 - `InvalidValue`：传入无效数据。
-- `AccessDenied`：
 
 **示例**
 
@@ -6286,7 +6285,6 @@ $STREAM.writestruct(
 - `ArgumentMissed`：未传入必要参数。
 - `WrongDataType`：错误的数据类型。
 - `InvalidValue`：传入无效数据。
-- `AccessDenied`：
 
 **示例**
 
@@ -6311,23 +6309,27 @@ $STREAM.writestruct($stream,  "i16le:2 i32le", [10, 15], 255)
 $STREAM.readlines(
         < native $stream: `the native representing the opened stream.` >,
         < real $lines: `the number of lines to read`>
-) string | false
+) array | undefined
 
 ```
 
 **异常**
 
-- `ArgumentMissed`：未传入必要参数。
-- `WrongDataType`：错误的数据类型。
-- `InvalidValue`：传入无效数据。
-- `AccessDenied`：
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
 
 **示例**
 
 ```js
 
-// 示例：读取10行
+// 文件内容如下:
+// This is the string to write
+// Second line
+
 $STREAM.readlines($stream, 10)
+// array: ["This is the string to write", "Second line"]
 ```
 
 #### 4.4.8) `writelines` 方法
@@ -6340,25 +6342,28 @@ $STREAM.readlines($stream, 10)
 $STREAM.writelines(
         < native $stream: `the native representing the opened stream.` >,
         < 'string | array' $line: `the data to write`>
-) number | false
+) number | undefined
 
 ```
 
 **异常**
 
-- `ArgumentMissed`：未传入必要参数。
-- `WrongDataType`：错误的数据类型。
-- `InvalidValue`：传入无效数据。
-- `AccessDenied`：
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
 
 **示例**
 
 ```js
-// 示例: 写入一行文字
 $STREAM.writelines($STREAM.stdout, "This is the string to write")
+// 屏幕输出：
+// This is the string to write
 
-// 示例: 写入多行文字
 $STREAM.writelines($STREAM.stdout, ["This is the string to write", "Second line"])
+// 屏幕输出：
+// This is the string to write
+// Second line
 
 ```
 
@@ -6372,23 +6377,24 @@ $STREAM.writelines($STREAM.stdout, ["This is the string to write", "Second line"
 $STREAM.readbytes(
         < native $stream: `the native representing the opened stream.` >,
         < real $length: `the length to read in bytes`>
-) bsequence | false
+) bsequence | undefined
 
 ```
 
 **异常**
 
-- `ArgumentMissed`：未传入必要参数。
-- `WrongDataType`：错误的数据类型。
-- `InvalidValue`：传入无效数据。
-- `AccessDenied`：
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
 
 **示例**
 
 ```js
 
-// 示例：读取10个字节
+// 文件内容(共12字节):write string
 $STREAM.readbytes($STREAM.stdin, 10)
+// bsequence: bx77726974652073747269
 ```
 
 
@@ -6402,25 +6408,26 @@ $STREAM.readbytes($STREAM.stdin, 10)
 $STREAM.writebytes(
         < native $stream: `the native representing the opened stream.` >,
         < 'string | bsequence' $data: ` the data to write`>
-) number | false
+) ulongint | undefined
 
 ```
 
 **异常**
 
-- `ArgumentMissed`：未传入必要参数。
-- `WrongDataType`：错误的数据类型。
-- `InvalidValue`：传入无效数据。
-- `AccessDenied`：
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
 
 **示例**
 
 ```js
-// 示例: 写入字节序列
-$STREAM.writebytes($STREAM.stdout, bx00112233445566778899AABBCCDDEEFF)
 
-// 示例: 写入字符串
+$STREAM.writebytes($STREAM.stdout, bx48564d4c3A202d5f2e)
+// 写入字节序列，返回值为: 9
+
 $STREAM.writebytes($STREAM.stdout, "write string")
+// 写入字符串，返回值为: 12
 
 ```
 
@@ -6435,7 +6442,6 @@ $STREAM.seek(
         < native $stream: `the native representing the opened stream.` >,
         < number $offset: `the offset to be set`>,
         <'set | current | end' $whence :
-        <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which = 'default':
             - 'set':     `The $stream offset is set to offset bytes`
             - 'current': `The $stream offset is set to its current location plus offset bytes`
             - 'end':     `The $stream offset is set to the size of the file plus offset bytes.`
@@ -6449,11 +6455,10 @@ $STREAM.seek(
 - `ArgumentMissed`：未传入必要参数。
 - `WrongDataType`：错误的数据类型。
 - `InvalidValue`：传入无效数据。
-- `AccessDenied`：
 
 **备注**
 
-1. 仅支持 `files://` 类型的流。
+1. 仅支持 `file://` 类型的流。
 
 **示例**
 
