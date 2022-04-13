@@ -6181,7 +6181,7 @@ $STREAM.open(
                - 'default':         `is equivalent to 'read write'`
            >
         ]
-) native | false: `the native representing the opened stream.`
+) native | undefined
 
 ```
 
@@ -6199,9 +6199,10 @@ $STREAM.open(
 
 **异常**
 
-- `ArgumentMissed`：未传入必要参数。
-- `WrongDataType`：错误的数据类型。
-- `InvalidValue`：传入无效数据。
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
 - `AccessDenied`：
 
 **备注**
@@ -6435,7 +6436,6 @@ $STREAM.seek(
         < native $stream: `the native representing the opened stream.` >,
         < number $offset: `the offset to be set`>,
         <'set | current | end' $whence :
-        <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which = 'default':
             - 'set':     `The $stream offset is set to offset bytes`
             - 'current': `The $stream offset is set to its current location plus offset bytes`
             - 'end':     `The $stream offset is set to the size of the file plus offset bytes.`
@@ -6453,7 +6453,7 @@ $STREAM.seek(
 
 **备注**
 
-1. 仅支持 `files://` 类型的流。
+1. 仅支持 `file://` 类型的流。
 
 **示例**
 
