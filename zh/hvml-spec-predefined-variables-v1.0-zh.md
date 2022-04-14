@@ -6237,6 +6237,8 @@ $STREAM.readstruct(
 
 ```
 
+该方法按指定的格式读取数据，并转换为数据返回。
+
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
@@ -6284,6 +6286,8 @@ $STREAM.writestruct(
 
 当传入三个参数，且第三个参数为数组时，该函数将传入的数组之成员依次按照 `$format` 指定的二进制格式写入流。
 
+该方法按指定的格式将数据写入流，返回写入的字节数。
+
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
@@ -6318,6 +6322,8 @@ $STREAM.readlines(
 
 ```
 
+该方法按指定行数读取数据，并转换为数组返回，数组的每个成员都是一行数据。
+
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
@@ -6350,6 +6356,8 @@ $STREAM.writelines(
 ) number | undefined
 
 ```
+
+该方法将参数指定的字符串写入流，当参数是数组时，要求数组的每个成员都是字符串类型，写入时每个数组成员是单独的一行，返回写入的字节数。
 
 **异常**
 
@@ -6386,6 +6394,8 @@ $STREAM.readbytes(
 
 ```
 
+该方法读取指定长度的字节，并转换为字节序列返回。
+
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
@@ -6416,6 +6426,8 @@ $STREAM.writebytes(
 ) ulongint | undefined
 
 ```
+
+该方法将字节序列写入流，返回写入的字节数。
 
 **异常**
 
@@ -6451,15 +6463,18 @@ $STREAM.seek(
             - 'current': `The $stream offset is set to its current location plus offset bytes`
             - 'end':     `The $stream offset is set to the size of the file plus offset bytes.`
         >
-) number | false
+) longint
 
 ```
 
+该方法进行定位操作，返回当前位置。
+
 **异常**
 
-- `ArgumentMissed`：未传入必要参数。
-- `WrongDataType`：错误的数据类型。
-- `InvalidValue`：传入无效数据。
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回-1。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回-1。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回-1。
 
 **备注**
 
