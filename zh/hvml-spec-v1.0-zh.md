@@ -3355,7 +3355,7 @@ doSomething(<string $foo>, <string $bar>)
         </observe>
 ```
 
-上面的 HVML 代码，在初始化 `listbox` 时，以及用户点击了 `#goRoot` 或者 `#goHome` 按钮时，使用了 `$fillDirEntries` 定义的操作组。注意，在使用 `include` 标签的三处地方，通过 `with` 属性传入了不同的参数，并使用 `in` 属性指定了目标文档位置。
+上面的 HVML 代码，在初始化 `listbox` 时，以及用户点击了 `#goRoot` 或者 `#goHome` 按钮时，使用了 `$fillDirEntries` 定义的操作组。注意，在使用 `include` 标签的三处地方，通过 `on` 属性传入了不同的参数，并使用 `in` 属性指定了目标文档位置。
 
 以上代码，若不使用 `define` 和 `include`，则相当于：
 
@@ -3441,7 +3441,7 @@ doSomething(<string $foo>, <string $bar>)
 
 `include` 元素的 `on` 属性定义的值，将成为 `define` 定义的操作组的结果数据。另外，我们可以在 `include` 元素中使用 `in` 属性定义目标文档的位置，因此，该属性值也将影响操作组的行为。
 
-在 `include` 元素中，我们也可以定义子元素，但这些子元素仅在 `include` 产生异常时工作。
+在 `include` 元素中，我们可以使用内容定义 `on` 属性的值，也可以在 `include` 元素中定义子元素，这些子元素会在 `define` 定义的操作组执行完毕后执行。
 
 #### 2.5.15) `call` 和 `return` 标签
 
@@ -3453,7 +3453,7 @@ doSomething(<string $foo>, <string $bar>)
                 <iterate on="$?" by="RANGE: FROM 0">
                     <update on="$@" to="append" with="$dir_entry" />
                 </iterate>
-                <return with="$#" />
+                <return with="$EJSON.count($?)" />
             </choose>
         </define>
 
@@ -3484,10 +3484,12 @@ doSomething(<string $foo>, <string $bar>)
 
 在上述 HVML 代码中，`fillDirEntries` 使用 `return` 标签的 `with` 属性返回了目录项的个数，使之从一个操作组变成了一个带有返回值的函数。在使用这个函数时，使用 `call` 标签，以便获得结果数据。
 
-`call` 标签和 `include` 标签有如下不同：
+`call` 元素和 `include` 元素有如下不同：
 
-- `call` 元素有返回值，可通过子元素定义后续操作。
-- `include` 元素会忽略操作组的返回值。
+- `call` 元素对应栈帧中，初始的结果数据由 `with` 属性值或其内容确定，可被操作组中的 `return` 元素或者操作组中的 `back` 元素覆盖。若操作组中没有 `return` 或者 `back` 修改结果数据，则 `call` 元素对应栈帧中的结果数据将被保持不变。
+- `include` 元素对应的栈帧中，初始的结果数据由其本身的 `on` 属性值或内容确定，可被操作组中的 `back` 元素覆盖，而操作组中的 `return` 元素仅用于回退到最近一个 `include` 所在栈帧，而不修改该 `include` 对应栈帧中的结果数据。
+
+也就是说，`call` 和 `include` 的主要区别在于如何处理操作组中 `return` 元素定义的返回值：前者关心返回值，后者不关心返回值。在实践当中，`include` 一般用于操作目标文档，`call` 一般用作获取一个结果数据。
 
 另外，我们可以在 `call` 元素中使用副词属性 `asynchronously`，这样我们可以异步调用耗时的函数，然后使用 `observe` 观察其结果。如：
 
