@@ -6233,17 +6233,18 @@ $STREAM.open("file://abc.md", "read write")
 $STREAM.readstruct(
         < native $stream: `the native representing the opened stream.` >,
         < string $format: `the format of the struct`>
-) array
+) array | real | string | bsequenc
 
 ```
 
-该方法按指定的格式读取数据，并转换为数据返回。
+该方法按指定的格式读取数据， 当 $format 指定的格式字符串包含多个基本数据类型时，该函数返回数组；
+否则返回单个数据。
 
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时空数组。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时空数组。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回已读取数据。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回已读取数据。
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
 
 **示例**
