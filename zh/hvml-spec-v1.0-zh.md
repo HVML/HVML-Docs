@@ -3092,11 +3092,26 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```html
     <request at="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
-        <observe on="$foo" for="result">
+        <observe on="$foo" for="result:success">
             ...
         </observe>
     </request>
 ```
+
+以上用法和 `init` 类似，但 `request` 可以通过 `to` 属性指定请求结果的处理方法，比如将请求结果保存到指定的文件当中：
+
+```html
+    <request at="http://foo.bar.com/foo" with="$params" via="POST" to="save:/tmp/foo.tmp" as="foo" async>
+        <observe on="$foo" for="result:success">
+            ...
+        </observe>
+    </request>
+```
+
+此种情况下，我们可以使用如下几种结果处理方法：
+
+- `save:` 保存到本地文件。该操作的执行结果是保存后的完整文件路径。
+- `filter:` 创建子进程和管道并将管道作为子进程的标准输入，然后在子进程中执行指定的程序，将请求结果写入管道。该操作的执行结果是子进程的标准输出（字节序列）。
 
 我们也可以使用 `request` 标签在一个目标文档位置上发起一个方法调用请求，比如，操控 HTML 的 `video` 元素快速跳转到指定的位置：
 
@@ -3114,7 +3129,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 此时，我们使用如下三个属性：
 
 - `on` 属性，指定目标文档位置。
-- `to` 属性，指定要调用的方法名称。
+- `to` 属性，指定要调用的方法或函数。
 - `with` 属性，指定调用方法的参数。我们也可以使用 `request` 的内容来定义调用方法的参数。
 
 为了异步观察请求的执行结果，我们可使用 `as` 属性为该请求定义一个静态命名变量，并使用 `observe` 标签观察其结果。因此，我们在该标签中可使用如下副词属性：
@@ -3143,6 +3158,18 @@ doSomething(<string $foo>, <string $bar>)
             bar: 'value for bar'
         }
     </request>
+```
+
+我们还可以使用 `request` 在指定的元素上执行一段渲染器支持的函数调用，此时，我们使用 `call:` 前缀：
+
+```html
+    <request on="#myModal" to="call:bootstrap.Modal.getInstance($THIS$).toggle()" />
+```
+
+在上面的 `to` 属性值中，我们使用了 `$THIS$` 和 `$ARGS$` 等指代当前元素对象以及通过 `with` 属性传递给方法的参数。这些特殊关键词由渲染器处理并替代。比如上面的函数调用，最终会被渲染器解释为如下 JavaScript 代码：
+
+```js
+bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 ```
 
 #### 2.5.12) `connect`、 `send` 和 `disconnect` 标签
@@ -5747,6 +5774,14 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 相关章节：
 
 - [3.1.3.2) 扩展 JSON 语法](#3132-扩展-json-语法)
+
+##### RC3.6) 增强 `request` 元素
+
+增强 `request` 元素使之支持将请求结果保存到指定文件或者传递给子进程作为标准输入。
+
+相关章节：
+
+- [2.5.11) `request` 标签](#2511-request-标签)
 
 #### RC2) 220401
 
