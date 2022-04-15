@@ -1189,7 +1189,7 @@ HVML 定义有如下几个基本的动作标签，用于操作数据或者元素
 
 HVML 还定义有如下一些动作标签：
 
-- `request` 标签用于向一个外部数据源或者目标文档位置发出一个请求并获得结果数据。
+- `request` 标签用于向渲染器就给定的目标文档位置发出一个请求并获得结果数据。
 - `connect` 标签用于连接到一个指定的外部数据源，并绑定一个变量名。
 - `send` 标签用来在指定的长连接上发出一个消息。
 - `disconnect` 标签用于显式关闭一个先前建立的外部数据源连接。
@@ -1332,7 +1332,7 @@ HVML 还定义有如下一些动作标签：
 
 针对动作标签，HVML 定义了如下几个介词（如 `on`、 `in`、 `to` 等）属性，用于定义执行动作时依赖的数据（或元素）及其集合。如：
 
-- `at`：在 `request` 和 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URL，如 `tcp://foo.com:2345`、 `unix:///var/run/hibus.sock`。
+- `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URL，如 `tcp://foo.com:2345`、 `unix:///var/run/hibus.sock`。
 - `from`：在 `init`、 `update`、 `load` 等动作元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URL。
 - `on`：用于定义执行动作所依赖的数据、元素或元素汇集。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`$?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
 - `in`：用于定义执行操作的目标文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。
@@ -1348,7 +1348,7 @@ HVML 还定义有如下一些动作标签：
    - `TRAVEL: ` 表示使用指定的遍历方式遍历树状结构，是一种内建的迭代器或选择器。
    - `SQL: ` 表示在结构化数据上执行 SQL 查询，从而实现复杂的选择、迭代以及归约操作。
    - 其他针对字符串和数值的内建执行器，见本文档 [2.6.1) 内建执行器](#261-内建执行器) 小节。
-- `via`：用于在 `init`、 `request`、 `send` 元素中指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
+- `via`：用于在 `init` 和 `send` 元素中指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
 - `against`：在 `init` 元素中用于指定集合的唯一性键值，在 `sort` 元素中用于指定排序依据。
 - `onlyif` 和 `while`：在 `iterate` 中，用于定义在产生迭代结果前和产生迭代结果后判断是否继续迭代的条件表达式。
 
@@ -3086,34 +3086,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 #### 2.5.11) `request` 标签
 
-`request` 标签在外部数据源上发出一个同步或者异步的请求。
-
-从外部数据源中获取数据时，我们使用 `at` 属性指定 URL，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）：
-
-```html
-    <request at="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
-        <observe on="$foo" for="result:success">
-            ...
-        </observe>
-    </request>
-```
-
-以上用法和 `init` 类似，但 `request` 可以通过 `to` 属性指定请求结果的处理方法，比如将请求结果保存到指定的文件当中：
-
-```html
-    <request at="http://foo.bar.com/foo" with="$params" via="POST" to="save:/tmp/foo.tmp" as="foo" async>
-        <observe on="$foo" for="result:success">
-            ...
-        </observe>
-    </request>
-```
-
-此种情况下，我们可以使用如下几种结果处理方法：
-
-- `save:` 保存到本地文件。该操作的执行结果是保存后的完整文件路径。
-- `filter:` 创建子进程和管道并将管道作为子进程的标准输入，然后在子进程中执行指定的程序，将请求结果写入管道。该操作的执行结果是子进程的标准输出（字节序列）。
-
-我们也可以使用 `request` 标签在一个目标文档位置上发起一个方法调用请求，比如，操控 HTML 的 `video` 元素快速跳转到指定的位置：
+我们可以使用 `request` 标签在一个目标文档位置上发起一个方法调用请求，比如，操控 HTML 的 `video` 元素快速跳转到指定的位置：
 
 ```html
     <video id="my-video" width="320" height="240" autoplay muted>
@@ -3171,6 +3144,37 @@ doSomething(<string $foo>, <string $bar>)
 ```js
 bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 ```
+
+【待删除——
+
+`request` 标签在外部数据源上发出一个同步或者异步的请求。
+
+从外部数据源中获取数据时，我们使用 `at` 属性指定 URL，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）：
+
+```html
+    <request at="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
+        <observe on="$foo" for="result:success">
+            ...
+        </observe>
+    </request>
+```
+
+以上用法和 `init` 类似，但 `request` 可以通过 `to` 属性指定请求结果的处理方法，比如将请求结果保存到指定的文件当中：
+
+```html
+    <request at="http://foo.bar.com/foo" with="$params" via="POST" to="save:/tmp/foo.tmp" as="foo" async>
+        <observe on="$foo" for="result:success">
+            ...
+        </observe>
+    </request>
+```
+
+此种情况下，我们可以使用如下几种结果处理方法：
+
+- `save:` 保存到本地文件。该操作的执行结果是保存后的完整文件路径。
+- `filter:` 创建子进程和管道并将管道作为子进程的标准输入，然后在子进程中执行指定的程序，将请求结果写入管道。该操作的执行结果是子进程的标准输出（字节序列）。
+
+——待删除】
 
 #### 2.5.12) `connect`、 `send` 和 `disconnect` 标签
 
@@ -5774,14 +5778,6 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 相关章节：
 
 - [3.1.3.2) 扩展 JSON 语法](#3132-扩展-json-语法)
-
-##### RC3.6) 增强 `request` 元素
-
-增强 `request` 元素使之支持将请求结果保存到指定文件或者传递给子进程作为标准输入。
-
-相关章节：
-
-- [2.5.11) `request` 标签](#2511-request-标签)
 
 #### RC2) 220401
 
