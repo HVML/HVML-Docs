@@ -48,7 +48,7 @@
                 "shortDesc": "The Zhang family's rooster has laid eggs!",
                 "longDesc": 'Yesterday, the second son of the Zhang family came to me and said, "My rooster has laid eggs!"',
                 "detailedUrl": "#",
-                "time": $SYSTEM.time.iso8601
+                "time": $DATETIME.time_prt
             }
 
             <update on="#breaking-news" to="displace" with="$realCardBody" />

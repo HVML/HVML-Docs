@@ -1,0 +1,95 @@
+<!DOCTYPE hvml>
+<hvml target="html" lang="en">
+    <head>
+
+        <init as="assetURLPrefix">https://files.fmsoft.cn/assets/bootstrap-5.1.3-dist</init>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <base href="$HVML.base(! 'https://gitlab.fmsoft.cn/hvml/hvml-docs/raw/master/samples/bootstrap/' )" />
+
+        <update on="$T.map" from="assets/messages-{$SYSTEM.locale}.json" to="merge" />
+
+        <!-- CSS file of Bootstrap -->
+        <link href="$assetURLPrefix/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- JS files of Bootsrap -->
+        <script src="$assetURLPrefix/js/popper.min.js" crossorigin="anonymous"></script>
+        <script src="$assetURLPrefix/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+        <title>$T.get('Sample - Loading')</title>
+
+        <init at="assetURLPrefix" with=undefined />
+    </head>
+
+    <body>
+        <header>
+            <h1>
+                $T.get('Sample - Bootstrap')
+                <small class="text-muted">$T.get('Modal')</small>
+            </h1>
+        </header>
+
+        <archetype name="newsModal">
+            <!-- Modal -->
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">$?.shortDesc</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="$T.get('Close')"></button>
+                  </div>
+                  <div class="modal-body">
+                    $?.longDesc
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">$T.get('Close')</button>
+                    <button id="btnReadDetails" hvml:events="click" type="button" class="btn btn-primary">$T.get('Read Details…')</button>
+                  </div>
+                </div>
+            </div>
+        </archetype>
+
+        <section id="main">
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            </div>
+
+            <!-- Button trigger modal -->
+            <button id="btnShowModal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" disabled>
+                Show the Breaking News!
+            </button>
+        </section>
+
+        <archetype name="realCardBody">
+            <h5 class="card-title">$?.title</h5>
+            <p class="card-text">$?.shortDesc</p>
+            <a href="$?.detailedUrl" class="btn btn-primary">$T.get('Read Details…')</a>
+        </archetype>
+
+        <init as="breakingNews" from="assets/breaking-news-{$SYSTEM.locale}.json" async>
+            {
+                "title": "This is an absolute breaking news!",
+                "shortDesc": "The Zhang family's rooster has laid eggs!",
+                "longDesc": 'Yesterday, the second son of the Zhang family came to me and said, "My rooster has laid eggs!"',
+                "detailedUrl": "#",
+                "time": $DATETIME.time_prt
+            }
+
+
+            <observe at="breakingNews" for="change:attached" in="#exampleModal">
+                <update on="#exampleModal" to="displace" with="$newsModal" />
+                <update on="#btnShowModal" at="attr.disabled" to="remove" />
+            </observe>
+        </init>
+
+        <footer>
+            <p>Copyright &copy; FMSoft</p>
+        </footer>
+
+        <observe on="#btnReadDetails" for="click" in="#exampleModal">
+            <request on="#exampleModal" to="bootstrap.Modal.getInstance($ELEMENT$).hide" />
+        </observe>
+
+    </body>
+</hvml>
+
