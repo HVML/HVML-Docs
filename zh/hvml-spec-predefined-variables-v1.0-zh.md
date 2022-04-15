@@ -6272,7 +6272,7 @@ $STREAM.writestruct(
                 [, ... ]
             ]
         ]
-) ulongint | undefined
+) ulongint
 ```
 
 该函数将传入的多个实数、实数数组、字符串或字节序列按照 `$format` 指定的二进制格式写入流。
@@ -6282,7 +6282,7 @@ $STREAM.writestruct(
         < native $stream: `the native representing the opened stream.` >,
         < string $format: `the format string; see Binary Format Notation.` >,
         < array $data >
-) ulongint | undefined
+) ulongint
 ```
 
 当传入三个参数，且第三个参数为数组时，该函数将传入的数组之成员依次按照 `$format` 指定的二进制格式写入流。
@@ -6292,9 +6292,9 @@ $STREAM.writestruct(
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回已写入的字节数。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回已写入的字节数。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回已写入的字节数。
 
 **示例**
 
@@ -6354,7 +6354,7 @@ $STREAM.readlines($stream, 10)
 $STREAM.writelines(
         < native $stream: `the native representing the opened stream.` >,
         < 'string | array' $line: `the data to write`>
-) number | undefined
+) ulongint
 
 ```
 
@@ -6363,9 +6363,9 @@ $STREAM.writelines(
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回实际写入的字节数。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回实际写入的字节数。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回实际写入的字节数。
 
 **示例**
 
@@ -6391,7 +6391,7 @@ $STREAM.writelines($STREAM.stdout, ["This is the string to write", "Second line"
 $STREAM.readbytes(
         < native $stream: `the native representing the opened stream.` >,
         < real $length: `the length to read in bytes`>
-) bsequence | undefined
+) bsequence
 
 ```
 
@@ -6400,9 +6400,9 @@ $STREAM.readbytes(
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字节序列。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回空字节序列。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回空字节序列。
 
 **示例**
 
@@ -6424,7 +6424,7 @@ $STREAM.readbytes($STREAM.stdin, 10)
 $STREAM.writebytes(
         < native $stream: `the native representing the opened stream.` >,
         < 'string | bsequence' $data: ` the data to write`>
-) ulongint | undefined
+) ulongint
 
 ```
 
@@ -6433,9 +6433,9 @@ $STREAM.writebytes(
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回实际写入的字节数。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回实际写入的字节数。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回实际写入的字节数。
 
 **示例**
 
@@ -6459,12 +6459,14 @@ $STREAM.writebytes($STREAM.stdout, "write string")
 $STREAM.seek(
         < native $stream: `the native representing the opened stream.` >,
         < number $offset: `the offset to be set`>,
-        <'set | current | end' $whence :
+        [, <'set | current | end | default' $whence = 'default':
             - 'set':     `The $stream offset is set to offset bytes`
             - 'current': `The $stream offset is set to its current location plus offset bytes`
             - 'end':     `The $stream offset is set to the size of the file plus offset bytes.`
-        >
-) longint
+            - 'default': `is equivalent to 'set'`
+           >
+        ]
+) longint | false
 
 ```
 
@@ -6473,9 +6475,9 @@ $STREAM.seek(
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回-1。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回-1。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回-1。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
 
 **备注**
 
