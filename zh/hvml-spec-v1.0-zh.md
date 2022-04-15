@@ -3468,7 +3468,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 
 若 `define` 定义的操作组为空，则使用 `include` 或者 `call` 标签引用该操作组时，应抛出 `NoData` 异常。
 
-和 `request` 标签类似，使用 `define` 标签从外部资源装载 HVML 片段时，可使用 `with` 和 `via` 等属性指定查询参数和请求方法。
+和 `init` 标签类似，使用 `define` 标签从外部资源装载 HVML 片段时，可使用 `with` 和 `via` 等属性指定查询参数和请求方法。
 
 `include` 元素的 `on` 属性定义的值，将成为 `define` 定义的操作组的结果数据。另外，我们可以在 `include` 元素中使用 `in` 属性定义目标文档的位置，因此，该属性值也将影响操作组的行为。
 
@@ -5620,18 +5620,18 @@ CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被�
 
 在上述代码中，外部选择器 `CDirEntries` 的实现非常简单，就是列出给定路径下的目录项，并按照要求返回一个字典数组。使用 Python 实现时非常简单，所以这里略去不谈。
 
-如果我们使用 HybridOS 中提到的直接执行本地系统命令的扩展图式（lcmd），我们甚至都不需要编写任何代码，而只需要使用 `request`：
+如果我们使用 HybridOS 中提到的直接执行本地系统命令的扩展图式（lcmd），我们甚至都不需要编写任何代码，而只需要使用 `init`：
 
 ```html
         <init as="lcmdParams">
             { "cmdLine": "ls $fileInfo.curr_path" }
         <init>
 
-        <request at="lcmd:///bin/ls" with="$lcmdParams" via="GET">
-            <iterate on="$?" in="#entries" by="RANGE: 0">
+        <init from="lcmd:///bin/ls" with="$lcmdParams" via="GET" as="files" locally>
+            <iterate on="$files" in="#entries" by="RANGE: 0">
                 <update on="$@" to="append" with="$dir_entry" />
             </iterate>
-        </request>
+        </init>
 ```
 
 如此，开发者不需要做编写任何程序，即可实现一个简单的文件浏览和打开对话框。
