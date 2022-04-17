@@ -4678,7 +4678,7 @@ $STREAM.open("file://abc.md", "read write")
 
 ```
 // 将内核名称（如 `Linux`）输出到标准输出。
-$STREAM.writelines($STREAM.stdout, $SYSTEM.uname_prt('kernel-name'))
+$STREAM.stdout.writelines($SYSTEM.uname_prt('kernel-name'))
 ```
 
 #### 3.11.4) `stderr` 静态属性
@@ -4715,7 +4715,7 @@ $stream.readstruct(
 // 文件内容如下(16进制)：0x0a 0x00 0x0a 0x00 0x00 0x00
 
 $stream.readstruct('i16le i32le')
-// array [10, 10]
+    // array: [10, 10]
 ```
 
 #### 3.11.6) 流实体的 `writestruct` 方法
@@ -4799,14 +4799,18 @@ $stream.readlines(
 
 **示例**
 
-```js
-/* 假定文件内容如下:
+假定文件内容如下:
+
+```
 This is the string to write
 Second line
- */
+```
 
+读取 10 行：
+
+```js
 $stream.readlines(10)
-// array: ["This is the string to write", "Second line"]
+    // array: ["This is the string to write", "Second line"]
 ```
 
 #### 3.11.8) 流实体的 `writelines` 方法
@@ -4840,11 +4844,11 @@ $stream.writelines(
 
 ```js
 $STREAM.stdout.writelines("This is the string to write")
-    // STDOUT:
+    // 将在 STDOUT 上输出：
     // This is the string to write
 
 $STREAM.stdout.writelines(["This is the string to write", "Second line"])
-    // STDOUT:
+    // 将在 STDOUT 上输出：
     // This is the string to write
     // Second line
 ```
@@ -4877,11 +4881,15 @@ $stream.readbytes(
 
 **示例**
 
-```js
-/* 假定文件内容(共12字节)：
-write string
- */
+假定文件内容（共 12 字节）：
 
+```
+write string
+```
+
+读取 10 个字节：
+
+```js
 $STREAM.stdin.readbytes(10)
     // bsequence: bx77726974652073747269
 ```
