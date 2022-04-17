@@ -170,7 +170,8 @@ Language: Chinese
       * [3.11.8) 流实体的 `writelines` 方法](#3118-流实体的-writelines-方法)
       * [3.11.9) 流实体的 `readbytes` 方法](#3119-流实体的-readbytes-方法)
       * [3.11.10) 流实体的 `writebytes` 方法](#31110-流实体的-writebytes-方法)
-      * [3.11.11) 流实体的 `seek` 方法](#31111-流实体的-seek-方法)
+      * [3.11.11) 流实体的 `close` 方法](#31111-流实体的-close-方法)
+      * [3.11.12) 流实体的 `seek` 方法](#31112-流实体的-seek-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -4554,7 +4555,7 @@ $URL.assemble(
 
 ### 3.11) `STREAM`
 
-`STREAM` 是一个会话级内置变量，该变量用于实现基于读写流的操作。和 `$DOC` 变量类似，该变量上提供的 `open` 方法返回一个原生实体，在该原生实体上，我们提供用于从流中读取或者向流中写入的接口。
+`STREAM` 是一个会话级内置变量，该变量用于实现基于读写流的操作。和 `$DOC` 变量的 `query` 方法类似，该变量上提供的 `open` 方法返回一个原生实体，在该原生实体上，我们提供用于从流中读取或者向流中写入的接口。
 
 下面的 HVML 代码，打开了一个本地文件，然后在代表读取流的原生实体上调用 `readstruct` 方法：
 
@@ -4576,14 +4577,18 @@ $URL.assemble(
     </choose>
 ```
 
-`$STREAM.open` 方法返回的原生实体，称为“流实体（stream entity）”，应提供如下基本接口：
+`$STREAM.open` 方法返回的原生实体，称为“流实体（stream entity）”。流实体应提供如下基本接口：
 
 - `readbytes` 和 `writebytes` 方法：读写字节序列。
 - `readstruct` 和 `writestruct` 方法：读写二进制数据结构。
 - `readlines` 和 `writelines` 方法：读写文本行。
 - `seek`：在可定位流中重新定位流的读写位置。
 
-流实体应该是可被观察的，从而可以监听读取流上是否有数据等待读取，或者是否可向写入流中写入数据。比如，我们可以观察 `STREAM` 变量的静态属性 `$STREAM.stdin`，以便监听用户的输入：
+为方便使用，我们在 `$STREAM` 变量上提供如下静态属性：
+
+- `stdin`、 `stdout` 和 `stderr` 静态属性：C 语言标准输入、标准输出和标准错误的流实体封装。
+
+通常来讲，流实体应该是可被观察的，从而可以监听读取流上是否有数据等待读取，或者是否可向写入流中写入数据。比如，我们可以观察 `$STREAM.stdin`，以便监听用户的输入：
 
 ```html
     <observe on="$STREAM.stdin" for="read">
@@ -4632,6 +4637,7 @@ $STREAM.open(
 
 - `file:///etc/passwd`：打开 `/etc/passwd` 文件。
 - `file://Documents/mydata`：打开当前工作路径下的 `Document/mydata` 文件。
+- `exec:///usr/bin/wc`：在子进程中执行指定的程序，创建匿名管道作为子进程的标准输入、输出和错误。
 - `pipe:///var/tmp/apipe`：打开一个命名管道。
 - `unix:///var/run/myapp.sock`：打开一个 UNIX 套接字。
 - `winsock://xxx`：打开一个 Windows 套接字。
@@ -4938,7 +4944,11 @@ $STREAM.stdout.writebytes("write string")
     // longint: 12L FIXME: 字符串作为字节序列写入时，应该写入结尾的空字符。
 ```
 
-#### 3.11.11) 流实体的 `seek` 方法
+#### 3.11.11) 流实体的 `close` 方法
+
+TODO
+
+#### 3.11.12) 流实体的 `seek` 方法
 
 在流中执行定位操作。
 
