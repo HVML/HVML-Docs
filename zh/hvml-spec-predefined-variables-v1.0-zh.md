@@ -159,6 +159,18 @@ Language: Chinese
       * [3.10.4) `parse_query` 方法](#3104-parse_query-方法)
       * [3.10.5) `parse` 方法](#3105-parse-方法)
       * [3.10.6) `assemble` 方法](#3106-assemble-方法)
+   + [3.11) `STREAM`](#311-stream)
+      * [3.11.1) `open` 方法](#3111-open-方法)
+      * [3.11.2) `stdin` 静态属性](#3112-stdin-静态属性)
+      * [3.11.3) `stdout` 静态属性](#3113-stdout-静态属性)
+      * [3.11.4) `stderr` 静态属性](#3114-stderr-静态属性)
+      * [3.11.5) 流实体的 `readstruct` 方法](#3115-流实体的-readstruct-方法)
+      * [3.11.6) 流实体的 `writestruct` 方法](#3116-流实体的-writestruct-方法)
+      * [3.11.7) 流实体的 `readlines` 方法](#3117-流实体的-readlines-方法)
+      * [3.11.8) 流实体的 `writelines` 方法](#3118-流实体的-writelines-方法)
+      * [3.11.9) 流实体的 `readbytes` 方法](#3119-流实体的-readbytes-方法)
+      * [3.11.10) 流实体的 `writebytes` 方法](#31110-流实体的-writebytes-方法)
+      * [3.11.11) 流实体的 `seek` 方法](#31111-流实体的-seek-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -230,19 +242,6 @@ Language: Chinese
       * [4.3.2) 二进制文件](#432-二进制文件)
          - [4.3.2.1) `bin.head` 方法](#4321-binhead-方法)
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
-   + [4.4) `STREAM`](#44-stream)
-      * [4.4.1) `stdin` 静态属性](#441-stdin-静态属性)
-      * [4.4.2) `stdout` 静态属性](#442-stdout-静态属性)
-      * [4.4.3) `stderr` 静态属性](#443-stderr-静态属性)
-      * [4.4.4) `open` 方法](#444-open-方法)
-      * [4.4.5) `readstruct` 方法](#445-readstruct-方法)
-      * [4.4.6) `writestruct` 方法](#446-writestruct-方法)
-      * [4.4.7) `readlines` 方法](#447-readlines-方法)
-      * [4.4.8) `writelines` 方法](#448-writelines-方法)
-      * [4.4.9) `readbytes` 方法](#449-readbytes-方法)
-      * [4.4.10) `writebytes` 方法](#4410-writebytes-方法)
-      * [4.4.11) `seek` 方法](#4411-seek-方法)
-      * [4.4.12) 综合示例](#4412-综合示例)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RC2) 220501](#rc2-220501)
@@ -4553,6 +4552,420 @@ $URL.assemble(
 
 - PHP `parse_url()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
+### 3.11) `STREAM`
+
+`STREAM` 是一个会话级内置变量，该变量用于实现基于读写流的操作。和 `$DOC` 变量类似，该变量上提供的 `open` 方法返回一个原生实体，在该原生实体上，我们提供用于从流中读取或者向流中写入的接口。
+
+下面的 HVML 代码，打开了一个本地文件，然后在代表读取流的原生实体上调用 `readstruct` 方法：
+
+```html
+    <init as="formats">
+        [
+            "bytes:2 padding:2 u32le u32le",
+            "f64le f64le",
+        ]
+    </init>
+
+    <init as="packages">
+    </init>
+
+    <choose on="$STREAM.open('file://mydata.txt', 'read')">
+        <iterate on="$formats" in="$packages" by="RANGE: 0">
+            <update on="$packages" to="append" with="$?.readstruct($2, $?)" />
+        </iterate>
+    </choose>
+```
+
+`$STREAM.open` 方法返回的原生实体，称为“流实体（stream entity）”，应提供如下基本接口：
+
+- `readbytes` 和 `writebytes` 方法：读写字节序列。
+- `readstruct` 和 `writestruct` 方法：读写二进制数据结构。
+- `readlines` 和 `writelines` 方法：读写文本行。
+- `seek`：在可定位流中重新定位流的读写位置。
+
+流实体应该是可被观察的，从而可以监听读取流上是否有数据等待读取，或者是否可向写入流中写入数据。比如，我们可以观察 `STREAM` 变量的静态属性 `$STREAM.stdin`，以便监听用户的输入：
+
+```html
+    <observe on="$STREAM.stdin" for="read">
+        <choose on="$?.readlines(1)">
+            ...
+        </choose>
+    </observe>
+```
+
+另外，`STREAM` 变量应使用可扩展的实现，从而针对不同的流类型，在流实体上提供额外的读写方法，从而可以实现对某些应用层协议的支持。比如，当某个解释器实现的 `$STREAM` 方法支持发送 HTTP 请求时，即可实现额外用于处理 HTTP 协议头的方法：
+
+```html
+    <observe on="$STREAM.open('http://foo.com/')" for="read">
+        <choose on="$?.http_get_headers()">
+            ...
+        </choose>
+    </choose>
+```
+
+#### 3.11.1) `open` 方法
+
+打开流，返回一个代表流的原生实体值。这个原生实体可以被观察。
+
+**描述**
+
+```js
+$STREAM.open(
+        < string $uri: `the URI of the stream.` >
+        [, <'[read || write || append || create || truncate || nonblock] | default' $opt = 'default':
+               - 'read':            `Open for reading only`
+               - 'write':           `Open for writing only`
+               - 'append':          `Open in append mode.  Before each write, the offset is positioned at the end of the stream`
+               - 'create':          `If $uri does not exist, create it as a regular file`
+               - 'truncate':        `If $uri already  exists and is a regular file and the access mode allows writing it will be truncated to length 0`
+               - 'nonblock':        `open $uri in nonblocking mode`
+               - 'default':         `is equivalent to 'read write'`
+           >
+        ]
+) native | undefined
+
+```
+
+该方法打开一个流，返回一个代表流的原生实体值。
+
+该方法使用 URI 指定要打开的流的类型和位置，如：
+
+- `file:///etc/passwd`：打开 `/etc/passwd` 文件。
+- `file://Documents/mydata`：打开当前工作路径下的 `Document/mydata` 文件。
+- `pipe:///var/tmp/apipe`：打开一个命名管道。
+- `unix:///var/run/myapp.sock`：打开一个 UNIX 套接字。
+- `winsock://xxx`：打开一个 Windows 套接字。
+- `ws://foo.bar.com:8877`：连接到 foo.bar.com 端口 8877 上的 WebSocket。
+- `wss://foo.bar.com:8877`：使用 SSL 连接到 foo.bar.com 端口 8877 上的 WebSocket。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
+
+**备注**
+
+1. 流的关闭将在最终释放对应的原生实体值时自动进行，故而没有对应的 `close` 方法。
+1. 选项字符串随流的类型不同而不同。
+1. 选项字符串与`fopen`对应关系：
+
+| $STREAM.open                 |  fopen    |
+| --------------------------   |  -------- |
+| `read`                       |  `r`      |
+| `write create truncate`      |  `w`      |
+| `write create append`        |  `a`      |
+| `read write`                 |  `r+`     |
+| `read write create truncate` |  `w+`     |
+| `read write create append`   |  `a+`     |
+
+**示例**
+
+```js
+$STREAM.open("file://abc.md", "read write")
+```
+
+#### 3.11.2) `stdin` 静态属性
+
+这是一个静态属性，对应一个流实体，其值可用于流式读写的读取接口，是 C 语言标准输入流的封装。
+
+#### 3.11.3) `stdout` 静态属性
+
+这是一个静态属性，对应一个流实体，其值可用于流式读写的写入接口，是 C 语言标准输出流的封装。
+
+**示例**
+
+```
+// 将内核名称（如 `Linux`）输出到标准输出。
+$STREAM.writelines($STREAM.stdout, $SYSTEM.uname_prt('kernel-name'))
+```
+
+#### 3.11.4) `stderr` 静态属性
+
+这是一个静态属性，其对应一个流实体，值可用于流式读写的写入接口，是 C 语言标准错误流的封装。
+
+#### 3.11.5) 流实体的 `readstruct` 方法
+
+从流中读取一个二进制结构，并转换为适当的数据。
+
+```js
+$stream.readstruct(
+        < string $format: `the format of the struct`>
+) array | real | string | bsequenc
+```
+
+该方法按指定的格式从流实体（`$stream`）中读取数据， 当 `$format` 指定的格式字符串包含多个基本数据类型时，该函数返回数组；
+否则返回单个数据。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回已读取数据。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回已读取数据。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
+- `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空数组。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空数组。
+- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回空数组。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空数组。
+
+**示例**
+
+```js
+// 文件内容如下(16进制)：0x0a 0x00 0x0a 0x00 0x00 0x00
+
+$stream.readstruct('i16le i32le')
+// array [10, 10]
+```
+
+#### 3.11.6) 流实体的 `writestruct` 方法
+
+将多个数据按照指定的结构格式写入流。
+
+```js
+$stream.writestruct(
+        <string $format: `the format string; see Binary Format Notation.` >,
+        <real | string | bsequence | array $first: `the first data.` >
+        [,  <real | string | bsequence | array $second: `the second data.` >
+            [, <real | string | bsequence | array $third: `the third data.` >
+                [, ... ]
+            ]
+        ]
+) ulongint
+```
+
+该函数将传入的多个实数、实数数组、字符串或字节序列按照 `$format` 指定的二进制格式写入流实体（`$stream`）。
+
+```js
+$stream.writestruct(
+        < string $format: `the format string; see Binary Format Notation.` >,
+        < array $data >
+) ulongint
+```
+
+当传入三个参数，且第三个参数为数组时，该函数将传入的数组之成员依次按照 `$format` 指定的二进制格式写入流。
+
+该方法按指定的格式将数据写入流，返回写入的字节数。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回已写入的字节数。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回已写入的字节数。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回已写入的字节数。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回实际写入的字节数。
+- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回实际写入的字节数。
+- `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回实际写入的字节数。
+- `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回实际写入的字节数。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回实际写入的字节数。
+
+**示例**
+
+```js
+$stream.writestruct("i16le i32le", 10, 10)
+// 写入文件(16进制)：0x0a 0x00 0x0a 0x00 0x00 0x00
+
+$stream.writestruct("i16le:2 i32le", [[10, 15], 255])
+// 写入文件(16进制)：0x0a 0x00 0x0f 0x00 0xff 0x00 0x00 0x00
+
+$stream.writestruct("i16le:2 i32le", [10, 15], 255)
+// 写入文件(16进制)：0x0a 0x00 0x0f 0x00 0xff 0x00 0x00 0x00
+```
+
+#### 3.11.7) 流实体的 `readlines` 方法
+
+从流中读取给定行数，返回字符串数组。
+
+**描述**
+
+```js
+$stream.readlines(
+        < real $lines: `the number of lines to read`>
+) array
+```
+
+该方法按指定行数读取数据，并转换为数组返回，数组的每个成员都是一行数据。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时空数组。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时空数组。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
+- `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空数组。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空数组。
+- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回空数组。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空数组。
+
+**示例**
+
+```js
+/* 假定文件内容如下:
+This is the string to write
+Second line
+ */
+
+$stream.readlines(10)
+// array: ["This is the string to write", "Second line"]
+```
+
+#### 3.11.8) 流实体的 `writelines` 方法
+
+将字符串写入流中。
+
+**描述**
+
+```js
+$stream.writelines(
+        < 'string | array' $line: `the data to write`>
+) ulongint
+
+```
+
+该方法将参数指定的字符串写入流，当参数是数组时，要求数组的每个成员都是字符串类型，写入时每个数组成员是单独的一行，返回写入的字节数。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回实际写入的字节数。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回实际写入的字节数。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回实际写入的字节数。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回实际写入的字节数。
+- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回实际写入的字节数。
+- `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回实际写入的字节数。
+- `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回实际写入的字节数。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回实际写入的字节数。
+
+**示例**
+
+```js
+$STREAM.stdout.writelines("This is the string to write")
+    // STDOUT:
+    // This is the string to write
+
+$STREAM.stdout.writelines(["This is the string to write", "Second line"])
+    // STDOUT:
+    // This is the string to write
+    // Second line
+```
+
+#### 3.11.9) 流实体的 `readbytes` 方法
+
+从流中读取一个字节序列，返回一个字节序列。
+
+**描述**
+
+```js
+$stream.readbytes(
+        < real $length: `the length to read in bytes`>
+) bsequence
+```
+
+该方法从 `$stream` 流中读取指定长度的字节，并转换为字节序列返回。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字节序列。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回空字节序列。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回空字节序列。
+- `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空字节序列。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空字节序列。
+- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回空字节序列。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空字节序列。
+
+
+**示例**
+
+```js
+/* 假定文件内容(共12字节)：
+write string
+ */
+
+$STREAM.stdin.readbytes(10)
+    // bsequence: bx77726974652073747269
+```
+
+#### 3.11.10) 流实体的 `writebytes` 方法
+
+将一个字节序列写入流。
+
+**描述**
+
+```js
+$stream.writebytes(
+        < 'string | bsequence' $data: ` the data to write`>
+) ulongint
+```
+
+该方法将字节序列写入 `$stream` 流，返回写入的字节数。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回0。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回0。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回0。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回0。
+- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回0。
+- `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回0。
+- `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回0。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回0。
+
+**示例**
+
+```js
+// 写入字节序列
+$STREAM.stdout.writebytes(bx48564d4c3A202d5f2e)
+    // ulongint: 9L
+
+// 将字符串作为字节序列写入
+$STREAM.stdout.writebytes("write string")
+    // longint: 12L FIXME: 字符串作为字节序列写入时，应该写入结尾的空字符。
+```
+
+#### 3.11.11) 流实体的 `seek` 方法
+
+在流中执行定位操作。
+
+**描述**
+
+```js
+$stream.seek(
+        < number $offset: `the offset to be set`>,
+        [, <'set | current | end | default' $whence = 'default':
+            - 'set':     `The $stream offset is set to offset bytes`
+            - 'current': `The $stream offset is set to its current location plus offset bytes`
+            - 'end':     `The $stream offset is set to the size of the file plus offset bytes.`
+            - 'default': `is equivalent to 'set'`
+           >
+        ]
+) ulongint | false
+```
+
+该方法进行定位操作，返回当前位置。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+- `Unsupported`：不支持该操作(管道，套接字); 可忽略异常，静默求值时返回 `false`。
+- `TooLarge`：返回的偏移量太大; 可忽略异常，静默求值时返回 `false`。
+
+**备注**
+
+1. 仅支持 `file://` 类型的流。
+
+**示例**
+
+```js
+// 示例：定位到第10个字节的位置
+$stream.seek(10, 'set')
+    // ulongint: 10L
+```
+
 ## 4) 可选动态变量
 
 ### 4.1) `MATH`
@@ -6137,407 +6550,6 @@ $FILE.bin.tail($file, 5)
 
 // 示例：读取最前 5 字节之外的所有字节
 $FILE.bin.tail($file, -5)
-```
-
-### 4.4) `STREAM`
-
-`STREAM` 是一个可装载的动态变量，该变量用于实现常见的读写流操作。
-
-#### 4.4.1) `stdin` 静态属性
-
-这是一个静态属性，对应一个原生实体，其值可用于流式读写的读取接口，是 C 语言标准输入流的封装。
-
-#### 4.4.2) `stdout` 静态属性
-
-这是一个静态属性，对应一个原生实体，其值可用于流式读写的写入接口，是 C 语言标准输出流的封装。
-
-**示例**
-
-```
-// 将内核名称（如 `Linux`）输出到标准输出。
-$STREAM.writelines($STREAM.stdout, $SYSTEM.uname_prt('kernel-name'))
-```
-
-#### 4.4.3) `stderr` 静态属性
-
-这是一个静态属性，其对应一个原生实体，值可用于流式读写的写入接口，是 C 语言标准错误流的封装。
-
-#### 4.4.4) `open` 方法
-
-打开流，返回一个代表流的原生实体值。这个原生实体可以被观察。
-
-**描述**
-
-```js
-$STREAM.open(
-        < string $uri: `the URI of the stream.` >
-        [, <'[read || write || append || create || truncate || nonblock] | default' $opt = 'default':
-               - 'read':            `Open for reading only`
-               - 'write':           `Open for writing only`
-               - 'append':          `Open in append mode.  Before each write, the offset is positioned at the end of the stream`
-               - 'create':          `If $uri does not exist, create it as a regular file`
-               - 'truncate':        `If $uri already  exists and is a regular file and the access mode allows writing it will be truncated to length 0`
-               - 'nonblock':        `open $uri in nonblocking mode`
-               - 'default':         `is equivalent to 'read write'`
-           >
-        ]
-) native | undefined
-
-```
-
-该方法打开一个流，返回一个代表流的原生实体值。
-
-该方法使用 URI 指定要打开的流的类型和位置，如：
-
-- `file:///etc/passwd`：打开 `/etc/passwd` 文件。
-- `file://Documents/mydata`：打开当前工作路径下的 `Document/mydata` 文件。
-- `pipe:///var/tmp/apipe`：打开一个命名管道。
-- `unix:///var/run/myapp.sock`：打开一个 UNIX 套接字。
-- `winsock://xxx`：打开一个 Windows 套接字。
-- `ws://foo.bar.com:8877`：连接到 foo.bar.com 端口 8877 上的 WebSocket。
-- `wss://foo.bar.com:8877`：使用 SSL 连接到 foo.bar.com 端口 8877 上的 WebSocket。
-
-**异常**
-
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
-
-**备注**
-
-1. 流的关闭将在最终释放对应的原生实体值时自动进行，故而没有对应的 `close` 方法。
-1. 选项字符串随流的类型不同而不同。
-1. 选项字符串与`fopen`对应关系：
-
-| $STREAM.open                 |  fopen    |
-| --------------------------   |  -------- |
-| `read`                       |  `r`      |
-| `write create truncate`      |  `w`      |
-| `write create append`        |  `a`      |
-| `read write`                 |  `r+`     |
-| `read write create truncate` |  `w+`     |
-| `read write create append`   |  `a+`     |
-
-**示例**
-
-```js
-$STREAM.open("file://abc.md", "read write")
-```
-
-#### 4.4.5) `readstruct` 方法
-
-从流中读取一个二进制结构，并转换为适当的数据。
-
-```js
-$STREAM.readstruct(
-        < native $stream: `the native representing the opened stream.` >,
-        < string $format: `the format of the struct`>
-) array | real | string | bsequenc
-
-```
-
-该方法按指定的格式读取数据， 当 $format 指定的格式字符串包含多个基本数据类型时，该函数返回数组；
-否则返回单个数据。
-
-**异常**
-
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回已读取数据。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回已读取数据。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
-- `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空数组。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空数组。
-- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回空数组。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空数组。
-
-**示例**
-
-```js
-
-// 文件内容如下(16进制)：0x0a 0x00 0x0a 0x00 0x00 0x00
-
-$STREAM.readstruct($stream, 'i16le i32le')
-// array [10, 10]
-
-```
-
-#### 4.4.6) `writestruct` 方法
-
-将多个数据按照指定的结构格式写入流。
-
-```js
-$STREAM.writestruct(
-        < native $stream: `the native representing the opened stream.` >,
-        <string $format: `the format string; see Binary Format Notation.` >,
-        <real | string | bsequence | array $first: `the first data.` >
-        [,  <real | string | bsequence | array $second: `the second data.` >
-            [, <real | string | bsequence | array $third: `the third data.` >
-                [, ... ]
-            ]
-        ]
-) ulongint
-```
-
-该函数将传入的多个实数、实数数组、字符串或字节序列按照 `$format` 指定的二进制格式写入流。
-
-```js
-$STREAM.writestruct(
-        < native $stream: `the native representing the opened stream.` >,
-        < string $format: `the format string; see Binary Format Notation.` >,
-        < array $data >
-) ulongint
-```
-
-当传入三个参数，且第三个参数为数组时，该函数将传入的数组之成员依次按照 `$format` 指定的二进制格式写入流。
-
-该方法按指定的格式将数据写入流，返回写入的字节数。
-
-**异常**
-
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回已写入的字节数。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回已写入的字节数。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回已写入的字节数。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回实际写入的字节数。
-- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回实际写入的字节数。
-- `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回实际写入的字节数。
-- `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回实际写入的字节数。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回实际写入的字节数。
-
-**示例**
-
-```js
-$STREAM.writestruct($stream,  "i16le i32le", 10, 10)
-// 写入文件(16进制)：0x0a 0x00 0x0a 0x00 0x00 0x00
-
-$STREAM.writestruct($stream,  "i16le:2 i32le", [[10, 15], 255])
-// 写入文件(16进制)：0x0a 0x00 0x0f 0x00 0xff 0x00 0x00 0x00
-
-$STREAM.writestruct($stream,  "i16le:2 i32le", [10, 15], 255)
-// 写入文件(16进制)：0x0a 0x00 0x0f 0x00 0xff 0x00 0x00 0x00
-```
-
-#### 4.4.7) `readlines` 方法
-
-从流中读取给定行数，返回字符串数组。
-
-**描述**
-
-```js
-$STREAM.readlines(
-        < native $stream: `the native representing the opened stream.` >,
-        < real $lines: `the number of lines to read`>
-) array
-
-```
-
-该方法按指定行数读取数据，并转换为数组返回，数组的每个成员都是一行数据。
-
-**异常**
-
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时空数组。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时空数组。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
-- `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空数组。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空数组。
-- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回空数组。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空数组。
-
-**示例**
-
-```js
-
-// 文件内容如下:
-// This is the string to write
-// Second line
-
-$STREAM.readlines($stream, 10)
-// array: ["This is the string to write", "Second line"]
-```
-
-#### 4.4.8) `writelines` 方法
-
-将字符串写入流中。
-
-**描述**
-
-```js
-$STREAM.writelines(
-        < native $stream: `the native representing the opened stream.` >,
-        < 'string | array' $line: `the data to write`>
-) ulongint
-
-```
-
-该方法将参数指定的字符串写入流，当参数是数组时，要求数组的每个成员都是字符串类型，写入时每个数组成员是单独的一行，返回写入的字节数。
-
-**异常**
-
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回实际写入的字节数。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回实际写入的字节数。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回实际写入的字节数。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回实际写入的字节数。
-- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回实际写入的字节数。
-- `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回实际写入的字节数。
-- `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回实际写入的字节数。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回实际写入的字节数。
-
-**示例**
-
-```js
-$STREAM.writelines($STREAM.stdout, "This is the string to write")
-// 屏幕输出：
-// This is the string to write
-
-$STREAM.writelines($STREAM.stdout, ["This is the string to write", "Second line"])
-// 屏幕输出：
-// This is the string to write
-// Second line
-
-```
-
-#### 4.4.9) `readbytes` 方法
-
-从流中读取一个字节序列，返回一个字节序列。
-
-**描述**
-
-```js
-$STREAM.readbytes(
-        < native $stream: `the native representing the opened stream.` >,
-        < real $length: `the length to read in bytes`>
-) bsequence
-
-```
-
-该方法读取指定长度的字节，并转换为字节序列返回。
-
-**异常**
-
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字节序列。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回空字节序列。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回空字节序列。
-- `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空字节序列。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空字节序列。
-- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回空字节序列。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空字节序列。
-
-
-**示例**
-
-```js
-
-// 文件内容(共12字节):write string
-$STREAM.readbytes($STREAM.stdin, 10)
-// bsequence: bx77726974652073747269
-```
-
-
-#### 4.4.10) `writebytes` 方法
-
-将一个字节序列写入流。
-
-**描述**
-
-```js
-$STREAM.writebytes(
-        < native $stream: `the native representing the opened stream.` >,
-        < 'string | bsequence' $data: ` the data to write`>
-) ulongint
-
-```
-
-该方法将字节序列写入流，返回写入的字节数。
-
-**异常**
-
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回0。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回0。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回0。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回0。
-- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回0。
-- `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回0。
-- `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回0。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回0。
-
-**示例**
-
-```js
-
-$STREAM.writebytes($STREAM.stdout, bx48564d4c3A202d5f2e)
-// 写入字节序列，返回值为: 9
-
-$STREAM.writebytes($STREAM.stdout, "write string")
-// 写入字符串，返回值为: 12
-
-```
-
-#### 4.4.11) `seek` 方法
-
-在流中执行定位操作。
-
-**描述**
-
-```js
-$STREAM.seek(
-        < native $stream: `the native representing the opened stream.` >,
-        < number $offset: `the offset to be set`>,
-        [, <'set | current | end | default' $whence = 'default':
-            - 'set':     `The $stream offset is set to offset bytes`
-            - 'current': `The $stream offset is set to its current location plus offset bytes`
-            - 'end':     `The $stream offset is set to the size of the file plus offset bytes.`
-            - 'default': `is equivalent to 'set'`
-           >
-        ]
-) longint | false
-
-```
-
-该方法进行定位操作，返回当前位置。
-
-**异常**
-
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
-- `Unsupported`：不支持该操作(管道，套接字); 可忽略异常，静默求值时返回 `false`。
-- `TooLarge`：返回的偏移量太大; 可忽略异常，静默求值时返回 `false`。
-
-**备注**
-
-1. 仅支持 `file://` 类型的流。
-
-**示例**
-
-```js
-// 示例：定位到第10个字节的位置
-$STREAM.seek($stream, 10, 'set')
-```
-
-#### 4.4.12) 综合示例
-
-```html
-    <init as="formats">
-        [
-            "bytes:2 padding:2 u32le u32le",
-            "f64le f64le",
-        ]
-    </init>
-
-    <init as="packages">
-    </init>
-
-    <choose on="$STREAM.open('mydata.txt', 'b')" to="iterate">
-        <iterate on="$formats" in="$packages" by="RANGE: 0">
-            <update on="$packages" to="append" with="$STREAM.readstruct($2, $?)" />
-        </iterate>
-    </choose>
 ```
 
 ## 附录
