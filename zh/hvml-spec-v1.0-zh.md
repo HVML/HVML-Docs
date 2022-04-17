@@ -51,7 +51,7 @@ Language: Chinese
          - [2.1.6.6) `$L`](#2166-l)
          - [2.1.6.7) `$T`](#2167-t)
          - [2.1.6.8) `$EJSON`](#2168-ejson)
-         - [2.1.6.9) `STREAM`](#2169-stream)
+         - [2.1.6.9) `$STREAM`](#2169-stream)
          - [2.1.6.10) 集合变量](#21610-集合变量)
          - [2.1.6.11) 表达式变量](#21611-表达式变量)
       * [2.1.7) 文档片段的 JSON 数据表达](#217-文档片段的-json-数据表达)
@@ -101,7 +101,6 @@ Language: Chinese
       * [2.5.16) `catch` 标签](#2516-catch-标签)
       * [2.5.17) `bind` 标签](#2517-bind-标签)
       * [2.5.18) `back` 标签](#2518-back-标签)
-      * [2.5.19) `pipe` 标签](#2519-pipe-标签)
    + [2.6) 执行器](#26-执行器)
       * [2.6.1) 内建执行器](#261-内建执行器)
          - [2.6.1.1) `KEY` 执行器](#2611-key-执行器)
@@ -150,7 +149,6 @@ Language: Chinese
          - [RC3.4) `define` 元素的 `from` 属性](#rc34-define-元素的-from-属性)
          - [RC3.5) eJSON 语法增强](#rc35-ejson-语法增强)
          - [RC3.6) `$STREAM` 预定义变量](#rc36-stream-预定义变量)
-         - [RC3.7) `pipe` 标签草案](#rc37-pipe-标签草案)
       * [RC2) 220401](#rc2-220401)
          - [RC2.1) 用户自定义临时变量的初始化和重置方法](#rc21-用户自定义临时变量的初始化和重置方法)
          - [RC2.2) 调整动态对象方法的描述语法](#rc22-调整动态对象方法的描述语法)
@@ -174,6 +172,10 @@ Language: Chinese
          - [RC1.6) 属性值操作符的增强](#rc16-属性值操作符的增强)
       * [BRC) 其他](#brc-其他)
    + [附.2) 待定内容](#附2-待定内容)
+      * [TBD 1) 扩展数据类型](#tbd-1-扩展数据类型)
+         - [TBD 1.1) 扩展数据类型](#tbd-11-扩展数据类型)
+      * [TBD 2) 动作元素](#tbd-2-动作元素)
+         - [TBD 2.1) `pipe` 标签](#tbd-21-pipe-标签)
    + [附.3) 贡献者榜单](#附3-贡献者榜单)
    + [附.4) 商标声明](#附4-商标声明)
 
@@ -961,17 +963,6 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
     <observe on="$mySteams.out" for="read">
         <choose on="$STREAM.stdout.writelines($myStreams.out.readlines(1))" />
     </observe>
-```
-
-亦可直接用 `pipe` 标签：
-
-```html
-    <pipe on="$STREAM.stdin" with="$STREAM.open('exe:///usr/bin/wc')"
-            as="myPipe" async>
-        <observe on="myPipe" for="pipe:done">
-            <choose on="$STREAM.stdout.writelines($myStreams.out.readlines(1))" />
-        </observe>
-    </pipe>
 ```
 
 ##### 2.1.6.10) 集合变量
@@ -3792,41 +3783,6 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 
 上述代码读取指定目录下的目录项，并捕获可能的异常。当发生异常时，使用 `back` 标签回退到`ul` 对应的栈帧，并修改 `ul` 栈帧的结果数据（`$?`）为一个字符串。回退后，程序开始执行 `test` 标签，判断结果数据的类型。注意 `ul` 作为外部元素，其最初的结果数据为 `undefined`。如果其类型为 `string` 则说明发生了异常，其后的操作将一个 `li` 元素插入目标文档，其中包含异常信息。
 
-#### 2.5.19) `pipe` 标签
-
-`pipe` 标签用于将一个字节序列、字符串或者输出流管接（pipe）到另外一个可接收输入流的东西上。
-
-比如，如下代码的实际效果是将文件 `src.txt` 中的内容追加到 `dst.txt` 中。
-
-```html
-    <pipe   on="$STREAM.open('file://src.txt', 'read')"
-            with="$STREAM.open('file://dst.txt', 'write append')">
-    </pipe>
-```
-
-我们还可以将输出流管接到一个执行特定程序的子进程上，然后再将子进程的输出流管接到标准输出上：
-
-```html
-    <pipe   on="HVML" with="$STREAM.open('exe:///usr/bin/wc')">
-        <pipe on="$?" with="$STREAM.stdout" />
-    </pipe>
-```
-
-`pipe` 标签将一直从 `on` 属性指定的流实体中读取数据，并将结果写入到 `with` 属性指定的流实体中。默认情况下，当 `on` 属性指定的流实体被关闭时，`pipe` 结束执行，其结果数据为 `with` 属性指定的流实体。
-
-当 `on` 属性指定的数据是字节序列或者字符串时，将对应一个虚拟的流实体，该实体的内容就是指定的字节序列或者字符串，并在读取完这些内容后收到文件尾的标志，表示该流实体已被关闭。
-
-我们可以使用 `asynchronously` 副词属性，从而异步执行 `pipe` 操作：
-
-```html
-    <pipe   on="$STREAM.in" with="$STREAM.open('exe:///usr/bin/wc')"
-            as="myPipe" async>
-        <observe on="myPipe" for="pipe:done" >
-            <choose on="$STREAM.stdout.writelines($myPipe.out.readlines(1))" />
-        </observe>
-    </pipe>
-```
-
 ### 2.6) 执行器
 
 在 `choose`、 `iterate` 以及 `reduce` 等动作标签中，我们通常要使用 `by` 介词属性来定义如何执行选择、迭代或者归约操作，我们称之为规则，而实现相应的规则的代码或者功能模块被称为选择器、迭代器或归约器，统称为执行器（executor）。HVML 解释器可实现内置（built-in）执行器，通过简单的语法来指定在选择、迭代、归约数据时遵循什么样的规则。在复杂情形下，HVML 允许文档作者调用外部程序（比如可动态加载的模块）来实现执行器。HVML 使用 `CLASS` 或 `FUNC` 前缀来表示使用外部定义的执行器。
@@ -5896,14 +5852,6 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 - [2.1.6.9) `STREAM`](#2169-stream)
 
-##### RC3.7) `pipe` 标签草案
-
-使用 `pipe` 标签将流通过管道连接起来。
-
-相关章节：
-
-- [2.5.19) `pipe` 标签](#2519-pipe-标签)
-
 #### RC2) 220401
 
 ##### RC2.1) 用户自定义临时变量的初始化和重置方法
@@ -6136,7 +6084,52 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 ### 附.2) 待定内容
 
-未来，可以增加针对矩阵运算的执行器。
+#### TBD 1) 扩展数据类型
+
+##### TBD 1.1) 扩展数据类型
+
+1) 二元组
+
+2) 复数及其运算
+
+3) 矩阵及其运算
+
+#### TBD 2) 动作元素
+
+##### TBD 2.1) `pipe` 标签
+
+`pipe` 标签用于将一个字节序列、字符串或者输出流管接（pipe）到另外一个可接收输入流的东西上。
+
+比如，如下代码的实际效果是将文件 `src.txt` 中的内容追加到 `dst.txt` 中。
+
+```html
+    <pipe   on="$STREAM.open('file://src.txt', 'read')"
+            with="$STREAM.open('file://dst.txt', 'write append')">
+    </pipe>
+```
+
+我们还可以将输出流管接到一个执行特定程序的子进程上，然后再将子进程的输出流管接到标准输出上：
+
+```html
+    <pipe   on="HVML" with="$STREAM.open('exe:///usr/bin/wc')">
+        <pipe on="$?" with="$STREAM.stdout" />
+    </pipe>
+```
+
+`pipe` 标签将一直从 `on` 属性指定的流实体中读取数据，并将结果写入到 `with` 属性指定的流实体中。默认情况下，当 `on` 属性指定的流实体被关闭时，`pipe` 结束执行，其结果数据为 `with` 属性指定的流实体。
+
+当 `on` 属性指定的数据是字节序列或者字符串时，将对应一个虚拟的流实体，该实体的内容就是指定的字节序列或者字符串，并在读取完这些内容后收到文件尾的标志，表示该流实体已被关闭。
+
+我们可以使用 `asynchronously` 副词属性，从而异步执行 `pipe` 操作：
+
+```html
+    <pipe   on="$STREAM.in" with="$STREAM.open('exe:///usr/bin/wc')"
+            as="myPipe" async>
+        <observe on="myPipe" for="pipe:done" >
+            <choose on="$STREAM.stdout.writelines($myPipe.out.readlines(1))" />
+        </observe>
+    </pipe>
+```
 
 ### 附.3) 贡献者榜单
 
