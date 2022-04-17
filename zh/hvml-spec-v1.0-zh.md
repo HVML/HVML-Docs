@@ -51,8 +51,9 @@ Language: Chinese
          - [2.1.6.6) `$L`](#2166-l)
          - [2.1.6.7) `$T`](#2167-t)
          - [2.1.6.8) `$EJSON`](#2168-ejson)
-         - [2.1.6.9) 集合变量](#2169-集合变量)
-         - [2.1.6.10) 表达式变量](#21610-表达式变量)
+         - [2.1.6.9) `STREAM`](#2169-stream)
+         - [2.1.6.10) 集合变量](#21610-集合变量)
+         - [2.1.6.11) 表达式变量](#21611-表达式变量)
       * [2.1.7) 文档片段的 JSON 数据表达](#217-文档片段的-json-数据表达)
       * [2.1.8) 数据模板和文档片段模板](#218-数据模板和文档片段模板)
       * [2.1.9) 用来操作数据或元素的动作标签](#219-用来操作数据或元素的动作标签)
@@ -100,6 +101,7 @@ Language: Chinese
       * [2.5.16) `catch` 标签](#2516-catch-标签)
       * [2.5.17) `bind` 标签](#2517-bind-标签)
       * [2.5.18) `back` 标签](#2518-back-标签)
+      * [2.5.19) `pipe` 标签](#2519-pipe-标签)
    + [2.6) 执行器](#26-执行器)
       * [2.6.1) 内建执行器](#261-内建执行器)
          - [2.6.1.1) `KEY` 执行器](#2611-key-执行器)
@@ -147,6 +149,8 @@ Language: Chinese
          - [RC3.3) 可使用元素的锚点名称定位祖先栈帧](#rc33-可使用元素的锚点名称定位祖先栈帧)
          - [RC3.4) `define` 元素的 `from` 属性](#rc34-define-元素的-from-属性)
          - [RC3.5) eJSON 语法增强](#rc35-ejson-语法增强)
+         - [RC3.6) `$STREAM` 预定义变量](#rc36-stream-预定义变量)
+         - [RC3.7) `pipe` 标签草案](#rc37-pipe-标签草案)
       * [RC2) 220401](#rc2-220401)
          - [RC2.1) 用户自定义临时变量的初始化和重置方法](#rc21-用户自定义临时变量的初始化和重置方法)
          - [RC2.2) 调整动态对象方法的描述语法](#rc22-调整动态对象方法的描述语法)
@@ -904,7 +908,73 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 使用上述选择器之后，相当于对原有的单个数据项做了一些过滤。比如 `<choose on="$users" ... />` 选择了整个 `$users` 数组内容做后续处理，但如果使用 `<choose on="$EJSON.select($users, ":nth-child(even)")` 则仅选择下标为偶数的数组单元。
 
-##### 2.1.6.9) 集合变量
+##### 2.1.6.9) `STREAM`
+
+`STREAM` 是一个会话级内置变量，该变量用于实现基于读写流的操作。和 `$DOC` 变量的 `query` 方法类似，该变量上提供的 `open` 方法返回一个原生实体，在该原生实体上，我们提供用于从流中读取或者向流中写入的接口。
+
+`$STREAM.open` 方法返回的原生实体，称为“流实体（stream entity）”。流实体提供如下基本接口：
+
+- `readbytes` 和 `writebytes` 方法：读写字节序列。
+- `readstruct` 和 `writestruct` 方法：读写二进制数据结构。
+- `readlines` 和 `writelines` 方法：读写文本行。
+- `seek`：在可定位流中重新定位流的读写位置。
+- `close`：关闭读写流。
+
+为方便使用，我们在 `$STREAM` 变量上提供如下静态属性：
+
+- `stdin`、 `stdout` 和 `stderr` 静态属性：C 语言标准输入、标准输出和标准错误的流实体封装。
+
+流实体应该是可被观察的，从而可以监听读取流上是否有数据等待读取，或者是否可向写入流中写入数据。比如，我们可以观察 `$STREAM.stdin`，以便监听用户的输入：
+
+```html
+    <observe on="$STREAM.stdin" for="read">
+        <choose on="$?.readlines(1)">
+            ...
+        </choose>
+    </observe>
+```
+
+另外，`STREAM` 变量应使用可扩展的实现，从而在不同的平台上实现不同的流类型，进而还可以针对不同的流类型，在流实体上提供额外的读写方法。比如，当某个解释器实现的 `$STREAM` 方法支持发送 HTTP 请求时，即可实现额外用于处理 HTTP 协议头的方法：
+
+```html
+    <observe on="$STREAM.open('http://foo.com/')" for="read">
+        <choose on="$?.http_get_headers()">
+            ...
+        </choose>
+    </choose>
+```
+
+作为一个有价值的设计，我们可以将传统的 Unix 命令行程序的执行机制抽象为一个流实体，比如，我们将标准输出上的内容管接给 `/usr/bin/wc` 命令处理：
+
+```html
+    <init as="myStreams">
+        {
+            in: $STREAM.stdin,
+            out: $STREAM.open('exe:///usr/bin/wc')
+        }
+    </init>
+
+    <observe on="$mySteams.in" for="read">
+        <choose on="$?.out.writelines($myStreams.in.readlines(1))" />
+    </observe>
+
+    <observe on="$mySteams.out" for="read">
+        <choose on="$STREAM.stdout.writelines($myStreams.out.readlines(1))" />
+    </observe>
+```
+
+亦可直接用 `pipe` 标签：
+
+```html
+    <pipe on="$STREAM.stdin" with="$STREAM.open('exe:///usr/bin/wc')"
+            as="myPipe" async>
+        <observe on="myPipe" for="pipe:done">
+            <choose on="$STREAM.stdout.writelines($myStreams.out.readlines(1))" />
+        </observe>
+    </pipe>
+```
+
+##### 2.1.6.10) 集合变量
 
 在 HVML 中，我们可以使用 JSON 数组来描述包含在一个集合中的数据，但 JSON 本身并不具有集合的概念。因此，HVML 提供了使用 JSON 数组来初始化一个集合变量的能力。也就是说，集合是具有某些特征的数组的一种内部表达，我们需要通过变量来访问集合数据。
 
@@ -979,7 +1049,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并集、交集、差集、异或集等。详情见 `update` 标签的描述。
 
-##### 2.1.6.10) 表达式变量
+##### 2.1.6.11) 表达式变量
 
 HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
@@ -1698,7 +1768,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 {{
      $SYSTEM.cwd(! '/root') &&
         $FS.list ||
-        $STREAM.writelines($FILE.stream.stdout,
+        $STREAM.stdout.writelines(
                 'Cannot change directory to "/root"'); $SYSTEM.cwd(! '/' ) &&
                     $FS.list || false
 }}
@@ -1707,7 +1777,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 // 所有目录项清单（字符串），否则返回提示信息。最终将目录项清单或者错误信息
 // 输出到标准输出。
 {{
-    $STREAM.writelines($FILE.stream.stdout, {{
+    $STREAM.stdout.writelines({{
                 $SYSTEM.cwd(! '/root') && $FS.list_prt ||
                     'Cannot change directory to "/root"''
             }})
@@ -3448,7 +3518,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 
 ```html
     <define as="listitems" from="/module/$DOC.doctype/listitems.hvml">
-        <choose on=$STREAM.writelines($STREAM.stdout,$?) />
+        <choose on=$STREAM.stdout.writelines($?) />
     </define>
 
     <include with="$listitems" on=['Line #1', 'Line #2'] />
@@ -3714,9 +3784,48 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
             </match>
         </test>
     </ul>
+
+    ...
+
+</body>
 ```
 
 上述代码读取指定目录下的目录项，并捕获可能的异常。当发生异常时，使用 `back` 标签回退到`ul` 对应的栈帧，并修改 `ul` 栈帧的结果数据（`$?`）为一个字符串。回退后，程序开始执行 `test` 标签，判断结果数据的类型。注意 `ul` 作为外部元素，其最初的结果数据为 `undefined`。如果其类型为 `string` 则说明发生了异常，其后的操作将一个 `li` 元素插入目标文档，其中包含异常信息。
+
+#### 2.5.19) `pipe` 标签
+
+`pipe` 标签用于将一个字节序列、字符串或者输出流管接（pipe）到另外一个可接收输入流的东西上。
+
+比如，如下代码的实际效果是将文件 `src.txt` 中的内容追加到 `dst.txt` 中。
+
+```html
+    <pipe   on="$STREAM.open('file://src.txt', 'read')"
+            with="$STREAM.open('file://dst.txt', 'write append')">
+    </pipe>
+```
+
+我们还可以将输出流管接到一个执行特定程序的子进程上，然后再将子进程的输出流管接到标准输出上：
+
+```html
+    <pipe   on="HVML" with="$STREAM.open('exe:///usr/bin/wc')">
+        <pipe on="$?" with="$STREAM.stdout" />
+    </pipe>
+```
+
+`pipe` 标签将一直从 `on` 属性指定的流实体中读取数据，并将结果写入到 `with` 属性指定的流实体中。默认情况下，当 `on` 属性指定的流实体被关闭时，`pipe` 结束执行，其结果数据为 `with` 属性指定的流实体。
+
+当 `on` 属性指定的数据是字节序列或者字符串时，将对应一个虚拟的流实体，该实体的内容就是指定的字节序列或者字符串，并在读取完这些内容后收到文件尾的标志，表示该流实体已被关闭。
+
+我们可以使用 `asynchronously` 副词属性，从而异步执行 `pipe` 操作：
+
+```html
+    <pipe   on="$STREAM.in" with="$STREAM.open('exe:///usr/bin/wc')"
+            as="myPipe" async>
+        <observe on="myPipe" for="pipe:done" >
+            <choose on="$STREAM.stdout.writelines($myPipe.out.readlines(1))" />
+        </observe>
+    </pipe>
+```
 
 ### 2.6) 执行器
 
@@ -5778,6 +5887,22 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 相关章节：
 
 - [3.1.3.2) 扩展 JSON 语法](#3132-扩展-json-语法)
+
+##### RC3.6) `$STREAM` 预定义变量
+
+对内置动态变量 `$STREAM` 的基本描述。
+
+相关章节：
+
+- [2.1.6.9) `STREAM`](#2169-stream)
+
+##### RC3.7) `pipe` 标签草案
+
+使用 `pipe` 标签将流通过管道连接起来。
+
+相关章节：
+
+- [2.5.19) `pipe` 标签](#2519-pipe-标签)
 
 #### RC2) 220401
 
