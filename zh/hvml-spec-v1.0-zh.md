@@ -149,6 +149,7 @@ Language: Chinese
          - [RC3.4) `define` 元素的 `from` 属性](#rc34-define-元素的-from-属性)
          - [RC3.5) eJSON 语法增强](#rc35-ejson-语法增强)
          - [RC3.6) `$STREAM` 预定义变量](#rc36-stream-预定义变量)
+         - [RC3.6) 调整动态对象方法的描述语法](#rc36-调整动态对象方法的描述语法)
       * [RC2) 220401](#rc2-220401)
          - [RC2.1) 用户自定义临时变量的初始化和重置方法](#rc21-用户自定义临时变量的初始化和重置方法)
          - [RC2.2) 调整动态对象方法的描述语法](#rc22-调整动态对象方法的描述语法)
@@ -1849,9 +1850,9 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
    - boolean $case\_insensitivity = false: \`performs a case-sensitive (@false) or a case-insensitive (@true) check.\`
    - string: locale category
 1. 若在描述中包含 `true`、`null`、`undefined` 等关键词，使用 U+0040（@ ）前导符号。
+1. 使用 `native/<entityName>` 的形式描述原生实体类型，其中 `<entityName>` 是这种原生实体类型的名称。
 1. 可使用如下类型别名：
    1. `any`：任意类型。
-   1. `specific`：特定类型，尤指原生实体对象。
    1. `real`：任意实数类型，即 `number`、 `longint`、 `ulongint` 或 `longdouble` 之一。
    1. `container`：容器，即 `array`、 `object` 或 `set`。
 1. 参数可传递多个类型时，使用 `|` 分隔，如：`string | number`。
@@ -1867,7 +1868,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 1. 方法的返回值类型，在右括号 U+0029（`)`）之后描述；可能返回多种类型时，使用 `|` 符号分隔。可选地，在类型名称后添加冒号（`:`）以及对返回值的简要描述信息。
 1. 可选地，我们对必须包含的参数或语法单元，包含在一对尖括号（`< >`）中描述；对可选的参数或语法单元，包含在一对中括号（`[ ]`）中描述。
 
-上述语法中的第六条，示例如下：
+上述语法中使用关键词表示选项的情形，示例如下：
 
 - `'kernel-name | kernel-release | kernel-version | machine | all'`：表示只能传递这些关键词中的一个。
 - `'[kernel-name || kernel-release || kernel-version || machine] | all'`：表示要么传递 `all` 要么传递前面可选关键词中一个或多个，顺序任意。
@@ -5851,6 +5852,14 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 相关章节：
 
 - [2.1.6.9) `STREAM`](#2169-stream)
+
+##### RC3.6) 调整动态对象方法的描述语法
+
+使用 `native/<entityName>` 的形式描述原生实体类型，其中 `<entityName>` 是这种原生实体类型的名称。不再使用 `specific` 的别名。
+
+相关章节：
+
+- [2.2.4) 动态对象方法的描述语法](#224-动态对象方法的描述语法)
 
 #### RC2) 220401
 

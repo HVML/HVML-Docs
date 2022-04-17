@@ -4555,7 +4555,7 @@ $URL.assemble(
 
 ### 3.11) `STREAM`
 
-`$STREAM` 是一个会话级内置变量，该变量用于实现基于读写流的操作。和 `$DOC` 变量的 `query` 方法类似，该变量上提供的 `open` 方法返回一个原生实体，在该原生实体上，我们提供用于从流中读取或者向流中写入的接口。
+`$STREAM` 是一个会话级内置变量，该变量用于实现基于读写流的操作。和 `$DOC` 变量的 `query` 方法类似，该变量上提供的 `open` 方法返回一个原生实体，在该原生实体上，我们提供用于从流中读取数据或者将数据写入流的接口。
 
 下面的 HVML 代码，打开了一个本地文件，然后在代表读取流的原生实体上调用 `readstruct` 方法：
 
@@ -4577,7 +4577,7 @@ $URL.assemble(
     </choose>
 ```
 
-`$STREAM.open` 方法返回的原生实体，称为“流实体（stream entity）”。流实体应提供如下基本接口：
+`$STREAM.open` 方法返回的原生实体，称为“流（stream）实体”。流实体应提供如下基本接口：
 
 - `readbytes` 和 `writebytes` 方法：读写字节序列。
 - `readstruct` 和 `writestruct` 方法：读写二进制数据结构。
@@ -4627,7 +4627,7 @@ $STREAM.open(
                - 'default':         `is equivalent to 'read write'`
            >
         ]
-) native | undefined
+) native/stream | undefined
 
 ```
 
@@ -6414,10 +6414,13 @@ $FS.file_contents(!
 ```js
 $FS.opendir(
         < string $pathname: Path to the directory. >
-) native
+) native/dirStream
 ```
 
-该方法打开指定的路径，用于读取其中的目录项，返回的数据对应一个原生实体，可在随后的 `readdir` 中使用。
+该方法打开指定的路径，用于读取其中的目录项，返回的数据对应一个代表目录流（directory stream）的原生实体，称为“目录流实体（dirStream）”。目录实体提供如下方法：
+
+- `$dirStream.read()`：读取下一个目录项。
+- `$dirStream.rewind()`：回卷目录流。
 
 注意，打开的路径将在释放原生实体时自动进行，故而不需要 `closedir` 方法。
 
@@ -6433,30 +6436,14 @@ $FS.opendir(
 
 - PHP `opendir()` 函数：<https://www.php.net/manual/en/function.opendir.php>
 
-#### 4.2.31) `readdir` 方法
+#### 4.2.31) 目录流实体的 `read` 方法
 
 读取下一个目录项。
 
 **描述**
 
 ```js
-$FS.readdir(
-        < specific $dir: an entity returned by opendir. >
-) object | false
-```
-
-**参数**
-
-**返回值**
-
-如果正确读取了下一个目录项，则返回如下对象：
-
-```js
-{
-    type: <string: file type like 'd' (directory), 'b' (block device), 'c' (character device), 'p' (named pipe, FIFO), 's' (UNIX domain socket), 'r' (regular file), 'l' (symbolic link), 'u' (unknown)>,
-    name: <string: the file name>,
-    inode: <ulongint: inode number>,
-}
+$dirStream.read object | false
 ```
 
 **示例**
@@ -6465,21 +6452,15 @@ $FS.readdir(
 
 - PHP `readdir()` 函数：<https://www.php.net/manual/en/function.readdir.php>
 
-#### 4.2.32) `rewinddir` 方法
+#### 4.2.32) 目录流实体的 `rewind` 方法
 
 重置目录流。
 
 **描述**
 
 ```js
-$FS.rewinddir(
-        < specific $dir: an entity returned by opendir. >
-) boolean
+$dirStream.rewind boolean
 ```
-
-**参数**
-
-**返回值**
 
 **示例**
 
