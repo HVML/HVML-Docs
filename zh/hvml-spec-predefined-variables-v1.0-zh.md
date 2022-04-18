@@ -4682,7 +4682,7 @@ $STREAM.open(
 - `file:///etc/passwd`：`/etc/passwd` 文件。
 - `file://Documents/mydata`：当前工作路径下的 `Document/mydata` 文件。
 - `pipe:///usr/bin/wc`：在子进程中执行指定的程序，创建匿名管道作为子进程的标准输入、输出和错误。
-- `npipe:///var/tmp/namedpipe`：命名管道。
+- `fifo:///var/tmp/namedpipe`：FIFO，也就是命名管道。
 - `unix:///var/run/myapp.sock`：UNIX 套接字。
 - `tcp://foo.com:1100`：TCP 套接字。
 - `udp://foo.com:1100`：UDP 套接字。
