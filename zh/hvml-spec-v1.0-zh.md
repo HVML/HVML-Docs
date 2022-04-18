@@ -92,15 +92,14 @@ Language: Chinese
          - [2.5.7.2) 不使用迭代执行器](#2572-不使用迭代执行器)
       * [2.5.8) `reduce` 标签](#258-reduce-标签)
       * [2.5.9) `sort` 标签](#259-sort-标签)
-      * [2.5.10) `observe`、 `forget` 和 `fire` 标签](#2510-observe-forget-和-fire-标签)
-      * [2.5.11) `request` 标签](#2511-request-标签)
-      * [2.5.12) `connect`、 `send` 和 `disconnect` 标签](#2512-connect-send-和-disconnect-标签)
-      * [2.5.13) `load` 和 `exit` 标签](#2513-load-和-exit-标签)
-      * [2.5.14) `define` 和 `include` 标签](#2514-define-和-include-标签)
-      * [2.5.15) `call` 和 `return` 标签](#2515-call-和-return-标签)
-      * [2.5.16) `catch` 标签](#2516-catch-标签)
-      * [2.5.17) `bind` 标签](#2517-bind-标签)
-      * [2.5.18) `back` 标签](#2518-back-标签)
+      * [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
+      * [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
+      * [2.5.12) `call` 和 `return` 标签](#2512-call-和-return-标签)
+      * [2.5.13) `bind` 标签](#2513-bind-标签)
+      * [2.5.14) `catch` 标签](#2514-catch-标签)
+      * [2.5.15) `back` 标签](#2515-back-标签)
+      * [2.5.16) `request` 标签](#2516-request-标签)
+      * [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
    + [2.6) 执行器](#26-执行器)
       * [2.6.1) 内建执行器](#261-内建执行器)
          - [2.6.1.1) `KEY` 执行器](#2611-key-执行器)
@@ -175,8 +174,9 @@ Language: Chinese
    + [附.2) 待定内容](#附2-待定内容)
       * [TBD 1) 扩展数据类型](#tbd-1-扩展数据类型)
          - [TBD 1.1) 扩展数据类型](#tbd-11-扩展数据类型)
-      * [TBD 2) 动作元素](#tbd-2-动作元素)
-         - [TBD 2.1) `pipe` 标签](#tbd-21-pipe-标签)
+      * [TBD2) 动作元素](#tbd2-动作元素)
+         - [TBD2.1) `pipe` 标签](#tbd21-pipe-标签)
+         - [TBD2.2) `connect`、 `send` 和 `disconnect` 标签](#tbd22-connect-send-和-disconnect-标签)
    + [附.3) 贡献者榜单](#附3-贡献者榜单)
    + [附.4) 商标声明](#附4-商标声明)
 
@@ -350,7 +350,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
             ]
         </init>
 
-        <connect at="unix:///var/tmp/hibus.sock" as="databus" for="hiBus" />
+        <init as="databus" with=$STREAM.open('unix:///var/tmp/hibus.sock', 'hiBus') >
 
         <archetype name="user_item">
             <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
@@ -421,11 +421,11 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
             </test>
         </footer>
 
-        <send on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED">
+        <choose on=$databus.subscribe('@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED')>
             <observe on="$databus" for="event:$?" in="#theStatusBar">
                 <update on="$@" by="FUNC: on_battery_changed" />
             </observe>
-        </send>
+        </choose>
 
         <observe on=".avatar" for="click">
             <load from="user.hvml" with="{'id': $@.attr[data-value]}" as="userProfile" in="_modal" />
@@ -444,7 +444,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
    1. 可被原样保留到目标文档的标签，如 HTML 文档的 `<meta>`、 `<link>` 标签。
    1. 全局数据的初始化和重置；使用 `init` 标签定义。
    1. 全局动态对象；使用 `init` 标签定义。
-   1. 全局长连接数据源；使用 `connect` 标签定义。
+   1. 全局长连接数据源；使用 `init` 标签和 `$STREAM` 预定义变量定义。
    1. 全局模板；使用 `archedata` 或 `archetype` 标签定义。
 - `body` 标签用于定义文档的本体内容。在 HVML 文档中，可以定义多个 `body` 本地内容，使用 `id` 属性区别不同的本体内容。在执行过程中，可通过 `load` 元素装载不同的本体内容。
 
@@ -700,9 +700,13 @@ HVML 不提供任何操作可以用来改变不可变数据，但开发者可以
 除了上述用于定义文档整体结构的标签外，HVML 提供了如下用于定义数据的标签：
 
 - `init`：该标签初始化一个变量；我们将有名字的数据称为变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义请求的 URL，`with` 属性定义请求的参数，`via` 属性定义请求的方法（如 `GET` 或 `POST`）。
+- `bind`：该标签用于定义一个表达式变量。
+- `load`：该标签用于定义一个正在执行的 HVML 程序变量。
+
+【待删除——
 - `connect`：该标签定义对一个外部数据源的连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包。
 - `disconnect`：该标签关闭先前建立的外部数据源连接。
-- `bind`：该标签用于定义一个表达式变量。
+——待删除】
 
 在 HVML 中，当我们引用变量时，我们使用 `$` 前缀，比如 `$global`、 `$users`、 `$?` 等。当我们要指代普通的 `$` 字符时，我们使用 `\` 做转义字符。
 
@@ -937,23 +941,22 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
     </observe>
 ```
 
-另外，`STREAM` 变量应使用可扩展的实现，从而在不同的平台上实现不同的流类型，进而还可以针对不同的流类型，在流实体上提供额外的读写方法。比如，当某个解释器实现的 `$STREAM` 方法支持发送 HTTP 请求时，即可实现额外用于处理 HTTP 协议头的方法：
+另外，`STREAM` 变量应使用可扩展的实现，一方面，我们可以扩展流实体的类型，比如从文件、匿名管道、命名管道到 Unix 套接字、TCP 连接，另一方面，我们可以通过支持不同的协议来扩展流实体提供的操作方法，从而在流实体上提供额外的读写方法。比如，当某个解释器实现的 `$STREAM` 方法支持发送 HTTP 协议时，即可实现发送 HTTP 请求以及处理 HTTP 协议的方法：
 
 ```html
-    <observe on="$STREAM.open('http://foo.com/')" for="read">
-        <choose on="$?.http_get_headers()">
-            ...
-        </choose>
-    </choose>
+    <init as="myFetcher" on="$STREAM.open('tcp://foo.com:80','http')">
+        <choose on="$myFetcher.http_send_request('GET','/')" />
+        <choose on="$myFetcher.http_get_response_header()" />
+    </init>
 ```
 
-作为一个有价值的设计，我们可以将传统的 Unix 命令行程序的执行机制抽象为一个流实体，比如，我们将标准输出上的内容管接给 `/usr/bin/wc` 命令处理：
+作为一个有价值的设计，我们可以将传统的 Unix 通过匿名管道管接两个进程的行为抽象为一个流实体，比如，我们将标准输出上的内容管接（pipe）给 `/usr/bin/wc` 命令处理：
 
 ```html
     <init as="myStreams">
         {
             in: $STREAM.stdin,
-            out: $STREAM.open('exe:///usr/bin/wc')
+            out: $STREAM.open('pipe:///usr/bin/wc')
         }
     </init>
 
@@ -1252,14 +1255,18 @@ HVML 定义有如下几个基本的动作标签，用于操作数据或者元素
 HVML 还定义有如下一些动作标签：
 
 - `request` 标签用于向渲染器就给定的目标文档位置发出一个请求并获得结果数据。
+- `define` 标签用于定义一个可供重用的操作组。
+- `include` 用于包含一个通过 `define` 标签定义的操作组。
+- `call` 和 `return` 标签用于实现类似函数调用的功能。我们可以通过 `call` 同步或者异步调用一个由 `define` 定义的操作组，并在操作组中使用 `return` 返回一个结果。
+- `back` 标签用于回退当前操作到指定的父操作位置。
+- `load` 标签用来装载一个由 `from` 属性指定的新 HVML 程序，并可将 `with` 属性指定的对象数据作为请求参数传递到新的 HVML 程序。
+- `exit` 标签用于退出当前的 HVML 程序。
+
+【待删除——
 - `connect` 标签用于连接到一个指定的外部数据源，并绑定一个变量名。
 - `send` 标签用来在指定的长连接上发出一个消息。
 - `disconnect` 标签用于显式关闭一个先前建立的外部数据源连接。
-- `define` 和 `include` 标签用于实现操作组的复制。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作。
-- `call` 和 `return` 标签用于实现类似函数调用的功能。我们可以通过 `call` 同步或者异步调用一个操作组，并在操作组中使用 `return` 返回一个结果。
-- `back` 标签用于回退当前操作到指定的父操作位置。
-- `load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为请求参数传递到新的 HVML 文档。
-- `exit` 标签用于退出当前的 HVML 程序。
+——待删除】
 
 #### 2.1.11) 错误和异常的处理
 
@@ -1394,13 +1401,12 @@ HVML 还定义有如下一些动作标签：
 
 针对动作标签，HVML 定义了如下几个介词（如 `on`、 `in`、 `to` 等）属性，用于定义执行动作时依赖的数据（或元素）及其集合。如：
 
-- `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URL，如 `tcp://foo.com:2345`、 `unix:///var/run/hibus.sock`。
 - `from`：在 `init`、 `update`、 `load` 等动作元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URL。
 - `on`：用于定义执行动作所依赖的数据、元素或元素汇集。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`$?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
 - `in`：用于定义执行操作的目标文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。
-- `for`：在 `observe`、 `forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的消息类型；在 `match` 标签中，用于定义匹配条件；在 `connect` 标签中，用于定义协议或用途。
-- `as`：用于定义 `init`、 `connect`、 `bind`、 `load` 等元素绑定的变量名称、程序名称等。
-- `with`：在 `init`、 `request`、 `send` 元素中定义发送请求或消息时的参数；在 `iterate` 元素中定义不使用执行器时迭代结果的求值表达式。
+- `for`：在 `observe`、 `forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的消息类型；在 `match` 标签中，用于定义匹配条件。
+- `as`：用于定义 `init`、 `bind`、 `load` 等元素绑定的变量名称、程序名称等。
+- `with`：在 `init`、 `request` 元素中定义发送请求或消息时的参数；在 `iterate` 元素中定义不使用执行器时迭代结果的求值表达式。
 - `to`：用于在 `update` 标签中定义具体的更新动作，比如表示追加的 `append`，表示替换的 `displace` 等。
 - `by`：还可用于定义执行测试、选择、迭代、归约操作时的脚本程序类或函数名称，分别称为选择器、迭代器或归约器，并统称为执行器（executor）。HVML 允许解释器支持内建（built-in）执行器。对简单的数据处理，可直接使用内置执行器，在复杂的数据处理情形中，可使用外部程序定义的类或者函数。在 HVML 中，我们使用如下前缀来表示不同的执行器类型：
    - `CLASS: ` 表示使用外部程序定义的类作为执行器。
@@ -1410,16 +1416,22 @@ HVML 还定义有如下一些动作标签：
    - `TRAVEL: ` 表示使用指定的遍历方式遍历树状结构，是一种内建的迭代器或选择器。
    - `SQL: ` 表示在结构化数据上执行 SQL 查询，从而实现复杂的选择、迭代以及归约操作。
    - 其他针对字符串和数值的内建执行器，见本文档 [2.6.1) 内建执行器](#261-内建执行器) 小节。
-- `via`：用于在 `init` 和 `send` 元素中指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
+- `via`：用于在 `init` 和 `request` 等元素中指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
 - `against`：在 `init` 元素中用于指定集合的唯一性键值，在 `sort` 元素中用于指定排序依据。
 - `onlyif` 和 `while`：在 `iterate` 中，用于定义在产生迭代结果前和产生迭代结果后判断是否继续迭代的条件表达式。
+
+【待删除——
+- `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URL，如 `tcp://foo.com:2345`、 `unix:///var/run/hibus.sock`。
+- `for`：在 `connect` 标签中，用于定义协议或用途。
+- `with`：在 `send` 元素中定义发送请求或消息时的参数。
+——待删除】
 
 #### 2.1.13) 副词属性
 
 针对某些动作标签，HVML 定义了如下几个副词属性，用于修饰操作行为。如：
 
-- `synchronously`：在 `request`、 `send`、 `call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用同步请求方式；默认值；可简写为 `sync`。
-- `asynchronously`：在 `request`、 `send`、 `call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用异步请求方式；可简写为 `async`。
+- `synchronously`：在 `request`、 `call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用同步请求方式；默认值；可简写为 `sync`。
+- `asynchronously`：在 `request`、 `call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用异步请求方式；可简写为 `async`。
 - `exclusively`：在 `match` 标签中，用于定义排他性；具有这一属性时，匹配当前动作时，将不再处理同级其他 `match` 标签；可简写为 `excl`。
 - `uniquely`：在 `init` 标签中，用于定义集合；具有这一属性时，`init` 定义的变量将具有唯一性条件；可简写为 `uniq`。
 - `individually`：在 `update` 标签中，用于定义更新动作作用于数组、对象或者集合的单个数据项上；可简写为 `indv`。
@@ -1933,7 +1945,7 @@ $EJSON.numberify(
 - 可被原样保留到目标文档的标签，如 HTML 文档的 `<meta>`、 `<link>` 等标签。当目标标记语言不支持 `head` 标签时，所有外部元素定义的内容将被废弃。
 - 全局数据的初始化；使用 `init` 标签定义。
 - 全局动态对象；使用 `init` 标签定义。
-- 全局长连接数据源；使用 `connect` 标签定义。
+- 全局长连接数据源；使用 `init` 标签和 `$STREAM` 预定义变量初始化。
 - 全局模板；使用 `archedata`、 `archetype`、 `error`、 `except` 等标签定义。
 
 HVML 程序中，`head` 标签是可选的，无预定义属性。
@@ -2862,557 +2874,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 注意，在第一种用法（即使用 `by` 属性指定执行器的情况）中，`against="v"` 的排序条件将被隐含指定，无需显式指定。
 
-#### 2.5.10) `observe`、 `forget` 和 `fire` 标签
+#### 2.5.10) `define` 和 `include` 标签
 
-`observe` 标签用于观察特定变量或数据上的状态变化，并在指定的事件到来时，执行该标签定义的操作组。
-
-我们使用 `observe` 的 `at` 属性指定一个要观察的静态命名变量之名称，使用 `on` 属性指定一项要观察的数据。`at` 属性的优先级高于 `on` 属性。注意，我们不能观察一个局部命名变量或者上下文变量。
-
-当我们观察一个静态命名变量时，我们可以观察这个命名变量对应的数据是否已经就绪，或者在获取数据的过程是否发生了错误，或者这个命名变量上的数据是否已经被销毁等等。
-
-下面的代码从远程服务器上获得当前的用户信息，但使用异步请求：
-
-```html
-        <init as="users" from="http://foo.bar.com/get_all_users" async />
-
-        <archetype name="user_item">
-            <li class="user-item">
-                <img class="avatar" src="" />
-                <span></span>
-            </li>
-        </archetype>
-
-        <ul class="user-list">
-            <img src="wait.png" />
-        </ul>
-
-        <observe at="users" for="change:attached" in="#user-list">
-            <clear on="$@" />
-            <iterate on="$users" by="RANGE: FROM 0">
-                <update on="$@" to="append" with="$user_item" />
-            </iterate>
-        </observe>
-```
-
-当我们观察到 `users` 变量上的 `change:attached` 事件之后，表明数据已经就绪，此时，即可执行 `observe` 定义的操作组：清空 `#user-list` 中的内容，然后迭代 `$users` 数组的成员，使用模板 `$user_item` 生成文档片段追加到 `#user-list` 当中。
-
-我们可以跟踪处理静态命名变量上的如下事件：
-
-- `change:attached`：表示静态命名变量上的数据从初始的 `undefined` 变化为有效数据。
-- `change:displaced`：表示先前关联到该变量上的数据被置换为新的数据，比如使用 `init` 重置该变量，或者先前发起的异步请求操作成功获得了有效数据。
-- `change:detached`：表示先前关联到该变量上的有效数据被取消关联，其值被重置为 `undefined`，比如先前发起的异步请求操作失败，未能获得有效数据的情形。
-- `except:<exceptionName>`：表示在获取该变量对应的数据时出现异常，可能是请求出错，也可能是解析出错。具体信息，由事件的子类型给出。
-
-注意：当我们尝试使用一个尚未关联到有效数据的静态命名变量时，将产生 `NotReady` 异常。
-
-当我们观察一项数据时，我们可获得该数据产生的事件或者数据本身上的变化。比如，我们可监听来自长连接的事件，异步请求的返回值，或者获得长连接上调用远程过程后返回的结果，亦可用来监听某些内部数据产生的事件，比如 `$TIMERS` 数据产生的定时器到期事件，等等。
-
-假设文档通过本地总线机制（本例中是 `hiBus`）监听来自系统的状态改变事件，如电池电量、WiFi 信号强度、移动网络信号强度等信息，并在文档使用相应的图标来表示这些状态的改变。为此，我们可以定义如下的 HVML 文档：
-
-```html
-<hvml>
-    <head>
-        <connect at="unix:///var/run/hibus.sock" as="databus" for="hiBus"/>
-    </head>
-
-    <body>
-        <header id="the-header">
-            <img class="mobile-status" src="/placeholder.png" />
-            <span class="mobile-operator"></span>
-            <img class="wifi-status" src="/placeholder.png" />
-            <span class="local-time">12:00</span>
-            <img class="battery-status" src="/placeholder.png" />
-        </header>
-
-        <send on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED">
-            <observe on="$databus" for="event:$?">
-                <update in="#the-header" by="FUNC: on_battery_changed">
-                    <except>
-                        <p>Failed to update battery status</p>
-                    </except>
-                </update>
-            </observe>
-        </send>
-    </body>
-```
-
-在上例中，我们使用外部程序定义的 `on_battery_changed` 函数来实现更新操作。
-
-另外一个 `observe` 标签的使用例子描述如下。
-
-在 `head` 元素中，我们通过 `connect` 连接到 `unix:///var/run/hibus.sock`（`at` 属性），该连接被命名为 `databus`（`as` 属性）。
-
-然后在 `body` 元素中，我们通过 `send` 元素订阅（`subscribe`）指定的事件，然后用 `observe` 元素定义了在 `$databus` 上特定事件的观察。每当电池状态发生变化时，就会从这个数据源收到相应的数据包。为方便数据交换，所有的数据包都打包为 JSON 格式，并具有如下的格式：
-
-```json
-    {
-        "messageType": "event",
-        "name": "XXXXXX",
-        "source": <source data>,
-        "time": 20200616100207.567,
-        "signature": "XXXXX",
-        "payload" : {
-            "level": 80,
-            "charging": false,
-        },
-    }
-```
-
-其中，`messageType` 字段表示数据包类型；`name` 字段表示事件名称；`source` 表示产生此事件的来源数据；`time` 表示此事件产生的系统时间；`signature` 是此事件的内容的签名，可用来验证数据来源的合法性；`payload` 中包含事件关联的数据。在上面这个例子中，事件包含两个信息，一个信息用来表示当前电量百分比，另一个信息表示是否在充电状态。
-
-当 HVML 代理观察到来自 `$databus` 上的电池变化事件数据包之后，将根据 `observe` 标签定义的观察动作执行相应的操作。在上面的例子中，`observe` 标签所定义的操作及条件解释如下：
-
-- 当来自`$databus`（由 `on` 属性值指定）上的数据包类型为 `event:$?`（由 `for` 属性值指定），这里的 `$?` 是 `send` 返回的唯一性标识字符串（相当于事件标志符），执行 `observe` 定义的操作组。
-- `observe` 元素的子元素 `update` 元素定义了具体的更新操作：由 `by` 介词属性定义的脚本函数 `on_battery_changed` 完成，该更新操作限定在 `in` 介词属性定义的 `#the-header` 元素节点中。
-
-注意，当 `observe` 观察到了来自特定数据源上的数据包时，其结果数据为该事件数据包中的 `payload` 数据；若没有通过 `for` 属性和 `with` 指定具体要观察的数据包类型以及过滤条件时，则结果数据为整个数据包。
-
-在简单情形下，我们也可以不使用脚本程序，直接使用 `update` 标签来定义更新操作。比如，我们要在状态栏上显示当前的 WiFi 名称或者移动网络的运营商名称：
-
-```html
-    <send on="$databus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED">
-        <observe on="$databus" for="event:$?" in="#the-header">
-            <update on="span.mobile-operator" at="textContent" with="$?.name">
-                <except>
-                    <p>Failed to update mobile operator</p>
-                </except>
-            </update>
-        </observe>
-    </send>
-```
-
-对电池电量的更新，我们也可以不使用脚本程序，直接使用 `test`、 `match` 和 `update` 标签来定义更新操作：
-
-```html
-    <observe on="$databus" for="event:$?">
-        <test on="$?.level" in="#the-header">
-            <match for="GE 100" exclusively>
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-full.png" />
-            </match>
-            <match for="GT 90" exclusively>
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-90.png" />
-            </match>
-            <match for="GT 70" exclusively>
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-70.png" />
-            </match>
-            <match for="GT 50" exclusively>
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-50.png" />
-            </match>
-            <match for="GT 30" exclusively>
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-30.png" />
-            </match>
-            <match for="GT 10" exclusively>
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-10.png" />
-            </match>
-            <match for="ANY">
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-low.png" />
-            </match>
-        </test>
-        <except>
-            <p>Failed to update battery status</p>
-        </except>
-    </observe>
-```
-
-我们还可以使用 `observe` 标签观察文档某个节点上的变化或者用户交互事件。下面的例子展示了 `observe` 的多种用法：
-
-- 通过监听 `MQTT` 数据包获得后台用户的新增或者删除时间，从而动态更改用户列表。
-- 通过监听用户列表的父元素（容器元素）上的变化事件，动态更新用户统计信息。
-
-```html
-<hvml lang="en">
-    <head>
-        <connect at="tcp://foo.bar.com:1366" as="mqtt" for="MQTT" />
-    </head>
-
-    <body>
-        <send on="$mqtt" to="subscribe" at="newUser" as="new_user" />
-        <send on="$mqtt" to="subscribe" at="deleteUser" as="del_user" />
-
-        <observe on="$mqtt" for="event:$new_user">
-            <iterate on="$?" in="#the-user-list" by="CLASS: IUser">
-                <update on="$@" to="append" with="$user_item" />
-            </iterate>
-        </observe>
-
-        <observe on="$mqtt" for="event:$del_user">
-            <iterate on="$?" in="#the-user-list" by="RANGE: FROM 0">
-                <erase on="#user-$?.id" />
-            </iterate>
-        </observe>
-
-        <div id="the-user-statistics">
-            <h2>User regions (totally <span></span> users):</h2>
-            <dl>
-            </dl>
-        </div>
-
-        <archetype name="region_to_users">
-            <div>
-                <dt>$?.k</dt>
-                <dd>$?.v</dd>
-            </div>
-        </archetype>
-
-        <archedata name="item_user">
-            {
-                "id": "$?.attr[data-value]", "avatar": "$?.content[0].attr.src",
-                "name": "$?.content[1].textContent", "region": "$?.attr[data-region]"
-            },
-        </archedata>
-
-        <observe on="#the-user-list" for="change:content">
-
-            <init as="users">
-                [ ]
-            </init>
-
-            <iterate on="$@" by="TRAVEL: BREADTH">
-                <update on="$users" to="append" with="$item_user" />
-            </iterate>
-
-            <reduce on="$users" in="#the-user-statistics" by="CLASS: RUserRegionStats">
-                <choose on="$?" in="> h2 > span" by="KEY: AS 'count'">
-                    <update on="$@" at="textContent" with="$?" />
-                </choose>
-                <clear on="#the-user-statistics > dl" />
-                <sort on="$?.regions" by="KEY: ALL FOR KV" ascendingly>
-                    <iterate on="$?" in="> dl" by="RANGE: FROM 0">
-                        <update on="$@" to="append" with="$region_to_users" />
-                    </iterate>
-                </sort>
-            </reduce>
-
-        </observe>
-
-    </body>
-</hvml>
-```
-
-当我们要解除在某个特定数据或者元素之上对某个事件的观察时，使用 `forget` 标签。也就是说，`forget` 是 `observe` 的反操作。
-
-```html
-    <forget on="#the-user-list" for="change:content" />
-```
-
-需要注意的是，由于我们可以在 HVML 程序多个不同位置使用 `observe` 观察同一事件，故而 `forget` 将移除所有匹配的被观察事件上的观察。
-
-在 HVML 代码中，除了被动等待事件的发生之外，代码也可以直接使用 `fire` 标签主动地激发一个事件：
-
-```html
-    <init as="new_user">
-        { "id": "5", "avatar": "/img/avatars/5.png", "name": "Vincent", "region": "zh_CN" }
-    </init>
-
-    <fire on="#user-list" for="newUser" with="$new_user" />
-
-    ...
-
-    <observe on="#user-list" for="newUser">
-        ...
-    </observe>
-```
-
-`fire` 元素将把 `with` 属性指定的数据作为事件数据包的 `payload` 进行处理，并根据 `on` 属性指定的元素或者数据确定事件的源，`for` 属性值作为事件名称打包事件数据包，并将事件加入到事件队列中。
-
-对同一个事件，我们可以在 HVML 程序的多个地方进行观察并执行不同的动作。当我们需要撤销特定的观察时，可以在 `observe` 标签中使用 `as` 属性为这个观察命名（关联到某个全局变量），之后使用 `init` 将该变量重置为 `undefine` 即可移除这个观察：
-
-```html
-    <choose on="$TIMERS" by="FILTER: AS 'foo'">
-        <update on="$?" at=".active" with="yes" />
-    </choose>
-
-    ...
-
-    <init as="updateTimes">
-        0
-    </init>
-
-    <observe as="opsPerSecond" on="$TIMERS" for="expired:foo" in="#the-header" >
-        <update on="$updateTimes" with+="1" />
-        <test on="$updateTimes">
-            <match for="GE 10">
-                <!-- remove the observer -->
-                <init at="opsPerSecond" with="undefined" />
-
-                <!-- remove the variable -->
-                <init at="updateTimes" with="undefined" />
-            </match>
-
-            <match for="ANY">
-                <update on="> span.local-time" at="textContent" with="$SYSTEM.time('%H:%m')" />
-            </match>
-        </test>
-    </observe>
-```
-
-#### 2.5.11) `request` 标签
-
-我们可以使用 `request` 标签在一个目标文档位置上发起一个方法调用请求，比如，操控 HTML 的 `video` 元素快速跳转到指定的位置：
-
-```html
-    <video id="my-video" width="320" height="240" autoplay muted>
-        <source src="movie.mp4" type="video/mp4">
-        <source src="movie.ogg" type="video/ogg">
-        Your browser does not support the video tag.
-    </video>
-
-    <!-- request on="$DOC.query('#my-video')" to="fastSeek" with="5.30" -->
-    <request on="#my-video" to="fastSeek" with="5.30" />
-```
-
-此时，我们使用如下三个属性：
-
-- `on` 属性，指定目标文档位置。
-- `to` 属性，指定要调用的方法或函数。
-- `with` 属性，指定调用方法的参数。我们也可以使用 `request` 的内容来定义调用方法的参数。
-
-为了异步观察请求的执行结果，我们可使用 `as` 属性为该请求定义一个静态命名变量，并使用 `observe` 标签观察其结果。因此，我们在该标签中可使用如下副词属性：
-
-- `synchronously` 属性，用来指定是否同步等待请求的执行结果，是默认值。
-- `asynchronously` 属性，用来指定是否异步等待执行结果。
-
-在使用 `with` 属性指定调用方法时的参数时，如果方法要求有多个参数，我们可使用数组或者对象来指定参数。使用数组时，数组的成员将依次作为方法的参数使用，使用对象时，将按对象名称设定方法的参数。
-
-比如对如下方法：
-
-```js
-doSomething(<string $foo>, <string $bar>)
-```
-
-以下三种 `with` 属性的传递方法之效果一样的：
-
-```html
-    <request on="#my-video" to="doSomething" with="['value for foo', 'value for bar']" />
-
-    <request on="#my-video" to="doSomething" with="{foo: 'value for foo', bar: 'value for bar'}" />
-
-    <request on="#my-video" to="doSomething">
-        {
-            foo: 'value for foo',
-            bar: 'value for bar'
-        }
-    </request>
-```
-
-我们还可以使用 `request` 在指定的元素上执行一段渲染器支持的函数调用，此时，我们使用 `call:` 前缀：
-
-```html
-    <request on="#myModal" to="call:bootstrap.Modal.getInstance($THIS$).toggle()" />
-```
-
-在上面的 `to` 属性值中，我们使用了 `$THIS$` 和 `$ARGS$` 等指代当前元素对象以及通过 `with` 属性传递给方法的参数。这些特殊关键词由渲染器处理并替代。比如上面的函数调用，最终会被渲染器解释为如下 JavaScript 代码：
-
-```js
-bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
-```
-
-【待删除——
-
-`request` 标签在外部数据源上发出一个同步或者异步的请求。
-
-从外部数据源中获取数据时，我们使用 `at` 属性指定 URL，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）：
-
-```html
-    <request at="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
-        <observe on="$foo" for="result:success">
-            ...
-        </observe>
-    </request>
-```
-
-以上用法和 `init` 类似，但 `request` 可以通过 `to` 属性指定请求结果的处理方法，比如将请求结果保存到指定的文件当中：
-
-```html
-    <request at="http://foo.bar.com/foo" with="$params" via="POST" to="save:/tmp/foo.tmp" as="foo" async>
-        <observe on="$foo" for="result:success">
-            ...
-        </observe>
-    </request>
-```
-
-此种情况下，我们可以使用如下几种结果处理方法：
-
-- `save:` 保存到本地文件。该操作的执行结果是保存后的完整文件路径。
-- `filter:` 创建子进程和管道并将管道作为子进程的标准输入，然后在子进程中执行指定的程序，将请求结果写入管道。该操作的执行结果是子进程的标准输出（字节序列）。
-
-——待删除】
-
-#### 2.5.12) `connect`、 `send` 和 `disconnect` 标签
-
-如前所述，`connect` 标签定义一个对外部数据源的长连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包；而 `disconnect` 标签关闭先前建立的一个长连接数据源。
-
-`send` 标签用于在一个已连接的长连接数据源上发出一个同步或者异步的消息。比如在通过 MQTT 或者本地数据总线发送请求到外部模块或者远程计算机时，我们使用 `send` 元素发出一个异步消息，然后在另外一个 `observe` 标签定义的 HVML 元素中做相应的处理。比如，我们要通过 hiDataBus 协议向系统守护进程发出一个获得当前可用 WiFi 热点列表的远程过程调用：
-
-```html
-</hvml>
-    <head>
-        <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus"/>
-    </head>
-
-    <body>
-        ...
-
-        <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiGetHotspots" as="wifilist" asynchronously>
-            <observe on="$hibus" for="result:$wifilist">
-                ...
-            </observe>
-        </send>
-
-        <send on="$hibus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED" as="networkchanged">
-            <observe on="$hibus" for="event:$networkchanged">
-                ...
-            </observe>
-        </send>
-        ...
-    </body>
-</hvml>
-```
-
-正常情况下，使用同步请求时，`send` 元素的执行结果数据就是请求的返回结果；如果使用异步请求，`send` 元素的操作结果数据为字符串 `ok`。异步请求时，一般应该在对应的 `observe` 元素中做后续处理。
-
-```html
-    <body>
-        <button id="theBtnWifiList">Click to fetch WiFi List</button>
-
-        <archetype name="wifi_item">
-            <li>@?.name</li>
-        </archetype>
-
-        <ul id="theWifiList">
-        </ul>
-
-        <observe on="#theBtnWifiList" for="click">
-
-            <init as="paramWifiList">
-                { "action": "get_list" }
-            </init>
-
-            <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus" />
-
-            <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiScanHotspots" with="$paramWifiList" as="hotspots_list" asynchronously>
-                <observe on="$hibus" for="result:$hotspots_list">
-                    <disconnect on="$hibus" />
-
-                    <!-- fill the Wifi list with the response data -->
-                    <iterate on="$?" in="#theWifiList">
-                        <update on="$@" to="append" with="$wifi_item" />
-                    </iterate>
-
-                </observe>
-            </send>
-
-        </observe>
-    </body>
-```
-
-#### 2.5.13) `load` 和 `exit` 标签
-
-`load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递到新的 HVML 文档。如：
-
-```html
-    <load from="b.hvml" with="$user" as="userProfile" in="_blank" />
-```
-
-`load` 标签支持如下介词属性：
-
-- `from`：指定的 HVML 程序的 URL。
-- `with`：指定装载对应程序的请求参数。
-- `as`：当我们使用 `async` 副词属性加载该 HVML 程序时，我们可使用该属性将这个程序和一个变量名称绑定，从而可观察该程序的加载和执行状态。
-- `in`：指定渲染器的窗口名称，该 HVML 程序的内容将展示在该窗口中。我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的窗口：
-   - `_self`：表示当前窗口。在当前窗口中渲染新的 HVML 程序，意味着强制终止当前的 HVML 程序，并清空当前的目标文档内容，然后装载新的 HVML 程序。
-   - `_blank`：表示新的空白窗口。
-   - `_top`：表示最顶层窗口。
-   - `_parent`：表示在父窗口（若存在）中渲染新的目标文档，若没有父窗口，则等同于 `_blank`。
-
-`load` 标签支持如下副词属性：
-
-- `synchronously`：同步装载。`load` 标签将等待新的 HVML 程序退出，相当于创建一个模态窗口。
-- `ssynchronously`：异步装载。
-
-当 `from` 属性值指定的 URL 定义有片段（使用`#`符号）时，`load` 元素将尝试装载该 HVML 文档中的另一个本体，即另一个 `body` 子树定义的内容。
-
-当我们在当前窗口中渲染新的 HVML 程序时，将忽略同步或者异步副词属性。如下面的代码：
-
-```html
-<hvml>
-    <body>
-        ...
-
-        <load from="#errorPage" in="_self" />
-    </body>
-
-    <body id="errorPage">
-        <p>We encountered a fatal error!</p>
-    </body>
-</hvml>
-```
-
-上述代码中的 `load` 元素对应如下三个步骤：
-
-1. 强制终止当前的 HVML 程序。
-1. 清空当前的目标文档内容。
-1. 重新装载当前 HVML 程序并执行 `#errorPage` 本体定义的操作；或者，跳转到 `#erroPage` 定义的本体中执行操作。
-
-假定我们使用 `load` 标签装载一个用来创建新用户的 HVML 程序，如果使用同步装载方式：
-
-```html
-    <load from="new_user.hvml" in="_blank" synchronously>
-        <test on="$?.status">
-            <match for="AS 'exited'" exclusively>
-                <choose on="$3?.payload" in="#the-user-list">
-                    <update on="$@" to="append" with="$user_item" />
-                </choose>
-            </match>
-        </test>
-    </load>
-```
-
-如果使用异步装载方式，则需要 `as` 属性并使用 `observe` 标签创建一个观察者，用于观察程序的 `terminated`（终止）事件：
-
-```html
-    <load from="new_user.hvml" as="newUser" in="_blank" asynchronously>
-        <observe on="$newUser">
-            <test on="$?.name">
-                <match for="AS 'status:exited'" exclusively>
-                    <choose on="$3?.payload" in="#the-user-list">
-                        <update on="$@" to="append" with="$user_item" />
-                    </choose>
-                </match>
-            </test>
-        </observe>
-    </load>
-```
-
-以上两种实现方式，最终判断装载执行的 HVML 程序的终止状态，如终止状态为 `exited` 时，会在当前目标文档的 `#the-user-list` 中插入一条新的用户条目。
-
-和 `load` 元素配合，我们通常在被装载的程序中使用 `exit` 标签主动退出程序的运行并定义程序的返回数据。如：
-
-```html
-    <init as="user_info">
-        { "id": "5", "avatar": "/img/avatars/5.png", "name": "Vincent", "region": "en_US" },
-    </init>
-
-    <exit with="$user_info" />
-```
-
-上面的代码，使用 `exit` 标签的 `with` 属性定义了一项数据，解释器应将该数据作为该 HVML 程序的返回数据处理。
-
-【待删除——
-
-当前 HVML 程序在模态窗口中渲染时，可观察该程序的 `terminated:success` 事件，然后进行处理。如果当前 HVML 程序不在模态对话框中渲染，则该数据将做为请求数据（对应 `$REQUEST` 内置全局变量）提供给目标返回对应的 HVML 程序，此时，该 HVML 程序会执行一次重新装载操作（类似浏览器刷新页面的功能）。
-
-`exit` 元素不产生任何结果数据，故而不能包含子动作元素。
-
-正常情况下，`load` 元素装载一个 HVML 程序在一个模态窗口中渲染时，其执行结果数据就是新 HVML 程序中 `exit` 元素的 `with` 属性值；如果在一个新建的普通窗口中渲染，则正常情况下 `load` 元素的操作结果数据为字符串 `ok`；如果在其他已有的窗口中渲染，则将终止该窗口中运行的 HVML 程序，并在当前窗口中渲染新的 HVML 程序内容。
-
-`exit` 标签用于终止当前的 HVML 程序，并将返回值返回到指定的目标 HVML 程序。
-
-——待删除】
-
-#### 2.5.14) `define` 和 `include` 标签
-
-`define` 和 `include` 标签用于实现类似函数调用的功能。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作。在 HVML 中，我们将这组操作简称为操作组。
+`define` 标签用于定义一组可重用的操作组。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作，或者通过 `call` 标签调用这组操作并期待返回一个结果，其效果类似于其他编程语言的闭包。在 HVML 中，我们将 `define` 标签定义的一组操作简称为操作组（operation set）。
 
 `define` 标签通过 `as` 属性定义操作组的名称，其中包含了一组动作标签定义的子元素。`include` 元素将切换上下文到 `with` 属性指定的操作组中，`on` 属性传入的参数将作为结果数据供操作组使用。如：
 
@@ -3536,7 +3000,298 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 
 在 `include` 元素中，我们可以使用内容定义 `on` 属性的值，也可以在 `include` 元素中定义子元素，这些子元素会在 `define` 定义的操作组执行完毕后执行。
 
-#### 2.5.15) `call` 和 `return` 标签
+#### 2.5.11) `observe`、 `forget` 和 `fire` 标签
+
+`observe` 标签用于观察特定变量或数据上的状态变化，并在指定的事件到来时，若其 `with` 属性指定了有效的操作组，则执行该操作组，否则执行该标签定义的操作组。
+
+我们使用 `observe` 的 `at` 属性指定一个要观察的静态命名变量之名称，使用 `on` 属性指定一项要观察的数据。`at` 属性的优先级高于 `on` 属性。注意，我们不能观察一个局部命名变量或者上下文变量。
+
+当我们观察一个静态命名变量时，我们可以观察这个命名变量对应的数据是否已经就绪，或者在获取数据的过程是否发生了错误，或者这个命名变量上的数据是否已经被销毁等等。
+
+下面的代码从远程服务器上获得当前的用户信息，但使用异步请求：
+
+```html
+        <init as="users" from="http://foo.bar.com/get_all_users" async />
+
+        <archetype name="user_item">
+            <li class="user-item">
+                <img class="avatar" src="" />
+                <span></span>
+            </li>
+        </archetype>
+
+        <ul class="user-list">
+            <img src="wait.png" />
+        </ul>
+
+        <observe at="users" for="change:attached" in="#user-list">
+            <clear on="$@" />
+            <iterate on="$users" by="RANGE: FROM 0">
+                <update on="$@" to="append" with="$user_item" />
+            </iterate>
+        </observe>
+```
+
+当我们观察到 `users` 变量上的 `change:attached` 事件之后，表明数据已经就绪，此时，即可执行 `observe` 定义的操作组：清空 `#user-list` 中的内容，然后迭代 `$users` 数组的成员，使用模板 `$user_item` 生成文档片段追加到 `#user-list` 当中。
+
+我们可以跟踪处理静态命名变量上的如下事件：
+
+- `change:attached`：表示静态命名变量上的数据从初始的 `undefined` 变化为有效数据。
+- `change:displaced`：表示先前关联到该变量上的数据被置换为新的数据，比如使用 `init` 重置该变量，或者先前发起的异步请求操作成功获得了有效数据。
+- `change:detached`：表示先前关联到该变量上的有效数据被取消关联，其值被重置为 `undefined`，比如先前发起的异步请求操作失败，未能获得有效数据的情形。
+- `except:<exceptionName>`：表示在获取该变量对应的数据时出现异常，可能是请求出错，也可能是解析出错。具体信息，由事件的子类型给出。
+
+注意：当我们尝试使用一个尚未关联到有效数据的静态命名变量时，将产生 `NotReady` 异常。
+
+当我们观察一项数据时，我们可获得该数据产生的事件或者数据本身上的变化。比如，我们可监听来自长连接的事件，异步请求的返回值，或者获得长连接上调用远程过程后返回的结果，亦可用来监听某些内部数据产生的事件，比如 `$TIMERS` 数据产生的定时器到期事件，等等。
+
+假设文档通过本地总线机制（本例中是 `hiBus`）监听来自系统的状态改变事件，如电池电量、WiFi 信号强度、移动网络信号强度等信息，并在文档使用相应的图标来表示这些状态的改变。为此，我们可以编写如下的 HVML 程序：
+
+```html
+<hvml>
+    <head>
+        <init as="databus" with="$STREAM.open('unix:///var/run/hibus.sock')" for="hiBus"/>
+    </head>
+
+    <body>
+        <header id="the-header">
+            <img class="mobile-status" src="/placeholder.png" />
+            <span class="mobile-operator"></span>
+            <img class="wifi-status" src="/placeholder.png" />
+            <span class="local-time">12:00</span>
+            <img class="battery-status" src="/placeholder.png" />
+        </header>
+
+        <choose on=$databus.subscribe('@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED')>
+            <observe on="$databus" for="event:$?">
+                <update in="#the-header" by="FUNC: on_battery_changed">
+                    <except>
+                        <p>Failed to update battery status</p>
+                    </except>
+                </update>
+            </observe>
+        </choose>
+    </body>
+```
+
+在上例中，我们使用外部程序定义的 `on_battery_changed` 函数来实现更新操作。
+
+另外一个 `observe` 标签的使用例子描述如下。
+
+在 `head` 元素中，我们通过 `init` 标签，使用 `$STREAM` 预定义变量连接到了 `unix:///var/run/hibus.sock`。`$STREAM` 的 `open` 方法返回一个流实体，并被命名为 `databus`（`as` 属性）。
+
+然后在 `body` 元素中，我们使用 `choose` 标签通过 `$databus.subscribe` 方法订阅（`subscribe`）指定的事件，然后用 `observe` 元素定义了对 `$databus` 上特定事件的观察。每当电池状态发生变化时，就会从这个数据源收到相应的数据包。为方便数据交换，所有的数据包都打包为 JSON 格式，并具有如下的格式：
+
+```json
+    {
+        "messageType": "event",
+        "name": "XXXXXX",
+        "source": <source data>,
+        "time": 20200616100207.567,
+        "signature": "XXXXX",
+        "payload" : {
+            "level": 80,
+            "charging": false,
+        },
+    }
+```
+
+其中，`messageType` 字段表示数据包类型；`name` 字段表示事件名称；`source` 表示产生此事件的来源数据；`time` 表示此事件产生的系统时间；`signature` 是此事件的内容的签名，可用来验证数据来源的合法性；`payload` 中包含事件关联的数据。在上面这个例子中，事件包含两个信息，一个信息用来表示当前电量百分比，另一个信息表示是否在充电状态。
+
+当 HVML 代理观察到来自 `$databus` 上的电池变化事件数据包之后，将根据 `observe` 标签定义的观察动作执行相应的操作。在上面的例子中，`observe` 标签所定义的操作及条件解释如下：
+
+- 当来自`$databus`（由 `on` 属性值指定）上的数据包类型为 `event:$?`（由 `for` 属性值指定），这里的 `$?` 是 `choose` 元素的执行结果，表示被订阅事件的唯一性标识字符串（相当于事件标识符），执行 `observe` 定义的操作组。
+- `observe` 元素的子元素 `update` 元素定义了具体的更新操作：由 `by` 介词属性定义的脚本函数 `on_battery_changed` 完成，该更新操作限定在 `in` 介词属性定义的 `#the-header` 元素节点中。
+
+注意，当 `observe` 观察到了来自特定数据源上的数据包时，其结果数据为该事件数据包中的 `payload` 数据；若没有通过 `for` 属性和 `with` 指定具体要观察的数据包类型以及过滤条件时，则结果数据为整个数据包。
+
+在简单情形下，我们也可以不使用脚本程序，直接使用 `update` 标签来定义更新操作。比如，我们要在状态栏上显示当前的 WiFi 名称或者移动网络的运营商名称：
+
+```html
+    <choose on=$databus.subscribe('@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED')>
+        <observe on="$databus" for="event:$?" in="#the-header">
+            <update on="span.mobile-operator" at="textContent" with="$?.name">
+                <except>
+                    <p>Failed to update mobile operator</p>
+                </except>
+            </update>
+        </observe>
+    </choose>
+```
+
+对电池电量的更新，我们也可以不使用脚本程序，直接使用 `test`、 `match` 和 `update` 标签来定义更新操作：
+
+```html
+    <observe on="$databus" for="event:$?">
+        <test on="$?.level" in="#the-header">
+            <match for="GE 100" exclusively>
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-full.png" />
+            </match>
+            <match for="GT 90" exclusively>
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-90.png" />
+            </match>
+            <match for="GT 70" exclusively>
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-70.png" />
+            </match>
+            <match for="GT 50" exclusively>
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-50.png" />
+            </match>
+            <match for="GT 30" exclusively>
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-30.png" />
+            </match>
+            <match for="GT 10" exclusively>
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-10.png" />
+            </match>
+            <match for="ANY">
+                <update on="> img.mobile-status" at="attr.src" with="/battery-level-low.png" />
+            </match>
+        </test>
+        <except>
+            <p>Failed to update battery status</p>
+        </except>
+    </observe>
+```
+
+我们还可以使用 `observe` 标签观察文档某个节点上的变化或者用户交互事件。下面的例子展示了 `observe` 的多种用法：
+
+- 通过监听 `MQTT` 数据包获得后台用户的新增或者删除时间，从而动态更改用户列表。
+- 通过监听用户列表的父元素（容器元素）上的变化事件，动态更新用户统计信息。
+
+```html
+<hvml lang="en">
+    <head>
+        <init as="mqtt" with=$STREAM.open('tcp://foo.bar.com:1366', 'MQTT') />
+    </head>
+
+    <body>
+        <choose on=$mqtt.subscribe('newUser') >
+            <observe on="$mqtt" for="event:$?" in="#the-user-list" >
+                <iterate on="$?" by="CLASS: IUser">
+                    <update on="$@" to="append" with="$user_item" />
+                </iterate>
+            </observe>
+        </choose>
+
+        <choose on=$mqtt.subscribe('deleteUser') >
+            <observe on="$mqtt" for="event:$del_user" in="#the-user-list" >
+                <iterate on="$?" by="RANGE: FROM 0">
+                    <erase on="#user-$?.id" />
+                </iterate>
+            </observe>
+        </choose>
+
+        <div id="the-user-statistics">
+            <h2>User regions (totally <span></span> users):</h2>
+            <dl>
+            </dl>
+        </div>
+
+        <archetype name="region_to_users">
+            <div>
+                <dt>$?.k</dt>
+                <dd>$?.v</dd>
+            </div>
+        </archetype>
+
+        <archedata name="item_user">
+            {
+                "id": "$?.attr[data-value]", "avatar": "$?.content[0].attr.src",
+                "name": "$?.content[1].textContent", "region": "$?.attr[data-region]"
+            },
+        </archedata>
+
+        <define as="onChangeContent">
+            <init as="users" locally>
+                [ ]
+            </init>
+
+            <iterate on="$@" by="TRAVEL: BREADTH">
+                <update on="$users" to="append" with="$item_user" />
+            </iterate>
+
+            <reduce on="$users" in="#the-user-statistics" by="CLASS: RUserRegionStats">
+                <choose on="$?" in="> h2 > span" by="KEY: AS 'count'">
+                    <update on="$@" at="textContent" with="$?" />
+                </choose>
+                <clear on="#the-user-statistics > dl" />
+                <sort on="$?.regions" by="KEY: ALL FOR KV" ascendingly>
+                    <iterate on="$?" in="> dl" by="RANGE: FROM 0">
+                        <update on="$@" to="append" with="$region_to_users" />
+                    </iterate>
+                </sort>
+            </reduce>
+        </define>
+
+        <observe on="#the-user-list" for="change:content" in="#the-user-list"
+                with="$onChangeContent">
+        </observe>
+
+    </body>
+</hvml>
+```
+
+在上面的例子中，我们使用 `define` 标签定义了一个操作组，然后在 `observe` 标签中使用 `with` 属性指定了这个操作组，从而在事件达到时，将执行 `$onChangeContent` 操作组。
+
+我们还使用 `observe` 标签的 `in` 属性指定了执行 `$onChangeContent` 操作组时的目标文档位置。
+
+当我们要解除在某个特定数据或者元素之上对某个事件的观察时，使用 `forget` 标签。也就是说，`forget` 是 `observe` 的反操作。
+
+```html
+    <forget on="#the-user-list" for="change:content" />
+```
+
+需要注意的是，由于我们可以在 HVML 程序多个不同位置使用 `observe` 观察同一事件，故而 `forget` 将移除所有匹配的被观察事件上的观察。
+
+在 HVML 代码中，除了被动等待事件的发生之外，代码也可以直接使用 `fire` 标签主动地激发一个事件：
+
+```html
+    <init as="new_user">
+        { "id": "5", "avatar": "/img/avatars/5.png", "name": "Vincent", "region": "zh_CN" }
+    </init>
+
+    <fire on="#user-list" for="newUser" with="$new_user" />
+
+    ...
+
+    <observe on="#user-list" for="newUser">
+        ...
+    </observe>
+```
+
+`fire` 元素将把 `with` 属性指定的数据作为事件数据包的 `payload` 进行处理，并根据 `on` 属性指定的元素或者数据确定事件的源，`for` 属性值作为事件名称打包事件数据包，并将事件加入到事件队列中。
+
+对同一个事件，我们可以在 HVML 程序的多个地方进行观察并执行不同的动作。当我们需要撤销特定的观察时，可以在 `observe` 标签中使用 `as` 属性为这个观察命名（关联到某个全局变量），之后使用 `init` 将该变量重置为 `undefine` 即可移除这个观察：
+
+```html
+    <choose on="$TIMERS" by="FILTER: AS 'foo'">
+        <update on="$?" at=".active" with="yes" />
+    </choose>
+
+    ...
+
+    <init as="updateTimes">
+        0
+    </init>
+
+    <observe as="opsPerSecond" on="$TIMERS" for="expired:foo" in="#the-header" >
+        <update on="$updateTimes" with+="1" />
+        <test on="$updateTimes">
+            <match for="GE 10">
+                <!-- remove the observer -->
+                <init at="opsPerSecond" with="undefined" />
+
+                <!-- remove the variable -->
+                <init at="updateTimes" with="undefined" />
+            </match>
+
+            <match for="ANY">
+                <update on="> span.local-time" at="textContent" with="$SYSTEM.time('%H:%m')" />
+            </match>
+        </test>
+    </observe>
+```
+
+#### 2.5.12) `call` 和 `return` 标签
 
 `include` 元素完成的工作相当于复制指定的操作组到当前的位置执行，所以和传统编程语言中的函数调用并不相同。如果要获得和函数调用相同的效果，使用 `call` 和 `return` 标签：
 
@@ -3605,33 +3360,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 
 注意，不管是 `include` 还是 `call`，我们都可以递归使用。
 
-#### 2.5.16) `catch` 标签
-
-`catch` 作为任意动作元素的子元素，定义该动作出现异常时要执行的动作。`catch` 标签定义的元素作为 `except` 元素的补充，可定义异常情形下的动作。如：
-
-```
-    <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
-        <update on="p > a" at="textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
-        <catch for="NoData" raw>
-            <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
-        </catch>
-        <catch for="NoSuchKey">
-            <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
-        </catch>
-        <catch>
-            <update on="p" at="textContent" with='Bad $locales/$global data!' />
-        </catch>
-    </choose>
-```
-
-我们使用 `for` 介词属性来定义要捕获的异常具体名称或模式。
-
-`for` 属性值的取值有如下规则：
-
-- 若未定义 `for` 属性，或 `for` 的属性值为 `*` 或空字符串，则相当于匹配任意异常。
-- 多个异常，可使用空白字符分隔。
-
-#### 2.5.17) `bind` 标签
+#### 2.5.13) `bind` 标签
 
 `bind` 标签定义一个绑定的变量；通常，被绑定的变量对应的是一个可求值的表达式，该表达式可使用 `on` 属性指定，也可以使用 `bind` 元素的内容来定义。如：
 
@@ -3701,7 +3430,33 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
     </bind>
 ```
 
-#### 2.5.18) `back` 标签
+#### 2.5.14) `catch` 标签
+
+`catch` 作为任意动作元素的子元素，定义该动作出现异常时要执行的动作。`catch` 标签定义的元素作为 `except` 元素的补充，可定义异常情形下的动作。如：
+
+```
+    <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
+        <update on="p > a" at="textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
+        <catch for="NoData" raw>
+            <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
+        </catch>
+        <catch for="NoSuchKey">
+            <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
+        </catch>
+        <catch>
+            <update on="p" at="textContent" with='Bad $locales/$global data!' />
+        </catch>
+    </choose>
+```
+
+我们使用 `for` 介词属性来定义要捕获的异常具体名称或模式。
+
+`for` 属性值的取值有如下规则：
+
+- 若未定义 `for` 属性，或 `for` 的属性值为 `*` 或空字符串，则相当于匹配任意异常。
+- 多个异常，可使用空白字符分隔。
+
+#### 2.5.15) `back` 标签
 
 `back` 标签用于控制当前的执行栈，以便回退到指定的祖先栈帧。回退后，将从目标栈帧定义的下个执行位置开始执行程序。
 
@@ -3783,6 +3538,202 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 ```
 
 上述代码读取指定目录下的目录项，并捕获可能的异常。当发生异常时，使用 `back` 标签回退到`ul` 对应的栈帧，并修改 `ul` 栈帧的结果数据（`$?`）为一个字符串。回退后，程序开始执行 `test` 标签，判断结果数据的类型。注意 `ul` 作为外部元素，其最初的结果数据为 `undefined`。如果其类型为 `string` 则说明发生了异常，其后的操作将一个 `li` 元素插入目标文档，其中包含异常信息。
+
+#### 2.5.16) `request` 标签
+
+我们可以使用 `request` 标签在一个目标文档位置上发起一个方法调用请求，比如，操控 HTML 的 `video` 元素快速跳转到指定的位置：
+
+```html
+    <video id="my-video" width="320" height="240" autoplay muted>
+        <source src="movie.mp4" type="video/mp4">
+        <source src="movie.ogg" type="video/ogg">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- request on="$DOC.query('#my-video')" to="fastSeek" with="5.30" -->
+    <request on="#my-video" to="fastSeek" with="5.30" />
+```
+
+此时，我们使用如下三个属性：
+
+- `on` 属性，指定目标文档位置。
+- `to` 属性，指定要调用的方法或函数。
+- `with` 属性，指定调用方法的参数。我们也可以使用 `request` 的内容来定义调用方法的参数。
+
+为了异步观察请求的执行结果，我们可使用 `as` 属性为该请求定义一个静态命名变量，并使用 `observe` 标签观察其结果。因此，我们在该标签中可使用如下副词属性：
+
+- `synchronously` 属性，用来指定是否同步等待请求的执行结果，是默认值。
+- `asynchronously` 属性，用来指定是否异步等待执行结果。
+
+在使用 `with` 属性指定调用方法时的参数时，如果方法要求有多个参数，我们可使用数组或者对象来指定参数。使用数组时，数组的成员将依次作为方法的参数使用，使用对象时，将按对象名称设定方法的参数。
+
+比如对如下方法：
+
+```js
+doSomething(<string $foo>, <string $bar>)
+```
+
+以下三种 `with` 属性的传递方法之效果一样的：
+
+```html
+    <request on="#my-video" to="doSomething" with="['value for foo', 'value for bar']" />
+
+    <request on="#my-video" to="doSomething" with="{foo: 'value for foo', bar: 'value for bar'}" />
+
+    <request on="#my-video" to="doSomething">
+        {
+            foo: 'value for foo',
+            bar: 'value for bar'
+        }
+    </request>
+```
+
+我们还可以使用 `request` 在指定的元素上执行一段渲染器支持的函数调用，此时，我们使用 `call:` 前缀：
+
+```html
+    <request on="#myModal" to="call:bootstrap.Modal.getInstance($THIS$).toggle()" />
+```
+
+在上面的 `to` 属性值中，我们使用了 `$THIS$` 和 `$ARGS$` 等指代当前元素对象以及通过 `with` 属性传递给方法的参数。这些特殊关键词由渲染器处理并替代。比如上面的函数调用，最终会被渲染器解释为如下 JavaScript 代码：
+
+```js
+bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
+```
+
+【待删除——
+
+`request` 标签在外部数据源上发出一个同步或者异步的请求。
+
+从外部数据源中获取数据时，我们使用 `at` 属性指定 URL，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）：
+
+```html
+    <request at="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
+        <observe on="$foo" for="result:success">
+            ...
+        </observe>
+    </request>
+```
+
+以上用法和 `init` 类似，但 `request` 可以通过 `to` 属性指定请求结果的处理方法，比如将请求结果保存到指定的文件当中：
+
+```html
+    <request at="http://foo.bar.com/foo" with="$params" via="POST" to="save:/tmp/foo.tmp" as="foo" async>
+        <observe on="$foo" for="result:success">
+            ...
+        </observe>
+    </request>
+```
+
+此种情况下，我们可以使用如下几种结果处理方法：
+
+- `save:` 保存到本地文件。该操作的执行结果是保存后的完整文件路径。
+- `filter:` 创建子进程和管道并将管道作为子进程的标准输入，然后在子进程中执行指定的程序，将请求结果写入管道。该操作的执行结果是子进程的标准输出（字节序列）。
+
+——待删除】
+
+#### 2.5.17) `load` 和 `exit` 标签
+
+`load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递到新的 HVML 文档。如：
+
+```html
+    <load from="b.hvml" with="$user" as="userProfile" in="_blank" />
+```
+
+`load` 标签支持如下介词属性：
+
+- `from`：指定的 HVML 程序的 URL。
+- `with`：指定装载对应程序的请求参数。
+- `as`：当我们使用 `async` 副词属性加载该 HVML 程序时，我们可使用该属性将这个程序和一个变量名称绑定，从而可观察该程序的加载和执行状态。
+- `in`：指定渲染器的窗口名称，该 HVML 程序的内容将展示在该窗口中。我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的窗口：
+   - `_self`：表示当前窗口。在当前窗口中渲染新的 HVML 程序，意味着强制终止当前的 HVML 程序，并清空当前的目标文档内容，然后装载新的 HVML 程序。
+   - `_blank`：表示新的空白窗口。
+   - `_top`：表示最顶层窗口。
+   - `_parent`：表示在父窗口（若存在）中渲染新的目标文档，若没有父窗口，则等同于 `_blank`。
+
+`load` 标签支持如下副词属性：
+
+- `synchronously`：同步装载。`load` 标签将等待新的 HVML 程序退出，相当于创建一个模态窗口。
+- `ssynchronously`：异步装载。
+
+当 `from` 属性值指定的 URL 定义有片段（使用`#`符号）时，`load` 元素将尝试装载该 HVML 文档中的另一个本体，即另一个 `body` 子树定义的内容。
+
+当我们在当前窗口中渲染新的 HVML 程序时，将忽略同步或者异步副词属性。如下面的代码：
+
+```html
+<hvml>
+    <body>
+        ...
+
+        <load from="#errorPage" in="_self" />
+    </body>
+
+    <body id="errorPage">
+        <p>We encountered a fatal error!</p>
+    </body>
+</hvml>
+```
+
+上述代码中的 `load` 元素对应如下三个步骤：
+
+1. 强制终止当前的 HVML 程序。
+1. 清空当前的目标文档内容。
+1. 重新装载当前 HVML 程序并执行 `#errorPage` 本体定义的操作；或者，跳转到 `#erroPage` 定义的本体中执行操作。
+
+假定我们使用 `load` 标签装载一个用来创建新用户的 HVML 程序，如果使用同步装载方式：
+
+```html
+    <load from="new_user.hvml" in="_blank" synchronously>
+        <test on="$?.status">
+            <match for="AS 'exited'" exclusively>
+                <choose on="$3?.payload" in="#the-user-list">
+                    <update on="$@" to="append" with="$user_item" />
+                </choose>
+            </match>
+        </test>
+    </load>
+```
+
+如果使用异步装载方式，则需要 `as` 属性并使用 `observe` 标签创建一个观察者，用于观察程序的 `terminated`（终止）事件：
+
+```html
+    <load from="new_user.hvml" as="newUser" in="_blank" asynchronously>
+        <observe on="$newUser">
+            <test on="$?.name">
+                <match for="AS 'status:exited'" exclusively>
+                    <choose on="$3?.payload" in="#the-user-list">
+                        <update on="$@" to="append" with="$user_item" />
+                    </choose>
+                </match>
+            </test>
+        </observe>
+    </load>
+```
+
+以上两种实现方式，最终判断装载执行的 HVML 程序的终止状态，如终止状态为 `exited` 时，会在当前目标文档的 `#the-user-list` 中插入一条新的用户条目。
+
+和 `load` 元素配合，我们通常在被装载的程序中使用 `exit` 标签主动退出程序的运行并定义程序的返回数据。如：
+
+```html
+    <init as="user_info">
+        { "id": "5", "avatar": "/img/avatars/5.png", "name": "Vincent", "region": "en_US" },
+    </init>
+
+    <exit with="$user_info" />
+```
+
+上面的代码，使用 `exit` 标签的 `with` 属性定义了一项数据，解释器应将该数据作为该 HVML 程序的返回数据处理。
+
+【待删除——
+
+当前 HVML 程序在模态窗口中渲染时，可观察该程序的 `terminated:success` 事件，然后进行处理。如果当前 HVML 程序不在模态对话框中渲染，则该数据将做为请求数据（对应 `$REQUEST` 内置全局变量）提供给目标返回对应的 HVML 程序，此时，该 HVML 程序会执行一次重新装载操作（类似浏览器刷新页面的功能）。
+
+`exit` 元素不产生任何结果数据，故而不能包含子动作元素。
+
+正常情况下，`load` 元素装载一个 HVML 程序在一个模态窗口中渲染时，其执行结果数据就是新 HVML 程序中 `exit` 元素的 `with` 属性值；如果在一个新建的普通窗口中渲染，则正常情况下 `load` 元素的操作结果数据为字符串 `ok`；如果在其他已有的窗口中渲染，则将终止该窗口中运行的 HVML 程序，并在当前窗口中渲染新的 HVML 程序内容。
+
+`exit` 标签用于终止当前的 HVML 程序，并将返回值返回到指定的目标 HVML 程序。
+
+——待删除】
 
 ### 2.6) 执行器
 
@@ -4892,7 +4843,7 @@ SYSTEM 标识符字符串的格式如下：
             ]
         </init>
 
-        <connect at="unix:///var/run/hibus.sock" as="databus" for="hiBus" />
+        <init as="databus" with=$STREAM.open('unix:///var/run/hibus.sock','hiBus') />
 
         <header id="theStatusBar">
             <img class="mobile-status" src="" />
@@ -4944,7 +4895,7 @@ SYSTEM 标识符字符串的格式如下：
    1. 数据动作元素（data operation elements）  
       `init` 和 `update` 元素。其内容必须是符合 eJSON 语法的文本，可包含 JSON 求值表达式。
    1. 一般动作元素（ordinary operation elements）  
-       `erase`、 `clear`、 `test`、 `match`、 `choose`、 `iterate`、 `reduce`、 `observe`、 `fire`、 `connect`、 `disconnect`、 `load`、 `back`、 `define`、 `include`、 `call`、 `return` 和 `catch` 元素。
+       `erase`、 `clear`、 `test`、 `match`、 `choose`、 `iterate`、 `reduce`、 `observe`、 `fire`、 `load`、 `back`、 `define`、 `include`、 `call`、 `return` 和 `catch` 元素。
    1. 片段模板元素（fragment template elements）  
       `archetype`、 `error` 和 `except` 元素。片段模板元素的内容通常是使用目标标记语言书写的文档片段。简称模板元素（template elements）。
    1. 数据模板元素（data template elements）  
@@ -5714,7 +5665,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
-        <connect at="tcp://foo.bar:1300" as="braceletInfo" for="mqtt">
+        <init as="braceletInfo" with=$STREAM.open('tcp://foo.bar:1300','mqtt') />
 
         <update on="$TIMERS" to="unite">
             [
@@ -5733,27 +5684,27 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
         </div>
 
         <div class="temperature" id="temperature">
-            <send on="$braceletInfo" to="subscribe" at="temperature">
+            <choose on=$braceletInfo.subscribe('temperature')>
                 <observe on="$braceletInfo" for="event:$?">
                     <update on="#temperature" at="textContent" with="$?.value ℃" />
                 </observe>
-            </send>
+            </choose>
         </div>
 
         <div class="heartbeat" id="heartbeat">
-            <send on="$braceletInfo" to="subscribe" at="heartbeat">
+            <choose on=$braceletInfo.subscribe('heartbeat')>
                 <observe on="$braceletInfo" for="event:$?">
                     <update on="#heartbeat" at="textContent" with="$?.value BPM" />
                 </observe>
-            </send>
+            </choose>
         </div>
 
         <div class="steps" id="steps">
-            <send on="$braceletInfo" to="subscribe" at="steps">
+            <choose on=$braceletInfo.subscribe('steps')>
                 <observe on="$braceletInfo" for="event:$?">
                     <update on="#steps" at="textContent" with="$?.value" />
                 </observe>
-            </send>
+            </choose>
         </div>
 
         <observe on="$braceletInfo">
@@ -5799,16 +5750,26 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 #### RC3) 220501
 
-##### RC3.1) `exit` 标签和 `back` 标签
+##### RC3.1) 调整动作标签
+
+移除 `connect`、`send` 和 `disconnect` 标签，相关功能调整为使用 `$STREAM` 实现。
 
 使用 `exit` 标签退出程序的执行，并定义程序的返回数据。
 
 调整 `back` 标签的功能，用于回退栈帧。
 
+补充了 `define` 元素的 `from` 属性的处理细节。
+
+`observe` 标签中可使用 `with` 属性指定操作组。
+
+调整了动作标签的描述顺序。
+
 相关章节：
 
-- [2.5.13) `load` 和 `exit` 标签](#2513-load-和-exit-标签)
-- [2.5.18) `back` 标签](#2518-back-标签)
+- [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
+- [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
+- [2.5.15) `back` 标签](#2515-back-标签)
+- [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
 
 ##### RC3.2) HVML 程序的运行状态
 
@@ -5826,14 +5787,6 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 - [2.1.6) 变量](#216-变量)
 - [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法)
-
-##### RC3.4) `define` 元素的 `from` 属性
-
-补充了 `define` 元素的 `from` 属性的处理细节。
-
-相关章节：
-
-- [2.5.14) `define` 和 `include` 标签](#2514-define-和-include-标签)
 
 ##### RC3.5) eJSON 语法增强
 
@@ -6103,9 +6056,9 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 3) 矩阵及其运算
 
-#### TBD 2) 动作元素
+#### TBD2) 动作元素
 
-##### TBD 2.1) `pipe` 标签
+##### TBD2.1) `pipe` 标签
 
 `pipe` 标签用于将一个字节序列、字符串或者输出流管接（pipe）到另外一个可接收输入流的东西上。
 
@@ -6138,6 +6091,74 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
             <choose on="$STREAM.stdout.writelines($myPipe.out.readlines(1))" />
         </observe>
     </pipe>
+```
+
+##### TBD2.2) `connect`、 `send` 和 `disconnect` 标签
+
+如前所述，`connect` 标签定义一个对外部数据源的长连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包；而 `disconnect` 标签关闭先前建立的一个长连接数据源。
+
+`send` 标签用于在一个已连接的长连接数据源上发出一个同步或者异步的消息。比如在通过 MQTT 或者本地数据总线发送请求到外部模块或者远程计算机时，我们使用 `send` 元素发出一个异步消息，然后在另外一个 `observe` 标签定义的 HVML 元素中做相应的处理。比如，我们要通过 hiDataBus 协议向系统守护进程发出一个获得当前可用 WiFi 热点列表的远程过程调用：
+
+```html
+</hvml>
+    <head>
+        <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus"/>
+    </head>
+
+    <body>
+        ...
+
+        <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiGetHotspots" as="wifilist" asynchronously>
+            <observe on="$hibus" for="result:$wifilist">
+                ...
+            </observe>
+        </send>
+
+        <send on="$hibus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED" as="networkchanged">
+            <observe on="$hibus" for="event:$networkchanged">
+                ...
+            </observe>
+        </send>
+        ...
+    </body>
+</hvml>
+```
+
+正常情况下，使用同步请求时，`send` 元素的执行结果数据就是请求的返回结果；如果使用异步请求，`send` 元素的操作结果数据为字符串 `ok`。异步请求时，一般应该在对应的 `observe` 元素中做后续处理。
+
+```html
+    <body>
+        <button id="theBtnWifiList">Click to fetch WiFi List</button>
+
+        <archetype name="wifi_item">
+            <li>@?.name</li>
+        </archetype>
+
+        <ul id="theWifiList">
+        </ul>
+
+        <observe on="#theBtnWifiList" for="click">
+
+            <init as="paramWifiList">
+                { "action": "get_list" }
+            </init>
+
+            <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus" />
+
+            <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiScanHotspots" with="$paramWifiList" as="hotspots_list" asynchronously>
+                <observe on="$hibus" for="result:$hotspots_list">
+                    <disconnect on="$hibus" />
+
+                    <!-- fill the Wifi list with the response data -->
+                    <iterate on="$?" in="#theWifiList">
+                        <update on="$@" to="append" with="$wifi_item" />
+                    </iterate>
+
+                </observe>
+            </send>
+
+        </observe>
+    </body>
 ```
 
 ### 附.3) 贡献者榜单
