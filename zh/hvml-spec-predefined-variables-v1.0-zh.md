@@ -771,6 +771,108 @@ $SYSTEM.time_us
 - PHP: <https://www.php.net/manual/en/datetime.formats.php>
 - PHP DateTime 类：<https://www.php.net/manual/en/class.datetime.php>
 
+#### 3.1.5) `sleep` 方法
+
+休眠指定的秒数。
+
+**描述**
+
+```js
+$SYSTEM.sleep(
+        longint | ulongint $delay_time: `the delay time in seconds.`
+) ulongint: left seconds
+```
+
+```js
+$SYSTEM.sleep(
+        number | longdouble $delay_time: `A double or long double number representing the number of seconds (integral part) and microseconds/nanoseconds (fractional part) to delay.`
+) longdouble: left seconds
+```
+
+**异常**
+
+- `ArgumentMissed`：未指定必要参数。
+- `WrongDataType`：非实数类参数类型。
+- `InvalidValue`：传入无效参数，如负值。
+
+**示例**
+
+```js
+$SYSTEM.sleep(1UL)
+    // ulongint: 0UL
+
+$SYSTEM.sleep(0.3)
+    // longdouble: 0.0FL
+```
+
+**参见**
+
+- POSIX 函数：`sleep()`、`usleep()` 和 `nanosleep()`。
+
+#### 3.1.6) `sleep_us` 方法
+
+获取或设置具有微秒精度的系统时间。
+
+**描述**
+
+```js
+$SYSTEM.sleep_us longdouble :
+    ``
+```
+
+该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值 longdouble 数值，小数部分为微秒值。
+
+```js
+$SYSTEM.sleep_us(
+        [
+            < 'longdouble | object' $return_type = 'longdouble': `indicate the return type: a long double number or an object.`>
+        ]
+) longdouble | object : `A long double numer or an object representing the number of seconds and microseconds since Epoch:`
+        - 'sec': < longint: `seconds since Epoch` >
+        - 'usec': < longint: `microseconds` >
+```
+
+该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为 longdouble 数值或包含 `sec` 和 `usec` 两个属性的对象。
+
+```js
+$SYSTEM.sleep_us(!
+        <real $sec_us: `seconds with microseconds since Epoch`>
+) true | false
+```
+
+该方法用一个实数（整数部分表示自 Epoch 以来的秒数，小数部分表示微秒数）设置系统时间。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
+
+```js
+$SYSTEM.sleep_us(!
+        <object $sleep_with_us: `An object representing the number of seconds and microseconds since Epoch`>
+) true | false
+```
+
+该方法使用表示系统时间的对象设置系统时间。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
+
+**异常**
+
+- `InvalidValue`：获取器被调用时，传入错误参数时（如错误的返回类型），将抛出该异常；静默求值时，返回 `longdouble` 类型的当前事件。设置器被调用时，传入无效参数时（如负值或者大于 100,000 或小于 0 的微秒值）时，将抛出该异常。
+- `AccessDenied`：设置器被调用时，当运行解释器的所有者没有权限设置系统时间时，将抛出该异常。
+
+**备注**
+
+1. 对系统时间的修改，将在 `$SYSTEM` 变量上产生 `change:sleep` 事件。
+
+**示例**
+
+```js
+$SYSTEM.sleep_us
+    // longdouble: 123456789.456789
+```
+
+**参见**
+
+- C 标准函数：`getsleepofday()`、`setsleepofday()`
+- PHP: <https://www.php.net/manual/en/ref.datesleep.php>
+- PHP: <https://www.php.net/manual/en/datesleep.formats.php>
+- PHP DateTime 类：<https://www.php.net/manual/en/class.datesleep.php>
+
 #### 3.1.7) `timezone` 方法
 
 获取或设置时区。
@@ -6585,6 +6687,12 @@ $FILE.bin.tail($file, -5)
 
 #### RC2) 220501
 
+1. 将 `$STREAM` 变量调整为必要变量。
+
+1. 原设计为 `$STREAM` 方法的 `readstruct` 等，全部调整为流实体的方法。
+
+1. 原设计为 `$FS` 方法的 `readdir` 和 `rewinddir` 方法，调整为目录流实体的方法。
+
 1. 调整接口，使用字符串选项而非布尔标志：
    - `$SYSTEM.time_us`
    - `$SYSTEM.timezone`
@@ -6594,6 +6702,7 @@ $FILE.bin.tail($file, -5)
    - `$STR.strne`
 
 1. 新增方法
+   - `$SYSTEM.sleep`
    - `$EJSON.pack`
    - `$EJSON.unpack`
    - `$STR.scan_c`
