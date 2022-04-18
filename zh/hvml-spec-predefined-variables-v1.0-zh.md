@@ -4618,31 +4618,49 @@ $URL.assemble(
 $STREAM.open(
         < string $uri: `the URI of the stream.` >
         [, <'[read || write || append || create || truncate || nonblock] | default' $opt = 'default':
-               - 'read':            `Open for reading only`
-               - 'write':           `Open for writing only`
-               - 'append':          `Open in append mode.  Before each write, the offset is positioned at the end of the stream`
-               - 'create':          `If $uri does not exist, create it as a regular file`
-               - 'truncate':        `If $uri already  exists and is a regular file and the access mode allows writing it will be truncated to length 0`
-               - 'nonblock':        `open $uri in nonblocking mode`
-               - 'default':         `is equivalent to 'read write'`
+               - 'read':        `Open for reading only`
+               - 'write':       `Open for writing only`
+               - 'append':      `Open in append mode.  Before each write, the offset is positioned at the end of the stream`
+               - 'create':      `If $uri does not exist, create it as a regular file`
+               - 'truncate':    `If $uri already  exists and is a regular file and the access mode allows writing it will be truncated to length 0`
+               - 'nonblock':    `open $uri in nonblocking mode`
+               - 'default':     `js equivalent to 'read write'`
            >
+            [, <'[ssl | tls] || websocket || hibus || mqtt || http || ...' $filerts = '': `the filters will be used on the stream entity.`
+                   - 'ssl':         `this filter uses SSL to encrypt and decrypt the data; only for TCP connections.`
+                   - 'tls':         `this filter uses TLS to encrypt and decrypt the data; only for TCP connections.`
+                   - 'websocket':   `this filter can handle WebSocket protocol, provide methods like ws_send() and ws_read()`
+                   - 'hibus':       `this filter can handle hiBus protocol, provide methods like hibus_subscribe() and hibus_call_procedure()`
+                   - 'mqtt':        `this filter can handle the MQTT protocol, privide methods like mqtt_subscribe() and mqtt_send_message()`
+                   - 'http':        `this filter can handle the HTTP protocol, provide methods like http_send_request() and http_read_response_header()`
+               >
+            ]
         ]
 ) native/stream | undefined
-
 ```
 
 该方法打开一个流，返回一个代表流的原生实体值。
 
-该方法使用 URI 指定要打开的流的类型和位置，如：
+该方法使用 URI 指定要打开的流位置以及传输层类型名称，如：
 
-- `file:///etc/passwd`：打开 `/etc/passwd` 文件。
-- `file://Documents/mydata`：打开当前工作路径下的 `Document/mydata` 文件。
-- `exec:///usr/bin/wc`：在子进程中执行指定的程序，创建匿名管道作为子进程的标准输入、输出和错误。
-- `pipe:///var/tmp/apipe`：打开一个命名管道。
-- `unix:///var/run/myapp.sock`：打开一个 UNIX 套接字。
-- `winsock://xxx`：打开一个 Windows 套接字。
-- `ws://foo.bar.com:8877`：连接到 foo.bar.com 端口 8877 上的 WebSocket。
-- `wss://foo.bar.com:8877`：使用 SSL 连接到 foo.bar.com 端口 8877 上的 WebSocket。
+- `file:///etc/passwd`：`/etc/passwd` 文件。
+- `file://Documents/mydata`：当前工作路径下的 `Document/mydata` 文件。
+- `pipe:///usr/bin/wc`：在子进程中执行指定的程序，创建匿名管道作为子进程的标准输入、输出和错误。
+- `npipe:///var/tmp/namedpipe`：命名管道。
+- `unix:///var/run/myapp.sock`：UNIX 套接字。
+- `tcp://foo.com:1100`：TCP 套接字。
+- `udp://foo.com:1100`：UDP 套接字。
+
+我们可以在 `open` 方法中指定一个或者多个数据的过滤器，这些数据过滤器可担任不同的角色，比如：
+
+- `ssl`：使用 SSL 安全套接字层协议加解密数据，仅针对 `tcp` 类型名称。
+- `tls`：使用 TLS 传输层安全协议加解密数据，仅针对 `tcp` 类型名称。
+- `http`: 使用 HTTP 应用层协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 HTTP 协议发送请求或处理响应头。
+- `websocket`：使用 WebSocket 应用层协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 WebSocket 协议发送和接收消息数据包。
+- `hibus`：使用 hiBus 数据总线协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 hiBus 数据总线订阅事件或者发起远程过程调用并获得结果。
+- `mqtt`：使用 MQTT 物联网协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 MQTT 数据总线订阅事件或者发起远程过程调用并获得结果。
+
+解释器最少应实现对 `file://` 的支持，其他类型以及过滤器，可根据情况选择实现。解释器也可以自定义过滤器，比如可提供对各种 MIME 类型的支持，从而可以将 PNG、JPEG 等位图文件解码为表达位图的对象，其中包括位图的分辨率以及各扫描线上像素点颜色值组成的字节序。
 
 **异常**
 
