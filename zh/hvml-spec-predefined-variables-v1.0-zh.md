@@ -45,11 +45,12 @@ Language: Chinese
       * [3.1.4) `locale` 方法](#314-locale-方法)
       * [3.1.5) `time` 方法](#315-time-方法)
       * [3.1.6) `time_us` 方法](#316-time_us-方法)
-      * [3.1.7) `timezone` 方法](#317-timezone-方法)
-      * [3.1.8) `cwd` 方法](#318-cwd-方法)
-      * [3.1.9) `env` 方法](#319-env-方法)
-      * [3.1.10) `random_sequence` 方法](#3110-random_sequence-方法)
-      * [3.1.11) `random` 方法](#3111-random-方法)
+      * [3.1.7) `sleep` 方法](#317-sleep-方法)
+      * [3.1.8) `timezone` 方法](#318-timezone-方法)
+      * [3.1.9) `cwd` 方法](#319-cwd-方法)
+      * [3.1.10) `env` 方法](#3110-env-方法)
+      * [3.1.11) `random_sequence` 方法](#3111-random_sequence-方法)
+      * [3.1.12) `random` 方法](#3112-random-方法)
    + [3.2) `SESSION`](#32-session)
       * [3.2.1) `user_obj` 静态属性](#321-user_obj-静态属性)
       * [3.2.2) `user` 方法](#322-user-方法)
@@ -234,8 +235,8 @@ Language: Chinese
       * [4.2.28) `unlink` 方法](#4228-unlink-方法)
       * [4.2.29) `file_contents` 方法](#4229-file_contents-方法)
       * [4.2.30) `opendir` 方法](#4230-opendir-方法)
-      * [4.2.31) `readdir` 方法](#4231-readdir-方法)
-      * [4.2.32) `rewinddir` 方法](#4232-rewinddir-方法)
+      * [4.2.31) 目录流实体的 `read` 方法](#4231-目录流实体的-read-方法)
+      * [4.2.32) 目录流实体的 `rewind` 方法](#4232-目录流实体的-rewind-方法)
    + [4.3) `FILE`](#43-file)
       * [4.3.1) 文本文件](#431-文本文件)
          - [4.3.1.1) `txt.head` 方法](#4311-txthead-方法)
@@ -771,29 +772,26 @@ $SYSTEM.time_us
 - PHP: <https://www.php.net/manual/en/datetime.formats.php>
 - PHP DateTime 类：<https://www.php.net/manual/en/class.datetime.php>
 
-#### 3.1.5) `sleep` 方法
+#### 3.1.7) `sleep` 方法
 
-休眠指定的秒数。
+暂停当前会话的执行。
 
 **描述**
 
 ```js
 $SYSTEM.sleep(
-        longint | ulongint $delay_time: `the delay time in seconds.`
-) ulongint: left seconds
+        real $delay_time: `the delay time in seconds; a double or long double number representing the number of seconds (integral part) and microseconds/nanoseconds (fractional part) to delay.`
+) real | false
 ```
 
-```js
-$SYSTEM.sleep(
-        number | longdouble $delay_time: `A double or long double number representing the number of seconds (integral part) and microseconds/nanoseconds (fractional part) to delay.`
-) longdouble: left seconds
-```
+该方法暂停当前 HVML 会话的执行以指定的秒数。若使用浮点数指定秒数，则小数部分可指定要休眠的纳秒数。正常情况下，该方法返回 0；当休眠被信号打断时，则返回剩余的秒数（返回值的类型和参数类型一致）。
 
 **异常**
 
-- `ArgumentMissed`：未指定必要参数。
-- `WrongDataType`：非实数类参数类型。
-- `InvalidValue`：传入无效参数，如负值。
+- `ArgumentMissed`：未指定必要参数。可忽略异常；静默求值时返回 `false`。
+- `WrongDataType`：非实数类参数类型。可忽略异常；静默求值时返回 `false`。
+- `InvalidValue`：传入无效参数，如负值。可忽略异常；静默求值时返回 `false`。
+- `SystemFault`：操作系统故障。不可忽略异常。
 
 **示例**
 
@@ -809,71 +807,7 @@ $SYSTEM.sleep(0.3)
 
 - POSIX 函数：`sleep()`、`usleep()` 和 `nanosleep()`。
 
-#### 3.1.6) `sleep_us` 方法
-
-获取或设置具有微秒精度的系统时间。
-
-**描述**
-
-```js
-$SYSTEM.sleep_us longdouble :
-    ``
-```
-
-该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值 longdouble 数值，小数部分为微秒值。
-
-```js
-$SYSTEM.sleep_us(
-        [
-            < 'longdouble | object' $return_type = 'longdouble': `indicate the return type: a long double number or an object.`>
-        ]
-) longdouble | object : `A long double numer or an object representing the number of seconds and microseconds since Epoch:`
-        - 'sec': < longint: `seconds since Epoch` >
-        - 'usec': < longint: `microseconds` >
-```
-
-该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为 longdouble 数值或包含 `sec` 和 `usec` 两个属性的对象。
-
-```js
-$SYSTEM.sleep_us(!
-        <real $sec_us: `seconds with microseconds since Epoch`>
-) true | false
-```
-
-该方法用一个实数（整数部分表示自 Epoch 以来的秒数，小数部分表示微秒数）设置系统时间。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
-
-```js
-$SYSTEM.sleep_us(!
-        <object $sleep_with_us: `An object representing the number of seconds and microseconds since Epoch`>
-) true | false
-```
-
-该方法使用表示系统时间的对象设置系统时间。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
-
-**异常**
-
-- `InvalidValue`：获取器被调用时，传入错误参数时（如错误的返回类型），将抛出该异常；静默求值时，返回 `longdouble` 类型的当前事件。设置器被调用时，传入无效参数时（如负值或者大于 100,000 或小于 0 的微秒值）时，将抛出该异常。
-- `AccessDenied`：设置器被调用时，当运行解释器的所有者没有权限设置系统时间时，将抛出该异常。
-
-**备注**
-
-1. 对系统时间的修改，将在 `$SYSTEM` 变量上产生 `change:sleep` 事件。
-
-**示例**
-
-```js
-$SYSTEM.sleep_us
-    // longdouble: 123456789.456789
-```
-
-**参见**
-
-- C 标准函数：`getsleepofday()`、`setsleepofday()`
-- PHP: <https://www.php.net/manual/en/ref.datesleep.php>
-- PHP: <https://www.php.net/manual/en/datesleep.formats.php>
-- PHP DateTime 类：<https://www.php.net/manual/en/class.datesleep.php>
-
-#### 3.1.7) `timezone` 方法
+#### 3.1.8) `timezone` 方法
 
 获取或设置时区。
 
@@ -934,7 +868,7 @@ $SYSTEM.timezone
 - C 标准函数：`tzset()`
 - PHP: <https://www.php.net/manual/en/timezones.php>
 
-#### 3.1.8) `cwd` 方法
+#### 3.1.9) `cwd` 方法
 
 获取或设置当前工作路径。
 
@@ -974,7 +908,7 @@ $SYSTEM.cwd(!
 
 - C 标准函数：`chdir()`, `getcwd()`
 
-#### 3.1.9) `env` 方法
+#### 3.1.10) `env` 方法
 
 获取或设置系统环境变量。
 
@@ -1018,7 +952,7 @@ $SYSTEM.env(! 'LOGNAME', 'tom' )
     // boolean: true
 ```
 
-#### 3.1.10) `random_sequence` 方法
+#### 3.1.11) `random_sequence` 方法
 
 从内核获取指定的随机数据，可用于随机数发生器的种子或加密用途。
 
@@ -1049,7 +983,7 @@ $SYSTEM.random(! $EJSON.fetchreal($SYSTEM.random_sequence(4), 'u32') )
 
 - Linux 特有接口：`getrandom()`
 
-#### 3.1.11) `random` 方法
+#### 3.1.12) `random` 方法
 
 获取随机值。
 
