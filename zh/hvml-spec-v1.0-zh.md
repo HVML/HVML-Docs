@@ -350,7 +350,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
             ]
         </init>
 
-        <init as="databus" with=$STREAM.open('unix:///var/tmp/hibus.sock', 'hiBus') >
+        <init as="databus" with=$STREAM.open('unix:///var/tmp/hibus.sock','default','hiBus') >
 
         <archetype name="user_item">
             <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
@@ -944,9 +944,9 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 另外，`STREAM` 变量应使用可扩展的实现，一方面，我们可以扩展流实体的类型，比如从文件、匿名管道、命名管道到 Unix 套接字、TCP 连接，另一方面，我们可以通过支持不同的协议来扩展流实体提供的操作方法，从而在流实体上提供额外的读写方法。比如，当某个解释器实现的 `$STREAM` 方法支持发送 HTTP 协议时，即可实现发送 HTTP 请求以及处理 HTTP 协议的方法：
 
 ```html
-    <init as="myFetcher" on="$STREAM.open('tcp://foo.com:80','http')">
+    <init as="myFetcher" on="$STREAM.open('tcp://foo.com:80','default','http')">
         <choose on="$myFetcher.http_send_request('GET','/')" />
-        <choose on="$myFetcher.http_get_response_header()" />
+        <choose on="$myFetcher.http_read_response_header()" />
     </init>
 ```
 
@@ -2738,8 +2738,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             <li>Exception when calling '$FS.opendir($REQUEST.dir)'</li>
         </except>
 
-        <!-- no directory entry if $FS.readdir() returns false -->
-        <iterate on=$? with=$FS.readdir($0^) >
+        <!-- no directory entry if $?.read() returns false -->
+        <iterate on=$? with=$?.read() >
             <li>$?.type: $?.name</li>
         </iterate>
     </choose>
@@ -3050,7 +3050,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 ```html
 <hvml>
     <head>
-        <init as="databus" with="$STREAM.open('unix:///var/run/hibus.sock')" for="hiBus"/>
+        <init as="databus" with="$STREAM.open('unix:///var/run/hibus.sock','default','hibus')"/>
     </head>
 
     <body>
@@ -3160,7 +3160,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 ```html
 <hvml lang="en">
     <head>
-        <init as="mqtt" with=$STREAM.open('tcp://foo.bar.com:1366', 'MQTT') />
+        <init as="mqtt" with=$STREAM.open('tcp://foo.bar.com:1366','default','mqtt') />
     </head>
 
     <body>
@@ -3514,11 +3514,11 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                 </back>
             </catch>
 
-            <!-- no directory entry if $FS.readdir() returns false -->
-            <iterate on=$? with=$FS.readdir($0^) >
+            <!-- no directory entry if $?.read() returns false -->
+            <iterate on=$? with=$?.read() >
                 <catch for="ANY">
                     <back to="#theUL">
-                        "Exception when calling '$FS.readdir($REQUEST.dir)': $?"
+                        "Exception when calling '$FS.opendir($REQUEST.dir).read($REQUEST.dir)': $?"
                     </back>
                 </catch>
                 <li>$?.type: $?.name</li>
@@ -4843,7 +4843,7 @@ SYSTEM 标识符字符串的格式如下：
             ]
         </init>
 
-        <init as="databus" with=$STREAM.open('unix:///var/run/hibus.sock','hiBus') />
+        <init as="databus" with=$STREAM.open('unix:///var/run/hibus.sock','default','hiBus') />
 
         <header id="theStatusBar">
             <img class="mobile-status" src="" />
@@ -5665,7 +5665,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
-        <init as="braceletInfo" with=$STREAM.open('tcp://foo.bar:1300','mqtt') />
+        <init as="braceletInfo" with=$STREAM.open('tcp://foo.bar:1300','default','mqtt') />
 
         <update on="$TIMERS" to="unite">
             [
