@@ -1442,7 +1442,7 @@ HVML 还定义有如下一些动作标签：
 - `ascendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为升序；可简写为 `asc`。
 - `descendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为降序；可简写为 `desc`。
 - `silently`：在动作元素中，用于指定忽略执行当前元素时的可忽略异常；在骨架元素中使用 `hvml:silently` 属性。
-- `locally`：在 `init` 等定义变量的动作元素中，用于指定变量是全局的还是局部的；所有局部变量，在用户自定义的上下文变量中维护。
+- `temporarily`：在 `init` 等定义变量的动作元素中，用于指定变量是临时的而非静态的；所有临时变量，在用户自定义的上下文变量中维护；可简写为 `temp`。
 - `nosetotail`：在 `iterate` 动作元素中，用于将上次迭代的结果作为下次迭代的输入。
 - `responsively`：在骨架元素中，用于定义其文本内容是响应式的。
 - `noreturn`：在 `request` 标签中，用于定义无需返回值。
@@ -2104,16 +2104,16 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当 `at` 属性指定的变量名不存在时，将抛出相应的异常。
 
-当我们在 `init` 标签中使用 `locally` 副词属性时，将操作父栈帧或者祖先栈帧中用户自定义的上下文变量 `$!`：
+当我们在 `init` 标签中使用 `temporarily` 副词属性时，将操作父栈帧或者祖先栈帧中用户自定义的上下文变量 `$!`：
 
 - 初始时时，`$!` 应被定义一个空对象。新增用户自定义的临时变量，意味着在这个对象中增加一个新的键值对，键名为该临时变量的名称，而键值为该临时变量的值。
 - 使用 `as` 属性时，将初始化或覆盖父栈帧中用户自定义的上下文变量 `$!` 中指定的键值对。
 - 使用 `at` 属性时，将向上遍历祖先栈帧，找到第一个匹配的临时变量，然后重置其键值。
 - 访问当前父栈帧或者祖先栈帧中的临时变量时，可使用 `$[N]!.<name of the temp. variable>` 表达式。
-- 为使用方便，也可以用 `$<name of the temp. variable>` 表达式来访问局部变量：
+- 为使用方便，也可以用 `$<name of the temp. variable>` 表达式来访问临时变量：
    1. 基于名称查询命名变量时，将向上遍历祖先栈帧，找到第一个匹配的临时变量；
    1. 若没有找到，从当前 vDOM 位置的父元素开始，在祖先元素节点中查找对应的静态命名变量。
-- 作为一个限制，临时变量不能异步初始化，也就是说，`locally` 副词属性不能和 `asynchronously` 副词属性同时使用。
+- 作为一个限制，临时变量不能异步初始化，也就是说，`temporarily` 副词属性不能和 `asynchronously` 副词属性同时使用。
 
 #### 2.5.2) `update` 标签
 
@@ -3205,7 +3205,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         </archedata>
 
         <define as="onChangeContent">
-            <init as="users" locally>
+            <init as="users" temporarily>
                 [ ]
             </init>
 
@@ -5648,7 +5648,7 @@ CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被�
             { "cmdLine": "ls $fileInfo.curr_path" }
         <init>
 
-        <init from="lcmd:///bin/ls" with="$lcmdParams" via="GET" as="files" locally>
+        <init from="lcmd:///bin/ls" with="$lcmdParams" via="GET" as="files" temporarily>
             <iterate on="$files" in="#entries" by="RANGE: 0">
                 <update on="$@" to="append" with="$dir_entry" />
             </iterate>
@@ -5825,7 +5825,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 ##### RC2.1) 用户自定义临时变量的初始化和重置方法
 
-使用 `locally` 表示创建或重置一个临时变量。
+使用 `temporarily` 表示创建或重置一个临时变量。
 
 可在 `init` 标签的 `as` 或者 `at` 中指定临时变量的名称。
 

@@ -7,10 +7,10 @@
     <body>
         <header>
             <h1>Fibonacci Numbers less than 2000</h1>
-            <p hvml:raw>Using local array variable ($!) and negative index</p>
+            <p hvml:raw>Using temporary array variable ($!) and negative index</p>
         </header>
 
-        <init as='fibonacci' locally>
+        <init as='fibonacci' temp>
             [0, 1, ]
         </init>
 
