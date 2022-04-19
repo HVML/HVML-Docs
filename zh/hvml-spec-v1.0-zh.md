@@ -1407,14 +1407,15 @@ HVML 还定义有如下一些动作标签：
 
 针对动作标签，HVML 定义了如下几个介词（如 `on`、 `in`、 `to` 等）属性，用于定义执行动作时依赖的数据（或元素）及其集合。如：
 
-- `from`：在 `init`、 `update`、 `load` 等动作元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URL。
-- `on`：用于定义执行动作所依赖的数据、元素或元素汇集。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`$?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
+- `from`：在 `init`、 `update`、 `load` 等标签中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URL。
+- `on`：在 `choose`、`iterate` 等操作数据的标签中，用于定义执行动作所依赖的数据、元素或元素汇集。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`$?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
 - `in`：用于定义执行操作的目标文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。
 - `for`：在 `observe`、 `forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的消息类型；在 `match` 标签中，用于定义匹配条件。
-- `as`：用于定义 `init`、 `bind`、 `load` 等元素绑定的变量名称、程序名称等。
+- `as`：在 `init`、 `define`、 `bind`、 `load` 等元素中定义变量名称。
+- `at`：在 `init`、 `define` 中指定已存在的变量名；在 `update` 元素中指定目标数据上的目标位置。
 - `with`：在 `init`、 `request` 元素中定义发送请求或消息时的参数；在 `iterate` 元素中定义不使用执行器时迭代结果的求值表达式。
-- `to`：用于在 `update` 标签中定义具体的更新动作，比如表示追加的 `append`，表示替换的 `displace` 等。
-- `by`：还可用于定义执行测试、选择、迭代、归约操作时的脚本程序类或函数名称，分别称为选择器、迭代器或归约器，并统称为执行器（executor）。HVML 允许解释器支持内建（built-in）执行器。对简单的数据处理，可直接使用内置执行器，在复杂的数据处理情形中，可使用外部程序定义的类或者函数。在 HVML 中，我们使用如下前缀来表示不同的执行器类型：
+- `to`：在 `update` 标签中定义具体的更新动作，比如表示追加的 `append`，表示替换的 `displace` 等；在 `back` 标签中定义回退到的栈帧；在 `init`、`define` 中指定要创建的变量位置。
+- `by`：用于定义执行测试、选择、迭代、归约操作时的脚本程序类或函数名称，分别称为选择器、迭代器或归约器，并统称为执行器（executor）。HVML 允许解释器支持内建（built-in）执行器。对简单的数据处理，可直接使用内置执行器，在复杂的数据处理情形中，可使用外部程序定义的类或者函数。在 HVML 中，我们使用如下前缀来表示不同的执行器类型：
    - `CLASS: ` 表示使用外部程序定义的类作为执行器。
    - `FUNC: ` 表示使用外部程序定义的函数作为执行器。
    - `KEY: ` 表示使用某个键名或多个指定的键名返回对应的键值数据项，是一种内建的迭代器或选择器。
@@ -1422,7 +1423,7 @@ HVML 还定义有如下一些动作标签：
    - `TRAVEL: ` 表示使用指定的遍历方式遍历树状结构，是一种内建的迭代器或选择器。
    - `SQL: ` 表示在结构化数据上执行 SQL 查询，从而实现复杂的选择、迭代以及归约操作。
    - 其他针对字符串和数值的内建执行器，见本文档 [2.6.1) 内建执行器](#261-内建执行器) 小节。
-- `via`：用于在 `init` 和 `request` 等元素中指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
+- `via`：用于在 `init` 等元素中指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
 - `against`：在 `init` 元素中用于指定集合的唯一性键值，在 `sort` 元素中用于指定排序依据。
 - `onlyif` 和 `while`：在 `iterate` 中，用于定义在产生迭代结果前和产生迭代结果后判断是否继续迭代的条件表达式。
 
@@ -2042,7 +2043,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 #### 2.5.1) `init` 标签
 
-`init` 标签初始化一个变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义该请求的 URL，使用 `with` 参数定义请求参数，使用 `via` 定义请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
+`init` 标签初始化一个变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，默认将定义一个仅在其所在父元素定义的子树中有效的局部变量，但我们可使用 `to` 属性指定变量的作用域（scope）：
+
+- 使用下划线（\_）打头的预定义名称 `_parent`、`_grandparent`、 `_body`、`_root`，将分别在父元素、祖父元素、`body` 元素以及根元素上定义变量。
+- 使用井号（#）打头的元素标识符，如 `#myAnchor`，将在其祖先元素中搜索指定的元素标识符（由 `id` 属性指定），将在第一个匹配的祖先元素上定义变量。
+- 若未找到匹配的祖先元素，则按未定义 `to` 属性做默认处理。
+
+我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义该请求的 URL，使用 `with` 参数定义请求参数，使用 `via` 定义请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
 
 我们也可以使用 `init` 标签从共享库中初始化一个自定义的动态对象，此时，使用 `from` 指定要装在的动态库名称，使用 `for` 指定要装载的动态对象名称，并给定 `via` 属性值为 `LOAD`，表示装载共享库。
 
@@ -2087,7 +2094,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 我们也可以在 `init` 标签中使用 `at` 属性指定要修改的已存在的变量名，避免创建新的命名变量。如：
 
 ```html
-    <!-- init a set with an object array -->
+<body>
+    <!-- 在 `body` 元素上使用对象数组初始化一个集合（唯一性键名是 id） -->
     <init as="users" uniquely against="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
@@ -2096,7 +2104,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </init>
 
     <div>
-        <!-- this will not create a new named variable called `users`, instead it will replace the old value -->
+        <!-- 使用 `at` 属性不会创建新的变量，而是会覆盖 `body` 元素上的 `users` 变量 -->
         <init at="users">
             [
                 { "id": "3", "avatar": "/img/avatars/3.png", "name": "Vincent", "region": "zh_CN" },
@@ -2104,15 +2112,27 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             ]
         </init>
 
-        <!-- this will create a new named variable at `div` element. -->
+        <!-- 在 `div` 元素上创建一个 `users` 变量 -->
         <init as="users" with="[]" />
+
+        <section id="myAnchor">
+            <div>
+                <!-- 在 `section` 元素上创建一个 `users` 变量 -->
+                <init as="users" with="[]" to="#myAnchor" />
+
+                <!-- 在 `section` 元素上创建一个 `emptyUser` 变量 -->
+                <init as="emptyUser" with="{}" to="_grandparent" />
+            </div>
+        </section>
     </div>
+</body>
 ```
 
 `init` 元素可能抛出的异常有：
 
 - 当 `as` 属性指定的变量名不符合要求时，将抛出 `BadName` 异常。
 - 当 `as` 属性指定的变量名已存在时，将抛出 `DuplicateName` 异常。
+- 当 `to` 属性指定的祖先元素定位名称不符合要求或者不存在时，将分别抛出 `BadName` 异常和 `EntityNotFound` 异常。
 - 当 `at` 属性指定的变量名不存在时，将抛出 `EntityNotFound` 异常。
 
 当我们在 `init` 标签中使用 `temporarily` 副词属性时，将操作父栈帧或者祖先栈帧中用户自定义的上下文变量 `$!`：
@@ -3018,21 +3038,53 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <head>
         <base href="$HVML.base(! 'file:///' )" />
 
-        <init as='fragments' with=$FS.list_prt('/module/$HVML.target/','*.hvml','name') temp>
-            <iterate on=$? by="RANGE: 0">
-                <define as="ops$FS.basename($?,'hvml')" from="/module/$HVML.target/$?">
-                    <choose on=true />
-                </define>
-            </iterate>
-        </init>
+        <iterate on=$FS.list_prt('/module/$HVML.target/','*.hvml','name') by="RANGE: 0">
+            <define as="ops$FS.basename($?,'hvml')" from="/module/$HVML.target/$?">
+                <choose on=true />
+            </define>
+        </iterate>
     </head>
 
-    ...
+    <body>
+
+        ...
+
+    </body>
 
 </hvml>
 ```
 
 以上代码，若在 `/module/html/` 目录下存在两个 HVML 片段文件：`A.hvml` 和 `B.hvml`，则会创建两个操作组：`opsA` 和 `opsB`，分别指向两个独立的 vDOM 片段树。当我们在 HVML 程序中使用 `include`、`call` 或者 `observe` 引用 `opsA` 和 `opsB` 时，将执行对应的 vDOM 片段树，而非原始的默认值操作组。
+
+和 `init` 类似，在 `head` 元素定义的 `define`，将创建全局可见的操作组，也就是说，上述代码中定义的 `opsA` 和 `opsB` 的操作组是全局可见的。在 `body` 中定义的 `define`，默认将创建仅在其父元素所在子树中可见的操作组。但我们可使用 `to` 属性指定操作组的作用域（scope）：
+
+- 使用下划线（\_）打头的预定义名称 `_parent`、`_grandparent`、 `_body`、`_root`，将分别在父元素、祖父元素、`body` 元素以及根元素上定义操作组名称。
+- 使用井号（#）打头的元素标识符，如 `#myAnchor`，将在其祖先元素中搜索指定的元素标识符（由 `id` 属性指定），将在第一个匹配的祖先元素上定义操作组的名称。
+- 若未找到匹配的祖先元素，则按未定义 `to` 属性做默认处理。
+
+按照以上规则，上述定义多个操作组的方法，亦可按以下方式编码：
+
+```html
+<hvml target="html" lang="en">
+    <head>
+        <base href="$HVML.base(! 'file:///' )" />
+
+    </head>
+
+    <body>
+
+        <iterate on=$FS.list_prt('/module/$HVML.target/','*.hvml','name') by="RANGE: 0">
+            <define as="ops$FS.basename($?,'hvml')" from="/module/$HVML.target/$?" to="_body">
+                <choose on=true />
+            </define>
+        </iterate>
+
+        ...
+
+    </body>
+
+</hvml>
+```
 
 若 `define` 定义的操作组为空，则使用 `include` 或者 `call` 标签引用该操作组时，应抛出 `NoData` 异常。
 
