@@ -1,5 +1,5 @@
 <!DOCTYPE hvml>
-<hvml target="html" lang="en">
+<hvml target="html" lang="$STR.substr($SYSTEM.locale, 0, 2)">
     <head>
 
         <init as="assetURLPrefix">https://files.fmsoft.cn/assets/bootstrap-5.1.3-dist</init>
@@ -60,12 +60,6 @@
             </button>
         </section>
 
-        <archetype name="realCardBody">
-            <h5 class="card-title">$?.title</h5>
-            <p class="card-text">$?.shortDesc</p>
-            <a href="$?.detailedUrl" class="btn btn-primary">$T.get('Read Details…')</a>
-        </archetype>
-
         <init as="breakingNews" from="assets/breaking-news-{$SYSTEM.locale}.json" async>
             {
                 "title": "This is an absolute breaking news!",
@@ -74,7 +68,6 @@
                 "detailedUrl": "#",
                 "time": $DATETIME.time_prt
             }
-
 
             <observe at="breakingNews" for="change:attached" in="#exampleModal">
                 <update on="#exampleModal" to="displace" with="$newsModal" />
