@@ -2060,7 +2060,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 该标签的常见用法如下：
 
 ```html
-    <!-- init a set with an object array -->
+    <!-- 使用对象数组初始化一个集合 -->
     <init as="users" uniquely against="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
@@ -2068,20 +2068,21 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         ]
     </init>
 
-    <!-- init a set with an string array case-insensitively -->
+    <!-- 使用字符串（大小写不敏感）数组初始化一个集合 -->
     <init as="locales" uniquely caseinsensitively>
         [ "zh_CN", "zh_HK", "zh_TW", "en_US", "en_UK", "en_us" ]
     </init>
-    <!-- result:
+    <!-- 结果为：
         [ "zh_CN", "zh_HK", "zh_TW", "en_US", "en_UK" ]
     -->
 
-    <!-- init $math from a shared library -->
+    <!-- 从共享库中装载动态对象 $math  -->
     <init as="math" from="purc_dvobj_math" via="LOAD" />
 
+    <!-- 使用 POST 方法以及 from=foo 查询参数从 http://foo.bar.com/locales 获取数据并初始化 $locales  -->
     <init as="locales" from="http://foo.bar.com/locales" with="{ from: 'foo' }" via="POST" />
 
-    <!-- reset $new_users -->
+    <!-- 初始化 $new_users -->
     <init as="new_users">
         [
             { "id": "1", "avatar": "/img/avatars/101.png", "name": "Jerry", "region": "en_US" }
@@ -2135,7 +2136,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 - 当 `to` 属性指定的祖先元素定位名称不符合要求或者不存在时，将分别抛出 `BadName` 异常和 `EntityNotFound` 异常。
 - 当 `at` 属性指定的变量名不存在时，将抛出 `EntityNotFound` 异常。
 
-当我们在 `init` 标签中使用 `temporarily` 副词属性时，将操作父栈帧或者祖先栈帧中用户自定义的上下文变量 `$!`：
+当我们在 `init` 标签中使用 `temporarily` 副词属性时，将操作父栈帧或者祖先栈帧中用户自定义的上下文变量 `$!`，从而创建一个临时变量：
 
 - 初始时时，`$!` 应被定义一个空对象。新增用户自定义的临时变量，意味着在这个对象中增加一个新的键值对，键名为该临时变量的名称，而键值为该临时变量的值。
 - 使用 `as` 属性时，将初始化或覆盖父栈帧中用户自定义的上下文变量 `$!` 中指定的键值对。
@@ -2144,7 +2145,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 - 为使用方便，也可以用 `$<name of the temp. variable>` 表达式来访问临时变量：
    1. 基于名称查询命名变量时，将向上遍历祖先栈帧，找到第一个匹配的临时变量；
    1. 若没有找到，从当前 vDOM 位置的父元素开始，在祖先元素节点中查找对应的静态命名变量。
-- 作为一个限制，临时变量不能异步初始化，也就是说，`temporarily` 副词属性不能和 `asynchronously` 副词属性同时使用。
+- 作为一个限制，临时变量不能异步初始化，也就是说，`temporarily` 副词属性不能和 `asynchronously` 副词属性同时使用。若同时指定这两个副词属性，应忽略 `asynchronously`。
 
 #### 2.5.2) `update` 标签
 
