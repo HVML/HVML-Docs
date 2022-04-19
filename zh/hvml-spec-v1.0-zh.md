@@ -1934,10 +1934,10 @@ $EJSON.numberify(
 
 `hvml` 标签定义一个 HVML 文档（或 HVML 程序）。`hvml` 标签支持如下属性：
 
-- `target`：定义 HVML 文档的目标标记语言，取 `html`、 `xml` 等值。
+- `target`：定义 HVML 文档的目标标记语言，取 `html`、 `xml` 等值，通常是某种目标标记语言的名称。HVML 解释器应至少支持 `void` 这一特殊的目标标记语言；顾名思义，`void` 类型不产生任何目标文档内容，故而无需渲染器即可正常运行，此时，HVML 程序和一般的脚本程序并无本质区别。当目标标记语言定义为 `void` 时，解释器将维护一个特殊的 eDOM 树，对这个 eDOM 树的任何更新都将被完全忽略，而在其上执行 `$DOC.query` 将始终返回空的元素汇集。
 - `lang`： 定义语言信息，如 `en`、 `zh` 等；在解释器内部，当需要利用 Unicode 定义的语言规则进行大小写转换或者字符串比较时使用。
 
-除了 `target` 属性之外，在 `hvml` 标签中定义的 `lang` 属性以及其他属性，将被克隆到目标文档的根元素中。这里所说的“克隆（clone）”，是指在复制之前，要对标签的属性值或其内容按照 JSONSTR 做求值。
+除了 `target` 属性之外，在 `hvml` 标签中定义的 `lang` 属性以及其他属性，将被克隆到目标文档的根元素中。这里所说的“克隆（clone）”，是指在复制之前，要对标签的属性值或其内容按照 JSON 表达式做求值。
 
 除了注释之外，`hvml` 元素中可包含如下两种标签定义的子元素：
 
@@ -2981,7 +2981,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 而默认的操作组向标准输出流写入数组成员：
 
 ```html
-    <define as="listitems" from="/module/$DOC.doctype/listitems.hvml">
+    <define as="listitems" from="/module/$HVML.target/listitems.hvml">
         <choose on=$STREAM.stdout.writelines($?) />
     </define>
 
@@ -2995,12 +2995,38 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当使用 `from` 属性时，`define` 的行为如下：
 
-1. 尝试同步装载 `from` 指定的 HVML 片段，若不成功，则停止装载，抛出异常，继续使用内容定义的操作组。若成功，则，
-1. 尝试解析由已装载的 HVML 片段，若不成功，则停止装载，抛出异常，继续使用内容定义的操作组。若成功，则，
-1. 若解析后的 vDOM 片段树不包含任何有效子元素，则停止装载，抛出异常，继续使用内容定义的操作组。若成功，则，
-1. 使用解析后的 vDOM 片段树替代 `define` 的内容，并记录 `from`、 `with` 和 `via` 属性值求值结果的散列值（如 MD5）。
+1. 尝试同步装载 `from` 指定的 HVML 片段，若不成功，则停止装载，抛出异常，保留内容定义的操作组。若成功，则，
+1. 尝试解析已装载的 HVML 片段，若不成功，则停止装载，抛出异常，保留内容定义的操作组。若成功，则，
+1. 若解析后的 vDOM 片段树不包含任何有效子元素，则停止装载，抛出异常，保留内容定义的操作组。若成功，则，
+1. 对应的变量（`as` 属性值指定）指向解析后的 vDOM 片段树，并记录 `from`、 `with` 和 `via` 属性值求值结果的散列值（如 MD5）。
 
-若之后再次执行使用 `from` 属性的 `define` 动作元素，应对 `from`、 `with` 和 `via` 属性的求值结果再次求散列值，当这个散列值和已经记录的散列值不同时，重复上述动作。
+若之后再次执行使用 `from` 属性的 `define` 动作元素，则按如下步骤处理：
+
+1. 对 `as` 属性值求值，若 `as` 属性值对应的操作组已存在，则应对 `from`、 `with` 和 `via` 属性的求值结果再次求散列值，当这个散列值和已经记录的散列值不同时，重复上述装载行为；否则不做任何动作。
+1. 对 `as` 属性值求值，若 `as` 属性值对应的操作组不存在，则重复上述装载行为。这将产生一个新的变量指向解析后的 vDOM 片段树。
+
+如此，我们可以通过 `iterate` 动作元素装载多个 HVML 片段：
+
+```html
+<hvml target="html" lang="en">
+    <head>
+        <base href="$HVML.base(! 'file:///' )" />
+
+        <init as='fragments' with=$FS.list_prt('/module/$HVML.target/','*.hvml','name') temp>
+            <iterate on=$? by="RANGE: 0">
+                <define as="ops$FS.basename($?,'hvml')" from="/module/$HVML.target/$?">
+                    <choose on=true />
+                </define>
+            </iterate>
+        </init>
+    </head>
+
+    ...
+
+</hvml>
+```
+
+以上代码，若在 `/module/html/` 目录下存在两个 HVML 片段文件：`A.hvml` 和 `B.hvml`，则会创建两个操作组：`opsA` 和 `opsB`，分别指向两个独立的 vDOM 片段树。当我们在 HVML 程序中使用 `include`、`call` 或者 `observe` 引用 `opsA` 和 `opsB` 时，将执行对应的 vDOM 片段树，而非原始的默认值操作组。
 
 若 `define` 定义的操作组为空，则使用 `include` 或者 `call` 标签引用该操作组时，应抛出 `NoData` 异常。
 
