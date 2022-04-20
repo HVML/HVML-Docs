@@ -428,7 +428,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
         </choose>
 
         <observe on=".avatar" for="click">
-            <load from="user.hvml" with="{'id': $@.attr[data-value]}" as="userProfile" in="modals:_self" />
+            <load from="user.hvml" with="{'id': $@.attr[data-value]}" as="userProfile" in="_self" />
         </observe>
     </body>
 </hvml>
@@ -3787,7 +3787,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 `load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递到新的 HVML 文档。如：
 
 ```html
-    <load from="b.hvml" with="$user" as="userProfile" in="main:_blank" />
+    <load from="b.hvml" with="$user" as="userProfile" in="user@main:tab" />
 ```
 
 `load` 标签支持如下介词属性：
@@ -3796,10 +3796,10 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 - `with`：指定装载对应程序的请求参数。
 - `as`：当我们使用 `async` 副词属性加载该 HVML 程序时，我们可使用该属性将这个程序和一个变量名称绑定，从而可观察该程序的加载和执行状态。
 - `at`：和 `init` 类似，在 `load` 标签中使用 `as` 属性命名一个 HVML 程序时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
-- `in`：指定用于渲染目标文档的渲染器窗口分组名称以及窗口名称，用分号（`:`）分隔。指定窗口名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的窗口：
-   - `_self`：表示当前窗口。在当前窗口中渲染新的 HVML 程序，意味着强制终止当前的 HVML 程序，并清空当前的目标文档内容，然后装载新的 HVML 程序。使用该窗口名称时，将忽略窗口分组名称。
-   - `_first`：表示指定分组中的第一个窗口。
-   - `_last`：表示指定分组中的最后一个窗口。
+- `in`：指定用于渲染目标文档的渲染器窗口分组名称以及窗口名称，使用 `<window_name>@<group_name>:<window_type>` 这样的形式，用于指定窗口名称、所在窗口组和窗口类型（`tab` 和 `plain`）。指定窗口名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的窗口（使用保留名称时，不需要指定窗口组和窗口类型）：
+   - `_self`：表示当前窗口或标签页。在当前窗口中渲染新的 HVML 程序，意味着强制终止当前的 HVML 程序，并清空当前的目标文档内容，然后装载新的 HVML 程序。使用该窗口名称时，将忽略窗口分组名称。
+   - `_first`：表示当前分组中的第一个窗口或者标签页。
+   - `_last`：表示当前分组中的最后一个窗口或者标签页。
 
 当给定的窗口名称不存在时，意味着在指定分组中创建一个新的空白窗口，并赋予该窗口给定的名称。
 
