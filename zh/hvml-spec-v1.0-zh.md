@@ -2047,11 +2047,12 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 默认情况下，我们使用 `init` 标签初始化或者覆盖一个静态变量，但如果我们在 `init` 标签中使用 `temporarily` 副词属性，则会创建一个临时变量。
 
-我们可使用 `to` 属性指定变量的作用域（scope）或者所在栈帧：
+通常，我们使用 `as` 属性指定要初始化的变量之名称，我们可使用 `at` 属性指定变量的名字空间（name space）或者在创建临时变量的情况下，指定变量所在栈帧：
 
-- 若初始化静态变量，当我们使用下划线（\_）打头的预定义名称 `_parent`、`_grandparent`、 `_ancestor` 时，将分别在父元素、祖父元素或始祖元素上定义变量。若初始化临时变量，则分别在父栈帧、祖父栈帧和始祖栈帧上定义临时变量。
-- 使用井号（#）打头的元素标识符，如 `#myAnchor`，将在其祖先元素（或祖先栈帧）中搜索指定的元素标识符（由 `id` 属性指定），将在第一个匹配的祖先元素（或祖先栈帧）上定义变量。
-- 静默请求情形下，若未找到匹配的祖先元素，则按未定义 `to` 属性做默认处理。
+- 当我们使用下划线（\_）打头的预定义名称 `_parent`、`_grandparent`、 `_ancestor` 时，若初始化静态变量，将分别在父元素、祖父元素或始祖元素（根元素）上定义变量；若初始化临时变量，则分别在父栈帧、祖父栈帧和始祖栈帧上定义临时变量。
+- 使用井号（#）打头的元素标识符，如 `#myAnchor`，将在其祖先元素（或祖先栈帧）中搜索指定的元素标识符（由元素的 `id` 属性指定），将在第一个匹配的祖先元素（或祖先栈帧）上初始化变量。
+- 使用正整数 N（如 `2`、`3`）时，若初始化静态变量，将沿 vDOM 树向祖先元素方向回溯 N 个祖先元素，在该祖先元素上初始化变量；若初始化临时变量，将沿执行栈向上回溯 N 个栈帧，在该栈帧上初始化变量。
+- 静默求值情形下，若未找到匹配的祖先元素或者祖先栈帧，则按未定义 `at` 属性做默认处理。
 
 我们可以使用 `with` 属性定义一个 JSON 求值表达式来指定变量的值。我们也可以直接将 JSON 数据嵌入到 `init` 标签内，使用内容来定义这个变量的值，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义该请求的 URL，使用 `with` 参数定义请求参数，使用 `via` 定义请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
 
@@ -2112,8 +2113,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </init>
 
     <div>
-        <!-- 使用 `at` 属性不会创建新的变量，而是会覆盖 `body` 元素上的 `users` 变量 -->
-        <init at="users">
+        <!-- 使用 `at` 属性覆盖 `body` 元素上的 `users` 变量 -->
+        <init as="users" at="_grandparent">
             [
                 { "id": "3", "avatar": "/img/avatars/3.png", "name": "Vincent", "region": "zh_CN" },
                 { "id": "4", "avatar": "/img/avatars/4.png", "name": "David", "region": "en_US" }
@@ -2126,10 +2127,10 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         <section id="myAnchor">
             <div>
                 <!-- 在 `section` 元素上创建一个 `users` 变量，初始化为空数组 -->
-                <init as="users" with="[]" to="#myAnchor" />
+                <init as="users" with="[]" at="#myAnchor" />
 
                 <!-- 在 `section` 元素上创建一个 `emptyUser` 变量，初始化为空对象 -->
-                <init as="emptyUser" with="{}" to="_grandparent" />
+                <init as="emptyUser" with="{}" at="_grandparent" />
             </div>
         </section>
     </div>
@@ -3039,11 +3040,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 1. 若解析后的 vDOM 片段树不包含任何有效子元素，则停止装载，抛出异常，保留内容定义的操作组。若成功，则，
 1. 对应的变量（由 `as` 属性值指定）指向解析后的 vDOM 片段树。
 
-和 `init` 标签类似，使用 `define` 标签从外部资源装载 HVML 片段时，可使用 `with` 和 `via` 等属性指定查询参数和请求方法。另外：
+和 `init` 标签类似，使用 `define` 标签从外部资源装载 HVML 片段时，可使用 `with` 和 `via` 等属性指定查询参数和请求方法。
 
-1. 当 `define` 标签的 `as` 属性定义的变量已经存在时，应抛出 `DuplicateName` 异常。注意这点和 `init` 标签不同，`init` 标签会直接使用新数据覆盖已有的变量。
-1. 若要修改已有的操作组，可使用 `at` 属性指定要修改的操作组名称，而非创建一个新的操作组。当 `at` 属性指定的操作组不存在时，应抛出 `EntityNotFound` 异常。
-1. 可使用 `async` 副词属性，异步装载和解析操作组，并使用 `observe` 元素观察变量的状态。
+本质上，我们可以将操作组视为一种特殊的数据，使用 `define` 定义一个命名操作组和使用 `init` 初始化一个变量并无本质区别。因此，我们也可以使用 `at` 属性指定操作组名称的作用域，也可以使用 `async` 副词属性异步装载和解析操作组，并使用 `observe` 元素观察变量的状态。
 
 下面的代码通过 `iterate` 动作元素装载多个 HVML 片段：
 
@@ -3070,11 +3069,12 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 以上代码，若在 `/module/html/` 目录下存在两个 HVML 片段文件：`A.hvml` 和 `B.hvml`，则会创建两个操作组：`opsA` 和 `opsB`，分别指向两个独立的 vDOM 片段树。当我们在 HVML 程序中使用 `include`、`call` 或者 `observe` 引用 `opsA` 和 `opsB` 时，将执行对应的 vDOM 片段树，而非原始的默认值操作组。
 
-和 `init` 类似，在 `head` 元素定义的 `define`，将创建全局可见的操作组，也就是说，上述代码中定义的 `opsA` 和 `opsB` 的操作组是全局可见的。在 `body` 中定义的 `define`，默认将创建仅在其父元素所在子树中可见的操作组。但我们可使用 `to` 属性指定操作组的作用域（scope）：
+和 `init` 类似，在 `head` 元素定义的 `define`，将创建全局可见的操作组，也就是说，上述代码中定义的 `opsA` 和 `opsB` 的操作组是全局可见的。在 `body` 中使用 `define`，默认将在其父元素上绑定操作组名称，从而让该操作组在父元素为根的 vDOM 子树中可见。但我们可使用 `at` 属性指定操作组的名字空间（name space）：
 
-- 使用下划线（\_）打头的预定义名称 `_parent`、`_grandparent`、 `_ancestor`，将分别在父元素、祖父元素、始祖元素（根元素）上定义操作组名称。
+- 使用下划线（\_）打头的预定义名称 `_parent`、`_grandparent`、 `_ancestor`，将分别在父元素、祖父元素、始祖元素（根元素）上定义操作组的名称。
 - 使用井号（#）打头的元素标识符，如 `#myAnchor`，将在其祖先元素中搜索指定的元素标识符（由 `id` 属性指定），将在第一个匹配的祖先元素上定义操作组的名称。
-- 静默求值情况下，若未找到匹配的祖先元素，则按未定义 `to` 属性做默认处理。
+- 使用正整数 N（如 `2`、`3`）时，将沿 vDOM 树向祖先元素方向回溯 N 个祖先元素，在该祖先元素上定义操作组名称。
+- 静默求值情况下，若未找到匹配的祖先元素，则按未定义 `at` 属性做默认处理；否则应该抛出 `EntityNotFound` 异常。
 
 按照以上规则，上述定义多个操作组的方法，亦可按以下方式编码：
 
@@ -3088,7 +3088,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <body>
 
         <iterate on=$FS.list_prt('/module/$HVML.target/','*.hvml','name') by="RANGE: 0">
-            <define as="ops$FS.basename($?,'hvml')" from="/module/$HVML.target/$?" to="_body">
+            <define as="ops$FS.basename($?,'hvml')" at="_grandparent" from="/module/$HVML.target/$?" >
                 <choose on=true />
             </define>
         </iterate>
@@ -3384,10 +3384,10 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         <test on="$updateTimes">
             <match for="GE 10">
                 <!-- remove the observer -->
-                <init at="opsPerSecond" with="undefined" />
+                <init as="opsPerSecond" with="undefined" />
 
                 <!-- remove the variable -->
-                <init at="updateTimes" with="undefined" />
+                <init as="updateTimes" with="undefined" />
             </match>
 
             <match for="ANY">
