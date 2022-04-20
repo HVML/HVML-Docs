@@ -428,7 +428,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
         </choose>
 
         <observe on=".avatar" for="click">
-            <load from="user.hvml" with="{'id': $@.attr[data-value]}" as="userProfile" in="_modal" />
+            <load from="user.hvml" with="{'id': $@.attr[data-value]}" as="userProfile" in="modals:_blank" />
         </observe>
     </body>
 </hvml>
@@ -705,7 +705,6 @@ HVML 不提供任何操作可以用来改变不可变数据，但开发者可以
 
 - `init`：该标签初始化一个变量；我们将有名字的数据称为变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义请求的 URL，`with` 属性定义请求的参数，`via` 属性定义请求的方法（如 `GET` 或 `POST`）。
 - `bind`：该标签用于定义一个表达式变量。
-- `load`：该标签用于定义一个正在执行的 HVML 程序变量。
 
 【待删除——
 
@@ -1459,6 +1458,7 @@ HVML 还定义有如下一些动作标签：
 - `nosetotail`：在 `iterate` 动作元素中，用于将上次迭代的结果作为下次迭代的输入。
 - `responsively`：在骨架元素中，用于定义其文本内容是响应式的。
 - `noreturn`：在 `request` 标签中，用于定义无需返回值。
+- `concurrently`：在 `load` 和 `call` 标签中，用于定义并行装载 HVML 程序或者执行一个函数。
 
 注意：在 HVML 中，我们无需为副词属性赋值。
 
@@ -3477,7 +3477,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 也就是说，`call` 和 `include` 的主要区别在于如何处理操作组中 `return` 元素定义的返回值：前者关心返回值，后者不关心返回值。在实践当中，`include` 一般用于操作目标文档，`call` 一般用作获取一个结果数据。
 
-另外，我们可以在 `call` 元素中使用副词属性 `asynchronously`，这样我们可以异步调用耗时的函数，然后使用 `observe` 观察其结果。如：
+另外，我们可以在 `call` 元素中使用副词属性 `concurrently`，这样我们可以并行调用耗时的函数，然后使用 `observe` 观察其结果。如：
 
 ```html
         <define as="collectAllDirEntriesRecursively">
@@ -3485,7 +3485,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         </define>
 
         <listbox id="entries">
-            <call as="my_task" on="$collectAllDirEntriesRecursively" with="/" asynchronously />
+            <call as="my_task" on="$collectAllDirEntriesRecursively" with="/" concurrently />
             <observe on="$my_task" for="success">
                 <iterate on="$?" in="#entries" by="RANGE: FROM 0">
                     <update on="$@" to="append" with="$dir_entry" />
@@ -3779,7 +3779,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 `load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递到新的 HVML 文档。如：
 
 ```html
-    <load from="b.hvml" with="$user" as="userProfile" in="_blank" />
+    <load from="b.hvml" with="$user" as="userProfile" in="main:_blank" />
 ```
 
 `load` 标签支持如下介词属性：
@@ -3788,16 +3788,17 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 - `with`：指定装载对应程序的请求参数。
 - `as`：当我们使用 `async` 副词属性加载该 HVML 程序时，我们可使用该属性将这个程序和一个变量名称绑定，从而可观察该程序的加载和执行状态。
 - `at`：和 `init` 类似，在 `load` 标签中使用 `as` 属性命名一个 HVML 程序时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
-- `in`：指定渲染器的窗口名称，该 HVML 程序的内容将展示在该窗口中。我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的窗口：
-   - `_self`：表示当前窗口。在当前窗口中渲染新的 HVML 程序，意味着强制终止当前的 HVML 程序，并清空当前的目标文档内容，然后装载新的 HVML 程序。
-   - `_blank`：表示新的空白窗口。
-   - `_top`：表示最顶层窗口。
-   - `_parent`：表示在父窗口（若存在）中渲染新的目标文档，若没有父窗口，则等同于 `_blank`。
+- `in`：指定用于渲染目标文档的渲染器窗口分组名称以及窗口名称，用分号（`:`）分隔。指定窗口名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的窗口：
+   - `_self`：表示当前窗口。在当前窗口中渲染新的 HVML 程序，意味着强制终止当前的 HVML 程序，并清空当前的目标文档内容，然后装载新的 HVML 程序。使用该窗口名称时，将忽略窗口分组名称。
+   - `_first`：表示指定分组中的第一个窗口。
+   - `_last`：表示指定分组中的最后一个窗口。
+   - `_blank`：表示在指定分组中创建一个新的空白窗口。
 
 `load` 标签支持如下副词属性：
 
-- `synchronously`：同步装载。`load` 标签将等待新的 HVML 程序退出，相当于创建一个模态窗口。
-- `asynchronously`：异步装载。
+- `synchronously`：同步装载，默认行为。`load` 元素将等待新的 HVML 程序退出，相当于创建一个模态窗口。
+- `asynchronously`：异步装载。`load` 元素不等待新的 HVML 程序退出。
+- `concurrently`：并行执行 HVML 程序。若解释器支持行者（runner），则 `as` 属性的值用于标识一个行者。
 
 当 `from` 属性值指定的 URL 定义有片段（使用`#`符号）时，`load` 元素将尝试装载该 HVML 文档中的另一个本体，即另一个 `body` 子树定义的内容。
 
@@ -3808,7 +3809,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
     <body>
         ...
 
-        <load from="#errorPage" in="_self" />
+        <load from="#errorPage" in="main:_self" />
     </body>
 
     <body id="errorPage">
@@ -3826,7 +3827,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 假定我们使用 `load` 标签装载一个用来创建新用户的 HVML 程序，如果使用同步装载方式：
 
 ```html
-    <load from="new_user.hvml" in="_blank" synchronously>
+    <load from="new_user.hvml" in="main:_blank" synchronously>
         <test on="$?.status">
             <match for="AS 'exited'" exclusively>
                 <choose on="$3?.payload" in="#the-user-list">
@@ -3840,7 +3841,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 如果使用异步装载方式，则需要 `as` 属性并使用 `observe` 标签创建一个观察者，用于观察程序的 `terminated`（终止）事件：
 
 ```html
-    <load from="new_user.hvml" as="newUser" in="_blank" asynchronously>
+    <load from="new_user.hvml" as="newUser" in="main:_blank" asynchronously>
         <observe on="$newUser">
             <test on="$?.name">
                 <match for="AS 'status:exited'" exclusively>
@@ -5919,6 +5920,8 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 定义了 `observe` 操作组的上下文变量之内容。
 
 调整了动作标签的描述顺序。
+
+增加 `concurrently` 副词属性，用于 `load` 和 `call` 标签定义并行执行程序或者调用操作组。通常意味着在独立的线程中执行程序或操作组。
 
 相关章节：
 
