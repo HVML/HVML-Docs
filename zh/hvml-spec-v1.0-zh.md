@@ -3743,6 +3743,14 @@ doSomething(<string $foo>, <string $bar>)
 bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 ```
 
+我们使用 `request` 标签，也可以向渲染器本身发送一个请求，比如新建窗口组，移除一个窗口等。此时，不指定 `on` 属性值。至于具体要执行的请求操作以及参数，通过 `to` 属性和 `with` 属性传递，其含义和要求和具体的渲染器协议有关。比如在使用 PURCMC 协议时，我们可以向渲染器发送如下的请求来添加窗口组：
+
+```html
+    <request to="addWindowGroups" >
+        '<section id="newGroup1"></section><section id="newGroup2"><article id="newGroupBody2" class="tabbedwindow"></article></section>'
+    </request>
+```
+
 【待删除——
 
 `request` 标签在外部数据源上发出一个同步或者异步的请求。
