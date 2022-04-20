@@ -428,7 +428,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
         </choose>
 
         <observe on=".avatar" for="click">
-            <load from="user.hvml" with="{'id': $@.attr[data-value]}" as="userProfile" in="modals:_blank" />
+            <load from="user.hvml" with="{'id': $@.attr[data-value]}" as="userProfile" in="modals:_self" />
         </observe>
     </body>
 </hvml>
@@ -3800,7 +3800,8 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
    - `_self`：表示当前窗口。在当前窗口中渲染新的 HVML 程序，意味着强制终止当前的 HVML 程序，并清空当前的目标文档内容，然后装载新的 HVML 程序。使用该窗口名称时，将忽略窗口分组名称。
    - `_first`：表示指定分组中的第一个窗口。
    - `_last`：表示指定分组中的最后一个窗口。
-   - `_blank`：表示在指定分组中创建一个新的空白窗口。
+
+当给定的窗口名称不存在时，意味着在指定分组中创建一个新的空白窗口，并赋予该窗口给定的名称。
 
 `load` 标签支持如下副词属性：
 
