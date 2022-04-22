@@ -1415,9 +1415,9 @@ HVML 还定义有如下一些动作标签：
 - `on`：在 `choose`、`iterate` 等操作数据的标签中，用于定义执行动作所依赖的数据、元素或元素汇集。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`$?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
 - `in`：用于定义执行操作的目标文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。
 - `for`：在 `observe`、 `forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的消息类型；在 `match` 标签中，用于定义匹配条件。
-- `as`：在 `init`、 `define`、 `bind`、 `load` 等元素中定义变量名称。
+- `as`：在 `init`、 `define`、 `bind`、 `load` 等元素中定义变量、操作组或者行者的名称。
 - `at`：在 `init`、 `define` 中指定操作组名称或者变量名的名字空间；在 `update` 元素中指定目标数据上的目标位置。
-- `with`：在 `init`、 `request` 元素中定义发送请求或消息时的参数；在 `iterate` 元素中定义不使用执行器时迭代结果的求值表达式。
+- `with`：在 `init`、 `request`、 `load` 元素中定义发送请求或装载新 HVML 程序时的参数；在 `iterate` 元素中定义不使用执行器时迭代结果的求值表达式。
 - `to`：在 `update` 标签中定义具体的更新动作，比如表示追加的 `append`，表示替换的 `displace` 等；在 `back` 标签中定义回退到的栈帧。
 - `by`：用于定义执行测试、选择、迭代、归约操作时的脚本程序类或函数名称，分别称为选择器、迭代器或归约器，并统称为执行器（executor）。HVML 允许解释器支持内建（built-in）执行器。对简单的数据处理，可直接使用内置执行器，在复杂的数据处理情形中，可使用外部程序定义的类或者函数。在 HVML 中，我们使用如下前缀来表示不同的执行器类型：
    - `CLASS: ` 表示使用外部程序定义的类作为执行器。
@@ -3733,10 +3733,10 @@ doSomething(<string $foo>, <string $bar>)
 我们还可以使用 `request` 在指定的元素上执行一段渲染器支持的函数调用，此时，我们使用 `call:` 前缀：
 
 ```html
-    <request on="#myModal" to="call:bootstrap.Modal.getInstance($THIS$).toggle()" />
+    <request on="#myModal" to="call:bootstrap.Modal.getInstance(@THIS@).toggle()" />
 ```
 
-在上面的 `to` 属性值中，我们使用了 `$THIS$` 和 `$ARGS$` 等指代当前元素对象以及通过 `with` 属性传递给方法的参数。这些特殊关键词由渲染器处理并替代。比如上面的函数调用，最终会被渲染器解释为如下 JavaScript 代码：
+在上面的 `to` 属性值中，我们使用了 `@THIS@` 和 `@ARGS@` 等指代当前元素对象以及通过 `with` 属性传递给方法的参数。这些特殊关键词由渲染器处理并替代。比如上面的函数调用，最终会被渲染器解释为如下 JavaScript 代码：
 
 ```js
 bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
@@ -3783,7 +3783,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 
 #### 2.5.17) `load` 和 `exit` 标签
 
-`load` 标签用来装载一个由 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递到新的 HVML 文档。如：
+`load` 标签用来装载一个由 `on` 属性指定的数据或者 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递到新的 HVML 文档。如：
 
 ```html
     <load from="b.hvml" with="$user" as="userProfile" in="user@main:tab" />
@@ -3792,15 +3792,44 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 `load` 标签支持如下介词属性：
 
 - `from`：指定的 HVML 程序的 URL。
-- `with`：指定装载对应程序的请求参数。
+- `with`：指定装载对应程序的请求参数；该数据应是一个对象。
 - `as`：当我们使用 `async` 副词属性加载该 HVML 程序时，我们可使用该属性将这个程序和一个变量名称绑定，从而可观察该程序的加载和执行状态。
 - `at`：和 `init` 类似，在 `load` 标签中使用 `as` 属性命名一个 HVML 程序时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
-- `in`：指定用于渲染目标文档的渲染器窗口分组名称以及窗口名称，使用 `<page_name>@<group_name>:<page_type>` 这样的形式，用于指定页面名称、所在页面组和页面类型（`tab`、`panel`）。指定窗口名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
+- `in`：指定用于渲染目标文档的渲染器页面名称，使用 `<page_name>@<group_name>:<page_type>` 这样的形式，用于指定页面名称、所在页面组和页面类型（`plainwindow`、`tab` 和 `panel`）。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
    - `_self`：表示当前页面。在当前页面中渲染新的 HVML 程序，意味着强制终止当前的 HVML 程序，并清空当前的目标文档内容，然后装载新的 HVML 程序。使用该页面名称时，将忽略页面分组以及页面类型信息。
-   - `_first`：表示当前页面分组中的第一个页面。
-   - `_last`：表示当前页面分组中的最后一个页面。
+   - `_active`：表示当前 HVML 程序对应分组中的当前活动页面；当前活动页面对应的 HVML 程序将被强制终止。
+   - `_first`：表示当前 HVML 程序对应分组中的第一个页面；第一个页面对应的 HVML 程序将被强制终止。
+   - `_last`：表示当前 HVML 程序对应分组中的最后一个页面；最后一个页面对应的 HVML 程序将被强制终止。
 
-当给定的页面名称不存在时，意味着在指定分组中创建一个新的页面，并赋予该页面给定的名称。
+当给定的页面名称不存在时，意味着在指定分组中创建一个新的页面，并赋予该页面给定的名称。当我们创建一个新的渲染器页面时，可通过其 `with` 属性值的 `_renderer` 键名指定传递给渲染器的页面参数，如类名和样式。
+
+```html
+    <init as="request">
+        {
+            hvml: '<hvml target="html"><body><h1>$REQUEST.text</h1><p>$REQUEST.hvml</p></body></hvml>',
+            text: "Hello, world!",
+            _renderer: {
+                class: 'hello',
+                style: 'with:200px;height:100px',
+            },
+        }
+    </init>
+
+    <load on="$request.hvml" with="$request" as="hello" in="hello@main:tab" />
+```
+
+上面的代码，使用 `on` 属性指定了一段要装载执行的 HVML 程序（`$request.hvml`），并将 `$request` 数据作为该程序的请求数据。该程序使用了 `$REQUEST` 预定义变量的 `text` 作为 `h1` 元素的内容，将程序代码本身作为 `p` 元素的内容。同时，该程序使用 `_renderer` 键名定义了需要传递给渲染器的参数：页面的类名及样式信息。
+
+该程序最终生成的 HTML 文档内容如下：
+
+```html
+<html>
+    <body>
+        <h1>Hello, world!</h1>
+        <p>&lt;hvml target="html"&gt;&lt;body&gt;&lt;h1&gt;$REQUEST.text&lt;/h1&gt;&lt;p&gt;$REQUEST.hvml&lt;/p&gt;&lt;/body>&lt;/hvml&gt;</p>
+    </body>
+</html>
+```
 
 `load` 标签支持如下副词属性：
 
