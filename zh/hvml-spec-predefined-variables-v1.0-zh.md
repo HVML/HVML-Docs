@@ -162,16 +162,16 @@ Language: Chinese
       * [3.10.6) `assemble` 方法](#3106-assemble-方法)
    + [3.11) `STREAM`](#311-stream)
       * [3.11.1) `open` 方法](#3111-open-方法)
-      * [3.11.2) `stdin` 静态属性](#3112-stdin-静态属性)
-      * [3.11.3) `stdout` 静态属性](#3113-stdout-静态属性)
-      * [3.11.4) `stderr` 静态属性](#3114-stderr-静态属性)
-      * [3.11.5) 流实体的 `readstruct` 方法](#3115-流实体的-readstruct-方法)
-      * [3.11.6) 流实体的 `writestruct` 方法](#3116-流实体的-writestruct-方法)
-      * [3.11.7) 流实体的 `readlines` 方法](#3117-流实体的-readlines-方法)
-      * [3.11.8) 流实体的 `writelines` 方法](#3118-流实体的-writelines-方法)
-      * [3.11.9) 流实体的 `readbytes` 方法](#3119-流实体的-readbytes-方法)
-      * [3.11.10) 流实体的 `writebytes` 方法](#31110-流实体的-writebytes-方法)
-      * [3.11.11) 流实体的 `close` 方法](#31111-流实体的-close-方法)
+      * [3.11.2) `close` 方法](#3112-close-方法)
+      * [3.11.3) `stdin` 静态属性](#3113-stdin-静态属性)
+      * [3.11.4) `stdout` 静态属性](#3114-stdout-静态属性)
+      * [3.11.5) `stderr` 静态属性](#3115-stderr-静态属性)
+      * [3.11.6) 流实体的 `readstruct` 方法](#3116-流实体的-readstruct-方法)
+      * [3.11.7) 流实体的 `writestruct` 方法](#3117-流实体的-writestruct-方法)
+      * [3.11.8) 流实体的 `readlines` 方法](#3118-流实体的-readlines-方法)
+      * [3.11.9) 流实体的 `writelines` 方法](#3119-流实体的-writelines-方法)
+      * [3.11.10) 流实体的 `readbytes` 方法](#31110-流实体的-readbytes-方法)
+      * [3.11.11) 流实体的 `writebytes` 方法](#31111-流实体的-writebytes-方法)
       * [3.11.12) 流实体的 `seek` 方法](#31112-流实体的-seek-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
@@ -235,8 +235,9 @@ Language: Chinese
       * [4.2.28) `unlink` 方法](#4228-unlink-方法)
       * [4.2.29) `file_contents` 方法](#4229-file_contents-方法)
       * [4.2.30) `opendir` 方法](#4230-opendir-方法)
-      * [4.2.31) 目录流实体的 `read` 方法](#4231-目录流实体的-read-方法)
-      * [4.2.32) 目录流实体的 `rewind` 方法](#4232-目录流实体的-rewind-方法)
+      * [4.2.31) `closedir` 方法](#4231-closedir-方法)
+      * [4.2.32) 目录流实体的 `read` 方法](#4232-目录流实体的-read-方法)
+      * [4.2.33) 目录流实体的 `rewind` 方法](#4233-目录流实体的-rewind-方法)
    + [4.3) `FILE`](#43-file)
       * [4.3.1) 文本文件](#431-文本文件)
          - [4.3.1.1) `txt.head` 方法](#4311-txthead-方法)
@@ -4709,7 +4710,7 @@ $STREAM.open(
 
 **备注**
 
-1. 流的关闭将在最终释放对应的原生实体值时自动进行，故而没有对应的 `close` 方法。
+1. 流的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用 `$FS.close` 方法释放流实体占用的系统资源。
 1. 选项字符串随流的类型不同而不同。
 1. 选项字符串与`fopen`对应关系：
 
@@ -4728,11 +4729,40 @@ $STREAM.open(
 $STREAM.open("file://abc.md", "read write")
 ```
 
-#### 3.11.2) `stdin` 静态属性
+#### 3.11.2) `close` 方法
+
+关闭流。
+
+**描述**
+
+```js
+$STREAM.close(
+        < stream $stream: `the stream entity to close.` >
+) boolean
+```
+
+该方法关闭由 `$STREAM.open` 打开的流实体，以便释放该流实体占用的系统资源。成功时返回 `true`，若流已关闭，也视作成功。
+
+注意，若没有调用该方法，流的关闭将在最终释放对应的原生实体值时自动进行。
+
+**异常**
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```js
+// 创建并清空
+$STREAM.$close($STREAM.open("file://abc.md", "read write create truncate"))
+```
+
+#### 3.11.3) `stdin` 静态属性
 
 这是一个静态属性，对应一个流实体，其值可用于流式读写的读取接口，是 C 语言标准输入流的封装。
 
-#### 3.11.3) `stdout` 静态属性
+#### 3.11.4) `stdout` 静态属性
 
 这是一个静态属性，对应一个流实体，其值可用于流式读写的写入接口，是 C 语言标准输出流的封装。
 
@@ -4743,11 +4773,11 @@ $STREAM.open("file://abc.md", "read write")
 $STREAM.stdout.writelines($SYSTEM.uname_prt('kernel-name'))
 ```
 
-#### 3.11.4) `stderr` 静态属性
+#### 3.11.5) `stderr` 静态属性
 
 这是一个静态属性，其对应一个流实体，值可用于流式读写的写入接口，是 C 语言标准错误流的封装。
 
-#### 3.11.5) 流实体的 `readstruct` 方法
+#### 3.11.6) 流实体的 `readstruct` 方法
 
 从流中读取一个二进制结构，并转换为适当的数据。
 
@@ -4786,7 +4816,7 @@ $stream.readstruct('i16le i32le')
     // array: [10, 10]
 ```
 
-#### 3.11.6) 流实体的 `writestruct` 方法
+#### 3.11.7) 流实体的 `writestruct` 方法
 
 将多个数据按照指定的结构格式写入流。
 
@@ -4840,7 +4870,7 @@ $stream.writestruct("i16le:2 i32le", [10, 15], 255)
 // 写入文件(16进制)：0x0a 0x00 0x0f 0x00 0xff 0x00 0x00 0x00
 ```
 
-#### 3.11.7) 流实体的 `readlines` 方法
+#### 3.11.8) 流实体的 `readlines` 方法
 
 从流中读取给定行数，返回字符串数组。
 
@@ -4881,7 +4911,7 @@ $stream.readlines(10)
     // array: ["This is the string to write", "Second line"]
 ```
 
-#### 3.11.8) 流实体的 `writelines` 方法
+#### 3.11.9) 流实体的 `writelines` 方法
 
 将字符串写入流中。
 
@@ -4921,7 +4951,7 @@ $STREAM.stdout.writelines(["This is the string to write", "Second line"])
     // Second line
 ```
 
-#### 3.11.9) 流实体的 `readbytes` 方法
+#### 3.11.10) 流实体的 `readbytes` 方法
 
 从流中读取一个字节序列，返回一个字节序列。
 
@@ -4962,7 +4992,7 @@ $STREAM.stdin.readbytes(10)
     // bsequence: bx77726974652073747269
 ```
 
-#### 3.11.10) 流实体的 `writebytes` 方法
+#### 3.11.11) 流实体的 `writebytes` 方法
 
 将一个字节序列写入流。
 
@@ -4999,10 +5029,6 @@ $STREAM.stdout.writebytes(bx48564d4c3A202d5f2e)
 $STREAM.stdout.writebytes("write string")
     // longint: 12L FIXME: 字符串作为字节序列写入时，应该写入结尾的空字符。
 ```
-
-#### 3.11.11) 流实体的 `close` 方法
-
-TODO
 
 #### 3.11.12) 流实体的 `seek` 方法
 
@@ -6490,7 +6516,7 @@ $FS.opendir(
 
 - PHP `opendir()` 函数：<https://www.php.net/manual/en/function.opendir.php>
 
-#### 4.2.30) `closedir` 方法
+#### 4.2.31) `closedir` 方法
 
 关闭目录流。
 
@@ -6516,7 +6542,7 @@ $FS.closedir(
 
 - PHP `opendir()` 函数：<https://www.php.net/manual/en/function.opendir.php>
 
-#### 4.2.31) 目录流实体的 `read` 方法
+#### 4.2.32) 目录流实体的 `read` 方法
 
 读取下一个目录项。
 
@@ -6532,7 +6558,7 @@ $dirStream.read object | false
 
 - PHP `readdir()` 函数：<https://www.php.net/manual/en/function.readdir.php>
 
-#### 4.2.32) 目录流实体的 `rewind` 方法
+#### 4.2.33) 目录流实体的 `rewind` 方法
 
 重置目录流。
 
