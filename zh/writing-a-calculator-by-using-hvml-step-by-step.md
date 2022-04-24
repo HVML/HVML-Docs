@@ -314,7 +314,7 @@
 
 ```hvml
         <observe on=".clear" for="click">
-            <init as="expression">0</init>
+            <init as="expression" at="_root">0</init>
         </observe>
 ```
 
@@ -322,7 +322,7 @@
 
 ```hvml
         <observe on=".letters" for="click">
-            <init as="expression" with="$expression$@.textContent" />
+            <init as="expression" at="_root" with="$expression$@.textContent" />
         </observe>
 ```
 
@@ -340,7 +340,7 @@
 
 ```html
         <observe on=".backspace" for="click">
-            <init as="expression" with="$STR.strip($expression, 1)" />
+            <init as="expression" at="_root" with="$STR.strip($expression, 1)" />
         </observe>
 ```
 
@@ -349,7 +349,7 @@
 ```html
         <observe on=".equal" for="click">
             <choose on="$expression" by="CLASS: CEval">
-                <init as="expression" with="$?" />
+                <init as="expression" at="_root" with="$?" />
             </choose>
         </observe>
 ```
@@ -371,7 +371,7 @@ class CEval (HVMLChooser):
 
 ```html
         <observe on=".equal" for="click">
-            <init as="expression" with="$MATH.eval($expression)" />
+            <init as="expression" at="_root" with="$MATH.eval($expression)" />
         </observe>
 ```
 
@@ -383,10 +383,10 @@ class CEval (HVMLChooser):
         <observe on=".letters" for="click">
             <test on="$expression">
                 <match for="LIKE 'err*'" exclusively>
-                    <init at="expression" with="$@.textContent" />
+                    <init as="expression" at="_root" with="$@.textContent" />
                 </match>
                 <match for="ANY">
-                    <init at="expression" with="$expression$@.textContent" />
+                    <init as="expression" at="_root" with="$expression$@.textContent" />
                 </match>
             </test>
         </observe>
@@ -400,10 +400,10 @@ class CEval (HVMLChooser):
         <observe on=".backspace" for="click">
             <test on="$STR.strlen($expression)">
                 <match for="EQ 1" exclusively>
-                    <init as="expression" with="0" />
+                    <init as="expression" at="_root" with="0" />
                 </match>
                 <match for="ANY">
-                    <init as="expression" with="$STR.strip($expression, 1)" />
+                    <init as="expression" at="_root" with="$STR.strip($expression, 1)" />
                 </match>
             </test>
         </observe>
@@ -413,9 +413,9 @@ class CEval (HVMLChooser):
 
 ```html
         <observe on=".equal" for="click">
-            <init as="expression" with="$MATH.eval($expression)">
+            <init as="expression" at="_root" with="$MATH.eval($expression)">
                 <catch for="*">
-                    <init as="expression" with="ERROR" />
+                    <init as="expression" at="_root" with="ERROR" />
                 </catch>
             </init>
         </observe>
@@ -497,16 +497,16 @@ class CEval (HVMLChooser):
         </div>
 
         <observe on=".clear" for="click">
-            <init as="expression" with="0" />
+            <init as="expression" at="_root" with="0" />
         </observe>
 
         <observe on=".number" for="click">
             <test on="$expression">
                 <match for="LIKE 'ERR*'" exclusively>
-                    <init as="expression" with="$@.textContent" />
+                    <init as="expression" at="_root" with="$@.textContent" />
                 </match>
                 <match for="ANY">
-                    <init as="expression" with="$expression$@.textContent" />
+                    <init as="expression" at="_root" with="$expression$@.textContent" />
                 </match>
             </test>
         </observe>
@@ -514,18 +514,18 @@ class CEval (HVMLChooser):
         <observe on=".backspace" for="click">
             <test on="$STR.strlen($expression)">
                 <match for="EQ 1" exclusively>
-                    <init as="expression" with="0" />
+                    <init as="expression" at="_root" with="0" />
                 </match>
                 <match for="ANY">
-                    <init as="expression" with="$STR.strip($expression, 1)" />
+                    <init as="expression" at="_root" with="$STR.strip($expression, 1)" />
                 </match>
             </test>
         </observe>
 
         <observe on=".equal" for="click">
-            <init as="expression" with="$MATH.eval($expression)">
+            <init as="expression" at="_root" with="$MATH.eval($expression)">
                 <catch for="*">
-                    <init as="expression" with="ERROR" />
+                    <init as="expression" at="_root" with="ERROR" />
                 </catch>
             </init>
         </observe>
