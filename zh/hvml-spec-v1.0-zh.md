@@ -3221,7 +3221,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 - `click`
 - `change:attached`
-- `event:3cc8f9e2ff74f872f09518ffd3db6f29'
+- `event:3cc8f9e2ff74f872f09518ffd3db6f29`
 
 当 HVML 代理观察到来自 `$databus` 上的电池变化事件数据包之后，将根据 `observe` 标签定义的观察动作执行相应的操作。在上面的例子中，`observe` 标签所定义的操作及条件解释如下：
 
