@@ -4659,8 +4659,8 @@ $STREAM.open(
                - 'append':      `Open in append mode.  Before each write, the offset is positioned at the end of the stream`
                - 'create':      `If $uri does not exist, create it as a regular file`
                - 'truncate':    `If $uri already  exists and is a regular file and the access mode allows writing it will be truncated to length 0`
-               - 'nonblock':    `open $uri in nonblocking mode`
-               - 'default':     `js equivalent to 'read write'`
+               - 'nonblock':    `Open the $uri in nonblocking mode`
+               - 'default':     `equivalent to 'read write'`
            >
             [, <'[ssl | tls] || websocket || hibus || mqtt || http || ...' $filerts = '': `the filters will be used on the stream entity.`
                    - 'ssl':         `this filter uses SSL to encrypt and decrypt the data; only for TCP connections.`
@@ -4670,6 +4670,8 @@ $STREAM.open(
                    - 'mqtt':        `this filter can handle the MQTT protocol, privide methods like mqtt_subscribe() and mqtt_send_message()`
                    - 'http':        `this filter can handle the HTTP protocol, provide methods like http_send_request() and http_read_response_header()`
                >
+                [, <object $filert_opts: `the options for fitlers.` >
+                ]
             ]
         ]
 ) native/stream | undefined
@@ -6476,15 +6478,39 @@ $FS.opendir(
 - `$dirStream.read()`：读取下一个目录项。
 - `$dirStream.rewind()`：回卷目录流。
 
-注意，打开的路径将在释放原生实体时自动进行，故而不需要 `closedir` 方法。
+**参数**
+
+**返回值**
+
+一个原生实体，其上提供 `read` 或者 `rewind` 方法，分别用于读取一个目录项或重置目录流。
+
+**示例**
+
+**参见**
+
+- PHP `opendir()` 函数：<https://www.php.net/manual/en/function.opendir.php>
+
+#### 4.2.30) `closedir` 方法
+
+关闭目录流。
+
+**描述**
+
+```js
+$FS.closedir(
+        < dirStream $dir_stream: `The dirStream entity to close.` >
+) boolean
+```
+
+该方法提前关闭由 `$FS.opendir()` 打开的目录流以便释放其占用的系统资源。如果不调用这个方法，当目录流对应的变体数据被销毁时，也会自动关闭目录流。
 
 **参数**
 
 **返回值**
 
-一个原生实体，可用于 `readdir` 或者 `rewinddir` 方法。
-
 **示例**
+
+**备注**
 
 **参见**
 
