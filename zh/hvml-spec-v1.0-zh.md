@@ -2878,58 +2878,45 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 `sort` 标签用于对指定的数组或者由执行器产生的序列执行排序操作：
 
 - `on` 属性指定要操作的数据。
-- `by` 属性指定执行器；若指定了执行器，则对执行器产生的数据序列执行排序操作，若没有指定执行器，则对 `on` 属性指定的数据（必须为数组）执行排序操作。
-- `against` 属性指定排序的依据；当要排序的数组或者数据序列由对象组成时，该属性指定参与排序的单个或者多个键名。
-- 使用 `ascendingly` 和 `descendingly` 副词属性指定使用升序还是降序排列。
-- 使用 `casesensitively` 和 `caseinsensitively` 副词属性指定按照字符串排序时是否对大小写敏感。
+- `by` 属性指定排序用的外部执行器。
+- `with` 属性指定使用外部执行器时的额外参数。
+- `against` 属性指定排序的依据；当要排序的数组由对象组成时，该属性指定参与排序的单个或者多个键名。
+- 使用 `ascendingly`（默认） 和 `descendingly` 副词属性指定使用升序还是降序排列。
+- 使用 `casesensitively`（默认） 和 `caseinsensitively` 副词属性指定按照字符串排序时是否对大小写敏感。
 
 如下代码对 `$users` 执行排序：
 
 ```html
-        <init as="users">
-            [
-                { "id": 3, "avatar": "/img/avatars/3.png", "name": "David", "region": "en_US" }
-                { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-                { "id": 2, "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
-            ]
-        </init>
+    <init as="users">
+        [
+            { "id": 3, "avatar": "/img/avatars/3.png", "name": "David", "region": "en_US" }
+            { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+            { "id": 2, "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+        ]
+    </init>
 
-        <sort on="$users" ascendingly against="id" />
+    <sort on="$users" ascendingly against="id" />
 ```
 
 结果为：
 
 ```json
-            [
-                { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-                { "id": 2, "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
-                { "id": 3, "avatar": "/img/avatars/3.png", "name": "David", "region": "en_US" }
-            ]
+    [
+        { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+        { "id": 2, "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+        { "id": 3, "avatar": "/img/avatars/3.png", "name": "David", "region": "en_US" }
+    ]
 ```
 
 `sort` 动作支持按照字符串或数值两种类型执行排序，这取决于从数组中获得的第一个排序数据的类型。若第一个参与排序的数据类型是 `number、 `longint`、 `ulongint` 或者 `longdouble` 时，使用数值排序，否则使用字符串排序。当使用数值时，所有数据数值化之后进行排序，而使用字符串时，所有数据字符串化之后进行排序。
 
-当使用 `by` 属性指定了执行器之后，`sort` 标签定义的排序操作，可理解为一个 `choose` 动作外加一个 `sort` 操作。
-
-如
+我们可以用 `by` 属性指定一个执行排序的外部函数执行器。如：
 
 ```html
-        <sort on="$?.regions" by="KEY: ALL FOR KV" descendingly>
-            ...
-        </sort>
+    <sort on="$?.regions" by="FUNC: mySort">
+        ...
+    </sort>
 ```
-
-相当于
-
-```html
-        <choose on="$?.regions" by="KEY: ALL FOR KV">
-            <sort on="$?" descendingly against="v">
-                ...
-            </sort>
-        </choose>
-```
-
-注意，在第一种用法（即使用 `by` 属性指定执行器的情况）中，`against="v"` 的排序条件将被隐含指定，无需显式指定。
 
 #### 2.5.10) `define` 和 `include` 标签
 
@@ -4531,18 +4518,28 @@ HVML 解释器可自行定义上述外部执行器的接口规范，比如对 C/
 
 ##### 2.6.2.1) 外部函数执行器
 
-我们可以使用函数实现所有的外部执行器。以 `Python` 为例，当使用 `by` 介词属性指定一个外部的函数执行器时，该执行器必须实现为具有如下原型的函数：
+我们可以使用函数实现所有的外部执行器。以 `Python` 为例，当使用 `by` 介词属性指定一个外部的函数执行器作为选择器、迭代器或规约器时，该执行器必须实现为具有如下原型的函数：
 
 ```python
-def executor(on_value, with_value):
+def chooser(on_value, with_value):
 ```
 
-当我们定义一个外部函数用作不同的执行器时，对应的功能如下所述：
+对应的功能如下所述：
 
 - 作为选择器，源数据（`on` 属性值）应该是一个容器，该函数应该返回源数据中的某项数据。
 - 作为迭代器，该函数应该返回基于源数据生成的一个数组，之后的迭代发生在这个数组上。
 - 作为规约器，源数据应该是一个容器，该函数应该返回对源数据经过特定的规约处理后的数据，通常是一个对象。
-- 作为排序器，源数据应该是一个数组或者集合，该函数对源数据进行特定的排序处理并返回源数据本身。
+
+当使用 `by` 介词属性指定一个外部的函数执行器作为排序器时，该执行器必须实现为具有如下原型的函数：
+
+```python
+def sorter(on_value, with_value,
+        against_value = None, desc = False, caseless = False):
+```
+
+也就说，`sort` 元素指定的 `against` 属性之以及 `ascendingly`/`descendingly`、 `casesensitively`/`caseinsensitively` 等副词属性值，通过 `against_value`、`desc` 和 `caseless` 参数传递。
+
+当作为排序器，源数据应该是一个数组或集合，该函数对源数据进行特定的排序处理并返回源数据本身。
 
 比如我们要从全局 `$TIMERS` 变量定义的数据中选择指定的定时器，我们可以使用内建的 SQL 执行器，也可以使用一个外部执行器 `FUNC: ChooseTimer`。
 
@@ -5892,6 +5889,19 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 - [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)
 - [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
+
+##### RC3.9) 简化外部执行器
+
+`init`、`update` 等标签不再支持外部执行器。
+
+仅 `iterate` 标签支持基于类的外部执行器。
+
+`sort` 标签支持外部函数作为排序器。
+
+相关章节：
+
+- [2.5.9) `sort` 标签](#259-sort-标签)
+- [2.6.2) 外部执行器](#262-外部执行器)
 
 #### RC2) 220401
 
