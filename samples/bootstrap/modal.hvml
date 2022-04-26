@@ -80,7 +80,7 @@
         </footer>
 
         <observe on="#btnReadDetails" for="click" in="#exampleModal">
-            <request on="#exampleModal" to="call: bootstrap.Modal.getInstance($ELEMENT$).hide()" />
+            <request on="#exampleModal" to="call: bootstrap.Modal.getInstance(@THIS@).hide()" />
         </observe>
 
     </body>
