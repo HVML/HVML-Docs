@@ -111,10 +111,8 @@ Language: Chinese
          - [2.6.1.7) `TRAVEL` 执行器](#2617-travel-执行器)
          - [2.6.1.8) 内建执行器的使用](#2618-内建执行器的使用)
       * [2.6.2) 外部执行器](#262-外部执行器)
-         - [2.6.2.1) 外部选择器](#2621-外部选择器)
-         - [2.6.2.2) 外部迭代器](#2622-外部迭代器)
-         - [2.6.2.3) 外部归约器](#2623-外部归约器)
-         - [2.6.2.4) 外部函数](#2624-外部函数)
+         - [2.6.2.1) 外部函数执行器](#2621-外部函数执行器)
+         - [2.6.2.2) 外部类执行器](#2622-外部类执行器)
       * [2.6.3) 执行器规则表达式的处理](#263-执行器规则表达式的处理)
    + [2.7) 响应式更新](#27-响应式更新)
 - [3) HVML 语法](#3-hvml-语法)
@@ -177,6 +175,8 @@ Language: Chinese
       * [TBD2) 动作元素](#tbd2-动作元素)
          - [TBD2.1) `pipe` 标签](#tbd21-pipe-标签)
          - [TBD2.2) `connect`、 `send` 和 `disconnect` 标签](#tbd22-connect-send-和-disconnect-标签)
+         - [TBD2.3) 外部函数更新器](#tbd23-外部函数更新器)
+         - [TBD2.4) 杂项](#tbd24-杂项)
    + [附.3) 贡献者榜单](#附3-贡献者榜单)
    + [附.4) 商标声明](#附4-商标声明)
 
@@ -421,10 +421,34 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
             </test>
         </footer>
 
+        <define as="onBatteryChanged">
+            <test on="$?.level">
+                <match for="GE 100" exclusively>
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-full.png" />
+                </match>
+                <match for="GT 90" exclusively>
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-90.png" />
+                </match>
+                <match for="GT 70" exclusively>
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-70.png" />
+                </match>
+                <match for="GT 50" exclusively>
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-50.png" />
+                </match>
+                <match for="GT 30" exclusively>
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-30.png" />
+                </match>
+                <match for="GT 10" exclusively>
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-10.png" />
+                </match>
+                <match for="ANY">
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-low.png" />
+                </match>
+            </test>
+        </define>
+
         <choose on=$databus.subscribe('@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED')>
-            <observe on="$databus" for="event:$?" in="#theStatusBar">
-                <update on="$@" by="FUNC: on_battery_changed" />
-            </observe>
+            <observe on="$databus" for="event:$?" in="#theStatusBar" with=$onBatteryChanged />
         </choose>
 
         <observe on=".avatar" for="click">
@@ -707,13 +731,6 @@ HVML 不提供任何操作可以用来改变不可变数据，但开发者可以
 
 - `init`：该标签初始化一个变量；我们将有名字的数据称为变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义请求的 URL，`with` 属性定义请求的参数，`via` 属性定义请求的方法（如 `GET` 或 `POST`）。
 - `bind`：该标签用于定义一个表达式变量。
-
-【待删除——
-
-- `connect`：该标签定义对一个外部数据源的连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包。
-- `disconnect`：该标签关闭先前建立的外部数据源连接。
-
-——待删除】
 
 在 HVML 中，当我们引用变量时，我们使用 `$` 前缀，比如 `$global`、 `$users`、 `$?` 等。当我们要指代普通的 `$` 字符时，我们使用 `\` 做转义字符。
 
@@ -999,7 +1016,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 - 两个数组的成员逐次对比，所有成员一对一相同时，相等。
 - 两个字典字符串化后的字符串相同时，相等。
 
-以上有两种情况使用字符串对比。为此，在使用 `init` 标签初始化集合时，我们可使用 `casesensitively` 或者 `caseinsensitively` 两个副词属性来指定字符串对比是否对大小写敏感；默认对大小写敏感。另外，我们还可以使用 `init` 元素的 `by` 属性指定用于对比两个数据是否相等的外部执行器。
+以上有两种情况使用字符串对比。为此，在使用 `init` 标签初始化集合时，我们可使用 `casesensitively` 或者 `caseinsensitively` 两个副词属性来指定字符串对比是否对大小写敏感；默认对大小写敏感。
 
 比如，我们使用下面的 `init` 标签定义一个字符串集合：
 
@@ -1269,14 +1286,6 @@ HVML 还定义有如下一些动作标签：
 - `load` 标签用来装载一个由 `from` 属性指定的新 HVML 程序，并可将 `with` 属性指定的对象数据作为请求参数传递到新的 HVML 程序。
 - `exit` 标签用于退出当前的 HVML 程序。
 
-【待删除——
-
-- `connect` 标签用于连接到一个指定的外部数据源，并绑定一个变量名。
-- `send` 标签用来在指定的长连接上发出一个消息。
-- `disconnect` 标签用于显式关闭一个先前建立的外部数据源连接。
-
-——待删除】
-
 #### 2.1.11) 错误和异常的处理
 
 在 HVML 中，错误指无法恢复的致命问题，比如段故障、总线错误等；而异常指可以被捕获或者处理的错误情形。
@@ -1414,12 +1423,12 @@ HVML 还定义有如下一些动作标签：
 针对动作标签，HVML 定义了如下几个介词（如 `on`、 `in`、 `to` 等）属性，用于定义执行动作时依赖的数据（或元素）及其集合。如：
 
 - `from`：在 `init`、 `update`、 `load` 等标签中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URL。
-- `on`：在 `choose`、`iterate` 等操作数据的标签中，用于定义执行动作所依赖的数据、元素或元素汇集。未定义情形下，若父元素是动作元素，则取父动作元素的执行结果（`$?`），若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。
-- `in`：用于定义执行操作的目标文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个子树（sub tree），之后的操作会默认限定在这个子树中。如果没有定义该属性值，则继承父元素的操作位置，若父元素是骨架元素，则取该骨架元素在目标文档中对应的位置。
-- `for`：在 `observe`、 `forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的消息类型；在 `match` 标签中，用于定义匹配条件。
+- `on`：在 `choose`、`iterate` 等操作数据的标签中，用于定义执行动作所依赖的数据、元素或元素汇集。~~未指定情形下，若前置栈帧是动作元素，则取前置栈帧的执行结果（`$?`）；若父元素是骨架元素，则取骨架元素在目标文档中对应的位置（`$@`）。~~
+- `in`：用于定义执行操作的目标文档位置或作用域（scope）。该属性通常使用 CSS 选择器定义目标文档的一个元素汇集，之后的操作会在这个元素汇集上进行。如果没有定义该属性值，则继承q前置栈帧的相应值，若前置栈帧对应元素是骨架元素，则取该骨架元素在目标文档中对应的位置。
+- `for`：在 `observe`、 `forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的事件名称；在 `match` 标签中，用于定义匹配条件。
 - `as`：在 `init`、 `define`、 `bind`、 `load` 等元素中定义变量、操作组或者行者的名称。
 - `at`：在 `init`、 `define` 中指定操作组名称或者变量名的名字空间；在 `update` 元素中指定目标数据上的目标位置。
-- `with`：在 `init`、 `request`、 `load` 元素中定义发送请求或装载新 HVML 程序时的参数；在 `iterate` 元素中定义不使用执行器时迭代结果的求值表达式。
+- `with`：在 `init`、 `request`、 `load` 元素中定义发送请求或装载新 HVML 程序时的参数；在 `iterate` 元素中定义不使用执行器时迭代结果的求值表达式；在 `include` 元素中定义要引用的操作组。
 - `to`：在 `update` 标签中定义具体的更新动作，比如表示追加的 `append`，表示替换的 `displace` 等；在 `back` 标签中定义回退到的栈帧。
 - `by`：用于定义执行测试、选择、迭代、归约操作时的脚本程序类或函数名称，分别称为选择器、迭代器或归约器，并统称为执行器（executor）。HVML 允许解释器支持内建（built-in）执行器。对简单的数据处理，可直接使用内置执行器，在复杂的数据处理情形中，可使用外部程序定义的类或者函数。在 HVML 中，我们使用如下前缀来表示不同的执行器类型：
    - `CLASS: ` 表示使用外部程序定义的类作为执行器。
@@ -1432,14 +1441,6 @@ HVML 还定义有如下一些动作标签：
 - `via`：用于在 `init` 等元素中指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
 - `against`：在 `init` 元素中用于指定集合的唯一性键值，在 `sort` 元素中用于指定排序依据。
 - `onlyif` 和 `while`：在 `iterate` 中，用于定义在产生迭代结果前和产生迭代结果后判断是否继续迭代的条件表达式。
-
-【待删除——
-
-- `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URL，如 `tcp://foo.com:2345`、 `unix:///var/run/hibus.sock`。
-- `for`：在 `connect` 标签中，用于定义协议或用途。
-- `with`：在 `send` 元素中定义发送请求或消息时的参数。
-
-——待删除】
 
 #### 2.1.13) 副词属性
 
@@ -2072,7 +2073,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 在一个已经初始化的变量上使用 `init` 标签时，将使用新的数据重置这个变量，而如果使用 `undefine` 重置变量，其效果相当于删除这个变量。
 
-在使用 `init` 标签初始化集合时，我们可使用 `casesensitively` 或者 `caseinsensitively` 两个副词属性来指定字符串对比是否对大小写敏感；默认对大小写敏感。另外，我们还可以使用 `init` 元素的 `by` 属性指定用于对比两个数据是否相等的外部执行器。
+在使用 `init` 标签初始化集合时，我们可使用 `casesensitively` 或者 `caseinsensitively` 两个副词属性来指定字符串对比是否对大小写敏感；默认对大小写敏感。
 
 该标签的常见用法如下：
 
@@ -2195,7 +2196,6 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 1. `from` 属性指定修改操作源数据的外部数据源，如 URL；此时，使用 `with` 属性指定请求参数。
 1. 当未定义 `from` 属性时，`with` 属性指定修改操作使用的源数据；当定义有 `from` 属性时，`with` 属性指定请求参数。
 1. `via` 属性指定获得外部数据源的方法，如 `GET`、`POST` 等，仅在指定 `from` 时有效。
-1. `by` 指定一个外部函数执行器；当 `to` 属性给定的修改动作无法完成预期的修改操作时，可使用外部函数执行器。指定 `by` 属性时，将忽略 `to` 属性值。
 
 在指定源数据时，除了 `with` 属性和 `from` 属性之外，我们还可以使用 `update` 元素的 JSON 内容。三种源数据指定方式的优先级为：
 
@@ -2710,7 +2710,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 在上面的例子中，我们在 `by` 介词属性中指定了一个内置的 KEY 执行器，该执行器将 `$global.locale` 的值作为键名，返回了 `on` 介词属性指定的 `$locales` 字典数组上对应的键值，使用该键值通过其后的 `update` 子元素实现了 `in` 介词属性指定的 HTML 文档片段中的元素更新操作。
 
-在复杂情形下，我们也可以编写脚本程序作为外部执行器来完成选择动作。
+在复杂情形下，我们也可以编写外部程序作为外部执行器来完成选择动作。
 
 #### 2.5.7) `iterate` 标签
 
@@ -3181,19 +3181,39 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             <img class="battery-status" src="/placeholder.png" />
         </header>
 
+        <define as="onBatteryChanged">
+            <test on="$?.level">
+                <match for="GE 100" exclusively>
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-full.png" />
+                </match>
+                <match for="GT 90" exclusively>
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-90.png" />
+                </match>
+                <match for="GT 70" exclusively>
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-70.png" />
+                </match>
+                <match for="GT 50" exclusively>
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-50.png" />
+                </match>
+                <match for="GT 30" exclusively>
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-30.png" />
+                </match>
+                <match for="GT 10" exclusively>
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-10.png" />
+                </match>
+                <match for="ANY">
+                    <update on="> img.mobile-status" at="attr.src" with="/battery-level-low.png" />
+                </match>
+            </test>
+        </define>
+
         <choose on=$databus.subscribe('@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED')>
-            <observe on="$databus" for="event:$?">
-                <update in="#the-header" by="FUNC: on_battery_changed">
-                    <except>
-                        <p>Failed to update battery status</p>
-                    </except>
-                </update>
-            </observe>
+            <observe on="$databus" for="event:$?" in="#the-header" with=$onBatteryChanged />
         </choose>
     </body>
 ```
 
-在上例中，我们使用外部程序定义的 `on_battery_changed` 函数来实现更新操作。
+在上例中，我们使用 `define` 定义的 `onBatteryChanged` 操作组实现了目标文档的更新操作。
 
 另外一个 `observe` 标签的使用例子描述如下。
 
@@ -3226,7 +3246,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 当 HVML 代理观察到来自 `$databus` 上的电池变化事件数据包之后，将根据 `observe` 标签定义的观察动作执行相应的操作。在上面的例子中，`observe` 标签所定义的操作及条件解释如下：
 
 - 当来自`$databus`（由 `on` 属性值指定）上的数据包类型为 `event:$?`（由 `for` 属性值指定），这里的 `$?` 是 `choose` 元素的执行结果，表示被订阅事件的唯一性标识字符串（相当于事件标识符），执行 `observe` 定义的操作组。
-- `observe` 元素的子元素 `update` 元素定义了具体的更新操作：由 `by` 介词属性定义的脚本函数 `on_battery_changed` 完成，该更新操作限定在 `in` 介词属性定义的 `#the-header` 元素节点中。
+- `observe` 元素的 `with` 属性指定了执行更新操作的操作组（`$onBatteryChanged`），其中的更新操作限定在 `in` 介词属性定义的 `#the-header` 目标元素中。
 
 注意，当 `observe` 观察到了来自特定数据源上的数据包时，其结果数据为该事件数据包中的 `payload` 数据；若没有通过 `for` 属性和 `with` 指定具体要观察的数据包类型以及过滤条件时，则结果数据为整个数据包。
 
@@ -3248,29 +3268,6 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```html
     <observe on="$databus" for="event:$?">
-        <test on="$?.level" in="#the-header">
-            <match for="GE 100" exclusively>
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-full.png" />
-            </match>
-            <match for="GT 90" exclusively>
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-90.png" />
-            </match>
-            <match for="GT 70" exclusively>
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-70.png" />
-            </match>
-            <match for="GT 50" exclusively>
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-50.png" />
-            </match>
-            <match for="GT 30" exclusively>
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-30.png" />
-            </match>
-            <match for="GT 10" exclusively>
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-10.png" />
-            </match>
-            <match for="ANY">
-                <update on="> img.mobile-status" at="attr.src" with="/battery-level-low.png" />
-            </match>
-        </test>
         <except>
             <p>Failed to update battery status</p>
         </except>
@@ -3753,37 +3750,6 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
     </request>
 ```
 
-【待删除——
-
-`request` 标签在外部数据源上发出一个同步或者异步的请求。
-
-从外部数据源中获取数据时，我们使用 `at` 属性指定 URL，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）：
-
-```html
-    <request at="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
-        <observe on="$foo" for="result:success">
-            ...
-        </observe>
-    </request>
-```
-
-以上用法和 `init` 类似，但 `request` 可以通过 `to` 属性指定请求结果的处理方法，比如将请求结果保存到指定的文件当中：
-
-```html
-    <request at="http://foo.bar.com/foo" with="$params" via="POST" to="save:/tmp/foo.tmp" as="foo" async>
-        <observe on="$foo" for="result:success">
-            ...
-        </observe>
-    </request>
-```
-
-此种情况下，我们可以使用如下几种结果处理方法：
-
-- `save:` 保存到本地文件。该操作的执行结果是保存后的完整文件路径。
-- `filter:` 创建子进程和管道并将管道作为子进程的标准输入，然后在子进程中执行指定的程序，将请求结果写入管道。该操作的执行结果是子进程的标准输出（字节序列）。
-
-——待删除】
-
 #### 2.5.17) `load` 和 `exit` 标签
 
 `load` 标签用来装载一个由 `on` 属性指定的数据或者 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递到新的 HVML 文档。如：
@@ -3907,18 +3873,6 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 ```
 
 上面的代码，使用 `exit` 标签的 `with` 属性定义了一项数据，解释器应将该数据作为该 HVML 程序的返回数据处理。
-
-【待删除——
-
-当前 HVML 程序在模态窗口中渲染时，可观察该程序的 `terminated:success` 事件，然后进行处理。如果当前 HVML 程序不在模态对话框中渲染，则该数据将做为请求数据（对应 `$REQUEST` 内置全局变量）提供给目标返回对应的 HVML 程序，此时，该 HVML 程序会执行一次重新装载操作（类似浏览器刷新页面的功能）。
-
-`exit` 元素不产生任何结果数据，故而不能包含子动作元素。
-
-正常情况下，`load` 元素装载一个 HVML 程序在一个模态窗口中渲染时，其执行结果数据就是新 HVML 程序中 `exit` 元素的 `with` 属性值；如果在一个新建的普通窗口中渲染，则正常情况下 `load` 元素的操作结果数据为字符串 `ok`；如果在其他已有的窗口中渲染，则将终止该窗口中运行的 HVML 程序，并在当前窗口中渲染新的 HVML 程序内容。
-
-`exit` 标签用于终止当前的 HVML 程序，并将返回值返回到指定的目标 HVML 程序。
-
-——待删除】
 
 ### 2.6) 执行器
 
@@ -4562,36 +4516,35 @@ SQL 执行器通过 `GROUP BY` 分句，可用于归约。
 
 #### 2.6.2) 外部执行器
 
-外部执行器是由外部程序实现的符合所在动作标签要求的类或者函数，通常用于执行复杂的选择、迭代和归约操作，尤其是无法通过内建执行器实现某些特殊排序、条件判断和归约操作时。
+外部执行器是由外部程序实现的符合所在动作标签要求的类或者函数，通常用于执行复杂的选择、迭代、归约和排序操作，尤其是无法通过内建执行器实现的某些特殊选择、过滤、归约和排序操作时。
 
-使用外部执行器时，HVML 解释器将根据执行器的类型前缀和当前的动作标签来动态调用对应的函数或者创建对应的类对象来执行相应的操作。HVML 解释器支持如下外部执行器前缀：
+使用外部执行器时，HVML 解释器将根据执行器的类型前缀和当前的动作标签来动态调用对应的函数或者创建对应的类对象来执行相应的操作。HVML 解释器至少应支持如下两类外部执行器：
 
-- `CLASS: <ClassName>`：表示使用 `<ClassName>` 类作为执行器。目前可用于 `choose`、 `iterate`、 `reduce` 三个动作元素。
-- `FUNC: <FuncName>`：表示使用 `<FuncName>` 函数作为执行器。目前仅用于 `update` 动作元素。
+- `CLASS: <className>@[<moduleName>]`：表示使用模块 `<moduleName>` 中的 `<className>` 类作为执行器，主要用于 `iterate` 动作元素。
+- `FUNC: <funcName>@[<moduleName>]`：表示使用模块 `<moduleName>` 中的 `<funcName>` 函数作为执行器，可用于 `choose`、 `iterate`、 `reduce`、 `sort` 和 `update` 动作元素。
 
-在 `choose`、 `iterate`、 `reduce` 以及 `update` 四个动作元素中使用外部执行器时，可使用 `with` 属性指定一个过滤参数。
+HVML 解释器可自行定义上述外部执行器的接口规范，比如对 C/C++ 语言来讲，`<moduleName>` 指共享库，对 Python 语言来讲，`<moduleName>` 指一个可装载模块名。
 
-使用外部执行器时，HVML 应用的主程序需要实现相应的类或者函数。本文档以 Python 语言为例，说明各个外部执行器的实现方法。对于不同于 Python 的脚本语言，比如 C/C++、JavaScript、Lua 等，可参考 Python 的实现进行处理。
+另外，使用外部执行器时，可使用 `with` 属性指定一个额外的参数。
 
-##### 2.6.2.1) 外部选择器
+使用外部执行器时，应用需要在主程序或者外部模块中实现相应的类或者函数。本文档以 Python 语言为例，说明各个外部执行器的实现方法。对于不同于 Python 的脚本语言，比如 C/C++、JavaScript、Lua 等，可参考 Python 的实现进行处理。
 
-在 `choose` 标签中，我们可以使用 `by` 介词属性指定使用一个外部的选择执行器，该执行器必须实现为 `HVMLChooser` 基类的一个子类。该基类的原型如下：
+##### 2.6.2.1) 外部函数执行器
+
+我们可以使用函数实现所有的外部执行器。以 `Python` 为例，当使用 `by` 介词属性指定一个外部的函数执行器时，该执行器必须实现为具有如下原型的函数：
 
 ```python
-class HVMLChooser (object):
-    def __init__ (self):
-        pass
-
-    def choose (self, on_value, with_value):
-        return None
-
-    def map (self, cloned_item, in_value):
-        return None
+def executor(on_value, with_value):
 ```
 
-`HVMLChooser` 类仅包含两个主要的方法：`choose` 和 `map`。这两个方法在基类中不做任何工作，主要用于提供给子类重载。前者用于从 `on` 属性指定的数据项或元素（集合）中选择某个数据项或元素；后者建立被选中的元素在 `in` 属性指定的范围所执行的操作。如果后续执行使用的片段模板或者数据模板中已经定义有数据的映射关系，则无需实现 `map` 方法。
+当我们定义一个外部函数用作不同的执行器时，对应的功能如下所述：
 
-比如我们要从全局 `$TIMERS` 变量定义的数据中选择指定的定时器，我们可以使用内建的 SQL 执行器，也可以使用一个外部执行器 `CLASS: CTimer`。
+- 作为选择器，源数据（`on` 属性值）应该是一个容器，该函数应该返回源数据中的某项数据。
+- 作为迭代器，该函数应该返回基于源数据生成的一个数组，之后的迭代发生在这个数组上。
+- 作为规约器，源数据应该是一个容器，该函数应该返回对源数据经过特定的规约处理后的数据，通常是一个对象。
+- 作为排序器，源数据应该是一个数组或者集合，该函数对源数据进行特定的排序处理并返回源数据本身。
+
+比如我们要从全局 `$TIMERS` 变量定义的数据中选择指定的定时器，我们可以使用内建的 SQL 执行器，也可以使用一个外部执行器 `FUNC: ChooseTimer`。
 
 ```html
     <head>
@@ -4606,7 +4559,7 @@ class HVMLChooser (object):
     <body>
         ...
 
-        <choose on='$TIMERS' by="CLASS: CTimer" with="foo">
+        <choose on='$TIMERS' by="ChooseTimer" with="foo">
             <update on="$?" at=".active" with="yes" />
         </choose>
 
@@ -4615,29 +4568,42 @@ class HVMLChooser (object):
     </body>
 ```
 
-则 `CTimer` 的实现非常简单——从 `on` 属性指定的数组中查找 `id` 为 `with` 属性值（这里是 `foo`）数组单元，若有，则返回这个数组单元，否则返回 `None`。
+则 `ChooseTimer` 的实现非常简单——从 `on` 属性指定的数组中查找 `id` 为 `with` 属性值（这里是 `foo`）数组单元，若有，则返回这个数组单元，否则返回 `None`。
 
 ```python
-class CTimer (HVMLChooser):
-    def __init__ (self):
-        pass
-
-    def choose (self, on_value, with_value):
-        for t in on_value:
-            if with_value == t['id']
-                return t
-        return None
-
+def ChooseTimer(on_value, with_value):
+    for t in on_value:
+        if with_value == t['id']
+            return t
+    return None
 ```
 
+再如使用 `reduce` 统计用户分布的示例，对应的外部 `StatsUser` 函数实现如下：
 
-`CTimer` 并未实现 `map` 方法，因为上面示例中并不需要克隆模板。
+```python
+def StatsUser(on_value, with_value):
+    stats = {}
+    stats.count = 0
+    stats.regions = { '中国大陆': 0, '中国台湾': 0, '其他': 0 }
 
-##### 2.6.2.2) 外部迭代器
+    for item in on_value:
+        if item.locale == 'zh_CN':
+            stats.regions ['中国大陆'] += 1
+        elif item.locale == 'zh_TW':
+            stats.regions ['中国台湾'] += 1
+        else:
+            stats.regions ['其他'] += 1
 
-在 `iterate` 动作标签中，当无法使用内建执行器实现特殊迭代操作时，我们可以使用由外部程序定义的迭代执行器。
+        count += 1
 
-以 Python 语言为例，类似外部选择器，外部迭代器是 `HVMLIterator` 的子类，该类的实现如下：
+   return stats
+```
+
+##### 2.6.2.2) 外部类执行器
+
+在 `iterate` 动作标签中，除了使用外部函数作为迭代器之外，我们也可以使用由外部类定义的迭代执行器。函数实现的迭代器，需要一次性返回所有带迭代的数据，而类实现的迭代器在每次迭代时被调用获得当前迭代的数据，因此具有更好的灵活性，且在待迭代数据较多时，占用更小的系统资源。
+
+以 Python 语言为例，使用类作为外部迭代器时，必须实现为 `HVMLIterator` 的子类，该类的实现如下：
 
 ```python
 class HVMLIterator:
@@ -4651,18 +4617,12 @@ class HVMLIterator:
     # implement this method to filter an item.
     def filter (self, curr_item):
         return True
-
-    # implement this method to map the item data to the attributes and/or contents of
-    # the cloned element.
-    def map (self, cloned_item, current_item):
-         return None
 ```
 
-`HVMLIterator` 定义了三个方法：
+`HVMLIterator` 定义了两个方法：
 
 - `iterate`：用于迭代数据，子类必须重载该方法。第一次调用时，该方法返回第一个数据项，之后每调用一次，该方法返回下一个数据项，直到返回 `None` 为止。
-- `filter`：用于过滤某些数据项。子类可不用实现该方法。
-- `map`：若后续操作要克隆模板，使用该方法将数据项映射到克隆后的元素上。
+- `filter`：用于过滤某些数据项；当 `iterate` 方法产生一个数据项之后，会调用该方法，若返回 `False`，则丢弃当前数据，继续获取下个数据项。子类可不用实现该方法。
 
 比如对下面迭代并克隆模板插入到指定位置的操作：
 
@@ -4714,97 +4674,7 @@ class IUser (HVMLIterator):
     # implement this method to filter an item.
     def filter (self, item):
         return True
-
-    # implement this method to map the item data to the attributes and/or contents of
-    # the cloned element.
-    def map (self, el, item_data):
-         el.find ('li').attr ('id') = 'user-' + item_data.id
-         el.find ('li').attr ('alt') = item_data.name
-         el.find ('img').attr ('src') = item_data.avatar
-         el.find ('span').textContent = item_data.name
-         return node
 ```
-
-##### 2.6.2.3) 外部归约器
-
-在 `reduce` 动作标签中，当无法使用内建执行器实现特殊的归约操作时，我们可以使用由外部程序定义的归约执行器。以 Python 语言为例，类似外部选择器，外部归约器是 `HVMLReducer` 的子类，该类的实现大致如下：
-
-```python
-class HVMLReducer:
-    def __init__ (self, on_value, with_value):
-        pass
-
-    # implement this method to reduce the data.
-    def reduce (self):
-        return None
-
-```
-
-`HVMLReducer` 仅定义了一个方法：
-
-- `reduce`：用于执行归约操作，子类必须重载该方法。
-
-比如就 2.7) 中提到的统计用户分布的示例，对应的外部 `RUserRegionStats` 类的实现大致如下：
-
-```python
-class RUserRegionStats (HVMLReducer):
-    def __init__ (self, on_value, with_value):
-        self.data = on_value
-        self.stats = {}
-        self.stats.count = 0
-        self.stats.regions = { '中国大陆': 0, '中国台湾': 0, '其他': 0 }
-        pass
-
-    # implement this method to iterate the data.
-    def reduce (self, item):
-        for item in self.data:
-            if item.locale == 'zh_CN':
-                self.stats.regions ['中国大陆'] += 1
-            elif item.locale == 'zh_TW':
-                self.stats.regions ['中国台湾'] += 1
-            else:
-                self.stats.regions ['其他'] += 1
-
-            self.count += 1
-
-       return self.stats
-```
-
-##### 2.6.2.4) 外部函数
-
-外部函数主要用于 `update` 标签以完成复杂的更新操作，所有的事件处理函数之原型为：
-
-```python
-def event_handler (on_value, with_value, root_in_scope):
-```
-
-其中，
-
-- `on_value` 是 `update` 元素之 `on` 属性的值。
-- `with_value` 是 `update` 元素之 `with` 属性的值。
-- `root_in_scope` 是 `update` 元素之 `in` 属性确定的当前操作范围。
-
-比如针对电池电量的改变事件，其 `payload` 如 2.8) 所示包含 `level` 和 `charging` 两个键值对，分别表示当前电量百分比以及是否在充电中。因此，其对应的执行器可实现为：
-
-```python
-def on_battery_changed (on_value, with_value, root_in_scope):
-    if on_value.level == 100:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-full.png'
-    elif on_value.level > 90:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-90.png'
-    elif on_value.level > 70:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-70.png'
-    elif on_value.level > 50:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-50.png'
-    elif on_value.level > 30:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-30.png'
-    elif on_value.level > 10:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-10.png'
-    else:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-low.png'
-```
-
-上面的脚本，针对不同的电量范围设置了不同的电池图标，从而向用户展示了当前电池的剩余电量信息。
 
 #### 2.6.3) 执行器规则表达式的处理
 
@@ -6369,6 +6239,94 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
         </observe>
     </body>
 ```
+
+##### TBD2.3) 外部函数更新器
+
+在 `update` 标签中，`by` 指定一个外部函数执行器；当 `to` 属性给定的修改动作无法完成预期的修改操作时，可使用外部函数执行器。指定 `by` 属性时，将忽略 `to` 属性值。
+
+外部函数主要用于 `update` 标签以完成复杂的更新操作，所有的事件处理函数之原型为：
+
+```python
+def event_handler (on_value, with_value, root_in_scope):
+```
+
+其中，
+
+- `on_value` 是 `update` 元素之 `on` 属性的值。
+- `with_value` 是 `update` 元素之 `with` 属性的值。
+- `root_in_scope` 是 `update` 元素之 `in` 属性确定的当前操作范围。
+
+比如针对电池电量的改变事件，其 `payload` 如 2.8) 所示包含 `level` 和 `charging` 两个键值对，分别表示当前电量百分比以及是否在充电中。因此，其对应的执行器可实现为：
+
+```python
+def on_battery_changed (on_value, with_value, root_in_scope):
+    if on_value.level == 100:
+        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-full.png'
+    elif on_value.level > 90:
+        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-90.png'
+    elif on_value.level > 70:
+        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-70.png'
+    elif on_value.level > 50:
+        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-50.png'
+    elif on_value.level > 30:
+        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-30.png'
+    elif on_value.level > 10:
+        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-10.png'
+    else:
+        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-low.png'
+```
+
+上面的脚本，针对不同的电量范围设置了不同的电池图标，从而向用户展示了当前电池的剩余电量信息。
+
+##### TBD2.4) 杂项
+
+另外，我们还可以使用 `init` 元素的 `by` 属性指定用于对比两个数据是否相等的外部执行器。另外，我们还可以使用 `init` 元素的 `by` 属性指定用于对比两个数据是否相等的外部执行器。
+
+- `connect`：该标签定义对一个外部数据源的连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包。
+- `disconnect`：该标签关闭先前建立的外部数据源连接。
+
+- `connect` 标签用于连接到一个指定的外部数据源，并绑定一个变量名。
+- `send` 标签用来在指定的长连接上发出一个消息。
+- `disconnect` 标签用于显式关闭一个先前建立的外部数据源连接。
+
+- `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URL，如 `tcp://foo.com:2345`、 `unix:///var/run/hibus.sock`。
+- `for`：在 `connect` 标签中，用于定义协议或用途。
+- `with`：在 `send` 元素中定义发送请求或消息时的参数。
+
+`request` 标签在外部数据源上发出一个同步或者异步的请求。
+
+从外部数据源中获取数据时，我们使用 `at` 属性指定 URL，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）：
+
+```html
+    <request at="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
+        <observe on="$foo" for="result:success">
+            ...
+        </observe>
+    </request>
+```
+
+以上用法和 `init` 类似，但 `request` 可以通过 `to` 属性指定请求结果的处理方法，比如将请求结果保存到指定的文件当中：
+
+```html
+    <request at="http://foo.bar.com/foo" with="$params" via="POST" to="save:/tmp/foo.tmp" as="foo" async>
+        <observe on="$foo" for="result:success">
+            ...
+        </observe>
+    </request>
+```
+
+此种情况下，我们可以使用如下几种结果处理方法：
+
+- `save:` 保存到本地文件。该操作的执行结果是保存后的完整文件路径。
+- `filter:` 创建子进程和管道并将管道作为子进程的标准输入，然后在子进程中执行指定的程序，将请求结果写入管道。该操作的执行结果是子进程的标准输出（字节序列）。
+
+当前 HVML 程序在模态窗口中渲染时，可观察该程序的 `terminated:success` 事件，然后进行处理。如果当前 HVML 程序不在模态对话框中渲染，则该数据将做为请求数据（对应 `$REQUEST` 内置全局变量）提供给目标返回对应的 HVML 程序，此时，该 HVML 程序会执行一次重新装载操作（类似浏览器刷新页面的功能）。
+
+`exit` 元素不产生任何结果数据，故而不能包含子动作元素。
+
+正常情况下，`load` 元素装载一个 HVML 程序在一个模态窗口中渲染时，其执行结果数据就是新 HVML 程序中 `exit` 元素的 `with` 属性值；如果在一个新建的普通窗口中渲染，则正常情况下 `load` 元素的操作结果数据为字符串 `ok`；如果在其他已有的窗口中渲染，则将终止该窗口中运行的 HVML 程序，并在当前窗口中渲染新的 HVML 程序内容。
+
+`exit` 标签用于终止当前的 HVML 程序，并将返回值返回到指定的目标 HVML 程序。
 
 ### 附.3) 贡献者榜单
 
