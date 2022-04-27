@@ -205,10 +205,7 @@ Language: Chinese
 
 随着互联网技术和应用的发展，围绕 HTML/CSS/JavaScript 发展的 Web 前端开发技术发展迅猛，甚至可以用“一日千里”来形容。五年前，基于 jQuery 和 Bootstrap 的前端框架大行其道，而从 2019 年开始，基于虚拟 DOM 技术的框架又受到前端开发者的青睐，比如著名的 [React.js]、[Vue.js] 等。值得注意的是，微信小程序、快应用等，也不约而同使用了这种虚拟 DOM 技术来构建应用框架。
 
-所谓“虚拟 DOM” 是指前端应用程序通过 JavaScript 来创建和维护一个虚拟的文档对象树，程序脚本并不直接操作真实的 DOM 树。在虚拟 DOM 树中，通过一些特别的属性实现了基于数据的一些流程控制，如条件、循环等。虚拟 DOM 技术提供如下一些好处：
-
-1. 由于脚本程序并不直接操作真实的 DOM 树，故而一方面通过现有的框架简化了前端开发的复杂性，另一方面通过优化对真实 DOM 树的操作而减少了由于动态修改页面内容而对 DOM 树的频繁操作，从而提高页面的渲染效率和用户体验。
-1. 通过虚拟 DOM 技术，程序对某个数据的修改，可以直接反应到该数据绑定的页面内容上，开发者无需主动或直接地调用相关接口来操作 DOM 树。这种技术提供了所谓的“响应式”编程，极大降低了开发者的工作量。
+所谓“虚拟 DOM” 是指前端应用程序通过 JavaScript 来创建和维护一个虚拟的文档对象树，程序脚本并不直接操作真实的 DOM 树。在虚拟 DOM 树中，通过一些特别的属性实现了基于数据的一些流程控制，如条件、循环等。
 
 另一方面，大量图形用户界面（GUI）应用，仍然在使用 C、C++、Java、C# 等编程语言开发。这些传统的 GUI 应用，其程序框架无外乎直接调用 C/C++ 或其他编程语言提供的接口，在一个事件循环中完成创建 GUI 元素，响应用户交互的工作。为了方便 GUI 应用的开发，业界存在诸多大同小异的 GUI Toolkit 库，比如早期运行在 Unix 图形工作站上的 Motif，Windows 上的 Win32、MFC，Linux 桌面发展出的 Gtk+，跨平台的 Qt，针对嵌入式的 MiniGUI 等等。
 
@@ -216,12 +213,16 @@ Language: Chinese
 
 那么，我们能否将 Web 前端技术带到浏览器之外？比如可以让 C、C++、Java 程序，甚至 Python 这类脚本语言也能轻松地使用 Web 前端技术来开发 GUI 应用？
 
-为了将 Web 前端技术引入到通用的 GUI 应用的开发中，开源社区也做了一些探索性工作，比如 Electron 开源项目，将 Chromium + Node.js 打包在一起，让 Web 后端跑在本机上，从而方便本地 GUI 应用的开发。遗憾的是，Electron 并未流行起来。
+为了将 Web 前端技术引入到通用的 GUI 应用的开发中，开源社区也做了一些探索性工作，比如 Electron 开源项目，将 Chromium + Node.js 打包在一起，让 Web 后端跑在本机上，从而方便本地 GUI 应用的开发。但 Electron 的软件栈过于复杂，限制了其应用领域。
 
 另外，以 React.js、Vue.js 为代表的前端框架取得了巨大成功，但存在如下缺陷和不足：
 
-- 这些技术建立在已有成熟的 Web 标准之上，需要完整支持相关前端规范的浏览器才能运行，因此无法应用于其他场合。比如要在 Python 脚本中使用这类技术，目前没有任何解决方案；再比如在传统的 GUI 应用编程中，也无法使用这一技术带来的好处。
-- 这些技术通过引入 `v-if`、 `v-else`、 `v-for` 等虚拟属性实现了基于数据的条件和循环流程控制，但这种方法带来代码可读性的下降，代码可读性的下降带来代码可维护性的下降。如下面 Vue.js 的一个示例：
+1. 这些技术建立在已有成熟的 Web 标准之上，需要完整支持相关前端规范的浏览器才能运行（或者说，只能运行在浏览器之内），很难和已有基于 C/C++ 等编程语言开发的功能模块整合。
+1. 由于先天局限性，在网页中使用 JavaScript 语言，一直存在开发者诟病的如下问题：
+   - 安全性差。一方面业务逻辑有关的代码在最终用户的浏览器上执行，任何人都可以看到 JavaScript 程序的源代码，从而可能泄露敏感信息；另一方面，恶意代码可能在最终用户的浏览器上执行，从而导致用户敏感数据的泄露。
+   - 对性能的负面影响。在浏览器中运行大量业务逻辑相关的 JavaScript 代码，会引发页面渲染和业务逻辑竞争处理器资源的问题，这是浏览器页面渲染能力和传统 GUI 开发的界面存在显著差异的一个原因。
+   - 较低的代码可维护性。开发者经常会在网页的不同地方随意嵌入零散的 JavaScript 代码，这降低了整个应用系统代码的可维护性。
+1. 这些技术通过引入 `v-if`、 `v-else`、 `v-for` 等虚拟属性实现了基于数据的条件和循环流程控制，割裂了代码的逻辑，破坏了代码的可读性。如下面的一个示例：
 
 ```html
 <div v-if="Math.random() > 0.5">
@@ -234,13 +235,19 @@ Language: Chinese
 
 ### 1.3) 目的
 
-在 [HybridOS]（合璧操作系统）的开发过程中，我们在虚拟 DOM 思想的基础上，发展了一套完备、通用、优雅、易学的标记语言 HVML（Hybrid Virtual Markup Language）。HVML 通过数据驱动的动作标签、介词属性以及动态对象，实现了 XML/HTML 文档的动态生成和更新功能；HVML 还提供了和已有编程语言，如 C/C++、Python、Lua、JavaScript 等进行结合的方法，从而为这些编程语言抛开浏览器利用 Web 前端技术提供了强有力的技术支撑。
+在 [HybridOS]（合璧操作系统）的开发过程中，魏永明提出了一套完备、通用、优雅、易学的标记语言 HVML（Hybrid Virtual Markup Language）。HVML 通过数据驱动的动作标签、介词属性以及动态对象，实现了 XML/HTML 文档的动态生成和更新功能；HVML 还提供了和已有编程语言，如 C/C++、Python、Lua、JavaScript 等进行结合的方法，从而为这些编程语言在浏览器之外利用 Web 前端技术提供了强有力的技术支撑。
 
 本质上，HVML 提供了一种新的思路来解决前面的那个问题：第一，将 Web 前端技术（主要是 DOM、CSS 等）引入到其他编程语言中，而不是用 JavaScript 替代其他编程语言。第二，采用类似 HTML 的标记语言来操控 Web 页面中的元素、属性和样式，而非 JavaScript。另外，在设计 HVML 的过程中，我们有意地使用了数据驱动的概念，使得 HVML 可以非常方便地和其他编程语言以及各种网络连接协议，如数据总线、消息协议等结合在一起。这样，开发者熟悉哪种编程语言，就使用这种编程语言来开发应用的非 GUI 部分，而所有操控 GUI 的功能，交给 HVML 来完成，它们之间，通过模块间流转的数据来驱动，而 HVML 提供了对数据流转过程的抽象处理能力。
 
-我们将 HVML 定义为一种可编程标记语言（Programmable Markup Language）。和 HTML 类似，HVML 使用标记语言来定义程序的结构和数据，但和 HTML 不同的是，HVML 是可编程的、动态的。尽管设计 HVML 的最初目标是为了提高 GUI 应用的开发效率，但其实可用于更加通用的场景——只要程序的输出可被抽象为使用一个或者多个树状结构来表达，就可以使用 HVML。
+我们将 HVML 定义为一种可编程标记语言（Programmable Markup Language）。和 HTML 类似，HVML 使用标记语言来定义程序的结构和数据，但和 HTML 不同的是，HVML 是可编程的、动态的。尽管设计 HVML 的最初目标是为了提高 GUI 应用的开发效率，但其实可用于更加通用的场景——只要程序的输出可被抽象为使用一个或者多个树状结构来表达，就可以使用 HVML；甚至我们可以像普通脚本语言来使用 HVML。
 
-HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。但是，相比基于虚拟 DOM 和 JavaScript 的 Web 前端技术，HVML 提供了不同于传统编程语言的编码模式，在数据驱动思想基础上，HVML 提供了更加系统和完备的低代码（low code，指使用更少的代码来编写程序）编程方法。
+本质上，HVML 是一种抽象层级高于 JavaScript 或者 Python 这类脚本语言的编程语言，其主要特点有：
+
+1. 极简的设计，优秀的代码可读性。HVML 仅仅使用二十多个特有的标签，定义了用于操作一个栈式虚拟机的完备抽象指令。通过符合英语表达习惯的动词标签和介词或副词属性，让每一行代码都具有清晰的语义以及非常优秀的可读性。
+1. 数据驱动。一方面，HVML 提供了通过操控数据来操控功能的方法。比如，我们使用更新动作操控定时器数组中的某个字段就可以开启或者关闭一个定时器，而无需调用对应的接口。另一方面，HVML 语言致力于通过统一的数据表达方式将系统中的不同模块关联起来，而不是通过复杂的模块间接口调用。这两个手段可有效地避免传统编程语言存在的接口爆炸问题。为了实现以上目标，HVML 在 JSON 这一广泛使用的抽象数据表达方式之上，提供了扩展的数据类型以及灵活的表达式处理能力。
+1. 事件驱动是 HVML 语言的固有特性，HVML 语言提供了观察事件甚至观察一个表达式变化的机制，开发者无需关心底层的实现机制，从而轻松实现其他编程语言中难以管理的并发或异步编程。
+
+总之，HVML 提供了不同于传统编程语言的编码模式，在数据驱动思想基础上，HVML 提供了更加系统和完备的低代码（low code，指使用更少的代码来编写程序）编程方法。
 
 在未来，HVML 将成为 HybridOS 的应用开发首选编程语言。
 
@@ -490,7 +497,7 @@ HVML 的设计思想来源于 React.js、Vue.js 等最新的 Web 前端框架。
 
 在上面的示例代码中，我们使用了系统内置变量 `$TIMERS` 来定义定时器，每个定时器有一个全局的标识符，间隔时间以及是否激活的标志。如果要激活一个定时器，我们只需要使用 HVML 的 `update` 标签来修改对应的键值，而不需要调用某个特定的编程接口。这是数据驱动编程的另一个用法——我们不需要为定时器或者其他的类似模块的操作提供额外的 API。
 
-另外，在上面的示例代码中，我们通过 `observe` 标签观察新的数据或文档本身的变化以及用户交互事件，可实现 XML/HTML 文档或数据的动态更新。比如在最后一个 `observe` 标签中，通过监听用户头像上的点击事件来装载一个新的 `user.hvml` 文件，以模态对话框的形式展示对应用户的详细信息。
+另外，在上面的示例代码中，我们通过 `observe` 标签观察新的数据或文档本身的变化以及用户交互事件，可实现 XML/HTML 文档或数据的动态更新。比如在最后一个 `observe` 标签中，通过监听用户头像上的点击事件来装载一个新的 `user.hvml` 文件，在新的渲染器页面展示对应用户的详细信息。
 
 其次是彻底解除界面、交互和数据之间的耦合。通过 HVML 引入的编程模型和方法，用于表述界面的 XML/HTML 文档内容可完全由 HVML 生成和动态调整，这避免了在程序代码中直接操作文档的数据结构（即文档对象树，或简称 DOM 树），而程序只需要关注数据本身的产生和处理即可。这样，就实现了界面和数据的解耦。比如：
 
@@ -1510,7 +1517,7 @@ HVML 还定义有如下一些动作标签：
 在 HVML 中，`on` 或者 `in` 介词属性在引用目标文档中的元素时，若使用前导字符 `>`，则将被限定在父元素 `in` 介词指定的范围内。如下面例子中，
 
 ```html
-        <reduce on="$?" in="#the-user-statistics" by="CLASS: RUserRegionStats">
+        <reduce on="$?" in="#the-user-statistics" by="FUNC: StatsUserRegion">
             <choose on="$?.count" to="update" in="> h2 > span">
                 <update on="$@" at="textContent" with="$?" />
             </choose>
@@ -2840,7 +2847,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         </div>
     </archetype>
 
-    <reduce on="$users" in="#the-user-statistics" by="CLASS: RUserRegionStats">
+    <reduce on="$users" in="#the-user-statistics" by="FUNC: StatsUserRegion">
         <update on="> h2 > span" at="textContent" with="$?.count" />
         <clear on="> dl" />
         <sort on="$?.regions" by="KEY: ALL FOR KV" descendingly>
@@ -2851,7 +2858,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </reduce>
 ```
 
-上述代码由脚本程序定义的类 `RUserRegionStats` 在 `$users` 上执行归约操作，之后形成一个如上面 JSON 格式描述的统计结果，其中包括整个用户的个数，以及所有区域的用户个数。然后使用了 `update` 标签、 `clear` 标签以及 `iterate` 标签执行了三个后续动作：
+上述代码使用外部函数执行器 `StatsUserRegion` 在 `$users` 上执行归约操作，之后形成一个如上面 JSON 格式描述的统计结果，其中包括整个用户的个数，以及所有区域的用户个数。然后使用了 `update` 标签、 `clear` 标签以及 `iterate` 标签执行了三个后续动作：
 
 - `update` 标签：用于更新 `#the-user-statistics > h2 > span` 元素的内容为用户总数。
 - `clear` 标签：用于清除 `#the-user-statistics > dl` 元素的所有子元素。
@@ -3079,7 +3086,6 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 <hvml target="html" lang="en">
     <head>
         <base href="$HVML.base(! 'file:///' )" />
-
     </head>
 
     <body>
@@ -3107,32 +3113,32 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `observe` 标签用于观察特定变量或数据上的状态变化，并在指定的事件到来时，若其 `with` 属性指定了有效的操作组，则执行该操作组，否则执行该标签定义的操作组。
 
-我们使用 `observe` 的 `at` 属性指定一个要观察的静态命名变量之名称，使用 `on` 属性指定一项要观察的数据。`at` 属性的优先级高于 `on` 属性。注意，我们不能观察一个局部命名变量或者上下文变量。
+我们使用 `observe` 的 `at` 属性指定一个要观察的静态命名变量之名称，使用 `on` 属性指定一项要观察的数据。`at` 属性的优先级高于 `on` 属性。注意，我们不能观察一个临时命名变量或上下文变量。
 
 当我们观察一个静态命名变量时，我们可以观察这个命名变量对应的数据是否已经就绪，或者在获取数据的过程是否发生了错误，或者这个命名变量上的数据是否已经被销毁等等。
 
 下面的代码从远程服务器上获得当前的用户信息，但使用异步请求：
 
 ```html
-        <init as="users" from="http://foo.bar.com/get_all_users" async />
+    <init as="users" from="http://foo.bar.com/get_all_users" async />
 
-        <archetype name="user_item">
-            <li class="user-item">
-                <img class="avatar" src="" />
-                <span></span>
-            </li>
-        </archetype>
+    <archetype name="user_item">
+        <li class="user-item">
+            <img class="avatar" src="" />
+            <span></span>
+        </li>
+    </archetype>
 
-        <ul class="user-list">
-            <img src="wait.png" />
-        </ul>
+    <ul class="user-list">
+        <img src="wait.png" />
+    </ul>
 
-        <observe at="users" for="change:attached" in="#user-list">
-            <clear on="$@" />
-            <iterate on="$users" by="RANGE: FROM 0">
-                <update on="$@" to="append" with="$user_item" />
-            </iterate>
-        </observe>
+    <observe at="users" for="change:attached" in="#user-list">
+        <clear on="$@" />
+        <iterate on="$users" by="RANGE: FROM 0">
+            <update on="$@" to="append" with="$user_item" />
+        </iterate>
+    </observe>
 ```
 
 当我们观察到 `users` 变量上的 `change:attached` 事件之后，表明数据已经就绪，此时，即可执行 `observe` 定义的操作组：清空 `#user-list` 中的内容，然后迭代 `$users` 数组的成员，使用模板 `$user_item` 生成文档片段追加到 `#user-list` 当中。
@@ -3205,14 +3211,12 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 另外一个 `observe` 标签的使用例子描述如下。
 
-在 `head` 元素中，我们通过 `init` 标签，使用 `$STREAM` 预定义变量连接到了 `unix:///var/run/hibus.sock`。`$STREAM` 的 `open` 方法返回一个流实体，并被命名为 `databus`（`as` 属性）。
-
-然后在 `body` 元素中，我们使用 `choose` 标签通过 `$databus.subscribe` 方法订阅（`subscribe`）指定的事件，然后用 `observe` 元素定义了对 `$databus` 上特定事件的观察。每当电池状态发生变化时，就会从这个数据源收到相应的数据包。为方便数据交换，所有的数据包都打包为 JSON 格式，并具有如下的格式：
+在 `head` 元素中，我们通过 `init` 标签，使用 `$STREAM` 预定义变量连接到了 `unix:///var/run/hibus.sock`。`$STREAM` 的 `open` 方法返回一个流实体，并被命名为 `databus`（`as` 属性）。然后在 `body` 元素中，我们使用 `choose` 标签通过 `$databus.subscribe` 方法订阅（`subscribe`）指定的事件，然后用 `observe` 元素定义了对 `$databus` 上特定事件的观察。每当电池状态发生变化时，就会从这个数据源获得相应的数据包。为方便说明，我们假定数据包以 JSON 格式描述：
 
 ```json
     {
         "messageType": "event",
-        "name": "XXXXXX",
+        "eventName": "XXXXXX",
         "source": <source data>,
         "time": 20200616100207.567,
         "signature": "XXXXX",
@@ -3223,7 +3227,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     }
 ```
 
-其中，`messageType` 字段表示数据包类型；`name` 字段表示事件名称；`source` 表示产生此事件的来源数据；`time` 表示此事件产生的系统时间；`signature` 是此事件的内容的签名，可用来验证数据来源的合法性；`payload` 中包含事件关联的数据。在上面这个例子中，事件包含两个信息，一个信息用来表示当前电量百分比，另一个信息表示是否在充电状态。
+其中，`messageType` 字段表示数据包类型；`eventName` 字段表示事件名称；`source` 表示产生此事件的来源数据；`time` 表示此事件产生的系统时间；`signature` 是此事件的内容的签名，可用来验证数据来源的合法性；`payload` 中包含事件关联的数据。在上面这个例子中，事件包含两个信息，一个信息用来表示当前电量百分比，另一个信息表示是否在充电状态。
 
 事件名称必须符合本规范定义的 `event_name` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法事件名称的样例：
 
@@ -3236,9 +3240,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 - 当来自`$databus`（由 `on` 属性值指定）上的数据包类型为 `event:$?`（由 `for` 属性值指定），这里的 `$?` 是 `choose` 元素的执行结果，表示被订阅事件的唯一性标识字符串（相当于事件标识符），执行 `observe` 定义的操作组。
 - `observe` 元素的 `with` 属性指定了执行更新操作的操作组（`$onBatteryChanged`），其中的更新操作限定在 `in` 介词属性定义的 `#the-header` 目标元素中。
 
-注意，当 `observe` 观察到了来自特定数据源上的数据包时，其结果数据为该事件数据包中的 `payload` 数据；若没有通过 `for` 属性和 `with` 指定具体要观察的数据包类型以及过滤条件时，则结果数据为整个数据包。
+注意，当 `observe` 观察到了来自特定数据源上的数据包时，其结果数据为该事件数据包中的 `payload` 数据。
 
-在简单情形下，我们也可以不使用脚本程序，直接使用 `update` 标签来定义更新操作。比如，我们要在状态栏上显示当前的 WiFi 名称或者移动网络的运营商名称：
+类似地，我们要在状态栏上显示当前的 WiFi 名称或者移动网络的运营商名称时：
 
 ```html
     <choose on=$databus.subscribe('@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED')>
@@ -3250,16 +3254,6 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             </update>
         </observe>
     </choose>
-```
-
-对电池电量的更新，我们也可以不使用脚本程序，直接使用 `test`、 `match` 和 `update` 标签来定义更新操作：
-
-```html
-    <observe on="$databus" for="event:$?">
-        <except>
-            <p>Failed to update battery status</p>
-        </except>
-    </observe>
 ```
 
 我们还可以使用 `observe` 标签观察文档某个节点上的变化或者用户交互事件。下面的例子展示了 `observe` 的多种用法：
@@ -3283,7 +3277,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         </choose>
 
         <choose on=$mqtt.subscribe('deleteUser') >
-            <observe on="$mqtt" for="event:$del_user" in="#the-user-list" >
+            <observe on="$mqtt" for="event:userDeleted" in="#the-user-list" >
                 <iterate on="$?" by="RANGE: FROM 0">
                     <erase on="#user-$?.id" />
                 </iterate>
@@ -3319,7 +3313,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                 <update on="$users" to="append" with="$item_user" />
             </iterate>
 
-            <reduce on="$users" in="#the-user-statistics" by="CLASS: RUserRegionStats">
+            <reduce on="$users" in="#the-user-statistics" by="FUNC: StatsUserRegion">
                 <choose on="$?" in="> h2 > span" by="KEY: AS 'count'">
                     <update on="$@" at="textContent" with="$?" />
                 </choose>
@@ -3340,9 +3334,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 </hvml>
 ```
 
-在上面的例子中，我们使用 `define` 标签定义了一个操作组，然后在 `observe` 标签中使用 `with` 属性指定了这个操作组，从而在事件达到时，将执行 `$onChangeContent` 操作组。
-
-我们还使用 `observe` 标签的 `in` 属性指定了执行 `$onChangeContent` 操作组时的目标文档位置。
+在上面的例子中，我们使用 `define` 标签定义了一个操作组，然后在 `observe` 标签中使用 `with` 属性指定了这个操作组，当 `change:content` 事件到达时，将执行 `$onChangeContent` 操作组。我们还使用 `observe` 标签的 `in` 属性指定了执行 `$onChangeContent` 操作组时的目标文档位置。
 
 当我们要解除在某个特定数据或者元素之上对某个事件的观察时，使用 `forget` 标签。也就是说，`forget` 是 `observe` 的反操作。
 
@@ -3350,7 +3342,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <forget on="#the-user-list" for="change:content" />
 ```
 
-需要注意的是，由于我们可以在 HVML 程序多个不同位置使用 `observe` 观察同一事件，故而 `forget` 将移除所有匹配的观察。
+需要注意的是，我们可以在 HVML 程序多个不同位置使用 `observe` 观察同一事件，而 `forget` 将移除所有匹配的观察。
 
 在 HVML 代码中，除了被动等待事件的发生之外，代码也可以直接使用 `fire` 标签主动地激发一个事件：
 
@@ -3415,6 +3407,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 ```
 
 将移除对所有定时器的到期事件观察。
+
+最后，`observe` 支持 `once` 副词属性，具有该副词属性的观察，将在执行一次后由解释器自动解除。
 
 #### 2.5.12) `call` 和 `return` 标签
 
@@ -6291,7 +6285,12 @@ def on_battery_changed (on_value, with_value, root_in_scope):
 
 ##### TBD2.4) 杂项
 
-另外，我们还可以使用 `init` 元素的 `by` 属性指定用于对比两个数据是否相等的外部执行器。另外，我们还可以使用 `init` 元素的 `by` 属性指定用于对比两个数据是否相等的外部执行器。
+虚拟 DOM 技术提供如下一些好处：
+
+1. 由于脚本程序并不直接操作真实的 DOM 树，故而一方面通过现有的框架简化了前端开发的复杂性，另一方面通过优化对真实 DOM 树的操作而减少了由于动态修改页面内容而对 DOM 树的频繁操作，从而提高页面的渲染效率和用户体验。
+1. 通过虚拟 DOM 技术，程序对某个数据的修改，可以直接反应到该数据绑定的页面内容上，开发者无需主动或直接地调用相关接口来操作 DOM 树。这种技术提供了所谓的“响应式”编程，极大降低了开发者的工作量。
+
+另外，我们还可以使用 `init` 元素的 `by` 属性指定用于对比两个数据是否相等的外部执行器。
 
 - `connect`：该标签定义对一个外部数据源的连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包。
 - `disconnect`：该标签关闭先前建立的外部数据源连接。
