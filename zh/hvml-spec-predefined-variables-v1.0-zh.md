@@ -7,7 +7,7 @@ Category: Language Specification
 Creation Date: Nov. 1, 2021  
 Last Modified Date: May 1, 2022  
 Status: Release Candidate  
-ReleaseName: 硕鼠  
+Release Name: 硕鼠  
 Language: Chinese
 
 *Copyright Notice*
@@ -63,12 +63,11 @@ Language: Chinese
       * [3.3.6) `fmtbdtime` 方法](#336-fmtbdtime-方法)
    + [3.4) `HVML`](#34-hvml)
       * [3.4.1) `target` 方法](#341-target-方法)
-      * [3.4.2) `lang` 方法](#342-lang-方法)
-      * [3.4.3) `base` 方法](#343-base-方法)
-      * [3.4.4) `max_iteration_count` 方法](#344-max_iteration_count-方法)
-      * [3.4.5) `max_recursion_depth` 方法](#345-max_recursion_depth-方法)
-      * [3.4.6) `max_embedded_levels` 方法](#346-max_embedded_levels-方法)
-      * [3.4.7) `timeout` 方法](#347-timeout-方法)
+      * [3.4.2) `base` 方法](#342-base-方法)
+      * [3.4.3) `max_iteration_count` 方法](#343-max_iteration_count-方法)
+      * [3.4.4) `max_recursion_depth` 方法](#344-max_recursion_depth-方法)
+      * [3.4.5) `max_embedded_levels` 方法](#345-max_embedded_levels-方法)
+      * [3.4.6) `timeout` 方法](#346-timeout-方法)
    + [3.5) `DOC`](#35-doc)
       * [3.5.1) `doctype` 方法](#351-doctype-方法)
       * [3.5.2) `query` 方法](#352-query-方法)
@@ -1432,7 +1431,7 @@ $HVML.target
     // string: 'html'
 ```
 
-#### 3.4.3) `base` 方法
+#### 3.4.2) `base` 方法
 
 该方法获取或设置 HVML 程序的基础 URL。
 
@@ -1463,7 +1462,7 @@ $HVML.base(! "https://foo.example.com//app/hvml/" )
     // string: 'https://foo.example.com/app/hvml'
 ```
 
-#### 3.4.4) `max_iteration_count` 方法
+#### 3.4.3) `max_iteration_count` 方法
 
 该方法获取或设置 HVML 程序在执行 `iterate` 动作元素时的最大迭代次数，用于检测可能的死循环。
 
@@ -1497,7 +1496,7 @@ $HVML.max_iteration_count(!
 $HVML.max_iteration_count(! 10000UL )
 ```
 
-#### 3.4.5) `max_recursion_depth` 方法
+#### 3.4.4) `max_recursion_depth` 方法
 
 该方法获取或设置 HVML 程序在递归执行某个功能时的最大递归深度，以防止栈溢出。
 
@@ -1531,7 +1530,7 @@ $HVML.max_recursion_depth(!
 $HVML.max_recursion_depth(! 10000UL )
 ```
 
-#### 3.4.6) `max_embedded_levels` 方法
+#### 3.4.5) `max_embedded_levels` 方法
 
 该方法获取或设置解析 eJSON 数据或者处理容器数据时，允许的最大嵌套层级。
 
@@ -1565,7 +1564,7 @@ $HVML.max_embedded_levels(!
 $HVML.max_embedded_levels(! 64UL )
 ```
 
-#### 3.4.7) `timeout` 方法
+#### 3.4.6) `timeout` 方法
 
 该方法获取或设置 HVML 程序在通过数据获取器获取数据或者建立长连接、发送请求时的超时值（单位：秒）。
 
