@@ -270,6 +270,8 @@ Language: Chinese
 
 通常，我们将界面渲染器设计为类似字符控制台的哑设备，这样，我们就可以将 HVML 程序和应用的其他模块从控制界面元素展现行为的细节中解放出来。举个例子。我们在字符终端程序的开发中，可以使用一些转义控制指令来设置字符的颜色、是否闪烁等，而字符终端程序无需包含任何处理字符颜色以及闪烁的代码——因为这些细节字符控制台（可能是硬件，也可能是一个伪终端程序）帮我们默默处理了。HVML 的界面渲染器也遵循同样的设计思路，HVML 程序创建好一个按钮，至于这个按钮显示出来是什么样子的，用户如何跟它交互，这些统统无需 HVML 程序来操心——一切由渲染器在给定的描述式语言（如 HTML、CSS）的控制下运转。这带来另一个好处，由于在界面渲染器中不包含任何的应用运行逻辑代码和敏感的数据，从某种程度上讲，这带来了安全性的提高。
 
+在 HVML 应用框架中，一个应用可以同时启动多个并行的任务，我们将这些并行的任务称为“行者（runner）”（注：不同的行者可能使用不同的编程语言开发）。使用 HVML 语言开发的行者在一个独立的 HVML 解释器实例中运行。一个解释器实例可以是一个独立运行的系统进程，也可以是解释器进程中的独立线程；这取决于解释器的具体实现方式。但不论解释器如何实现，HVML 要求单个行者可以同时装载多个 HVML 程序运行，而且解释器应该始终以独立的协程（coroutine）形式执行同一行者装载的这些 HVML 程序实例。因此，我们在本文档中使用“协程（coroutine）”一词来指代一个运行中的 HVML 程序实例。
+
 有了这样的应用框架设计，HVML 可以让几乎所有的编程语言，不论是 C/C++ 这类传统编程语言，还是 Python 这类脚本语言，都可以使用统一的模式来开发 GUI 应用。从这个角度讲，HVML 也可以视作是一种胶水语言。
 
 ## 2) HVML 详解
@@ -284,6 +286,7 @@ Language: Chinese
 1. `文档元素（document element）`。指文档对象模型中，使用某个标签（tag）定义的元素节点；一个文档元素可包含一个或多个属性（attribute）以及属性值，还可以包含内容（content）；一个元素可包含文本内容、数据内容或者使用标签定义的单个或多个子元素。
 1. `文档片段（document fragment）`。指 XML/HTML 文档中的一个片段，可作为模板被克隆（clone）到目标文档的其他位置。
 1. `元素汇集（element collection）`。指使用选择器选择的零个或者多个元素。这里避免使用“集合”这个术语，是为了防止和`集合（set）`数据类型混淆。
+1. `协程（coroutine）`。运行中的 HVML 程序实例。
 1. `码点（code point）`。指一个表述为 `U+` 和四到六个 ASCII 大写十六进制数字形式的 Unicode 码点，范围在 U+0000 到 U+10FFFF（含）。有时候，我们会在码点之后包含码点的名称以及包含在小括号中的该码点的渲染形式，且高亮或加粗显示该码点的渲染形式。对无法渲染的码点，本文档会给出其码点名称。有关 Unicode 字符的更多术语解释如下：
    - 码点的名称由 Unicode 标准定义并以 ASCII 大写形式表述，如 `CR` 指 Carriage Return（回车）。
    - `替代符（surrogate）`是范围在 U+D800 到 U+DFFF（含）的码点。
@@ -1341,6 +1344,7 @@ HVML 还定义有如下一些动作标签：
       - `LostRenderer`：丢失到渲染器的连接。
       - `MemoryFailure`：内存错误，如内部堆太小，内存分配失败。
       - `InternalFailure`：解释器内部错误。
+      - `ChildTerminated`：子协程被强制终止。
    - 浮点数相关：
       - `ZeroDivision`：表示遇到被零除错误。
       - `Overflow`：表示浮点数运算时出现向上溢出错误。
@@ -1473,7 +1477,6 @@ HVML 还定义有如下一些动作标签：
 - `nosetotail`：在 `iterate` 动作元素中，用于将上次迭代的结果作为下次迭代的输入。
 - `responsively`：在骨架元素中，用于定义其文本内容是响应式的。
 - `noreturn`：在 `request` 标签中，用于定义无需返回值。
-- `concurrently`：在 `load` 和 `call` 标签中，用于定义并行装载 HVML 程序或者执行一个函数。
 
 注意：在 HVML 中，我们无需为副词属性赋值。
 
@@ -3462,7 +3465,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 也就是说，`call` 和 `include` 的主要区别在于如何处理操作组中 `return` 元素定义的返回值：前者关心返回值，后者不关心返回值。在实践当中，`include` 一般用于操作目标文档，`call` 一般用作获取一个结果数据。
 
-另外，我们可以在 `call` 元素中使用副词属性 `concurrently`，这样我们可以并行调用耗时的函数，然后使用 `observe` 观察其结果。如：
+另外，我们可以在 `call` 元素中使用副词属性 `asynchronously`，这样我们可以并行调用耗时的函数，然后使用 `observe` 观察其结果。如：
 
 ```html
         <define as="collectAllDirEntriesRecursively">
@@ -3470,7 +3473,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         </define>
 
         <listbox id="entries">
-            <call as="my_task" on="$collectAllDirEntriesRecursively" with="/" concurrently />
+            <call as="my_task" on="$collectAllDirEntriesRecursively" with="/" asynchronously />
             <observe on="$my_task" for="success">
                 <iterate on="$?" in="#entries" by="RANGE: FROM 0">
                     <update on="$@" to="append" with="$dir_entry" />
@@ -3738,7 +3741,9 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 
 #### 2.5.17) `load` 和 `exit` 标签
 
-`load` 标签用来装载一个由 `on` 属性指定的数据或者 `from` 属性指定的新 HVML 文档，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递到新的 HVML 文档。如：
+`load` 标签用于实现装载并在新的协程中执行 HVML 程序的功能。由 `load` 装载的新 HVML 代码或者程序实例，称为子协程（child coroutine），执行 `load` 元素动作的协程称为父协程（parent coroutine）。
+
+`load` 标签用来装载并执行一个由 `on` 属性指定的 HVML 代码或者 `from` 属性指定的新 HVML 程序，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递给子协程。如：
 
 ```html
     <load from="b.hvml" with="$user" as="userProfile" in="user@main:tab" />
@@ -3748,7 +3753,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 
 - `from`：指定的 HVML 程序的 URL。
 - `with`：指定装载对应程序的请求参数；该数据应是一个对象。
-- `as`：当我们使用 `async` 副词属性加载该 HVML 程序时，我们可使用该属性将这个程序和一个变量名称绑定，从而可观察该程序的加载和执行状态。
+- `as`：当我们异步装载新的 HVML 程序时，我们使用该属性将新的 HVML 协程和一个变量名称绑定，从而可观察该协程的加载、执行和退出状态。
 - `at`：和 `init` 类似，在 `load` 标签中使用 `as` 属性命名一个 HVML 程序时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
 - `in`：指定用于渲染目标文档的渲染器页面名称，使用 `<page_name>@<group_name>:<page_type>` 这样的形式，用于指定页面名称、所在页面组和页面类型（`plainwindow`、`tab` 和 `panel`）。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
    - `_self`：表示当前页面。在当前页面中渲染新的 HVML 程序，意味着强制终止当前的 HVML 程序，并清空当前的目标文档内容，然后装载新的 HVML 程序。使用该页面名称时，将忽略页面分组以及页面类型信息。
@@ -3786,67 +3791,36 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 </html>
 ```
 
+当 `from` 属性值指定的 URL 定义有片段（使用`#`符号）时，`load` 元素将尝试装载该 HVML 程序中的另一个本体，即另一个 `body` 子树定义的内容。
+
 `load` 标签支持如下副词属性：
 
-- `synchronously`：同步装载，默认行为。`load` 元素将等待新的 HVML 程序退出，相当于创建一个模态窗口。
-- `asynchronously`：异步装载。`load` 元素不等待新的 HVML 程序退出。
-- `concurrently`：并行执行 HVML 程序。若解释器支持行者（runner），则 `as` 属性的值用于标识一个行者。
-
-当 `from` 属性值指定的 URL 定义有片段（使用`#`符号）时，`load` 元素将尝试装载该 HVML 文档中的另一个本体，即另一个 `body` 子树定义的内容。
-
-当我们在当前窗口中渲染新的 HVML 程序时，将忽略同步或者异步副词属性。如下面的代码：
-
-```html
-<hvml>
-    <body>
-        ...
-
-        <load from="#errorPage" in="main:_self" />
-    </body>
-
-    <body id="errorPage">
-        <p>We encountered a fatal error!</p>
-    </body>
-</hvml>
-```
-
-上述代码中的 `load` 元素对应如下三个步骤：
-
-1. 强制终止当前的 HVML 程序。
-1. 清空当前的目标文档内容。
-1. 重新装载当前 HVML 程序并执行 `#errorPage` 本体定义的操作；或者，跳转到 `#erroPage` 定义的本体中执行操作。
+- `synchronously`：同步装载，默认行为。`load` 元素将同步等待子协程退出，相当于创建一个模态窗口。
+- `asynchronously`：异步装载。`load` 元素不等待子协程退出。
 
 假定我们使用 `load` 标签装载一个用来创建新用户的 HVML 程序，如果使用同步装载方式：
 
 ```html
-    <load from="new_user.hvml" in="main:_blank" synchronously>
-        <test on="$?.status">
-            <match for="AS 'exited'" exclusively>
-                <choose on="$3?.payload" in="#the-user-list">
-                    <update on="$@" to="append" with="$user_item" />
-                </choose>
-            </match>
-        </test>
+    <load from="new_user.hvml" in="newUser@mainBody" synchronously>
+        <update on="#the-user-list" to="append" with="$user_item" />
+
+        <!-- 对子协程非正常退出的情形，通过捕获相应的异常进行处理 -->
+        <catch for="ChildTerminated">
+        </catch>
     </load>
 ```
 
-如果使用异步装载方式，则需要 `as` 属性并使用 `observe` 标签创建一个观察者，用于观察程序的 `terminated`（终止）事件：
+如果使用异步装载方式，则需要 `as` 属性并使用 `observe` 标签创建一个观察者，用于观察子协程的 `exited`（退出）事件：
 
 ```html
-    <load from="new_user.hvml" as="newUser" in="main:_blank" asynchronously>
-        <observe on="$newUser">
-            <test on="$?.name">
-                <match for="AS 'status:exited'" exclusively>
-                    <choose on="$3?.payload" in="#the-user-list">
-                        <update on="$@" to="append" with="$user_item" />
-                    </choose>
-                </match>
-            </test>
+    <load from="new_user.hvml" as="newUser" in="newUser@mainBody" asynchronously>
+        <observe on="$newUser" for="exited">
+            <update on="#the-user-list" to="append" with="$user_item" />
         </observe>
     </load>
 ```
 
-以上两种实现方式，最终判断装载执行的 HVML 程序的终止状态，如终止状态为 `exited` 时，会在当前目标文档的 `#the-user-list` 中插入一条新的用户条目。
+以上两种实现方式，均会在当前目标文档的 `#the-user-list` 中插入一条新的用户条目。
 
 和 `load` 元素配合，我们通常在被装载的程序中使用 `exit` 标签主动退出程序的运行并定义程序的返回数据。如：
 
@@ -3859,6 +3833,36 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 ```
 
 上面的代码，使用 `exit` 标签的 `with` 属性定义了一项数据，解释器应将该数据作为该 HVML 程序的返回数据处理。
+
+当我们在一个已有的渲染器页面（比如将 `in` 属性值设置为 `_self`）中渲染子协程的文档内容时，该页面对应的协程将因为渲染器页面被占用而被解释器挂起。如下面的代码：
+
+```html
+<hvml>
+    <body>
+        ...
+
+        <load from="#errorPage" in="_self" />
+    </body>
+
+    <body id="errorPage">
+        <p>We encountered a fatal error!</p>
+    </body>
+</hvml>
+```
+
+上述代码中的 `load` 元素对应如下几个步骤：
+
+1. 装载 HVML 程序并在新子协程中执行（当前程序的 `#errorPage` 本体）。
+1. 子协程将使用其父协程使用的渲染器页面（由 `in` 属性值 `_self` 指定），故父协程将被解释器挂起（状态为 `stopped`）。
+1. 子协程清空父协程使用的渲染器页面并装载自己的目标文档内容。
+1. 子协程终止运行后释放渲染器页面，解释器设置父协程状态为运行（状态为 `running`），父协程使用其完整的目标文档内容覆盖原有的渲染器页面内容。
+
+如上所示，一个 HVML 协程有如下状态：
+
+- `stopped`：被解释器挂起。
+- `running`：正在执行。
+- `exited`：主动退出。
+- `terminated`：因为错误或者未被捕获的异常被终止。
 
 ### 2.6) 执行器
 
@@ -5827,8 +5831,6 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 调整了动作标签的描述顺序。
 
-增加 `concurrently` 副词属性，用于 `load` 和 `call` 标签定义并行执行程序或者调用操作组。通常意味着在独立的线程中执行程序或操作组。
-
 相关章节：
 
 - [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
@@ -6341,6 +6343,12 @@ def on_battery_changed (on_value, with_value, root_in_scope):
 正常情况下，`load` 元素装载一个 HVML 程序在一个模态窗口中渲染时，其执行结果数据就是新 HVML 程序中 `exit` 元素的 `with` 属性值；如果在一个新建的普通窗口中渲染，则正常情况下 `load` 元素的操作结果数据为字符串 `ok`；如果在其他已有的窗口中渲染，则将终止该窗口中运行的 HVML 程序，并在当前窗口中渲染新的 HVML 程序内容。
 
 `exit` 标签用于终止当前的 HVML 程序，并将返回值返回到指定的目标 HVML 程序。
+
+`load` 标签支持如下副词属性：
+
+- `synchronously`：同步装载，默认行为。`load` 元素将等待新的 HVML 程序退出，相当于创建一个模态窗口。
+- `asynchronously`：异步装载。`load` 元素不等待新的 HVML 程序退出。
+- `concurrently`：并行执行 HVML 程序。若解释器支持行者（runner），则 `as` 属性的值用于标识一个行者。
 
 ### 附.3) 贡献者榜单
 
