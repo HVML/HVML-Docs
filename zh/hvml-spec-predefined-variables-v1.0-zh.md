@@ -1,11 +1,11 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RC1  
+Version: 1.0-RC2  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Apr. 1, 2022  
+Last Modified Date: May 1, 2022  
 Status: Release Candidate  
 ReleaseName: 硕鼠  
 Language: Chinese
@@ -1431,35 +1431,6 @@ $HVML.target string: `the target document type such as 'html'`
 $HVML.target
     // string: 'html'
 ```
-
-#### 3.4.2) `lang` 方法
-
-获取 HVML 程序中由 `hvml` 元素之 `lang` 属性定义的语言编码。
-
-**描述**
-
-```js
-$HVML.lang string: `the language code such as 'zh'`
-```
-
-获取当前 HVML 程序的语言编码，该语言编码通常由 `hvml` 标签的 `lang` 属性值设定；若未设定，默认使用 `en`（英语）。
-
-**异常**
-
-该方法不产生异常。
-
-**备注**
-
-该函数返回的语言编码符合 ISO639-1 标准。ISO639-1 标准为每个语言赋予两个拉丁字母的编码，比如阿拉伯语（Arabic）的语言编码是 `ar`，中文（Chinese）的语言编码是 `zh`。
-
-**示例**
-
-```js
-$HVML.lang
-    // string: 'zh'
-```
-
-**参见**
 
 #### 3.4.3) `base` 方法
 
