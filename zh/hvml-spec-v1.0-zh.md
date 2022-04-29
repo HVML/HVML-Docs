@@ -3849,16 +3849,18 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
     <exit with="$user_info" />
 ```
 
-上面的代码，使用 `exit` 标签的 `with` 属性定义了一项数据，解释器应将该数据作为该 HVML 程序的返回数据处理。
+上面的代码，使用 `exit` 标签的 `with` 属性定义了一项数据，解释器应将该数据作为当前 HVML 协程的返回数据处理。
 
-当我们在一个已有的渲染器页面（比如将 `in` 属性值设置为 `_self`）中渲染子协程的文档内容时，该页面对应的协程将因为渲染器页面被占用而被解释器挂起。如下面的代码：
+当我们在一个已有的渲染器页面（比如将 `in` 属性值设置为 `_self`）中渲染子协程的文档内容时，该页面对应的协程之渲染状态将因为渲染器页面被占用而被设置为被压制（suppressed）。如下面的代码：
 
 ```html
 <hvml>
     <body>
         ...
 
-        <load from="#errorPage" in="_self" />
+        <load from="#errorPage" in="_self" asynchronously>
+
+        ...
     </body>
 
     <body id="errorPage">
@@ -3869,10 +3871,11 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 
 上述代码中的 `load` 元素对应如下几个步骤：
 
-1. 装载 HVML 程序并在新子协程中执行（当前程序的 `#errorPage` 本体）。
-1. 子协程将使用其父协程使用的渲染器页面（由 `in` 属性值 `_self` 指定），故父协程将被解释器压制（渲染状态为 `suppressed`）。
+1. 装载 HVML 程序（或者克隆当前程序的 vDOM）并在新建的新子协程中执行该程序，其入口为 `#errorPage` 本体。
+1. 子协程将使用其父协程使用的渲染器页面（由 `in` 属性值 `_self` 指定），故父协程将被解释器压制（渲染状态为 `suppressed`）。由于使用了 `asynchronously` 副词属性，故父协程会继续运行，但不会和渲染器做任何数据交换。
 1. 子协程清空父协程使用的渲染器页面并装载自己的目标文档内容。
-1. 子协程终止运行后释放渲染器页面，解释器设置父协程的渲染状态为 `exposed`，并使用其完整的目标文档内容覆盖原有的渲染器页面内容。
+1. 子协程终止运行后释放渲染器页面，解释器设置父协程的渲染状态为 `regular`，并使用其完整的目标文档内容覆盖渲染器页面内容。
+1. 父协程恢复正常的渲染器数据交换。
 
 ### 2.6) 执行器
 
