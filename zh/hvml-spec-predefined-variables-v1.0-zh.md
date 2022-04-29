@@ -1406,7 +1406,14 @@ $DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MAT
 
 ### 3.4) `HVML`
 
-`HVML` 是一个内置的程序级动态变量，该变量用于获取 HVML 程序的基本信息或者设置解释器在执行 HVML 程序时一些参数。
+`HVML` 是一个内置的程序级动态变量，该变量用于获取当前 HVML 协程的基本信息或者设置当前协程的解释器参数。
+
+另外，在 `$HVML` 变量上，会产生如下渲染状态相关的事件：
+
+1. `rdrState:suppressed`：当前协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
+1. `rdrState:closed`：协程对应的渲染器页面被用户强制关闭。
+1. `rdrState:lost`：协程所在会话丢失渲染器的连接，比如渲染器意外终止或者异常退出。
+1. `rdrState:regular`：当前协程和渲染器恢复到常规数据交换状态。
 
 #### 3.4.1) `target` 方法
 
