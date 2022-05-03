@@ -14,9 +14,10 @@ Author: Vincent Wei
    + [Simple Design](#simple-design)
    + [Data-driven](#data-driven)
    + [Inherent Event-driven Mechanism](#inherent-event-driven-mechanism)
-- [New Application Framework](#new-application-framework)
-- [HVML 如何改变传统的 GUI 开发](#hvml-如何改变传统的-gui-开发)
+   + [New Application Framework](#new-application-framework)
+- [Use HVML to Govern GUIs](#use-hvml-to-govern-guis)
 - [Future of HVML](#future-of-hvml)
+- [Open Source Implementations](#open-source-implementations)
 - [Tradmarks](#tradmarks)
 
 [//]:# (END OF TOC)
