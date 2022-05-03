@@ -547,7 +547,8 @@ the coupling problem between different components.
         </archetype>
 
         <define as="fillDirEntries">
-            <choose on="$?" by="CLASS: CDirEntries">
+            <clear on="$@" />
+            <choose on="$?" by="FUNC: DirEntries">
                 <iterate on="$?" in="#entries" by="RANGE: 0">
                     <update on="$@" to="append" with="$dir_entry" />
                 </iterate>
@@ -562,24 +563,23 @@ the coupling problem between different components.
             Open
         </button>
 
-        <observe on="$entries" for="selected-item-changed">
-            <update on="$fileInfo" at="property.selected_type key.selected_name" with ["$?.type", "$?.name" ] />
+        <observe on="#entries" for="selected-item-changed">
+            <update on="$fileInfo" at=".selected_type .selected_name" with ["$?.type", "$?.name" ] />
         </observe>
 
-        <observe on="$open" for="click">
+        <observe on="#open" for="click">
             <test on="$fileInfo.selected_type">
-                <match for="dir" exclusively>
+                <match for="AS 'dir'" exclusively>
                     <init as="new_path">
                         "$fileInfo.curr_path{$2.name}/"
                     </init>
 
-                    <empty on="#entries" />
-                    <call on="$fillDirEntries" with="$new_path" />
+                    <call on="$fillDirEntries" with="$new_path" in="#entries" />
                     <update on="$fileInfo" at="property.curr_path" with="$new_path" />
                     <update on="#path" at="textContent" with="$new_path" />
                 </match>
-                <match for="file" exclusively>
-                    <back to="_caller" with="$fileInfo">
+                <match for="AS 'file'" exclusively>
+                    <exit with="$fileInfo">
                 </match>
             </test>
         </observe>
@@ -598,7 +598,7 @@ the coupling problem between different components.
     }
 ```
 
-其次，该代码使用了 `choose` 元素以及一个外部执行器（`CLASS: CDirEntries`）来获得当前路径中的所有目录项。返回的结果数据大致为：
+其次，该代码使用了 `choose` 元素以及一个外部执行器（`FUNC: DirEntries`）来获得当前路径中的所有目录项。返回的结果数据大致为：
 
 ```json
     [
@@ -615,16 +615,26 @@ the coupling problem between different components.
 - 如果当前选中的目录项类型是目录，则切换到该目录。此时，会首先清空列表框，然后再使用新路径下的目录项填充列表框。
 - 如果当前选中的目录项类型是文件，则使用 `back` 标签返回上个页面，同时返回 `fileInfo` 数据。
 
-在上述代码中，外部选择器 `CDirEntries` 的实现非常简单，就是列出给定路径下的目录项，并按照要求返回一个字典数组。使用 Python 实现时非常简单，所以这里略去不谈。
+在上述代码中，外部选择器 `DirEntries` 的实现非常简单，就是列出给定路径下的目录项，并按照要求返回一个字典数组。使用 Python 实现时非常简单，所以这里略去不谈。
 
-如果我们使用 HybridOS 中提到的直接执行本地系统命令的扩展 URL 图式（lcmd），我们甚至都不需要编写任何代码，而只需要使用 `request`：
+如果我们使用 HybridOS 中提到的直接执行本地系统命令的扩展 URL 图式（lcmd），我们甚至都不需要编写任何代码，而只需要使用 `init` 创建一个临时变量：
 
 ```html
-        <requset on="lcmd:///bin/ls" with="{ "cmdLine": "ls $fileInfo.curr_path" }">
-            <iterate on="$?" in="#entries" by="RANGE: 0">
-                <update on="$@" to="append" with="$dir_entry" />
-            </iterate>
-        </request>
+    <init as="direntries" from="lcmd:///bin/ls" via="GET" with="{ "cmdLine": "ls $fileInfo.curr_path" }" temp>
+        <iterate on="$?" in="#entries" by="RANGE: 0">
+            <update on="$@" to="append" with="$dir_entry" />
+        </iterate>
+    </init>
+```
+
+或者，我们使用 `$FS` 预定义变量读取给定路径下的目录项：
+
+```html
+    <choose on=$FS.opendir($fileInfo.curr_path) >
+        <iterate on=$? with=$?.read() >
+            <update on="$@" to="append" with="$dir_entry" />
+        </iterate>
+    </choose>
 ```
 
 如此，开发者不需要编写任何程序，即可实现一个简单的文件浏览和打开对话框。
