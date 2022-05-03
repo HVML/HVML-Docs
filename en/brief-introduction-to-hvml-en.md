@@ -271,7 +271,7 @@ programming method.
             ]
         </update>
 
-        <connect at="socket:///var/run/hibus.sock" as="systemStatus" for="hiBus" />
+        <init as="systemStatus" with=$STREAM.open('unix:///var/tmp/hibus.sock','default','hiBus') >
     </head>
 
     <body>
@@ -348,31 +348,33 @@ programming method.
             <update on="> span.local-time" at="textContent" with="$_SYSTEM.time('%H:%m')" />
         </observe>
 
-        <observe on="$systemStatus" for="battery">
-            <test on="$?.level" in="#the-header">
-                <match for="GE 100" exclusively>
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-full.png" />
-                </match>
-                <match for="GE 90" exclusively>
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-90.png" />
-                </match>
-                <match for="GE 70" exclusively>
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-70.png" />
-                </match>
-                <match for="GE 50" exclusively>
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-50.png" />
-                </match>
-                <match for="GE 30" exclusively>
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-30.png" />
-                </match>
-                <match for="GE 10" exclusively>
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-10.png" />
-                </match>
-                <match for="ANY">
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-low.png" />
-                </match>
-            </test>
-        </observe>
+        <choose on=$systemStatus.subscribe('@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED')>
+            <observe on="$databus" for="event:$?" in="#the-header" with=$onBatteryChanged />
+                <test on="$?.level" in="#the-header">
+                    <match for="GE 100" exclusively>
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-full.png" />
+                    </match>
+                    <match for="GE 90" exclusively>
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-90.png" />
+                    </match>
+                    <match for="GE 70" exclusively>
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-70.png" />
+                    </match>
+                    <match for="GE 50" exclusively>
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-50.png" />
+                    </match>
+                    <match for="GE 30" exclusively>
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-30.png" />
+                    </match>
+                    <match for="GE 10" exclusively>
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-10.png" />
+                    </match>
+                    <match for="ANY">
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-low.png" />
+                    </match>
+                </test>
+            </observe>
+        </choose>
 
         <observe on=".avatar" for="clicked">
             <load on="user.hvml" with="{'id': $@.attr['data-value']}" as="modal" />
