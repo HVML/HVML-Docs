@@ -2288,7 +2288,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们可以使用不含等号的 `on` 和 `with` 属性值表述语法，如：
 
-```
+```html
     <update on $users[0] at=".age" with 3>
         <update on $users[1] at=".age" with $math.add($<.age, 1) />
     </update>
@@ -2298,13 +2298,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当我们使用 `undefined` 赋值给数组或者对象的某个数据项时，该数值项将被删除（同 `erase` 标签的效果），如：
 
-```
+```html
     <update on $users[1] at=".age" with undefined />
 ```
 
 亦可用 `remove` 动作：
 
-```
+```html
     <update on $users[1] at=".age" to="remove" />
 ```
 
