@@ -1,6 +1,4 @@
-# Design of a Programable Markup Language: HVML
-
-Author: Vincent Wei
+# Design and Implementation of a Programable Markup Language: HVML
 
 **Table of Contents**
 
