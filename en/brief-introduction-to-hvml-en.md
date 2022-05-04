@@ -1,4 +1,4 @@
-# Design and Implementation of a Programable Markup Language: HVML
+# HVML, a Programable Markup Language
 
 **Table of Contents**
 
@@ -16,22 +16,25 @@
    + [2.3) The HVML Virtual Machine](#23-the-hvml-virtual-machine)
       * [2.3.1) The execution model of HVML interpreter](#231-the-execution-model-of-hvml-interpreter)
       * [2.3.2) Flow control](#232-flow-control)
-      * [2.3.3) Handling of errors and exceptions](#233-handling-of-errors-and-exceptions)
+      * [2.3.3) Event loop](#233-event-loop)
+      * [2.3.4) Handling of errors and exceptions](#234-handling-of-errors-and-exceptions)
    + [2.4) eJSON Evaluation Expressions](#24-ejson-evaluation-expressions)
       * [2.4.1) The extended JSON](#241-the-extended-json)
       * [2.4.2) eJSON Evaluation Expressions](#242-ejson-evaluation-expressions)
       * [2.4.3) Complex eJSON Evaluation Expressions](#243-complex-ejson-evaluation-expressions)
    + [2.5) Variables](#25-variables)
-      * [2.5.1) Context variables](#251-context-variables)
-      * [2.5.2) Static variables](#252-static-variables)
-      * [2.5.3) Temporary variables](#253-temporary-variables)
+      * [2.5.1) Anonymous Context variables](#251-anonymous-context-variables)
+      * [2.5.2) Named Static variables](#252-named-static-variables)
+      * [2.5.3) Named Temporary variables](#253-named-temporary-variables)
       * [2.5.4) Life cycle of a variable](#254-life-cycle-of-a-variable)
    + [2.6) Closures](#26-closures)
-   + [2.7) Coroutines](#27-coroutines)
-      * [2.7.1) Asynchrony and Concurrency](#271-asynchrony-and-concurrency)
-      * [2.7.2) Event-driven](#272-event-driven)
-      * [2.7.3) Observing a datum or a variable](#273-observing-a-datum-or-a-variable)
-      * [2.7.4) Executes a closure asynchronously](#274-executes-a-closure-asynchronously)
+      * [2.6.1) Replaceable closures](#261-replaceable-closures)
+      * [2.6.2) Executing a closure in-place](#262-executing-a-closure-in-place)
+      * [2.6.3) Calling a closure](#263-calling-a-closure)
+   + [2.7) Coroutines and Concurrency](#27-coroutines-and-concurrency)
+      * [2.7.1) Runners and coroutines](#271-runners-and-coroutines)
+      * [2.7.2) Observing a datum or an expression](#272-observing-a-datum-or-an-expression)
+      * [2.7.3) Executes a closure asynchronously](#273-executes-a-closure-asynchronously)
    + [2.8) HVML Tags and Attributes](#28-hvml-tags-and-attributes)
       * [2.8.1) Frame tags](#281-frame-tags)
       * [2.8.2) Template tags](#282-template-tags)
@@ -39,7 +42,7 @@
       * [2.8.4) Stack operation tags](#284-stack-operation-tags)
       * [2.8.5) Coroutine operation tags](#285-coroutine-operation-tags)
       * [2.8.6) Event tags](#286-event-tags)
-- [3) Interop with System](#3-interop-with-system)
+- [3) Interop with Runtime Environment](#3-interop-with-runtime-environment)
    + [3.1) Dynamic Objects and Predefined Static Variables](#31-dynamic-objects-and-predefined-static-variables)
    + [3.2) External Dynamic Objects](#32-external-dynamic-objects)
    + [3.3) External Executors](#33-external-executors)
@@ -54,20 +57,23 @@
       * [3.6.3) THREAD Renderer](#363-thread-renderer)
 - [4) Typical Applications](#4-typical-applications)
    + [4.1) Use HVML to Govern GUIs](#41-use-hvml-to-govern-guis)
-   + [4.2) Cloud Apps](#42-cloud-apps)
+   + [4.2) Remote Apps](#42-remote-apps)
 - [5) Open Source Implementation](#5-open-source-implementation)
    + [5.1) PurC](#51-purc)
    + [5.2) PurC Fetcher](#52-purc-fetcher)
    + [5.3) PurC Midnight Commander](#53-purc-midnight-commander)
    + [5.4) xGUI Pro](#54-xgui-pro)
-- [6) Performance Testing](#6-performance-testing)
-- [7) Development Experience](#7-development-experience)
+- [6) Improvement of Application Development Efficiency](#6-improvement-of-application-development-efficiency)
+- [7) Performance Testing](#7-performance-testing)
 - [8) Related Work](#8-related-work)
 - [9) The Conclusion](#9-the-conclusion)
-   + [9.1) Simple Design](#91-simple-design)
-   + [9.2) Data-driven](#92-data-driven)
-   + [9.3) Inherent Event-driven Mechanism](#93-inherent-event-driven-mechanism)
-   + [9.4) New Application Framework](#94-new-application-framework)
+   + [9.1) Achieved Objectives](#91-achieved-objectives)
+      * [9.1.1) Simple design](#911-simple-design)
+      * [9.1.2) Data-driven](#912-data-driven)
+      * [9.1.3) Inherent event-driven Mechanism](#913-inherent-event-driven-mechanism)
+      * [9.1.4) New application framework with better security](#914-new-application-framework-with-better-security)
+   + [9.2) Challenges and Lessons](#92-challenges-and-lessons)
+   + [9.3) Recommendations for Future Work](#93-recommendations-for-future-work)
 - [Acknowledgements](#acknowledgements)
 - [References](#references)
 - [Authors](#authors)
@@ -95,7 +101,7 @@ a programming language to rapidly develop GUI applications based on Web
 front-end technologies in the C/C++ runtime environment, but also use HVML
 as a general script language.
 
-This article describes the reason we design HVML, and the main features of HVML.
+In this article, we describe the design and the implementation of HVML.
 
 ## 1) Introduction
 
@@ -482,7 +488,9 @@ abstraction than common script languages such as JavaScript or Python.
 
 #### 2.3.2) Flow control
 
-#### 2.3.3) Handling of errors and exceptions
+#### 2.3.3) Event loop
+
+#### 2.3.4) Handling of errors and exceptions
 
 ### 2.4) eJSON Evaluation Expressions
 
@@ -494,26 +502,29 @@ abstraction than common script languages such as JavaScript or Python.
 
 ### 2.5) Variables
 
-#### 2.5.1) Context variables
+#### 2.5.1) Anonymous Context variables
 
-#### 2.5.2) Static variables
+#### 2.5.2) Named Static variables
 
-#### 2.5.3) Temporary variables
+#### 2.5.3) Named Temporary variables
 
 #### 2.5.4) Life cycle of a variable
 
 ### 2.6) Closures
 
+#### 2.6.1) Replaceable closures
 
-### 2.7) Coroutines
+#### 2.6.2) Executing a closure in-place
 
-#### 2.7.1) Asynchrony and Concurrency
+#### 2.6.3) Calling a closure
 
-#### 2.7.2) Event-driven
+### 2.7) Coroutines and Concurrency
 
-#### 2.7.3) Observing a datum or a variable
+#### 2.7.1) Runners and coroutines
 
-#### 2.7.4) Executes a closure asynchronously
+#### 2.7.2) Observing a datum or an expression
+
+#### 2.7.3) Executes a closure asynchronously
 
 ### 2.8) HVML Tags and Attributes
 
@@ -523,15 +534,13 @@ abstraction than common script languages such as JavaScript or Python.
 
 #### 2.8.3) Data operation tags
 
-
 #### 2.8.4) Stack operation tags
-
 
 #### 2.8.5) Coroutine operation tags
 
 #### 2.8.6) Event tags
 
-## 3) Interop with System
+## 3) Interop with Runtime Environment
 
 ### 3.1) Dynamic Objects and Predefined Static Variables
 
@@ -707,7 +716,7 @@ abstraction than common script languages such as JavaScript or Python.
 
 显然，如果使用 HVML，将大大提高传统 GUI 应用的开发效率，缩短开发周期。当然，传统的 GUI 支持系统，需要提供基于 XML 的 UI 描述支持以及类似 CSS 的布局、样式、动画等的渲染效果支持。
 
-### 4.2) Cloud Apps
+### 4.2) Remote Apps
 
 HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至可以将 HVML 代码运行在云端，通过云端控制设备上的界面显示，从而形成一个新的云应用解决方案。
 
@@ -793,15 +802,17 @@ For open source tools of HVML, please refer to the following repositories:
 
 ### 5.4) xGUI Pro
 
-## 6) Performance Testing
+## 6) Improvement of Application Development Efficiency
 
-## 7) Development Experience
+## 7) Performance Testing
 
 ## 8) Related Work
 
 ## 9) The Conclusion
 
-### 9.1) Simple Design
+### 9.1) Achieved Objectives
+
+#### 9.1.1) Simple design
 
 HVML defines the complete set of instructions for operating
 an abstract stack-based virtual machine using only a dozen tags.
@@ -809,7 +820,7 @@ Each line of code has clear semantics through verb tags, preposition
 attributes, and adverb attributes that conform to English expression habits.
 This will help developers write program code with excellent readability.
 
-### 9.2) Data-driven
+#### 9.1.2) Data-driven
 
 On the one hand, HVML provides methods for implementing
 functions by manipulating data. For example, we can use the update action to
@@ -823,7 +834,7 @@ the above goals, HVML provides extended data types and flexible expression
 processing capabilities on top of JSON, a widely used abstract data
 representation.
 
-### 9.3) Inherent Event-driven Mechanism
+#### 9.1.3) Inherent event-driven Mechanism
 
 Inherent event-driven mechanism. Unlike other programming languages, the HVML
 language provides language-level mechanisms for observing data, events, and
@@ -832,7 +843,7 @@ developers can easily implement concurrency or asynchronous programming that
 is difficult to manage in other programming languages without caring about
 the underlying implementation details.
 
-### 9.4) New Application Framework
+#### 9.1.4) New application framework with better security
 
 When we used HVML to build the framework for GUI applications,
 we got a totally different framework other than Java, C#, or Swift.
@@ -884,6 +895,10 @@ languages, so that the advantages of each component can be fully utilized and
 the value of existing software assets can be protected; on the other hand,
 once the application framework provided by HVML is adopted, we can minimize
 the coupling problem between different components.
+
+### 9.2) Challenges and Lessons
+
+### 9.3) Recommendations for Future Work
 
 ## Acknowledgements
 
