@@ -1,4 +1,4 @@
-# An Brief Introduction to HVML
+# Design of a Programable Markup Language: HVML
 
 Author: Vincent Wei
 
@@ -6,21 +6,80 @@ Author: Vincent Wei
 
 [//]:# (START OF TOC)
 
+- [Article Info](#article-info)
 - [Abstract](#abstract)
-- [Problems](#problems)
-- [Our Solution](#our-solution)
-- [Key Features](#key-features)
-   + [A Comprehensive Sample](#a-comprehensive-sample)
-   + [Simple Design](#simple-design)
-   + [Data-driven](#data-driven)
-   + [Inherent Event-driven Mechanism](#inherent-event-driven-mechanism)
-   + [New Application Framework](#new-application-framework)
-- [Use HVML to Govern GUIs](#use-hvml-to-govern-guis)
-- [Future of HVML](#future-of-hvml)
-- [Open Source Implementations](#open-source-implementations)
+- [1) Introduction](#1-introduction)
+   + [1.1) Problems](#11-problems)
+   + [1.2) Existing Solutions](#12-existing-solutions)
+   + [1.3) Our Solution](#13-our-solution)
+- [2) Design of HVML](#2-design-of-hvml)
+   + [2.1) Some Simple Samples](#21-some-simple-samples)
+   + [2.2) A Comprehensive Sample](#22-a-comprehensive-sample)
+   + [2.3) The HVML Virtual Machine](#23-the-hvml-virtual-machine)
+      * [2.3.1) The execution model of HVML interpreter](#231-the-execution-model-of-hvml-interpreter)
+      * [2.3.2) Flow control](#232-flow-control)
+      * [2.3.3) Handling of errors and exceptions](#233-handling-of-errors-and-exceptions)
+   + [2.4) eJSON Evaluation Expressions](#24-ejson-evaluation-expressions)
+      * [2.4.1) The extended JSON](#241-the-extended-json)
+      * [2.4.2) eJSON Evaluation Expressions](#242-ejson-evaluation-expressions)
+      * [2.4.3) Complex eJSON Evaluation Expressions](#243-complex-ejson-evaluation-expressions)
+   + [2.5) Variables](#25-variables)
+      * [2.5.1) Context variables](#251-context-variables)
+      * [2.5.2) Static variables](#252-static-variables)
+      * [2.5.3) Temporary variables](#253-temporary-variables)
+      * [2.5.4) Life cycle of a variable](#254-life-cycle-of-a-variable)
+   + [2.6) Closures](#26-closures)
+   + [2.7) Coroutines](#27-coroutines)
+      * [2.7.1) Asynchrony and Concurrency](#271-asynchrony-and-concurrency)
+      * [2.7.2) Event-driven](#272-event-driven)
+      * [2.7.3) Observing a datum or a variable](#273-observing-a-datum-or-a-variable)
+      * [2.7.4) Executes a closure asynchronously](#274-executes-a-closure-asynchronously)
+   + [2.8) HVML Tags and Attributes](#28-hvml-tags-and-attributes)
+      * [2.8.1) Frame tags](#281-frame-tags)
+      * [2.8.2) Template tags](#282-template-tags)
+      * [2.8.3) Data operation tags](#283-data-operation-tags)
+      * [2.8.4) Stack operation tags](#284-stack-operation-tags)
+      * [2.8.5) Coroutine operation tags](#285-coroutine-operation-tags)
+      * [2.8.6) Event tags](#286-event-tags)
+- [3) Interop with System](#3-interop-with-system)
+   + [3.1) Dynamic Objects and Predefined Static Variables](#31-dynamic-objects-and-predefined-static-variables)
+   + [3.2) External Dynamic Objects](#32-external-dynamic-objects)
+   + [3.3) External Executors](#33-external-executors)
+   + [3.4) Remote Data Fetcher](#34-remote-data-fetcher)
+   + [3.5) HVML Targets](#35-hvml-targets)
+      * [3.5.1) Target `void`](#351-target-void)
+      * [3.5.2) Target `html`](#352-target-html)
+      * [3.5.3) Target `xml`](#353-target-xml)
+   + [3.6) HVML Renderers](#36-hvml-renderers)
+      * [3.6.1) Headless Renderer](#361-headless-renderer)
+      * [3.6.2) PURCMC Renderer](#362-purcmc-renderer)
+      * [3.6.3) THREAD Renderer](#363-thread-renderer)
+- [4) Typical Applications](#4-typical-applications)
+   + [4.1) Use HVML to Govern GUIs](#41-use-hvml-to-govern-guis)
+   + [4.2) Cloud Apps](#42-cloud-apps)
+- [5) Open Source Implementation](#5-open-source-implementation)
+   + [5.1) PurC](#51-purc)
+   + [5.2) PurC Fetcher](#52-purc-fetcher)
+   + [5.3) PurC Midnight Commander](#53-purc-midnight-commander)
+   + [5.4) xGUI Pro](#54-xgui-pro)
+- [6) Performance Testing](#6-performance-testing)
+- [7) Development Experience](#7-development-experience)
+- [8) Related Work](#8-related-work)
+- [9) The Conclusion](#9-the-conclusion)
+   + [9.1) Simple Design](#91-simple-design)
+   + [9.2) Data-driven](#92-data-driven)
+   + [9.3) Inherent Event-driven Mechanism](#93-inherent-event-driven-mechanism)
+   + [9.4) New Application Framework](#94-new-application-framework)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Authors](#authors)
 - [Tradmarks](#tradmarks)
 
 [//]:# (END OF TOC)
+
+## Article Info
+
+- Vincent Wei
 
 ## Abstract
 
@@ -40,7 +99,9 @@ as a general script language.
 
 This article describes the reason we design HVML, and the main features of HVML.
 
-## Problems
+## 1) Introduction
+
+### 1.1) Problems
 
 With the development of Internet and applications, the Web front-end
 development technologies around HTML/CSS/JavaScript has evolved rapidly.
@@ -99,7 +160,12 @@ achieved great success, but have the following deficiencies and shortcomings:
 </div>
 ```
 
-## Our Solution
+### 1.2) Existing Solutions
+
+(Say something about electron and other similiar open source projects.)
+
+
+### 1.3) Our Solution
 
 HVML is a programmable markup language. Like HTML, HVML uses markups to define
 program structure and data, but unlike HTML, HVML is programmable and dynamic.
@@ -111,6 +177,10 @@ to interact with the runtime of an existing programming language, such as
 C/C++, Python, Lua, etc., so as to provide strong technical support for these
 programming languages to utilize Web front-end technologies outside the browser.
 From this perspective, HVML can also be regarded as a glue language.
+
+## 2) Design of HVML
+
+### 2.1) Some Simple Samples
 
 The classical `helloworld` program in HVML looks like:
 
@@ -244,9 +314,7 @@ programming languages. On the basis of data-driven, HVML provides a more
 systematic and complete low-code (which means using less code to write programs)
 programming method.
 
-## Key Features
-
-### A Comprehensive Sample
+### 2.2) A Comprehensive Sample
 
 下面的示例 HVML 代码生成的 HTML 页面，将在屏幕上展示三组信息：
 
@@ -387,14 +455,6 @@ programming method.
 Essentially, HVML is a new-style programming language with a higher level of
 abstraction than common script languages such as JavaScript or Python.
 
-### Simple Design
-
-HVML defines the complete set of instructions for operating
-an abstract stack-based virtual machine using only a dozen tags.
-Each line of code has clear semantics through verb tags, preposition
-attributes, and adverb attributes that conform to English expression habits.
-This will help developers write program code with excellent readability.
-
 下面用一个简单的例子来描述 HVML 的基本长相。有关 HVML 的详细规范，感兴趣的读者可点击文末的原文链接。
 
 熟悉 HTML 读者一定会觉得上面的代码很眼熟。是的，和 HTML 类似，HVML 使用标签（tag）；但和 HTML 不同的是，HVML 是动态的，表述的是程序，而 HTML 是静态的，表述的是文档。
@@ -418,83 +478,90 @@ This will help developers write program code with excellent readability.
 
 限于篇幅，我们不打算在本文中详细介绍 HVML，读者对 HVML 有个感性认识就可以了。有兴趣了解详细规范的读者，可以参阅文末的原文链接。不过要耐心点哦，定义一个完备、自恰的编程语言不是一件容易的事儿，所以要读，就要找个大段的时间，耐心点儿仔细地阅读。
 
-### Data-driven
+### 2.3) The HVML Virtual Machine
 
-On the one hand, HVML provides methods for implementing
-functions by manipulating data. For example, we can use the update action to
-manipulate a field in the timer array to turn a timer on or off without
-calling the corresponding interface. On the other hand, the HVML language is
-committed to connecting different modules in the system through a unified data
-expression, rather than realizing the interoperation between modules through
-complex interface calls. These two methods can effectively avoid the interface
-explosion problem existing in traditional programming languages. To achieve
-the above goals, HVML provides extended data types and flexible expression
-processing capabilities on top of JSON, a widely used abstract data
-representation.
+#### 2.3.1) The execution model of HVML interpreter
 
-### Inherent Event-driven Mechanism
+#### 2.3.2) Flow control
 
-Inherent event-driven mechanism. Unlike other programming languages, the HVML
-language provides language-level mechanisms for observing data, events, and
-even observing changes in the result of an expression. On this basis,
-developers can easily implement concurrency or asynchronous programming that
-is difficult to manage in other programming languages without caring about
-the underlying implementation details.
+#### 2.3.3) Handling of errors and exceptions
 
-### New Application Framework
+### 2.4) eJSON Evaluation Expressions
 
-When we used HVML to build the framework for GUI applications,
-we got a totally different framework other than Java, C#, or Swift.
+#### 2.4.1) The extended JSON
 
-In a complete HVML-based application framework, a standalone UI renderer
-is usually included. Developers write HVML programs to manipulate the page
-content that describes the user interface, and the page content is finally
-processed by the renderer and displayed on the screen. The HVML program runs
-in the HVML interpreter, which can interact easily with the runtime environment
-of other existing programming languages. The HVML program receives data or
-events generated by other foreign programs or the renderer, and converts it
-into the description of the UI or changes of UI according to the instructions
-of the HVML program.
+#### 2.4.2) eJSON Evaluation Expressions
 
-With this design, we separate all applications involving the GUI into two
-loose modules:
+#### 2.4.3) Complex eJSON Evaluation Expressions
 
-- First, a data processing module independent of the user interface, developers
-can use any programming language and development tools they are familiar with
-to develop this module. For example, when it comes to artificial intelligence
-processing, developers choose C++ or Python; in C++ code, apart from loading
-HVML programs, developers do not need to consider anything related to interface
-rendering and interaction, such as creating a button or clicking a menu item.
-Developers only need to prepare the data needed to render the user interface
-in the C++ code, and these data are usually represented by JSON.
+### 2.5) Variables
 
-- Second, one or more programs written in the HVML language (HVML programs) to
-complete the manipulation of the user interface. The HVML program generates
-the description information of the user interface according to the data provided
-by the data processing module, and updates the user interface according to the
-user's interaction or the calculation results obtained from the data processing
-module, or drives the data processing module to complete certain tasks according
-to the user's interaction.
+#### 2.5.1) Context variables
 
-In this way, the HVML application framework liberates the code for manipulating
-interface elements from the tranditional design pattern of calling interfaces
-such as C/C++, Java, C#  and uses HVML code instead. HVML uses a tag language
-similar to HTML to manipulate interface elements. By hiding a lot of details,
-it reduces the program complexity caused by directly using low-level
-programming languages to manipulate interface elements.
+#### 2.5.2) Static variables
 
-Through HVML's unique application framework, we
-delegate performance-critical data processing to an external program or server,
-and the interaction with the user is handled by an independent renderer, and
-the HVML program is responsible for gluing these different system components.
-On the one hand, HVML solves the problem of difficult and efficient
-interoperability between system components developed in different programming
-languages, so that the advantages of each component can be fully utilized and
-the value of existing software assets can be protected; on the other hand,
-once the application framework provided by HVML is adopted, we can minimize
-the coupling problem between different components.
+#### 2.5.3) Temporary variables
 
-## Use HVML to Govern GUIs
+#### 2.5.4) Life cycle of a variable
+
+### 2.6) Closures
+
+
+### 2.7) Coroutines
+
+#### 2.7.1) Asynchrony and Concurrency
+
+#### 2.7.2) Event-driven
+
+#### 2.7.3) Observing a datum or a variable
+
+#### 2.7.4) Executes a closure asynchronously
+
+### 2.8) HVML Tags and Attributes
+
+#### 2.8.1) Frame tags
+
+#### 2.8.2) Template tags
+
+#### 2.8.3) Data operation tags
+
+
+#### 2.8.4) Stack operation tags
+
+
+#### 2.8.5) Coroutine operation tags
+
+#### 2.8.6) Event tags
+
+## 3) Interop with System
+
+### 3.1) Dynamic Objects and Predefined Static Variables
+
+### 3.2) External Dynamic Objects
+
+### 3.3) External Executors
+
+### 3.4) Remote Data Fetcher
+
+### 3.5) HVML Targets
+
+#### 3.5.1) Target `void`
+
+#### 3.5.2) Target `html`
+
+#### 3.5.3) Target `xml`
+
+### 3.6) HVML Renderers
+
+#### 3.6.1) Headless Renderer
+
+#### 3.6.2) PURCMC Renderer
+
+#### 3.6.3) THREAD Renderer
+
+## 4) Typical Applications
+
+### 4.1) Use HVML to Govern GUIs
 
 我们假设有一个 GUI 系统，使用 XML 来描述界面上的构件（widget）。现在，我们要使用这个 GUI 系统开发一个简单的文件打开对话框，大致的界面需求如下：
 
@@ -642,7 +709,7 @@ the coupling problem between different components.
 
 显然，如果使用 HVML，将大大提高传统 GUI 应用的开发效率，缩短开发周期。当然，传统的 GUI 支持系统，需要提供基于 XML 的 UI 描述支持以及类似 CSS 的布局、样式、动画等的渲染效果支持。
 
-## Future of HVML
+### 4.2) Cloud Apps
 
 HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至可以将 HVML 代码运行在云端，通过云端控制设备上的界面显示，从而形成一个新的云应用解决方案。
 
@@ -710,9 +777,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 1. 当我们需要调整设备端的显示效果或者功能时，我们只需要修改 HVML 代码，而不需要更新设备端的固件。
 1. 我们还可以通过外部脚本，将运行在云端的其他功能，如数据库存储、数据的分析以及人工智能等要素有机整合在一起。
 
-写到这里，笔者真的被自己一贯强调的观点打动了：**编程语言才是决定操作系统灵魂和基因的那个东西，才是基础软件生态皇冠上的那颗明珠！**
-
-## Open Source Implementations
+## 5) Open Source Implementation
 
 For open source tools of HVML, please refer to the following repositories:
 
@@ -721,6 +786,112 @@ For open source tools of HVML, please refer to the following repositories:
 - PurC Fetcher (the remote data fetcher for PurC): <https://github.com/HVML/purc-fetcher>.
 - PurCMC (an HVML renderer in text-mode): <https://github.com/HVML/purc-midnight-commander>.
 - xGUI Pro (an advanced HVML renderer based on WebKit): <https://github.com/HVML/xgui-pro>.
+
+### 5.1) PurC
+
+### 5.2) PurC Fetcher
+
+### 5.3) PurC Midnight Commander
+
+### 5.4) xGUI Pro
+
+## 6) Performance Testing
+
+## 7) Development Experience
+
+## 8) Related Work
+
+## 9) The Conclusion
+
+### 9.1) Simple Design
+
+HVML defines the complete set of instructions for operating
+an abstract stack-based virtual machine using only a dozen tags.
+Each line of code has clear semantics through verb tags, preposition
+attributes, and adverb attributes that conform to English expression habits.
+This will help developers write program code with excellent readability.
+
+### 9.2) Data-driven
+
+On the one hand, HVML provides methods for implementing
+functions by manipulating data. For example, we can use the update action to
+manipulate a field in the timer array to turn a timer on or off without
+calling the corresponding interface. On the other hand, the HVML language is
+committed to connecting different modules in the system through a unified data
+expression, rather than realizing the interoperation between modules through
+complex interface calls. These two methods can effectively avoid the interface
+explosion problem existing in traditional programming languages. To achieve
+the above goals, HVML provides extended data types and flexible expression
+processing capabilities on top of JSON, a widely used abstract data
+representation.
+
+### 9.3) Inherent Event-driven Mechanism
+
+Inherent event-driven mechanism. Unlike other programming languages, the HVML
+language provides language-level mechanisms for observing data, events, and
+even observing changes in the result of an expression. On this basis,
+developers can easily implement concurrency or asynchronous programming that
+is difficult to manage in other programming languages without caring about
+the underlying implementation details.
+
+### 9.4) New Application Framework
+
+When we used HVML to build the framework for GUI applications,
+we got a totally different framework other than Java, C#, or Swift.
+
+In a complete HVML-based application framework, a standalone UI renderer
+is usually included. Developers write HVML programs to manipulate the page
+content that describes the user interface, and the page content is finally
+processed by the renderer and displayed on the screen. The HVML program runs
+in the HVML interpreter, which can interact easily with the runtime environment
+of other existing programming languages. The HVML program receives data or
+events generated by other foreign programs or the renderer, and converts it
+into the description of the UI or changes of UI according to the instructions
+of the HVML program.
+
+With this design, we separate all applications involving the GUI into two
+loose modules:
+
+- First, a data processing module independent of the user interface, developers
+can use any programming language and development tools they are familiar with
+to develop this module. For example, when it comes to artificial intelligence
+processing, developers choose C++ or Python; in C++ code, apart from loading
+HVML programs, developers do not need to consider anything related to interface
+rendering and interaction, such as creating a button or clicking a menu item.
+Developers only need to prepare the data needed to render the user interface
+in the C++ code, and these data are usually represented by JSON.
+
+- Second, one or more programs written in the HVML language (HVML programs) to
+complete the manipulation of the user interface. The HVML program generates
+the description information of the user interface according to the data provided
+by the data processing module, and updates the user interface according to the
+user's interaction or the calculation results obtained from the data processing
+module, or drives the data processing module to complete certain tasks according
+to the user's interaction.
+
+In this way, the HVML application framework liberates the code for manipulating
+interface elements from the tranditional design pattern of calling interfaces
+such as C/C++, Java, C#  and uses HVML code instead. HVML uses a tag language
+similar to HTML to manipulate interface elements. By hiding a lot of details,
+it reduces the program complexity caused by directly using low-level
+programming languages to manipulate interface elements.
+
+Through HVML's unique application framework, we
+delegate performance-critical data processing to an external program or server,
+and the interaction with the user is handled by an independent renderer, and
+the HVML program is responsible for gluing these different system components.
+On the one hand, HVML solves the problem of difficult and efficient
+interoperability between system components developed in different programming
+languages, so that the advantages of each component can be fully utilized and
+the value of existing software assets can be protected; on the other hand,
+once the application framework provided by HVML is adopted, we can minimize
+the coupling problem between different components.
+
+## Acknowledgements
+
+## References
+
+## Authors
 
 ## Tradmarks
 
