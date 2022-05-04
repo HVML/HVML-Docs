@@ -73,7 +73,7 @@
       * [9.1.3) Inherent event-driven Mechanism](#913-inherent-event-driven-mechanism)
       * [9.1.4) New application framework with better security](#914-new-application-framework-with-better-security)
    + [9.2) Challenges and Lessons](#92-challenges-and-lessons)
-   + [9.3) Recommendations for Future Work](#93-recommendations-for-future-work)
+   + [9.3) Roadmap of Future Work](#93-roadmap-of-future-work)
 - [Acknowledgements](#acknowledgements)
 - [References](#references)
 - [Authors](#authors)
@@ -898,7 +898,7 @@ the coupling problem between different components.
 
 ### 9.2) Challenges and Lessons
 
-### 9.3) Recommendations for Future Work
+### 9.3) Roadmap of Future Work
 
 ## Acknowledgements
 
