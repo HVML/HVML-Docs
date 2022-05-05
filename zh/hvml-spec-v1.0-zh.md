@@ -2135,8 +2135,6 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `archetype` 标签用于定义一个文档片段模板。
 
-通常，我们可以在模板中使用 JSON 表达式，当这些元素具有 `raw` 属性时，其定义的文档片段将不执行 JSON 表达式的求值操作。
-
 ```html
     <archetype name="user_item">
         <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
@@ -2144,13 +2142,6 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             <span>$?.name</span>
         </li>
     </archetype>
-
-    <archedata name="item_user">
-        {
-            "id": "$?.attr[data-value]", "avatar": "$?.children[0].attr.src",
-            "name": "$?.children[1].children[0].textContent", "region": "$?.attr[data-region]"
-        }
-    </archedata>
 
     <archetype name="unknown_user_item" raw>
         <li class="user-item">
@@ -2162,13 +2153,11 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 在上面的例子中，第一个 `archetype` 标签定义了一个文档片段模板，可用于生成最终的目标文档片段并插入到 eDOM 树位置。HVML 解释器在将该模板克隆并插入到真实的文档 DOM 树时，会将当前上下文中的数据按照给定的映射关系进行替换。在 HVML 中，`$?` 是一个特殊的上下文变量，用来指代动作标签执行时的父操作结果数据。类似 `$?.id`、 `$?.name` 这样的字符串将被视为 JSON 求值表达式进行求值，最终使用当前上下文的数据来替代。
 
-在上面的例子中，`archedata` 标签定义了一个数据模板，其处理类似 `archetype`，但主要执行相反的操作，通常用于将一个 DOM 子树映射为一个 JSON 数据项，或者将一个 JSON 数据项映射到另一个结构不同的数据。
-
 在上面的例子中，第二个 `archetype` 标签定义了一个裸文本模板，其中包含一段 XML/HTML 文档片段，可克隆到目标位置，但不做任何 JSON 求值表达式的处理，即使包含合法的 JSON 求值表达式。
 
-本质上，`archedata` 和 `archetype` 定义的模板内容是一个字符串变量，其变量名由 `name` 属性定义。
+本质上，`archetype` 定义的模板内容是一个字符串变量，其变量名由 `name` 属性定义。
 
-注意，用于引用特定的 `archetype` 或 `archedata` 模板的变量名，和 HTML/XML 不同，HVML 不要求该标识符是全局唯一的，而只要求在 HVML 的同一级兄弟元素中唯一，这带来了一定的便利。比如：
+注意，用于引用特定的 `archetype` 模板的变量名，和 HTML/XML 不同，HVML 不要求该标识符是全局唯一的，而只要求在 HVML 的同一级兄弟元素中唯一，这带来了一定的便利。比如：
 
 ```html
     <body>
@@ -2191,6 +2180,19 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 #### 2.4.2) `archedata` 标签
 
 `archedata` 标签用于定义一个数据模板。
+
+```html
+    <archedata name="item_user">
+        {
+            "id": "$?.attr[data-value]", "avatar": "$?.children[0].attr.src",
+            "name": "$?.children[1].children[0].textContent", "region": "$?.attr[data-region]"
+        }
+    </archedata>
+```
+
+在上面的例子中，`archedata` 标签定义了一个数据模板，其处理类似 `archetype`，但主要执行相反的操作，通常用于将一个数据映射到另一个结构不同的数据。
+
+本质上，`archedata` 定义了一个参数化的 JSON 数据，可通过 `name` 属性定义的变量名引用。
 
 #### 2.4.3) `error` 标签
 
