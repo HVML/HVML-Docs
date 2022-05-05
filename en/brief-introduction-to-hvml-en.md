@@ -255,9 +255,9 @@ Please read the code below and the comments carefully:
         a text line to STDOUT.
     -->
     <define as="output_void">
-        <noop>
+        <inherit>
             $STREAM.stdout.writelines($?)
-        </noop>
+        </inherit>
     </define>
 
     <!--
