@@ -55,7 +55,6 @@ Language: Chinese
          - [2.1.6.10) 集合变量](#21610-集合变量)
          - [2.1.6.11) 表达式变量](#21611-表达式变量)
       * [2.1.7) 栈式虚拟机](#217-栈式虚拟机)
-- [Fibonacci Numbers less than 10](#fibonacci-numbers-less-than-10)
       * [2.1.8) 框架元素](#218-框架元素)
       * [2.1.9) 模板元素](#219-模板元素)
       * [2.1.10) 动作元素](#2110-动作元素)
@@ -1212,20 +1211,18 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
 最终该 HVML 程序的输出结果为：
 
-```
-# Fibonacci Numbers
-## Fibonacci Numbers less than 10
+    # Fibonacci Numbers
+    ## Fibonacci Numbers less than 10
 
-    0: 0
-    1: 1
-    2: 1
-    3: 2
-    4: 3
-    5: 5
-    6: 8
+        0: 0
+        1: 1
+        2: 1
+        3: 2
+        4: 3
+        5: 5
+        6: 8
 
-Totally 7 numbers.
-```
+    Totally 7 numbers.
 
 #### 2.1.8) 框架元素
 
