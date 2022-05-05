@@ -1594,13 +1594,19 @@ HVML 协程可通过观察内置 `$HVML` 变量上的渲染器事件来判断自
 
 `init` 以及其他从外部资源装载数据的元素，会根据资源的 MIME 来确定装载后的数据类型：
 
-- `application/json`：eJSON
-- `application/ejson`：eJSON
-- `application/xml`：用来表述 DOM 文档的原生实体
-- `text/html`：用来表述 eDOM 文档的原生实体
-- `text/hvml`：用来表述 vDOM 文档的原生实体
+- `text/html`：字符串
 - `text/css`：字符串
-- 其他：字节序列
+- `text/javascript`：字符串
+- `text/plain`：字符串
+- `text/*`：字符串
+- `application/xml`：字符串
+- `application/json`：eJSON
+- `application/octet-stream`：字节序列
+- `application/*`：字节序列
+- `image/*`：字节序列
+- `audio/*`：字节序列
+- `video/*`：字节序列
+- `font/*`：字节序列
 
 ### 2.2) 规则、表达式及方法的描述语法
 
