@@ -4035,7 +4035,67 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 
 #### 2.5.18) `inherit` 标签
 
-为方便代码块的分组书写，新增 `inherit` 标签。`inherit` 标签创建的动作元素不使用任何介词和副词属性，也不使用内容数据，仅继承父操作的上下文变量。
+`inherit` 元素不使用任何介词和副词属性，该元素继承前置栈帧的上下文变量，若定义有数据内容，则使用数据内容覆盖对应栈帧的 `$<` 上下文变量。
+
+下面的代码展示了 `inherit` 标签的多种使用场景：
+
+```html
+<!DOCTYPE hvml>
+
+<!-- $REQUEST contains the startup options -->
+<hvml target="$REQUEST.target">
+  <body>
+
+    <inherit>
+        $STREAM.stdout.writelines("Start of 'Hello, world!'");
+    </inherit>
+
+    <!--
+        $SYSTEM.locale returns the current system locale like `zh_CN'.
+        This statement loads a JSON file which defined the map of
+        localization messages, like:
+        {
+            "Hello, world!": "世界，您好！"
+        }
+    -->
+    <update on="$T.map" from="messages/$SYSTEM.locale" to="merge" />
+
+    <!--
+        This statement defines an operation set, which output
+        an HTML fragment.
+
+        An operation set of HVML is similiar to a function or a closure
+        in other languages.
+    -->
+    <define as="output_html">
+        <h1>HVML</h1>
+        <p>$?</p>
+    </define>
+
+    <!--
+        This statement defines an operation set, which output
+        a text line to STDOUT.
+    -->
+    <define as="output_void">
+        <inherit>
+            $STREAM.stdout.writelines($?)
+        </inherit>
+    </define>
+
+    <!--
+        This statement includes one of the operation sets defined above
+        according to the value of `target` attribute of `hvml` element,
+        and pass the result returned by `$T.get('Hello, world!')`.
+    -->
+    <include with=${output_$HVML.target} on="$T.get('Hello, world!')" />
+
+    <inherit>
+        $STREAM.stdout.writelines("End of 'Hello, world!'");
+    </inherit>
+
+  </body>
+</hvml>
+```
 
 ### 2.6) 执行器
 
