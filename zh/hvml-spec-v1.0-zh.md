@@ -150,6 +150,7 @@ Language: Chinese
          - [RC4.2) MIME 类型和数据](#rc42-mime-类型和数据)
          - [RC4.3) `inherit` 标签](#rc43-inherit-标签)
          - [RC4.4) 调整上下文变量](#rc44-调整上下文变量)
+         - [RC4.5) 元素及属性的调整](#rc45-元素及属性的调整)
       * [RC3) 220501](#rc3-220501)
          - [RC3.1) 调整动作标签](#rc31-调整动作标签)
          - [RC3.2) HVML 程序的运行状态](#rc32-hvml-程序的运行状态)
@@ -1467,6 +1468,7 @@ HVML 定义的异常如下：
    - 其他针对字符串和数值的内建执行器，见本文档 [2.6.1) 内建执行器](#261-内建执行器) 小节。
 - `via`：用于在 `init` 等元素中指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
 - `against`：在 `init` 元素中用于指定集合的唯一性键值，在 `sort` 元素中用于指定排序依据。
+- `within`：在 `load` 元素中用于指定渲染器的页面名称。
 - `onlyif` 和 `while`：在 `iterate` 中，用于定义在产生迭代结果前和产生迭代结果后判断是否继续迭代的条件表达式。
 
 #### 2.1.13) 副词属性
@@ -1965,7 +1967,7 @@ HVML 解释器按照固定的策略将 DOM 子树（文档片段）视作一个�
         and `*` or `?` as the wildcard characters.
     regular_expression: A regular expression conforms to POSIX.1-2001.
 
-    event_name: <literal_variable_token>[':'<literal_alnum_token>]
+    event_name: <literal_variable_token>[':'<literal_alnum_token>['/'<literal_alnum_token>]]
 
     literal_alnum_token: /[A-Za-z0-9_][A-Za-z0-9_]*$/
     literal_variable_token: /^[A-Za-z_][A-Za-z0-9_]*$/
@@ -3419,6 +3421,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 - `click`
 - `change:attached`
 - `event:3cc8f9e2ff74f872f09518ffd3db6f29`
+- `runState:except/BadName`
 
 当 HVML 代理观察到来自 `$databus` 上的电池变化事件数据包之后，将根据 `observe` 标签定义的观察动作执行相应的操作。在上面的例子中，`observe` 标签所定义的操作及条件解释如下：
 
@@ -3652,7 +3655,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
         <listbox id="entries">
             <call as="my_task" on="$collectAllDirEntriesRecursively" with="/" asynchronously />
-            <observe on="$my_task" for="success">
+            <observe on="$my_task" for="callState:success">
                 <iterate on="$?" in="#entries" by="RANGE: FROM 0">
                     <update on="$@" to="append" with="$dir_entry" />
                 </iterate>
@@ -3660,7 +3663,48 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         </listbox>
 ```
 
-在上面的 HVML 代码中，我们异步调用了 `collectAllDirEntriesRecursively` 函数，该函数递归获取当前路径下的所有文件系统目录项（这是一个典型的耗时操作）。HVML 解释器会创建一个异步任务来执行该函数，`as` 属性指定了该任务的名称（`my_task`）。之后，代码使用 `observe` 元素来观察 `my_task` 任务的 `success` 事件，并做后续的处理。需要注意的是，异步调用操作组时，一般不应该操作真实文档对应的元素。
+在上面的 HVML 代码中，我们异步调用了 `collectAllDirEntriesRecursively` 操作组，该操作组递归获取当前路径下的所有文件系统目录项（这是一个典型的耗时操作）。HVML 解释器应在一个并行任务（如线程）中创建一个新的虚拟机实例来执行该操作组，`as` 属性指定该任务的名称（`my_task`），该名称也将作为新任务的行者名称。之后，代码使用 `observe` 元素来观察 `my_task` 任务的 `callState:success` 事件，并做后续的处理。
+
+异步调用一个操作组时，解释器应在独立的线程或者进程中创建一个新的虚拟机实例，在新的虚拟机实例中创建一个协程执行操作组定义的 vDOM 子树：
+
+1. 创建当前虚拟机实例的所有会话级内置动态变量（如 `$SYSTEM`、 `$EJSON` 以及 `$STREAM` 等），并关联到新的虚拟机实例上。
+1. 克隆当前虚拟机实例的所有会话级内置静态变量（如 `$SESSION`），并关联到新的虚拟机实例上。
+1. 构建一个空的 `hvml` 根节点，其 `target` 属性为 `void`，然后克隆操作组定义的 vDOM 子树并将其作为 `hvml` 根元素的子树，从而构成一个完整的 vDOM 树。
+1. 构建文档级内置变量，如 `$TIMERS`，并关联到 `hvml` 根元素上。
+1. 在新的虚拟机实例上创建一个协程从 `hvml` 根元素开始执行。在 `hvml` 元素对应的栈帧中，将 `call` 元素 `with` 属性定义的值作为该栈帧的 `$?` 变量值，`call` 元素的内容数据作为该栈帧 `$^` 变量值。
+1. 当执行到 `exit` 或者 `return` 元素时，或者遇到错误或未捕获的异常时，协程结束执行，然后将 `exit` 或者 `return` 定义的返回值或者错误或异常信息通过 `runState` 事件返回给调用者。
+
+通过以上步骤实现异步调用操作组的功能，和创建一个新的行者并无本质区别，因此该方法也可以用来创建新的行者。比如：
+
+```html
+        <define as="newRunner">
+            <request to="startSession">
+                { ... }
+            </request>
+
+            <request to="resetPageGroups">
+                '...'
+            </request>
+
+            <load on="new_user.hvml" with="$?" within="user@main" asynchronously />
+        </define>
+
+        <call as="my_task" on="$newRunner" with="..." asynchronously />
+
+        <observe on="$my_task" for="callState:success">
+            ...
+        </observe>
+```
+
+以上的代码在异步执行的操作组中异步装载了一个 HVML 程序，然后退出。
+
+需要注意的是，我们将异步执行的操作组的目标文档类型限制成了 `void`，从而无需将对应的协程关联到渲染器，但可以在操作组中使用 `load` 标签装载其他的需要渲染器的 HVML 程序。针对这种情况，我们可使用 `request` 元素创建并设置新的渲染器会话。
+
+异步调用操作组可能产生的事件有：
+
+- `callState:success`：成功。
+- `callState:error/<errorName>`：错误。
+- `callState:except/<exceptName>`：未捕获的异常。
 
 注意，不管是 `include` 还是 `call`，我们都可以递归使用。
 
@@ -3924,7 +3968,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 `load` 标签用来装载并执行一个由 `on` 属性指定的 HVML 代码或者 `from` 属性指定的新 HVML 程序，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递给子协程。如：
 
 ```html
-    <load from="b.hvml" with="$user" as="userProfile" in="user@main:tab" />
+    <load from="b.hvml" with="$user" as="userProfile" within="user@main:tab" />
 ```
 
 `load` 标签支持如下介词属性：
@@ -3933,7 +3977,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 - `with`：指定装载对应程序的请求参数；该数据应是一个对象。
 - `as`：当我们异步装载新的 HVML 程序时，我们使用该属性将新的 HVML 协程和一个变量名称绑定，从而可观察该协程的状态。
 - `at`：和 `init` 类似，在 `load` 标签中使用 `as` 属性命名一个 HVML 程序时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
-- `in`：指定用于渲染目标文档的渲染器页面名称，使用 `<page_name>@<group_name>:<page_type>` 这样的形式，用于指定页面名称、所在页面组和页面类型（`plainwindow`、`tab` 和 `panel`）。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
+- `within`：指定用于渲染目标文档的渲染器页面名称，使用 `<page_name>@<group_name>:<page_type>` 这样的形式，用于指定页面名称、所在页面组和页面类型（`plainwindow`、`tab` 和 `panel`）。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
    - `_self`：表示当前页面。在当前页面中渲染新的 HVML 程序，意味着当前页面对应的 HVML 协程将被压制（suppressed），页面中的文档内容将被新 HVML 协程覆盖。使用该页面名称时，将忽略页面分组以及页面类型信息。
    - `_active`：表示当前 HVML 程序对应分组中的当前活动页面；当前活动页面对应的 HVML 协程将被压制。
    - `_first`：表示当前 HVML 程序对应分组中的第一个页面；第一个页面对应的 HVML 协程将被压制。
@@ -3954,7 +3998,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
         }
     </init>
 
-    <load on="$request.hvml" with="$request" as="hello" in="hello@main:tab" />
+    <load on="$request.hvml" with="$request" as="hello" within="hello@main:tab" />
 ```
 
 上面的代码，使用 `on` 属性指定了一段要装载执行的 HVML 程序（`$request.hvml`），并将 `$request` 数据作为该程序的请求数据。该程序使用了 `$REQUEST` 预定义变量的 `text` 作为 `h1` 元素的内容，将程序代码本身作为 `p` 元素的内容。同时，该程序使用 `_renderer` 键名定义了需要传递给渲染器的参数：页面的类名及样式信息。
@@ -3980,7 +4024,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 假定我们使用 `load` 标签装载一个用来创建新用户的 HVML 程序，如果使用同步装载方式：
 
 ```html
-    <load from="new_user.hvml" in="newUser@mainBody" synchronously>
+    <load from="new_user.hvml" within="newUser@mainBody" synchronously>
         <update on="#the-user-list" to="append" with="$user_item" />
 
         <!-- 对子协程非正常退出的情形，通过捕获相应的异常进行处理 -->
@@ -3992,7 +4036,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 如果使用异步装载方式，则需要 `as` 属性并使用 `observe` 标签创建一个观察者，用于观察子协程的 `runState:exited`（退出）事件：
 
 ```html
-    <load from="new_user.hvml" as="newUser" in="newUser@mainBody" asynchronously>
+    <load from="new_user.hvml" as="newUser" within="newUser@mainBody" asynchronously>
         <observe on="$newUser" for="runState:exited">
             <update on="#the-user-list" to="append" with="$user_item" />
         </observe>
@@ -4020,7 +4064,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
     <body>
         ...
 
-        <load from="#errorPage" in="_self" asynchronously>
+        <load from="#errorPage" within="_self" asynchronously>
 
         ...
     </body>
@@ -6047,6 +6091,8 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 ##### RC4.1) 重构`基本原理`一节
 
+主要修订内容如下：
+
 1. 增加若干术语。
 1. 增加对 HVML 栈式虚拟机的描述。
 1. 增加对各类元素的概要介绍，补充了各种元素和虚拟机栈帧及上下文变量的关系。
@@ -6057,6 +6103,8 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 ##### RC4.2) MIME 类型和数据
 
+主要修订内容如下：
+
 1. 阐述了从外部资源装载数据时，如何根据资源的 MIME 类型来确定装载后的数据类型。
 
 相关章节：
@@ -6065,6 +6113,8 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 ##### RC4.3) `inherit` 标签
 
+主要修订内容如下：
+
 1. 为方便代码块的分组书写，新增 `inherit` 标签。`inherit` 标签创建的动作元素不使用任何介词和副词属性，继承前置栈帧的上下文变量。
 
 相关章节：
@@ -6072,6 +6122,8 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - [2.5.18) `inherit` 标签](#2518-inherit-标签)
 
 ##### RC4.4) 调整上下文变量
+
+主要修订内容如下：
 
 1. 新增 `$^` 上下文变量，用于表示动作元素中使用内容定义的数据。
 1. 调整 `$<` 的用途，仅用于迭代，名称为迭代数据。
@@ -6084,6 +6136,18 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - [2.5.7.2) 不使用迭代执行器](#2572-不使用迭代执行器)
 - [2.6.1.5) 用于数值的内建执行器](#2615-用于数值的内建执行器)
 - [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
+
+##### RC4.5) 元素及属性的调整
+
+主要修订内容如下：
+
+1. 详细描述了 `call` 元素异步调用操作组的实现机制。
+1. 新增 `within` 属性，用于在 `load` 元素中指定渲染器页面信息，不再使用 `in` 属性。
+
+相关章节：
+
+- [2.5.12) `call` 和 `return` 标签](#2512-call-和-return-标签)
+- [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
 
 #### RC3) 220501
 
