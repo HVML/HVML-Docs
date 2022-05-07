@@ -397,7 +397,7 @@ Language: Chinese
 
     ...
 
-    <!-- 关闭标识符为 `foo` 的定时器 -->
+    <!-- 使标识符为 `foo` 的定时器失效 -->
     <choose on="$TIMERS" by="FILTER: AS 'foo'">
         <update on="$?" at=".active" with="no" />
     </choose>
