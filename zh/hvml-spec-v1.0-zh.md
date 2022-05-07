@@ -12,6 +12,7 @@ Language: Chinese
 
 *Copyright Notice*
 
+版权所有 &copy; 2020, 2021, 2022 魏永明  
 版权所有 &copy; 2020, 2021, 2022 北京飞漫软件技术有限公司  
 保留所有权利
 
@@ -361,14 +362,14 @@ Language: Chinese
 </hvml>
 ```
 
-第二，HVML 使用类似 XML 的标记语言来定义程序结构。HVML 定义了为数不多的十多个动作标签，可用来定义变量，操作数据或者控制程序的执行路径。和这些动作标签配合，HVML 使用介词属性和副词属性来定义动作依赖的源数据、目标数据以及执行条件，从而获得更加贴近自然语言的程序书写方式。这一方面降低了开发者的学习门槛，另一方面可以大幅提高代码的可读性。
+第二，HVML 使用类似 XML 的标记语言来定义程序结构。HVML 定义了为数不多的十多个动作标签，可用来定义变量，操作数据或者控制程序的执行路径。和这些动作标签配合，HVML 使用介词属性和副词属性来定义动作依赖的源数据、目标数据以及执行条件，从而获得更加贴近自然语言的程序表达和书写效果。这一方面降低了开发者的学习门槛，另一方面可以大幅提高了代码的可读性。
 
 比如下面的 HVML 代码片段生成小于 100 的偶数数列，其中使用了 `init`、 `iterate` 和 `update` 这三个动作标签，分别实现了初始化一个数组变量、迭代计算偶数并将每个迭代结果追加到数组中的功能：
 
 ```html
     <init as="evenNumbers" with=[0,] >
         <iterate on=$?[0] onlyif=$L.lt($0<,100) with=$MATH.add($0<,2) nosetotail>
-            <update on="$evenNumbers" to="append" with="$?">
+            <update on="$evenNumbers" to="append" with="$?" />
         </iterate>
     </init>
 ```
@@ -472,7 +473,7 @@ Language: Chinese
     </observe>
 ```
 
-由于 `$SYSTEM.time` 返回的是以秒为单位的 Unix 时间戳，故而 `observe` 定义的操作组，将每秒执行一次。
+由于 `$SYSTEM.time` 返回的是以秒为单位的 Unix 时间戳数值，故而 `observe` 元素定义的操作组，将每秒执行一次。
 
 #### 2.1.1) 程序结构
 
@@ -3147,7 +3148,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 ```html
     <init as="evenNumbers" with=[0,] >
         <iterate on=$?[0] onlyif=$L.lt($0<,100) with=$MATH.add($0<,2) nosetotail>
-            <update on="$evenNumbers" to="append" with="$?">
+            <update on="$evenNumbers" to="append" with="$?" />
         </iterate>
     </init>
 ```
