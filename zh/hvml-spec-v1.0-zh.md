@@ -390,7 +390,7 @@ Language: Chinese
 比如下面的 HVML 代码片段，使用 `update` 动作标签，添加了一个激活的定时器，随后使用 `choose` 和 `update` 使之无效：
 
 ```html
-    <!-- 新增标识符为 `foo` 的定时器，间隔 3000 ms，激活状态 */
+    <!-- 新增标识符为 `foo` 的定时器，间隔 3000 ms，激活状态 -->
     <update on="$TIMERS" to="append">
         { "id" : "foo", "interval" : 3000, "active" : "yes" }
     </update>
