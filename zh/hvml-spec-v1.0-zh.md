@@ -442,7 +442,7 @@ Language: Chinese
         <p>$?</p>
     </define>
 
-    <!-- 该元素定义了一个操作组，该操作组向标准输入打印内容。-->
+    <!-- 该元素定义了一个操作组，该操作组向系统的标准输出打印文本。-->
     <define as="output_void">
         <inherit>
             $STREAM.stdout.writelines($?)
@@ -474,6 +474,21 @@ Language: Chinese
 ```
 
 由于 `$SYSTEM.time` 返回的是以秒为单位的 Unix 时间戳数值，故而 `observe` 元素定义的操作组，将每秒执行一次。
+
+第七，轻松实现异步及并发编程。在栈式虚拟机基础上，HVML 允许在一个虚拟机之上同时运行多个 HVML 程序，并要求解释器使用协程实现同一个虚拟机实例上多个协程的并发管理。同时，HVML 允许异步地调用函数，从而创建一个新的虚拟机实例。这些机制可以帮助开发者轻松实现异步及并发编程，而在其他编程语言中，异步和并发编程通常需要足够的技巧才能良好驾驭。
+
+比如下面的代码片段，异步调用 `collectAllDirEntriesRecursively` 操作组，该操作组递归遍历指定的目录，收集其下的所有目录项，然后使用 `observe` 来观察这个异步任务的调用状态。显然，这个操作组是一项耗时操作。在该操作组返回结果之前，HVML 程序可以继续执行完成其他的工作。
+
+```html
+    <call as="my_task" on="$collectAllDirEntriesRecursively" with="/" asynchronously />
+    <observe on="$my_task" for="callState:success">
+        <iterate on="$?" in="#entries" by="RANGE: FROM 0">
+            <update on="$@" to="append" with="$dir_entry" />
+        </iterate>
+    </observe>
+```
+
+除此之外，HVML 还允许在不同虚拟机实例之间互相发送事件，从而提供了一种基本的跨虚拟机通讯机制。
 
 #### 2.1.1) 程序结构
 
@@ -2114,6 +2129,7 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
     event_name: <literal_variable_token>[':'<literal_alnum_token>['/'<literal_alnum_token>]]
     page_name: <literal_variable_token>'@'<literal_alnum_token>[':' < 'tab' | 'panel' >]
+    coroutine_identifier: <literal_variable_token>'/'<literal_alnum_token>
 
     literal_alnum_token: /[A-Za-z0-9_][A-Za-z0-9_]*$/
     literal_variable_token: /^[A-Za-z_][A-Za-z0-9_]*$/
@@ -3857,11 +3873,18 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 需要注意的是，我们将异步执行的操作组的目标文档类型限制成了 `void`，从而无需将对应的协程关联到渲染器，但可以在操作组中使用 `load` 标签装载其他的需要渲染器的 HVML 程序。针对这种情况，我们可使用 `request` 元素连接到渲染器，启动新的渲染器会话并做其他设置。此时，我们可以使用 `call` 元素的内容数据传递渲染器相关的参数。
 
-异步调用操作组可能产生的事件有：
+异步调用操作组时，`call` 元素的结果数据是新的协程标识符，该协程在新的虚拟机实例中运行，对应一个新创建的行者。
 
-- `callState:success`：成功。
-- `callState:error/<errorName>`：错误。
-- `callState:except/<exceptName>`：未捕获的异常。
+协程标识符的格式为 `<runnerName>/<coroutineId>`，必须符合本规范定义的 `coroutine_identifier` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法的协程标识符样例：
+
+- `Runner0/3cc8f9e2ff74f872f09518ffd3db6f29`
+- `myRunner/3cc8f`
+
+异步调用操作组对应的事件有：
+
+- `callState:success`：操作组对应的协程成功返回数据。
+- `callState:error/<errorName>`：操作组对应的协程出现错误。
+- `callState:except/<exceptName>`：操作组对应的协程遇到未捕获的异常。
 
 注意，不管是 `include` 还是 `call`，我们都可以递归使用。
 
@@ -4048,7 +4071,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 #### 2.5.16) `request` 标签
 
-`request` 标签定义一个执行文档请求或者渲染器请求操作的动作元素。
+`request` 标签定义一个执行文档请求、行者请求或者渲染器请求操作的动作元素。
 
 我们可以使用 `request` 元素在一个目标文档位置上发起一个方法调用请求，比如，操控 HTML 的 `video` 元素快速跳转到指定的位置：
 
@@ -4112,7 +4135,35 @@ doSomething(<string $foo>, <string $bar>)
 bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 ```
 
-我们使用 `request` 标签，也可以向渲染器本身发送一个请求，比如新建窗口组，移除一个窗口等。此时，不指定 `on` 属性值。至于具体要执行的请求操作以及参数，通过 `to` 属性和 `with` 属性传递，其含义和要求和具体的渲染器协议有关。比如在使用 PURCMC 协议时，我们可以向渲染器发送如下的请求来添加窗口组：
+我们使用 `request` 标签，也可以向另一个协程发送一个请求，此时，我们指定 `on` 属性值为 `$HVML`，`to` 属性值为协程标识符。之后，在目标协程中，在 `$HVML` 上观察 `runnerEvent` 事件，即可获得该请求的数据，并通过 `_eventSource` 临时变量获得该事件的来源协程标识符，其中包含有行者名称（注：协程标识符的格式始终为 `<runnerName>/<coroutineId>`）。
+
+如下面的代码所示，两个运行在不同虚拟机上的协程互相发送 Ping Pong 事件。
+
+```html
+    <define as="newRunner">
+
+        <observe on="$HVML" for="runnerEvent">
+            <request on="$HVML" to="$_eventSource" >
+                "pong"
+            </request>
+        </observe>
+
+    </define>
+
+    <call as="myRunner" on="$newRunner" with="..." asynchronously>
+        <request on="$HVML" to="$?" >
+            "ping"
+        </request>
+    </call>
+
+    <observe on="$HVML" for="runnerEvent">
+        <request on="$HVML" to="$_eventSource" >
+            "ping"
+        </request>
+    </observe>
+```
+
+我们使用 `request` 标签，还可以向渲染器发送一个请求，比如新建窗口组，移除一个窗口等。此时，不指定 `on` 属性值。至于具体要执行的请求操作以及参数，通过 `to` 属性和 `with` 属性传递，其含义和要求和具体的渲染器协议有关。比如在使用 PURCMC 协议时，我们可以向渲染器发送如下的请求来添加窗口组：
 
 ```html
     <request to="addWindowGroups" >
@@ -4210,7 +4261,9 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 
 以上两种实现方式，均会在当前目标文档的 `#the-user-list` 中插入一条新的用户条目。
 
-和 `load` 元素配合，我们通常在被装载的程序中使用 `exit` 标签主动退出程序的运行并定义程序的返回数据。如：
+使用异步装载方式，`load` 元素的结果数据是新的协程标识符，该协程在当前虚拟机实例中运行。
+
+和 `load` 元素配合，我们通常在被装载的程序中使用 `exit` 标签主动退出协程的运行并定义协程的返回数据。如：
 
 ```html
     <init as="user_info">
@@ -6307,11 +6360,14 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 1. 详细描述了 `call` 元素异步调用操作组的实现机制。
 1. 新增 `within` 属性，用于在 `load` 元素中指定渲染器页面信息，不再使用 `in` 属性。
+1. 增强 `request` 元素，使之可用于发送事件到其他协程。
+1. 补充 `load` 和 `call` 元素异步执行情况下的结果数据：协程标识符。
 
 相关章节：
 
 - [2.5.12) `call` 和 `return` 标签](#2512-call-和-return-标签)
 - [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
+- [2.5.16) `request` 标签](#2516-request-标签)
 
 #### RC3) 220501
 
