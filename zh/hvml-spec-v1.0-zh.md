@@ -456,7 +456,7 @@ Language: Chinese
 
 比如，下面的代码片段观察标识符为 `foo` 的定时器的到期事件：
 
-```
+```html
     <observe on="$TIMERS" for="expired:foo" >
         ...
     </observe>
