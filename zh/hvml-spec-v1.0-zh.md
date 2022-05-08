@@ -91,7 +91,9 @@ Language: Chinese
          - [2.5.2.2) 更新集合](#2522-更新集合)
       * [2.5.3) `erase` 标签](#253-erase-标签)
       * [2.5.4) `clear` 标签](#254-clear-标签)
-      * [2.5.5) `test` 标签和 `match` 标签](#255-test-标签和-match-标签)
+      * [2.5.5) `test`、 `match` 和 `differ` 标签](#255-test-match-和-differ-标签)
+         - [2.5.5.1) 多分支处理](#2551-多分支处理)
+         - [2.5.5.2) 二选一处理](#2552-二选一处理)
       * [2.5.6) `choose` 标签](#256-choose-标签)
       * [2.5.7) `iterate` 标签](#257-iterate-标签)
          - [2.5.7.1) 使用迭代执行器](#2571-使用迭代执行器)
@@ -154,6 +156,7 @@ Language: Chinese
          - [RC4.4) `sleep` 标签](#rc44-sleep-标签)
          - [RC4.5) 调整上下文变量](#rc45-调整上下文变量)
          - [RC4.6) 元素及属性的调整](#rc46-元素及属性的调整)
+         - [RC4.7) `differ` 标签](#rc47-differ-标签)
       * [RC3) 220501](#rc3-220501)
          - [RC3.1) 调整动作标签](#rc31-调整动作标签)
          - [RC3.2) HVML 程序的运行状态](#rc32-hvml-程序的运行状态)
@@ -2919,7 +2922,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 注意，当 `on` 属性值指定的是一个元素汇集时，`clear` 标签将对中的每个元素执行清空操作。
 
-#### 2.5.5) `test` 标签和 `match` 标签
+#### 2.5.5) `test`、 `match` 和 `differ` 标签
+
+##### 2.5.5.1) 多分支处理
 
 `test` 标签和 `match` 标签配合使用，主要用于实现分支处理。`test` 元素通过 `on` 属性定义在哪个数据项上执行测试，而 `match` 作为 `test` 元素的子元素，每个 `match` 子元素定义一个匹配分支。
 
@@ -3036,6 +3041,25 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 1. 若 `match` 元素的 `for` 属性指定的匹配规则是字符串匹配表达式（如 `AS`、`LIKE`），则对 `test` 元素的结果数据做字符串化处理后再行匹配。
 1. ~~若其父元素（即 `test`）元素的结果数据是实数类型时，`match` 标签的 `for` 属性指定的匹配规则按数值比较逻辑表达式处理，此时在逻辑表达式中使用字符串匹配表达式（如 `AS`、`LIKE`）是无效的。~~
 1. ~~若其父标签（即 `test`）标签的结果数据是其他类型时，`match` 标签的 `for` 属性指定的匹配规则按字符串比较逻辑表达式处理，此时在逻辑表达式中使用数值比较表达式（如 `GT`、`LT`）是无效的。当结果数据不是字符串类型时，应做字符串化处理。~~
+
+##### 2.5.5.2) 二选一处理
+
+作为一种简化处理方案，我们可以使用 `test` 元素的 `with` 属性的值来确定如何处理 `test` 元素定义的操作子树：
+
+```html
+    <test with="$STR.stars_with($HVML.app, 'cn.fmsoft.hvml')">
+        ...
+
+        <!-- when the value of `with` attribute of `test` element is false -->
+        <differ>
+            ...
+        </differ>
+    </test>
+```
+
+以上的代码，当 `with` 属性的值为 `true` 时，继续执行该元素的操作子树，但忽略 `differ` 子元素定义的操作子树；如果属性值求值后的结果为 `false`，则仅处理 `differ` 子元素定义的操作子树。这种场景下，`differ` 元素是可选的。`differ` 元素不使用除 `in` 之外的任何介词属性和副词属性。和 `inherit` 类似，该元素会默认继承前置操作的上下文变量，若定义有数据内容，则使用数据内容覆盖对应栈帧的 `$^` 上下文变量。
+
+当同时指定 `with` 和 `on` 属性时，优先按 `on` 属性处理。也就是说，要采用这一简化方案，就不能指定 `on` 属性。
 
 #### 2.5.6) `choose` 标签
 
@@ -3832,7 +3856,33 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```html
     <define as="collectAllDirEntriesRecursively">
-        ...
+        <init as="allEntries" with=[] temporarily />
+
+        <define as="collectAllDirEntries" >
+            <choose on=$FS.opendir($?) >
+                <catch for="ANY">
+                    <return with=false />
+                </catch>
+
+                <!-- no more directory entry if $?.read() returns false -->
+                <iterate on=$? with=$?.read() >
+                    <catch for="ANY">
+                        <return with=false />
+                    </catch>
+
+                    <update on="$allEntries" to="append" with="$3?/$1?.name" />
+
+                    <test with=$L.streq($?.type,'dir')>
+                        <call on="$collectAllDirEntries" with="$4?/$2?.name" />
+                    </test>
+                </iterate>
+
+                <return with=$FS.closedir($?) />
+            </choose>
+        </define>
+
+        <call on="$collectAllDirEntries" with="$?" />
+        <return with="$allEntries" />
     </define>
 
     <listbox id="entries">
@@ -3863,7 +3913,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 6. 在目标行者对应的虚拟机实例上创建一个协程从上述 vDOM 树的 `hvml` 根元素开始执行。在 `hvml` 元素对应的栈帧中，将 `call` 元素 `with` 属性定义的值作为该栈帧的 `$?` 变量值，`call` 元素的内容数据作为该栈帧的 `$^` 变量值。
 7. 当该协程正常退出时，或者遇到错误或未捕获的异常时，将 `exit` 或者 `return` 定义的返回值或者错误或异常信息通过 `runState` 事件返回给调用者。
 
-由于并发调用通常用来执行一些耗时的计算任务，故而我们将对应协程的目标文档类型设定为 `void`，从而可避免新创建的行者以及协程关联到渲染器上。但通过以上步骤并发调用操作组的功能，我们也可用来创建一个关联到渲染器的普通行者。比如：
+由于并发调用通常用来执行一些耗时的计算任务，故而我们将对应协程的目标文档类型设定为 `void`，从而可避免新创建的行者以及协程关联到渲染器上。但通过并发调用操作组，我们也可用来创建一个关联到渲染器的普通行者。比如：
 
 ```html
         <define as="newRunner">
@@ -3911,7 +3961,82 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 - `callState:error/<errorName>`：操作组对应的协程出现错误。
 - `callState:except/<exceptName>`：操作组对应的协程遇到未捕获的异常。
 
-注意，不管是 `include` 还是 `call`，我们都可以递归使用。
+并发调用操作组时，由于我们将对应的 HVML 程序限制在了一个 vDOM 子树上，故而无法访问在原 HVML 程序中操作组所在闭包中的变量。这点和常规的调用存在较大的差别。比如如下的代码：
+
+```html
+    <body>
+        <init as="allEntries" with=[] >
+            <define as="collectAllDirEntriesRecursively" at="_grandparent">
+                <clear on="$allEntries" />
+
+                <define as="collectAllDirEntries" >
+                    <choose on=$FS.opendir($?) >
+                        <catch for="ANY">
+                            <return with=false />
+                        </catch>
+
+                        <!-- no more directory entry if $?.read() returns false -->
+                        <iterate on=$? with=$?.read() >
+                            <catch for="ANY">
+                                <return with=false />
+                            </catch>
+
+                            <update on="$allEntries" to="append" with="$3?/$1?.name" />
+
+                            <test with=$L.streq($?.type,'dir')>
+                                <call on="$collectAllDirEntries" with="$4?/$2?.name" />
+                            </test>
+                        </iterate>
+
+                        <return with=$FS.closedir($?) />
+                    </choose>
+                </define>
+
+                <call on="$collectAllDirEntries" with="$?" />
+                <return with="$allEntries" />
+            </define>
+        </init>
+
+        ...
+
+    </body>
+```
+
+定义了一个操作组，该操作组使用了其所在闭包中的静态变量 `$allEntries`。因此，如果不使用并发调用，该操作组可正常工作：
+
+```html
+        <call on="$collectAllDirEntriesRecursively" with="/" />
+```
+
+但如果使用并发调用，则该操作组将因为找不到 `$allEntries` 变量而抛出异常：
+
+```html
+        <call on="$collectAllDirEntriesRecursively" with="/"
+                within="newRunner" concurrently asynchronously />
+```
+
+因此，我们需要使用局部变量，并在最后返回局部变量：
+
+```html
+    <define as="collectAllDirEntriesRecursively">
+        <init as="allEntries" with=[] temporarily />
+
+        <define as="collectAllDirEntries" >
+            ...
+        </define>
+
+        <call on="$collectAllDirEntries" with="$?" />
+        <return with="$allEntries" />
+    </define>
+
+    ...
+
+    <call as="my_task" on="$collectAllDirEntriesRecursively" with="/"
+            within="newRunner" concurrently asynchronously />
+
+```
+
+上面的代码，也展示了递归调用操作组的功能。
 
 #### 2.5.13) `bind` 标签
 
@@ -4344,7 +4469,7 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
 
 #### 2.5.18) `inherit` 标签
 
-`inherit` 标签用于定义一个执行继承操作的动作元素，该元素不使用任何介词和副词属性。该元素继承其前置栈帧的上下文变量，若定义有数据内容，则使用数据内容覆盖对应栈帧的 `$^` 上下文变量。
+`inherit` 标签用于定义一个执行继承操作的动作元素，除 `in` 之外，该元素不使用任何介词和副词属性，默认继承其前置栈帧的上下文变量。若定义有数据内容，则使用数据内容覆盖对应栈帧的 `$^` 上下文变量。
 
 通常，我们使用 `inherit` 元素分隔具有不同逻辑功能的代码，也经常利用其内容来执行由动态对象提供的功能。下面的代码展示了 `inherit` 标签的多种使用场景：
 
@@ -6456,6 +6581,17 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - [2.5.12) `call` 和 `return` 标签](#2512-call-和-return-标签)
 - [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
 - [2.5.16) `request` 标签](#2516-request-标签)
+
+##### RC4.7) `differ` 标签
+
+主要修订内容如下：
+
+1. 增强 `test` 标签使用 `with` 属性简化分支处理。
+1. 新增 `differ` 标签定义其他分支。
+
+相关章节：
+
+- [2.5.5) `test`、 `match` 和 `differ` 标签](#255-test-match-和-differ-标签)
 
 #### RC3) 220501
 
