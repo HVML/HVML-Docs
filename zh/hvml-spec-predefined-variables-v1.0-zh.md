@@ -1025,11 +1025,11 @@ $SYSTEM.random(!
 
 ```js
 // 使用当前系统日历时间设置随机数种子。
-$SYSTEM.randome(! $SYSTEM.time )
+$SYSTEM.random(! $SYSTEM.time )
     // true
 
 // 使用当前系统日历时间设置随机数种子，并设置随机数发生器的复杂度为最高。
-$SYSTEM.randome(! $SYSTEM.time, 256 )
+$SYSTEM.random(! $SYSTEM.time, 256 )
     // true
 
 $SYSTEM.random
