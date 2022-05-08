@@ -4549,6 +4549,8 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
    - `h`：时。
    - `d`：天。
 
+同时指定 `with` 和 `for` 属性时，`with` 优先。
+
 如下面的示例代码：
 
 ```html
