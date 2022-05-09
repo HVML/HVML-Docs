@@ -1650,22 +1650,22 @@ HVML 定义的异常如下：
 
 针对某些动作标签，HVML 定义了如下副词属性，用于修饰操作行为。如：
 
-- `synchronously`：在 `request`、 `call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用同步请求方式；默认值；可简写为 `sync`。
-- `asynchronously`：在 `request`、 `call` 等标签中，用于定义从外部数据源（或操作组）获取数据时采用异步请求方式；可简写为 `async`。
-- `exclusively`：在 `match` 标签中，用于定义排他性；具有这一属性时，匹配当前动作时，将不再处理同级其他 `match` 标签；可简写为 `excl`。
-- `uniquely`：在 `init` 标签中，用于定义集合；具有这一属性时，`init` 定义的变量将具有唯一性条件；可简写为 `uniq`。
-- `individually`：在 `update` 标签中，用于定义更新动作作用于数组、对象或者集合的每个数据项上。
-- `once`：在 `observe` 动作标签中，用于指定仅观察一次，之后该观察将被自动解除。
-- `casesensitively`：在 `init` 动作标签中初始化一个集合时，用于指定唯一性值的对比对大小写敏感，亦可用在 `sort` 标签；可简写为 `case`。
-- `caseinsensitively`：在 `init` 动作标签中初始化一个集合时，用于指定唯一性值的对比对大小写不敏感，亦可用在 `sort` 标签；可简写为 `caseless`。
-- `ascendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为升序；可简写为 `asc`。
-- `descendingly`：在 `sort` 标签中，用于指定数据项的排列顺序为降序；可简写为 `desc`。
+- `synchronously`：在 `init`、 `request`、 `call`、 `load` 等元素中，用于定义从外部数据源（或操作组）获取数据时采用同步请求方式；默认值；可简写为 `sync`。
+- `asynchronously`：在 `init`、 `request`、 `call`、 `load` 等元素中，用于定义从外部数据源（或操作组）获取数据时采用异步请求方式；可简写为 `async`。
+- `exclusively`：在 `match` 元素中，用于定义排他性；具有这一属性时，匹配当前动作时，将不再处理同级其他 `match` 元素；可简写为 `excl`。
+- `uniquely`：在 `init` 元素中，用于定义集合；具有这一属性时，`init` 定义的变量将具有唯一性条件；可简写为 `uniq`。
+- `individually`：在 `update` 元素中，用于定义更新动作作用于数组、对象或者集合的每个数据项上。
+- `once`：在 `observe` 动作元素中，用于指定仅观察一次，之后该观察将被自动解除。
+- `casesensitively`：在 `init` 动作元素中初始化一个集合时，用于指定唯一性值的对比对大小写敏感，亦可用在 `sort` 元素；可简写为 `case`。
+- `caseinsensitively`：在 `init` 动作元素中初始化一个集合时，用于指定唯一性值的对比对大小写不敏感，亦可用在 `sort` 元素；可简写为 `caseless`。
+- `ascendingly`：在 `sort` 元素中，用于指定数据项的排列顺序为升序；可简写为 `asc`。
+- `descendingly`：在 `sort` 元素中，用于指定数据项的排列顺序为降序；可简写为 `desc`。
 - `silently`：用于指示解释器执行静默求值和操作，以忽略对当前元素属性、内容进行求值，或者执行元素定义的操作时遇到的可忽略异常；在外部元素中使用 `hvml:silently` 这一写法。
 - `temporarily`：在 `init` 等定义变量的动作元素中，用于指定变量是临时的而非静态的；所有临时变量，在上下文变量（`$!`）中维护；可简写为 `temp`。
 - `nosetotail`：在 `iterate` 动作元素中，用于将上次迭代的结果作为下次迭代的输入数据。
 - `responsively`：在骨架元素中，用于定义其文本内容是响应式的。
-- `noreturn`：在 `request` 标签中，用于定义忽略该请求的返回值。
-- `concurrently`：在 `call` 标签中，用于定义一个并发调用。
+- `noreturn`：在 `request` 元素中，用于定义忽略该请求的返回值。
+- `concurrently`：在 `call` 元素中，用于定义一个并发调用。
 
 注意：在 HVML 中，我们无需为副词属性赋值。
 
@@ -1749,17 +1749,17 @@ HVML 定义的异常如下：
 
 JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法) 一节。
 
-#### 2.1.16) HVML 协程状态
+#### 2.1.16) 协程和行者状态
 
 一个正确解析并装载的 HVML 程序以协程的形式运行。HVML 定义协程有如下几种运行状态：
 
-- 等待执行（ready）：表示正等待执行。
+- 就绪（ready）：表示正等待执行。
 - 运行（running）：表示正在运行。
 - 退出（exited）：隐式退出或者主动退出；自然执行完所有的动作元素，且没有注册任何观察者；或者执行 `exit` 动作元素主动退出。
 - 被终止（terminated）：由于错误或者未捕获的异常而终止。
 - 被暂停（stopped）：休眠等待特定事件的到来，比如子协程退出，休眠到期，异步IO请求返回数据，调试器继续执行等。
 
-当我们异步装载另外一个 HVML 程序时，就可以在当前 HVML 协程中观察子协程的运行状态变化。运行状态相关的事件对应的名称具有 `runState:` 前缀，如 `runState:terminated`。
+当我们异步装载另外一个 HVML 程序时，就可以在当前 HVML 协程中观察子协程的运行状态变化。和协程运行状态相关的事件具有 `corState:` 前缀，如 `corState:terminated`。
 
 通常在下面几种情况下，协程将被解释器设置为被暂停状态：
 
@@ -1775,6 +1775,13 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 - 被压制（suppressed）：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
 
 HVML 协程可通过观察内置 `$HVML` 变量上的渲染器事件来判断自身渲染状态的变化。渲染状态相关的事件对应的名称具有 `rdrState:` 前缀，如 `rdrState:suppressed`。
+
+每个 HVML 协程在运行在特定的 HVML 虚拟机实例上，而每个 HVML 虚拟机实例对应 HVML 应用框架中的一个行者。行者（或者其对应的虚拟机实例）有如下状态：
+
+- 启动（boot）：启动。
+- 空闲（idle）：空闲。
+- 忙（busy）：工作中。
+- 关机（shutdown）：关机。
 
 #### 2.1.17) 文档片段的 JSON 数据表达
 
@@ -2441,6 +2448,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 我们也可以使用 `init` 标签从共享库中初始化一个自定义的动态对象，此时，给定 `via` 的属性值为 `LOAD`，表示装载一个外部程序模块。使用 `init` 元素装载动态对象时，我们通过 `from` 属性指定的是要装载的外部程序模块的名称。根据该模块名称确定具体的文件名以及模块文件的存储位置，取决于具体的解释器实现。若外部程序模块（如 C/C++ 语言共享库）中定义有多个动态对象，使用 `for` 属性指定要装载的动态对象名称。
 
 当我们在 `init` 标签中使用 `from` 属性，`via` 属性不为 `LOAD`，且使用 `asynchronously` 副词属性时，将异步地从外部资源中获取数据作为变量的值。程序可通过观察变量上的 `change:attached` 做进一步的处理。具体可参阅 [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签) 一节。
+
+需要注意的是，当使用异步加载方式初始化一个变量时，当外部资源的数据返回时，程序已经脱离了 `init` 元素所在的上下文（执行栈），故而无法处理数据中含有上下文变量的情形。解释器可以限制此种情况下的数据只能是原始的数据（raw data）。
 
 在一个已经初始化的变量上使用 `init` 标签时，将使用新的数据重置这个变量，而如果使用 `undefine` 重置变量，其效果相当于删除这个变量。
 
@@ -3631,7 +3640,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 - `click`
 - `change:attached`
 - `event:3cc8f9e2ff74f872f09518ffd3db6f29`
-- `runState:except/BadName`
+- `corState:except/BadName`
 
 当 HVML 代理观察到来自 `$databus` 上的电池变化事件数据包之后，将根据 `observe` 标签定义的观察动作执行相应的操作。在上面的例子中，`observe` 标签所定义的操作及条件解释如下：
 
@@ -3913,7 +3922,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 4. 构建一个空的 `hvml` 根节点，设置其 `target` 属性为 `void`，然后克隆操作组定义的 vDOM 子树并将其作为 `hvml` 根元素的子树，从而构成一个完整的 vDOM 树。
 5. 构建所有必要的协程级全局变量，如 `$TIMERS`、 `$HVML` 等，并关联到 vDOM 树上。
 6. 在目标行者对应的虚拟机实例上创建一个协程从上述 vDOM 树的 `hvml` 根元素开始执行。在 `hvml` 元素对应的栈帧中，将 `call` 元素 `with` 属性定义的值作为该栈帧的 `$?` 变量值，`call` 元素的内容数据作为该栈帧的 `$^` 变量值。
-7. 当该协程正常退出时，或者遇到错误或未捕获的异常时，将 `exit` 或者 `return` 定义的返回值或者错误或异常信息通过 `runState` 事件返回给调用者。
+7. 当该协程正常退出时，或者遇到错误或未捕获的异常时，将 `exit` 或者 `return` 定义的返回值或者错误或异常信息通过 `corState` 事件返回给调用者。
 
 由于并发调用通常用来执行一些耗时的计算任务，故而我们将对应协程的目标文档类型设定为 `void`，从而可避免新创建的行者以及协程关联到渲染器上。但通过并发调用操作组，我们也可用来创建一个关联到渲染器的普通行者。比如：
 
@@ -4246,7 +4255,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 为了异步观察请求的执行结果，我们可使用 `as` 属性为该请求定义一个静态命名变量，并使用 `observe` 标签观察其结果。因此，我们在该标签中可使用如下副词属性：
 
-- `synchronously` 属性，用来指定同步等待请求的执行结果，是默认值。
+- `synchronously` 属性，用来指定同步等待请求的执行结果，是默认值，一般无需显式指定。
 - `asynchronously` 属性，用来指定异步等待执行结果。
 - `noreturn` 属性，用来指定不要求渲染器发送响应消息。
 
@@ -4417,11 +4426,11 @@ bootstrap.Modal.getInstance(document.getElementById('myModal')).toggle();
     </load>
 ```
 
-如果使用异步装载方式，则需要 `as` 属性并使用 `observe` 标签创建一个观察者，用于观察子协程的 `runState:exited`（退出）事件：
+如果使用异步装载方式，则需要 `as` 属性并使用 `observe` 标签创建一个观察者，用于观察子协程的 `corState:exited`（退出）事件：
 
 ```html
     <load from="new_user.hvml" as="newUser" within="newUser@mainBody" asynchronously>
-        <observe on="$newUser" for="runState:exited">
+        <observe on="$newUser" for="corState:exited">
             <update on="#the-user-list" to="append" with="$user_item" />
         </observe>
     </load>
