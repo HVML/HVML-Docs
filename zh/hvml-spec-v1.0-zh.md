@@ -3966,6 +3966,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 - `Runner0/3cc8f9e2ff74f872f09518ffd3db6f29`
 - `myRunner/3cc8f`
 
+我们保留 `_self` 作为预定义行者名称，特指当前行者。
+
 并发调用操作组对应的事件有：
 
 - `callState:success`：操作组对应的协程成功返回数据。
