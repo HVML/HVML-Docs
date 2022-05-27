@@ -4254,7 +4254,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 - `on` 属性，指定目标文档位置。
 - `to` 属性，指定要调用的方法或函数。
-- `with` 属性，指定调用方法的参数。我们也可以使用 `request` 的内容来定义调用方法的参数。
+- `with` 属性，指定调用参数。我们也可以使用 `request` 的内容来定义调用参数。
 
 为了异步观察请求的执行结果，我们可使用 `as` 属性为该请求定义一个静态命名变量，并使用 `observe` 标签观察其结果。因此，我们在该标签中可使用如下副词属性：
 
@@ -4264,23 +4264,22 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 和 `init` 类似，在 `request` 标签中使用 `as` 属性命名一个请求时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
 
-在使用 `with` 属性指定方法的参数时，如果方法要求传递多个参数时，我们使用数组指定参数，并使用 `individually` 副词属性。
-
-比如如下两种写法的效果是不一样的：
+当我们使用 `to` 属性指定一个简单的方法时，`with` 属性的值将作为参数传递给这个方法。如下面的例子：
 
 ```html
     <request on="#my-video" to="doSomething" with="['value for foo', 'value for bar']" />
-
-    <request on="#my-video" to="doSomething" with="['value for foo', 'value for bar']" individually />
 ```
 
-第一个写法将数组作为方法的单个参数处理，第二个写法将数组中的每个成员依次作为方法的参数传入。
+在支持 JavaScript 的渲染器中，以上请求将最终解释为如下 JavaScript 代码：
 
-我们还可以使用 `request` 在指定的元素上执行一段渲染器支持的函数调用代码，并在其中使用渲染器设定的如下预定义变量：
+```js
+    document.getElementById('#my-video').doSomething(['value for foo', 'value for bar']);
+```
+
+我们还可以使用 `request` 在指定的元素上执行一段渲染器支持的函数调用代码，并在函数调用代码中使用渲染器设定的如下预定义变量：
 
 - `ELEMENT`：由 `on` 属性指定的目标文档元素汇集中的每个元素。
-- `ARG`：单个参数。
-- `ARGS`：多个参数。
+- `ARG`：由 `with` 属性或者内容定义的参数。
 
 此时，我们使用在 `to` 属性值中使用 `call:` 前缀：
 
@@ -4288,12 +4287,14 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <request on="#myModal" to="call:bootstrap.Carousel.getInstance(ELEMENT).to(ARG)" with=0 />
 ```
 
-在上面的 `to` 属性值中，我们使用了 `ELEMENT` 和 `ARG` 指代当前元素对象以及通过 `with` 属性传递给方法的参数。这些特殊关键词由渲染器处理并替代。比如上面的函数调用，最终会被渲染器解释为如下 JavaScript 代码：
+在上面的 `to` 属性值中，我们使用了 `ELEMENT` 和 `ARG` 指代当前元素对象以及通过 `with` 属性或者内容传递给方法的参数。这些特殊关键词由渲染器处理并替代。比如上面的函数调用，最终会被渲染器解释为如下 JavaScript 代码：
 
 ```js
 const method = new Function('ELEMENT', 'ARG', 'return bootstrap.Carousel.getInstance(ELEMENT).to(ARG)');
 const result = method(document.getElementByHVMLHandle('4567834'), 0);
 ```
+
+使用这种方法时，当参数为数组时，可使用渲染器脚本语言支持的方式引用其中的成员，如 `ARG[0]`、`ARG[1]`。
 
 我们使用 `request` 标签，也可以向另一个协程发送一个请求，此时，我们指定 `on` 属性值为 `$HVML`，`to` 属性值为协程标识符。之后，在目标协程中，在 `$HVML` 上观察 `runnerEvent` 事件，即可获得该请求的数据，并通过 `_eventSource` 临时变量获得该事件的来源协程标识符，其中包含有行者名称（注：协程标识符的格式始终为 `<runnerName>/<coroutineId>`）。
 
