@@ -1856,9 +1856,9 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 - 当我们在一个元素上获得 `content[<index>]` 键名的键值时，相当于获得这个元素第 `<index>` 个子元素的文本表达；在设置该键名的键值时，相当于使用文本表达来创建该元素的内容或者子元素（替换掉原有子元素）。
 - 我们可以使用 `attr.class` 这样的复合键名来引用一个元素的特定属性。引用一个未定义的属性时，按属性值为 `undefined` 值对待。
 - 我们可以使用 `style.width` 这样的复合键名来引用一个元素的特定 CSS 属性。引用一个未定义的 CSS 属性时，按属性值为 `undefined` 值对待。
-- ~~我们可以使用 `prop.src` 这样的复合键名来引用一个元素的动态属性（property）。引用一个未定义的动态属性时，按属性值按 `undefined` 对待。~~
+- 我们可以使用 `prop.selectedIndex` 这样的复合键名来引用一个元素的动态属性（property）。引用一个未定义的动态属性时，按属性值为 `undefined` 对待。
 
-注：目前只有 SGML 支持用数据作为元素的内容，即 `jsonContent`。
+注：目前只有规划中的 SGML 支持使用数据作为元素的内容，即 `jsonContent`。
 
 #### 2.1.18) MIME 类型
 
@@ -4281,7 +4281,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 - `ELEMENT`：由 `on` 属性指定的目标文档元素汇集中的每个元素。
 - `ARG`：由 `with` 属性或者内容定义的参数。
 
-此时，我们使用在 `to` 属性值中使用 `call:` 前缀：
+此时，我们在 `to` 属性值中使用 `call:` 前缀：
 
 ```html
     <request on="#myModal" to="call:bootstrap.Carousel.getInstance(ELEMENT).to(ARG)" with=0 />
@@ -4295,6 +4295,12 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 ```
 
 使用这种方法时，当参数为数组时，可使用渲染器脚本语言支持的方式引用其中的成员，如 `ARG[0]`、`ARG[1]`。
+
+另外，我们使用这种方法，还可以获取或者设置特定文档元素的动态属性值。比如下面的代码将 `#myInput` 元素设置为禁止，并使用 `noreturn` 副词属性，忽略响应。
+
+```html
+    <request on="#myInput" to="call:ELEMENT.disabled=true" with=0 noreturn />
+```
 
 我们使用 `request` 标签，也可以向另一个协程发送一个请求，此时，我们指定 `on` 属性值为 `$HVML`，`to` 属性值为协程标识符。之后，在目标协程中，在 `$HVML` 上观察 `runnerEvent` 事件，即可获得该请求的数据，并通过 `_eventSource` 临时变量获得该事件的来源协程标识符，其中包含有行者名称（注：协程标识符的格式始终为 `<runnerName>/<coroutineId>`）。
 
