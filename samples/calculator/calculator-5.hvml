@@ -1,0 +1,154 @@
+<!DOCTYPE hvml SYSTEM 'v: MATH'>
+<hvml target="html" lang="en">
+    <head>
+        <base href="$HVML.base(! 'http://files.fmsoft.cn/calculator/' )" />
+
+        <update on="$T.map" from="assets/{$SYSTEM.locale}.json" to="merge" />
+
+        <init as="buttons">
+            [
+                { "id": "btn_7", "letters": "7", "class": "number" },
+                { "id": "btn_8", "letters": "8", "class": "number" },
+                { "id": "btn_9", "letters": "9", "class": "number" },
+                { "id": "btn_back", "letters": "←", "class": "c_blue backspace" },
+                { "id": "btn_clear", "letters": "C", "class": "c_blue clear" },
+                { "id": "btn_4", "letters": "4", "class": "number" },
+                { "id": "btn_5", "letters": "5", "class": "number" },
+                { "id": "btn_6", "letters": "6", "class": "number" },
+                { "id": "btn_mul", "letters": "×", "class": "c_blue multiplication" },
+                { "id": "btn_div", "letters": "÷", "class": "c_blue division" },
+                { "id": "btn_1", "letters": "1", "class": "number" },
+                { "id": "btn_2", "letters": "2", "class": "number" },
+                { "id": "btn_3", "letters": "3", "class": "number" },
+                { "id": "btn_plus", "letters": "+", "class": "c_blue plus" },
+                { "id": "btn_sub", "letters": "-", "class": "c_blue subtraction" },
+                { "id": "btn_0", "letters": "0", "class": "number" },
+                { "id": "btn_00", "letters": "00", "class": "number" },
+                { "id": "btn_dot", "letters": ".", "class": "number" },
+                { "id": "btn_pct", "letters": "%", "class": "c_blue percent" },
+                { "id": "btn_eq", "letters": "=", "class": "c_yellow equal" },
+            ]
+        </init>
+
+        <title>$T.get('HVML Calculator')</title>
+
+        <update on="$TIMERS" to="unite">
+            [
+                { "id" : "clock", "interval" : 1000, "active" : "yes" },
+            ]
+        </update>
+
+        <link rel="stylesheet" type="text/css" href="assets/calculator.css" />
+        <style>
+            #expression {
+                /*margin-left: 200px;*/
+                padding-right: 10px;
+                width: 1000px;
+                height: 50px;
+                font-size: 25px;font-family: "微软雅黑";color: #666666;
+                text-align: right;border: 1px white;
+                border: double 1px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="calculator">
+
+            <div id="c_title">
+                <h2 id="c_title">$T.get('HVML Calculator')
+                    <small>$T.get('Current Time: ')<span id="clock">$DATETIME.time_prt()</span></small>
+                </h2>
+                <observe on="$TIMERS" for="expired:clock">
+                    <update on="#clock" at="textContent" with="$DATETIME.time_prt()" />
+                </observe>
+            </div>
+
+            <div id="c_text">
+                <input type="text" id="expression" value="" readonly="readonly" />
+            </div>
+
+            <div id="c_value">
+                <archetype name="button">
+                    <li class="$?.class" id="$?.id" value="$?.letters" hvml-events="click">$?.letters</li>
+                </archetype>
+
+                <ul>
+                    <iterate on="$buttons">
+                        <update on="$@" to="append" with="$button" />
+                        <except type="NoData" raw>
+                            <p>Bad data!</p>
+                        </except>
+                    </iterate>
+                </ul>
+            </div>
+            <observe on="#btn_0" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_0').attr('value'))" />
+            </observe>
+            <observe on="#btn_1" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_1').attr('value'))" />
+            </observe>
+            <observe on="#btn_2" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_2').attr('value'))" />
+            </observe>
+            <observe on="#btn_3" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_3').attr('value'))" />
+            </observe>
+            <observe on="#btn_4" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_4').attr('value'))" />
+            </observe>
+            <observe on="#btn_5" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_5').attr('value'))" />
+            </observe>
+            <observe on="#btn_6" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_6').attr('value'))" />
+            </observe>
+            <observe on="#btn_7" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_7').attr('value'))" />
+            </observe>
+            <observe on="#btn_8" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_8').attr('value'))" />
+            </observe>
+            <observe on="#btn_9" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_9').attr('value'))" />
+            </observe>
+            <observe on="#btn_00" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_00').attr('value'))" />
+            </observe>
+            <observe on="#btn_plus" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_plus').attr('value'))" />
+            </observe>
+            <observe on="#btn_sub" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_sub').attr('value'))" />
+            </observe>
+            <observe on="#btn_mul" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_mul').attr('value'))" />
+            </observe>
+            <observe on="#btn_div" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_div').attr('value'))" />
+            </observe>
+            <observe on="#btn_dot" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_dot').attr('value'))" />
+            </observe>
+            <observe on="#btn_pct" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_pct').attr('value'))" />
+            </observe>
+            <observe on="#btn_clear" for="click">
+                <update on="#expression" at="attr.value" with = "" />
+            </observe>
+            <observe on="#btn_back" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.substr($DOC.query('#expression').attr('value'), 0, $MATH.sub($STR.nr_chars($DOC.query('#expression').attr('value')), 1))" />
+            </observe>
+            <observe on="#btn_eq" for="click">
+                <choose on="$MATH.eval($DOC.query('#expression').attr('value'))">
+                    <update on="#expression" at="attr.value" with="$?" />
+                    <catch for='*'>
+                        <update on="#expression" at="attr.value" with="ERR" />
+                    </catch>
+                </choose>
+            </observe>
+        </div>
+    </body>
+
+</hvml>
+
