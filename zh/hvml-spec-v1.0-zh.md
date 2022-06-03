@@ -3333,11 +3333,15 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 #### 2.5.10) `define` 和 `include` 标签
 
-`define` 标签用于定义一组可重用的操作组。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作，或者通过 `call` 标签调用这组操作并期待返回一个结果，其效果类似于其他编程语言的闭包（closure）。在 HVML 中，我们将 `define` 标签定义的一组操作简称为操作组（operation set）。
+`define` 标签用于定义一组可重用的操作组。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作，或者通过 `call` 标签调用这组操作并期待返回一个结果。在 HVML 中，我们将 `define` 标签定义的一组操作简称为操作组（operation set）。
 
 `define` 元素通过 `as` 属性定义操作组的名称，其中包含了一组动作标签定义的子元素。`include` 元素将切换执行上下文到 `with` 属性指定的操作组中，`on` 属性传入的参数将作为结果数据（即 `$?` 变量的值）供操作组使用，而 `include` 元素通过内容定义的数据，将成为 `$^` 变量的值。如：
 
 ```html
+        <archetype name="dir_entry">
+            <item class="$?.type">$?.name</item>
+        </archetype>
+
         <define as="fillDirEntries">
             <choose on="$?" by="CLASS: CDirEntries">
                 <iterate on="$?" by="RANGE: FROM 0">
@@ -3371,9 +3375,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 上面的 HVML 代码，在初始化 `listbox` 时，以及用户点击了 `#goRoot` 或者 `#goHome` 按钮时，使用了 `$fillDirEntries` 定义的操作组。注意，在使用 `include` 标签的三处地方，通过 `on` 属性传入了不同的参数，并使用 `in` 属性指定了目标文档位置。
 
-以上代码，若不使用 `define` 和 `include`，则相当于：
+本质上，`include` 元素完成的工作相当于复制指定的操作组到当前的位置执行，我们称之为就地执行（execute in place）。比如以上代码，若不使用 `define` 和 `include`，则相当于：
 
 ```html
+        <archetype name="dir_entry">
+            <item class="$?.type">$?.name</item>
+        </archetype>
+
         <listbox id="entries">
             <choose on="/home" in="#entries">
                 <choose on="$?" by="CLASS: CDirEntries">
@@ -3412,6 +3420,50 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                     </iterate>
                 </choose>
             </choose>
+        </observe>
+```
+
+`include` 就地执行操作组的效果类似于其他编程语言的闭包（closure）。比如以上的 `fillDirEntries` 操作组中使用了 `dir_entry` 这个模板，而该模板只定义了一次。但如果稍作修改，就可以在包含操作组之前，通过定义一个新的名为 `dir_entry` 的模板，即可覆盖默认的 `dir_entry` 模板。请注意其中的注释：
+
+```html
+        <archetype name="dir_entry">
+            <item class="$?.type">Name: $?.name</item>
+        </archetype>
+
+        <define as="fillDirEntries">
+            <choose on="$?" by="CLASS: CDirEntries">
+                <iterate on="$?" by="RANGE: FROM 0">
+                    <update on="$@" to="append" with="$dir_entry" />
+                </iterate>
+            </choose>
+        </define>
+
+        <listbox id="entries">
+            <!-- 定义一个新的 `dir_entry` 模板，该模板在文件名之前显示 `/home/`（路径）前缀 -->
+            <archetype name="dir_entry">
+                <item class="$?.type">/home/$?.name</item>
+            </archetype>
+
+            <!-- `fillDirEntries` 操作组将使用上面这个新的 `dir_entry` 模板 -->
+            <include with="$fillDirEntries" on="/home" in="#entries" />
+        </listbox>
+
+        <button id="goRoot">
+            Root
+        </button>
+
+        <button id="goHome">
+            Home
+        </button>
+
+        <observe on="#goRoot" for="click">
+            <clear on="#entries" />
+            <include with="$fillDirEntries" on="/" in="#entries" />
+        </observe>
+
+        <observe on="#goHome" for="click">
+            <clear on="#entries" />
+            <include with="$fillDirEntries" on="/home" in="#entries" />
         </observe>
 ```
 
@@ -3562,6 +3614,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 - `$?`：事件的负载（payload）数据；若被观察的是变量，则就是被观察变量对应的数据。
 - `$!`：在用户数据中，预定义两个临时变量，用于表示完整的事件名称和事件源，名称分别为 `_eventName` 和 `_eventSource`。
 - `$@`：`observe` 的 `in` 属性定义的目标文档位置，或者 `observe` 继承自其的目标文档位置。
+
+当我们在 `observe` 元素中使用 `with` 属性定义要引用的操作组时，HVML 程序的执行效果等同于 `include` 动作元素的效果，也就是说，应做就地执行而不是调用由 `with` 属性指定的操作组。
 
 当我们观察一项数据时，我们可获得该数据产生的事件或者数据本身上的变化。比如，我们可监听来自长连接的事件，异步请求的返回值，或者获得长连接上调用远程过程后返回的结果，亦可用来监听某些内部数据产生的事件，比如 `$TIMERS` 数据产生的定时器到期事件，等等。
 
@@ -6522,6 +6576,19 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
+
+#### OR) 220701
+
+##### OR.1) 调整对 `include` 标签的描述
+
+主要修订内容如下：
+
+1. 补充针对就地执行的描述。
+
+相关章节：
+
+- [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
+
 
 #### RC4) 220601
 
