@@ -143,10 +143,12 @@
         </observe>
 
         <observe on="#theBtnEqual" for="click">
-            <choose on="$STREAM.open('pipe:///usr/bin/bc?OPT0=quiet')">
+            <choose on="$STREAM.open('pipe:///usr/bin/bc?ARG1=--quiet')">
                 <choose on={{ $?.writelines(['scale=$myResult.scale', $myResult.exp]) && $?.writeeof() && $?.readlines(1) }}>
                     <update on="#theExpression" at="textContent" with="$?" />
                 </choose>
+
+                <choose on="$STREAM.close($?)" />
 
                 <catch for='*'>
                     <update on="#theExpression" at="textContent" with="ERROR" />
