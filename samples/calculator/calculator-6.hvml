@@ -129,14 +129,25 @@
         </observe>
 
         <observe on="#theBtnToggleSign" for="click">
+            <test with="$myResult.exp">
+                <update on="$myResult" at="exp" with="$STR.join('-(', $myResult.exp, ')')" />
+                <update on="#theExpression" at="textContent" with="$myResult.exp" />
+            </test>
         </observe>
 
         <observe on="#theBtnPercent" for="click">
+            <test with="$myResult.exp">
+                <update on="$myResult" at="exp" with="$STR.join('(', $myResult.exp, ')/100')" />
+                <update on="#theExpression" at="textContent" with="$myResult.exp" />
+            </test>
         </observe>
 
         <observe on="#theBtnEqual" for="click">
-            <choose on="$MATH.eval($myResult.exp)">
-                <update on="#theExpression" at="textContent" with="$?" />
+            <choose on="$STREAM.open('pipe:///usr/bin/bc?OPT0=quiet')">
+                <choose on={{ $?.writelines(['scale=$myResult.scale', $myResult.exp]) && $?.writeeof() && $?.readlines(1) }}>
+                    <update on="#theExpression" at="textContent" with="$?" />
+                </choose>
+
                 <catch for='*'>
                     <update on="#theExpression" at="textContent" with="ERROR" />
                 </catch>
