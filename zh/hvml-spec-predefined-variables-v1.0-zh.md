@@ -55,7 +55,7 @@ Language: Chinese
    + [3.2) `SESSION`](#32-session)
       * [3.2.1) `app` 方法](#321-app-方法)
       * [3.2.2) `runner` 方法](#322-runner-方法)
-      * [3.2.3) `user_obj` 静态属性](#323-user_obj-静态属性)
+      * [3.2.3) `myobj` 静态属性](#323-myobj-静态属性)
       * [3.2.4) `user` 方法](#324-user-方法)
    + [3.3) `DATETIME`](#33-datetime)
       * [3.3.1) `time_prt` 方法](#331-time_prt-方法)
@@ -1105,15 +1105,15 @@ $SESSION.runner
     // string: 'hello'
 ```
 
-#### 3.2.3) `user_obj` 静态属性
+#### 3.2.3) `myobj` 静态属性
 
-`user_obj` 是 `SESSION` 的一个静态属性，用来定义用户自定义键值对，初始为一个空对象。程序可使用 `update` 元素设置其内容：
+`myobj` 是 `SESSION` 的一个静态属性，用来定义用户自定义键值对，初始为一个空对象。程序可使用 `update` 元素设置其内容：
 
 ```html
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
-        <update on="$SESSION.user_obj" to="displace">
+        <update on="$SESSION.myobj" to="displace">
             {
                 "AUTHOR": "Vincent Wei",
             }
@@ -1129,7 +1129,7 @@ $SESSION.runner
 由于 `$SESSION` 是会话级变量，故而可以在当前会话的另一个 HVML 协程中观察该数据上的变化：
 
 ```html
-    <observe on="$SESSION.user_obj" for="change:AUTHOR" in="#theStatusBar">
+    <observe on="$SESSION.myobj" for="change:AUTHOR" in="#theStatusBar">
         ...
     </observe>
 ```
@@ -1157,7 +1157,7 @@ $SESSION.user(!
 
 该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。注意，传入键值为 `undefined` 会执行移除对应键值对的操作。当移除一个并不存在的键值对时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `false`。
 
-_注意_，`user` 的获取器和设置器本质上访问的是 `$SESSION` 的 `user_obj` 静态属性。
+_注意_，`user` 的获取器和设置器本质上访问的是 `$SESSION` 的 `myobj` 静态属性。
 
 **异常**
 
@@ -4404,7 +4404,7 @@ $URL.encode(
         <string |bsequence $data: the string or the byte sequence to be encoded.>
         [, <'rfc1738 | rfc3986' $enc_type = 'rfc1738':
           - 'rfc1738': encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.
-          - 'rfc3986':  encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).
+          - 'rfc3986': encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).
         ]
 ) string
 ```
@@ -5058,8 +5058,10 @@ $STREAM.stdout.writebytes(bx48564d4c3A202d5f2e)
 
 // 将字符串作为字节序列写入
 $STREAM.stdout.writebytes("write string")
-    // longint: 12L FIXME: 字符串作为字节序列写入时，应该写入结尾的空字符。
+    // longint: 13L
 ```
+
+注意：字符串作为字节序列写入时，应该写入结尾的空字符。
 
 #### 3.11.12) 流实体的 `seek` 方法
 
@@ -5125,14 +5127,13 @@ du -BM hvml-spec-v1.0-zh.md
     pipe:///usr/bin/du?ARG0=du&ARG1=-BM&ARG2=hvml-spec-v1.0-zh.md
 ```
 
-注意各个参数的值，应经过 URI 编码。
-
+注意各个参数的值，应经过符合 RFC3986 规范的 URI 编码。
 
 **额外方法**
 
 `pipe` 流实体应该额外提供 `writeeof` 方法，用于父进程一侧向管道写入 EOF（文件尾）字符。此操作相当于关闭子进程的标准输入（stdin），大部分交互式命令行程序在遇到标准输入被关闭时，会选择退出。
 
-`pipe` 流实体应该额外提供 `wait` 方法，用于等待子进程退出。该方法在子进程退出后返回，返回值可表明退出状态以及退出值。如果在子进程退出后调用读取或者 `wait` 方法，则应该产生相应的异常。
+`pipe` 流实体应该额外提供 `status` 方法，用于检查子进程的状态。该方法返回一个数组，第一个成员是表示状态的字符串，第二个成员给出状态对应的值。
 
 ## 4) 可选动态变量
 
@@ -6739,7 +6740,8 @@ $FILE.bin.tail($file, -5)
 #### OR) 220701
 
 1. 描述了如何通过 `pipe` URI 的查询组件传递命令行参数。
-1. 描述了 `pipe` 流实体的额外方法。
+1. 描述了 `pipe` 流实体的额外方法：`writeeof` 和 `status`。
+1. `$SESSION` 的 `user_obj` 静态属性名称调整为 `myobj`。
 
 #### RC3) 220601
 
