@@ -55,7 +55,7 @@ Language: Chinese
    + [3.2) `SESSION`](#32-session)
       * [3.2.1) `app` 方法](#321-app-方法)
       * [3.2.2) `runner` 方法](#322-runner-方法)
-      * [3.2.3) `myobj` 静态属性](#323-myobj-静态属性)
+      * [3.2.3) `myObj` 静态属性](#323-myObj-静态属性)
       * [3.2.4) `user` 方法](#324-user-方法)
    + [3.3) `DATETIME`](#33-datetime)
       * [3.3.1) `time_prt` 方法](#331-time_prt-方法)
@@ -276,8 +276,8 @@ Language: Chinese
 - 解释器（interpreter），指解析并运行 HVML 程序的计算机软件。
 - 渲染器（renderer），指渲染 HVML 协程生成的目标文档并和用户交互的计算机软件。
 - 会话（session），指一个解释器实例的上下文信息；每个解释器实例对应一个 HVML 会话，每个 HVML 会话运行多个 HVML 协程，对应渲染器中的多个窗口。
-- 静态属性（static property），指一个对象上键值为普通数据的属性，其键值不是动态值。
-- 方法（method），指一个对象上键值为动态值的属性。
+- 静态属性（static property），指一个对象上键值为普通数据的属性，其键值不是动态值。我们通常使用小写开头的驼峰命名法命名这类属性，如 `myObj`。
+- 方法（method），指一个对象上键值为动态值的属性。我们通常使用下划线连接的全小写命名法，如 `starts_with`。
 - 获取器（getter），指一个方法的获取器。调用获取器返回该方法的动态属性值。
 - 设置器（setter），指一个方法的设置器。调用特定方法的设置器，将完成对应属性的设置工作。
 
@@ -1105,15 +1105,15 @@ $SESSION.runner
     // string: 'hello'
 ```
 
-#### 3.2.3) `myobj` 静态属性
+#### 3.2.3) `myObj` 静态属性
 
-`myobj` 是 `SESSION` 的一个静态属性，用来定义用户自定义键值对，初始为一个空对象。程序可使用 `update` 元素设置其内容：
+`myObj` 是 `SESSION` 的一个静态属性，用来定义用户自定义键值对，初始为一个空对象。程序可使用 `update` 元素设置其内容：
 
 ```html
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
-        <update on="$SESSION.myobj" to="displace">
+        <update on="$SESSION.myObj" to="displace">
             {
                 "AUTHOR": "Vincent Wei",
             }
@@ -1129,7 +1129,7 @@ $SESSION.runner
 由于 `$SESSION` 是会话级变量，故而可以在当前会话的另一个 HVML 协程中观察该数据上的变化：
 
 ```html
-    <observe on="$SESSION.myobj" for="change:AUTHOR" in="#theStatusBar">
+    <observe on="$SESSION.myObj" for="change:AUTHOR" in="#theStatusBar">
         ...
     </observe>
 ```
@@ -1157,7 +1157,7 @@ $SESSION.user(!
 
 该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。注意，传入键值为 `undefined` 会执行移除对应键值对的操作。当移除一个并不存在的键值对时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `false`。
 
-_注意_，`user` 的获取器和设置器本质上访问的是 `$SESSION` 的 `myobj` 静态属性。
+_注意_，`user` 的获取器和设置器本质上访问的是 `$SESSION` 的 `myObj` 静态属性。
 
 **异常**
 
@@ -6741,7 +6741,7 @@ $FILE.bin.tail($file, -5)
 
 1. 描述了如何通过 `pipe` URI 的查询组件传递命令行参数。
 1. 描述了 `pipe` 流实体的额外方法：`writeeof` 和 `status`。
-1. `$SESSION` 的 `user_obj` 静态属性名称调整为 `myobj`。
+1. `$SESSION` 的 `user_obj` 静态属性名称调整为 `myObj`。
 
 #### RC3) 220601
 
