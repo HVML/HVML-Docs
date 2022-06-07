@@ -55,7 +55,7 @@ Language: Chinese
    + [3.2) `SESSION`](#32-session)
       * [3.2.1) `app` 方法](#321-app-方法)
       * [3.2.2) `runner` 方法](#322-runner-方法)
-      * [3.2.3) `myObj` 静态属性](#323-myObj-静态属性)
+      * [3.2.3) `myObj` 静态属性](#323-myobj-静态属性)
       * [3.2.4) `user` 方法](#324-user-方法)
    + [3.3) `DATETIME`](#33-datetime)
       * [3.3.1) `time_prt` 方法](#331-time_prt-方法)
