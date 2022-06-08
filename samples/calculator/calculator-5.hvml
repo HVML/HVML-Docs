@@ -7,25 +7,25 @@
 
         <init as="buttons">
             [
-                { "id": "btn_7", "letters": "7", "class": "number" },
-                { "id": "btn_8", "letters": "8", "class": "number" },
-                { "id": "btn_9", "letters": "9", "class": "number" },
+                { "id": "btn_7", "letters": "7", "class": "btn number" },
+                { "id": "btn_8", "letters": "8", "class": "btn number" },
+                { "id": "btn_9", "letters": "9", "class": "btn number" },
                 { "id": "btn_back", "letters": "←", "class": "c_blue backspace" },
                 { "id": "btn_clear", "letters": "C", "class": "c_blue clear" },
-                { "id": "btn_4", "letters": "4", "class": "number" },
-                { "id": "btn_5", "letters": "5", "class": "number" },
-                { "id": "btn_6", "letters": "6", "class": "number" },
-                { "id": "btn_mul", "letters": "×", "class": "c_blue multiplication" },
-                { "id": "btn_div", "letters": "÷", "class": "c_blue division" },
-                { "id": "btn_1", "letters": "1", "class": "number" },
-                { "id": "btn_2", "letters": "2", "class": "number" },
-                { "id": "btn_3", "letters": "3", "class": "number" },
-                { "id": "btn_plus", "letters": "+", "class": "c_blue plus" },
-                { "id": "btn_sub", "letters": "-", "class": "c_blue subtraction" },
-                { "id": "btn_0", "letters": "0", "class": "number" },
-                { "id": "btn_00", "letters": "00", "class": "number" },
-                { "id": "btn_dot", "letters": ".", "class": "number" },
-                { "id": "btn_pct", "letters": "%", "class": "c_blue percent" },
+                { "id": "btn_4", "letters": "4", "class": "btn number" },
+                { "id": "btn_5", "letters": "5", "class": "btn number" },
+                { "id": "btn_6", "letters": "6", "class": "btn number" },
+                { "id": "btn_mul", "letters": "x", "class": "btn c_blue multiplication" },
+                { "id": "btn_div", "letters": "÷", "class": "btn c_blue division" },
+                { "id": "btn_1", "letters": "1", "class": "btn number" },
+                { "id": "btn_2", "letters": "2", "class": "btn number" },
+                { "id": "btn_3", "letters": "3", "class": "btn number" },
+                { "id": "btn_plus", "letters": "+", "class": "btn c_blue plus" },
+                { "id": "btn_sub", "letters": "-", "class": "btn c_blue subtraction" },
+                { "id": "btn_0", "letters": "0", "class": "btn number" },
+                { "id": "btn_00", "letters": "00", "class": "btn number" },
+                { "id": "btn_dot", "letters": ".", "class": "btn number" },
+                { "id": "btn_pct", "letters": "%", "class": "btn c_blue percent" },
                 { "id": "btn_eq", "letters": "=", "class": "c_yellow equal" },
             ]
         </init>
@@ -59,6 +59,7 @@
                 <h2 id="c_title">$T.get('HVML Calculator')
                     <small>$T.get('Current Time: ')<span id="clock">$DATETIME.time_prt()</span></small>
                 </h2>
+
                 <observe on="$TIMERS" for="expired:clock">
                     <update on="#clock" at="textContent" with="$DATETIME.time_prt()" />
                 </observe>
@@ -82,57 +83,6 @@
                     </iterate>
                 </ul>
             </div>
-            <observe on="#btn_0" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_0').attr('value'))" />
-            </observe>
-            <observe on="#btn_1" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_1').attr('value'))" />
-            </observe>
-            <observe on="#btn_2" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_2').attr('value'))" />
-            </observe>
-            <observe on="#btn_3" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_3').attr('value'))" />
-            </observe>
-            <observe on="#btn_4" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_4').attr('value'))" />
-            </observe>
-            <observe on="#btn_5" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_5').attr('value'))" />
-            </observe>
-            <observe on="#btn_6" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_6').attr('value'))" />
-            </observe>
-            <observe on="#btn_7" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_7').attr('value'))" />
-            </observe>
-            <observe on="#btn_8" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_8').attr('value'))" />
-            </observe>
-            <observe on="#btn_9" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_9').attr('value'))" />
-            </observe>
-            <observe on="#btn_00" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_00').attr('value'))" />
-            </observe>
-            <observe on="#btn_plus" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_plus').attr('value'))" />
-            </observe>
-            <observe on="#btn_sub" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_sub').attr('value'))" />
-            </observe>
-            <observe on="#btn_mul" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_mul').attr('value'))" />
-            </observe>
-            <observe on="#btn_div" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_div').attr('value'))" />
-            </observe>
-            <observe on="#btn_dot" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_dot').attr('value'))" />
-            </observe>
-            <observe on="#btn_pct" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $DOC.query('#btn_pct').attr('value'))" />
-            </observe>
             <observe on="#btn_clear" for="click">
                 <update on="#expression" at="attr.value" with = "" />
             </observe>
@@ -146,6 +96,9 @@
                         <update on="#expression" at="attr.value" with="ERR" />
                     </catch>
                 </choose>
+            </observe>
+            <observe on=".btn" for="click">
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $?.targetValue)" />
             </observe>
         </div>
     </body>
