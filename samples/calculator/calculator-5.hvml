@@ -7,26 +7,26 @@
 
         <init as="buttons">
             [
-                { "id": "btn_7", "letters": "7", "class": "btn number" },
-                { "id": "btn_8", "letters": "8", "class": "btn number" },
-                { "id": "btn_9", "letters": "9", "class": "btn number" },
-                { "id": "btn_back", "letters": "←", "class": "c_blue backspace" },
-                { "id": "btn_clear", "letters": "C", "class": "c_blue clear" },
-                { "id": "btn_4", "letters": "4", "class": "btn number" },
-                { "id": "btn_5", "letters": "5", "class": "btn number" },
-                { "id": "btn_6", "letters": "6", "class": "btn number" },
-                { "id": "btn_mul", "letters": "x", "class": "btn c_blue multiplication" },
-                { "id": "btn_div", "letters": "÷", "class": "btn c_blue division" },
-                { "id": "btn_1", "letters": "1", "class": "btn number" },
-                { "id": "btn_2", "letters": "2", "class": "btn number" },
-                { "id": "btn_3", "letters": "3", "class": "btn number" },
-                { "id": "btn_plus", "letters": "+", "class": "btn c_blue plus" },
-                { "id": "btn_sub", "letters": "-", "class": "btn c_blue subtraction" },
-                { "id": "btn_0", "letters": "0", "class": "btn number" },
-                { "id": "btn_00", "letters": "00", "class": "btn number" },
-                { "id": "btn_dot", "letters": ".", "class": "btn number" },
-                { "id": "btn_pct", "letters": "%", "class": "btn c_blue percent" },
-                { "id": "btn_eq", "letters": "=", "class": "c_yellow equal" },
+                { "idx":"0", "id": "btn_7", "letters": "7", "class": "btn number" },
+                { "idx":"1", "id": "btn_8", "letters": "8", "class": "btn number" },
+                { "idx":"2", "id": "btn_9", "letters": "9", "class": "btn number" },
+                { "idx":"3", "id": "btn_back", "letters": "←", "class": "c_blue backspace" },
+                { "idx":"4", "id": "btn_clear", "letters": "C", "class": "c_blue clear" },
+                { "idx":"5", "id": "btn_4", "letters": "4", "class": "btn number" },
+                { "idx":"6", "id": "btn_5", "letters": "5", "class": "btn number" },
+                { "idx":"7", "id": "btn_6", "letters": "6", "class": "btn number" },
+                { "idx":"8", "id": "btn_mul", "letters": "x", "class": "btn c_blue multiplication" },
+                { "idx":"9", "id": "btn_div", "letters": "÷", "class": "btn c_blue division" },
+                { "idx":"10", "id": "btn_1", "letters": "1", "class": "btn number" },
+                { "idx":"11", "id": "btn_2", "letters": "2", "class": "btn number" },
+                { "idx":"12", "id": "btn_3", "letters": "3", "class": "btn number" },
+                { "idx":"13", "id": "btn_plus", "letters": "+", "class": "btn c_blue plus" },
+                { "idx":"14", "id": "btn_sub", "letters": "-", "class": "btn c_blue subtraction" },
+                { "idx":"15", "id": "btn_0", "letters": "0", "class": "btn number" },
+                { "idx":"16", "id": "btn_00", "letters": "00", "class": "btn number" },
+                { "idx":"17", "id": "btn_dot", "letters": ".", "class": "btn number" },
+                { "idx":"18", "id": "btn_pct", "letters": "%", "class": "btn c_blue percent" },
+                { "idx":"19", "id": "btn_eq", "letters": "=", "class": "c_yellow equal" },
             ]
         </init>
 
@@ -71,7 +71,7 @@
 
             <div id="c_value">
                 <archetype name="button">
-                    <li class="$?.class" id="$?.id" value="$?.letters" hvml-events="click">$?.letters</li>
+                    <li class="$?.class" id="$?.id" value="$?.idx" hvml-events="click">$?.letters</li>
                 </archetype>
 
                 <ul>
@@ -98,7 +98,7 @@
                 </choose>
             </observe>
             <observe on=".btn" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $?.targetValue)" />
+                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $buttons[$?.targetValue].letters)" />
             </observe>
         </div>
     </body>
