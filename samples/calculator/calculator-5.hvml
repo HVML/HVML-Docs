@@ -5,28 +5,35 @@
 
         <update on="$T.map" from="assets/{$SYSTEM.locale}.json" to="merge" />
 
+        <init as="myResult">
+            {
+                exp: "",
+                expr: "",
+            }
+        </init>
+
         <init as="buttons">
             [
-                { "idx":"0", "id": "btn_7", "letters": "7", "class": "btn number" },
-                { "idx":"1", "id": "btn_8", "letters": "8", "class": "btn number" },
-                { "idx":"2", "id": "btn_9", "letters": "9", "class": "btn number" },
-                { "idx":"3", "id": "btn_back", "letters": "←", "class": "c_blue backspace" },
-                { "idx":"4", "id": "btn_clear", "letters": "C", "class": "c_blue clear" },
-                { "idx":"5", "id": "btn_4", "letters": "4", "class": "btn number" },
-                { "idx":"6", "id": "btn_5", "letters": "5", "class": "btn number" },
-                { "idx":"7", "id": "btn_6", "letters": "6", "class": "btn number" },
-                { "idx":"8", "id": "btn_mul", "letters": "x", "class": "btn c_blue multiplication" },
-                { "idx":"9", "id": "btn_div", "letters": "÷", "class": "btn c_blue division" },
-                { "idx":"10", "id": "btn_1", "letters": "1", "class": "btn number" },
-                { "idx":"11", "id": "btn_2", "letters": "2", "class": "btn number" },
-                { "idx":"12", "id": "btn_3", "letters": "3", "class": "btn number" },
-                { "idx":"13", "id": "btn_plus", "letters": "+", "class": "btn c_blue plus" },
-                { "idx":"14", "id": "btn_sub", "letters": "-", "class": "btn c_blue subtraction" },
-                { "idx":"15", "id": "btn_0", "letters": "0", "class": "btn number" },
-                { "idx":"16", "id": "btn_00", "letters": "00", "class": "btn number" },
-                { "idx":"17", "id": "btn_dot", "letters": ".", "class": "btn number" },
-                { "idx":"18", "id": "btn_pct", "letters": "%", "class": "btn c_blue percent" },
-                { "idx":"19", "id": "btn_eq", "letters": "=", "class": "c_yellow equal" },
+                { "idx":"0",    "id": "btn_7",      "exp": "7",    "letters": "7",     "class": "btn number"                   },
+                { "idx":"1",    "id": "btn_8",      "exp": "8",    "letters": "8",     "class": "btn number"                   },
+                { "idx":"2",    "id": "btn_9",      "exp": "9",    "letters": "9",     "class": "btn number"                   },
+                { "idx":"3",    "id": "btn_back",   "exp": "←",    "letters": "←",     "class": "c_blue backspace"             },
+                { "idx":"4",    "id": "btn_clear",  "exp": "C",    "letters": "C",     "class": "c_blue clear"                 },
+                { "idx":"5",    "id": "btn_4",      "exp": "4",    "letters": "4",     "class": "btn number"                   },
+                { "idx":"6",    "id": "btn_5",      "exp": "5",    "letters": "5",     "class": "btn number"                   },
+                { "idx":"7",    "id": "btn_6",      "exp": "6",    "letters": "6",     "class": "btn number"                   },
+                { "idx":"8",    "id": "btn_mul",    "exp": "*",    "letters": "x",     "class": "btn c_blue multiplication"    },
+                { "idx":"9",    "id": "btn_div",    "exp": "/",    "letters": "÷",     "class": "btn c_blue division"          },
+                { "idx":"10",   "id": "btn_1",      "exp": "1",    "letters": "1",     "class": "btn number"                   },
+                { "idx":"11",   "id": "btn_2",      "exp": "2",    "letters": "2",     "class": "btn number"                   },
+                { "idx":"12",   "id": "btn_3",      "exp": "3",    "letters": "3",     "class": "btn number"                   },
+                { "idx":"13",   "id": "btn_plus",   "exp": "+",    "letters": "+",     "class": "btn c_blue plus"              },
+                { "idx":"14",   "id": "btn_sub",    "exp": "-",    "letters": "-",     "class": "btn c_blue subtraction"       },
+                { "idx":"15",   "id": "btn_0",      "exp": "0",    "letters": "0",     "class": "btn number"                   },
+                { "idx":"16",   "id": "btn_00",     "exp": "00",   "letters": "00",    "class": "btn number"                   },
+                { "idx":"17",   "id": "btn_dot",    "exp": ".",    "letters": ".",     "class": "btn number"                   },
+                { "idx":"18",   "id": "btn_pct",    "exp": "%",    "letters": "%",     "class": "btn c_blue percent"           },
+                { "idx":"19",   "id": "btn_eq",     "exp": "=",    "letters": "=",     "class": "c_yellow equal"               },
             ]
         </init>
 
@@ -66,7 +73,7 @@
             </div>
 
             <div id="c_text">
-                <input type="text" id="expression" value="" readonly="readonly" />
+                <input type="text" id="expression" value="0" readonly="readonly" />
             </div>
 
             <div id="c_value">
@@ -83,22 +90,38 @@
                     </iterate>
                 </ul>
             </div>
+
             <observe on="#btn_clear" for="click">
-                <update on="#expression" at="attr.value" with = "" />
+                <update on="$myResult" at=".exp" with="" />
+                <update on="$myResult" at=".expr" with="" />
+                <update on="#expression" at="attr.value" with="0" />
             </observe>
+
             <observe on="#btn_back" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.substr($DOC.query('#expression').attr('value'), 0, $MATH.sub($STR.nr_chars($DOC.query('#expression').attr('value')), 1))" />
+                <update on="$myResult" at=".exp" with="$STR.substr($myResult.exp, 0, -1)" />
+                <update on="$myResult" at=".expr" with="$STR.substr($myResult.expr, 0, -1)" />
+                <test with="$myResult.exp">
+                    <update on="#expression" at="attr.value" with="$myResult.exp" />
+
+                    <differ>
+                        <update on="#expression" at="attr.value" with="0" />
+                    </differ>
+                </test>
             </observe>
+
             <observe on="#btn_eq" for="click">
-                <choose on="$MATH.eval($DOC.query('#expression').attr('value'))">
+                <choose on="$MATH.eval($myResult.expr)">
                     <update on="#expression" at="attr.value" with="$?" />
                     <catch for='*'>
                         <update on="#expression" at="attr.value" with="ERR" />
                     </catch>
                 </choose>
             </observe>
+
             <observe on=".btn" for="click">
-                <update on="#expression" at="attr.value" with = "$STR.join($DOC.query('#expression').attr('value'), $buttons[$?.targetValue].letters)" />
+                <update on="$myResult" at=".exp" with="$STR.join($myResult.exp, $buttons[$?.targetValue].letters)" />
+                <update on="$myResult" at=".expr" with="$STR.join($myResult.expr, $buttons[$?.targetValue].exp)" />
+                <update on="#expression" at="attr.value" with="$myResult.exp" />
             </observe>
         </div>
     </body>
