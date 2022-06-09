@@ -45,31 +45,32 @@
             {
                 scale: 10,
                 exp: "",
+                expr: "",
             }
         </init>
 
         <init as="buttons">
             [
-                { id: "theBtn7",            text: "7",              class: "btn-outline-primary btn-for-input", idx:"0" },
-                { id: "theBtn8",            text: "8",              class: "btn-outline-primary btn-for-input", idx:"1" },
-                { id: "theBtn9",            text: "9",              class: "btn-outline-primary btn-for-input", idx:"2" },
-                { id: "theBtnBack",         text: "$T.get('←')",    class: "btn-outline-warning", idx:"3" },
-                { id: "theBtnClear",        text: "$T.get('C')",    class: "btn-outline-danger", idx:"4" },
-                { id: "theBtn4",            text: "4",              class: "btn-outline-primary btn-for-input", idx:"5" },
-                { id: "theBtn5",            text: "5",              class: "btn-outline-primary btn-for-input", idx:"6" },
-                { id: "theBtn6",            text: "6",              class: "btn-outline-primary btn-for-input", idx:"7" },
-                { id: "theBtnTimes",        text: "×",              class: "btn-outline-success btn-for-input", idx:"8" },
-                { id: "theBtnDivision",     text: "÷",              class: "btn-outline-success btn-for-input", idx:"9" },
-                { id: "theBtn1",            text: "1",              class: "btn-outline-primary btn-for-input", idx:"10" },
-                { id: "theBtn2",            text: "2",              class: "btn-outline-primary btn-for-input", idx:"11" },
-                { id: "theBtn3",            text: "3",              class: "btn-outline-primary btn-for-input", idx:"12" },
-                { id: "theBtnPlus",         text: "+",              class: "btn-outline-success btn-for-input", idx:"13" },
-                { id: "theBtnMinus",        text: "-",              class: "btn-outline-success btn-for-input", idx:"14" },
-                { id: "theBtn0",            text: "0",              class: "btn-outline-primary btn-for-input", idx:"15" },
-                { id: "theBtnDot",          text: ".",              class: "btn-outline-primary btn-for-input", idx:"16" },
-                { id: "theBtnToggleSign",   text: "±",              class: "btn-outline-success", idx:"17" },
-                { id: "theBtnPercent",      text: "%",              class: "btn-outline-success", idx:"18" },
-                { id: "theBtnEqual",        text: "=",              class: "btn-success", idx:"19" },
+                { id: "theBtn7",            exp: "7",    text: "7",              class: "btn-outline-primary btn-for-input", idx: "0" },
+                { id: "theBtn8",            exp: "8",    text: "8",              class: "btn-outline-primary btn-for-input", idx: "1" },
+                { id: "theBtn9",            exp: "9",    text: "9",              class: "btn-outline-primary btn-for-input", idx: "2" },
+                { id: "theBtnBack",         exp: "←",    text: "$T.get('←')",    class: "btn-outline-warning",               idx: "3" },
+                { id: "theBtnClear",        exp: "C",    text: "$T.get('C')",    class: "btn-outline-danger",                idx: "4" },
+                { id: "theBtn4",            exp: "4",    text: "4",              class: "btn-outline-primary btn-for-input", idx: "5" },
+                { id: "theBtn5",            exp: "5",    text: "5",              class: "btn-outline-primary btn-for-input", idx: "6" },
+                { id: "theBtn6",            exp: "6",    text: "6",              class: "btn-outline-primary btn-for-input", idx: "7" },
+                { id: "theBtnTimes",        exp: "*",    text: "×",              class: "btn-outline-success btn-for-input", idx: "8" },
+                { id: "theBtnDivision",     exp: "/",    text: "÷",              class: "btn-outline-success btn-for-input", idx: "9" },
+                { id: "theBtn1",            exp: "1",    text: "1",              class: "btn-outline-primary btn-for-input", idx: "10" },
+                { id: "theBtn2",            exp: "2",    text: "2",              class: "btn-outline-primary btn-for-input", idx: "11" },
+                { id: "theBtn3",            exp: "3",    text: "3",              class: "btn-outline-primary btn-for-input", idx: "12" },
+                { id: "theBtnPlus",         exp: "+",    text: "+",              class: "btn-outline-success btn-for-input", idx: "13" },
+                { id: "theBtnMinus",        exp: "-",    text: "-",              class: "btn-outline-success btn-for-input", idx: "14" },
+                { id: "theBtn0",            exp: "0",    text: "0",              class: "btn-outline-primary btn-for-input", idx: "15" },
+                { id: "theBtnDot",          exp: ".",    text: ".",              class: "btn-outline-primary btn-for-input", idx: "16" },
+                { id: "theBtnToggleSign",   exp: "±",    text: "±",              class: "btn-outline-success",               idx: "17" },
+                { id: "theBtnPercent",      exp: "%",    text: "%",              class: "btn-outline-success",               idx: "18" },
+                { id: "theBtnEqual",        exp: "=",    text: "=",              class: "btn-success",                       idx: "19" },
             ]
         </init>
 
@@ -92,19 +93,10 @@
                 </div>
             </archetype>
 
-            <!--
-                <iterate on=0 onlyif=$L.lt($0<,4) with=$MATH.add($0<,1) nosetotail>
-                    <div class="row mb-3">
-                        <iterate on="$buttons" by="RANGE: FROM $2?">
-                            <update on="$@" to="append" with="$button" />
-                        </iterate>
-                    </div>
-                </iterate>
-            -->
             <div class="border border-3 pt-3">
                 <iterate on=0 onlyif=$L.lt($0<,4) with=$MATH.add($0<,1) nosetotail>
                     <div class="row mb-3">
-                        <iterate on="$buttons" by="RANGE: FROM  $MATH.sub($MATH.mul($2?, 5), 5) TO $MATH.sub($MATH.mul($2?, 5), 1)">
+                        <iterate on="$buttons" by="RANGE: FROM  $MATH.mul($MATH.sub($2?, 1), 5) TO $MATH.sub($MATH.mul($2?, 5), 1)">
                             <update on="$@" to="append" with="$button" />
                         </iterate>
                     </div>
@@ -113,17 +105,19 @@
         </div>
 
         <observe on="#theScaleRange" for="change">
-            <update on="$myResult" at="scale" with="$EJSON.numberify($?.tragetValue)" />
-            <update on="#theScale" at="textContent" with="$?.tragetValue" />
+            <update on="$myResult" at=".scale" with="$EJSON.numberify($?.targetValue)" />
+            <update on="#theScale" at="textContent" with="$?.targetValue" />
         </observe>
 
         <observe on=".btn-for-input" for="click">
             <update on="$myResult" at=".exp" with="$STR.join($myResult.exp, $buttons[$?.targetValue].text)" />
+            <update on="$myResult" at=".expr" with="$STR.join($myResult.expr, $buttons[$?.targetValue].exp)" />
             <update on="#theExpression" at="textContent" with="$myResult.exp" />
         </observe>
 
         <observe on="#theBtnBack" for="click">
             <update on="$myResult" at=".exp" with="$STR.substr($myResult.exp, 0, -1)" />
+            <update on="$myResult" at=".expr" with="$STR.substr($myResult.expr, 0, -1)" />
 
             <test with="$myResult.exp">
                 <update on="#theExpression" at="textContent" with="$myResult.exp" />
@@ -136,12 +130,14 @@
 
         <observe on="#theBtnClear" for="click">
             <update on="$myResult" at=".exp" with="" />
+            <update on="$myResult" at=".expr" with="" />
             <update on="#theExpression" at="textContent" with="0" />
         </observe>
 
         <observe on="#theBtnToggleSign" for="click">
             <test with="$myResult.exp">
                 <update on="$myResult" at=".exp" with="$STR.join('-(', $myResult.exp, ')')" />
+                <update on="$myResult" at=".expr" with="$STR.join('-(', $myResult.expr, ')')" />
                 <update on="#theExpression" at="textContent" with="$myResult.exp" />
             </test>
         </observe>
@@ -149,13 +145,14 @@
         <observe on="#theBtnPercent" for="click">
             <test with="$myResult.exp">
                 <update on="$myResult" at=".exp" with="$STR.join('(', $myResult.exp, ')/100')" />
+                <update on="$myResult" at=".expr" with="$STR.join('(', $myResult.expr, ')/100')" />
                 <update on="#theExpression" at="textContent" with="$myResult.exp" />
             </test>
         </observe>
 
         <observe on="#theBtnEqual" for="click">
             <choose on="$STREAM.open('pipe:///usr/bin/bc?ARG1=--quiet')">
-                <choose on={{ $?.writelines(['scale=$myResult.scale', $myResult.exp]) && $?.writeeof() && $?.readlines(1) }}>
+                <choose on={{ $?.writelines(["scale=$myResult.scale", $myResult.expr]) && $?.writeeof() && $?.readlines(1) }}>
                     <update on="#theExpression" at="textContent" with="$?[0]" />
                 </choose>
 
