@@ -48,6 +48,32 @@
             }
         </init>
 
+        <init as="buttons">
+            [
+                { id: "theBtn7",            text: "7",              class: "btn-outline-primary btn-for-input", idx:"0" },
+                { id: "theBtn8",            text: "8",              class: "btn-outline-primary btn-for-input", idx:"1" },
+                { id: "theBtn9",            text: "9",              class: "btn-outline-primary btn-for-input", idx:"2" },
+                { id: "theBtnBack",         text: "$T.get('←')",    class: "btn-outline-warning", idx:"3" },
+                { id: "theBtnClear",        text: "$T.get('C')",    class: "btn-outline-danger", idx:"4" },
+                { id: "theBtn4",            text: "4",              class: "btn-outline-primary btn-for-input", idx:"5" },
+                { id: "theBtn5",            text: "5",              class: "btn-outline-primary btn-for-input", idx:"6" },
+                { id: "theBtn6",            text: "6",              class: "btn-outline-primary btn-for-input", idx:"7" },
+                { id: "theBtnTimes",        text: "×",              class: "btn-outline-success btn-for-input", idx:"8" },
+                { id: "theBtnDivision",     text: "÷",              class: "btn-outline-success btn-for-input", idx:"9" },
+                { id: "theBtn1",            text: "1",              class: "btn-outline-primary btn-for-input", idx:"10" },
+                { id: "theBtn2",            text: "2",              class: "btn-outline-primary btn-for-input", idx:"11" },
+                { id: "theBtn3",            text: "3",              class: "btn-outline-primary btn-for-input", idx:"12" },
+                { id: "theBtnPlus",         text: "+",              class: "btn-outline-success btn-for-input", idx:"13" },
+                { id: "theBtnMinus",        text: "-",              class: "btn-outline-success btn-for-input", idx:"14" },
+                { id: "theBtn0",            text: "0",              class: "btn-outline-primary btn-for-input", idx:"15" },
+                { id: "theBtnDot",          text: ".",              class: "btn-outline-primary btn-for-input", idx:"16" },
+                { id: "theBtnToggleSign",   text: "±",              class: "btn-outline-success", idx:"17" },
+                { id: "theBtnPercent",      text: "%",              class: "btn-outline-success", idx:"18" },
+                { id: "theBtnEqual",        text: "=",              class: "btn-success", idx:"19" },
+            ]
+        </init>
+
+
         <div class="container">
             <div class="mb-3">
                 <label id="resultScale" class="form-label">$T.get('The result scale (')<strong id="theScale">$myResult.scale</strong>$T.get(' decimals)')</label>
@@ -58,35 +84,10 @@
                 <p id="theExpression" class="fs-1 text-nowrap fw-bold overflow-scroll text-end">0</p>
             </div>
 
-            <init as="buttons" temporarily >
-                [
-                    { id: "theBtn7",            text: "7",              class: "btn-outline-primary btn-for-input" },
-                    { id: "theBtn8",            text: "8",              class: "btn-outline-primary btn-for-input" },
-                    { id: "theBtn9",            text: "9",              class: "btn-outline-primary btn-for-input" },
-                    { id: "theBtnBack",         text: "$T.get('←')",    class: "btn-outline-warning" },
-                    { id: "theBtnClear",        text: "$T.get('C')",    class: "btn-outline-danger" },
-                    { id: "theBtn4",            text: "4",              class: "btn-outline-primary btn-for-input" },
-                    { id: "theBtn5",            text: "5",              class: "btn-outline-primary btn-for-input" },
-                    { id: "theBtn6",            text: "6",              class: "btn-outline-primary btn-for-input" },
-                    { id: "theBtnTimes",        text: "×",              class: "btn-outline-success btn-for-input" },
-                    { id: "theBtnDivision",     text: "÷",              class: "btn-outline-success btn-for-input" },
-                    { id: "theBtn1",            text: "1",              class: "btn-outline-primary btn-for-input" },
-                    { id: "theBtn2",            text: "2",              class: "btn-outline-primary btn-for-input" },
-                    { id: "theBtn3",            text: "3",              class: "btn-outline-primary btn-for-input" },
-                    { id: "theBtnPlus",         text: "+",              class: "btn-outline-success btn-for-input" },
-                    { id: "theBtnMinus",        text: "-",              class: "btn-outline-success btn-for-input" },
-                    { id: "theBtn0",            text: "0",              class: "btn-outline-primary btn-for-input" },
-                    { id: "theBtnDot",          text: ".",              class: "btn-outline-primary btn-for-input" },
-                    { id: "theBtnToggleSign",   text: "±",              class: "btn-outline-success" },
-                    { id: "theBtnPercent",      text: "%",              class: "btn-outline-success" },
-                    { id: "theBtnEqual",        text: "=",              class: "btn-success" },
-                ]
-            </init>
-
             <archetype name="button">
                 <div class="col">
                     <div class="d-grid gap-2 col-10 mx-auto">
-                        <button class="btn $?.class" id="$?.id" hvml-events="click" type="button">$?.text</button>
+                        <button class="btn $?.class" id="$?.id" value="$?.idx" hvml-events="click" type="button">$?.text</button>
                     </div>
                 </div>
             </archetype>
@@ -117,10 +118,12 @@
         </observe>
 
         <observe on=".btn-for-input" for="click">
+            <update on="$myResult" at=".exp" with="$STR.join($myResult.exp, $buttons[$?.targetValue].text)" />
+            <update on="#theExpression" at="textContent" with="$myResult.exp" />
         </observe>
 
         <observe on="#theBtnBack" for="click">
-            <update on="$myResult" at="exp" with="$STR.substr($myResult.exp, 0, -1)" />
+            <update on="$myResult" at=".exp" with="$STR.substr($myResult.exp, 0, -1)" />
 
             <test with="$myResult.exp">
                 <update on="#theExpression" at="textContent" with="$myResult.exp" />
@@ -132,20 +135,20 @@
         </observe>
 
         <observe on="#theBtnClear" for="click">
-            <update on="$myResult" at="exp" with="" />
+            <update on="$myResult" at=".exp" with="" />
             <update on="#theExpression" at="textContent" with="0" />
         </observe>
 
         <observe on="#theBtnToggleSign" for="click">
             <test with="$myResult.exp">
-                <update on="$myResult" at="exp" with="$STR.join('-(', $myResult.exp, ')')" />
+                <update on="$myResult" at=".exp" with="$STR.join('-(', $myResult.exp, ')')" />
                 <update on="#theExpression" at="textContent" with="$myResult.exp" />
             </test>
         </observe>
 
         <observe on="#theBtnPercent" for="click">
             <test with="$myResult.exp">
-                <update on="$myResult" at="exp" with="$STR.join('(', $myResult.exp, ')/100')" />
+                <update on="$myResult" at=".exp" with="$STR.join('(', $myResult.exp, ')/100')" />
                 <update on="#theExpression" at="textContent" with="$myResult.exp" />
             </test>
         </observe>
@@ -153,7 +156,7 @@
         <observe on="#theBtnEqual" for="click">
             <choose on="$STREAM.open('pipe:///usr/bin/bc?ARG1=--quiet')">
                 <choose on={{ $?.writelines(['scale=$myResult.scale', $myResult.exp]) && $?.writeeof() && $?.readlines(1) }}>
-                    <update on="#theExpression" at="textContent" with="$?" />
+                    <update on="#theExpression" at="textContent" with="$?[0]" />
                 </choose>
 
                 <choose on="$STREAM.close($?)" />
