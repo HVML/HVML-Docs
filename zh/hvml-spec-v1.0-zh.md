@@ -151,6 +151,8 @@ Language: Chinese
    + [附.1) 修订记录](#附1-修订记录)
       * [OR) 220701](#or-220701)
          - [OR.1) 调整对 `include` 标签的描述](#or1-调整对-include-标签的描述)
+         - [OR.2) 调整 `rquest` 标签](#or2-调整-rquest-标签)
+         - [OR.3) 调整 `load` 和 `call` 标签](#or3-调整-load-和-call-标签)
       * [RC4) 220601](#rc4-220601)
          - [RC4.1) 重构`基本原理`一节](#rc41-重构基本原理一节)
          - [RC4.2) MIME 类型和数据](#rc42-mime-类型和数据)
@@ -631,7 +633,7 @@ Language: Chinese
         </choose>
 
         <observe on=".avatar" for="click">
-            <load from="user.hvml" as="userProfile" within="user" async />
+            <load from="user.hvml" as="userProfile" onto="user" async />
                 {'id': $@.attr[data-value]}
             </load>
         </observe>
@@ -1001,7 +1003,13 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 1. `$HVML.max_embedded_levels`：获取或设置 HVML 程序在解析或者处理嵌套的容器数据时，允许的最大嵌套层级。
 1. `$HVML.timeout`：获取或设置获取外部数据时的超时值。
 
-另外，我们还可以通过 `$HVML` 对象观察当前协程渲染状态的变化，从而优雅地处理渲染器页面被用户关闭或者渲染器丢失等的情形。
+另外，我们还可以通过 `$HVML` 对象观察一些全局事件以及当前协程渲染状态的变化，从而优雅地处理渲染器页面被用户关闭或者渲染器丢失等的情形。这些事件有：
+
+- `idle`：当前 HVML 程序在事件轮询阶段未获得任何事件。
+- `rdrState:closed`：协程对应的渲染器页面被用户强制关闭。
+- `rdrState:lost`：协程所在会话丢失渲染器的连接。
+- `rdrState:suppressed`：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
+- `rdrState:reload`：当前协程的文档内容重新装载到渲染器，渲染器状态调整为 `regular`。
 
 `$HVML` 变量本质上是一个必要的协程级动态对象。
 
@@ -1646,7 +1654,8 @@ HVML 定义的异常如下：
    - `SQL: ` 表示在结构化数据上执行 SQL 查询，从而实现复杂的选择、迭代以及归约操作。
    - 其他针对字符串和数值的内建执行器，见本文档 [2.6.1) 内建执行器](#261-内建执行器) 小节。
 - `against`：在 `init` 元素中用于指定集合的唯一性键值，在 `sort` 元素中用于指定排序依据。
-- `within`：在 `load` 元素中用于指定渲染器的页面名称；在 `call` 元素中用于指定并发调用时新协程所在目标行者的名称。
+- `within`：在 `load` 元素和 `call` 元素中用于指定目标行者的名称。
+- `onto`：在 `load` 元素中用于指定渲染器的页面名称。
 - `onlyif` 和 `while`：在 `iterate` 中，用于定义在产生迭代结果前和产生迭代结果后判断是否继续迭代的条件表达式。
 
 #### 2.1.13) 副词属性
@@ -1757,7 +1766,8 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 一个正确解析并装载的 HVML 程序以协程的形式运行。HVML 定义协程有如下几种运行状态：
 
 - 就绪（ready）：表示正等待执行。
-- 运行（running）：表示正在运行。
+- 运行（running）：表示正在运行，亦即首轮执行阶段。
+- 观察（observing）：表示正在观察，亦即事件循环阶段。
 - 退出（exited）：隐式退出或者主动退出；自然执行完所有的动作元素，且没有注册任何观察者；或者执行 `exit` 动作元素主动退出。
 - 被终止（terminated）：由于错误或者未捕获的异常而终止。
 - 被暂停（stopped）：休眠等待特定事件的到来，比如子协程退出，休眠到期，异步IO请求返回数据，调试器继续执行等。
@@ -3920,7 +3930,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 也就是说，`call` 和 `include` 的主要区别在于如何处理操作组中 `return` 元素定义的返回值：前者关心返回值，后者不关心返回值。在实践当中，`include` 一般用于操作目标文档，`call` 一般用作获取一个结果数据。
 
-我们可以在 `call` 元素中使用副词属性 `concurrently`，这样我们可在另一个行者中执行指定的操作组。由于每个 HVML 行者对应有自己的虚拟机实例，而不同的虚拟机实例通常运行在操作系统的不同线程或者不同进程当中，故而我们可通过这种方式实现基于线程或进程的并发处理，我们称之为 `并发调用（call concurrently）`。此时，如果使用 `asynchronously` 副词属性，`call` 元素将在创建新的协程（以及可能的新虚拟机实例）之后立即返回，然后使用 `observe` 观察其结果，否则将等待并发调用的结果返回。如：
+我们可以在 `call` 元素中使用 `within` 属性指定不同于当前行者的名称。此时，我们可在另一个行者中执行指定的操作组。由于每个 HVML 行者对应有自己的虚拟机实例，而不同的虚拟机实例通常运行在操作系统的不同线程或者不同进程当中，故而我们可通过这种方式实现基于线程或进程的并发处理。当我们在当前行者使用 `concurrently` 属性，则会在当前虚拟机实例中创建一个新的协程来执行指定的操作组。我们将上述两种调用行为称之为 `并发调用（call concurrently）`。此时，如果使用 `asynchronously` 副词属性，`call` 元素将在创建新的协程（以及可能的新虚拟机实例）之后立即返回，然后使用 `observe` 观察其结果，否则将等待并发调用的结果返回。如：
 
 ```html
     <define as="collectAllDirEntriesRecursively">
@@ -3968,7 +3978,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 注意上述副词属性的使用：
 
-- 不使用 `concurrently` 时，`call` 元素的行为和普通的函数调用没有任何差别，且忽略 `asynchronously` 或 `synchronously` 副词属性。
+- 当我们在 `within` 属性中指定了不同于当前行者的行者名称时，必定会执行并发调用；而如果未指定 `within` 属性或者在 `within` 属性中指定了 `_self` 时，如果不使用 `concurrently` 副词属性，则 `call` 元素的行为和普通的函数调用没有任何差别，且忽略 `asynchronously` 或 `synchronously` 副词属性。
 - 使用 `concurrently` 时，`call` 元素将在指定的行者中创建新的协程执行指定的操作组，默认会同步等待执行的结果，相当于指定了 `synchronously` 副词属性；如果指定 `asynchronously` 副词属性，则会立即返回，此时，需要使用一个变量来观察并发调用相关的事件。
 
 并发调用一个操作组时，解释器在指定的行者中创建一个新的协程来执行操作组定义的 vDOM 子树。解释器可参考如下步骤做相应的实现：
@@ -3997,7 +4007,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                 '...'
             </request>
 
-            <load from="new_user.hvml" within="user@main" asynchronously >
+            <load from="new_user.hvml" onto="user@main" asynchronously >
                 $^
             </load>
         </define>
@@ -4358,34 +4368,68 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     <request on="#myInput" to="call:ELEMENT.disabled=true" with=0 noreturn />
 ```
 
-我们使用 `request` 标签，也可以向另一个协程发送一个请求，此时，我们指定 `on` 属性值为 `$HVML`，`to` 属性值为协程标识符。之后，在目标协程中，在 `$HVML` 上观察 `runnerEvent` 事件，即可获得该请求的数据，并通过 `_eventSource` 临时变量获得该事件的来源协程标识符，其中包含有行者名称（注：协程标识符的格式始终为 `<runnerName>/<coroutineId>`）。
+我们使用 `request` 标签，可以向另一个协程发送一个请求，此时，我们指定 `on` 属性值为目标协程的标识符，`to` 属性值为目标协程中的操作组名称，`with` 属性或者元素内容为请求的参数。通过 `request` 标签提供的这一功能，我们可以让目标协程在它的执行上下文环境中，调用指定的操作组，然后返回结果给调用者。由于该请求可以跨行者发送，故而相当于执行远程过程调用。
 
-如下面的代码所示，两个运行在不同虚拟机上的协程互相发送 Ping Pong 事件。
+通常，用于完成请求的目标协程应该进入到事件轮询阶段，才能响应来自其他协程的请求并在执行对应的操作组后返回结果给发起请求的协程。
+
+如下面的代码所示，一个协程定义了一个操作组 `echo`，将传入的参数原样返回：
 
 ```html
-    <define as="newRunner">
+<!DOCTYPE hvml>
+<hvml>
+  <doby>
 
-        <observe on="$HVML" for="runnerEvent">
-            <request on="$HVML" to="$_eventSource" >
-                "pong"
-            </request>
-        </observe>
-
+    <define as="echo">
+        <return with="$STR.join($name,': ',$?)" />
     </define>
 
-    <call as="myRunner" on="$newRunner" with="..." within="myRunner"
-            concurrently asynchronously>
-        <request on="$HVML" to="$?" >
-            "ping"
-        </request>
-    </call>
+    <div id="scope1">
+        <init as="name" with="foo" />
+        <div id="scope2">
+            <init as="name" with="bar" />
+        </div>
+    </div>
 
-    <observe on="$HVML" for="runnerEvent">
-        <request on="$HVML" to="$_eventSource" >
-            "ping"
-        </request>
+    <observe on="$HVML" for="idle">
+        <sleep for="10ms" />
     </observe>
+
+  </body>
+</hvml>
 ```
+
+假如保存该 HVML 程序的文件名为 `myrepeater.hvml`。我们在另一个协程中通过 `load` 元素在指定的行者中启动这个协程。当该协程收到目标协程的 `observing` 事件后，向目标协程发送 `echo` 请求：
+
+```
+    <load as="myRepeater" from="myrepeater.hvml" within="myRunner"
+            concurrently asynchronously>
+        <observe on="$myRepeater" for="corState:observing">
+            <request on="$myRepeater" to="echo" at="#scope1" >
+                "How are you."
+            </request>
+        </observe>
+    </call>
+```
+
+目标协程收到来自调用者的请求后，将构造一个虚拟栈帧调用指定的操作组。此时，可利用 `request` 元素的 `at` 属性指定元素标识符来确定静态变量的命名范围，从而构成调用操作组的完整闭包。比如目标协程在收到上面的请求之后，实际执行效果相当于：
+
+```
+    <define as="echo">
+        <return with="$?" />
+    </define>
+
+    <div id="scope1">
+        <init as="name" with="foo" />
+        <call on="$echo" with="How are you." >
+        </call>
+
+        ...
+    </div>
+```
+
+得到的结果应该为：`foo: How are you.`。而如果 `request` 元素中的 `at` 属性值为 `#scope2`，则结果应该为：`bar: How areyou.`。
+
+注意，在未指定 `at` 属性时，在 `body` 元素范围内调用该操作组。
 
 我们使用 `request` 标签，还可以向渲染器发送一个请求，比如新建窗口组，移除一个窗口等。此时，不指定 `on` 属性值。至于具体要执行的请求操作以及参数，通过 `to` 属性和 `with` 属性传递，其含义和要求和具体的渲染器协议有关。比如在使用 PURCMC 协议时，我们可以向渲染器发送如下的请求来添加窗口组：
 
@@ -4397,7 +4441,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 #### 2.5.17) `load` 和 `exit` 标签
 
-`load` 标签定义一个执行装载程序操作的动作元素，该元素装载并在当前虚拟机实例的一个新协程中执行 HVML 程序。由 `load` 装载的新 HVML 代码或者程序实例，称为子协程（child coroutine），执行 `load` 元素动作的协程称为父协程（parent coroutine）。
+`load` 标签定义一个执行装载程序操作的动作元素，该元素在指定的行者（虚拟机实例）中启动一个新的协程装载并执行指定的 HVML 程序。由 `load` 装载的新 HVML 代码或者程序实例，称为子协程（child coroutine），执行 `load` 元素动作的协程称为父协程（parent coroutine）。
 
 `load` 元素用来装载并执行一个由 `on` 属性指定的 HVML 代码（字符串）或者 `from` 属性指定的新 HVML 程序，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递给子协程。如：
 
@@ -4415,7 +4459,8 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 - `via`：若 `from` 属性指定了一个合法的 URL 字符串，则该属性指定从外部资源中装载 HVML 程序时的请求方法，默认为 `GET`。
 - `as`：当我们异步装载新的 HVML 程序时，我们使用该属性将新的 HVML 协程和一个变量名称绑定，从而可观察该协程的状态。
 - `at`：和 `init` 类似，在 `load` 标签中使用 `as` 属性命名一个 HVML 程序时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
-- `within`：指定用于渲染目标文档的渲染器页面名称，使用 `<page_name>[@<group_name>[:<page_type>]]` 这样的形式，用于指定页面名称、所在页面组和页面类型（`tab` 和 `panel`）。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
+- `within` 属性指定行者名称。不指定该属性或者使用保留字 `_self` 作为行者名称，表示当前行者。和 `call` 元素不同，`load` 元素指定的行者必须已经存在，也就是说，`load` 元素不会主动创建新的行者。
+- `onto`：指定用于渲染目标文档的渲染器页面名称，使用 `<page_name>[@<group_name>[:<page_type>]]` 这样的形式，用于指定页面名称、所在页面组和页面类型（`tab` 和 `panel`）。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
    - `_self`：表示当前页面。在当前页面中渲染新的 HVML 程序，意味着当前页面对应的 HVML 协程将被压制（suppressed），页面中的文档内容将被新 HVML 协程覆盖。使用该页面名称时，将忽略页面分组以及页面类型信息。
    - `_active`：表示当前 HVML 程序对应分组中的当前活动页面；当前活动页面对应的 HVML 协程将被压制。
    - `_first`：表示当前 HVML 程序对应分组中的第一个页面；第一个页面对应的 HVML 协程将被压制。
@@ -4428,7 +4473,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 1. 同时使用字符串内容和外部资源时，若装载和解析外部资源的过程中出现异常，且设置有 `silently` 属性时，则转而使用字符串内容作为 HVML 程序；若一切正常，则使用外部资源。也就是说，字符串内容作为垫底（fallback）程序使用。
 1. 若字符串内容或者外部资源均不可用，则抛出不可忽略异常 `NoData`。
 
-除保留名称之外，`within` 属性指定的页面名称必须符合本规范定义的 `page_name` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法的页面名称样例：
+除保留名称之外，`onto` 属性指定的页面名称必须符合本规范定义的 `page_name` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法的页面名称样例：
 
 - `user`
 - `user@Users`
@@ -4451,7 +4496,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
         }
     </init>
 
-    <load on="$request.hvml" within="hello@main:tab" >
+    <load on="$request.hvml" onto="hello@main:tab" >
         $request
     </load>
 ```
@@ -4479,7 +4524,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 假定我们使用 `load` 标签装载一个用来创建新用户的 HVML 程序，如果使用同步装载方式：
 
 ```html
-    <load from="new_user.hvml" within="newUser@mainBody" synchronously>
+    <load from="new_user.hvml" onto="newUser@mainBody" synchronously>
         <update on="#the-user-list" to="append" with="$user_item" />
 
         <!-- 对子协程非正常退出的情形，通过捕获相应的异常进行处理 -->
@@ -4491,7 +4536,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 如果使用异步装载方式，则需要 `as` 属性并使用 `observe` 标签创建一个观察者，用于观察子协程的 `corState:exited`（退出）事件：
 
 ```html
-    <load from="new_user.hvml" as="newUser" within="newUser@mainBody" asynchronously>
+    <load from="new_user.hvml" as="newUser" onto="newUser@mainBody" asynchronously>
         <observe on="$newUser" for="corState:exited">
             <update on="#the-user-list" to="append" with="$user_item" />
         </observe>
@@ -4514,14 +4559,14 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 上面的代码，使用 `exit` 标签的 `with` 属性定义了一项数据，解释器应将该数据作为当前 HVML 协程的返回数据处理。
 
-当我们在一个已有的渲染器页面（比如将 `within` 属性值设置为 `_self`）中渲染子协程的文档内容时，该页面对应的协程之渲染状态将因为渲染器页面被占用而被设置为被压制（suppressed）。如下面的代码：
+当我们在当前行者中创建子协程，并在一个已有的渲染器页面（比如将 `onto` 属性值设置为 `_self`）中渲染子协程的文档内容时，该页面对应的协程之渲染状态将因为渲染器页面被占用而被设置为被压制（suppressed）。如下面的代码：
 
 ```html
 <hvml>
     <body>
         ...
 
-        <load from="#errorPage" within="_self" asynchronously>
+        <load from="#errorPage" onto="_self" asynchronously>
 
         ...
     </body>
@@ -4535,7 +4580,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 上述代码中的 `load` 元素对应如下几个步骤：
 
 1. 装载 HVML 程序（或者克隆当前程序的 vDOM）并在新建的新子协程中执行该程序，其入口为 `#errorPage` 本体。
-1. 子协程将使用其父协程使用的渲染器页面（由 `within` 属性值 `_self` 指定），故父协程将被解释器压制（渲染状态为 `suppressed`）。由于使用了 `asynchronously` 副词属性，故父协程会继续运行，但不会和渲染器做任何数据交换。
+1. 子协程将使用其父协程使用的渲染器页面（由 `onto` 属性值 `_self` 指定），故父协程将被解释器压制（渲染状态为 `suppressed`）。由于使用了 `asynchronously` 副词属性，故父协程会继续运行，但不会和渲染器做任何数据交换。
 1. 子协程清空父协程使用的渲染器页面并装载自己的目标文档内容。
 1. 子协程终止运行后释放渲染器页面，解释器设置父协程的渲染状态为 `regular`，并使用其完整的目标文档内容覆盖渲染器页面内容。
 1. 父协程恢复正常的渲染器数据交换。
@@ -6591,6 +6636,31 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 - [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
 
+##### OR.2) 调整 `rquest` 标签
+
+主要修订内容如下：
+
+1. 调整了使用 `request` 标签向其他协程发送请求的处理模型。
+
+相关章节：
+
+- [2.5.16) `request` 标签](#2516-request-标签)
+
+##### OR.3) 调整 `load` 和 `call` 标签
+
+主要修订内容如下：
+
+1. `load` 支持在指定的行者中创建新的协程来执行指定的 HVML 程序。
+1. `load` 和 `call` 标签统一使用 `within` 属性指定新的行者名称。
+1. `load` 标签中，使用新增的 `onto` 属性指定渲染器页面信息。
+1. `$HVML` 预定义变量上的 `idle` 以及渲染器事件。
+
+相关章节：
+
+- [2.1.12) 介词属性](#2112-介词属性)
+- [2.5.12) `call` 和 `return` 标签](#2512-call-和-return-标签)
+- [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
+- [2.1.6.3) `$HVML`](#2163-hvml)
 
 #### RC4) 220601
 
