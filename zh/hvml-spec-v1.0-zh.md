@@ -2232,7 +2232,7 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
     regular_expression: A regular expression conforms to POSIX.1-2001.
 
     event_name: <literal_variable_token>[':'<literal_alnum_token>['/'<literal_alnum_token>]]
-    page_name: <literal_variable_token>'@'<literal_alnum_token>[':' < 'tab' | 'panel' >]
+    page_name: <literal_variable_token>'@'<literal_alnum_token>
 
     coroutine_identifier: <cross_host_coroutine_identifier> | <local_host_coroutine_identifier>
     cross_host_coroutine_identifier: '//' <host_name> '/' <app_name> '/' <runner_name> '/' <coroutine_token>
@@ -4542,7 +4542,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 - `as`：当我们异步装载新的 HVML 程序时，我们使用该属性将新的 HVML 协程和一个变量名称绑定，从而可观察该协程的状态。
 - `at`：和 `init` 类似，在 `load` 标签中使用 `as` 属性命名一个 HVML 程序时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
 - `within` 属性指定行者名称。不指定该属性或者使用保留字 `_self` 作为行者名称，表示当前行者。和 `call` 元素不同，`load` 元素指定的行者必须已经存在，也就是说，`load` 元素不会主动创建新的行者。
-- `onto`：指定用于渲染目标文档的渲染器页面名称，使用 `<page_name>[@<group_name>[:<page_type>]]` 这样的形式，用于指定页面名称、所在页面组和页面类型（`tab` 和 `panel`）。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
+- `onto`：指定用于渲染目标文档的渲染器页面名称，使用 `<page_name>[@<group_name>]` 这样的形式，用于指定页面名称和所在页面组。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
    - `_self`：表示当前页面。在当前页面中渲染新的 HVML 程序，意味着当前页面对应的 HVML 协程将被压制（suppressed），页面中的文档内容将被新 HVML 协程覆盖。使用该页面名称时，将忽略页面分组以及页面类型信息。
    - `_active`：表示当前 HVML 程序对应分组中的当前活动页面；当前活动页面对应的 HVML 协程将被压制。
    - `_first`：表示当前 HVML 程序对应分组中的第一个页面；第一个页面对应的 HVML 协程将被压制。
