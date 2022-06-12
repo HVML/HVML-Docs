@@ -72,7 +72,7 @@ Language: Chinese
       * [2.1.18) MIME 类型](#2118-mime-类型)
       * [2.1.19) HVML URI 图式](#2119-hvml-uri-图式)
          - [2.1.19.1) `hvml` 图式](#21191-hvml-图式)
-         - [2.1.19.2) `hvml+rdr` 图式](#21192-hvmlrdr-图式)
+         - [2.1.19.2) `hvml+cor` 图式](#21192-hvmlcor-图式)
    + [2.2) 规则、表达式及方法的描述语法](#22-规则表达式及方法的描述语法)
       * [2.2.1) 规则描述语法](#221-规则描述语法)
       * [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法)
@@ -1896,35 +1896,17 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 #### 2.1.19) HVML URI 图式
 
-我们引入如下 URI 图式（Schema）用于 HVML 应用框架：
+我们引入 `hvml` 和 `hvml` 两种 URI 图式（Schema）用于 HVML 应用框架。
 
 ##### 2.1.19.1) `hvml` 图式
-
-该图式主要用于定义一个 HVML 协程的标识符，和 `ftp` 图式类似，完整的 `hvml` 图式包括主机名、应用名、行者名和协程令牌（coroutine token），如：
-
-`hvml://localhost/appName/myRunner/3cc8f9e2ff74f872f09518ffd3db6f29`
-
-在 HVML 程序中，我们可以通过 `request` 等动作元素和当前应用的其他协程交互。为方便处理，我们无需指定主机部分，且使用 `-` 指代当前应用，即可引用当前主机、当前应用中属于指定行者的协程，如：
-
-`/-/otherRunner/3cc8f9e2ff74f872f09518ffd3db6f2a`
-
-类似地，我们也可以使用 `-` 指代当前行者，即可引用当前主机、当前应用、当前行者中的指定协程，如：
-
-`/-/-/3cc8f9e2ff74f872f09518ffd3db6f2a`
-
-当我们需要引用另外一个主机上的协程时，可使用如下的写法：
-
-`//otherhost/otherAppName/otherRunner/3cc8f9e2ff74f872f09518ffd3db6f2b`
-
-##### 2.1.19.2) `hvml+rdr` 图式
 
 该图式主要用于 HVML 渲染器，有两种用途：
 
 1) 定义 HVML 渲染器中的页面
 
-和 `http` 图式类似，完整的 `hvml+rdr` 图式包括主机名、应用名、行者名、页面组名称和页面名称以及查询（query）组件，如：
+和 `http` 图式类似，完整的 `hvml` 图式包括主机名、应用名、行者名、页面组名称和页面名称以及查询（query）组件，如：
 
-`hvml+rdr://<host_name>/<app_name>/<runner_name/<page_group_name>/<page_name>/?irId=<the_initial_request_identifier>`
+`hvml://<host_name>/<app_name>/<runner_name/<page_group_name>/<page_name>/?irId=<the_initial_request_identifier>`
 
 如其中各部分的名称所暗示，其中包含了一个 HVML 渲染器页面的如下信息：
 
@@ -1937,21 +1919,39 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 2) 定义渲染器可直接访问的公共资源
 
-此时，`hvml+rdr` 用来表述一个应用对外提供的公共资源，比如图片和样式文件。此时，我们使用保留的 `_builtin` 来指代行者名，使用 `-` 指代页面组名，然后使用页面名称部分指代正在定位的资源相对于公共资源存储位置的路径：
+此时，`hvml` 用来表述一个应用对外提供的公共资源，比如图片和样式文件。此时，我们使用保留的 `_builtin` 来指代行者名，使用 `-` 指代页面组名，然后使用页面名称部分指代正在定位的资源相对于公共资源存储位置的路径：
 
-`hvml+rdr://<host_name>/<app_name>/_builtiin/-/<path_to_asset>[?query][#fragment]`
+`hvml://<host_name>/<app_name>/_builtiin/-/<path_to_asset>[?query][#fragment]`
 
 比如：
 
-`hvml+rdr://localhost/cn.fmsoft.hvml.test/_builtin/-/assets/logo.png`
+`hvml://localhost/cn.fmsoft.hvml.test/_builtin/-/assets/logo.png`
 
-通常，当主机名为 `localhost` 时，渲染器将尝试在本机装载指定的应用公共资源。对于来自远程主机的情形，渲染器可将 `hvml+rdr` 翻译为等价的 `http` 或 `https` 图式。比如：
+通常，当主机名为 `localhost` 时，渲染器将尝试在本机装载指定的应用公共资源。对于来自远程主机的情形，渲染器可将 `hvml` 翻译为等价的 `http` 或 `https` 图式。比如：
 
 `http://other.host.com/cn.fmsoft.hvml.test/_builtin/-/assets/logo.png`
 
 类似地，我们可使用 `_renderer` 保留名称指代渲染器本身，从而可通过如下 URI 从渲染器的内建资源中装载资源，如，
 
-`hvml+rdr://localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css`
+`hvml://localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css`
+
+##### 2.1.19.2) `hvml+cor` 图式
+
+该图式主要用于定义一个运行中的 HVML 协程，和 `ftp` 图式类似，完整的 `hvml+cor` 图式包括主机名、应用名、行者名和协程令牌（coroutine token），如：
+
+`hvml+cor://localhost/appName/myRunner/3cc8f9e2ff74f872f09518ffd3db6f29`
+
+在 HVML 程序中，我们可以通过 `request` 等动作元素和当前应用的其他协程交互。方便起见，我们无需指定图式名称和主机名称，并可使用 `-` 指代当前应用，这样就可以如下简写方式引用当前主机、当前应用中属于指定行者的协程，如：
+
+`/-/otherRunner/3cc8f9e2ff74f872f09518ffd3db6f2a`
+
+类似地，我们也可以使用 `-` 指代当前行者，即可引用当前主机、当前应用、当前行者中的指定协程，如：
+
+`/-/-/3cc8f9e2ff74f872f09518ffd3db6f2a`
+
+当我们需要引用另外一个主机上的协程时，可使用如下的写法：
+
+`//otherhost/otherAppName/otherRunner/3cc8f9e2ff74f872f09518ffd3db6f2b`
 
 ### 2.2) 规则、表达式及方法的描述语法
 
@@ -6747,7 +6747,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 ##### OR.4) HVML URI 图式及协程描述符
 
 1. `hvml` 图式
-1. `hvml+rdr` 图式
+1. `hvml+cor` 图式
 1. 协程描述符
 
 - [2.1.19) HVML URI 图式](#2119-hvml-uri-图式)
