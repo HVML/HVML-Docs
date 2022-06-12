@@ -70,6 +70,9 @@ Language: Chinese
       * [2.1.16) 协程和虚拟机状态](#2116-协程和虚拟机状态)
       * [2.1.17) 文档片段的 JSON 数据表达](#2117-文档片段的-json-数据表达)
       * [2.1.18) MIME 类型](#2118-mime-类型)
+      * [2.1.19) HVML URI 图式](#2119-hvml-uri-图式)
+         - [2.1.19.1) `hvml` 图式](#21191-hvml-图式)
+         - [2.1.19.2) `hvml+rdr` 图式](#21192-hvmlrdr-图式)
    + [2.2) 规则、表达式及方法的描述语法](#22-规则表达式及方法的描述语法)
       * [2.2.1) 规则描述语法](#221-规则描述语法)
       * [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法)
@@ -153,6 +156,7 @@ Language: Chinese
          - [OR.1) 调整对 `include` 标签的描述](#or1-调整对-include-标签的描述)
          - [OR.2) 调整 `rquest` 标签](#or2-调整-rquest-标签)
          - [OR.3) 调整 `load` 和 `call` 标签](#or3-调整-load-和-call-标签)
+         - [OR.4) HVML URI 图式及协程描述符](#or4-hvml-uri-图式及协程描述符)
       * [RC4) 220601](#rc4-220601)
          - [RC4.1) 重构`基本原理`一节](#rc41-重构基本原理一节)
          - [RC4.2) MIME 类型和数据](#rc42-mime-类型和数据)
@@ -1890,6 +1894,65 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 - `video/*`：字节序列
 - `font/*`：字节序列
 
+#### 2.1.19) HVML URI 图式
+
+我们引入如下 URI 图式（Schema）用于 HVML 应用框架：
+
+##### 2.1.19.1) `hvml` 图式
+
+该图式主要用于定义一个 HVML 协程的标识符，和 `ftp` 图式类似，完整的 `hvml` 图式包括主机名、应用名、行者名和协程令牌（coroutine token），如：
+
+`hvml://localhost/appName/myRunner/3cc8f9e2ff74f872f09518ffd3db6f29`
+
+在 HVML 程序中，我们可以通过 `request` 等动作元素和当前应用的其他协程交互。为方便处理，我们无需指定主机部分，且使用 `-` 指代当前应用，即可引用当前主机、当前应用中属于指定行者的协程，如：
+
+`/-/otherRunner/3cc8f9e2ff74f872f09518ffd3db6f2a`
+
+类似地，我们也可以使用 `-` 指代当前行者，即可引用当前主机、当前应用、当前行者中的指定协程，如：
+
+`/-/-/3cc8f9e2ff74f872f09518ffd3db6f2a`
+
+当我们需要引用另外一个主机上的协程时，可使用如下的写法：
+
+`//otherhost/otherAppName/otherRunner/3cc8f9e2ff74f872f09518ffd3db6f2b`
+
+##### 2.1.19.2) `hvml+rdr` 图式
+
+该图式主要用于 HVML 渲染器，有两种用途：
+
+1) 定义 HVML 渲染器中的页面
+
+和 `http` 图式类似，完整的 `hvml+rdr` 图式包括主机名、应用名、行者名、页面组名称和页面名称以及查询（query）组件，如：
+
+`hvml+rdr://<host_name>/<app_name>/<runner_name/<page_group_name>/<page_name>/?irId=<the_initial_request_identifier>`
+
+如其中各部分的名称所暗示，其中包含了一个 HVML 渲染器页面的如下信息：
+
+- 主机名。
+- 应用名称。我们使用 `_renderer` 这一保留名称指代渲染器本身。
+- 行者名称。我们使用 `_builtin` 这一保留名称指代内建资源（assets）。
+- 页面组名称。当页面不属于任何页面组时，我们使用 `-` 这一特殊名称。
+- 页面名称。普通窗口或者页面的名称。
+- `irId` 查询参数。用于传递来自 HVML 解释器的初始请求参数。
+
+2) 定义渲染器可直接访问的公共资源
+
+此时，`hvml+rdr` 用来表述一个应用对外提供的公共资源，比如图片和样式文件。此时，我们使用保留的 `_builtin` 来指代行者名，使用 `-` 指代页面组名，然后使用页面名称部分指代正在定位的资源相对于公共资源存储位置的路径：
+
+`hvml+rdr://<host_name>/<app_name>/_builtiin/-/<path_to_asset>[?query][#fragment]`
+
+比如：
+
+`hvml+rdr://localhost/cn.fmsoft.hvml.test/_builtin/-/assets/logo.png`
+
+通常，当主机名为 `localhost` 时，渲染器将尝试在本机装载指定的应用公共资源。对于来自远程主机的情形，渲染器可将 `hvml+rdr` 翻译为等价的 `http` 或 `https` 图式。比如：
+
+`http://other.host.com/cn.fmsoft.hvml.test/_builtin/-/assets/logo.png`
+
+类似地，我们可使用 `_renderer` 保留名称指代渲染器本身，从而可通过如下 URI 从渲染器的内建资源中装载资源，如，
+
+`hvml+rdr://localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css`
+
 ### 2.2) 规则、表达式及方法的描述语法
 
 在 HVML 中，我们经常会使用属性中的表达式或者规则字符串来表示一个求值行为，比如：
@@ -2170,7 +2233,14 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
     event_name: <literal_variable_token>[':'<literal_alnum_token>['/'<literal_alnum_token>]]
     page_name: <literal_variable_token>'@'<literal_alnum_token>[':' < 'tab' | 'panel' >]
-    coroutine_identifier: <literal_variable_token>'/'<literal_alnum_token>
+
+    coroutine_identifier: <cross_host_coroutine_identifier> | <local_host_coroutine_identifier>
+    cross_host_coroutine_identifier: '//' <host_name> '/' <app_name> '/' <runner_name> '/' <coroutine_token>
+    local_host_coroutine_identifier: '/' <app_name> '/' <runner_name> '/' <coroutine_token>
+    host_name: <ip_literal> | <ipv4_address> | <reg_host_name>
+    app_name: <literal_variable_token>[['.'<literal_variable_token>], ...]
+    runner_name: <literal_variable_token>
+    coroutine_token: <literal_alnum_token>
 
     literal_alnum_token: /[A-Za-z0-9_][A-Za-z0-9_]*$/
     literal_variable_token: /^[A-Za-z_][A-Za-z0-9_]*$/
@@ -2186,6 +2256,7 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 1. `literal_number` 遵循 [JSON] 语法。
 1. `literal_integer` 本质上同 `literal_number`，只是在执行器的内部实现当中，应转换为最接近的整数使用。
+1. `ip_literal`、 `ipv4_address` 和 `reg_host_name`，参阅 [RFC 3986] 之 `Section 3.2.2`。
 
 另外，由于执行器的规则字符串通常作为属性值使用，考虑到属性值可使用单引号及双引号包围，因此，规则中的字符串字面值（string literal）可使用单引号（`'`）或双引号（`"`）包围：
 
@@ -4024,16 +4095,19 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 以上的代码在并发执行的操作组中异步装载了一个 HVML 程序，这将在该虚拟机实例中创建一个新的协程。当前协程退出时，新创建的协程仍然在执行，故而对应的虚拟机实例也将继续运行。
 
-如前所述，我们将并发执行的操作组的目标文档类型限制成了 `void`，从而无需将对应的协程关联到渲染器，但可以在操作组中使用 `load` 标签装载其他需要渲染器的 HVML 程序。针对这种情况，上述代码使用了 `request` 元素和渲染器发送请求，比如连接到渲染器，启动新的渲染器会话并做相应设置等。此时，我们可以使用 `call` 元素的内容数据将相关参数传递给渲染器。
+如前所述，我们将并发执行的操作组的目标文档类型限制成了 `void`，从而无需将对应的协程关联到渲染器，但可以在操作组中使用 `load` 标签装载其他需要渲染器的 HVML 程序。针对这种情况，上述代码使用了 `request` 元素向渲染器发送请求，比如连接到渲染器，启动新的渲染器会话并做相应设置等。此时，我们可以使用 `call` 元素的内容数据将相关参数传递给渲染器。
 
 异步地并发调用操作组时，`call` 元素的结果数据是新的协程标识符，该协程在指定的虚拟机实例中运行，属于指定的行者。
 
-协程标识符的格式为 `<runnerName>/<coroutineId>`，必须符合本规范定义的 `coroutine_identifier` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法的协程标识符样例：
+协程标识符的格式为 `[//hostname]/<appName>/<runnerName>/<coroutineToken>`，必须符合本规范定义的 `coroutine_identifier` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法的协程标识符样例：
 
-- `Runner0/3cc8f9e2ff74f872f09518ffd3db6f29`
-- `myRunner/3cc8f`
+- `//localhost/cn.fmsoft.hvml.sample/Runner0/3cc8f9e2ff74f872f09518ffd3db6f29`
+- `/cn.fmsoft.hvml.sample/Runner0/3cc8f9e2ff74f872f09518ffd3db6f29`
+- `/cn.fmsoft.hvml.sample/myRunner/3cc8f`
 
-我们保留 `_self` 作为预定义行者名称，特指当前行者。
+其中，协程令牌是由解释器自动分配的唯一性标识符，可用来标识一个协程。我们不使用协程名称这一术语，是因为通过 `load` 元素，我们可以创建单个 HVML 程序的多个协程实例。
+
+针对 `within` 的属性值，我们保留 `_self` 作为预定义行者名称，特指当前行者。
 
 并发调用操作组对应的事件有：
 
@@ -4370,9 +4444,17 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 我们使用 `request` 标签，可以向另一个协程发送一个请求，此时，我们指定 `on` 属性值为目标协程的标识符，`to` 属性值为目标协程中的操作组名称，`with` 属性或者元素内容为请求的参数。通过 `request` 标签提供的这一功能，我们可以让目标协程在它的执行上下文环境中，调用指定的操作组，然后返回结果给调用者。由于该请求可以跨行者发送，故而相当于执行远程过程调用。
 
-通常，用于完成请求的目标协程应该进入到事件轮询阶段，才能响应来自其他协程的请求并在执行对应的操作组后返回结果给发起请求的协程。
+注意，由于我们不能使用 `request` 向当前协程发送请求，也不允许跨应用发送请求。
 
-如下面的代码所示，一个协程定义了一个操作组 `echo`，将传入的参数原样返回：
+目标协程的标识符格式为 `[//hostName]/appName/<runnerName>/<coroutineToken>`。对应本规范定义的被指名词法单元 `coroutine_identifier`，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。此处，我们可以使用 `-` 指代当前主机、当前应用或当前行者，如：
+
+- `//-/-/-/3dfedf`：指当前主机、当前应用、当前行者中的 `3dfedf` 号协程。
+- `/-/-/3dfedf`：指当前主机、当前应用、当前行者中的 `3dfedf` 号协程。
+- `/-/otherRunner/3dfedf`：指当前主机、当前应用 `otherRunner` 行者中的 `3dfedf` 号协程。
+
+通常，用于完成请求的目标协程的运行状态在进入到事件轮询阶段之后，才能响应来自其他协程的请求并在执行对应的操作组后返回结果给发起请求的协程。
+
+如下面的代码所示，一个协程定义了一个操作组 `echo`，将传入的参数追加一个前缀后原样返回：
 
 ```html
 <!DOCTYPE hvml>
@@ -4411,7 +4493,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     </call>
 ```
 
-目标协程收到来自调用者的请求后，将构造一个虚拟栈帧调用指定的操作组。此时，可利用 `request` 元素的 `at` 属性指定元素标识符来确定静态变量的命名范围，从而构成调用操作组的完整闭包。比如目标协程在收到上面的请求之后，实际执行效果相当于：
+当目标协程在事件轮询阶段收到来自调用者的请求后，将构造一个虚拟栈帧调用指定的操作组。此时，可利用 `request` 元素的 `at` 属性指定一个元素标识符来确定静态变量的命名范围，从而构成调用操作组的一个闭包。比如目标协程在收到上面的请求之后，实际执行效果相当于：
 
 ```
     <define as="echo">
@@ -4427,7 +4509,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     </div>
 ```
 
-得到的结果应该为：`foo: How are you.`。而如果 `request` 元素中的 `at` 属性值为 `#scope2`，则结果应该为：`bar: How areyou.`。
+得到的结果应该为：`foo: How are you.`。而如果 `request` 元素中的 `at` 属性值为 `#scope2`，则结果应该为：`bar: How are you.`。
 
 注意，在未指定 `at` 属性时，在 `body` 元素范围内调用该操作组。
 
@@ -6662,6 +6744,15 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
 - [2.1.6.3) `$HVML`](#2163-hvml)
 
+##### OR.4) HVML URI 图式及协程描述符
+
+1. `hvml` 图式
+1. `hvml+rdr` 图式
+1. 协程描述符
+
+- [2.1.19) HVML URI 图式](#2119-hvml-uri-图式)
+- [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)
+
 #### RC4) 220601
 
 ##### RC4.1) 重构`基本原理`一节
@@ -7382,6 +7473,7 @@ def on_battery_changed (on_value, with_value, root_in_scope):
 [CSS 2.2]: https://www.w3.org/TR/CSS22/
 [CSS Box Model Module Level 3]: https://www.w3.org/TR/css-box-3/
 [JSON]: https://www.json.org
+[RFC 3986]: https://datatracker.ietf.org/doc/html/rfc3986
 
 [React.js]: https://reactjs.org
 [Vue.js]: https://cn.vuejs.org
