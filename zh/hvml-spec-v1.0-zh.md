@@ -4528,7 +4528,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 `load` 元素用来装载并执行一个由 `on` 属性指定的 HVML 代码（字符串）或者 `from` 属性指定的新 HVML 程序，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递给子协程。如：
 
 ```html
-    <load from="b.hvml" as="userProfile" within="user@main:tab" />
+    <load from="b.hvml" as="userProfile" onto="user@main" />
         $user
     </load>
 ```
@@ -4578,7 +4578,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
         }
     </init>
 
-    <load on="$request.hvml" onto="hello@main:tab" >
+    <load on="$request.hvml" onto="hello@main" >
         $request
     </load>
 ```
