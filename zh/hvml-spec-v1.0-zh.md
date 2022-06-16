@@ -5494,7 +5494,7 @@ def sorter(on_value, with_value,
     <body>
         ...
 
-        <choose on='$TIMERS' by="ChooseTimer" with="foo">
+        <choose on='$TIMERS' by="FUNC:ChooseTimer" with="foo">
             <update on="$?" at=".active" with="yes" />
         </choose>
 
