@@ -4602,10 +4602,10 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 ```html
     <init as="request">
         {
-            hvml: '<hvml target="html"><body><h1>$REQUEST.text</h1><p>$REQUEST.hvml</p></body></hvml>',
+            hvml: "<hvml target='html'><body><h1>$REQUEST.text</h1><p>$REQUEST.hvml</p></body></hvml>",
             text: "Hello, world!",
             _renderer: {
-                title: 'Hello, world!",
+                title: 'Hello, world!',
                 class: 'hello',
                 style: 'with:200px;height:100px',
             },
