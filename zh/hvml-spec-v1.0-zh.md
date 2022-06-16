@@ -4521,7 +4521,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
             concurrently asynchronously>
         <observe on="$myRepeater" for="corState:observing">
             <request on="$myRepeater" to="echo" at="#scope1" >
-                "How are you."
+                "How are you?"
             </request>
         </observe>
     </call>
@@ -4536,14 +4536,14 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
     <div id="scope1">
         <init as="name" with="foo" />
-        <call on="$echo" with="How are you." >
+        <call on="$echo" with="How are you?" >
         </call>
 
         ...
     </div>
 ```
 
-得到的结果应该为：`foo: How are you.`。而如果 `request` 元素中的 `at` 属性值为 `#scope2`，则结果应该为：`bar: How are you.`。
+得到的结果应该为：`foo: How are you?`。而如果 `request` 元素中的 `at` 属性值为 `#scope2`，则结果应该为：`bar: How are you?`。
 
 注意，在未指定 `at` 属性时，在 `body` 元素范围内调用该操作组。
 
