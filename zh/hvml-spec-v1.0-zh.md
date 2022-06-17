@@ -1871,9 +1871,10 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 - 当我们在一个元素上设置 `jsonContent` 键值时，相当于移除该元素的所有子元素（若有），并设置该元素的数据内容为对应的键值。
 - 当我们在一个元素上获得 `content` 键名的键值时，相当于获得这个元素所有子元素的文档片段的文本表达；在设置该键名的键值时，相当于使用文本表达来创建该元素的子元素（替换掉原有子元素）。
 - 当我们在一个元素上获得 `content[<index>]` 键名的键值时，相当于获得这个元素第 `<index>` 个子元素的文本表达；在设置该键名的键值时，相当于使用文本表达来创建该元素的内容或者子元素（替换掉原有子元素）。
-- 我们可以使用 `attr.class` 这样的复合键名来引用一个元素的特定属性。引用一个未定义的属性时，按属性值为 `undefined` 值对待。
-- 我们可以使用 `style.width` 这样的复合键名来引用一个元素的特定 CSS 属性。引用一个未定义的 CSS 属性时，按属性值为 `undefined` 值对待。
-- 我们可以使用 `prop.selectedIndex` 这样的复合键名来引用一个元素的动态属性（property）。引用一个未定义的动态属性时，按属性值为 `undefined` 对待。
+- 我们可以使用 `attr.class` 这样的复合键名来引用一个元素的静态属性。引用一个未定义的静态属性时，按属性值为 `undefined` 值对待。
+- 使用 `prop.selectedIndex` 或 `prop.style.width` 这样的属性名来引用一个元素的动态属性（property）。引用一个未定义的动态属性时，按属性值为 `undefined` 对待。
+
+通常，我们通过 `update` 元素修改元素的静态属性（attribute）和内容（content）；而对动态属性（property），比如 `input` 框中输入的内容，则需要使用 `request` 元素来获取或者设置。
 
 注：目前只有规划中的 SGML 支持使用数据作为元素的内容，即 `jsonContent`。
 
@@ -4502,6 +4503,19 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     document.getElementById('#my-video').doSomething(['value for foo', 'value for bar']);
 ```
 
+我们在 `to` 属性中使用具有 `get:` 或者 `set:` 前缀的方法名，可用来获取或者设置特定文档元素的动态属性值。比如下面的代码将 `#myInput` 元素设置为禁止，并使用 `noreturn` 副词属性，忽略响应。
+
+```html
+    <request on="#myInput" to="set:disabled" with=true noreturn />
+```
+
+下面的代码获取输入框中的内容：
+
+```html
+    <request on="#myInput" to="get:value" />
+```
+
+
 我们还可以使用 `request` 在指定的元素上执行一段渲染器支持的函数调用代码，并在函数调用代码中使用渲染器设定的如下预定义变量：
 
 - `ELEMENT`：由 `on` 属性指定的目标文档元素汇集中的每个元素。
@@ -4522,7 +4536,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 使用这种方法时，当参数为数组时，可使用渲染器脚本语言支持的方式引用其中的成员，如 `ARG[0]`、`ARG[1]`。
 
-另外，我们使用这种方法，还可以获取或者设置特定文档元素的动态属性值。比如下面的代码将 `#myInput` 元素设置为禁止，并使用 `noreturn` 副词属性，忽略响应。
+我们也可以使用上面这种方法获取或者设置特定文档元素的动态属性值。比如下面的代码将 `#myInput` 元素设置为禁止，并使用 `noreturn` 副词属性，忽略响应。
 
 ```html
     <request on="#myInput" to="call:ELEMENT.disabled=true" with=0 noreturn />
@@ -6808,6 +6822,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 主要修订内容如下：
 
 1. 调整了使用 `request` 标签向其他协程发送请求的处理模型。
+1. 在 `to` 属性值中，可使用 `get:` 和 `set:` 前缀用来获取或者设置元素的动态属性值。
 
 相关章节：
 
