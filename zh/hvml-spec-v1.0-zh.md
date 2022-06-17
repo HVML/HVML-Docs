@@ -1275,7 +1275,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 上面的示例代码定义了一个使用 `id` 键名作为唯一性判断条件的集合。假如用来初始化这个集合的字典数组中多一项 `id` 为 `2` 的数据项，则之前 `id` 为 `2` 的数据项会被后来 `id` 为 `2` 的数据项覆盖。比如，
 
 ```html
-    <init as="users" uniquely by="id">
+    <init as="users" uniquely against="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
@@ -3368,11 +3368,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <reduce on="$users" in="#the-user-statistics" by="FUNC: StatsUserRegion">
         <update on="> h2 > span" at="textContent" with="$?.count" />
         <clear on="> dl" />
-        <sort on="$?.regions" by="KEY: ALL FOR KV" descendingly>
-            <iterate on="$?" in="> dl" by="RANGE: ALL">
-                <update on="$@" to="append" with="$region_to_users" />
-            </iterate>
-        </sort>
+        <choose on="$?.regions" by="KEY: ALL FOR KV">
+            <sort on="$?" against="v" descendingly>
+                <iterate on="$?" in="> dl" by="RANGE: ALL">
+                    <update on="$@" to="append" with="$region_to_users" />
+                </iterate>
+            </sort>
+        </choose>
     </reduce>
 ```
 
@@ -3380,7 +3382,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 - `update` 标签：用于更新 `#the-user-statistics > h2 > span` 元素的内容为用户总数。
 - `clear` 标签：用于清除 `#the-user-statistics > dl` 元素的所有子元素。
-- `sort` 标签：用于将 `$?.regions` 执行排序操作，按键值降序排列形成一个新的数组。
+- `choose` 标签：用于将 `$?.regions` 对象转换为键值对象数组。
+- `sort` 标签：用于将 `choose` 动作的结果（键值对象数组）按照 `v`（区域人数）执行降序排序操作。
 - `iterate` 标签：用于在 `#the-user-statistics > dl` 元素中追加用户按区域统计的信息。
 
 假设执行归约操作后的结果同前述 JSON 格式给出的数据，则执行上述操作后获得的文档片段为：
@@ -3404,7 +3407,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 `sort` 标签定义一个执行排序操作的动作元素，该元素对指定的数组执行排序操作。该元素支持如下属性：
 
 - `on` 属性指定要排序的数据。
-- `by` 属性指定排序用的外部执行器。
+- `by` 属性指定一个可将 `on` 数据转换成数组的内建执行器，或者一个可对 `on` 数据直接进行排序的外部函数执行器。若未指定，则执行默认排序；此时，将 `on` 属性指定的数据必须为数组或者集合。
 - `with` 属性指定使用外部执行器时的额外参数。
 - `against` 属性指定排序的依据；当要排序的数组由对象组成时，该属性指定参与排序的单个或者多个键名。
 - 使用 `ascendingly`（默认） 和 `descendingly` 副词属性指定使用升序还是降序排列。
@@ -3446,7 +3449,53 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </sort>
 ```
 
-当我们不使用外置执行器时，`on` 属性指定的值必须为数组或者集合；而当使用外置执行器时，`on` 属性指定的数据类型由执行器确定。比如，我们可以对一个字符串执行排序操作，执行的结果时，将字符串中的单词按照字典顺序排列。
+我们还可以使用内建执行器，首先在 `on` 属性指定的数据生成一个对象，然后再对结果数据执行默认排序。比如如下代码：
+
+```hvml
+    <init as="regions">
+        { "中国大陆": 10, "其他": 2, "中国台湾": 7, }
+    </init>
+
+    <sort on="$regions" by="KEY: ALL FOR KV" against="v" descendingly>
+        <iterate on="$?" in="> dl" by="RANGE: ALL">
+            <update on="$@" to="append" with="$region_to_users" />
+        </iterate>
+    </sort>
+```
+
+首先用 by 指定的内建执行器完成了对象到键值对象数组的转换，转换结果为：
+
+```json
+    [
+        { "k": "中国大陆", "v": 10 },
+        { "k": "其他":     "v": 2  },
+        { "k": "中国台湾": "v": 7  }
+    ]
+```
+
+之后对以上数组针对 `v` 键值进行降序排序，其结果为：
+
+```json
+    [
+        { "k": "中国大陆", "v": 10 },
+        { "k": "中国台湾": "v": 7  },
+        { "k": "其他":     "v": 2  }
+    ]
+```
+
+本质上，以上 HVML 代码和下面使用 `choose` 然后使用 `sort` 的结果一致：
+
+```html
+    <choose on="$regions" by="KEY: ALL FOR KV">
+        <sort on="$?" against="v" descendingly>
+            <iterate on="$?" in="> dl" by="RANGE: ALL">
+                <update on="$@" to="append" with="$region_to_users" />
+            </iterate>
+        </sort>
+    </choose>
+```
+
+当我们不使用外置执行器时，`on` 属性或者 `by` 属性指定的内建执行器，必须给出一个数组供排序使用；而当使用外置执行器时，`on` 属性指定的数据类型由外部执行器确定。比如，我们可以对一个字符串执行排序操作，执行的结果可能是，将字符串中所有的单词按照字典顺序排列。
 
 #### 2.5.10) `define` 和 `include` 标签
 
@@ -3897,11 +3946,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                     <update on="$@" at="textContent" with="$?" />
                 </choose>
                 <clear on="#the-user-statistics > dl" />
-                <sort on="$?.regions" by="KEY: ALL FOR KV" ascendingly>
-                    <iterate on="$?" in="> dl" by="RANGE: FROM 0">
-                        <update on="$@" to="append" with="$region_to_users" />
-                    </iterate>
-                </sort>
+                <choose on="$?.regions" by="KEY: ALL FOR KV">
+                    <sort on="$?.regions" agianst="v" ascendingly>
+                        <iterate on="$?" in="> dl" by="RANGE: FROM 0">
+                            <update on="$@" to="append" with="$region_to_users" />
+                        </iterate>
+                    </sort>
+                </choose>
             </reduce>
         </define>
 
@@ -4804,7 +4855,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 在 `choose`、 `iterate` 以及 `reduce` 等动作标签中，我们通常要使用 `by` 介词属性来定义如何执行选择、迭代或者归约操作，我们称之为规则，而实现相应的规则的代码或者功能模块被称为选择器、迭代器或归约器，统称为执行器（executor）。HVML 解释器可实现内置（built-in）执行器，通过简单的语法来指定在选择、迭代、归约数据时遵循什么样的规则。在复杂情形下，HVML 允许文档作者调用外部程序（比如可动态加载的模块）来实现执行器。HVML 使用 `CLASS` 或 `FUNC` 前缀来表示使用外部定义的执行器。
 
-需要说明的是，在 `test` 和 `sort` 标签中也可以使用执行器，此种情况下，对执行器的处理同 `choose` 标签。
+需要说明的是，在 `test` 和 `sort` 标签中也可以使用执行器。`test` 标签中使用执行器的情形同 `choose` 标签。`sort` 标签中使用内建执行器时，将对内建执行器返回的结果执行排序操作，而使用外部执行器时，直接在 `on` 属性指定的数据基础上执行排序操作。
 
 #### 2.6.1) 内建执行器
 
