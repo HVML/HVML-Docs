@@ -4161,7 +4161,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                 { ... }
             </request>
 
-            <request to="resetPageGroups">
+            <request to="setPageGroups">
                 '...'
             </request>
 
