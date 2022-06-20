@@ -53,8 +53,9 @@ Language: Chinese
          - [2.1.6.7) `$T`](#2167-t)
          - [2.1.6.8) `$EJSON`](#2168-ejson)
          - [2.1.6.9) `$STREAM`](#2169-stream)
-         - [2.1.6.10) 集合变量](#21610-集合变量)
-         - [2.1.6.11) 表达式变量](#21611-表达式变量)
+         - [2.1.6.10) `$RDR`](#21610-rdr)
+         - [2.1.6.11) 集合变量](#21611-集合变量)
+         - [2.1.6.12) 表达式变量](#21612-表达式变量)
       * [2.1.7) 栈式虚拟机](#217-栈式虚拟机)
       * [2.1.8) 框架元素](#218-框架元素)
       * [2.1.9) 模板元素](#219-模板元素)
@@ -1221,7 +1222,16 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 `$STREAM` 变量本质上是一个必要的会话级动态对象。
 
-##### 2.1.6.10) 集合变量
+##### 2.1.6.10) `$RDR`
+
+`$RDR` 是一个代表当前会话渲染器的原生实体对象。可用于获取当前的渲染器信息，如协议，URI 等。
+
+1. `$RDR.status`：获取当前渲染器状态。
+1. `$RDR.type`：获取当前渲染器类型。
+1. `$RDR.uri`：获取当前渲染器的 URI 地址。
+1. `$RDR.connect(<type>, <uri>)`：连接到指定的渲染器；若当前已连接到某个渲染器，则会断开该连接。
+
+##### 2.1.6.11) 集合变量
 
 在 HVML 中，我们可以使用 JSON 数组来描述包含在一个集合中的数据，但 JSON 本身并不具有集合的概念。因此，HVML 提供了使用 JSON 数组来初始化一个集合变量的能力。也就是说，集合是具有某些特征的数组的一种内部表达，我们需要通过变量来访问集合数据。
 
@@ -1296,7 +1306,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并集、交集、差集、异或集等。详情见 `update` 标签的描述。
 
-##### 2.1.6.11) 表达式变量
+##### 2.1.6.12) 表达式变量
 
 HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
@@ -4153,21 +4163,22 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```html
         <define as="newRunner">
-            <request to="connectToRenderer">
-                { ... }
-            </request>
+            <test with="$RDR.connect('purcmc', 'unix:///var/tmp/purcmc.sock')" >
 
-            <request to="startSession">
-                { ... }
-            </request>
+                <request on="$RDR" to="setPageGroups">
+                    '...'
+                </request>
 
-            <request to="setPageGroups">
-                '...'
-            </request>
+                <load from="new_user.hvml" onto="user@main" asynchronously >
+                    $^
+                </load>
 
-            <load from="new_user.hvml" onto="user@main" asynchronously >
-                $^
-            </load>
+                <return with="ok">
+
+                <differ>
+                    <return with="Failed to connect to the renderer.">
+                </differ>
+            </test>
         </define>
 
         <call as="my_task" on="$newRunner" with="..."
@@ -4612,10 +4623,10 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 注意，在未指定 `at` 属性时，在 `body` 元素范围内调用该操作组。
 
-我们使用 `request` 标签，还可以向渲染器发送一个请求，比如新建窗口组，移除一个窗口等。此时，不指定 `on` 属性值。至于具体要执行的请求操作以及参数，通过 `to` 属性和 `with` 属性传递，其含义和要求和具体的渲染器协议有关。比如在使用 PURCMC 协议时，我们可以向渲染器发送如下的请求来添加窗口组：
+我们使用 `request` 标签，还可以向渲染器发送一个请求，比如新建窗口组，移除一个窗口组等。此时，指定 `on` 属性值为预定义变量 `$RDR`。至于具体要执行的请求操作以及参数，通过 `to` 属性和 `with` 属性传递，其含义和要求和具体的渲染器协议有关。比如在使用 PURCMC 协议时，我们可以向渲染器发送如下的请求来添加窗口组：
 
 ```html
-    <request to="addWindowGroups" >
+    <request on="$RDR" to="addWindowGroups" >
         '<section id="newGroup1"></section><section id="newGroup2"><article id="newGroupBody2" class="tabbedwindow"></article></section>'
     </request>
 ```
@@ -6823,10 +6834,12 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 1. 调整了使用 `request` 标签向其他协程发送请求的处理模型。
 1. 在 `to` 属性值中，可使用 `get:` 和 `set:` 前缀用来获取或者设置元素的动态属性值。
+1. 向渲染器发送请求时，使用预定义变量 `$RDR`。
 
 相关章节：
 
 - [2.5.16) `request` 标签](#2516-request-标签)
+- [2.1.6.10) `$RDR`](#21610-rdr)
 
 ##### OR.3) 调整 `load` 和 `call` 标签
 
