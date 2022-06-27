@@ -155,10 +155,11 @@ Language: Chinese
    + [附.1) 修订记录](#附1-修订记录)
       * [OR) 220701](#or-220701)
          - [OR.1) 调整对 `include` 标签的描述](#or1-调整对-include-标签的描述)
-         - [OR.2) 调整 `rquest` 标签](#or2-调整-rquest-标签)
+         - [OR.2) 调整 `request` 标签](#or2-调整-request-标签)
          - [OR.3) 调整 `load` 和 `call` 标签](#or3-调整-load-和-call-标签)
          - [OR.4) HVML URI 图式及协程描述符](#or4-hvml-uri-图式及协程描述符)
          - [OR.5) 增强 `sort` 标签](#or5-增强-sort-标签)
+         - [OR.6) 调整 `observe` 标签](#or6-调整-observe-标签)
       * [RC4) 220601](#rc4-220601)
          - [RC4.1) 重构`基本原理`一节](#rc41-重构基本原理一节)
          - [RC4.2) MIME 类型和数据](#rc42-mime-类型和数据)
@@ -3748,7 +3749,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `observe` 标签用于定义一个执行观察操作的动作元素，该元素将观察特定变量或数据上的状态变化，并在指定的事件到来时，若其 `with` 属性指定了有效的操作组，则执行该操作组，否则执行该标签定义的操作组。
 
-我们使用 `observe` 的 `at` 属性指定一个要观察的静态命名变量之名称，使用 `on` 属性指定一项要观察的数据。`at` 属性的优先级高于 `on` 属性。注意，我们不能观察一个临时命名变量或上下文变量。
+我们使用 `observe` 的 `against` 属性指定一个要观察的静态命名变量之名称，使用 `on` 属性指定一项要观察的数据。`against` 属性的优先级高于 `on` 属性。注意，我们不能观察一个临时命名变量或上下文变量。
 
 当我们观察一个静态命名变量时，我们可以观察这个命名变量对应的数据是否已经就绪，或者在获取数据的过程是否发生了错误，或者这个命名变量上的数据是否已经被销毁等等。
 
@@ -3768,7 +3769,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         <img src="wait.png" />
     </ul>
 
-    <observe at="users" for="change:attached" in="#user-list">
+    <observe against="users" for="change:attached" in="#user-list">
         <clear on="$@" />
         <iterate on="$users" by="RANGE: FROM 0">
             <update on="$@" to="append" with="$user_item" />
@@ -5990,7 +5991,7 @@ SYSTEM 标识符字符串的格式如下：
 
             <update on="#breaking-news" to="displace" with="$realCardBody" />
 
-            <observe at="breakingNews" for="change:attached" in="#breaking-news">
+            <observe against="breakingNews" for="change:attached" in="#breaking-news">
                 <update on="$@" to="displace" with="$realCardBody" />
             </observe>
         </init>
@@ -6826,7 +6827,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 - [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
 
-##### OR.2) 调整 `rquest` 标签
+##### OR.2) 调整 `request` 标签
 
 主要修订内容如下：
 
@@ -6878,6 +6879,16 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 相关章节：
 
 - [2.5.9) `sort` 标签](#259-sort-标签)
+
+##### OR.6) 调整 `observe` 标签
+
+主要修订内容如下：
+
+1. 使用 `against` 介词属性定义针对变量的观察，而不是 `at` 属性。
+
+相关章节：
+
+- [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
 
 #### RC4) 220601
 
