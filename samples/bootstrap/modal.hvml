@@ -69,7 +69,7 @@
                 "time": $DATETIME.time_prt
             }
 
-            <observe at="breakingNews" for="change:attached" in="#exampleModal">
+            <observe against="breakingNews" for="change:attached" in="#exampleModal">
                 <update on="#exampleModal" to="displace" with="$newsModal" />
                 <update on="#btnShowModal" at="attr.disabled" to="remove" />
             </observe>

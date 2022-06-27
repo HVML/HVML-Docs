@@ -55,11 +55,11 @@
 
         <init as="breakingNews" from="assets/breaking-news-{$SYSTEM.locale}.json" async />
 
-        <observe at="breakingNews" for="change:attached" in="#breaking-news">
+        <observe against="breakingNews" for="change:attached" in="#breaking-news">
             <update on="$@" to="displace" with="$realCardBody" />
         </observe>
 
-        <observe at="breakingNews" for="except:*" in="#breaking-news">
+        <observe against="breakingNews" for="except:*" in="#breaking-news">
             <update on="#breaking-news > p" at="textContent" with=$T.get('Failed to load content!') />
         </observe>
 
