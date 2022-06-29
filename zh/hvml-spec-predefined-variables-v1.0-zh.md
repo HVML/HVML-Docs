@@ -1,7 +1,7 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RC3  
+Version: 1.0-RC4  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
@@ -250,7 +250,7 @@ Language: Chinese
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
-      * [OR) 220701](#or-220701)
+      * [RC4) 220701](#rc4-220701)
       * [RC3) 220601](#rc3-220601)
       * [RC2) 220501](#rc2-220501)
       * [RC1) 220401](#rc1-220401)
@@ -6732,12 +6732,12 @@ $FILE.bin.tail($file, -5)
 
 发布历史：
 
-- 2022 年 07 月 01 日：发布 V1.0 OR，标记为 'v1.0-pv-OR-220701'。
+- 2022 年 07 月 01 日：发布 V1.0 RC4，标记为 'v1.0-pv-rc4-220701'。
 - 2022 年 06 月 01 日：发布 V1.0 RC3，标记为 'v1.0-pv-rc3-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
 
-#### OR) 220701
+#### RC4) 220701
 
 1. 描述了如何通过 `pipe` URI 的查询组件传递命令行参数。
 1. 描述了 `pipe` 流实体的额外方法：`writeeof` 和 `status`。

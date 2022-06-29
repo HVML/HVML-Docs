@@ -7,7 +7,7 @@
     <body id="theBody">
         <inherit>
             {{
-                $STREAM.stdout.writelines("## Fibonacci Numbers less than 10");
+                $STREAM.stdout.writelines("## Fibonacci Numbers less than 2000");
                 $STREAM.stdout.writelines('')
             }}
         </inherit>
