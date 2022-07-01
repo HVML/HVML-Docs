@@ -5,7 +5,7 @@ Version: 1.0-RC4
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: June 1, 2022  
+Last Modified Date: July 1, 2022  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -71,6 +71,7 @@ Language: Chinese
       * [3.4.4) `max_recursion_depth` 方法](#344-max_recursion_depth-方法)
       * [3.4.5) `max_embedded_levels` 方法](#345-max_embedded_levels-方法)
       * [3.4.6) `timeout` 方法](#346-timeout-方法)
+      * [3.4.7) `cid` 方法](#347-cid-方法)
    + [3.5) `DOC`](#35-doc)
       * [3.5.1) `doctype` 方法](#351-doctype-方法)
       * [3.5.2) `query` 方法](#352-query-方法)
@@ -732,7 +733,7 @@ $SYSTEM.time_us(
         [
             < 'longdouble | object' $return_type = 'longdouble': `indicate the return type: a long double number or an object.`>
         ]
-) longdouble | object : `A long double numer or an object representing the number of seconds and microseconds since Epoch:`
+) longdouble | object : `A long double number or an object representing the number of seconds and microseconds since Epoch:`
         - 'sec': < longint: `seconds since Epoch` >
         - 'usec': < longint: `microseconds` >
 ```
@@ -966,7 +967,7 @@ $SYSTEM.env(! 'LOGNAME', 'tom' )
 
 ```js
 $SYSTEM.random_sequence(
-        <numer $length: `the length of the random byte sequence`>
+        <number $length: `the length of the random byte sequence`>
 ) bsequence | false
 ```
 
@@ -1627,7 +1628,7 @@ $HVML.max_embedded_levels(! 64UL )
 
 #### 3.4.6) `timeout` 方法
 
-该方法获取或设置 HVML 协程在通过数据获取器获取数据或者建立长连接、发送请求时的超时值（单位：秒）。
+该方法获取或设置 HVML 协程在通过数据获取器获取数据或者发送请求时的超时值（单位：秒）。
 
 默认值为 10.0。
 
@@ -1660,7 +1661,28 @@ $HVML.timeout(!
 ```js
 // 设置超时值为 3.5 秒。
 $HVML.timeout(! 3.5 )
-    // numer: 3.5
+    // number: 3.5
+```
+
+#### 3.4.7) `cid` 方法
+
+该方法获取当前 HVML 协程的标识符（coroutine identifier，简称 cid）。
+
+**描述**
+
+```js
+$HVML.cid longint : `the corontine identifier`
+```
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$HVML.cid
+    // longint: 10
 ```
 
 ### 3.5) `DOC`
@@ -6136,7 +6158,7 @@ $FS.lstat(
     'mode_digits': <string: `file mode like '0644'`>,
     'mode_alphas': <string: `file mode like 'rwxrwxr-x'`>,
     'nlink': <number: `number of hard links`>,
-    'uid': <numer: `the user ID of owner`>,
+    'uid': <number: `the user ID of owner`>,
     'gid': <number: `the group ID of owner`>,
     'rdev_major': <ulongint: `the major device ID if it is a special file`>,
     'rdev_minor': <ulongint: `the minor device ID if it is a special file`>,
@@ -6742,6 +6764,7 @@ $FILE.bin.tail($file, -5)
 1. 描述了如何通过 `pipe` URI 的查询组件传递命令行参数。
 1. 描述了 `pipe` 流实体的额外方法：`writeeof` 和 `status`。
 1. `$SESSION` 的 `user_obj` 静态属性名称调整为 `myObj`。
+1. 新增 `$HVML.cid` 获取器。
 
 #### RC3) 220601
 
