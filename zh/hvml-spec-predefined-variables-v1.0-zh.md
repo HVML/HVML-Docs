@@ -6857,12 +6857,16 @@ $FILE.bin.tail($file, -5)
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
 
+#### RC5) 220801
+
+1. 新增 `$HVML.cid`、 `$HVML.token` 以及 `$HVML.uri` 属性获取器。
+1. 新增 `$SESION.sid`、 `$SESSION.uri` 属性获取器。
+
 #### RC4) 220701
 
 1. 描述了如何通过 `pipe` URI 的查询组件传递命令行参数。
 1. 描述了 `pipe` 流实体的额外方法：`writeeof` 和 `status`。
 1. `$SESSION` 的 `user_obj` 静态属性名称调整为 `myObj`。
-1. 新增 `$HVML.cid` 获取器。
 
 #### RC3) 220601
 
