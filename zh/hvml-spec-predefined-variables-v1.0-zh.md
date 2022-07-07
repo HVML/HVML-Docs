@@ -55,8 +55,10 @@ Language: Chinese
    + [3.2) `SESSION`](#32-session)
       * [3.2.1) `app` 方法](#321-app-方法)
       * [3.2.2) `runner` 方法](#322-runner-方法)
-      * [3.2.3) `myObj` 静态属性](#323-myobj-静态属性)
-      * [3.2.4) `user` 方法](#324-user-方法)
+      * [3.2.3) `sid` 方法](#323-sid-方法)
+      * [3.2.4) `uri` 方法](#324-uri-方法)
+      * [3.2.5) `myObj` 静态属性](#325-myobj-静态属性)
+      * [3.2.6) `user` 方法](#326-user-方法)
    + [3.3) `DATETIME`](#33-datetime)
       * [3.3.1) `time_prt` 方法](#331-time_prt-方法)
       * [3.3.2) `utctime` 方法](#332-utctime-方法)
@@ -72,6 +74,8 @@ Language: Chinese
       * [3.4.5) `max_embedded_levels` 方法](#345-max_embedded_levels-方法)
       * [3.4.6) `timeout` 方法](#346-timeout-方法)
       * [3.4.7) `cid` 方法](#347-cid-方法)
+      * [3.4.8) `token` 方法](#348-token-方法)
+      * [3.4.9) `uri` 方法](#349-uri-方法)
    + [3.5) `DOC`](#35-doc)
       * [3.5.1) `doctype` 方法](#351-doctype-方法)
       * [3.5.2) `query` 方法](#352-query-方法)
@@ -1093,7 +1097,7 @@ $SESSION.runner
     string : `the runner name of current session.`
 ```
 
-该方法获取当前会话的应用名称。
+该方法获取当前会话的行者名称。
 
 **异常**
 
@@ -1106,7 +1110,55 @@ $SESSION.runner
     // string: 'hello'
 ```
 
-#### 3.2.3) `myObj` 静态属性
+#### 3.2.3) `sid` 方法
+
+获取当前会话的会话标识符（session identifier，简称 `sid`）。
+
+**描述**
+
+```js
+$SESSION.sid
+    ulongint : `the identifier of the current session.`
+```
+
+该方法获取当前会话的会话标识符。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$SESSION.sid
+    // ulongint: 3UL
+```
+
+#### 3.2.4) `uri` 方法
+
+获取当前会话的 URI。
+
+**描述**
+
+```js
+$SESSION.uri
+    string : `the URI of the current session.`
+```
+
+该方法获取当前会话的 URI，形似 `//localhost/cn.fmsoft.hvml.caculator/main/`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$SESSION.uri
+    // string: '//localhost/cn.fmsoft.hvml.caculator/main/'
+```
+
+#### 3.2.5) `myObj` 静态属性
 
 `myObj` 是 `SESSION` 的一个静态属性，用来定义用户自定义键值对，初始为一个空对象。程序可使用 `update` 元素设置其内容：
 
@@ -1135,7 +1187,7 @@ $SESSION.runner
     </observe>
 ```
 
-#### 3.2.4) `user` 方法
+#### 3.2.6) `user` 方法
 
 获取或设置用户键值对。
 
@@ -1666,12 +1718,12 @@ $HVML.timeout(! 3.5 )
 
 #### 3.4.7) `cid` 方法
 
-该方法获取当前 HVML 协程的标识符（coroutine identifier，简称 cid）。
+该方法获取当前 HVML 协程的标识符（coroutine identifier，简称 `cid`）。
 
 **描述**
 
 ```js
-$HVML.cid longint : `the corontine identifier`
+$HVML.cid ulongint : `the corontine identifier`
 ```
 
 **异常**
@@ -1682,7 +1734,53 @@ $HVML.cid longint : `the corontine identifier`
 
 ```js
 $HVML.cid
-    // longint: 10
+    // ulongint: 10UL
+```
+
+#### 3.4.8) `token` 方法
+
+该方法获取当前 HVML 协程的令牌（token）。
+
+**描述**
+
+```js
+$HVML.token string : `the corontine token`
+```
+
+该方法获取当前 HVML 协程的令牌（token），形如 `COROUTINE-100`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$HVML.token
+    // string: `COROUTINE-100`
+```
+
+#### 3.4.9) `uri` 方法
+
+该方法获取当前 HVML 协程的 URI。
+
+**描述**
+
+```js
+$HVML.uri string : `the corontine URI`
+```
+
+该方法获取当前 HVML 协程的 URI，形如 `//localhost/cn.fmsoft.hvml.calculator/main/COROUTINE-100`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$HVML.uri
+    // string: `//localhost/cn.fmsoft.hvml.calculator/main/COROUTINE-100`
 ```
 
 ### 3.5) `DOC`
