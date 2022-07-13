@@ -1819,32 +1819,35 @@ $DOC.doctype
 1. `.sub( <real: offset>, <real: length )`：以偏移量及长度为依据在给定的元素汇集中选择元素，形成新的元素汇集。
 1. `.select( <string: CSS selector )`：以 CSS 选择器在给定的元素汇集中的选择元素，形成一个新的元素汇集。
 1. `.attr( <string: attributeName> )`：获取元素汇集中第一个元素的指定属性值。
-1. `.prop( <string: propertyName> )`：获取元素汇集中第一个元素的指定状态值。
-1. `.style( <string: styleName> )`：获取元素汇集中第一个元素的指定样式值。
 1. `.content()`：获取元素汇集中第一个元素的内容（字符串，按目标标记语言序列化）。
 1. `.textContent()`：获得元素汇集中第一个元素（含子元素）的文本内容。
 1. `.jsonContent()`：获得元素汇集中第一个元素（含子元素）的数据内容，多个内容形成数组。
-1. `.val()`：获得元素汇集中第一个元素的当前值。
 1. `.hasClass( <string: className> )`：判断元素汇集中是否有任意元素被赋予指定的类名。
 
 在元素汇集实体上，我们可以就如下键名获得对应的设置器：
 
 1. `.attr(! <string: attributeName>, <string: value> )`：设置元素汇集中所有元素的属性值。
 1. `.attr(! <object: attributes> )`：使用对象信息设置元素汇集中所有元素的多个属性值。
-1. `.prop(! <string: propertyName>, <any: value> )`：设置元素汇集中所有元素的状态值。
-1. `.prop(! <object: properties> )`：使用对象信息设置元素汇集中所有元素的多个状态值。
-1. `.style(! <string: styleName>, <string: value> )`：设置元素汇集中所有元素的样式值。
-1. `.style(! <object: styles> )`：使用对象信息设置元素汇集中所有元素的多个样式值。
 1. `.content(! <string: content> )`：设置元素汇集中所有元素的内容。
 1. `.textContent(! <string: content> )`：设置元素汇集中所有元素的文本内容，将移除可能的子元素。
 1. `.jsonContent(! <any: content> )`：设置元素汇集中所有元素的数据内容，将移除可能的子元素。
-1. `.val(! newValue)`：设置元素汇集中所有元素的当前值。
 1. `.addClass(! <string: className> )`：为元素汇集中所有的元素添加指定的类名。
 1. `.addClass(! <array: classNames> )`：为元素汇集中所有的元素添加数组中指定的所有类名。
 1. `.removeAttr(! <string: attributeName> )`：移除元素汇集中所有元素的指定属性。
 1. `.removeClass(! )`：移除元素汇集中所有元素的所有类名。
 1. `.removeClass(! <string: className> )`：移除元素汇集中所有元素的指定类名。
 1. `.removeClass(! <array: classNames> )`：移除元素汇集中所有元素在数组中的所有类名。
+
+如下针对动态属性的获取器或设置器将被移除：
+
+1. `.prop( <string: propertyName> )`：获取元素汇集中第一个元素的指定状态值。
+1. `.prop(! <string: propertyName>, <any: value> )`：设置元素汇集中所有元素的状态值。
+1. `.prop(! <object: properties> )`：使用对象信息设置元素汇集中所有元素的多个状态值。
+1. `.style( <string: styleName> )`：获取元素汇集中第一个元素的指定样式值。
+1. `.style(! <string: styleName>, <string: value> )`：设置元素汇集中所有元素的样式值。
+1. `.style(! <object: styles> )`：使用对象信息设置元素汇集中所有元素的多个样式值。
+1. `.val()`：获得元素汇集中第一个元素的当前值。
+1. `.val(! newValue)`：设置元素汇集中所有元素的当前值。
 
 如此实现后，HVML 动作元素中通过 CSS 选择器引用元素时，如：
 
@@ -5479,8 +5482,8 @@ $MATH.div(1.4, 0.7, 'longint')
 在参数化运算表达式中，可以使用如下杂项函数：
 
 - `abs(x)`： 返回一个数的绝对值。
-- `max([x, y)`： 返回两个数值中的最大值。
-- `min([x, y)`： 返回两个数值中的最小值。
+- `max(x, y)`： 返回两个数值中的最大值。
+- `min(x, y)`： 返回两个数值中的最小值。
 - `random()`： 返回一个 0 到 1 之间的伪随机数。
 - `sign(x)`： 返回一个数的符号，得知一个数是正数、负数还是 0。
 
