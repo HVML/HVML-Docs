@@ -2413,7 +2413,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 在框架标签内部，我们可使用 JSON 表达式，这些表达式将在执行过程中被求值，其结果将被设置为对应元素的执行结果。在框架标签内，我们也可以定义多个表达式，此时，最后一个表达式的求值结果将被作为对应元素的执行结果。为避免歧义，框架标签内的多个表达式应被其他子元素分隔，或使用复合 JSON 表达式，如：
 
 ```html
-<hvml target="html" lang="$STR.substr($SYSTEM.locale, 0, 2)">
+<hvml target="void" lang="$STR.substr($SYSTEM.locale, 0, 2)">
     {{
         $STREAM.stdout.writelines('Start of `Hello, world!`');
         $STREAM.stdout.writelines('$SYSTEM.time('%H:%m')')
@@ -5881,11 +5881,50 @@ HVML 本质上采用 XML 语法描述程序中的各个元素。HVML 文档的�
 1. 一个以 `hvml` 元素形式定义的文档元素。
 1. 任意数量的注释和 ASCII 空白字符。
 
-> 1. Any number of comments and ASCII whitespace.
-> 1. A `DOCTYPE`.
-> 1. Any number of comments and ASCII whitespace.
-> 1. The document element, in the form of an `hvml` element.
-> 1. Any number of comments and ASCII whitespace.
+HVML 程序中的注释有两种形式，一种是 `<!-- 注释内容 -->` 形式的注释，一种是脚本语言常用的 `#` 注释。其区别在于：
+
+1. 使用第一种形式的注释，将在最终的 vDOM 树中构造出一个注释节点。
+1. 以 `#` 打头，或者由任意数量的空白字符加 `#` 字符可定义一个注释行，注释行中的所有字符，将被解析器整个忽略直到行尾。
+
+```
+#!/bin/purc
+# The above line makes the HVML program can be marked as an executable to
+# run it directly on the command line if you installed a correct
+# HVML interpreter, e.g., `/bin/purc` in you system.
+
+# This is a comment line
+    # This is another comment line
+
+<hvml target="void" lang="$STR.substr($SYSTEM.locale, 0, 2)" >
+    {{
+        $STREAM.stdout.writelines('Start of `Hello, world!`');
+        $STREAM.stdout.writelines($SYSTEM.time('%H:%m'))
+    }}
+
+    <!-- This is a multiple-line comments, which will be parsed and form
+        a comment node in the ultimate vDOM tree -->
+    <head>
+        $STREAM.stdout.writelines('Start of `head`')
+
+        <title>$T.get('Hello, world!')</title>
+
+        $STREAM.stdout.writelines('End of `head`')
+    </head>
+
+    <body>
+        $STREAM.stdout.writelines('Start of `body`')
+
+        <p>$T.get('Hello, HVML!')</p>
+
+        $STREAM.stdout.writelines('End of `body`')
+    </body>
+
+    {{
+        $STREAM.stdout.writelines('End of `Hello, world!`');
+        $STREAM.stdout.writelines($SYSTEM.time('%H:%m'))
+    }}
+</hvml>
+```
 
 #### 3.1.1) DOCTYPE
 
