@@ -1228,7 +1228,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ##### 2.1.6.10) `$RDR`
 
-`$RDR` 是一个代表当前会话渲染器的原生实体对象。可用于获取当前的渲染器信息，如协议，URI 等。
+`$RDR` 是一个代表当前会话渲染器的原生实体对象，可用于获取当前的渲染器信息，如协议，URI 等。该变量是一个必要的会话级动态对象。
 
 1. `$RDR.status`：获取当前渲染器状态。
 1. `$RDR.type`：获取当前渲染器类型。
@@ -1441,8 +1441,8 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 HVML 定义了如下几种框架元素：
 
 - `hvml`：该元素定义 HVML 程序的根元素，除 `target` 属性之外，其属性及内容，将被克隆到目标文档的根元素。
-- `head`：该元素定义 HVML 程序中的公共部分，通常用来创建全局静态变量。另外，若目标文档支持 `head` 元素，则其属性和内容将被克隆到目标文档的 `body` 元素中。
-- `body`：该元素定义一个程序本体；HVML 程序中可包含多个程序本体，但每次执行只会执行一个本体。另外，若目标文档支持 `body` 元素，则其属性和内容将被克隆到目标文档的 `body` 元素中。
+- `head`：该元素定义 HVML 程序中的公共部分，通常用来创建全局静态变量。另外，若目标文档支持 `head` 元素，则其属性和内容将被克隆到目标文档的 `head` 元素中。
+- `body`：该元素定义一个程序本体；HVML 程序中可包含零个或者多个程序本体，但每次执行只会执行一个指定的本体。另外，若目标文档支持 `body` 元素，则其属性和内容将被克隆到目标文档的 `body` 元素中。
 
 详情见本文档 [2.3) 框架标签详解](#23-框架标签详解) 小节。
 
@@ -2386,7 +2386,7 @@ $EJSON.numberify(
 除了注释之外，`hvml` 元素中可包含如下两种标签定义的子元素：
 
 - 零个或一个由 `head` 标签定义的头部元素，若有则必须定义为 `hvml` 元素的第一个子元素。
-- 一个或多个由 `body` 标签定义的本体元素。
+- 零个或多个由 `body` 标签定义的本体元素。
 
 #### 2.3.2) `head` 标签
 
@@ -4200,7 +4200,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 1. 若指定的行者名称就是当前行者，设定当前行者为目标行者，跳转到第 4 步。
 2. 若指定的行者已存在，设定该行者为目标行者，跳转到第 4 步。
-3. 若指定的行者不存在，则创建一个新行者及其对应的虚拟机实例，创建当前虚拟机实例中所有必要的会话级全局变量（如 `$SYSTEM`、 `$SESSION`、 `$EJSON` 以及 `$STREAM` 等）。设定新行者为目标行者，跳转到第 4 步。
+3. 若指定的行者不存在，则创建一个新行者及其对应的虚拟机实例，创建当前虚拟机实例中所有必要的会话级全局变量（如 `$SYSTEM`、 `$SESSION`、 `$EJSON`、 `$STREAM`、 `$RDR` 等）。设定新行者为目标行者，跳转到第 4 步。
 4. 构建一个空的 `hvml` 根节点，设置其 `target` 属性为 `void`，然后克隆操作组定义的 vDOM 子树并将其作为 `hvml` 根元素的子树，从而构成一个完整的 vDOM 树。
 5. 构建所有必要的协程级全局变量，如 `$TIMERS`、 `$HVML` 等，并关联到 vDOM 树上。
 6. 在目标行者对应的虚拟机实例上创建一个协程从上述 vDOM 树的 `hvml` 根元素开始执行。在 `hvml` 元素对应的栈帧中，将 `call` 元素 `with` 属性定义的值作为该栈帧的 `$?` 变量值，`call` 元素的内容数据作为该栈帧的 `$^` 变量值。
@@ -5881,13 +5881,13 @@ HVML 本质上采用 XML 语法描述程序中的各个元素。HVML 文档的�
 1. 一个以 `hvml` 元素形式定义的文档元素。
 1. 任意数量的注释和 ASCII 空白字符。
 
-HVML 程序中的注释有两种形式，一种是 `<!-- 注释内容 -->` 形式的注释，一种是脚本语言常用的 `#` 注释。其区别在于：
+HVML 程序中的注释有两种形式，一种是 `<!-- 注释内容 -->` 形式的常规注释，一种是脚本语言常用的井号（`#` ）注释。其区别在于：
 
-1. 使用第一种形式的注释，将在最终的 vDOM 树中构造出一个注释节点。
-1. 以 `#` 打头，或者由任意数量的空白字符加 `#` 字符可定义一个注释行，注释行中的所有字符，将被解析器整个忽略直到行尾。
+1. 解析器会解析常规注释，并在最终的 vDOM 树中构造出一个注释节点。
+1. 井号注释只能出现在常规注释或者 `DOCTYPE` 之前。任意数量的空白字符加 `#` 字符可定义一个井号注释行，注释行中的所有字符（包括行尾），将被解析器整个忽略。因此，井号注释的内容不会出现在 vDOM 树中。
 
 ```
-#!/bin/purc
+#!/usr/bin/purc
 # The above line makes the HVML program can be marked as an executable to
 # run it directly on the command line if you installed a correct
 # HVML interpreter, e.g., `/bin/purc` in you system.
@@ -6109,7 +6109,7 @@ SYSTEM 标识符字符串的格式如下：
 
 框架和外部元素可包含文本、字符引用、其他普通元素或外部元素以及注释，但文本中不可包含 U+003C LESS-THAN SIGN (`<`) 或含糊的 & 符号。
 
-> Framework and foreign elements can have text, character references, other elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand. 
+> Framework and foreign elements can have text, character references, other elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
 
 标签包含标签名称，给定了元素的名称。HVML 元素允许使用指定的前缀来避免出现标签名称的冲突。除该前缀中包含的冒号（:）字符之外，标签名称中仅使用 ASCII 字母及数字，且仅使用字母开头。
 
@@ -6351,7 +6351,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 
 1) 整个省略 `head` 元素
 
-我们可以整个省略 `head` 元素。当我们整个省略 `head` 元素时，对应的 HVML DOM 树中将包含一个空的 `head` 元素节点。
+我们可以整个省略 `head` 元素。此种情况下，若目标文档支持 `head` 元素，将在目标文档中创建一个空的 `head` 元素。
 
 ```html
 <!DOCTYPE hvml>
@@ -6359,6 +6359,20 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
     <body>
         ...
     </body>
+</hvml>
+```
+
+2) 整个省略 `body` 元素
+
+我们可以整个省略 `body` 元素。此种情况下，我们无法通过指定 `body` 的 `id` 属性来执行不同的本体代码。若目标文档支持 `body` 元素，则将在目标文档中创建一个空的 `body` 元素，且 HVML 程序生成的目标文档内容，将插入到 `body` 元素内。若目标文档不支持 `body` 元素，则生成的内容将插入到目标文档的根元素内。
+
+```html
+<!DOCTYPE hvml SYSTEM 'v: MATH'>
+<hvml target="void">
+    <iterate on 0 onlyif $L.lt($0<, 10) with $MATH.add($0<, 1) >
+        $STREAM.stdout.writelines(
+                $STR.join($0<, ") Hello, world! --from COROUTINE-", $HVML.cid))
+    </iterate>
 </hvml>
 ```
 
@@ -6699,8 +6713,6 @@ CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被�
 ```html
 <!DOCTYPE hvml>
 <hvml target="xml">
-    <head>
-    </head>
 
     <body>
         <init as="fileInfo">
@@ -6995,11 +7007,15 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 1. 增加预定义目标文档类型 `_inherit`，表示继承父协程的文档。
 1. 调整普通窗口前缀为 `plainwin:`。
+1. 允许井号注释。
+1. 允许 `head` 和 `body` 为可选标签。
 
 相关章节：
 
 - [2.3.4) 框架标签的内容](#234-框架标签的内容)
 - [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
+- [3.1) 书写 HVML 文档](#31-书写-hvml-文档)
+- [3.1.2.5) 可选标签](#3125-可选标签)
 
 #### RC4) 220601
 
