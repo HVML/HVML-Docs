@@ -4610,7 +4610,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 - `/-/-/3dfedf`：指当前主机、当前应用、当前行者中的 `3dfedf` 号协程。
 - `/-/otherRunner/3dfedf`：指当前主机、当前应用 `otherRunner` 行者中的 `3dfedf` 号协程。
 
-通常，用于完成请求的目标协程的运行状态在进入到事件轮询阶段之后，才能响应来自其他协程的请求并在执行对应的操作组后返回结果给发起请求的协程。
+通常，用于完成请求的目标协程的运行状态在进入到事件轮询阶段之后，才能响应来自其他协程的请求并在执行对应的操作组后返回结果给发起请求的协程。为此，协程应在 `$HVML` 变量上观察 `request` 事件。我们可以在这个 `observe` 中定义一个默认的操作组。
 
 如下面的代码所示，一个协程定义了一个操作组 `echo`，将传入的参数追加一个前缀后原样返回：
 
@@ -4630,9 +4630,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
         </div>
     </div>
 
-    <observe on="$HVML" for="idle">
-        <sleep for="10ms" />
-    </observe>
+    <observe on="$HVML" for="request" />
 
   </body>
 </hvml>
@@ -4643,14 +4641,14 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 ```
     <load as="myRepeater" from="myrepeater.hvml" within="myRunner" asynchronously>
         <observe on="$myRepeater" for="corState:observing">
-            <request on="$myRepeater.id" to="echo" at="#scope1" >
+            <request on="$myRepeater.uri" to="echo" at="#scope1" >
                 "How are you?"
             </request>
         </observe>
     </load>
 ```
 
-当子协程在事件轮询阶段收到来自父协程的请求后，将构造一个虚拟栈帧调用指定的操作组。因此，我们可利用 `request` 元素的 `at` 属性指定一个元素标识符来确定静态变量的命名范围，从而构成在子协程中调用操作组的一个闭包。比如，以上的代码，子协程在收到上面的请求之后，实际执行效果相当于：
+当该协程在事件轮询阶段收到来自父协程的请求后，将构造一个虚拟栈帧调用指定的操作组；若父协程的 `request` 元素未指定操作组的名称，则执行 `observe` 元素定义的默认操作组。此时，我们还可利用 `request` 元素的 `at` 属性指定一个元素标识符来确定静态变量的命名范围，从而构成在子协程中调用操作组的一个闭包。比如，以上的代码，子协程在收到上面的请求之后，实际执行效果相当于：
 
 ```
     <define as="echo">
