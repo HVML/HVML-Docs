@@ -52,10 +52,10 @@ Language: Chinese
       * [3.1.10) `env` 方法](#3110-env-方法)
       * [3.1.11) `random_sequence` 方法](#3111-random_sequence-方法)
       * [3.1.12) `random` 方法](#3112-random-方法)
-   + [3.2) `SESSION`](#32-session)
+   + [3.2) `RUNNER`](#32-runner)
       * [3.2.1) `app` 方法](#321-app-方法)
       * [3.2.2) `runner` 方法](#322-runner-方法)
-      * [3.2.3) `sid` 方法](#323-sid-方法)
+      * [3.2.3) `rid` 方法](#323-rid-方法)
       * [3.2.4) `uri` 方法](#324-uri-方法)
       * [3.2.5) `myObj` 静态属性](#325-myobj-静态属性)
       * [3.2.6) `user` 方法](#326-user-方法)
@@ -66,7 +66,7 @@ Language: Chinese
       * [3.3.4) `mktime` 方法](#334-mktime-方法)
       * [3.3.5) `fmttime` 方法](#335-fmttime-方法)
       * [3.3.6) `fmtbdtime` 方法](#336-fmtbdtime-方法)
-   + [3.4) `HVML`](#34-hvml)
+   + [3.4) `CRTN`](#34-crtn)
       * [3.4.1) `target` 方法](#341-target-方法)
       * [3.4.2) `base` 方法](#342-base-方法)
       * [3.4.3) `max_iteration_count` 方法](#343-max_iteration_count-方法)
@@ -255,14 +255,13 @@ Language: Chinese
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RC5) 220801](#rc5-220801)
       * [RC4) 220701](#rc4-220701)
       * [RC3) 220601](#rc3-220601)
       * [RC2) 220501](#rc2-220501)
       * [RC1) 220401](#rc1-220401)
       * [BRC) 220201](#brc-220201)
    + [附.2) 贡献者榜单](#附2-贡献者榜单)
-   + [附.3) 废弃的内容](#附3-废弃的内容)
-      * [`const_obj` 静态属性](#const_obj-静态属性)
    + [附.3) 商标声明](#附3-商标声明)
 
 [//]:# (END OF TOC)
@@ -280,7 +279,7 @@ Language: Chinese
   1. 2.2) 规则、表达式及方法的描述语法
 - 解释器（interpreter），指解析并运行 HVML 程序的计算机软件。
 - 渲染器（renderer），指渲染 HVML 协程生成的目标文档并和用户交互的计算机软件。
-- 会话（session），指一个解释器实例的上下文信息；每个解释器实例对应一个 HVML 会话，每个 HVML 会话运行多个 HVML 协程，对应渲染器中的多个窗口。
+- 行者（runner），每个解释器实例对应一个行者，连接到渲染器后对应一个渲染器会话。
 - 静态属性（static property），指一个对象上键值为普通数据的属性，其键值不是动态值。我们通常使用小写开头的驼峰命名法命名这类属性，如 `myObj`。
 - 方法（method），指一个对象上键值为动态值的属性。我们通常使用下划线连接的全小写命名法，如 `starts_with`。
 - 获取器（getter），指一个方法的获取器。调用获取器返回该方法的动态属性值。
@@ -293,10 +292,10 @@ Language: Chinese
 
 按变量对应数据的作用域，可分为：
 
-1. 会话级变量。指该变量对应的数据对当前解释器实例中的所有 HVML 协程可见。也就是说，同一会话中的不同协程对应同一个数据副本。
+1. 行者级变量。指该变量对应的数据对当前解释器实例中的所有 HVML 协程可见。也就是说，同一行者中的不同协程对应同一个数据副本。
 1. 协程级变量。指该变量对应的数据仅对当前解释器实例中的单个 HVML 协程可见。也就是说，不同的 HVML 协程有一个自己的数据副本。
 
-需要注意，会话级变量的实现应考虑多线程（当解释器以进程方式运行，每个解释器实例对应一个独立线程）情形下的线程安全和可重入性。
+需要注意，行者级变量的实现应考虑多线程（当解释器以进程方式运行，每个解释器实例对应一个独立线程）情形下的线程安全和可重入性。
 
 **约定**  
 解释器可自行实现全局变量，作为约定，解释器自行实现的全局变量，其名称应以 ASCII U+005F LOW LINE（`_`）打头，使用全大写字母并添加解释器前缀。如 `_PURC_VAR`。而一般的变量，使用全小写字母。
@@ -467,9 +466,9 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ### 3.1) `SYSTEM`
 
-该变量是一个会话级内置变量，主要用于获得或设置系统信息。该内置变量的实现，需要考虑如下要求：
+该变量是一个行者级内置变量，主要用于获得或设置系统信息。该内置变量的实现，需要考虑如下要求：
 
-- 在某个协程中调用 `$SYSTEM` 的设置器方法，可能产生 `change` 事件，解释器应该将该事件广播到所有会话，并进一步转发给会话中的所有协程。
+- 在某个协程中调用 `$SYSTEM` 的设置器方法，可能产生 `change` 事件，解释器应该将该事件广播到所有行者，并进一步转发给行者中的所有协程。
 
 #### 3.1.1) `const` 方法
 
@@ -699,7 +698,7 @@ $SYSTEM.time(!
 **异常**
 
 - `InvalidValue`：传入无效参数，如负值或者大于 100,000 或小于 0 的微秒值。
-- `AccessDenied`：当前会话的所有者没有权限设置系统时间时，将抛出该异常。
+- `AccessDenied`：当前行者的所有者没有权限设置系统时间时，将抛出该异常。
 
 **备注**
 
@@ -785,7 +784,7 @@ $SYSTEM.time_us
 
 #### 3.1.7) `sleep` 方法
 
-暂停当前会话的执行。
+暂停当前行者的执行。
 
 **描述**
 
@@ -795,7 +794,7 @@ $SYSTEM.sleep(
 ) real | false
 ```
 
-该方法暂停当前 HVML 会话的执行以指定的秒数。若使用浮点数指定秒数，则小数部分可指定要休眠的纳秒数。正常情况下，该方法返回 0；当休眠被信号打断时，则返回剩余的秒数（返回值的类型和参数类型一致）。
+该方法暂停当前行者的执行以指定的秒数。若使用浮点数指定秒数，则小数部分可指定要休眠的纳秒数。正常情况下，该方法返回 0；当休眠被信号打断时，则返回剩余的秒数（返回值的类型和参数类型一致）。
 
 **异常**
 
@@ -854,7 +853,7 @@ HVML 推荐使用类似 `Asia/Shanghai` 这样的字符串来表示时区。实�
 **异常**
 
 - `InvalidValue`：无效的时区字符串。对无效的选项关键词，静默求值时，将被视作 `local`。
-- `AccessDenied`：当前会话的所有者没有权限持久更改系统时区。
+- `AccessDenied`：当前行者的所有者没有权限持久更改系统时区。
 
 **备注**
 
@@ -985,7 +984,7 @@ $SYSTEM.random_sequence(
 **示例**
 
 ```js
-// 从内核获得随机数据用于当前会话的随机数发生器种子。
+// 从内核获得随机数据用于当前行者的随机数发生器种子。
 $SYSTEM.random(! $EJSON.fetchreal($SYSTEM.random_sequence(4), 'u32') )
     // boolean: true
 ```
@@ -1058,22 +1057,22 @@ $SYSTEM.random(-10FL)
 - C 标准函数：`srandom_r()`
 - C 标准函数：`initstate_r()`
 
-### 3.2) `SESSION`
+### 3.2) `RUNNER`
 
-该变量是一个会话级内置变量，解释器在创建一个新的会话时，会自动创建并绑定。该变量主要用于会话相关的信息，并提供给用户在当前会话的不同 HVML 协程之间共享数据的机制。
+该变量是一个行者级内置变量，解释器在创建一个新的行者时，会自动创建并绑定。该变量主要用于行者相关的信息，并提供给用户在当前行者的不同协程之间共享数据的机制。
 
 #### 3.2.1) `app` 方法
 
-获取当前会话的应用名称。
+获取当前行者的应用名称。
 
 **描述**
 
 ```js
-$SESSION.app
-    string : `the app name of current session.`
+$RUNNER.app
+    string : `the app name of current runner.`
 ```
 
-该方法获取当前会话的应用名称。
+该方法获取当前行者的应用名称。
 
 **异常**
 
@@ -1082,22 +1081,22 @@ $SESSION.app
 **示例**
 
 ```js
-$SESSION.app
+$RUNNER.app
     // string: 'cn.fmsoft.hvml.sample'
 ```
 
 #### 3.2.2) `runner` 方法
 
-获取当前会话的行者名称。
+获取当前行者的行者名称。
 
 **描述**
 
 ```js
-$SESSION.runner
-    string : `the runner name of current session.`
+$RUNNER.runner
+    string : `the runner name of current runner.`
 ```
 
-该方法获取当前会话的行者名称。
+该方法获取当前行者的行者名称。
 
 **异常**
 
@@ -1106,22 +1105,22 @@ $SESSION.runner
 **示例**
 
 ```js
-$SESSION.runner
+$RUNNER.runner
     // string: 'hello'
 ```
 
-#### 3.2.3) `sid` 方法
+#### 3.2.3) `rid` 方法
 
-获取当前会话的会话标识符（session identifier，简称 `sid`）。
+获取当前行者的行者标识符（runner identifier，简称 `rid`）。
 
 **描述**
 
 ```js
-$SESSION.sid
-    ulongint : `the identifier of the current session.`
+$RUNNER.rid
+    ulongint : `the identifier of the current runner.`
 ```
 
-该方法获取当前会话的会话标识符。
+该方法获取当前行者的行者标识符。
 
 **异常**
 
@@ -1130,22 +1129,22 @@ $SESSION.sid
 **示例**
 
 ```js
-$SESSION.sid
+$RUNNER.sid
     // ulongint: 3UL
 ```
 
 #### 3.2.4) `uri` 方法
 
-获取当前会话的 URI。
+获取当前行者的 URI。
 
 **描述**
 
 ```js
-$SESSION.uri
-    string : `the URI of the current session.`
+$RUNNER.uri
+    string : `the URI of the current runner.`
 ```
 
-该方法获取当前会话的 URI，形似 `//localhost/cn.fmsoft.hvml.caculator/main/`。
+该方法获取当前行者的 URI，形似 `//localhost/cn.fmsoft.hvml.caculator/main/`。
 
 **异常**
 
@@ -1154,19 +1153,19 @@ $SESSION.uri
 **示例**
 
 ```js
-$SESSION.uri
+$RUNNER.uri
     // string: '//localhost/cn.fmsoft.hvml.caculator/main/'
 ```
 
 #### 3.2.5) `myObj` 静态属性
 
-`myObj` 是 `SESSION` 的一个静态属性，用来定义用户自定义键值对，初始为一个空对象。程序可使用 `update` 元素设置其内容：
+`myObj` 是 `RUNNER` 的一个静态属性，用来定义用户自定义键值对，初始为一个空对象。程序可使用 `update` 元素设置其内容：
 
 ```html
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
-        <update on="$SESSION.myObj" to="displace">
+        <update on="$RUNNER.myObj" to="displace">
             {
                 "AUTHOR": "Vincent Wei",
             }
@@ -1179,10 +1178,10 @@ $SESSION.uri
 </hvml>
 ```
 
-由于 `$SESSION` 是会话级变量，故而可以在当前会话的另一个 HVML 协程中观察该数据上的变化：
+由于 `$RUNNER` 是行者级变量，故而可以在当前行者的另一个 HVML 协程中观察该数据上的变化：
 
 ```html
-    <observe on="$SESSION.myObj" for="change:AUTHOR" in="#theStatusBar">
+    <observe on="$RUNNER.myObj" for="change:AUTHOR" in="#theStatusBar">
         ...
     </observe>
 ```
@@ -1194,7 +1193,7 @@ $SESSION.uri
 **描述**
 
 ```js
-$SESSION.user(
+$RUNNER.user(
         <string $key: `the user defined key name`>
 ) any | undefined : `the variant value corresponding to the key name $key.`
 ```
@@ -1202,7 +1201,7 @@ $SESSION.user(
 该方法获取指定键名对应的键值。当指定的键名未被设置时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `undefined`。
 
 ```js
-$SESSION.user(!
+$RUNNER.user(!
         <string $key: `the user defined key name`>,
         <any | undefined $value: `the new variant value`>
 ) boolean : `returns @true when the old value was overridden or @false when a new key-value pair was created.`
@@ -1210,7 +1209,7 @@ $SESSION.user(!
 
 该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。注意，传入键值为 `undefined` 会执行移除对应键值对的操作。当移除一个并不存在的键值对时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `false`。
 
-_注意_，`user` 的获取器和设置器本质上访问的是 `$SESSION` 的 `myObj` 静态属性。
+_注意_，`user` 的获取器和设置器本质上访问的是 `$RUNNER` 的 `myObj` 静态属性。
 
 **异常**
 
@@ -1222,23 +1221,23 @@ _注意_，`user` 的获取器和设置器本质上访问的是 `$SESSION` 的 `
 
 ```js
 // 移除 `userId` 键值对
-$SESSION.user(! 'userId', undefined )
+$RUNNER.user(! 'userId', undefined )
     // false (assumed that `userId` was not set)
 
 // 设置 `userId` 为 `20211104`
-$SESSION.user(! 'userId', '20211104' )
+$RUNNER.user(! 'userId', '20211104' )
     // false
 
 // 获取 `userId` 对应的键值
-$SESSION.user('userId')
+$RUNNER.user('userId')
     // string: '20211104-01'
 
 // 重置 `userId` 为 `20220213`
-$SESSION.user(! 'userId', '20220213' )
+$RUNNER.user(! 'userId', '20220213' )
     // true
 
 // 移除 `userId` 键值对
-$SESSION.user(! 'userId', undefined )
+$RUNNER.user(! 'userId', undefined )
     // true
 ```
 
@@ -1511,15 +1510,15 @@ $DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MAT
 
 - C 标准函数：`strftime()`
 
-### 3.4) `HVML`
+### 3.4) `CRTN`
 
-`HVML` 是一个内置的协程级动态变量，该变量用于获取当前 HVML 协程的基本信息或者设置当前协程的解释器参数。
+`CRTN` 是一个内置的协程级动态变量，该变量用于获取当前协程的基本信息或者设置当前协程的解释器参数。
 
-另外，在 `$HVML` 变量上，会产生如下渲染状态相关的事件：
+另外，在 `$CRTN` 变量上，会产生如下渲染状态相关的事件：
 
 1. `rdrState:suppressed`：当前协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
 1. `rdrState:closed`：协程对应的渲染器页面被用户强制关闭。
-1. `rdrState:lost`：协程所在会话丢失渲染器的连接，比如渲染器意外终止或者异常退出。
+1. `rdrState:lost`：协程所在行者丢失渲染器的连接，比如渲染器意外终止或者异常退出。
 1. `rdrState:regular`：当前协程和渲染器恢复到常规数据交换状态。
 
 #### 3.4.1) `target` 方法
@@ -1529,7 +1528,7 @@ $DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MAT
 **描述**
 
 ```js
-$HVML.target string: `the target document type such as 'html'`
+$CRTN.target string: `the target document type such as 'html'`
 ```
 
 获取当前 HVML 协程的目标文档类型，也就是 `hvml` 标签的 `target` 属性值。
@@ -1541,7 +1540,7 @@ $HVML.target string: `the target document type such as 'html'`
 **示例**
 
 ```js
-$HVML.target
+$CRTN.target
     // string: 'html'
 ```
 
@@ -1550,13 +1549,13 @@ $HVML.target
 该方法获取或设置 HVML 协程的基础 URL。
 
 ```js
-$HVML.base string: `the base URL.`
+$CRTN.base string: `the base URL.`
 ```
 
 该方法返回当前的基础 URL，如 `file:///app/com.example.foo/hvml`。
 
 ```js
-$HVML.base(!
+$CRTN.base(!
         <string $new_url: `the new base URL`>
 ) string | false: `the new base URL normalized from $new_url or `false` for invalid $new_url.`
 ```
@@ -1572,7 +1571,7 @@ $HVML.base(!
 **示例**
 
 ```js
-$HVML.base(! "https://foo.example.com//app/hvml/" )
+$CRTN.base(! "https://foo.example.com//app/hvml/" )
     // string: 'https://foo.example.com/app/hvml'
 ```
 
@@ -1585,13 +1584,13 @@ $HVML.base(! "https://foo.example.com//app/hvml/" )
 **描述**
 
 ```js
-$HVML.max_iteration_count ulongint: `the current maximal iteration count.`
+$CRTN.max_iteration_count ulongint: `the current maximal iteration count.`
 ```
 
 该方法返回当前的最大迭代次数值。
 
 ```js
-$HVML.max_iteration_count(!
+$CRTN.max_iteration_count(!
         <real $new_value: `the new maximal interation count`>
 ) ulongint | false : `the new maximal iteration count.`
 ```
@@ -1607,7 +1606,7 @@ $HVML.max_iteration_count(!
 **示例**
 
 ```js
-$HVML.max_iteration_count(! 10000UL )
+$CRTN.max_iteration_count(! 10000UL )
 ```
 
 #### 3.4.4) `max_recursion_depth` 方法
@@ -1619,13 +1618,13 @@ $HVML.max_iteration_count(! 10000UL )
 **描述**
 
 ```js
-$HVML.max_recursion_depth ulongint: `the current maximal recursion depth value.`
+$CRTN.max_recursion_depth ulongint: `the current maximal recursion depth value.`
 ```
 
 该方法返回当前的最大递归深度值。
 
 ```js
-$HVML.max_recursion_depth(!
+$CRTN.max_recursion_depth(!
         <real $new_value: `new maximal recursion depth`>
 ) ulongint | false: `the new maximal recursion depth value.`
 ```
@@ -1641,7 +1640,7 @@ $HVML.max_recursion_depth(!
 **示例**
 
 ```js
-$HVML.max_recursion_depth(! 10000UL )
+$CRTN.max_recursion_depth(! 10000UL )
 ```
 
 #### 3.4.5) `max_embedded_levels` 方法
@@ -1653,13 +1652,13 @@ $HVML.max_recursion_depth(! 10000UL )
 **描述**
 
 ```js
-$HVML.max_embedded_levels ulongint: `the current maximal embedded levels.`
+$CRTN.max_embedded_levels ulongint: `the current maximal embedded levels.`
 ```
 
 该方法返回当前的最大容器数据嵌套层级。
 
 ```js
-$HVML.max_embedded_levels(!
+$CRTN.max_embedded_levels(!
         <real $new_value: `new maximal embedded levels`>
 ) ulongint | false: `the new maximal embedded levels.`
 ```
@@ -1675,7 +1674,7 @@ $HVML.max_embedded_levels(!
 **示例**
 
 ```js
-$HVML.max_embedded_levels(! 64UL )
+$CRTN.max_embedded_levels(! 64UL )
 ```
 
 #### 3.4.6) `timeout` 方法
@@ -1687,13 +1686,13 @@ $HVML.max_embedded_levels(! 64UL )
 **描述**
 
 ```js
-$HVML.timeout number : `the current timeout value (in seconds)`
+$CRTN.timeout number : `the current timeout value (in seconds)`
 ```
 
 该方法返回当前超时值。
 
 ```js
-$HVML.timeout(!
+$CRTN.timeout(!
         <number $new_timeout: `the new timeout value (in seconds)`>
 ) number | false: `the new timeout value`
 ```
@@ -1712,7 +1711,7 @@ $HVML.timeout(!
 
 ```js
 // 设置超时值为 3.5 秒。
-$HVML.timeout(! 3.5 )
+$CRTN.timeout(! 3.5 )
     // number: 3.5
 ```
 
@@ -1723,7 +1722,7 @@ $HVML.timeout(! 3.5 )
 **描述**
 
 ```js
-$HVML.cid ulongint : `the corontine identifier`
+$CRTN.cid ulongint : `the corontine identifier`
 ```
 
 **异常**
@@ -1733,7 +1732,7 @@ $HVML.cid ulongint : `the corontine identifier`
 **示例**
 
 ```js
-$HVML.cid
+$CRTN.cid
     // ulongint: 10UL
 ```
 
@@ -1744,7 +1743,7 @@ $HVML.cid
 **描述**
 
 ```js
-$HVML.token string : `the corontine token`
+$CRTN.token string : `the corontine token`
 ```
 
 该方法获取当前 HVML 协程的令牌（token），形如 `COROUTINE-100`。
@@ -1756,7 +1755,7 @@ $HVML.token string : `the corontine token`
 **示例**
 
 ```js
-$HVML.token
+$CRTN.token
     // string: `COROUTINE-100`
 ```
 
@@ -1767,7 +1766,7 @@ $HVML.token
 **描述**
 
 ```js
-$HVML.uri string : `the corontine URI`
+$CRTN.uri string : `the corontine URI`
 ```
 
 该方法获取当前 HVML 协程的 URI，形如 `//localhost/cn.fmsoft.hvml.calculator/main/COROUTINE-100`。
@@ -1779,7 +1778,7 @@ $HVML.uri string : `the corontine URI`
 **示例**
 
 ```js
-$HVML.uri
+$CRTN.uri
     // string: `//localhost/cn.fmsoft.hvml.calculator/main/COROUTINE-100`
 ```
 
@@ -1877,7 +1876,7 @@ $DOC.query("#foo").attr(! "bar", "qux")
 
 ### 3.6) `EJSON`
 
-该动态变量为会话级内置变量，用于返回数据的类型、成员个数等信息。
+该动态变量为行者级内置变量，用于返回数据的类型、成员个数等信息。
 
 #### 3.6.1) `type` 方法
 
@@ -2652,7 +2651,7 @@ $EJSON.base64_decode( 'SFZNTA==' )
 
 ### 3.7) `L`
 
-该变量是一个会话级内置变量，主要用于逻辑运算。
+该变量是一个行者级内置变量，主要用于逻辑运算。
 
 有关任何数据转换为逻辑真假值时的规则，请参阅 [HVML 1.0 规范 - 2.1.4) 任意数据类型的强制转换规则](hvml-spec-v1.0-zh.md#214-%E4%BB%BB%E6%84%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%BC%BA%E5%88%B6%E8%BD%AC%E6%8D%A2%E8%A7%84%E5%88%99)。
 
@@ -4746,7 +4745,7 @@ $URL.assemble(
 
 ### 3.11) `STREAM`
 
-`$STREAM` 是一个会话级内置变量，该变量用于实现基于读写流的操作。和 `$DOC` 变量的 `query` 方法类似，该变量上提供的 `open` 方法返回一个原生实体，在该原生实体上，我们提供用于从流中读取数据或者将数据写入流的接口。
+`$STREAM` 是一个行者级内置变量，该变量用于实现基于读写流的操作。和 `$DOC` 变量的 `query` 方法类似，该变量上提供的 `open` 方法返回一个原生实体，在该原生实体上，我们提供用于从流中读取数据或者将数据写入流的接口。
 
 下面的 HVML 代码，打开了一个本地文件，然后在代表读取流的原生实体上调用 `readstruct` 方法：
 
@@ -4952,7 +4951,7 @@ $stream.readstruct(
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
 - `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空数组。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空数组。
-- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回空数组。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回空数组。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空数组。
 
 **示例**
@@ -5006,7 +5005,7 @@ $stream.writestruct(
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回已写入的字节数。
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回已写入的字节数。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回实际写入的字节数。
-- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回实际写入的字节数。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回实际写入的字节数。
 - `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回实际写入的字节数。
 - `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回实际写入的字节数。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回实际写入的字节数。
@@ -5046,7 +5045,7 @@ $stream.readlines(
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
 - `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空数组。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空数组。
-- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回空数组。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回空数组。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空数组。
 
 **示例**
@@ -5087,7 +5086,7 @@ $stream.writelines(
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回实际写入的字节数。
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回实际写入的字节数。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回实际写入的字节数。
-- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回实际写入的字节数。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回实际写入的字节数。
 - `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回实际写入的字节数。
 - `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回实际写入的字节数。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回实际写入的字节数。
@@ -5127,7 +5126,7 @@ $stream.readbytes(
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回空字节序列。
 - `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空字节序列。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空字节序列。
-- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回空字节序列。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回空字节序列。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空字节序列。
 
 
@@ -5167,7 +5166,7 @@ $stream.writebytes(
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回0。
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回0。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回0。
-- `AccessDenied`：当前会话的所有者没有权限写入数据；可忽略异常，静默求值时返回0。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回0。
 - `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回0。
 - `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回0。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回0。
@@ -6851,7 +6850,7 @@ $dirStream.rewind boolean
 
 **备注**
 
-当指定的文件以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前会话维护的当前工作路径信息（同 `$SYSTEM.cwd`）。
+当指定的文件以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前行者维护的当前工作路径信息（同 `$SYSTEM.cwd`）。
 
 #### 4.3.1) 文本文件
 
@@ -6942,23 +6941,25 @@ $FILE.bin.tail($file, -5)
 
 #### RC5) 220801
 
-1. 新增 `$HVML.cid`、 `$HVML.token` 以及 `$HVML.uri` 属性获取器。
-1. 新增 `$SESION.sid`、 `$SESSION.uri` 属性获取器。
+1. 使用“行者”替换“会话”。
+1. `$SESSION` 更名为 `$RUNNER`；`$HVML` 更名为 `$CRTN`。
+1. 新增 `$CRTN.cid`、 `$CRTN.token` 以及 `$CRTN.uri` 属性获取器。
+1. 新增 `$RUNNER.rid`、 `$RUNNER.uri` 属性获取器。
 1. 增强 `$MATH.eval` 及 `$MATH.eval_l`，使之支持常量及函数。
 
 #### RC4) 220701
 
 1. 描述了如何通过 `pipe` URI 的查询组件传递命令行参数。
 1. 描述了 `pipe` 流实体的额外方法：`writeeof` 和 `status`。
-1. `$SESSION` 的 `user_obj` 静态属性名称调整为 `myObj`。
+1. `$RUNNER` 的 `user_obj` 静态属性名称调整为 `myObj`。
 
 #### RC3) 220601
 
 1. 新增接口：
-   - `$SESSION.app`：返回当前会话的应用名称。
-   - `$SESSION.runner`：返回当前会话的行者名称。
+   - `$RUNNER.app`：返回当前行者的应用名称。
+   - `$RUNNER.runner`：返回当前行者的行者名称。
 1. 移除全局级动态变量的提法。
-1. 将 `$SYSTEM` 调整为会话级动态变量。
+1. 将 `$SYSTEM` 调整为行者级动态变量。
 1. 调整 `$FS.rename` 方法返回值类型（boolean）。
 
 #### RC2) 220501
@@ -6985,8 +6986,7 @@ $FILE.bin.tail($file, -5)
    - `$STR.scan_p`
 
 1. 新增方法
-   - `$HVML.target`
-   - `$HVML.lang`
+   - `$CRTN.target`
 
 #### RC1) 220401
 
@@ -7002,10 +7002,10 @@ $FILE.bin.tail($file, -5)
 1. 将 `$STREAM` 独立出来。
 1. 为 `$FS` 新增大量方法。
 1. 将 `$SYSTEM` 调整为全局级动态变量。
-1. 将 `$SYSTEM` 中的 `random` 方法调整到 `SESSION` 变量，将时间格式化相关的方法调整到新的 `$DATETIME` 变量。
+1. 将 `$SYSTEM` 中的 `random` 方法调整到 `RUNNER` 变量，将时间格式化相关的方法调整到新的 `$DATETIME` 变量。
 1. 添加 `$STREAM.stdin`, `$STREAM.stdout` 以及 `$STREAM.stderr` 三个静态属性，用于返回代表标准输入、标准输出和标准错误的流式读写实体。
 1. 在 `$SYSTEM` 中增加 `random_sequence` 方法。
-1. 将 `$SESSION` 中的 `env` 和 `cwd` 方法转移到 `$SYSTEM` 方法。
+1. 将 `$RUNNER` 中的 `env` 和 `cwd` 方法转移到 `$SYSTEM` 方法。
 1. 在二进制格式表示法中增加 `utf16` 和 `utf32` 两种编码。
 1. 新增 `$EJSON.fetchstr` 和 `$EJSON.fetchreal`，可使用二进制格式表示法从一个字节序列中抽取实数或者字符串。
 1. 增强元素汇集原生实体的方法，使之可以生成指定元素汇集的子集。
@@ -7017,37 +7017,6 @@ $FILE.bin.tail($file, -5)
 
 本榜单顺序按贡献时间由早到晚排列：
 
-
-### 附.3) 废弃的内容
-
-#### `const_obj` 静态属性
-
-`const_obj` 是 `$SYSTEM` 的一个静态属性，用来定义系统常量值，程序只可增加但不可删除或修改已有的键值对：
-
-```html
-<!DOCTYPE hvml>
-<hvml target="html">
-    <head>
-        <update on="$SYSTEM.const_obj" to="merge">
-            {
-                "HVML_INTRPR_AUTHOR": "FMSoft",
-            }
-        </update>
-    </head>
-
-    <body>
-        ...
-    </body>
-</hvml>
-```
-
-由于 `$SYSTEM` 是系统级（或会话级）变量，故而可以在当前当前系统（或当前会话）的另一个 HVML 程序中观察该数据上的变化：
-
-```html
-    <observe on="$SYSTEM.const_obj" for="change:grown" in="#theStatusBar">
-        ...
-    </observe>
-```
 
 ### 附.3) 商标声明
 
