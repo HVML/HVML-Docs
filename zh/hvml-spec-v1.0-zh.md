@@ -46,16 +46,17 @@ Language: Chinese
       * [2.1.6) 变量](#216-变量)
          - [2.1.6.1) `$REQUEST`](#2161-request)
          - [2.1.6.2) `$SYSTEM`](#2162-system)
-         - [2.1.6.3) `$HVML`](#2163-hvml)
-         - [2.1.6.4) `$DOC`](#2164-doc)
-         - [2.1.6.5) `$TIMERS`](#2165-timers)
-         - [2.1.6.6) `$L`](#2166-l)
-         - [2.1.6.7) `$T`](#2167-t)
-         - [2.1.6.8) `$EJSON`](#2168-ejson)
-         - [2.1.6.9) `$STREAM`](#2169-stream)
-         - [2.1.6.10) `$RDR`](#21610-rdr)
-         - [2.1.6.11) 集合变量](#21611-集合变量)
-         - [2.1.6.12) 表达式变量](#21612-表达式变量)
+         - [2.1.6.3) `$RUNNER`](#2163-runner)
+         - [2.1.6.4) `$CRTN`](#2164-crtn)
+         - [2.1.6.5) `$DOC`](#2165-doc)
+         - [2.1.6.6) `$TIMERS`](#2166-timers)
+         - [2.1.6.7) `$L`](#2167-l)
+         - [2.1.6.8) `$T`](#2168-t)
+         - [2.1.6.9) `$EJSON`](#2169-ejson)
+         - [2.1.6.10) `$STREAM`](#21610-stream)
+         - [2.1.6.11) `$RDR`](#21611-rdr)
+         - [2.1.6.12) 集合变量](#21612-集合变量)
+         - [2.1.6.13) 表达式变量](#21613-表达式变量)
       * [2.1.7) 栈式虚拟机](#217-栈式虚拟机)
       * [2.1.8) 框架元素](#218-框架元素)
       * [2.1.9) 模板元素](#219-模板元素)
@@ -307,7 +308,7 @@ Language: Chinese
 
 这种设计带来了如下好处：
 
-1. 相比线程或进程提供的并发机制，协程提供了一种低成本实现并发的机制。同一行者创建的多个协程属于同一个 HVML 会话，在独立的解释器实例中运行；这些协程在解释器的协调下在单个线程或者进程中轮换执行，因此协程间的数据交换不需要考虑竞态（race-condition）问题，几乎都是无锁（lock-free）操作，这减低了处理并发的成本，从而提升了整体性能。
+1. 相比线程或进程提供的并发机制，协程提供了一种低成本实现并发的机制。同一行者创建的多个协程属于同一个操作系统任务，在独立的解释器实例中运行；这些协程在解释器的协调下在单个操作系统任务（线程或者进程）中轮换执行，因此协程间的数据交换不需要考虑竞态（race-condition）问题，几乎都是无锁（lock-free）操作，这减低了处理并发的成本，从而提升了整体性能。
 1. 通过将负责不同业务逻辑的代码分离到不同的协程当中实现，我们可以提高整个项目的模块化程度，从而提升项目的可测试性以及可维护性，进而提升整个项目的软件质量。
 
 有了这样的应用框架设计，HVML 可以让几乎所有的编程语言，不论是 C/C++ 这类传统编程语言，还是 Python 这类脚本语言，都可以使用统一的模式来开发 GUI 应用。
@@ -474,7 +475,7 @@ Language: Chinese
     </define>
 
     <!-- 该元素根据当前 `hvml` 元素的 `target` 属性值就地执行不同的操作组。-->
-    <include with=${output_$HVML.target} on="$T.get('Hello, world!')" />
+    <include with=${output_$CRTN.target} on="$T.get('Hello, world!')" />
 ```
 
 第六，内置事件驱动。HVML 在语言层面提供了对数据、变量和表达式的观察能力。只需要一个 `observe` 元素，我们就可以观察一个数据上的特定事件，变量状态的变化，甚至一个表达式值的变化。
@@ -973,7 +974,7 @@ HVML 定义的上下文变量罗列如下：
 
 按变量对应数据的作用域，HVML 的预定义变量可分为：
 
-1. 会话级变量。指该变量对应的数据对当前解释器实例中的所有 HVML 协程可见。也就是说，同一会话中的不同协程对应同一个数据副本。
+1. 行者级变量。指该变量对应的数据对当前解释器实例中的所有 HVML 协程可见。也就是说，同一行者中的不同协程对应同一个数据副本。
 1. 协程级变量。指该变量对应的数据仅对当前解释器实例中的单个 HVML 协程可见。也就是说，不同的 HVML 协程有一个自己的数据副本。
 
 按变量是否必须提供，HVML 的预定义变量可分为：
@@ -1001,29 +1002,33 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 `$SYSTEM`：一个用于访问系统基本功能的动态对象，可用于提供系统时间、当前语言地区（区域）、时区、随机序列、机器名称等。比如，我们要获得当前的 Unix 时间戳，可直接使用 `$SYSTEM.time`，如果要获得一个随机序列，可使用 `$SYSTEM.random_sequence`，如果我们要获得当前的机器名称，可使用 `$SYSTEM.uname`，如果要获取当前语言地区信息，可使用 `$SYSTEM.locale`。
 
-`$SYSTEM` 变量本质上是一个必要的会话级动态对象。
+`$SYSTEM` 变量本质上是一个必要的行者级动态对象。
 
-##### 2.1.6.3) `$HVML`
+##### 2.1.6.3) `$RUNNER`
 
-`$HVML` 是一个动态对象，该对象表述的是当前正在执行的 HVML 程序实例（协程）本身，用以设置当前协程相关的参数。比如：
+`$RUNNER` 是一个必要的行者级动态变量，主要用于获取行者相关的信息，并提供给用户在当前行者的不同协程之间共享数据的机制。
 
-1. `$HVML.base`：获取或设置 HVML 程序的默认 URL 位置（类似 HTML 的 `base` 标签）。
-1. `$HVML.max_iteration_count`：获取或设置 HVML 程序在执行 `iteration` 元素时的最大迭代次数；用于检测可能的死循环。
-1. `$HVML.max_recursion_depth`：获取或设置 HVML 程序在递归执行某个功能时的最大递归深度，以防止栈溢出。
-1. `$HVML.max_embedded_levels`：获取或设置 HVML 程序在解析或者处理嵌套的容器数据时，允许的最大嵌套层级。
-1. `$HVML.timeout`：获取或设置获取外部数据时的超时值。
+##### 2.1.6.4) `$CRTN`
 
-另外，我们还可以通过 `$HVML` 对象观察一些全局事件以及当前协程渲染状态的变化，从而优雅地处理渲染器页面被用户关闭或者渲染器丢失等的情形。这些事件有：
+`$CRTN` 是一个动态对象，该对象表述的是当前正在执行的 HVML 程序实例（协程）本身，用以设置当前协程相关的参数。比如：
 
-- `idle`：当前 HVML 协程正在监听 `$HVML` 上的 `idle` 事件，且由于未收到任何事件而触发 `idle` 事件。
+1. `$CRTN.base`：获取或设置 HVML 程序的默认 URL 位置（类似 HTML 的 `base` 标签）。
+1. `$CRTN.max_iteration_count`：获取或设置 HVML 程序在执行 `iteration` 元素时的最大迭代次数；用于检测可能的死循环。
+1. `$CRTN.max_recursion_depth`：获取或设置 HVML 程序在递归执行某个功能时的最大递归深度，以防止栈溢出。
+1. `$CRTN.max_embedded_levels`：获取或设置 HVML 程序在解析或者处理嵌套的容器数据时，允许的最大嵌套层级。
+1. `$CRTN.timeout`：获取或设置获取外部数据时的超时值。
+
+另外，我们还可以通过 `$CRTN` 对象观察一些全局事件以及当前协程渲染状态的变化，从而优雅地处理渲染器页面被用户关闭或者渲染器丢失等的情形。这些事件有：
+
+- `idle`：当前 HVML 协程正在监听 `$CRTN` 上的 `idle` 事件，且由于未收到任何事件而触发 `idle` 事件。
 - `rdrState:closed`：协程对应的渲染器页面被用户强制关闭。
-- `rdrState:lost`：协程所在会话丢失渲染器的连接。
+- `rdrState:lost`：协程所在行者丢失渲染器的连接。
 - `rdrState:suppressed`：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
 - `rdrState:reload`：当前协程的文档内容重新装载到渲染器，渲染器状态调整为 `regular`。
 
-`$HVML` 变量本质上是一个必要的协程级动态对象。
+`$CRTN` 变量本质上是一个必要的协程级动态对象。
 
-##### 2.1.6.4) `$DOC`
+##### 2.1.6.5) `$DOC`
 
 `$DOC` 是一个动态对象，该对象表述的是 HVML 生成的目标文档。我们可以使用该对象上的特定键名以及 `query` 方法通过 CSS 选择器获取目标文档上的元素汇集，如：
 
@@ -1033,7 +1038,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 `$DOC` 变量本质上是一个必要的协程级动态对象。
 
-##### 2.1.6.5) `$TIMERS`
+##### 2.1.6.6) `$TIMERS`
 
 `$TIMERS` 用于当前 HVML 程序的定时器，具有固定的格式，初始为一个空的集合。可使用 `update` 等元素修改它的值，如：
 
@@ -1066,7 +1071,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 `$TIMERS` 变量本质上是一个必要的协程级非动态对象。
 
-##### 2.1.6.6) `$L`
+##### 2.1.6.7) `$L`
 
 `$L` 是一个动态对象，该对象完成数值对比、字符串对比以及逻辑与、或、异或、取反等逻辑操作，比如：
 
@@ -1084,9 +1089,9 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 比如 `$L.not($L.gt(5, 3))` 的结果是假值（`false`）。
 
-`$L` 变量本质上是一个必要的会话级动态对象。
+`$L` 变量本质上是一个必要的行者级动态对象。
 
-##### 2.1.6.7) `$T`
+##### 2.1.6.8) `$T`
 
 该变量主要用于文本的本地化，包含两个属性：
 
@@ -1136,7 +1141,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 `$T` 变量本质上是一个必要的协程级动态对象。
 
-##### 2.1.6.8) `$EJSON`
+##### 2.1.6.9) `$EJSON`
 
 该变量主要用于获得指定数据相关的信息，比如类型、数据项个数，并完成数据的数值化、字符串化、序列化等。
 
@@ -1169,9 +1174,9 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 使用上述选择器之后，相当于对原有的单个数据项做了一些过滤。比如 `<choose on="$users" ... />` 选择了整个 `$users` 数组内容做后续处理，但如果使用 `<choose on="$EJSON.select($users, ":nth-child(even)")` 则仅选择下标为偶数的数组单元。
 
-`$EJSON` 变量本质上是一个必要的会话级动态对象。
+`$EJSON` 变量本质上是一个必要的行者级动态对象。
 
-##### 2.1.6.9) `$STREAM`
+##### 2.1.6.10) `$STREAM`
 
 `$STREAM` 用于实现基于读写流的操作。和 `$DOC` 变量的 `query` 方法类似，该变量上提供的 `open` 方法返回一个原生实体，在该原生实体上，我们提供用于从流中读取或者向流中写入的接口。
 
@@ -1224,18 +1229,18 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
     </observe>
 ```
 
-`$STREAM` 变量本质上是一个必要的会话级动态对象。
+`$STREAM` 变量本质上是一个必要的行者级动态对象。
 
-##### 2.1.6.10) `$RDR`
+##### 2.1.6.11) `$RDR`
 
-`$RDR` 是一个代表当前会话渲染器的原生实体对象，可用于获取当前的渲染器信息，如协议，URI 等。该变量是一个必要的会话级动态对象。
+`$RDR` 是一个代表当前行者对应的渲染器的原生实体对象，可用于获取当前的渲染器信息，如协议，URI 等。该变量是一个必要的行者级动态对象。
 
 1. `$RDR.status`：获取当前渲染器状态。
 1. `$RDR.type`：获取当前渲染器类型。
 1. `$RDR.uri`：获取当前渲染器的 URI 地址。
 1. `$RDR.connect(<type>, <uri>)`：连接到指定的渲染器；若当前已连接到某个渲染器，则会断开该连接。
 
-##### 2.1.6.11) 集合变量
+##### 2.1.6.12) 集合变量
 
 在 HVML 中，我们可以使用 JSON 数组来描述包含在一个集合中的数据，但 JSON 本身并不具有集合的概念。因此，HVML 提供了使用 JSON 数组来初始化一个集合变量的能力。也就是说，集合是具有某些特征的数组的一种内部表达，我们需要通过变量来访问集合数据。
 
@@ -1310,7 +1315,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并集、交集、差集、异或集等。详情见 `update` 标签的描述。
 
-##### 2.1.6.12) 表达式变量
+##### 2.1.6.13) 表达式变量
 
 HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
@@ -1512,7 +1517,7 @@ HVML 还定义有如下一些动作元素用于操控事件循环、渲染器、
 - `observe` 元素用来定义针对特定数据或者元素上的观察动作。
 - `fire` 元素用来显式激发一个事件。
 - `forget` 元素用来撤销对某个数据或者元素上的观察动作。
-- `request` 标签用于向渲染器就给定的目标文档位置发出一个请求并获得结果数据。
+- `request` 标签用于向渲染器、其他协程等发出一个请求并获得结果数据。
 - `load` 元素用来装载并执行一个指定的 HVML 程序（或代码），相当于创建一个新的协程。
 - `exit` 元素用于主动退出一个 HVML 程序的执行，即终止一个 HVML 协程。
 - `sleep` 元素用于主动休眠当前协程。
@@ -1812,10 +1817,10 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 
 - 常规（regular）：协程和渲染器进行正常的数据交换。
 - 被关闭（closed）：协程对应的渲染器页面被用户强制关闭。
-- 丢失（lost）：协程所在会话丢失渲染器的连接。
+- 丢失（lost）：协程所在行者丢失渲染器的连接。
 - 被压制（suppressed）：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
 
-HVML 协程可通过观察内置 `$HVML` 变量上的渲染器事件来判断自身渲染状态的变化。渲染状态相关的事件对应的名称具有 `rdrState:` 前缀，如 `rdrState:suppressed`。
+HVML 协程可通过观察内置 `$CRTN` 变量上的渲染器事件来判断自身渲染状态的变化。渲染状态相关的事件对应的名称具有 `rdrState:` 前缀，如 `rdrState:suppressed`。
 
 每个 HVML 协程运行在特定的 HVML 虚拟机实例上，而每个 HVML 虚拟机实例对应 HVML 应用框架中的一个行者。HVML 行者对应的虚拟机实例有如下状态：
 
@@ -2581,7 +2586,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 通常，我们使用 `as` 属性指定要初始化的变量之名称，我们可使用 `at` 属性指定变量的名字空间（name space）或者在创建临时变量的情况下，指定变量所在的栈帧：
 
 - 若初始化静态变量，当我们使用下划线（\_）打头的预定义名称 `_parent`、`_grandparent`、 `_root` 时，将分别在父元素、祖父元素或根元素上定义变量。
-- 若初始化静态变量，当我们使用下划线（\_）打头的预定义名称 `_session` 时，将创建会话级变量，该变量将对本会话所有的协程可见。
+- 若初始化静态变量，当我们使用下划线（\_）打头的预定义名称 `_runner` 时，将创建行者级变量，该变量将对本行者所有的协程可见。
 - 若初始化临时变量，当我们使用下划线（\_）打头的预定义名称 `_last`、`_nexttolast`、 `_topmost` 时，则分别在上一个栈帧、上上一个栈帧和最顶栈帧上定义临时变量。
 - 使用井号（#）打头的元素标识符，如 `#myAnchor`，将在其祖先元素（或前置栈帧）中搜索指定的元素标识符（由元素的 `id` 属性指定），将在第一个匹配的祖先元素（或前置栈帧）上初始化变量。
 - 使用正整数 N（如 `2`、`3`）时，若初始化静态变量，将沿 vDOM 树向祖先元素方向回溯 N 个祖先元素，在该祖先元素上初始化变量；若初始化临时变量，将沿执行栈向上回溯 N 个栈帧，在该栈帧上初始化变量。
@@ -3213,7 +3218,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 作为一种简化处理方案，我们可以使用 `test` 元素的 `with` 属性的值来确定如何处理 `test` 元素定义的操作子树：
 
 ```html
-    <test with="$STR.stars_with($HVML.app, 'cn.fmsoft.hvml')">
+    <test with="$STR.stars_with($CRTN.app, 'cn.fmsoft.hvml')">
         ...
 
         <!-- when the value of `with` attribute of `test` element is false -->
@@ -3719,7 +3724,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 而默认的操作组向标准输出流写入数组成员：
 
 ```html
-    <define as="listitems" from="/module/$HVML.target/listitems.hvml">
+    <define as="listitems" from="/module/$CRTN.target/listitems.hvml">
         <inherit>
             $STREAM.stdout.writelines($?)
         </inherit>
@@ -3749,10 +3754,10 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 ```html
 <hvml target="html" lang="en">
     <head>
-        <base href="$HVML.base(! 'file:///' )" />
+        <base href="$CRTN.base(! 'file:///' )" />
 
-        <iterate on=$FS.list_prt('/module/$HVML.target/','*.hvml','name') by="RANGE: 0">
-            <define as="ops$FS.basename($?,'hvml')" from="/module/$HVML.target/$?">
+        <iterate on=$FS.list_prt('/module/$CRTN.target/','*.hvml','name') by="RANGE: 0">
+            <define as="ops$FS.basename($?,'hvml')" from="/module/$CRTN.target/$?">
                 <choose on=true />
             </define>
         </iterate>
@@ -3781,13 +3786,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 ```html
 <hvml target="html" lang="en">
     <head>
-        <base href="$HVML.base(! 'file:///' )" />
+        <base href="$CRTN.base(! 'file:///' )" />
     </head>
 
     <body>
 
-        <iterate on=$FS.list_prt('/module/$HVML.target/','*.hvml','name') by="RANGE: 0">
-            <define as="ops$FS.basename($?,'hvml')" at="_grandparent" from="/module/$HVML.target/$?" >
+        <iterate on=$FS.list_prt('/module/$CRTN.target/','*.hvml','name') by="RANGE: 0">
+            <define as="ops$FS.basename($?,'hvml')" at="_grandparent" from="/module/$CRTN.target/$?" >
                 <choose on=true />
             </define>
         </iterate>
@@ -4212,9 +4217,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 1. 若指定的行者名称就是当前行者，设定当前行者为目标行者，跳转到第 4 步。
 2. 若指定的行者已存在，设定该行者为目标行者，跳转到第 4 步。
-3. 若指定的行者不存在，则创建一个新行者及其对应的虚拟机实例，创建当前虚拟机实例中所有必要的会话级全局变量（如 `$SYSTEM`、 `$SESSION`、 `$EJSON`、 `$STREAM`、 `$RDR` 等）。设定新行者为目标行者，跳转到第 4 步。
+3. 若指定的行者不存在，则创建一个新行者及其对应的虚拟机实例，创建当前虚拟机实例中所有必要的行者级全局变量（如 `$SYSTEM`、 `$RUNNER`、 `$EJSON`、 `$STREAM`、 `$RDR` 等）。设定新行者为目标行者，跳转到第 4 步。
 4. 构建一个空的 `hvml` 根节点，设置其 `target` 属性为 `void`，然后克隆操作组定义的 vDOM 子树并将其作为 `hvml` 根元素的子树，从而构成一个完整的 vDOM 树。
-5. 构建所有必要的协程级全局变量，如 `$TIMERS`、 `$HVML` 等，并关联到 vDOM 树上。
+5. 构建所有必要的协程级全局变量，如 `$TIMERS`、 `$CRTN` 等，并关联到 vDOM 树上。
 6. 在目标行者对应的虚拟机实例上创建一个协程从上述 vDOM 树的 `hvml` 根元素开始执行。在 `hvml` 元素对应的栈帧中，将 `call` 元素 `with` 属性定义的值作为该栈帧的 `$?` 变量值，`call` 元素的内容数据作为该栈帧的 `$^` 变量值。
 7. 当该协程正常退出时，或者遇到错误或未捕获的异常时，将 `exit` 或者 `return` 定义的返回值或者错误或异常信息通过 `callState` 事件返回给调用者。
 
@@ -4612,9 +4617,9 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     <request on="#myInput" to="call:ELEMENT.disabled=true" with=0 noreturn />
 ```
 
-我们使用 `request` 标签，可以向另一个协程发送一个请求，此时，我们指定 `on` 属性值为目标协程的标识符，`to` 属性值为目标协程中的操作组名称，`with` 属性或者元素内容为请求的参数。通过 `request` 标签提供的这一功能，我们可以让目标协程在它的执行上下文环境中，调用指定的操作组，然后返回结果给调用者。由于该请求可以跨行者发送，故而相当于执行远程过程调用。
+我们使用 `request` 标签，可以向另一个协程发送一个请求，此时，我们指定 `on` 属性值为目标协程的标识符，`to` 属性值构成请求的操作名称，`with` 属性或者元素内容为请求的参数。通过 `request` 标签提供的这一功能，我们可以让目标协程在它的执行上下文环境中调用指定的操作组，然后返回结果给调用者。由于该请求可以跨行者发送，故而相当于执行远程过程调用。
 
-注意，由于我们不能使用 `request` 向当前协程发送请求，也不允许跨应用发送请求。
+注意，我们不能使用 `request` 向当前协程发送请求，也不允许跨应用发送请求。
 
 目标协程的标识符格式为 `[//hostName]/appName/<runnerName>/<coroutineToken>`。对应本规范定义的被指名词法单元 `coroutine_identifier`，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。此处，我们可以使用 `-` 指代当前主机、当前应用或当前行者，如：
 
@@ -4622,7 +4627,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 - `/-/-/3dfedf`：指当前主机、当前应用、当前行者中的 `3dfedf` 号协程。
 - `/-/otherRunner/3dfedf`：指当前主机、当前应用 `otherRunner` 行者中的 `3dfedf` 号协程。
 
-通常，用于完成请求的目标协程的运行状态在进入到事件轮询阶段之后，才能响应来自其他协程的请求并在执行对应的操作组后返回结果给发起请求的协程。为此，协程应在 `$HVML` 变量上观察 `request` 事件。我们可以在这个 `observe` 中定义一个默认的操作组。
+通常，用于完成请求的目标协程的运行状态在进入到事件轮询阶段之后，才能响应来自其他协程的请求并在执行对应的操作组后返回结果给发起请求的协程。为此，协程应在 `$CRTN` 变量上观察 `request:<operationName>` 事件。
 
 如下面的代码所示，一个协程定义了一个操作组 `echo`，将传入的参数追加一个前缀后原样返回：
 
@@ -4635,50 +4640,34 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
         <return with="$STR.join($name,': ',$?)" />
     </define>
 
-    <div id="scope1">
+    <div>
         <init as="name" with="foo" />
-        <div id="scope2">
+        <observe on="$CRTN" for="request:echo1" with="$echo" />
+        <div>
             <init as="name" with="bar" />
+            <observe on="$CRTN" for="request:echo2" with="$echo" />
         </div>
     </div>
-
-    <observe on="$HVML" for="request" />
 
   </body>
 </hvml>
 ```
 
-假如保存该 HVML 程序的文件名为 `myrepeater.hvml`。我们在某个协程（父协程）中通过 `load` 元素在指定的行者中创建一个新协程（子协程）执行这个 HVML 程序，并在父协程中向子协程发送请求。当父协程收到来自子协程的 `corState:observing` 事件后，我们向子协程发送 `echo` 请求：
+假如保存该 HVML 程序的文件名为 `myrepeater.hvml`。我们在某个协程（父协程）中通过 `load` 元素在指定的行者中创建一个新协程（子协程）执行这个 HVML 程序，并在父协程中向子协程发送请求。当父协程收到来自子协程的 `corState:observing` 事件后，我们向子协程发送 `echo1` 请求：
 
 ```
     <load as="myRepeater" from="myrepeater.hvml" within="myRunner" asynchronously>
         <observe on="$myRepeater" for="corState:observing">
-            <request on="$myRepeater.uri" to="echo" at="#scope1" >
+            <request on="$myRepeater.uri" to="echo1" >
                 "How are you?"
             </request>
         </observe>
     </load>
 ```
 
-当该协程在事件轮询阶段收到来自父协程的请求后，将构造一个虚拟栈帧调用指定的操作组；若父协程的 `request` 元素未指定操作组的名称，则执行 `observe` 元素定义的默认操作组。此时，我们还可利用 `request` 元素的 `at` 属性指定一个元素标识符来确定静态变量的命名范围，从而构成在子协程中调用操作组的一个闭包。比如，以上的代码，子协程在收到上面的请求之后，实际执行效果相当于：
+显然，子协程在使用 `observe` 标签定义的针对 `request:echo1` 事件的观察者中处理针对 `echo1` 的请求。当子协程创建有多个针对 `echo1` 请求的观察者时，所有的观察者都将被安排执行，其结果将形成一个数组作为响应发送回请求者。
 
-```
-    <define as="echo">
-        <return with="$?" />
-    </define>
-
-    <div id="scope1">
-        <init as="name" with="foo" />
-        <call on="$echo" with="How are you?" >
-        </call>
-
-        ...
-    </div>
-```
-
-得到的结果应该为：`foo: How are you?`。而如果 `request` 元素中的 `at` 属性值为 `#scope2`，则结果应该为：`bar: How are you?`。
-
-注意，在未指定 `at` 属性时，在 `body` 元素范围内调用该操作组。
+需要说明是，在上面的例子中，如果父协程指定的请求名称为 `echo1`，则得到结果为：`foo: How are you?`；而如果请求名称为 `echo2`，则结果应该为：`bar: How are you?`。
 
 我们使用 `request` 标签，还可以向渲染器发送一个请求，比如新建窗口组，移除一个窗口组等。此时，指定 `on` 属性值为预定义变量 `$RDR`。至于具体要执行的请求操作以及参数，通过 `to` 属性和 `with` 属性传递，其含义和要求和具体的渲染器协议有关。比如在使用 PURCMC 协议时，我们可以向渲染器发送如下的请求来添加窗口组：
 
@@ -4889,7 +4878,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
         according to the value of `target` attribute of `hvml` element,
         and pass the result returned by `$T.get('Hello, world!')`.
     -->
-    <include with=${output_$HVML.target} on="$T.get('Hello, world!')" />
+    <include with=${output_$CRTN.target} on="$T.get('Hello, world!')" />
 
     <inherit>
         $STREAM.stdout.writelines("End of 'Hello, world!'");
@@ -6381,12 +6370,12 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 <hvml target="void">
     <iterate on 0 onlyif $L.lt($0<, 10) with $MATH.add($0<, 1) >
         $STREAM.stdout.writelines(
-                $STR.join($0<, ") Hello, world! --from COROUTINE-", $HVML.cid))
+                $STR.join($0<, ") Hello, world! --from COROUTINE-", $CRTN.cid))
     </iterate>
 </hvml>
 ```
 
-2) 自动关闭外部元素
+3) 自动关闭外部元素
 
 如下所示由外部元素定义的 HVML 片段：
 
@@ -6958,7 +6947,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 1. `load` 支持在指定的行者中创建新的协程来执行指定的 HVML 程序。
 1. `load` 和 `call` 标签统一使用 `within` 属性指定新的行者名称。
 1. `load` 标签中，使用新增的 `onto` 属性指定渲染器页面信息。
-1. `$HVML` 预定义变量上的 `idle` 以及渲染器事件。
+1. `$CRTN` 预定义变量上的 `idle` 以及渲染器事件。
 1. `load` 和 `call` 异步执行时，返回值为代表新协程的原生实体，该原生实体应提供 `id` 属性，用于返回新协程的标识符。
 
 相关章节：
@@ -6966,7 +6955,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - [2.1.12) 介词属性](#2112-介词属性)
 - [2.5.12) `call` 和 `return` 标签](#2512-call-和-return-标签)
 - [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
-- [2.1.6.3) `$HVML`](#2163-hvml)
+- [2.1.6.3) `$CRTN`](#2163-hvml)
 
 ##### RC5.4) HVML URI 图式及协程描述符
 
@@ -7020,7 +7009,9 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 1. 允许井号注释。
 1. 允许 `head` 和 `body` 为可选标签。
 1. 允许 `init` 标签不绑定变量而仅仅初始化数据作为 `init` 元素的执行结果。
-1. 允许 `init` 标签 `_session` 作为 `at` 属性值，以便初始化一个会话级变量。
+1. 允许 `init` 标签 `_runner` 作为 `at` 属性值，以便初始化一个行者级变量。
+1. 使用“行者”替代“会话”。
+1. `$SESSION` 更名为 `$RUNNER`；`$HVML` 更名为 `$CRTN`。
 
 相关章节：
 
@@ -7223,7 +7214,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 ##### RC3.10) 协程及其状态
 
-补充了解释器实例、HVML 会话、应用及行者之间的关系，并定义了协程相关的运行状态和渲染状态。
+补充了解释器实例、渲染器会话、应用及行者之间的关系，并定义了协程相关的运行状态和渲染状态。
 
 相关章节：
 
@@ -7467,7 +7458,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 ##### TBD 1.1) 扩展数据类型
 
-1) 二元组
+1) 元组
 
 2) 复数及其运算
 
