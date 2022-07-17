@@ -7,7 +7,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <base href="$HVML.base(! 'https://gitlab.fmsoft.cn/hvml/hvml-docs/raw/master/samples/bootstrap/' )" />
+        <base href="$CRTN.base(! 'https://gitlab.fmsoft.cn/hvml/hvml-docs/raw/master/samples/bootstrap/' )" />
 
         <update on="$T.map" from="assets/messages-{$SYSTEM.locale}.json" to="merge" />
 
