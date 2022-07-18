@@ -81,27 +81,30 @@ Language: Chinese
       * [3.5.2) `query` 方法](#352-query-方法)
    + [3.6) `EJSON`](#36-ejson)
       * [3.6.1) `type` 方法](#361-type-方法)
-      * [3.6.2) `count` 方法](#362-count-方法)
-      * [3.6.3) `numberify` 方法](#363-numberify-方法)
-      * [3.6.4) `booleanize` 方法](#364-booleanize-方法)
-      * [3.6.5) `stringify` 方法](#365-stringify-方法)
-      * [3.6.6) `serialize` 方法](#366-serialize-方法)
-      * [3.6.7) `sort` 方法](#367-sort-方法)
-      * [3.6.8) `shuffle` 方法](#368-shuffle-方法)
-      * [3.6.9) `compare` 方法](#369-compare-方法)
-      * [3.6.10) `parse` 方法](#3610-parse-方法)
-      * [3.6.11) `isequal` 方法](#3611-isequal-方法)
-      * [3.6.12) `fetchstr` 方法](#3612-fetchstr-方法)
-      * [3.6.13) `fetchreal` 方法](#3613-fetchreal-方法)
-      * [3.6.14) `crc32` 方法](#3614-crc32-方法)
-      * [3.6.15) `md5` 方法](#3615-md5-方法)
-      * [3.6.16) `sha1` 方法](#3616-sha1-方法)
-      * [3.6.17) `pack` 方法](#3617-pack-方法)
-      * [3.6.18) `unpack` 方法](#3618-unpack-方法)
-      * [3.6.19) `bin2hex` 方法](#3619-bin2hex-方法)
-      * [3.6.20) `hex2bin` 方法](#3620-hex2bin-方法)
-      * [3.6.21) `base64_encode` 方法](#3621-base64_encode-方法)
-      * [3.6.22) `base64_decode` 方法](#3622-base64_decode-方法)
+      * [3.6.2) `size` 方法](#362-size-方法)
+      * [3.6.3) `count` 方法](#363-count-方法)
+      * [3.6.4) `numberify` 方法](#364-numberify-方法)
+      * [3.6.5) `booleanize` 方法](#365-booleanize-方法)
+      * [3.6.6) `stringify` 方法](#366-stringify-方法)
+      * [3.6.7) `serialize` 方法](#367-serialize-方法)
+      * [3.6.8) `sort` 方法](#368-sort-方法)
+      * [3.6.9) `shuffle` 方法](#369-shuffle-方法)
+      * [3.6.10) `compare` 方法](#3610-compare-方法)
+      * [3.6.11) `parse` 方法](#3611-parse-方法)
+      * [3.6.12) `isequal` 方法](#3612-isequal-方法)
+      * [3.6.13) `fetchstr` 方法](#3613-fetchstr-方法)
+      * [3.6.14) `fetchreal` 方法](#3614-fetchreal-方法)
+      * [3.6.15) `crc32` 方法](#3615-crc32-方法)
+      * [3.6.16) `md5` 方法](#3616-md5-方法)
+      * [3.6.17) `sha1` 方法](#3617-sha1-方法)
+      * [3.6.18) `pack` 方法](#3618-pack-方法)
+      * [3.6.19) `unpack` 方法](#3619-unpack-方法)
+      * [3.6.20) `bin2hex` 方法](#3620-bin2hex-方法)
+      * [3.6.21) `hex2bin` 方法](#3621-hex2bin-方法)
+      * [3.6.22) `base64_encode` 方法](#3622-base64_encode-方法)
+      * [3.6.23) `base64_decode` 方法](#3623-base64_decode-方法)
+      * [3.6.24) `arith_calc` 方法](#3624-arith_calc-方法)
+      * [3.6.25) `bitwise_calc` 方法](#3625-bitwise_calc-方法)
    + [3.7) `L`](#37-l)
       * [3.7.1) `not` 方法](#371-not-方法)
       * [3.7.2) `and` 方法](#372-and-方法)
@@ -136,30 +139,31 @@ Language: Chinese
       * [3.9.10) `format_p` 方法](#3910-format_p-方法)
       * [3.9.11) `scan_p` 方法](#3911-scan_p-方法)
       * [3.9.12) `join` 方法](#3912-join-方法)
-      * [3.9.13) `nr_chars` 方法](#3913-nr_chars-方法)
-      * [3.9.14) `tolower` 方法](#3914-tolower-方法)
-      * [3.9.15) `toupper` 方法](#3915-toupper-方法)
-      * [3.9.16) `substr` 方法](#3916-substr-方法)
-      * [3.9.17) `substr_compare` 方法](#3917-substr_compare-方法)
-      * [3.9.18) `substr_count` 方法](#3918-substr_count-方法)
-      * [3.9.19) `substr_replace` 方法](#3919-substr_replace-方法)
-      * [3.9.20) `strstr` 方法](#3920-strstr-方法)
-      * [3.9.21) `strpos` 方法](#3921-strpos-方法)
-      * [3.9.22) `strpbrk` 方法](#3922-strpbrk-方法)
-      * [3.9.23) `split` 方法](#3923-split-方法)
-      * [3.9.24) `chunk_split` 方法](#3924-chunk_split-方法)
-      * [3.9.25) `trim` 方法](#3925-trim-方法)
-      * [3.9.26) `pad` 方法](#3926-pad-方法)
-      * [3.9.27) `repeat` 方法](#3927-repeat-方法)
-      * [3.9.28) `reverse` 方法](#3928-reverse-方法)
-      * [3.9.29) `tokenize` 方法](#3929-tokenize-方法)
-      * [3.9.30) `translate` 方法](#3930-translate-方法)
-      * [3.9.31) `htmlentities_encode` 方法](#3931-htmlentities_encode-方法)
-      * [3.9.32) `htmlentities_decode` 方法](#3932-htmlentities_decode-方法)
-      * [3.9.33) `nl2br` 方法](#3933-nl2br-方法)
-      * [3.9.34) `rot13` 方法](#3934-rot13-方法)
-      * [3.9.35) `count_chars` 方法](#3935-count_chars-方法)
-      * [3.9.36) `count_bytes` 方法](#3936-count_bytes-方法)
+      * [3.9.13) `nr_bytes` 方法](#3913-nr_bytes-方法)
+      * [3.9.14) `nr_chars` 方法](#3914-nr_chars-方法)
+      * [3.9.15) `tolower` 方法](#3915-tolower-方法)
+      * [3.9.16) `toupper` 方法](#3916-toupper-方法)
+      * [3.9.17) `substr` 方法](#3917-substr-方法)
+      * [3.9.18) `substr_compare` 方法](#3918-substr_compare-方法)
+      * [3.9.19) `substr_count` 方法](#3919-substr_count-方法)
+      * [3.9.20) `substr_replace` 方法](#3920-substr_replace-方法)
+      * [3.9.21) `strstr` 方法](#3921-strstr-方法)
+      * [3.9.22) `strpos` 方法](#3922-strpos-方法)
+      * [3.9.23) `strpbrk` 方法](#3923-strpbrk-方法)
+      * [3.9.24) `split` 方法](#3924-split-方法)
+      * [3.9.25) `chunk_split` 方法](#3925-chunk_split-方法)
+      * [3.9.26) `trim` 方法](#3926-trim-方法)
+      * [3.9.27) `pad` 方法](#3927-pad-方法)
+      * [3.9.28) `repeat` 方法](#3928-repeat-方法)
+      * [3.9.29) `reverse` 方法](#3929-reverse-方法)
+      * [3.9.30) `tokenize` 方法](#3930-tokenize-方法)
+      * [3.9.31) `translate` 方法](#3931-translate-方法)
+      * [3.9.32) `htmlentities_encode` 方法](#3932-htmlentities_encode-方法)
+      * [3.9.33) `htmlentities_decode` 方法](#3933-htmlentities_decode-方法)
+      * [3.9.34) `nl2br` 方法](#3934-nl2br-方法)
+      * [3.9.35) `rot13` 方法](#3935-rot13-方法)
+      * [3.9.36) `count_chars` 方法](#3936-count_chars-方法)
+      * [3.9.37) `count_bytes` 方法](#3937-count_bytes-方法)
    + [3.10) `URL`](#310-url)
       * [3.10.1) `encode` 方法](#3101-encode-方法)
       * [3.10.2) `decode` 方法](#3102-decode-方法)
@@ -1906,7 +1910,37 @@ $EJSON.type( 3.5 )
     // string: `number`
 ```
 
-#### 3.6.2) `count` 方法
+#### 3.6.2) `size` 方法
+
+返回数据占用的内存大小。
+
+**描述**
+
+```js
+$EJSON.size(
+        [ <any $data> ]
+) ulongint
+```
+
+该方法返回数据占用的内存空间大小，返回值为 `ulongint` 类型。未指定数据时，按 `undefined` 处理。
+
+注意：该函数的返回值和解释器的实现有关。开发者不应该期望不同的解释器针对同一数据返回同样的结果。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$EJSON.size
+    // ulongint: 32UL
+
+$EJSON.size( "HVML" )
+    // ulongint: 32UL
+```
+
+#### 3.6.3) `count` 方法
 
 返回数据的子数据项个数。
 
@@ -1918,7 +1952,7 @@ $EJSON.count(
 ) ulongint
 ```
 
-该方法返回数据的子数据项个数，返回值为数值类型。未指定数据时，按 `undefined` 处理。
+该方法返回数据的子数据项个数，返回值为 `ulongint` 类型。未指定数据时，按 `undefined` 处理。
 
 **异常**
 
@@ -1930,14 +1964,14 @@ $EJSON.count(
 $EJSON.count
     // ulongint: 0
 
-$EJSON.count(! 3.5 )
-    // ulongint: 1
+$EJSON.count( 3.5 )
+    // ulongint: 1UL
 
-$EJSON.count(! [ 1.0, 2.0 ] )
-    // ulongint: 2
+$EJSON.count( [ 1.0, 2.0 ] )
+    // ulongint: 2UL
 ```
 
-#### 3.6.3) `numberify` 方法
+#### 3.6.4) `numberify` 方法
 
 对给定数据做数值化处理。
 
@@ -1965,7 +1999,7 @@ $EJSON.numberify
     // number: 0
 ```
 
-#### 3.6.4) `booleanize` 方法
+#### 3.6.5) `booleanize` 方法
 
 对给定的数据做布尔化处理。
 
@@ -1990,7 +2024,7 @@ $EJSON.booleanize
     // boolean: false
 ```
 
-#### 3.6.5) `stringify` 方法
+#### 3.6.6) `stringify` 方法
 
 对给定的数据做字符串化处理。
 
@@ -2021,7 +2055,7 @@ $EJSON.stringify(123)
     // string: '123'
 ```
 
-#### 3.6.6) `serialize` 方法
+#### 3.6.7) `serialize` 方法
 
 对给定的数据做字符串化处理。
 
@@ -2075,7 +2109,7 @@ $EJSON.serialize([1, 2])
     // string: '[1,2]'
 ```
 
-#### 3.6.7) `sort` 方法
+#### 3.6.8) `sort` 方法
 
 对数组或者集合执行排序。
 
@@ -2111,7 +2145,7 @@ $EJSON.sort([3, 4, 1, 0], 'asc')
     // array: [0, 1, 3, 4]
 ```
 
-#### 3.6.8) `shuffle` 方法
+#### 3.6.9) `shuffle` 方法
 
 随机打乱给定数组或者集合的成员顺序。
 
@@ -2139,7 +2173,7 @@ $EJSON.shuffle([1, 2, 3, 4, 5])
     // array: [4, 3, 2, 5, 1]
 ```
 
-#### 3.6.9) `compare` 方法
+#### 3.6.10) `compare` 方法
 
 比较两个数据。
 
@@ -2179,7 +2213,7 @@ $EJSON.compare(1, "1")
     // number: 0
 ```
 
-#### 3.6.10) `parse` 方法
+#### 3.6.11) `parse` 方法
 
 解析 JSON/EJSON 字符串，返回 EJSON 数据。
 
@@ -2210,7 +2244,7 @@ $EJSON.parse(
     // array: []
 ```
 
-#### 3.6.11) `isequal` 方法
+#### 3.6.12) `isequal` 方法
 
 判断两个数据是否完全相等。
 
@@ -2241,7 +2275,7 @@ $EJSON.isequal(
     // boolean: true
 ```
 
-#### 3.6.12) `fetchstr` 方法
+#### 3.6.13) `fetchstr` 方法
 
 从二进制字节序列中抽取指定编码的字符串。
 
@@ -2290,7 +2324,7 @@ $EJSON.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8:6' )
     // string: "北京"
 ```
 
-#### 3.6.13) `fetchreal` 方法
+#### 3.6.14) `fetchreal` 方法
 
 该方法在给定的二进制序列的指定位置，按指定的实数类型（以及大小头顺序）提取实数，返回相应的实数类型。
 
@@ -2322,7 +2356,7 @@ $EJSON.fetchreal( bx0a00, 'i8:2', 0 )
     // array: [ 10L, 00L ]
 ```
 
-#### 3.6.14) `crc32` 方法
+#### 3.6.15) `crc32` 方法
 
 计算任意数据的 CRC32 多项式值。
 
@@ -2362,7 +2396,7 @@ $EJSON.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
 - [CRC 在线计算]<https://crccalc.com/>
 - [Catalogue of parametrised CRC algorithms](https://reveng.sourceforge.io/crc-catalogue/17plus.htm)
 
-#### 3.6.15) `md5` 方法
+#### 3.6.16) `md5` 方法
 
 计算任意数据的 MD5 散列值。
 
@@ -2387,7 +2421,7 @@ $EJSON.md5(
 
 - PHP `md5()` 函数：<https://www.php.net/manual/en/function.md5.php>
 
-#### 3.6.16) `sha1` 方法
+#### 3.6.17) `sha1` 方法
 
 计算任意数据的 SHA1 散列值。
 
@@ -2412,7 +2446,7 @@ $EJSON.sha1(
 
 - PHP `sha1()` 函数：<https://www.php.net/manual/en/function.sha1.php>
 
-#### 3.6.17) `pack` 方法
+#### 3.6.18) `pack` 方法
 
 将多个数据打包为二进制序列。
 
@@ -2471,7 +2505,7 @@ $EJSON.pack( "i16le:2 i32le", [10, 15], 255)
 
 - [1.2) 二进制格式表示法](#12-二进制格式表示法)
 
-#### 3.6.18) `unpack` 方法
+#### 3.6.19) `unpack` 方法
 
 将二进制序列分解为多个数据。
 
@@ -2509,7 +2543,7 @@ $EJSON.unpack( "i16le", bx0a000a000000)
 
 - [1.2) 二进制格式表示法](#12-二进制格式表示法)
 
-#### 3.6.19) `bin2hex` 方法
+#### 3.6.20) `bin2hex` 方法
 
 将字符串或者字节序列转换为十六进制字符串表达。
 
@@ -2546,7 +2580,7 @@ $EJSON.bin2hex( bb0000.1111.1111.0000, 'uppercase')
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.bin2hex.php>
 
-#### 3.6.20) `hex2bin` 方法
+#### 3.6.21) `hex2bin` 方法
 
 十六进制字符串转换为字节序列。
 
@@ -2579,7 +2613,7 @@ $EJSON.hex2bin( '0FF0' )
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.hex2bin.php>
 
-#### 3.6.21) `base64_encode` 方法
+#### 3.6.22) `base64_encode` 方法
 
 使用 MIME Base64 编码字符串或者字节序列。
 
@@ -2615,7 +2649,7 @@ $EJSON.base64_encode('HVML 是全球首款可编程标记语言')
 - PHP `base64_encode()` 函数：<https://www.php.net/manual/en/function.base64-encode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.6.22) `base64_decode` 方法
+#### 3.6.23) `base64_decode` 方法
 
 解码使用 MIME Base64 编码的字符串。
 
@@ -2648,6 +2682,69 @@ $EJSON.base64_decode( 'SFZNTA==' )
 
 - PHP `base64_decode()` 函数：<https://www.php.net/manual/en/function.base64-decode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
+
+#### 3.6.24) `arith_calc` 方法
+
+基于两项数据做简单整数算术运算。
+
+**描述**
+
+```js
+$EJSON.arith_calc(
+        <'+ | - | * | / | % | ^ ' $arithmetic_operation>,
+        <any $data1>,
+        <any $data2>
+) real
+```
+
+该函数将对输入的两个数据做基于整数的加、减、乘、除、取模、次幂等的算术计算，始终返回 `longint` 类型的结果。对非数值类数据，将数值化的结果强制转换为 `longint` 后进行相应的运算：
+
+- 参与计算的数据为 `longdouble`、 `ulongint` 或 `number` 时，强制转换为 `longint`。
+
+**异常**
+
+该方法可能抛出如下异常：
+
+- `WrongDataType`：错误数据类型。
+- `InvalidValue`：错误值，比如除数为零的情况。
+
+**示例**
+
+```js
+$EJSON.arith_calc( '+', 3, 2 )
+    // longint: 5L
+```
+
+#### 3.6.25) `bitwise_calc` 方法
+
+基于两项数据的位元计算。
+
+**描述**
+
+```js
+$EJSON.bitwise_calc(
+        <'& | "|" | ~ | ^' $bitwise_operation>,
+        <any $data1>
+        [, <any $data2> ]
+) ulongint
+```
+
+该函数将对输入的两项数据（或一项数据）做基于无符号整数的与、或、反、亦或等的位元运算，始终返回 `ulongint` 类型结果。对非数值类数据，将数值化的结果强制转换为 `ulongint` 类型后进行相应的运算：
+
+- 参与计算的数据为 `longdouble`、 `longint`、 `number` 时，强制转换为 `ulongint`，并返回 `ulongint` 类型结果。
+
+**异常**
+
+该方法可能抛出如下异常：
+
+- `WrongDataType`：错误数据类型。
+
+**示例**
+
+```js
+$EJSON.bitwise_calc( '|', 0, 15 )
+    // ulongint: 15UL
+```
 
 ### 3.7) `L`
 
@@ -3781,7 +3878,38 @@ $STR.join(1, ', ', 2, ', ', 3)
     // string: '1, 2, 3'
 ```
 
-#### 3.9.13) `nr_chars` 方法
+#### 3.9.13) `nr_bytes` 方法
+
+返回字符串或字节序列的字节长度。
+
+**描述**
+
+```js
+$STR.nr_bytes(
+        <string | bsequence $data>
+) ulongint
+```
+
+该方法返回字符串或者字节序列以字节度量时的长度，返回值为 `ulongint` 类型。注意，对字符串，该函数的返回值始终包含用作字符串结尾的空字符。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$STR.nr_bytes( "" )
+    // ulongint: 1
+
+$STR.nr_bytes( "HVML" )
+    // ulongint: 5UL
+
+$STR.nr_bytes( bb )
+    // ulongint: 0
+```
+
+#### 3.9.14) `nr_chars` 方法
 
 获得字符串的字符数量。
 
@@ -3819,7 +3947,7 @@ $STR.nr_chars('中国')
 
 **参见**
 
-#### 3.9.14) `tolower` 方法
+#### 3.9.15) `tolower` 方法
 
 将字符串转换为小写。
 
@@ -3853,7 +3981,7 @@ $STR.tolower('Hello, world')
 
 - PHP `strtolower()` 函数：<https://www.php.net/manual/en/function.strtolower.php>
 
-#### 3.9.15) `toupper` 方法
+#### 3.9.16) `toupper` 方法
 
 将字符串转换为大写。
 
@@ -3887,7 +4015,7 @@ $STR.toupper('Hello, world')
 
 - PHP `strtoupper()` 函数：<https://www.php.net/manual/en/function.strtoupper.php>
 
-#### 3.9.16) `substr` 方法
+#### 3.9.17) `substr` 方法
 
 返回字符串的子串。
 
@@ -3945,7 +4073,7 @@ $STR.substr('abcdef', -3, -1)
 
 - PHP `substr()` 函数：<https://www.php.net/manual/en/function.substr.php>
 
-#### 3.9.17) `substr_compare` 方法
+#### 3.9.18) `substr_compare` 方法
 
 比较子字符串（从指定的偏移位置开始比较指定的长度）。
 
@@ -3976,7 +4104,7 @@ $STR.substr_compare(
 
 - PHP `substr_compare()` 函数：<https://www.php.net/manual/en/function.substr-compare.php>
 
-#### 3.9.18) `substr_count` 方法
+#### 3.9.19) `substr_count` 方法
 
 计算子字符串出现的次数。
 
@@ -4003,7 +4131,7 @@ $STR.substr_count(
 
 - PHP `substr_count()` 函数：<https://www.php.net/manual/en/function.substr-count.php>
 
-#### 3.9.19) `substr_replace` 方法
+#### 3.9.20) `substr_replace` 方法
 
 在子字符串中做替换。
 
@@ -4030,7 +4158,7 @@ $STR.substr_replace(
 
 - PHP `substr_replace()` 函数：<https://www.php.net/manual/en/function.substr-replace.php>
 
-#### 3.9.20) `strstr` 方法
+#### 3.9.21) `strstr` 方法
 
 返回在目标字符串中，以指定字符串起始或结尾的子字符串。
 
@@ -4060,7 +4188,7 @@ $STR.strstr(
 - PHP `strstr()` 函数：<https://www.php.net/manual/en/function.strstr.php>
 - PHP `stristr()` 函数：<https://www.php.net/manual/en/function.stristr.php>
 
-#### 3.9.21) `strpos` 方法
+#### 3.9.22) `strpos` 方法
 
 返回在目标字符串中指定字符串第一次或者最后一次出现的位置。
 
@@ -4090,7 +4218,7 @@ $STR.strpos(
 - PHP `strpos()` 函数：<https://www.php.net/manual/en/function.strpos.php>
 - PHP `stripos()` 函数：<https://www.php.net/manual/en/function.stripos.php>
 
-#### 3.9.22) `strpbrk` 方法
+#### 3.9.23) `strpbrk` 方法
 
 在目标字符串中查找从一组字符的任何一个字符开始或结尾的子字符串。
 
@@ -4117,7 +4245,7 @@ $STR.strpbrk(
 
 - PHP `strpbrk()` 函数：<https://www.php.net/manual/en/function.strpbrk.php>
 
-#### 3.9.23) `split` 方法
+#### 3.9.24) `split` 方法
 
 将字符串按给定的长度切分成子字符串数组。
 
@@ -4140,7 +4268,7 @@ $STR.split(
 
 - PHP `str_split()` 函数：<https://www.php.net/manual/en/function.str-split.php>
 
-#### 3.9.24) `chunk_split` 方法
+#### 3.9.25) `chunk_split` 方法
 
 将字符串按给定的小块长度和分隔符切分，生成一个新的字符串。
 
@@ -4168,7 +4296,7 @@ $STR.chunk_split(
 
 - PHP `chunk_split()` 函数：<https://www.php.net/manual/en/function.chunk-split.php>
 
-#### 3.9.25) `trim` 方法
+#### 3.9.26) `trim` 方法
 
 删除字符串开头、结尾或两者处的空白字符（或其他字符）。
 
@@ -4195,7 +4323,7 @@ $STR.trim(
 - PHP `ltrim()` 函数：<https://www.php.net/manual/en/function.ltrim.php>
 - PHP `rtrim()` 函数：<https://www.php.net/manual/en/function.rtrim.php>
 
-#### 3.9.26) `pad` 方法
+#### 3.9.27) `pad` 方法
 
 使用另一个字符串填充字符串为指定长度。
 
@@ -4221,7 +4349,7 @@ $STR.pad(
 
 - PHP `str_pad()` 函数：<https://www.php.net/manual/en/function.str-pad.php>
 
-#### 3.9.27) `repeat` 方法
+#### 3.9.28) `repeat` 方法
 
 重复一个字符串。
 
@@ -4244,7 +4372,7 @@ $STR.repeat(
 
 - PHP `str_repeat()` 函数：<https://www.php.net/manual/en/function.str-repeat.php>
 
-#### 3.9.28) `reverse` 方法
+#### 3.9.29) `reverse` 方法
 
 反转一个字符串。
 
@@ -4266,7 +4394,7 @@ $STR.reverse(
 
 - PHP `strrev()` 函数：<https://www.php.net/manual/en/function.strrev.php>
 
-#### 3.9.29) `tokenize` 方法
+#### 3.9.30) `tokenize` 方法
 
 使用给定的词元分隔符分隔字符串，返回分隔后的词元数组。
 
@@ -4289,7 +4417,7 @@ $STR.tokenize(
 
 - PHP `strtok()` 函数：<https://www.php.net/manual/en/function.strtok.php>
 
-#### 3.9.30) `translate` 方法
+#### 3.9.31) `translate` 方法
 
 转换指定子字符串。
 
@@ -4318,7 +4446,7 @@ $STR.translate(
 
 - PHP `strtr()` 函数：<https://www.php.net/manual/en/function.strtr.php>
 
-#### 3.9.31) `htmlentities_encode` 方法
+#### 3.9.32) `htmlentities_encode` 方法
 
 转换字符为 HTML 实体。
 
@@ -4361,7 +4489,7 @@ $STR.htmlentities_encode(
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.htmlentities.php>
 - PHP `htmlspecialchars()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars.php>
 
-#### 3.9.32) `htmlentities_decode` 方法
+#### 3.9.33) `htmlentities_decode` 方法
 
 转换 HTML 实体为对应的字符。
 
@@ -4397,7 +4525,7 @@ $STR.htmlentities_decode(
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.html-entity-decode.php>
 - PHP `htmlspecialchars_decode()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars-decode.php>
 
-#### 3.9.33) `nl2br` 方法
+#### 3.9.34) `nl2br` 方法
 
 在字符串所有换行符之前插入 HTML 换行标记。
 
@@ -4429,7 +4557,7 @@ $STR.nl2br(
 
 - PHP `nl2br()` 函数：<https://www.php.net/manual/en/function.nl2br.php>
 
-#### 3.9.34) `rot13` 方法
+#### 3.9.35) `rot13` 方法
 
 对字符串执行 ROT13 转换。
 
@@ -4453,7 +4581,7 @@ $STR.rot13(
 
 - PHP `rot13()` 函数：<https://www.php.net/manual/en/function.rot13.php>
 
-#### 3.9.35) `count_chars` 方法
+#### 3.9.36) `count_chars` 方法
 
 统计字符串中的字符出现次数。
 
@@ -4481,7 +4609,7 @@ $STR.count_chars(
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
-#### 3.9.36) `count_bytes` 方法
+#### 3.9.37) `count_bytes` 方法
 
 统计字符串或二进制字节序中的各个字节（0...255）出现的次数。
 
@@ -6946,6 +7074,9 @@ $FILE.bin.tail($file, -5)
 1. 新增 `$CRTN.cid`、 `$CRTN.token` 以及 `$CRTN.uri` 属性获取器。
 1. 新增 `$RUNNER.rid`、 `$RUNNER.uri` 属性获取器。
 1. 增强 `$MATH.eval` 及 `$MATH.eval_l`，使之支持常量及函数。
+1. 新增 `$EJSON.arith_calc` 及 `$EJSON.bitwise_calc` 方法。
+1. 新增 `$EJSON.size` 方法。
+1. 新增 `$STR.nr_bytes` 方法。
 
 #### RC4) 220701
 
