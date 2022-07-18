@@ -1,5 +1,5 @@
 <!DOCTYPE hvml>
-<hvml target="html" lang="$STR.substr($SYSTEM.locale, 0, 2)">
+<hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
     <head>
 
         <init as="assetURLPrefix">https://files.fmsoft.cn/assets/bootstrap-5.1.3-dist</init>
@@ -9,7 +9,7 @@
 
         <base href="$CRTN.base(! 'https://gitlab.fmsoft.cn/hvml/hvml-docs/raw/master/samples/bootstrap/' )" />
 
-        <update on="$T.map" from="assets/messages-{$SYSTEM.locale}.json" to="merge" />
+        <update on="$T.map" from="assets/messages-{$SYS.locale}.json" to="merge" />
 
         <!-- CSS file of Bootstrap -->
         <link href="$assetURLPrefix/css/bootstrap.min.css" rel="stylesheet" />
@@ -60,7 +60,7 @@
             </button>
         </section>
 
-        <init as="breakingNews" from="assets/breaking-news-{$SYSTEM.locale}.json" async>
+        <init as="breakingNews" from="assets/breaking-news-{$SYS.locale}.json" async>
             {
                 "title": "This is an absolute breaking news!",
                 "shortDesc": "The Zhang family's rooster has laid eggs!",

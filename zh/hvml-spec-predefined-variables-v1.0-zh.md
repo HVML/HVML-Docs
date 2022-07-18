@@ -37,9 +37,9 @@ Language: Chinese
       * [2.1.2) 新增一个定时器](#212-新增一个定时器)
       * [2.1.3) 移除一个定时器](#213-移除一个定时器)
       * [2.1.4) 修改特定定时器的属性](#214-修改特定定时器的属性)
-   + [2.2) `REQUEST`](#22-request)
+   + [2.2) `REQ`](#22-req)
 - [3) 必要动态变量](#3-必要动态变量)
-   + [3.1) `SYSTEM`](#31-system)
+   + [3.1) `SYS`](#31-sys)
       * [3.1.1) `const` 方法](#311-const-方法)
       * [3.1.2) `uname` 方法](#312-uname-方法)
       * [3.1.3) `uname_prt` 方法](#313-uname_prt-方法)
@@ -450,9 +450,9 @@ Language: Chinese
     </update>
 ```
 
-### 2.2) `REQUEST`
+### 2.2) `REQ`
 
-`REQUEST` 是一个协程级内置变量。该变量用来保存装载一个 HVML 程序时传递给该程序的请求参数，以对象形式保存。
+`REQ` 是一个协程级内置变量。该变量用来保存装载一个 HVML 程序时传递给该程序的请求参数，以对象形式保存。
 
 比如下面的 Python 脚本装载一个 HVML 程序，并传递了 `nrUsers` 参数：
 
@@ -460,15 +460,15 @@ Language: Chinese
 hvml.load ("a.hvml", { "nrUsers" : 10 })
 ```
 
-在程序中，我们可使用 `$REQUEST.nrUsers` 或 `$REQUEST['nrUsers']` 来引用上述脚本代码传入的数值（`10`）。
+在程序中，我们可使用 `$REQ.nrUsers` 或 `$REQ['nrUsers']` 来引用上述脚本代码传入的数值（`10`）。
 
 ## 3) 必要动态变量
 
-### 3.1) `SYSTEM`
+### 3.1) `SYS`
 
 该变量是一个行者级内置变量，主要用于获得或设置系统信息。该内置变量的实现，需要考虑如下要求：
 
-- 在某个协程中调用 `$SYSTEM` 的设置器方法，可能产生 `change` 事件，解释器应该将该事件广播到所有行者，并进一步转发给行者中的所有协程。
+- 在某个协程中调用 `$SYS` 的设置器方法，可能产生 `change` 事件，解释器应该将该事件广播到所有行者，并进一步转发给行者中的所有协程。
 
 #### 3.1.1) `const` 方法
 
@@ -477,7 +477,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 **描述**
 
 ```js
-$SYSTEM.const(
+$SYS.const(
         <string $name: `the constant name`>
 ) any : `the constant value`
 ```
@@ -502,7 +502,7 @@ $SYSTEM.const(
 
 ```js
 // 获取常量 `HVML_SPEC_VER` 的值
-$SYSTEM.const('HVML_SPEC_VERSION')
+$SYS.const('HVML_SPEC_VERSION')
     // string: '1.0'
 ```
 
@@ -513,7 +513,7 @@ $SYSTEM.const('HVML_SPEC_VERSION')
 **描述**
 
 ```js
-$SYSTEM.uname object :
+$SYS.uname object :
     `an object contains the following properties:`
         - 'kernel-name':        < string: `kernel name (e.g., 'Linux')` >
         - 'kernel-release':     < string: `kernel release (e.g., '2.6.28')` >
@@ -534,7 +534,7 @@ $SYSTEM.uname object :
 **示例**
 
 ```js
-$SYSTEM.uname
+$SYS.uname
     /* object:
        {
             'kernel-name':      'Linux',
@@ -556,13 +556,13 @@ $SYSTEM.uname
 **描述**
 
 ```js
-$SYSTEM.uname_prt string: `the kernel name.`
+$SYS.uname_prt string: `the kernel name.`
 ```
 
 该方法获取内核名称，返回字符串。
 
 ```js
-$SYSTEM.uname_prt(
+$SYS.uname_prt(
         <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which = 'default':
             - 'kernel-name':        `includes kernel name (e.g., 'Linux')`
             - 'kernel-release':     `includes kernel release (e.g., '2.6.28')`
@@ -588,11 +588,11 @@ $SYSTEM.uname_prt(
 
 ```js
 // 获取内核名称
-$SYSTEM.uname_prt
+$SYS.uname_prt
     // string: 'Linux'
 
 // 获取内核名称及版本号
-$SYSTEM.uname_prt('kernel-name kernel-release kernel-version')
+$SYS.uname_prt('kernel-name kernel-release kernel-version')
     // string: "Linux 5.4.0-80-generic #90-Ubuntu SMP Fri Jul 9 22:49:44 UTC 2021"
 ```
 
@@ -603,13 +603,13 @@ $SYSTEM.uname_prt('kernel-name kernel-release kernel-version')
 **描述**
 
 ```js
-$SYSTEM.locale string : `the locale for the messages category.`
+$SYS.locale string : `the locale for the messages category.`
 ```
 
 该方法获得消息分类（messages category）的区域，返回字符串。
 
 ```js
-$SYSTEM.locale(
+$SYS.locale(
         < 'ctype | numeric | time | collate | monetary | messages | paper | name | address | telephone | measurement | identification' $category = 'messages':
             - 'ctype':          `Character classification`
             - 'numeric':        `Formatting of nonmonetary numeric values`
@@ -630,7 +630,7 @@ $SYSTEM.locale(
 该方法获取指定分类的区域，返回字符串。某些平台可能不支持特定的区域分类，比如姓名（`name`）分类。对不支持的区域分类，该函数将抛出 `Unsupported` 异常，或静默求值时返回 `undefined`。
 
 ```js
-$SYSTEM.locale(!
+$SYS.locale(!
         < '[ctype || numeric || time || collate || monetary || messages || paper || name || address || telephone || measurement || identification] | all' $categories:
             - 'ctype':          `Character classification`
             - 'numeric':        `Formatting of nonmonetary numeric values`
@@ -660,18 +660,18 @@ $SYSTEM.locale(!
 
 1. 在 HVML 中，表示区域的字符串始终使用 `en_US`、`zh_CN` 这种形式。
 1. 在 HVML 应用框架中，要求始终使用 UTF-8 编码。
-1. 对特定区域的修改，将在 `$SYSTEM` 变量上产生 `change:locale/<category>` 事件。
+1. 对特定区域的修改，将在 `$SYS` 变量上产生 `change:locale/<category>` 事件。
 
 **示例**
 
 ```js
-$SYSTEM.locale
+$SYS.locale
     // string: "en_US"
 
-$SYSTEM.locale(! 'all', 'zh_CN')
+$SYS.locale(! 'all', 'zh_CN')
     // boolean: true
 
-$SYSTEM.locale
+$SYS.locale
     // string: "zh_CN"
 ```
 
@@ -682,13 +682,13 @@ $SYSTEM.locale
 **描述**
 
 ```js
-$SYSTEM.time longint: `the calendar time (seconds since Epoch)`
+$SYS.time longint: `the calendar time (seconds since Epoch)`
 ```
 
 该方法获取当前日历时间（自 Epoch 以来的秒数），返回值类型为 `longint`。
 
 ```js
-$SYSTEM.time(!
+$SYS.time(!
         <real $seconds: `seconds since Epoch`>
 ) true | false
 ```
@@ -702,12 +702,12 @@ $SYSTEM.time(!
 
 **备注**
 
-1. 对日历时间的修改，将在 `$SYSTEM` 变量上产生 `change:time` 事件。
+1. 对日历时间的修改，将在 `$SYS` 变量上产生 `change:time` 事件。
 
 **示例**
 
 ```js
-$SYSTEM.time
+$SYS.time
     // longint: 123456789L
 ```
 
@@ -725,14 +725,14 @@ $SYSTEM.time
 **描述**
 
 ```js
-$SYSTEM.time_us longdouble :
+$SYS.time_us longdouble :
     `A long double number representing the number of seconds (integral part) and microseconds (fractional part) since Epoch.`
 ```
 
 该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值 longdouble 数值，小数部分为微秒值。
 
 ```js
-$SYSTEM.time_us(
+$SYS.time_us(
         [
             < 'longdouble | object' $return_type = 'longdouble': `indicate the return type: a long double number or an object.`>
         ]
@@ -744,7 +744,7 @@ $SYSTEM.time_us(
 该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为 longdouble 数值或包含 `sec` 和 `usec` 两个属性的对象。
 
 ```js
-$SYSTEM.time_us(!
+$SYS.time_us(!
         <real $sec_us: `seconds with microseconds since Epoch`>
 ) true | false
 ```
@@ -752,7 +752,7 @@ $SYSTEM.time_us(!
 该方法用一个实数（整数部分表示自 Epoch 以来的秒数，小数部分表示微秒数）设置系统时间。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
 
 ```js
-$SYSTEM.time_us(!
+$SYS.time_us(!
         <object $time_with_us: `An object representing the number of seconds and microseconds since Epoch`>
 ) true | false
 ```
@@ -766,12 +766,12 @@ $SYSTEM.time_us(!
 
 **备注**
 
-1. 对系统时间的修改，将在 `$SYSTEM` 变量上产生 `change:time` 事件。
+1. 对系统时间的修改，将在 `$SYS` 变量上产生 `change:time` 事件。
 
 **示例**
 
 ```js
-$SYSTEM.time_us
+$SYS.time_us
     // longdouble: 123456789.456789
 ```
 
@@ -789,7 +789,7 @@ $SYSTEM.time_us
 **描述**
 
 ```js
-$SYSTEM.sleep(
+$SYS.sleep(
         real $delay_time: `the delay time in seconds; a double or long double number representing the number of seconds (integral part) and microseconds/nanoseconds (fractional part) to delay.`
 ) real | false
 ```
@@ -806,10 +806,10 @@ $SYSTEM.sleep(
 **示例**
 
 ```js
-$SYSTEM.sleep(1UL)
+$SYS.sleep(1UL)
     // ulongint: 0UL
 
-$SYSTEM.sleep(0.3)
+$SYS.sleep(0.3)
     // longdouble: 0.0FL
 ```
 
@@ -824,13 +824,13 @@ $SYSTEM.sleep(0.3)
 **描述**
 
 ```js
-$SYSTEM.timezone : string | false
+$SYS.timezone : string | false
 ```
 
 该方法返回当前时区。
 
 ```js
-$SYSTEM.timezone(!
+$SYS.timezone(!
         <string $timezone: `new timezone`>
         [,
             < 'local | global' $permanently = 'local': `change timezone permanently/globally or temporarily/locally.`>
@@ -857,19 +857,19 @@ HVML 推荐使用类似 `Asia/Shanghai` 这样的字符串来表示时区。实�
 
 **备注**
 
-1. 对系统时区的修改，将在 `$SYSTEM` 变量上产生 `change:timezone` 事件。
+1. 对系统时区的修改，将在 `$SYS` 变量上产生 `change:timezone` 事件。
 1. 系统时区的全局、持久修改，可能需要重新启动操作系统。
 
 **示例**
 
 ```js
-$SYSTEM.timezone
+$SYS.timezone
     // string: "Asia/Shanghai"
 
-$SYSTEM.timezone(! 'America/New_York' )
+$SYS.timezone(! 'America/New_York' )
     // true
 
-$SYSTEM.timezone
+$SYS.timezone
     // string: "America/New_York"
 ```
 
@@ -885,13 +885,13 @@ $SYSTEM.timezone
 **描述**
 
 ```js
-$SYSTEM.cwd string | false: `returns the current working directory on success, or @false on failure.`
+$SYS.cwd string | false: `returns the current working directory on success, or @false on failure.`
 ```
 
 该方法获取当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
 
 ```js
-$SYSTEM.cwd(!
+$SYS.cwd(!
         <string $dir: `the new path for the current working directory.`>
 ) boolean: `returns @true on success or @false on failure.`
 ```
@@ -912,7 +912,7 @@ $SYSTEM.cwd(!
 
 **备注**
 
-1. 对当前工作路径的修改，将在 `$SYSTEM` 变量上产生 `change:cwd` 事件。
+1. 对当前工作路径的修改，将在 `$SYS` 变量上产生 `change:cwd` 事件。
 
 **参见**
 
@@ -925,7 +925,7 @@ $SYSTEM.cwd(!
 **描述**
 
 ```js
-$SYSTEM.env(
+$SYS.env(
         <string: `the environment variable name`>
 ) string | undefined
 ```
@@ -933,7 +933,7 @@ $SYSTEM.env(
 该方法获取指定环境变量的值（字符串）；未设置时抛出 `NoSuchKey` 异常，静默求值时返回 `undefined`。
 
 ```js
-$SYSTEM.env(!
+$SYS.env(!
         <string: `the environment variable name`>,
         <string | undefined: `the value`>
 ) true | false: `returns @true on success, otherwise @false if evaluated silently.`
@@ -950,15 +950,15 @@ $SYSTEM.env(!
 
 **备注**
 
-1. 新增特定的环境变量，将在 `$SYSTEM` 变量上产生 `change:env/grown` 事件，事件参数为一个对象，包含以新增环境变量名称为键，对应值为键值的键值对。
-1. 对特定环境变量的修改，将在 `$SYSTEM` 变量上产生 `change:env` 事件，事件参数为一个对象，包含以修改的环境变量名称为键，对应值为键值的键值对。
-1. 删除特定的环境变量，将在 `$SYSTEM` 变量上产生 `change:env/shrunk` 事件，事件参数为被移除的环境变量名称。
+1. 新增特定的环境变量，将在 `$SYS` 变量上产生 `change:env/grown` 事件，事件参数为一个对象，包含以新增环境变量名称为键，对应值为键值的键值对。
+1. 对特定环境变量的修改，将在 `$SYS` 变量上产生 `change:env` 事件，事件参数为一个对象，包含以修改的环境变量名称为键，对应值为键值的键值对。
+1. 删除特定的环境变量，将在 `$SYS` 变量上产生 `change:env/shrunk` 事件，事件参数为被移除的环境变量名称。
 
 **示例**
 
 ```js
 // 设置环境变量 `LOGNAME` 的值
-$SYSTEM.env(! 'LOGNAME', 'tom' )
+$SYS.env(! 'LOGNAME', 'tom' )
     // boolean: true
 ```
 
@@ -969,7 +969,7 @@ $SYSTEM.env(! 'LOGNAME', 'tom' )
 **描述**
 
 ```js
-$SYSTEM.random_sequence(
+$SYS.random_sequence(
         <number $length: `the length of the random byte sequence`>
 ) bsequence | false
 ```
@@ -985,7 +985,7 @@ $SYSTEM.random_sequence(
 
 ```js
 // 从内核获得随机数据用于当前行者的随机数发生器种子。
-$SYSTEM.random(! $EJSON.fetchreal($SYSTEM.random_sequence(4), 'u32') )
+$SYS.random(! $EJSON.fetchreal($SYS.random_sequence(4), 'u32') )
     // boolean: true
 ```
 
@@ -1000,13 +1000,13 @@ $SYSTEM.random(! $EJSON.fetchreal($SYSTEM.random_sequence(4), 'u32') )
 **描述**
 
 ```js
-$SYSTEM.random longint: `a random between 0 and RAND_MAX.`
+$SYS.random longint: `a random between 0 and RAND_MAX.`
 ```
 
 该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值（`longint`）。
 
 ```js
-$SYSTEM.random(
+$SYS.random(
         <real $max: `the max value`>
 ) real | false: `A random real number between 0 and $max. The type of return value will be same as the type of $max.`
 ```
@@ -1014,7 +1014,7 @@ $SYSTEM.random(
 该方法获取 0 到指定的最大值之间的一个随机值。返回值的类型同参数 `$max` 的类型。
 
 ```js
-$SYSTEM.random(!
+$SYS.random(!
         <real $seed: `the random seed`>
         [, <number $complexity: `a number equal or greater than 8 to indicates how sophisticated the random number generator it should use - the larger, the better the random numbers will be.>
         ]
@@ -1031,23 +1031,23 @@ $SYSTEM.random(!
 
 ```js
 // 使用当前系统日历时间设置随机数种子。
-$SYSTEM.random(! $SYSTEM.time )
+$SYS.random(! $SYS.time )
     // true
 
 // 使用当前系统日历时间设置随机数种子，并设置随机数发生器的复杂度为最高。
-$SYSTEM.random(! $SYSTEM.time, 256 )
+$SYS.random(! $SYS.time, 256 )
     // true
 
-$SYSTEM.random
+$SYS.random
     // longint: 8899L
 
-$SYSTEM.random(1)
+$SYS.random(1)
     // number: 0.789
 
-$SYSTEM.random(1000L)
+$SYS.random(1000L)
     // longint: 492L
 
-$SYSTEM.random(-10FL)
+$SYS.random(-10FL)
     // longdouble: -8.96987678FL
 ```
 
@@ -1295,7 +1295,7 @@ $DATETIME.time_prt('iso8601')
     // string: '2020-06-24T11:27:05+08:00'
 
 // 获取当前时间之前一个小时在上海时区（北京标准时间）的 ISO8601 标准字符串
-$DATETIME.time_prt('iso8601', $MATH.eval('x - 3600', { x: $SYSTEM.time }), 'Asia/Shanghai')
+$DATETIME.time_prt('iso8601', $MATH.eval('x - 3600', { x: $SYS.time }), 'Asia/Shanghai')
     // string: '2020-06-24T11:27:05+08:00'
 
 // 获取当前时间上海时区（北京标准时间）的 RFC822 标准字符串
@@ -1356,7 +1356,7 @@ $DATETIME.utctime
     // object
 
 // 获取当前时间之前一个小时的分解时间
-$DATETIME.utctime($MATH.sub($SYSTEM.time, 3600))
+$DATETIME.utctime($MATH.sub($SYS.time, 3600))
     // object
 ```
 
@@ -1414,7 +1414,7 @@ $DATETIME.localtime
     // object
 
 // 获取当前时间之前一个小时在上海时区（北京标准时间）的分解时间
-$DATETIME.localtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai')
+$DATETIME.localtime($MATH.sub($SYS.time, 3600), 'Asia/Shanghai')
 ```
 
 **参见**
@@ -1502,7 +1502,7 @@ $DATETIME.fmtbdtime(
 
 ```js
 // 获得类似 `08:55` 的时间字符串
-$DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MATH.sub($SYSTEM.time, 3600), 'Asia/Shanghai'))
+$DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MATH.sub($SYS.time, 3600), 'Asia/Shanghai'))
     // string: 'It is 08:55 now in Asia/Shanghai'
 ```
 
@@ -4923,7 +4923,7 @@ $STREAM.$close($STREAM.open("file://abc.md", "read write create truncate"))
 
 ```
 // 将内核名称（如 `Linux`）输出到标准输出。
-$STREAM.stdout.writelines($SYSTEM.uname_prt('kernel-name'))
+$STREAM.stdout.writelines($SYS.uname_prt('kernel-name'))
 ```
 
 #### 3.11.5) `stderr` 静态属性
@@ -5902,7 +5902,7 @@ $MATH.sqrt_l(9.0)
 
 **备注**
 
-当指定的路径以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前工作路径信息（同 `$SYSTEM.cwd`）。
+当指定的路径以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前工作路径信息（同 `$SYS.cwd`）。
 
 #### 4.2.1) `list` 方法
 
@@ -6850,7 +6850,7 @@ $dirStream.rewind boolean
 
 **备注**
 
-当指定的文件以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前行者维护的当前工作路径信息（同 `$SYSTEM.cwd`）。
+当指定的文件以相对路径形式（即没有前导 `/` 符号）给出时，该对象的所有方法将使用当前行者维护的当前工作路径信息（同 `$SYS.cwd`）。
 
 #### 4.3.1) 文本文件
 
@@ -6942,7 +6942,7 @@ $FILE.bin.tail($file, -5)
 #### RC5) 220801
 
 1. 使用“行者”替换“会话”。
-1. `$SESSION` 更名为 `$RUNNER`；`$HVML` 更名为 `$CRTN`。
+1. `$SESSION` 更名为 `$RUNNER`；`$HVML` 更名为 `$CRTN`；`$SYSTEM` 更名为 `$SYS`；`$REQUEST` 更名为 `$REQ`。
 1. 新增 `$CRTN.cid`、 `$CRTN.token` 以及 `$CRTN.uri` 属性获取器。
 1. 新增 `$RUNNER.rid`、 `$RUNNER.uri` 属性获取器。
 1. 增强 `$MATH.eval` 及 `$MATH.eval_l`，使之支持常量及函数。
@@ -6959,7 +6959,7 @@ $FILE.bin.tail($file, -5)
    - `$RUNNER.app`：返回当前行者的应用名称。
    - `$RUNNER.runner`：返回当前行者的行者名称。
 1. 移除全局级动态变量的提法。
-1. 将 `$SYSTEM` 调整为行者级动态变量。
+1. 将 `$SYS` 调整为行者级动态变量。
 1. 调整 `$FS.rename` 方法返回值类型（boolean）。
 
 #### RC2) 220501
@@ -6971,15 +6971,15 @@ $FILE.bin.tail($file, -5)
 1. 原设计为 `$FS` 方法的 `readdir` 和 `rewinddir` 方法，调整为目录流实体的方法。
 
 1. 调整接口，使用字符串选项而非布尔标志：
-   - `$SYSTEM.time_us`
-   - `$SYSTEM.timezone`
+   - `$SYS.time_us`
+   - `$SYS.timezone`
 
 1. 使用 `regexp` 关键词替代 `reg`：
    - `$STR.streq`
    - `$STR.strne`
 
 1. 新增方法
-   - `$SYSTEM.sleep`
+   - `$SYS.sleep`
    - `$EJSON.pack`
    - `$EJSON.unpack`
    - `$STR.scan_c`
@@ -7001,11 +7001,11 @@ $FILE.bin.tail($file, -5)
 1. 新增 `$URL` 动态对象及其方法。
 1. 将 `$STREAM` 独立出来。
 1. 为 `$FS` 新增大量方法。
-1. 将 `$SYSTEM` 调整为全局级动态变量。
-1. 将 `$SYSTEM` 中的 `random` 方法调整到 `RUNNER` 变量，将时间格式化相关的方法调整到新的 `$DATETIME` 变量。
+1. 将 `$SYS` 调整为全局级动态变量。
+1. 将 `$SYS` 中的 `random` 方法调整到 `RUNNER` 变量，将时间格式化相关的方法调整到新的 `$DATETIME` 变量。
 1. 添加 `$STREAM.stdin`, `$STREAM.stdout` 以及 `$STREAM.stderr` 三个静态属性，用于返回代表标准输入、标准输出和标准错误的流式读写实体。
-1. 在 `$SYSTEM` 中增加 `random_sequence` 方法。
-1. 将 `$RUNNER` 中的 `env` 和 `cwd` 方法转移到 `$SYSTEM` 方法。
+1. 在 `$SYS` 中增加 `random_sequence` 方法。
+1. 将 `$RUNNER` 中的 `env` 和 `cwd` 方法转移到 `$SYS` 方法。
 1. 在二进制格式表示法中增加 `utf16` 和 `utf32` 两种编码。
 1. 新增 `$EJSON.fetchstr` 和 `$EJSON.fetchreal`，可使用二进制格式表示法从一个字节序列中抽取实数或者字符串。
 1. 增强元素汇集原生实体的方法，使之可以生成指定元素汇集的子集。
