@@ -663,7 +663,7 @@ Language: Chinese
    1. 全局数据的初始化或重置；使用 `init` 标签定义。
    1. 全局动态对象；使用 `init` 标签定义。
    1. 全局模板；使用 `archedata` 或 `archetype` 标签定义。
-- `body` 标签用于定义文档的本体内容。在 HVML 文档中，可以定义多个 `body` 本地内容，使用 `id` 属性区别不同的本体内容。在执行过程中，可通过 `load` 元素装载不同的本体内容。
+- `body` 标签用于定义文档的本体内容。在 HVML 文档中，可以定义零个或多个 `body` 本地内容，使用 `id` 属性区别不同的本体内容。在执行过程中，可通过 `load` 元素装载不同的本体内容。
 
 其次，从上面的 HVML 程序看出，HVML 使用了类似 HTML 的标签（tag），同时也可混用 HTML 的标签。两者的区别在于：
 
@@ -6348,7 +6348,15 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 
 要求使用严格的 XML 语法，所以，原则上不能省略任何标签，但有如下所述的特殊情形。
 
-1) 整个省略 `head` 元素
+1) 整个省略 `DOCTYPE`
+
+我们可以整个省略 `DOCTYPE` 元素。此种情况下，解析器按如下默认的 `DOCTYPE` 处理：
+
+```
+<!DOCTYPE hvml SYSTEM "v:">
+```
+
+2) 整个省略 `head` 元素
 
 我们可以整个省略 `head` 元素。此种情况下，若目标文档支持 `head` 元素，将在目标文档中创建一个空的 `head` 元素。
 
@@ -6361,7 +6369,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 </hvml>
 ```
 
-2) 整个省略 `body` 元素
+3) 整个省略 `body` 元素
 
 我们可以整个省略 `body` 元素。此种情况下，我们无法通过指定 `body` 的 `id` 属性来执行不同的本体代码。若目标文档支持 `body` 元素，则将在目标文档中创建一个空的 `body` 元素，且 HVML 程序生成的目标文档内容，将插入到 `body` 元素内。若目标文档不支持 `body` 元素，则生成的内容将插入到目标文档的根元素内。
 
@@ -6375,7 +6383,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 </hvml>
 ```
 
-3) 自动关闭外部元素
+4) 自动关闭外部元素
 
 如下所示由外部元素定义的 HVML 片段：
 
