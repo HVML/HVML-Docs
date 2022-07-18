@@ -103,8 +103,8 @@ Language: Chinese
       * [3.6.21) `hex2bin` 方法](#3621-hex2bin-方法)
       * [3.6.22) `base64_encode` 方法](#3622-base64_encode-方法)
       * [3.6.23) `base64_decode` 方法](#3623-base64_decode-方法)
-      * [3.6.24) `arith_calc` 方法](#3624-arith_calc-方法)
-      * [3.6.25) `bitwise_calc` 方法](#3625-bitwise_calc-方法)
+      * [3.6.24) `arith` 方法](#3624-arith-方法)
+      * [3.6.25) `bitwise` 方法](#3625-bitwise-方法)
    + [3.7) `L`](#37-l)
       * [3.7.1) `not` 方法](#371-not-方法)
       * [3.7.2) `and` 方法](#372-and-方法)
@@ -2683,66 +2683,62 @@ $EJSON.base64_decode( 'SFZNTA==' )
 - PHP `base64_decode()` 函数：<https://www.php.net/manual/en/function.base64-decode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.6.24) `arith_calc` 方法
+#### 3.6.24) `arith` 方法
 
-基于两项数据做简单整数算术运算。
+基于两个数值做简单整数算术运算。
 
 **描述**
 
 ```js
-$EJSON.arith_calc(
+$EJSON.arith(
         <'+ | - | * | / | % | ^ ' $arithmetic_operation>,
-        <any $data1>,
-        <any $data2>
+        <null | boolean | real $data1>,
+        <null | boolean | real $data2>
 ) real
 ```
 
-该函数将对输入的两个数据做基于整数的加、减、乘、除、取模、次幂等的算术计算，始终返回 `longint` 类型的结果。对非数值类数据，将数值化的结果强制转换为 `longint` 后进行相应的运算：
-
-- 参与计算的数据为 `longdouble`、 `ulongint` 或 `number` 时，强制转换为 `longint`。
+该函数将对输入的两个数值做基于整数的加、减、乘、除、取模、次幂等的算术计算，始终返回 `longint` 类型的结果。两个数值将首先被强制转换为 `longint` 类型的数值，然后进行相应的运算。
 
 **异常**
 
 该方法可能抛出如下异常：
 
-- `WrongDataType`：错误数据类型。
+- `WrongDataType`：错误数据类型，即无法转换为 `longint` 类型数值的数据。
 - `InvalidValue`：错误值，比如除数为零的情况。
 
 **示例**
 
 ```js
-$EJSON.arith_calc( '+', 3, 2 )
+$EJSON.arith( '+', 3, 2 )
     // longint: 5L
 ```
 
-#### 3.6.25) `bitwise_calc` 方法
+#### 3.6.25) `bitwise` 方法
 
-基于两项数据的位元计算。
+基于两项数值的位元计算。
 
 **描述**
 
 ```js
-$EJSON.bitwise_calc(
+$EJSON.bitwise(
         <'& | "|" | ~ | ^' $bitwise_operation>,
-        <any $data1>
-        [, <any $data2> ]
+        <null | boolean | real $data1>
+        [, <null | boolean | real $data2> ]
 ) ulongint
 ```
 
-该函数将对输入的两项数据（或一项数据）做基于无符号整数的与、或、反、亦或等的位元运算，始终返回 `ulongint` 类型结果。对非数值类数据，将数值化的结果强制转换为 `ulongint` 类型后进行相应的运算：
-
-- 参与计算的数据为 `longdouble`、 `longint`、 `number` 时，强制转换为 `ulongint`，并返回 `ulongint` 类型结果。
+该函数将输入的两项数值（或一项数值）做基于无符号整数的与、或、反、亦或等的位元运算，始终返回 `ulongint` 类型结果。参与计算的数值，将首先被强制转换为 `ulongint` 类型，然后进行相应的运算。
 
 **异常**
 
 该方法可能抛出如下异常：
 
-- `WrongDataType`：错误数据类型。
+- `WrongDataType`：错误数据类型，即无法转换为 `ulongint` 类型数值的数据。
 
 **示例**
 
 ```js
-$EJSON.bitwise_calc( '|', 0, 15 )
+$EJSON.bitwise( '|', 0, 15 )
     // ulongint: 15UL
 ```
 
@@ -7074,7 +7070,7 @@ $FILE.bin.tail($file, -5)
 1. 新增 `$CRTN.cid`、 `$CRTN.token` 以及 `$CRTN.uri` 属性获取器。
 1. 新增 `$RUNNER.rid`、 `$RUNNER.uri` 属性获取器。
 1. 增强 `$MATH.eval` 及 `$MATH.eval_l`，使之支持常量及函数。
-1. 新增 `$EJSON.arith_calc` 及 `$EJSON.bitwise_calc` 方法。
+1. 新增 `$EJSON.arith` 及 `$EJSON.bitwise` 方法。
 1. 新增 `$EJSON.size` 方法。
 1. 新增 `$STR.nr_bytes` 方法。
 
