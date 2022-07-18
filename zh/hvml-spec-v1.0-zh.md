@@ -44,8 +44,8 @@ Language: Chinese
          - [2.1.4.5) 键值对象](#2145-键值对象)
       * [2.1.5) 可变数据和不可变数据](#215-可变数据和不可变数据)
       * [2.1.6) 变量](#216-变量)
-         - [2.1.6.1) `$REQUEST`](#2161-request)
-         - [2.1.6.2) `$SYSTEM`](#2162-system)
+         - [2.1.6.1) `$REQ`](#2161-req)
+         - [2.1.6.2) `$SYS`](#2162-sys)
          - [2.1.6.3) `$RUNNER`](#2163-runner)
          - [2.1.6.4) `$CRTN`](#2164-crtn)
          - [2.1.6.5) `$DOC`](#2165-doc)
@@ -374,11 +374,11 @@ Language: Chinese
 
 第一，在广泛使用的 JSON 表述方法之上，HVML 使其具有了动态处理能力以及参数化表述数据的能力。JSON 是一种人机共读的数据表述形式，可在数值、字符串、数组、字典等基本数据单元的基础上表述复杂对象。HVML 扩展了 JSON 表述方法，使之支持更多数据类型，并通过使用动态值和原生实体这两类动态数据，定义了从底层系统获得数据或者实现某种功能的方法，并在此基础上实现了灵活的表达式求值能力。这可以帮助我们利用已有的系统能力，也可以帮助开发者快速扩展 HVML 程序的功能和能力。
 
-比如下面的 HVML 代码片段，通过表达式 `$STR.substr($SYSTEM.locale, 0, 2)` 取系统区域字符串（如 `zh_CN`）的前两个字符作为结果，设置了 `lang` 这个属性的属性值（`zh`）：
+比如下面的 HVML 代码片段，通过表达式 `$STR.substr($SYS.locale, 0, 2)` 取系统区域字符串（如 `zh_CN`）的前两个字符作为结果，设置了 `lang` 这个属性的属性值（`zh`）：
 
 ```html
 <hvml target="html"
-        lang="$STR.substr($SYSTEM.locale, 0, 2)">
+        lang="$STR.substr($SYS.locale, 0, 2)">
     ...
 </hvml>
 ```
@@ -491,14 +491,14 @@ Language: Chinese
 再比如，下面的代码片段将一个表达式绑定为一个变量，从而可以观察这个表达式值的变化：
 
 ```html
-    <bind on="$SYSTEM.time" as="rtClock" />
+    <bind on="$SYS.time" as="rtClock" />
 
     <observe on="$rtClock" for="change">
        ...
     </observe>
 ```
 
-由于 `$SYSTEM.time` 返回的是以秒为单位的 Unix 时间戳数值，故而 `observe` 元素定义的操作组，将每秒执行一次。
+由于 `$SYS.time` 返回的是以秒为单位的 Unix 时间戳数值，故而 `observe` 元素定义的操作组，将每秒执行一次。
 
 第七，轻松实现异步及并发编程。在栈式虚拟机基础上，HVML 允许在一个虚拟机之上同时运行多个 HVML 程序，并要求解释器使用协程管理同一个虚拟机上同时运行的多个 HVML 程序实例。同时，HVML 允许并发调用操作组，从而在另一个虚拟机实例上执行一段代码。这些机制可以帮助开发者轻松实现异步及并发编程，而在其他编程语言中，异步和并发编程通常需要足够的技巧才能良好驾驭。
 
@@ -526,7 +526,7 @@ Language: Chinese
 
 ```html
 <!DOCTYPE hvml SYSTEM "v: MATH">
-<hvml target="html" lang="$STR.substr($SYSTEM.locale, 0, 2)">
+<hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
     <head>
     </head>
 
@@ -738,17 +738,17 @@ HVML 还定义有如下两种特殊数据类型：
 
 在 HVML 中，我们扩展了对象的属性使之具有动态特性。一个动态属性，通常由 HVML 解释器或者外部程序定义或实现，要么是一个动态值，要么是一个原生实体。
 
-从 HVML 文档的角度看，访问一个动态属性的方法和访问一个常规属性的方法并无二致。比如，我们通过访问 `$SYSTEM.time` 可获得当前的 UNIX 时间戳。但是，在不同的时刻访问 `$SYSTEM.time`，获得的值将会不同。这是因为这里的 `time` 就是一个动态属性。
+从 HVML 文档的角度看，访问一个动态属性的方法和访问一个常规属性的方法并无二致。比如，我们通过访问 `$SYS.time` 可获得当前的 UNIX 时间戳。但是，在不同的时刻访问 `$SYS.time`，获得的值将会不同。这是因为这里的 `time` 就是一个动态属性。
 
-作为动态属性的另一个特性，我们可以将某个特定的属性视作对象而在其上提供虚拟的属性，比如当我们访问 `$SYSTEM.uname_prt.default` 时，将获得当前的操作系统内核名称（如 `Linux`）。
+作为动态属性的另一个特性，我们可以将某个特定的属性视作对象而在其上提供虚拟的属性，比如当我们访问 `$SYS.uname_prt.default` 时，将获得当前的操作系统内核名称（如 `Linux`）。
 
-更进一步，我们还可以将某个特定的属性当作函数使用，通过传递参数来获得不同的返回值，或者对该属性设置特定的值。比如在 `$SYSTEM` 对象上，如果我们要获取当前操作系统的内核名称以及发布版本号，则可以使用 `$SYSTEM.uname_prt('kernel-name kernel-release')`，这时，我们将获得类似 `Linux 5.4.0-107-generic` 的字符串。
+更进一步，我们还可以将某个特定的属性当作函数使用，通过传递参数来获得不同的返回值，或者对该属性设置特定的值。比如在 `$SYS` 对象上，如果我们要获取当前操作系统的内核名称以及发布版本号，则可以使用 `$SYS.uname_prt('kernel-name kernel-release')`，这时，我们将获得类似 `Linux 5.4.0-107-generic` 的字符串。
 
-除了使用 `( )` 这种类似函数调用的方式之外，我们还可以使用 `(! )`，后者用于设置某个属性。比如，使用 `$SYSTEM.cwd` 可以获得当前工作目录，而使用 `$SYSTEM.cwd(! '/tmp' )` 可设置当前工作目录。
+除了使用 `( )` 这种类似函数调用的方式之外，我们还可以使用 `(! )`，后者用于设置某个属性。比如，使用 `$SYS.cwd` 可以获得当前工作目录，而使用 `$SYS.cwd(! '/tmp' )` 可设置当前工作目录。
 
 这里，我们引入了两种运算符：`( )` 和 `(! )`。本质上，前者对应于动态属性的获取器方法，后者对应于动态属性的设置器方法。
 
-除了内置的 `$SYSTEM` 动态对象或者通过 `DOCTYPE` 预先装载的动态对象之外，我们也可以通过外部程序模块实现自定义的动态对象，并通过 `init` 标签将这个动态对象和某个变量绑定在一起，如：
+除了内置的 `$SYS` 动态对象或者通过 `DOCTYPE` 预先装载的动态对象之外，我们也可以通过外部程序模块实现自定义的动态对象，并通过 `init` 标签将这个动态对象和某个变量绑定在一起，如：
 
 ```html
     <init as="math" from="purc_dvobj_math" via="LOAD" />
@@ -986,23 +986,23 @@ HVML 定义的上下文变量罗列如下：
 
 下面简单介绍一些关键的预定义变量。
 
-##### 2.1.6.1) `$REQUEST`
+##### 2.1.6.1) `$REQ`
 
-`$REQUEST`：主要用来表述装载文档时，由其他模块提供的请求数据，一般由 HVML 解释器在装载 HVML 文档时生成。比如下面的 Python 脚本装载一个 HVML 文档，并传递了 `nrUsers` 参数：
+`$REQ`：主要用来表述装载文档时，由其他模块提供的请求数据，一般由 HVML 解释器在装载 HVML 文档时生成。比如下面的 Python 脚本装载一个 HVML 文档，并传递了 `nrUsers` 参数：
 
 ```python
 hvml.load ("a.hvml", { "nrUsers" : 10 })
 ```
 
-在 HVML 文档中，我们可使用 `$REQUEST.nrUsers` 来引用上述脚本代码传入的值（`10`）。
+在 HVML 文档中，我们可使用 `$REQ.nrUsers` 来引用上述脚本代码传入的值（`10`）。
 
-`$REQUEST` 变量本质上是一个必要的协程级非动态对象。
+`$REQ` 变量本质上是一个必要的协程级非动态对象。
 
-##### 2.1.6.2) `$SYSTEM`
+##### 2.1.6.2) `$SYS`
 
-`$SYSTEM`：一个用于访问系统基本功能的动态对象，可用于提供系统时间、当前语言地区（区域）、时区、随机序列、机器名称等。比如，我们要获得当前的 Unix 时间戳，可直接使用 `$SYSTEM.time`，如果要获得一个随机序列，可使用 `$SYSTEM.random_sequence`，如果我们要获得当前的机器名称，可使用 `$SYSTEM.uname`，如果要获取当前语言地区信息，可使用 `$SYSTEM.locale`。
+`$SYS`：一个用于访问系统基本功能的动态对象，可用于提供系统时间、当前语言地区（区域）、时区、随机序列、机器名称等。比如，我们要获得当前的 Unix 时间戳，可直接使用 `$SYS.time`，如果要获得一个随机序列，可使用 `$SYS.random_sequence`，如果我们要获得当前的机器名称，可使用 `$SYS.uname`，如果要获取当前语言地区信息，可使用 `$SYS.locale`。
 
-`$SYSTEM` 变量本质上是一个必要的行者级动态对象。
+`$SYS` 变量本质上是一个必要的行者级动态对象。
 
 ##### 2.1.6.3) `$RUNNER`
 
@@ -1065,7 +1065,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
     ...
 
     <observe on="$TIMERS" for="expired:foo" in="#the-header" >
-        <update on="> span.local-time" at="textContent" with="$SYSTEM.time('%H:%m')" />
+        <update on="> span.local-time" at="textContent" with="$SYS.time('%H:%m')" />
     </observe>
 ```
 
@@ -1104,7 +1104,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
-        <update on="$T.map" from="https://foo.bar/messages/$SYSTEM.locale" to="merge" />
+        <update on="$T.map" from="https://foo.bar/messages/$SYS.locale" to="merge" />
 
         <title>$T.get('Hello, world!')</title>
     </head>
@@ -1116,7 +1116,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 </hvml>
 ```
 
-在上面的 HVML 代码中，我们在头部使用 `update` 标签设置了 `$T.map`，该变量的内容来自包含有 `$SYSTEM.locale` 的一个 URL。注意其中的 `$SYSTEM.locale` 是一个 JSON 求值表达式，会返回当前系统的语言地区标识符（如 `zh_CN`），HVML 解释器求值并替代后的最终 URL 为：`https://foo.bar/messages/zh_CN`。从该 URL 获得的文件内容可能为：
+在上面的 HVML 代码中，我们在头部使用 `update` 标签设置了 `$T.map`，该变量的内容来自包含有 `$SYS.locale` 的一个 URL。注意其中的 `$SYS.locale` 是一个 JSON 求值表达式，会返回当前系统的语言地区标识符（如 `zh_CN`），HVML 解释器求值并替代后的最终 URL 为：`https://foo.bar/messages/zh_CN`。从该 URL 获得的文件内容可能为：
 
 ```json
 {
@@ -1607,7 +1607,7 @@ HVML 定义的异常如下：
 1. 当发生异常时，首先看当前元素是否含有对应的 `catch` 动作元素。若有，则执行该 `catch` 元素定义的操作组；若没有，则检查是否有对应的 `except` 子元素，若有，则克隆其中定义的文档片段并追加到目标文档的当前位置，弹出当前栈帧继续执行。如果异常未被当前元素处理，则弹出当前栈帧，在前置栈帧中重复该步骤直到栈顶。
 1. 当发生错误时，首先看当前元素是否含有对应的 `error` 子元素。若有，则克隆其中定义的文档片段并追加到目标文档的当前位置，直接弹出当前执行栈中的所有栈帧到栈顶。如果错误未被当前元素处理，则弹出当前栈帧，在中重复该步骤直到栈顶。
 
-通常，当某个动作元素被设置有 `silently` 副词属性，或者骨架元素被设置为 `hvml:silently` 属性时，对其属性、执行器、内容求值时，若遇到可忽略异常，应返回一个合理的返回值，而不抛出异常。比如调用 `$SYSTEM.time(! <number $seconds: seconds since Epoch> )` 设置系统时间时，如果当前用户没有权限修改系统时间，通常应该产生 `AccessDenied` 异常。但如果在调用该方法的元素中，设置有 `silently` 副词属性，则不会产生异常，而是返回 `false` 表明执行错误。
+通常，当某个动作元素被设置有 `silently` 副词属性，或者骨架元素被设置为 `hvml:silently` 属性时，对其属性、执行器、内容求值时，若遇到可忽略异常，应返回一个合理的返回值，而不抛出异常。比如调用 `$SYS.time(! <number $seconds: seconds since Epoch> )` 设置系统时间时，如果当前用户没有权限修改系统时间，通常应该产生 `AccessDenied` 异常。但如果在调用该方法的元素中，设置有 `silently` 副词属性，则不会产生异常，而是返回 `false` 表明执行错误。
 
 注意，对 `silently` 属性的特别处理，用于对 EJSON 表达式求值时。大部分异常是可忽略的，但如下异常会被认为是致命的而无法忽略（尤其是有关浮点数运算的异常）：
 
@@ -2204,19 +2204,19 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 复合 JSON 求值表达式（complex JSON evaluation expression，缩写为 CJSONEE）是一项重要扩展。CJSONEE 本质上由一个或多个 JSONEE 组成，但带有一定的逻辑控制能力。其效果类似 Unix Shell 命令行中一次执行多条命令时使用分号或者 `&&`、`||` 的效果。如下是一些例子：
 
 ```js
-// 调用 $SYSTEM.cwd 将当前工作路径切换到 `/etc` 目录下，然后调用 $FS.list
+// 调用 $SYS.cwd 将当前工作路径切换到 `/etc` 目录下，然后调用 $FS.list
 // 获得所有目录项对象数组。
-{{ $SYSTEM.cwd(! '/etc'); $FS.list }}
+{{ $SYS.cwd(! '/etc'); $FS.list }}
 
 // 尝试改变工作路径到 `/root` 目录下，如果成功则调用 $FS.list 获得该目录下
 // 所有目录项对象数组，否则向标准输出（$STREAM.stdout）打印提示信息，
 // 并改变工作路径到 `/` 下，若成功，则获得该目录下所有目录项对象数组，
 // 否则将 `false` 作为该 CJSONEE 的最终求值结果。
 {{
-     $SYSTEM.cwd(! '/root') &&
+     $SYS.cwd(! '/root') &&
         $FS.list ||
         $STREAM.stdout.writelines(
-                'Cannot change directory to "/root"'); $SYSTEM.cwd(! '/' ) &&
+                'Cannot change directory to "/root"'); $SYS.cwd(! '/' ) &&
                     $FS.list || false
 }}
 
@@ -2225,7 +2225,7 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 // 输出到标准输出。
 {{
     $STREAM.stdout.writelines({{
-                $SYSTEM.cwd(! '/root') && $FS.list_prt ||
+                $SYS.cwd(! '/root') && $FS.list_prt ||
                     'Cannot change directory to "/root"''
             }})
 }}
@@ -2418,10 +2418,10 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 在框架标签内部，我们可使用 JSON 表达式，这些表达式将在执行过程中被求值，其结果将被设置为对应元素的执行结果。在框架标签内，我们也可以定义多个表达式，此时，最后一个表达式的求值结果将被作为对应元素的执行结果。为避免歧义，框架标签内的多个表达式应被其他子元素分隔，或使用复合 JSON 表达式，如：
 
 ```html
-<hvml target="void" lang="$STR.substr($SYSTEM.locale, 0, 2)">
+<hvml target="void" lang="$STR.substr($SYS.locale, 0, 2)">
     {{
         $STREAM.stdout.writelines('Start of `Hello, world!`');
-        $STREAM.stdout.writelines('$SYSTEM.time('%H:%m')')
+        $STREAM.stdout.writelines('$SYS.time('%H:%m')')
     }}
 
     <head>
@@ -2442,7 +2442,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
     {{
         $STREAM.stdout.writelines('End of `Hello, world!`');
-        $STREAM.stdout.writelines("$SYSTEM.time('%H:%m')")
+        $STREAM.stdout.writelines("$SYS.time('%H:%m')")
     }}
 </hvml>
 ```
@@ -3358,9 +3358,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 如下示例读取特定目录下的全部目录项：
 
 ```html
-    <choose on=$FS.opendir($REQUEST.dir) >
+    <choose on=$FS.opendir($REQ.dir) >
         <except raw>
-            <li>Exception when calling '$FS.opendir($REQUEST.dir)'</li>
+            <li>Exception when calling '$FS.opendir($REQ.dir)'</li>
         </except>
 
         <!-- no directory entry if $?.read() returns false -->
@@ -4093,7 +4093,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             </match>
 
             <match for="ANY">
-                <update on="> span.local-time" at="textContent" with="$SYSTEM.time('%H:%m')" />
+                <update on="> span.local-time" at="textContent" with="$SYS.time('%H:%m')" />
             </match>
         </test>
     </observe>
@@ -4217,7 +4217,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 1. 若指定的行者名称就是当前行者，设定当前行者为目标行者，跳转到第 4 步。
 2. 若指定的行者已存在，设定该行者为目标行者，跳转到第 4 步。
-3. 若指定的行者不存在，则创建一个新行者及其对应的虚拟机实例，创建当前虚拟机实例中所有必要的行者级全局变量（如 `$SYSTEM`、 `$RUNNER`、 `$EJSON`、 `$STREAM`、 `$RDR` 等）。设定新行者为目标行者，跳转到第 4 步。
+3. 若指定的行者不存在，则创建一个新行者及其对应的虚拟机实例，创建当前虚拟机实例中所有必要的行者级全局变量（如 `$SYS`、 `$RUNNER`、 `$EJSON`、 `$STREAM`、 `$RDR` 等）。设定新行者为目标行者，跳转到第 4 步。
 4. 构建一个空的 `hvml` 根节点，设置其 `target` 属性为 `void`，然后克隆操作组定义的 vDOM 子树并将其作为 `hvml` 根元素的子树，从而构成一个完整的 vDOM 树。
 5. 构建所有必要的协程级全局变量，如 `$TIMERS`、 `$CRTN` 等，并关联到 vDOM 树上。
 6. 在目标行者对应的虚拟机实例上创建一个协程从上述 vDOM 树的 `hvml` 根元素开始执行。在 `hvml` 元素对应的栈帧中，将 `call` 元素 `with` 属性定义的值作为该栈帧的 `$?` 变量值，`call` 元素的内容数据作为该栈帧的 `$^` 变量值。
@@ -4385,12 +4385,12 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```html
     <init as="sysClock">
-        $SYSTEM.time
+        $SYS.time
     </init>
 
     ...
 
-    <bind on="$SYSTEM.time" as="rtClock" />
+    <bind on="$SYS.time" as="rtClock" />
 
     <p>The initial system time: $sysClock</p>
 
@@ -4404,7 +4404,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 比如，
 
 ```html
-    <bind on="$SYSTEM.time" as="rtClock" />
+    <bind on="$SYS.time" as="rtClock" />
 
     <observe on="$rtClock" for="change">
        ...
@@ -4503,10 +4503,10 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <init as="dirEntries" with=[] />
 
     <ul id="theUL">
-        <choose on=$FS.opendir($REQUEST.dir) >
+        <choose on=$FS.opendir($REQ.dir) >
             <catch for="ANY">
                 <back to="3">
-                    "Exception when calling '$FS.opendir($REQUEST.dir)': $?"
+                    "Exception when calling '$FS.opendir($REQ.dir)': $?"
                 </back>
             </catch>
 
@@ -4514,7 +4514,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             <iterate on=$? with=$?.read() >
                 <catch for="ANY">
                     <back to="#theUL">
-                        "Exception when calling '$FS.opendir($REQUEST.dir).read($REQUEST.dir)': $?"
+                        "Exception when calling '$FS.opendir($REQ.dir).read($REQ.dir)': $?"
                     </back>
                 </catch>
                 <li>$?.type: $?.name</li>
@@ -4681,7 +4681,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 `load` 标签定义一个执行装载程序操作的动作元素，该元素在指定的行者（虚拟机实例）中启动一个新的协程装载并执行指定的 HVML 程序。由 `load` 装载的新 HVML 代码或者程序实例，称为子协程（child coroutine），执行 `load` 元素动作的协程称为父协程（parent coroutine）。
 
-`load` 元素用来装载并执行一个由 `on` 属性指定的 HVML 代码（字符串）或者 `from` 属性指定的新 HVML 程序，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQUEST` 变量）传递给子协程。如：
+`load` 元素用来装载并执行一个由 `on` 属性指定的 HVML 代码（字符串）或者 `from` 属性指定的新 HVML 程序，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQ` 变量）传递给子协程。如：
 
 ```html
     <load from="b.hvml" as="userProfile" onto="user@main" />
@@ -4725,7 +4725,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 ```html
     <init as="request">
         {
-            hvml: "<hvml target='html'><body><h1>$REQUEST.text</h1><p>$REQUEST.hvml</p></body></hvml>",
+            hvml: "<hvml target='html'><body><h1>$REQ.text</h1><p>$REQ.hvml</p></body></hvml>",
             text: "Hello, world!",
             _renderer: {
                 title: 'Hello, world!',
@@ -4740,7 +4740,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     </load>
 ```
 
-上面的代码，使用 `on` 属性指定了一段要装载执行的 HVML 程序（`$request.hvml`），并将 `$request` 数据作为该程序的请求数据传递给新的协程。注意 `on` 属性指定的 HVML 程序，该程序使用了 `$REQUEST` 预定义变量的 `text` 作为 `h1` 元素的内容，将程序代码本身作为 `p` 元素的内容。同时，该程序使用 `_renderer` 键名定义了需要传递给渲染器的参数，其中包括页面的类名及样式信息。
+上面的代码，使用 `on` 属性指定了一段要装载执行的 HVML 程序（`$request.hvml`），并将 `$request` 数据作为该程序的请求数据传递给新的协程。注意 `on` 属性指定的 HVML 程序，该程序使用了 `$REQ` 预定义变量的 `text` 作为 `h1` 元素的内容，将程序代码本身作为 `p` 元素的内容。同时，该程序使用 `_renderer` 键名定义了需要传递给渲染器的参数，其中包括页面的类名及样式信息。
 
 该程序最终生成的 HTML 文档内容如下：
 
@@ -4748,7 +4748,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 <html>
     <body>
         <h1>Hello, world!</h1>
-        <p>&lt;hvml target="html"&gt;&lt;body&gt;&lt;h1&gt;$REQUEST.text&lt;/h1&gt;&lt;p&gt;$REQUEST.hvml&lt;/p&gt;&lt;/body>&lt;/hvml&gt;</p>
+        <p>&lt;hvml target="html"&gt;&lt;body&gt;&lt;h1&gt;$REQ.text&lt;/h1&gt;&lt;p&gt;$REQ.hvml&lt;/p&gt;&lt;/body>&lt;/hvml&gt;</p>
     </body>
 </html>
 ```
@@ -4833,8 +4833,8 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 ```html
 <!DOCTYPE hvml>
 
-<!-- $REQUEST contains the startup options -->
-<hvml target="$REQUEST.target">
+<!-- $REQ contains the startup options -->
+<hvml target="$REQ.target">
   <body>
 
     <inherit>
@@ -4842,14 +4842,14 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     </inherit>
 
     <!--
-        $SYSTEM.locale returns the current system locale like `zh_CN'.
+        $SYS.locale returns the current system locale like `zh_CN'.
         This statement loads a JSON file which defined the map of
         localization messages, like:
         {
             "Hello, world!": "世界，您好！"
         }
     -->
-    <update on="$T.map" from="messages/$SYSTEM.locale" to="merge" />
+    <update on="$T.map" from="messages/$SYS.locale" to="merge" />
 
     <!--
         This statement defines an operation set, which output
@@ -4910,7 +4910,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 ```html
     <!-- 休眠 0 ~ 10.0 秒中的随机时间 -->
-    <sleep with="$SYSTEM.random(10.0)" />
+    <sleep with="$SYS.random(10.0)" />
 
     <!-- 休眠 0.5 秒 -->
     <sleep for="0.5s" />
@@ -5894,10 +5894,10 @@ HVML 程序中的注释有两种形式，一种是 `<!-- 注释内容 -->` 形�
 # This is a comment line
     # This is another comment line
 
-<hvml target="void" lang="$STR.substr($SYSTEM.locale, 0, 2)" >
+<hvml target="void" lang="$STR.substr($SYS.locale, 0, 2)" >
     {{
         $STREAM.stdout.writelines('Start of `Hello, world!`');
-        $STREAM.stdout.writelines($SYSTEM.time('%H:%m'))
+        $STREAM.stdout.writelines($SYS.time('%H:%m'))
     }}
 
     <!-- This is a multiple-line comments, which will be parsed and form
@@ -5920,7 +5920,7 @@ HVML 程序中的注释有两种形式，一种是 `<!-- 注释内容 -->` 形�
 
     {{
         $STREAM.stdout.writelines('End of `Hello, world!`');
-        $STREAM.stdout.writelines($SYSTEM.time('%H:%m'))
+        $STREAM.stdout.writelines($SYS.time('%H:%m'))
     }}
 </hvml>
 ```
@@ -6067,13 +6067,13 @@ SYSTEM 标识符字符串的格式如下：
 数据动作元素用于定义数据内容，可包含其他普通元素以及可作为骨架元素使用的外部元素。当包含有子元素时，其数据内容只能出现一次，且前置于任何子元素之前。如下例所示：
 
 ```html
-        <init as="breakingNews" from="assets/breaking-news-{$SYSTEM.locale}.json" async>
+        <init as="breakingNews" from="assets/breaking-news-{$SYS.locale}.json" async>
             {
                 "title": "This is an absolute breaking news!",
                 "shortDesc": "The Zhang family's rooster has laid eggs!",
                 "longDesc": 'Yesterday, the second son of the Zhang family came to me and said, "My rooster has laid eggs!"',
                 "detailedUrl": "#",
-                "time": $SYSTEM.time.iso8601
+                "time": $SYS.time.iso8601
             }
 
             <update on="#breaking-news" to="displace" with="$realCardBody" />
@@ -6843,7 +6843,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
     <body>
         <div class="clock" id="clock">
             <observe on="$TIMERS" for="expired:clock">
-                <update on="#clock" at="textContent" with="$SYSTEM.time('%H:%m')" />
+                <update on="#clock" at="textContent" with="$SYS.time('%H:%m')" />
             </observe>
         </div>
 
@@ -7011,7 +7011,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 1. 允许 `init` 标签不绑定变量而仅仅初始化数据作为 `init` 元素的执行结果。
 1. 允许 `init` 标签 `_runner` 作为 `at` 属性值，以便初始化一个行者级变量。
 1. 使用“行者”替代“会话”。
-1. `$SESSION` 更名为 `$RUNNER`；`$HVML` 更名为 `$CRTN`。
+1. `$SESSION` 更名为 `$RUNNER`；`$HVML` 更名为 `$CRTN`；`$SYSTEM` 更名为 `$SYS`；`$REQUEST` 更名为 `$REQ`。
 
 相关章节：
 
@@ -7654,7 +7654,7 @@ def on_battery_changed (on_value, with_value, root_in_scope):
 - `save:` 保存到本地文件。该操作的执行结果是保存后的完整文件路径。
 - `filter:` 创建子进程和管道并将管道作为子进程的标准输入，然后在子进程中执行指定的程序，将请求结果写入管道。该操作的执行结果是子进程的标准输出（字节序列）。
 
-当前 HVML 程序在模态窗口中渲染时，可观察该程序的 `terminated:success` 事件，然后进行处理。如果当前 HVML 程序不在模态对话框中渲染，则该数据将做为请求数据（对应 `$REQUEST` 内置全局变量）提供给目标返回对应的 HVML 程序，此时，该 HVML 程序会执行一次重新装载操作（类似浏览器刷新页面的功能）。
+当前 HVML 程序在模态窗口中渲染时，可观察该程序的 `terminated:success` 事件，然后进行处理。如果当前 HVML 程序不在模态对话框中渲染，则该数据将做为请求数据（对应 `$REQ` 内置全局变量）提供给目标返回对应的 HVML 程序，此时，该 HVML 程序会执行一次重新装载操作（类似浏览器刷新页面的功能）。
 
 `exit` 元素不产生任何结果数据，故而不能包含子动作元素。
 
