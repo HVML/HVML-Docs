@@ -2162,6 +2162,7 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
     <json_evaluation_expression>:
         '$'<json_variable_addressing_expression>
         '{$'<json_variable_addressing_expression>'}'
+        '${'<json_evaluation_expression>'}'
         '{{' [ws] <complex_json_evaluation_expression> [ws] '}}'
 
     <extended_json>: 见本文档“3.1.3.2) 扩展 JSON 语法”，其中的 JSON value 可以是一个 JSON 求值表达式。
