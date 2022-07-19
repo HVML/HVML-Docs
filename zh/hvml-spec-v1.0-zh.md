@@ -4691,8 +4691,8 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 `load` 元素支持如下介词属性：
 
-- `on`：指定 HVML 代码（字符串），或者使用该元素的内容数据。
-- `from`：指定的 HVML 程序的 URL。
+- `on`：指定 HVML 代码（字符串）。
+- `from`：指定的 HVML 程序的 URL；若使用保留字 `_self`，表示使用和当前 HVML 协程相同的 HVML 程序来启动新协程。
 - `with`：若 `from` 属性指定了一个合法的 URL 字符串，指定从外部资源中装载 HVML 程序时的请求参数。
 - `via`：若 `from` 属性指定了一个合法的 URL 字符串，则该属性指定从外部资源中装载 HVML 程序时的请求方法，默认为 `GET`。
 - `as`：当我们异步装载新的 HVML 程序时，我们使用该属性将新的 HVML 协程和一个变量名称绑定，从而可观察该协程的状态。

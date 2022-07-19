@@ -2691,10 +2691,10 @@ $EJSON.base64_decode( 'SFZNTA==' )
 
 ```js
 $EJSON.arith(
-        <'+ | - | * | / | % | ^ ' $arithmetic_operation>,
+        <' + | - | * | / | % | ^ ' $arithmetic_operation>,
         <null | boolean | real $data1>,
         <null | boolean | real $data2>
-) real
+) longint | undefined
 ```
 
 该函数将对输入的两个数值做基于整数的加、减、乘、除、取模、次幂等的算术计算，始终返回 `longint` 类型的结果。两个数值将首先被强制转换为 `longint` 类型的数值，然后进行相应的运算。
@@ -2703,8 +2703,9 @@ $EJSON.arith(
 
 该方法可能抛出如下异常：
 
-- `WrongDataType`：错误数据类型，即无法转换为 `longint` 类型数值的数据。
-- `InvalidValue`：错误值，比如除数为零的情况。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：错误数据类型，即无法转换为 `longint` 类型数值的数据；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：错误值，比如除数为零的情况，或者不正确的位元操作符；可忽略异常，静默求值时返回 `undefined`。
 
 **示例**
 
@@ -2721,19 +2722,21 @@ $EJSON.arith( '+', 3, 2 )
 
 ```js
 $EJSON.bitwise(
-        <'& | "|" | ~ | ^' $bitwise_operation>,
+        <' & | "|" | ~ | ^ | < | > ' $bitwise_operation>,
         <null | boolean | real $data1>
         [, <null | boolean | real $data2> ]
-) ulongint
+) ulongint | undefined
 ```
 
-该函数将输入的两项数值（或一项数值）做基于无符号整数的与、或、反、亦或等的位元运算，始终返回 `ulongint` 类型结果。参与计算的数值，将首先被强制转换为 `ulongint` 类型，然后进行相应的运算。
+该函数将输入的两项数值（或一项数值）做基于无符号整数的与、或、反、亦或、左移、右移等的位元运算，始终返回 `ulongint` 类型结果。参与计算的数值，将首先被强制转换为 `ulongint` 类型，然后进行相应的运算。
 
 **异常**
 
 该方法可能抛出如下异常：
 
-- `WrongDataType`：错误数据类型，即无法转换为 `ulongint` 类型数值的数据。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：错误数据类型，即无法转换为 `ulongint` 类型数值的数据；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：错误值，比如不正确的位元操作符；可忽略异常，静默求值时返回 `undefined`。
 
 **示例**
 
