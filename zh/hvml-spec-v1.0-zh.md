@@ -4218,9 +4218,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 1. 若指定的行者名称就是当前行者，设定当前行者为目标行者，跳转到第 4 步。
 2. 若指定的行者已存在，设定该行者为目标行者，跳转到第 4 步。
 3. 若指定的行者不存在，则创建一个新行者及其对应的虚拟机实例，创建当前虚拟机实例中所有必要的行者级全局变量（如 `$SYS`、 `$RUNNER`、 `$EJSON`、 `$STREAM`、 `$RDR` 等）。设定新行者为目标行者，跳转到第 4 步。
-4. 构建一个空的 `hvml` 根节点，设置其 `target` 属性为 `void`，然后克隆操作组定义的 vDOM 子树并将其作为 `hvml` 根元素的子树，从而构成一个完整的 vDOM 树。
-5. 构建所有必要的协程级全局变量，如 `$TIMERS`、 `$CRTN` 等，并关联到 vDOM 树上。
-6. 在目标行者对应的虚拟机实例上创建一个协程从上述 vDOM 树的 `hvml` 根元素开始执行。在 `hvml` 元素对应的栈帧中，将 `call` 元素 `with` 属性定义的值作为该栈帧的 `$?` 变量值，`call` 元素的内容数据作为该栈帧的 `$^` 变量值。
+4. 克隆当前 vDOM 的 `DOCTYPE` 节点并构建一个空的 `hvml` 根节点，设置其 `target` 属性为 `void`，然后克隆操作组定义的 vDOM 子树并将其作为 `hvml` 根元素的子树，从而构成一个完整的 vDOM 树。
+5. 在目标行者对应的虚拟机实例上创建一个协程，构建所有必要的协程级全局变量，如 `$T`、 `$TIMERS`、 `$CRTN` 等，并关联到 vDOM 树上。
+6. 调度执行新构建的 vDOM 树，在 `hvml` 元素对应的栈帧中，将 `call` 元素 `with` 属性定义的值作为该栈帧的 `$?` 变量值，`call` 元素的内容数据作为该栈帧的 `$^` 变量值。
 7. 当该协程正常退出时，或者遇到错误或未捕获的异常时，将 `exit` 或者 `return` 定义的返回值或者错误或异常信息通过 `callState` 事件返回给调用者。
 
 由于并发调用通常用来执行一些耗时的计算任务，故而我们将对应协程的目标文档类型设定为 `void`，从而可避免新创建的行者以及协程关联到渲染器上。但通过并发调用操作组，我们也可用来创建一个关联到渲染器的普通行者。比如：
@@ -4720,7 +4720,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 当给定的页面名称不存在时，意味着在指定分组中创建一个新的页面，并赋予该页面给定的名称；若指定的页面分组不存在时，将使用第一个分组。当我们创建一个新的渲染器页面时，可通过其 `with` 属性值的 `_renderer` 键名指定传递给渲染器的页面参数，如类名、标题和样式。
 
-`load` 元素的内容数据，将作为参数传递给新的协程，在新的协程中，可使用 `$REQEST` 变量访问。
+`load` 元素的内容数据，将作为参数传递给新的协程，在新的协程中，可使用 `$REQ` 变量访问。
 
 ```html
     <init as="request">
@@ -4764,7 +4764,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 ```html
     <load from="new_user.hvml" onto="newUser@mainBody" synchronously>
-        <update on="#the-user-list" to="append" with="$user_item" />
+        <update on="#the-user-list" to="append" with="$?" />
 
         <!-- 对子协程非正常退出的情形，通过捕获相应的异常进行处理 -->
         <catch for="ChildTerminated">
@@ -4805,7 +4805,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     <body>
         ...
 
-        <load from="#errorPage" onto="_self" asynchronously>
+        <load from="#errorPage" onto="_self" asynchronously />
 
         ...
     </body>
