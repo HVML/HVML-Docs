@@ -5035,7 +5035,7 @@ $STREAM.close(
 
 ```js
 // 创建并清空
-$STREAM.$close($STREAM.open("file://abc.md", "read write create truncate"))
+$STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
 ```
 
 #### 3.11.3) `stdin` 静态属性
