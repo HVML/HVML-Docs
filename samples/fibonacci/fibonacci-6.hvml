@@ -27,7 +27,7 @@
             <init as="last_one" at="2" with="$last_two" temp />
             <init as="last_two" at="2" with="$?" temp />
 
-            <init as="$#theBody!" at=".count" to="displace" with += 1 />
+            <update on "$#theBody!" at ".count" to "displace" with += 1 />
 
             <inherit>
                 $STREAM.stdout.writelines(

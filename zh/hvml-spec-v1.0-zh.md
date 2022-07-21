@@ -1387,7 +1387,7 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
             <init as="last_one" at="2" with="$last_two" temp />
             <init as="last_two" at="2" with="$?" temp />
 
-            <init as="$#theBody!" at=".count" to="displace" with += 1 />
+            <update on "$#theBody!" at ".count" to "displace" with += 1 />
 
             <inherit>
                 $STREAM.stdout.writelines(
@@ -2490,6 +2490,17 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 在上面的例子中，第一个 `archetype` 标签定义了一个文档片段模板，可用于生成最终的目标文档片段并插入到目标文档的指定位置。HVML 解释器在将该模板克隆并插入到真实的文档时，会将当前上下文中的数据按照给定的映射关系进行替换。在 HVML 中，`$?` 是一个特殊的上下文变量，用来指代动作标签执行时的前置操作结果数据。类似 `$?.id`、 `$?.name` 这样的字符串将被视为 JSON 求值表达式进行求值，最终使用当前上下文的数据来替代。
 
 在上面的例子中，第二个 `archetype` 标签定义了一个裸文本模板，其中包含一段 XML/HTML 文档片段，可克隆到目标位置，但不做任何 JSON 求值表达式的处理，即使包含合法的 JSON 求值表达式。
+
+另外，在 `archetype` 标签中，我们还可以使用 `type` 属性定义模板片段的文本类型，可以取如下值：
+
+- `plain`：视作普通文本。
+- `html`：视作 HTML 片段。
+- `svg`：视作 SVG 片段。
+- `mathml`：视作 MathML 片段。
+- `xgml`：视作 XGML 片段。
+- `xml`：视作通用 XML 片段。
+
+如果不指定 `type` 属性值，则取目标文档的默认文本类型。比如当目标文档类型为 `html` 时，`archetype` 标签定义的文档片段将默认按照 HTML 片段处理。
 
 本质上，`archetype` 定义的模板内容是一个字符串变量，其变量名由 `name` 属性定义。
 
@@ -7031,6 +7042,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 1. 使用“行者”替代“会话”。
 1. `$SESSION` 更名为 `$RUNNER`；`$HVML` 更名为 `$CRTN`；`$SYSTEM` 更名为 `$SYS`；`$REQUEST` 更名为 `$REQ`。
 1. 调整 `iterate` 不使用迭代执行器时的处理规则。
+1. `archetype` 标签增加 `type` 属性用于定义文本类型。
 
 相关章节：
 
@@ -7040,6 +7052,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - [3.1.2.5) 可选标签](#3125-可选标签)
 - [2.5.1) `init` 标签](#251-init-标签)
 - [2.5.7.2) 不使用迭代执行器](#2572-不使用迭代执行器)
+- [2.4.1) `archetype` 标签](#241-archetype-标签)
 
 #### RC4) 220601
 
