@@ -84,7 +84,7 @@ Language: Chinese
       * [2.3.1) `hvml` 标签](#231-hvml-标签)
       * [2.3.2) `head` 标签](#232-head-标签)
       * [2.3.3) `body` 标签](#233-body-标签)
-      * [2.3.4) 框架标签的内容](#234-框架标签的内容)
+      * [2.3.4) `hvml` 标签的内容](#234-hvml-标签的内容)
    + [2.4) 模板标签详解](#24-模板标签详解)
       * [2.4.1) `archetype` 标签](#241-archetype-标签)
       * [2.4.2) `archedata` 标签](#242-archedata-标签)
@@ -2414,41 +2414,41 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当目标标记语言支持 `body` 标签时，其属性将被克隆到目标文档的 `body` 元素中。若目标标记语言不支持 `body`，其属性将被丢弃。
 
-#### 2.3.4) 框架标签的内容
+#### 2.3.4) `hvml` 标签的内容
 
-在框架标签内部，我们可使用 JSON 表达式，这些表达式将在执行过程中被求值，其结果将被设置为对应元素的执行结果。在框架标签内，我们也可以定义多个表达式，此时，最后一个表达式的求值结果将被作为对应元素的执行结果。为避免歧义，框架标签内的多个表达式应被其他子元素分隔，或使用复合 JSON 表达式，如：
+在 `hvml` 标签内部，我们可使用 JSON 表达式，这些表达式将在执行过程中被求值，其结果将被设置为 `hvml` 元素的执行结果，而 `hvml` 元素对应的栈帧始终为最顶栈帧，因此，`hvml` 元素的结果数据也将作为整个 HVML 协程的执行结果。在 `hvml` 标签内，我们可以定义多个表达式，后一个表达式的求值结果将覆盖 `hvml` 元素的结果数据。如：
 
 ```html
 <hvml target="void" lang="$STR.substr($SYS.locale, 0, 2)">
     {{
         $STREAM.stdout.writelines('Start of `Hello, world!`');
-        $STREAM.stdout.writelines('$SYS.time('%H:%m')')
+        $STREAM.stdout.writelines('$DATETIME.fmttime('%H:%m')')
     }}
 
     <head>
-        $STREAM.stdout.writelines('Start of `head`')
+        {{ $STREAM.stdout.writelines('Start of `head`'); '' }
 
         <title>$T.get('Hello, world!')</title>
 
-        $STREAM.stdout.writelines('End of `head`')
+        {{ $STREAM.stdout.writelines('End of `head`'); '' }
     </head>
 
     <body>
-        $STREAM.stdout.writelines('Start of `body`')
+        {{ $STREAM.stdout.writelines('Start of `body`'); '' }}
 
         <p>$T.get('Hello, HVML!')</p>
 
-        $STREAM.stdout.writelines('End of `body`')
+        {{ $STREAM.stdout.writelines('End of `body`'); '' }}
     </body>
 
     {{
         $STREAM.stdout.writelines('End of `Hello, world!`');
-        $STREAM.stdout.writelines("$SYS.time('%H:%m')")
+        $STREAM.stdout.writelines("$DATETIME.fmttime('%H:%M')")
     }}
 </hvml>
 ```
 
-注意，就上述 HVML 程序，`hvml` 元素的结果数据将作为整个 HVML 协程的执行结果。因此，以上程序的正常执行结果为最后一个 JSON 表达式的求值结果：6（写入 "11:00" 字符串以及额外的新行符到标准输入的字节数）。
+就上述 HVML 程序，`hvml` 元素的结果数据将作为整个 HVML 协程的执行结果。因此，以上程序的正常执行结果为最后一个 JSON 表达式的求值结果：6（写入 "11:00" 字符串以及额外的新行符到标准输入的字节数）。
 
 ### 2.4) 模板标签详解
 
@@ -7021,11 +7021,11 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 主要修订内容如下：
 
-1. 框架标签中定义的内容被视作表达式进行求值，并设置为其结果数据。
+1. `hvml` 标签中定义的内容被视作表达式进行求值，并设置为对应栈帧的结果数据。
 
 相关章节：
 
-- [2.3.4) 框架标签的内容](#234-框架标签的内容)
+- [2.3.4) `hvml` 标签的内容](#234-hvml-标签的内容)
 
 ##### RC5.8) 其他修订
 
@@ -7042,7 +7042,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 相关章节：
 
-- [2.3.4) 框架标签的内容](#234-框架标签的内容)
+- [2.3.4) `hvml` 标签的内容](#234-hvml-标签的内容)
 - [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
 - [3.1) 书写 HVML 文档](#31-书写-hvml-文档)
 - [3.1.2.5) 可选标签](#3125-可选标签)
