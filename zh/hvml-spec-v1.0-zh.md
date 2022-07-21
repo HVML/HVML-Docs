@@ -2426,19 +2426,11 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     }}
 
     <head>
-        {{ $STREAM.stdout.writelines('Start of `head`'); '' }
-
         <title>$T.get('Hello, world!')</title>
-
-        {{ $STREAM.stdout.writelines('End of `head`'); '' }
     </head>
 
     <body>
-        {{ $STREAM.stdout.writelines('Start of `body`'); '' }}
-
         <p>$T.get('Hello, HVML!')</p>
-
-        {{ $STREAM.stdout.writelines('End of `body`'); '' }}
     </body>
 
     {{
