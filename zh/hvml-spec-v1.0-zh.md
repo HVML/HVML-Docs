@@ -1358,7 +1358,7 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 比如下面的 HVML 程序，将打印小于 10 的斐波那契数列：
 
 ```html
-<!DOCTYPE hvml SYSTEM 'v: MATH'>
+<!DOCTYPE hvml>
 <hvml target="void">
     <head>
         $STREAM.stdout.writelines("# Fibonacci Numbers")
@@ -1369,29 +1369,29 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
             {{
                 $STREAM.stdout.writelines("## Fibonacci Numbers less than 10");
                 $STREAM.stdout.writelines('')
-             }}
-        </inherit>
-
-        <init as="count" with=2 temp />
-        <init as="last_one" with=0 temp />
-        <init as="last_two" with=1 temp />
-
-        <inherit>
-            {{
-                $STREAM.stdout.writelines('    0: 0');
-                $STREAM.stdout.writelines('    1: 1')
             }}
         </inherit>
 
-        <iterate on 1 onlyif=$L.lt($0<, 10) with=$MATH.add($0<, $last_one)>
-            <init as="last_one" at="2" with="$last_two" temp />
-            <init as="last_two" at="2" with="$?" temp />
+        <init as "count" at "_topmost" with 2 temp />
+        <init as "last_one" with 0L temp />
+        <init as "last_two" with 1L temp />
 
-            <update on "$#theBody!" at ".count" to "displace" with += 1 />
+        <inherit>
+            {{
+                $STREAM.stdout.writelines($STR.join('    0: ', $last_one));
+                $STREAM.stdout.writelines($STR.join('    1: ', $last_two));
+            }}
+        </inherit>
+
+        <iterate on $last_two onlyif $L.lt($0<, 10L) with $EJSON.arith('+', $0<, $last_one) nosetotail >
+            <init as "last_one" at "2" with $last_two temp />
+            <init as "last_two" at "2" with $? temp />
+
+            <update on "$3!" at ".count" to "displace" with += 1 />
 
             <inherit>
                 $STREAM.stdout.writelines(
-                    $STR.join('    ', $MATH.add($%, 2), ': ', $?))
+                    $STR.join('    ', $EJSON.arith('+', $%, 2), ': ', $?))
             </inherit>
         </iterate>
 
@@ -1402,7 +1402,10 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
             }}
         </inherit>
 
+        <exit with [$count, $last_two] />
     </body>
+
+    $0!.count
 </hvml>
 ```
 

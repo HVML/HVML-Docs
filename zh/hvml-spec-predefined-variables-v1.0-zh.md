@@ -76,6 +76,8 @@ Language: Chinese
       * [3.4.7) `cid` 方法](#347-cid-方法)
       * [3.4.8) `token` 方法](#348-token-方法)
       * [3.4.9) `uri` 方法](#349-uri-方法)
+      * [3.4.10) `curator` 方法](#3410-curator-方法)
+      * [3.4.11) `native_crtn` 方法](#3411-native_crtn-方法)
    + [3.5) `DOC`](#35-doc)
       * [3.5.1) `doctype` 方法](#351-doctype-方法)
       * [3.5.2) `query` 方法](#352-query-方法)
@@ -1784,6 +1786,58 @@ $CRTN.uri string : `the corontine URI`
 ```js
 $CRTN.uri
     // string: `//localhost/cn.fmsoft.hvml.calculator/main/COROUTINE-100`
+```
+
+#### 3.4.10) `curator` 方法
+
+该方法获取当前 HVML 协程的监护协程标识符。
+
+**描述**
+
+```js
+$CRTN.curator ulongint : `the corontine identifier of the curator of the current coroutine`
+```
+
+该方法获取当前 HVML 协程的监护协程标识符，若该协程没有监护协程，则返回 0UL。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$CRTN.curator
+    // ulongint: 5UL
+```
+
+#### 3.4.11) `native_crtn` 方法
+
+该方法返回一个可被观察的原生实体，用于代表一个特定的子协程。
+
+**描述**
+
+```js
+$CRTN.native_crtn(
+    ulongint $cid: `the corontine identifier of one child coroutine`
+)
+```
+
+该方法根据给定的协程标识符返回一个代表特定子协程，且可观察的原生实体。可用于观察子协程的退出状态。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：无效参数，比如不存在指定的 `cid`；可忽略异常，静默求值时返回 `undefined`。
+
+**示例**
+
+```js
+$CRTN.native_crtn
+    // native/crtn
 ```
 
 ### 3.5) `DOC`
@@ -7071,6 +7125,7 @@ $FILE.bin.tail($file, -5)
 1. 使用“行者”替换“会话”。
 1. `$SESSION` 更名为 `$RUNNER`；`$HVML` 更名为 `$CRTN`；`$SYSTEM` 更名为 `$SYS`；`$REQUEST` 更名为 `$REQ`。
 1. 新增 `$CRTN.cid`、 `$CRTN.token` 以及 `$CRTN.uri` 属性获取器。
+1. 新增 `$CRTN.curator`、 `$CRTN.native_crtn` 属性获取器。
 1. 新增 `$RUNNER.rid`、 `$RUNNER.uri` 属性获取器。
 1. 增强 `$MATH.eval` 及 `$MATH.eval_l`，使之支持常量及函数。
 1. 新增 `$EJSON.arith` 及 `$EJSON.bitwise` 方法。
