@@ -1021,10 +1021,10 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 另外，我们还可以通过 `$CRTN` 对象观察一些全局事件以及当前协程渲染状态的变化，从而优雅地处理渲染器页面被用户关闭或者渲染器丢失等的情形。这些事件有：
 
 - `idle`：当前 HVML 协程正在监听 `$CRTN` 上的 `idle` 事件，且由于未收到任何事件而触发 `idle` 事件。
-- `rdrState:closed`：协程对应的渲染器页面被用户强制关闭。
-- `rdrState:lost`：协程所在行者丢失渲染器的连接。
-- `rdrState:suppressed`：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
-- `rdrState:reload`：当前协程的文档内容重新装载到渲染器，渲染器状态调整为 `regular`。
+- `rdrState:pageClosed`：协程对应的渲染器页面被用户关闭。
+- `rdrState:pageSuppressed`：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
+- `rdrState:pageReload`：当前协程的文档内容重新装载到渲染器，渲染器状态调整为 `regular`。
+- `rdrState:connLost`：协程所在行者丢失渲染器的连接。
 
 `$CRTN` 变量本质上是一个必要的协程级动态对象。
 
@@ -2165,7 +2165,7 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
     <json_evaluation_expression>:
         '$'<json_variable_addressing_expression>
         '{$'<json_variable_addressing_expression>'}'
-        '${'<json_evaluation_expression>'}'
+        '${'<json_variable_name_evaluation_expression>'}'
         '{{' [ws] <complex_json_evaluation_expression> [ws] '}}'
 
     <extended_json>: 见本文档“3.1.3.2) 扩展 JSON 语法”，其中的 JSON value 可以是一个 JSON 求值表达式。
@@ -2173,9 +2173,12 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
     <complex_json_evaluation_expression>:
         <json_evaluation_expression> | <extended_json> [[ws] < ';' | '&&' | '||' > [ws] <json_evaluation_expression> | <extended_json>, ...]
 
+    <json_variable_name_evaluation_expression>:
+        [ <literal_variable_token> ]<json_evaluation_expression>[<literal_variable_token_other_char>, ...]
+
     <json_variable_addressing_expression>: <literal_variable_name>[<json_addressing_expression>, ...]
        <literal_variable_name>: 用于直接引用一个已命名的 JSON 数据。
-       <json_addressing_expression>：用于引用一个 JSON 数据的子元素。
+       <json_addressing_expression>：用于引用一个 JSON 容器的成员。
 
     <json_expression>: <json_evaluation_expression> | <extended_json>
 
@@ -2195,7 +2198,10 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
     <literal_positive_integer>: /^[0-9]*[1-9][0-9]*$/
 
-    <literal_variable_token>: /^[A-Za-z_][A-Za-z0-9_]*$/
+    <literal_variable_token_first_char>: /[A-Za-z_]/
+    <literal_variable_token_other_char>: /[A-Za-z0-9_]/
+
+    <literal_variable_token>: <literal_variable_token_first_char>[<literal_variable_token_other_char>, ...]
 
     <quoted_key_name>: '''<literal_char_sequence>''' | '"'<literal_char_sequence>'"'
 
@@ -3581,7 +3587,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 #### 2.5.10) `define` 和 `include` 标签
 
-`define` 标签用于定义一组可重用的操作组。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作，或者通过 `call` 标签调用这组操作并期待返回一个结果。在 HVML 中，我们将 `define` 标签定义的一组操作简称为操作组（operation set）。
+`define` 标签用于定义一组可重用的操作组。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作，或者通过 `call` 标签调用这组操作并期待返回一个结果。在 HVML 中，我们将 `define` 标签定义的一组操作简称为操作组（operation group）。
 
 `define` 元素通过 `as` 属性定义操作组的名称，其中包含了一组动作标签定义的子元素。`include` 元素将切换执行上下文到 `with` 属性指定的操作组中，`on` 属性传入的参数将作为结果数据（即 `$?` 变量的值）供操作组使用，而 `include` 元素通过内容定义的数据，将成为 `$^` 变量的值。如：
 
@@ -3741,8 +3747,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 以上代码，当 `define` 元素的 `from` 属性指定的 HVML 片段装载或解析失败时，程序仍然可以正常运行，只是实际的操作效果有所不同。这一能力为我们提供了一项非常灵活的特性：
 
-1. HVML 程序的正常运行，可不依赖于特定的目标标记语言。
-1. 我们可以根据不同的目标标记语言让同一 HVML 程序生成不同的目标文档片段。
+1. HVML 程序的正常运行，可不依赖于特定的目标文档类型。
+1. 我们可以根据不同的目标文档类型让同一 HVML 程序生成不同的目标文档片段。
 
 当使用 `from` 属性时，`define` 的行为如下：
 
@@ -3812,7 +3818,44 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 若 `define` 定义的操作组为空，则使用 `include` 或者 `call` 元素引用该操作组时，应抛出 `NoData` 异常。
 
-`include` 元素的 `on` 属性定义的值，将成为 `define` 定义的操作组的结果数据。另外，我们可以在 `include` 元素中使用 `in` 属性定义目标文档的位置，因此，该属性值也将影响操作组的行为。
+`include` 元素的 `on` 属性定义的值，将成为 `define` 对应栈帧的结果数据；类似地，`call` 元素的 `with` 属性定义的值，将成为 `define` 对应栈帧的果数据。为书写方便，当传递给操作组的数据是 `object` 时，解释器应将该对象中所有键名符合 HVML `literal_variable_token` 词法单元的属性，设置为 `define` 对应栈帧中的临时命名变量，从而获得类似函数形参的效果。比如如下代码计算两个正整数的最大公约数（greatest common divisor）：
+
+```html
+    <define as "calcGreatestCommonDivisor">
+        <test with $L.or($L.le($x, 0), $L.le($y, 0)) >
+            <return with undefined />
+        </test>
+
+        <init as "big" with {{ $L.gt($x, $y) && $x || $y }} temp />
+        <init as "small" with {{ $L.lt($x, $y) && $x || $y }} temp />
+
+        <test with $L.eq($EJSON.arith('%', $big, $small), 0) >
+            <return with $small />
+        </test>
+
+        <iterate on $EJSON.arith('/', $small, 2) onlyif $L.gt($0<, 0)
+                with $EJSON.arith('-', $0<, 1) nosetotail >
+
+            <test with $L.eval('a == 0 && b == 0',
+                    $EJSON.arith('%', $big, $?),
+                    $EJSON.arith('%', $small, $?) >
+                <return with $? />
+            </test>
+
+        </iterate>
+
+        <return with 1L />
+
+    </define>
+
+    <include with $calcGreatestCommonDivisor on {x: 3, y: 6} >
+
+        $STREAM.stdout.writelines($STR.format_c("GCD of 3 and 6 is %d", $?))
+
+    </include>
+```
+
+另外，我们可以在 `include` 元素或者 `call` 元素中使用 `in` 属性定义目标文档的位置，因此，该属性值将影响操作组的行为。
 
 我们可以在 `include` 元素中定义子元素，这些子元素会在 `define` 定义的操作组执行完毕后执行。
 
@@ -7047,6 +7090,8 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 1. `$SESSION` 更名为 `$RUNNER`；`$HVML` 更名为 `$CRTN`；`$SYSTEM` 更名为 `$SYS`；`$REQUEST` 更名为 `$REQ`。
 1. 调整 `iterate` 不使用迭代执行器时的处理规则。
 1. `archetype` 标签增加 `type` 属性用于定义文本类型。
+1. `include` 或者 `call` 元素应用操作组时，若传递的实参为对象，可利用临时变量处理为多个形参，方便代码书写。
+1. 增加对表达式 `${...}` 的描述：用于构建一个有效变量名。
 
 相关章节：
 
@@ -7057,6 +7102,8 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - [2.5.1) `init` 标签](#251-init-标签)
 - [2.5.7.2) 不使用迭代执行器](#2572-不使用迭代执行器)
 - [2.4.1) `archetype` 标签](#241-archetype-标签)
+- [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
+- [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法)
 
 #### RC4) 220601
 
