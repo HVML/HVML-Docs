@@ -388,10 +388,9 @@ Language: Chinese
 比如下面的 HVML 代码片段生成小于 100 的偶数数列，其中使用了 `init`、 `iterate` 和 `update` 这三个动作标签，分别实现了初始化一个数组变量、迭代计算偶数并将每个迭代结果追加到数组中的功能：
 
 ```hvml
-    <init as="evenNumbers" with=[0,] >
-        <iterate on=$?[0] onlyif=$L.lt($0<,100)
-                with=$MATH.add($0<,2) nosetotail>
-            <update on="$evenNumbers" to="append" with="$?" />
+    <init as "evenNumbers" with [0, ] >
+        <iterate on $?[0] onlyif $L.lt($0<, 100) with $EJSON.arith('+', $0<, 2) nosetotail >
+            <update on "$evenNumbers" to "append" with $? />
         </iterate>
     </init>
 ```
@@ -400,9 +399,8 @@ Language: Chinese
 
 ```hvml
     <ul>
-        <init as="evenNumbers" with=[0,] temp >
-            <iterate on=$?[0] onlyif=$L.lt($0<,100)
-                    with=$MATH.add($0<,2) nosetotail>
+        <init as "evenNumbers" with [0, ] temp >
+            <iterate on $?[0] onlyif $L.lt($0<, 100) with $EJSON.arith('+', $0< 2) nosetotail >
                 <li>$?</li>
             </iterate>
         </init>
@@ -415,15 +413,15 @@ Language: Chinese
 
 ```hvml
     <!-- 新增标识符为 `foo` 的定时器，间隔 3000 ms，激活状态 -->
-    <update on="$TIMERS" to="append">
+    <update on "$TIMERS" to "append">
         { "id" : "foo", "interval" : 3000, "active" : "yes" }
     </update>
 
     ...
 
     <!-- 使标识符为 `foo` 的定时器失效 -->
-    <choose on="$TIMERS" by="FILTER: AS 'foo'">
-        <update on="$?" at=".active" with="no" />
+    <choose on "$TIMERS" by "FILTER: AS 'foo'">
+        <update on $? at ".active" with "no" />
     </choose>
 ```
 
@@ -432,7 +430,7 @@ Language: Chinese
 比如，下面的 HVML 程序片段，使用 `archetype` 元素定义了一个模板，然后使用 `iterate` 和 `update` 元素，将 `users` 数组中的数据通过模板置换处理为目标文档的片段，然后追加到目标文档中：
 
 ```hvml
-    <init as="users">
+    <init as "users">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom",
                 "region": "en_US", "age": 2 },
@@ -450,8 +448,8 @@ Language: Chinese
     </archetype>
 
     <ul class="user-list">
-        <iterate on="$users" by="RANGE: FROM 0">
-            <update on="$@" to="append" with="$user_item" />
+        <iterate on "$users" by "RANGE: FROM 0">
+            <update on $@ to "append" with $user_item />
         </iterate>
     </ul>
 ```
@@ -462,20 +460,20 @@ Language: Chinese
 
 ```hvml
     <!-- 该元素定义了一个操作组，该操作组输出 HTML 片段。-->
-    <define as="output_html">
+    <define as "output_html">
         <h1>HVML</h1>
         <p>$?</p>
     </define>
 
     <!-- 该元素定义了一个操作组，该操作组向系统的标准输出打印文本。-->
-    <define as="output_void">
+    <define as "output_void">
         <inherit>
             $STREAM.stdout.writelines($?)
         </inherit>
     </define>
 
     <!-- 该元素根据当前 `hvml` 元素的 `target` 属性值就地执行不同的操作组。-->
-    <include with=${output_$CRTN.target} on="$T.get('Hello, world!')" />
+    <include with ${output_$CRTN.target} on $T.get('Hello, world!') />
 ```
 
 第六，内置事件驱动。HVML 在语言层面提供了对数据、变量和表达式的观察能力。只需要一个 `observe` 元素，我们就可以观察一个数据上的特定事件，变量状态的变化，甚至一个表达式值的变化。
@@ -483,7 +481,7 @@ Language: Chinese
 比如，下面的代码片段观察标识符为 `foo` 的定时器的到期事件：
 
 ```hvml
-    <observe on="$TIMERS" for="expired:foo" >
+    <observe on "$TIMERS" for "expired:foo" >
         ...
     </observe>
 ```
@@ -491,9 +489,9 @@ Language: Chinese
 再比如，下面的代码片段将一个表达式绑定为一个变量，从而可以观察这个表达式值的变化：
 
 ```hvml
-    <bind on="$SYS.time" as="rtClock" />
+    <bind on $SYS.time as "rtClock" />
 
-    <observe on="$rtClock" for="change">
+    <observe on "$rtClock" for "change">
        ...
     </observe>
 ```
@@ -505,16 +503,17 @@ Language: Chinese
 比如下面的代码片段，异步地并发调用了 `collectAllDirEntriesRecursively` 操作组，该操作组递归遍历指定的目录，收集其下的所有目录项，然后使用 `observe` 来观察这个并发调用的状态。显然，这个操作组是一项耗时操作。在该操作组返回结果之前，调用者可以继续执行完成其他的工作。
 
 ```hvml
-    <call as="my_task" on="$collectAllDirEntriesRecursively" with="/"
-            within="myRunner" concurrently asynchronously />
-    <observe on="$my_task" for="callState:success">
-        <iterate on="$?" in="#entries" by="RANGE: FROM 0">
-            <update on="$@" to="append" with="$dir_entry" />
+    <call as "my_task" on $collectAllDirEntriesRecursively with "/" within "myRunner" concurrently asynchronously />
+    <observe on "$my_task" for "callState:success">
+        <iterate on $? in "#entries" by "RANGE: FROM 0">
+            <update on $@ to "append" with "$dir_entry" />
         </iterate>
     </observe>
 ```
 
 除此之外，HVML 还允许两个协程之间互相发送请求，且两个协程可以处于不同的虚拟机实例，这提供了一种统一和高效的跨协程及虚拟机的通讯机制。
+
+我们计划在 HVML 规范 1.1 版本中，提供对通道（类似 Go 语言）的支持，从而提供一个简单有效的协程间同步机制。
 
 #### 2.1.1) 程序结构
 
