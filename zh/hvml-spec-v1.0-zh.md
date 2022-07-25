@@ -3351,7 +3351,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们也可以使用 `with` 属性直接定义迭代结果的求值表达式，而不使用 `by` 属性定义的迭代执行器。此时，我们可使用 `onlyif` 属性和/或 `while` 属性定义在获得迭代结果之前判断是否开始新的迭代的条件表达式，或者在获得迭代结果后判断是否终止迭代的条件表达式。
 
-在不使用迭代执行器时，`iterate` 元素的属性或者上下文变量，应该按照如下顺序处理：
+在不使用迭代执行器时，`iterate` 元素的属性或者上下文变量，应该按照如下步骤处理。
+
+当定义有 `on` 属性时，我们将 `on` 属性的值视作每次迭代的输入值，后用 `with` 属性求下一个值：
 
 1. 第一次迭代前：
    - 使用 0 初始化 `$0%` 。
@@ -3363,32 +3365,46 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
    - 将 `$0<` 设置到 `$0?` 上；对内容表达式求值（结果设置到 `$0^`）；处理子元素。
 1. 每次迭代后：
    - 对 `with` 属性定义的表达式求值，若求值结果为 `false`、`null` 或者 `undefined` 之一（此处不做布尔化处理），则终止迭代，否则，若具有副词属性 `nosetotail`，则使用 `with` 属性的求值结果重置 `$0<`。若未定义 `with`，视其值为 `undefined`。
-   - 若定义有 `while` 属性，则对 `while` 属性定义的表达式求值，若对结果做布尔化处理后为 `false`，则终止迭代。若未定义 `while` 属性，则忽略此步骤。
+   - 若定义有 `while` 属性，则对 `while` 属性定义的表达式求值，若对结果做布尔化处理后为 `false`，则终止迭代。若未定义 `while` 属性，视其值为 `true`。
+   - 若以上步骤未导致迭代终止，则 `$0%` 增加 1，开始新的迭代。
+
+如下示例生成小于 100 的偶数数列：
+
+```hvml
+    <init as "evenNumbers" with [] >
+        <iterate on 0 onlyif $L.lt($0<, 100L) with $EJSON.arith('+', $0<, 2) nosetotail>
+            <update on="$evenNumbers" to="append" with="$?" />
+        </iterate>
+    </init>
+```
+
+当未定义 `on` 属性时，我们将 `with` 属性作为输入及迭代结果：
+
+1. 第一次迭代前：
+   - 使用 0 初始化 `$0%` 。
+   - 使用 `in` 属性值或者继承 `$@` 初始化 `$0@`。
+1. 每次迭代前：
+   - 对 `onlyif` 属性定义的表达式求值，若对结果做布尔化处理后为 `false`，则终止迭代，否则继续迭代。若未定义 `onlyif`，视其值为 `true`。
+1. 每次迭代中：
+   - 对 `with` 属性定义的表达式求值，若求值结果为 `false`、`null` 或者 `undefined` 之一（此处不做布尔化处理），则终止迭代，否则，则使用 `with` 属性的求值结果重置 `$0<`。若未定义 `with`，视其值为 `undefined`。
+   - 将 `$0<` 设置到 `$0?` 上；对内容表达式求值（结果设置到 `$0^`）；处理子元素。
+1. 每次迭代后：
+   - 若定义有 `while` 属性，则对 `while` 属性定义的表达式求值，若对结果做布尔化处理后为 `false`，则终止迭代。若未定义 `while` 属性，视其值为 `true`。
    - 若以上步骤未导致迭代终止，则 `$0%` 增加 1，开始新的迭代。
 
 如下示例读取特定目录下的全部目录项：
 
 ```hvml
-    <choose on=$FS.opendir($REQ.dir) >
+    <choose on $FS.opendir($REQ.dir) >
         <except raw>
             <li>Exception when calling '$FS.opendir($REQ.dir)'</li>
         </except>
 
         <!-- no directory entry if $?.read() returns false -->
-        <iterate on=$? with=$?.read() >
+        <iterate with $?.read() >
             <li>$?.type: $?.name</li>
         </iterate>
     </choose>
-```
-
-如下示例生成小于 100 的偶数数列：
-
-```hvml
-    <init as="evenNumbers" with=[0,] >
-        <iterate on=$?[0] onlyif=$L.lt($0<,100) with=$MATH.add($0<,2) nosetotail>
-            <update on="$evenNumbers" to="append" with="$?" />
-        </iterate>
-    </init>
 ```
 
 #### 2.5.8) `reduce` 标签
@@ -4223,7 +4239,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                 </catch>
 
                 <!-- no more directory entry if $?.read() returns false -->
-                <iterate on=$? with=$?.read() >
+                <iterate with=$?.read() >
                     <catch for="ANY">
                         <return with=false />
                     </catch>
@@ -4358,7 +4374,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                         </catch>
 
                         <!-- no more directory entry if $?.read() returns false -->
-                        <iterate on=$? with=$?.read() >
+                        <iterate with=$?.read() >
                             <catch for="ANY">
                                 <return with=false />
                             </catch>
@@ -4577,7 +4593,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
             </catch>
 
             <!-- no directory entry if $?.read() returns false -->
-            <iterate on=$? with=$?.read() >
+            <iterate with=$?.read() >
                 <catch for="ANY">
                     <back to="#theUL">
                         "Exception when calling '$FS.opendir($REQ.dir).read($REQ.dir)': $?"
