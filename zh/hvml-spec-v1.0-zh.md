@@ -3852,8 +3852,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                 with $EJSON.arith('-', $0<, 1) nosetotail >
 
             <test with $L.eval('a == 0 && b == 0',
-                    $EJSON.arith('%', $big, $?),
-                    $EJSON.arith('%', $small, $?) >
+                    { a: $EJSON.arith('%', $big, $?),
+                      b: $EJSON.arith('%', $small, $?) } >
                 <return with $? />
             </test>
 
@@ -4977,7 +4977,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 该元素使用如下属性：
 
-- `with`：指定休眠秒数。
+- `with`：指定休眠秒数（注：小数有效）。
 - `for`：使用时间单位来指定要休眠的时间，比如 `1m` 表示一分钟，支持如下单位：
    - `ns`：纳秒。
    - `us`：微秒。
