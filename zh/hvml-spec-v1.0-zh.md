@@ -388,8 +388,8 @@ Language: Chinese
 比如下面的 HVML 代码片段生成小于 100 的偶数数列，其中使用了 `init`、 `iterate` 和 `update` 这三个动作标签，分别实现了初始化一个数组变量、迭代计算偶数并将每个迭代结果追加到数组中的功能：
 
 ```hvml
-    <init as "evenNumbers" with [0, ] >
-        <iterate on $?[0] onlyif $L.lt($0<, 100) with $EJSON.arith('+', $0<, 2) nosetotail >
+    <init as "evenNumbers" with [ ] >
+        <iterate on 0 onlyif $L.lt($0<, 100) with $EJSON.arith('+', $0<, 2L) nosetotail >
             <update on "$evenNumbers" to "append" with $? />
         </iterate>
     </init>
@@ -399,8 +399,8 @@ Language: Chinese
 
 ```hvml
     <ul>
-        <init as "evenNumbers" with [0, ] temp >
-            <iterate on $?[0] onlyif $L.lt($0<, 100) with $EJSON.arith('+', $0< 2) nosetotail >
+        <init as "evenNumbers" with [ ] temp >
+            <iterate on 0 onlyif $L.lt($0<, 100) with $EJSON.arith('+', $0<, 2L) nosetotail >
                 <li>$?</li>
             </iterate>
         </init>
@@ -1822,7 +1822,7 @@ JSON 求值表达式的语法，见本文档 [2.2.2) JSON 求值表达式的语�
 - 丢失（lost）：协程所在行者丢失渲染器的连接。
 - 被压制（suppressed）：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
 
-HVML 协程可通过观察内置 `$CRTN` 变量上的渲染器事件来判断自身渲染状态的变化。渲染状态相关的事件对应的名称具有 `rdrState:` 前缀，如 `rdrState:suppressed`。
+HVML 协程可通过观察内置 `$CRTN` 变量上的渲染器事件来判断自身渲染状态的变化。渲染状态相关的事件对应的名称具有 `rdrState:` 前缀，如 `rdrState:pageSuppressed`。
 
 每个 HVML 协程运行在特定的 HVML 虚拟机实例上，而每个 HVML 虚拟机实例对应 HVML 应用框架中的一个行者。HVML 行者对应的虚拟机实例有如下状态：
 
