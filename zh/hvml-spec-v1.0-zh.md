@@ -376,7 +376,7 @@ Language: Chinese
 
 比如下面的 HVML 代码片段，通过表达式 `$STR.substr($SYS.locale, 0, 2)` 取系统区域字符串（如 `zh_CN`）的前两个字符作为结果，设置了 `lang` 这个属性的属性值（`zh`）：
 
-```html
+```hvml
 <hvml target="html"
         lang="$STR.substr($SYS.locale, 0, 2)">
     ...
@@ -387,7 +387,7 @@ Language: Chinese
 
 比如下面的 HVML 代码片段生成小于 100 的偶数数列，其中使用了 `init`、 `iterate` 和 `update` 这三个动作标签，分别实现了初始化一个数组变量、迭代计算偶数并将每个迭代结果追加到数组中的功能：
 
-```html
+```hvml
     <init as="evenNumbers" with=[0,] >
         <iterate on=$?[0] onlyif=$L.lt($0<,100)
                 with=$MATH.add($0<,2) nosetotail>
@@ -398,7 +398,7 @@ Language: Chinese
 
 这种语法还允许该我们混合使用外部标签来定义程序结构，这通过赋予未知的非 HVML 标签一个统一的动作而实现。比如下面的代码，通过 `iterate` 元素生成了由 HTML 的 `ul` 和 `li` 标签定义的偶数列表：
 
-```html
+```hvml
     <ul>
         <init as="evenNumbers" with=[0,] temp >
             <iterate on=$?[0] onlyif=$L.lt($0<,100)
@@ -413,7 +413,7 @@ Language: Chinese
 
 比如下面的 HVML 代码片段，使用 `update` 动作标签，添加了一个激活的定时器，随后使用 `choose` 和 `update` 使之无效：
 
-```html
+```hvml
     <!-- 新增标识符为 `foo` 的定时器，间隔 3000 ms，激活状态 -->
     <update on="$TIMERS" to="append">
         { "id" : "foo", "interval" : 3000, "active" : "yes" }
@@ -431,7 +431,7 @@ Language: Chinese
 
 比如，下面的 HVML 程序片段，使用 `archetype` 元素定义了一个模板，然后使用 `iterate` 和 `update` 元素，将 `users` 数组中的数据通过模板置换处理为目标文档的片段，然后追加到目标文档中：
 
-```html
+```hvml
     <init as="users">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom",
@@ -460,7 +460,7 @@ Language: Chinese
 
 比如下面的 HVML 代码片段，展示了根据当前的目标文档类型就地执行不同操作组的能力：
 
-```html
+```hvml
     <!-- 该元素定义了一个操作组，该操作组输出 HTML 片段。-->
     <define as="output_html">
         <h1>HVML</h1>
@@ -482,7 +482,7 @@ Language: Chinese
 
 比如，下面的代码片段观察标识符为 `foo` 的定时器的到期事件：
 
-```html
+```hvml
     <observe on="$TIMERS" for="expired:foo" >
         ...
     </observe>
@@ -490,7 +490,7 @@ Language: Chinese
 
 再比如，下面的代码片段将一个表达式绑定为一个变量，从而可以观察这个表达式值的变化：
 
-```html
+```hvml
     <bind on="$SYS.time" as="rtClock" />
 
     <observe on="$rtClock" for="change">
@@ -504,7 +504,7 @@ Language: Chinese
 
 比如下面的代码片段，异步地并发调用了 `collectAllDirEntriesRecursively` 操作组，该操作组递归遍历指定的目录，收集其下的所有目录项，然后使用 `observe` 来观察这个并发调用的状态。显然，这个操作组是一项耗时操作。在该操作组返回结果之前，调用者可以继续执行完成其他的工作。
 
-```html
+```hvml
     <call as="my_task" on="$collectAllDirEntriesRecursively" with="/"
             within="myRunner" concurrently asynchronously />
     <observe on="$my_task" for="callState:success">
@@ -524,7 +524,7 @@ Language: Chinese
 1. 在页面中间位置展示用户列表，每个用户项包括用户名称、头像等信息。这些信息来自 JSON 表达的一个字典数组。
 1. 在页面底部展示一个搜索引擎连接。具体的搜索引擎根据系统所在的语言地区（locale）信息确定。
 
-```html
+```hvml
 <!DOCTYPE hvml SYSTEM "v: MATH">
 <hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
     <head>
@@ -750,7 +750,7 @@ HVML 还定义有如下两种特殊数据类型：
 
 除了内置的 `$SYS` 动态对象或者通过 `DOCTYPE` 预先装载的动态对象之外，我们也可以通过外部程序模块实现自定义的动态对象，并通过 `init` 标签将这个动态对象和某个变量绑定在一起，如：
 
-```html
+```hvml
     <init as="math" from="purc_dvobj_math" via="LOAD" />
 ```
 
@@ -1042,7 +1042,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 `$TIMERS` 用于当前 HVML 程序的定时器，具有固定的格式，初始为一个空的集合。可使用 `update` 等元素修改它的值，如：
 
-```html
+```hvml
 <head>
     <update on="$TIMERS" to="unite">
         [
@@ -1057,7 +1057,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 只要在 HVML 中修改某个定时器的 `active` 参数即可激活这个定时器，然后使用 `observe` 标签即可监听定时器到期时间：
 
-```html
+```hvml
     <choose on="$TIMERS" by="FILTER: AS 'foo'">
         <update on="$?" at=".active" with="yes" />
     </choose>
@@ -1100,7 +1100,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 常用用法如下：
 
-```html
+```hvml
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
@@ -1127,7 +1127,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 以上代码最终会被解释为如下的 HTML 文档：
 
-```html
+```hvml
 <html>
     <head>
         <title>世界，您好！</title>
@@ -1193,7 +1193,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 流实体应该是可被观察的，从而可以监听读取流上是否有数据等待读取，或者是否可向写入流中写入数据。比如，我们可以观察 `$STREAM.stdin`，以便监听用户的输入：
 
-```html
+```hvml
     <observe on="$STREAM.stdin" for="read">
         <choose on="$?.readlines(1)">
             ...
@@ -1203,7 +1203,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 另外，`STREAM` 变量应使用可扩展的实现，一方面，我们可以扩展流实体的类型，比如从文件、匿名管道、命名管道到 Unix 套接字、TCP 连接，另一方面，我们可以通过支持不同的协议来扩展流实体提供的操作方法，从而在流实体上提供额外的读写方法。比如，当某个解释器实现的 `$STREAM` 方法支持发送 HTTP 协议时，即可实现发送 HTTP 请求以及处理 HTTP 协议的方法：
 
-```html
+```hvml
     <init as="myFetcher" on="$STREAM.open('tcp://foo.com:80','default','http')">
         <choose on="$myFetcher.http_send_request('GET','/')" />
         <choose on="$myFetcher.http_read_response_header()" />
@@ -1212,7 +1212,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 作为一个有价值的设计，我们可以将传统的 Unix 通过匿名管道管接两个进程的行为抽象为一个流实体，比如，我们将标准输出上的内容管接（pipe）给 `/usr/bin/wc` 命令处理：
 
-```html
+```hvml
     <init as="myStreams">
         {
             in: $STREAM.stdin,
@@ -1267,7 +1267,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 比如，我们使用下面的 `init` 标签定义一个字符串集合：
 
-```html
+```hvml
     <init as="locales" uniquely>
         [ "zh_CN", 100, "zh_HK", 90, "zh_TW", 60, "en_US", 50, "en_UK", 50, "en_US", 30 ]
     </init>
@@ -1283,7 +1283,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 我们使用 `init` 标签的 `against` 属性值来定义字典的唯一性键名。当使用多个键名作为唯一性条件时，使用空格分隔。比如：
 
-```html
+```hvml
     <init as="users" uniquely against="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
@@ -1294,7 +1294,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 上面的示例代码定义了一个使用 `id` 键名作为唯一性判断条件的集合。假如用来初始化这个集合的字典数组中多一项 `id` 为 `2` 的数据项，则之前 `id` 为 `2` 的数据项会被后来 `id` 为 `2` 的数据项覆盖。比如，
 
-```html
+```hvml
     <init as="users" uniquely against="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
@@ -1319,7 +1319,7 @@ HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并
 
 HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
-```html
+```hvml
     <bind on="$users[$MATH.random(10)]" as="me" />
 ```
 
@@ -1329,7 +1329,7 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
 我们还可以使用 `$me.eval_const` 方法。该方法将只求值一次，其后的每次调用将返回第一次求值的结果。在实际应用中，该方法可以用来定义一个特定表达式产生的常量。比如：
 
-```html
+```hvml
     <bind on="$MATH.div(1.0, $MATH.sqrt(2.0))" as="reciprocal_of_sqrt_2" />
 ```
 
@@ -1341,7 +1341,7 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
 比如，我们可以将某个目标文档元素的属性或者内容绑定到某个变量上，然后使用 `observe` 元素处理其上的 `change` 事件：
 
-```html
+```hvml
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
     <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name">
         <observe on="$user_name" for="change">
@@ -1357,7 +1357,7 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
 比如下面的 HVML 程序，将打印小于 10 的斐波那契数列：
 
-```html
+```hvml
 <!DOCTYPE hvml>
 <hvml target="void">
     <head>
@@ -1623,7 +1623,7 @@ HVML 定义的异常如下：
 
 下面给出了错误和异常处理的示例代码：
 
-```html
+```hvml
     <head>
         ...
         <error raw>
@@ -1719,13 +1719,13 @@ HVML 定义的异常如下：
 
 然后使用 `$DOC.query()` 方法获得对应的元素汇集：
 
-```html
+```hvml
     <update on="$DOC.query('#the-user-list > li')" at="attr.class" with="text-info" />
 ```
 
 由于 `update` 标签的 `on` 属性值不允许使用整数、字符串等不可变数据，而 `observe` 标签的 `on` 属性值只能为可观察的原生实体或容器数据，因此，我们也可以在 `update` 和 `observe` 标签的 `on` 属性值中直接使用 CSS 选择器（字符串）。比如：
 
-```html
+```hvml
     <update on="#the-user-list > li" at="attr.class" with="text-info" />
 ```
 
@@ -1741,7 +1741,7 @@ HVML 定义的异常如下：
 
 在其他可能导致混淆的动作标签中，可使用无等号的属性值表述语法，此时可或者使用字面的数值（number）、 `true`、 `false`、 `null` 等关键词：
 
-```html
+```hvml
     <choose on 12345 by="ADD: LE 9999 BY 1000">
         ...
     </choose>
@@ -1751,7 +1751,7 @@ HVML 定义的异常如下：
 
 在 HVML 中，`on` 或者 `in` 介词属性在引用目标文档中的元素时，若使用前导字符 `>`，则将被限定在父元素 `in` 介词指定的范围内。如下面例子中，
 
-```html
+```hvml
         <reduce on="$?" in="#the-user-statistics" by="FUNC: StatsUserRegion">
             <choose on="$?.count" to="update" in="> h2 > span">
                 <update on="$@" at="textContent" with="$?" />
@@ -1836,7 +1836,7 @@ HVML 协程可通过观察内置 `$CRTN` 变量上的渲染器事件来判断自
 
 HVML 解释器按照固定的策略将目标文档子树（文档片段）视作一个可以用 JSON 表达的数据来访问。比如对下面的 HTML 片段：
 
-```html
+```hvml
     <li class="user-item">
         <img class="avatar" src="foo/bar.png" />
         <span>foo</span>（中国大陆）
@@ -1990,7 +1990,7 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 在 HVML 中，我们经常会使用属性中的表达式或者规则字符串来表示一个求值行为，比如：
 
-```html
+```hvml
     <init as="locales">
       {
           "en_US" : "英语（美国）",
@@ -2427,7 +2427,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 在 `hvml` 标签内部，我们可使用 JSON 表达式，这些表达式将在执行过程中被求值，其结果将被设置为 `hvml` 元素的执行结果，而 `hvml` 元素对应的栈帧始终为最顶栈帧，因此，`hvml` 元素的结果数据也将作为整个 HVML 协程的执行结果。在 `hvml` 标签内，我们可以定义多个表达式，后一个表达式的求值结果将覆盖 `hvml` 元素的结果数据。如：
 
-```html
+```hvml
 <hvml target="void" lang="$STR.substr($SYS.locale, 0, 2)">
     {{
         $STREAM.stdout.writelines('Start of `Hello, world!`');
@@ -2457,7 +2457,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 所有模板标签可使用其内容来定义一个模板，也可以使用 `src` 属性定义的 URL 从外部数据源中获得模板数据。当同时使用 `src` 属性和内容来定义模板数据时，将尝试装载指定的外部资源作为模板数据，如果装载失败，则转而使用内容。如：
 
-```html
+```hvml
     <archetype name="user_item" src="foo:///nonexistent_dir/templates/user_item">
         <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
             <img class="avatar" src="$?.avatar" />
@@ -2480,7 +2480,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `archetype` 标签用于定义一个文档片段模板。
 
-```html
+```hvml
     <archetype name="user_item">
         <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
             <img class="avatar" src="$?.avatar" />
@@ -2515,7 +2515,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 注意，用于引用特定的 `archetype` 模板的变量名，和 HTML/XML 不同，HVML 不要求该标识符是全局唯一的，而只要求在 HVML 的同一级兄弟元素中唯一，这带来了一定的便利。比如：
 
-```html
+```hvml
     <body>
         <archetype name="user_item">
             <p>$?</p>
@@ -2537,7 +2537,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `archedata` 标签用于定义一个数据模板。
 
-```html
+```hvml
     <archedata name="item_user">
         {
             "id": "$?.attr[data-value]", "avatar": "$?.children[0].attr.src",
@@ -2558,7 +2558,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 本质上，`error` 标签定义的内容设置了 `ERROR` 变量对应 `type` 键名的键值，故而如下两个标签的功能是一样的：
 
-```html
+```hvml
     <error type="SegFault">
         <p>Out of memory!</p>
     </error>
@@ -2576,7 +2576,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 本质上，`except` 标签定义的内容设置了 `EXCEPT` 变量对应 `type` 键名的键值，故而如下两个标签的功能是一样的：
 
-```html
+```hvml
     <except>
         <p>There is an uncaught exception.</p>
     </except>
@@ -2625,7 +2625,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 该标签的常见用法如下：
 
-```html
+```hvml
     <!-- 使用对象数组初始化一个集合 -->
     <init as="users" uniquely against="id">
         [
@@ -2663,7 +2663,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们也可以在 `init` 标签中使用 `at` 属性指定变量名所在的元素位置。如：
 
-```html
+```hvml
 <body>
     <!-- 在 `body` 元素上使用对象数组初始化一个集合（唯一性键名是 id） -->
     <init as="users" uniquely against="id">
@@ -2705,7 +2705,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们也可以不指定 `init` 的 `as` 属性，从而仅仅利用 `init` 标签初始化一项数据，然后使用 `init` 元素的结果数据（$?）来完成相应的工作。此种情况下，我们通常不使用异步初始化模式。
 
-```html
+```hvml
     <init from="http://foo.bar.com/locales" with="{ from: 'foo' }" via="POST" >
 
         <!-- do something here by using `$?` -->
@@ -2767,7 +2767,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 对下面的文档片段：
 
-```html
+```hvml
     <div id="the-user-statistics">
         <h2>User regions (totally <span class="none">0</span> users):</h2>
     </div>
@@ -2775,14 +2775,14 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们通过下面的 `update` 标签来设置用户数量并修改其 `class` 属性：
 
-```html
+```hvml
     <update on="#the-user-stats > h2 > span" at="textContent" with="10" />
     <update on="#the-user-stats > h2 > span" at="attr.class" with="text-warning" />
 ```
 
 执行上述 `update` 动作后，上面的 HTML 代码片段将变为：
 
-```html
+```hvml
     <div id="the-user-statistics">
         <h2>User regions (totally <span class="text-warning">10</span> users):</h2>
     </div>
@@ -2790,7 +2790,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 类似地，我们在数组、对象等数据上执行 `update` 动作。比如更新 `$users` 的第二个用户的名称（`name`）：
 
-```html
+```hvml
     <init as="users">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US", "age": 2 },
@@ -2815,7 +2815,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们可以使用不含等号的 `on` 和 `with` 属性值表述语法，如：
 
-```html
+```hvml
     <update on $users[0] at=".age" with 3>
         <update on $users[1] at=".age" with $math.add($<, 1) />
     </update>
@@ -2825,13 +2825,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当我们使用 `undefined` 赋值给数组或者对象的某个数据项时，该数值项将被删除（同 `erase` 标签的效果），如：
 
-```html
+```hvml
     <update on $users[1] at=".age" with undefined />
 ```
 
 亦可用 `remove` 动作：
 
-```html
+```hvml
     <update on $users[1] at=".age" to="remove" />
 ```
 
@@ -2846,7 +2846,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当我们需要在一个 `update` 标签中同时修改多个数据项时，我们在 `at` 属性值中使用空格表示多个数据项位置，在 `with` 属性值中使用数组对应这些位置上要做的修改。如下面的三个 `update` 标签：
 
-```html
+```hvml
     <update on="p > a" at="textContent" with="$?.se_name" />
     <update on="p > a" at="attr.href" with="$?.se_url" />
     <update on="p > a" at="attr.title" with="$?.se_title" />
@@ -2864,7 +2864,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当我们直接在目标数据上执行更新动作时，我们不指定 `at` 属性：
 
-```html
+```hvml
     <init as="newUser">
         { "id": "0", "avatar": "/img/avatars/0.png", "name": "Annoymous", "region": "en_US", "age": 2 },
     </init>
@@ -2880,7 +2880,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当目标数据是元素汇集时，`update` 标签设定的更新动作，将作用于汇集中所有的元素在指定位置上的数据。比如，
 
-```html
+```hvml
     <update on="span" at="attr.class" with="text-danger" />
 ```
 
@@ -2888,7 +2888,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当目标数据是对象、数组、集合，且具有 `individually` 副词属性时，`update` 标签设定的更新动作，将作用于数组中所有的数据项在指定位置上的数据。如，
 
-```html
+```hvml
     <init as="users" uniquely against="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
@@ -2936,7 +2936,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 下面的代码定义了一个 `$users` 变量作为集合（使用 `id` 作为唯一性键名），并定义了一个 `$new_users` 对象数组：
 
-```html
+```hvml
     <init as="users" uniquely against="id">
         [
             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
@@ -2955,7 +2955,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们使用如下的 `update` 标签以 `$new_users` 作为源数据，使用 `unite` 动作：
 
-```html
+```hvml
     <update on="$users" to="unite" with="$new_users" />
 ```
 
@@ -2971,7 +2971,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 类似地，我们要添加一个新的定时器时，使用如下的 `update` 标签修改 `$TIMERS`：
 
-```html
+```hvml
     <update on="$TIMERS" to="unite">
         [
             { "id" : "foobar", "interval" : 3000, "active" : "yes" },
@@ -2981,7 +2981,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 又如，当我们需要覆盖全局定时器中某个特定的数据项时，我们可以使用 `overwrite` 动作：
 
-```html
+```hvml
     <update on="$TIMERS" to="overwrite">
         { "id" : "foo", "active" : "yes" }
     </update>
@@ -2989,7 +2989,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当我们要删除定时器 `foo` 时，可使用 `subtract` 动作：
 
-```html
+```hvml
     <update on="$TIMERS" to="subtract">
         { "id" : "foo" }
     </update>
@@ -3001,7 +3001,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 如针对如下的 HTML 代码片段：
 
-```html
+```hvml
     <div id="the-user-statistics">
         <h2 class="text-info">User regions (totally <span class="none"></span> users):</h2>
     </div>
@@ -3009,26 +3009,26 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们通过下面的 `erase` 标签来删除 `h2` 元素：
 
-```html
+```hvml
     <erase on="#the-user-stats > h2" />
 ```
 
 执行上述 `erase` 动作后，上面的 HTML 代码片段将变为：
 
-```html
+```hvml
     <div id="the-user-statistics">
     </div>
 ```
 
 我们通过下面的 `erase` 标签来删除 `h2` 元素中的 `class` 属性：
 
-```html
+```hvml
     <erase on="#the-user-stats > h2" at="attr.class" />
 ```
 
 执行上述 `erase` 动作后，上面的 HTML 代码片段将变为：
 
-```html
+```hvml
     <div id="the-user-statistics">
         <h2>User regions (totally <span class="none"></span> users):</h2>
     </div>
@@ -3038,25 +3038,25 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 类似地，我们也可以在数组上执行 `erase` 动作。比如清除 `$users` 的第二个成员：
 
-```html
+```hvml
     <erase on="$users" at="[1]" />
 ```
 
 我们也可以在对象上执行 `erase` 动作。比如清除 `$users[0]` 的 `name` 属性：
 
-```html
+```hvml
     <erase on="$users[0]" at=".name" />
 ```
 
 `at` 属性值可以是数组的索引值或者对象的属性名称（可指定多个，用空格分割）：
 
-```html
+```hvml
     <erase on="$users[0]" at=".name .age" />
 ```
 
 作为示例，下面的代码在 `iterate` 标签中使用 `erase` 标签，间隔删除数组中成员：
 
-```html
+```hvml
     <iterate on="$EJSON.count($users)" by="SUB: GE 0 BY 2">
         <erase on="$users" at="[$?]" />
     </iterate>
@@ -3068,7 +3068,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 如针对如下的 HTML 代码片段：
 
-```html
+```hvml
     <div id="the-user-statistics">
         <h2>User regions (totally <span class="none"></span> users):</h2>
         <dl>
@@ -3082,13 +3082,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们通过下面的 `clear` 标签来清空用来 `dl` 节点的所有子节点：
 
-```html
+```hvml
     <clear on="#the-user-stats > dl" />
 ```
 
 执行上述 `clear` 动作后，上面的 HTML 代码片段将变为：
 
-```html
+```hvml
     <div id="the-user-statistics">
         <h2>User regions (totally <span class="none"></span> users):</h2>
         <dl>
@@ -3098,7 +3098,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 类似地，我们也可以在数据项上执行 `clear` 动作。比如清空 `$users` 第二个用户信息：
 
-```html
+```hvml
     <clear on="$users[1]" />
 ```
 
@@ -3118,7 +3118,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 看如下的示例代码：
 
-```html
+```hvml
     <archetype name="footer_cn">
         <p><a href="http://www.baidu.com" title="百度">Baidu</a></p>
     </archetype>
@@ -3163,7 +3163,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 就上述示例代码而言，假定 `$global` 所指代的 JSON 数据 `locale` 定义为 `zh_CN`，则最终生成的 HTML 片段如下：
 
-```html
+```hvml
 <footer id="the-footer">
     <p><a href="http://www.baidu.com" title="百度">Baidu</a></p>
 </footer>
@@ -3175,7 +3175,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 使用 `on` 介词属性时，我们可以使用一个求值表达式来确定匹配条件；当求值结果做布尔化处理后，若结果为 `true`，则视作匹配，反之视作不匹配。比如就上述 HVML 代码中的匹配 `zh_CN` 的 `match` 元素，可以如下书写：
 
-```html
+```hvml
         <match on="$L.streq('case', 'zh_CN', $?)" exclusively>
             <update on="$@" to="displace" with="$footer_cn" />
         </match>
@@ -3213,7 +3213,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 比如，我们可以如下书写一个匹配规则：
 
-```html
+```hvml
     <match for="GT 10 AND LT 100">
         ...
     </match>
@@ -3230,7 +3230,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 作为一种简化处理方案，我们可以使用 `test` 元素的 `with` 属性的值来确定如何处理 `test` 元素定义的操作子树：
 
-```html
+```hvml
     <test with="$STR.stars_with($CRTN.app, 'cn.fmsoft.hvml')">
         ...
 
@@ -3253,7 +3253,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 比如要实现根据当前 `locale` 动态生成搜索链接的功能，我们也可以使用嵌套在 `choose` 元素中的 `update` 元素完成相关功能，如：
 
-```html
+```hvml
   <head>
       ...
   </head>
@@ -3299,7 +3299,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `iterate` 标签用于定义一个执行迭代操作的动作元素，该元素在指定的可迭代数据上执行迭代操作。比如我们可以迭代处理一个数组，将迭代得到的每个数据项使用 `update` 子元素将指定的文档片段模板使用迭代得到的数据项置换后插入到目标文档。如下面的 HVML 代码片段：
 
-```html
+```hvml
     <head>
     </head>
 
@@ -3369,7 +3369,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 如下示例读取特定目录下的全部目录项：
 
-```html
+```hvml
     <choose on=$FS.opendir($REQ.dir) >
         <except raw>
             <li>Exception when calling '$FS.opendir($REQ.dir)'</li>
@@ -3384,7 +3384,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 如下示例生成小于 100 的偶数数列：
 
-```html
+```hvml
     <init as="evenNumbers" with=[0,] >
         <iterate on=$?[0] onlyif=$L.lt($0<,100) with=$MATH.add($0<,2) nosetotail>
             <update on="$evenNumbers" to="append" with="$?" />
@@ -3398,7 +3398,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们可以在 `reduce` 标签中使用 `by` 属性指定一个内建执行器，则将在内建执行器生成的数据基础上执行隐含的规约操作。比如，如下的代码：
 
-```html
+```hvml
     <init as="regionStats">
         { "zh_CN" : 100, "zh_TW" : 90，"zh_HK": 90, "zh_SG": 90, "zh_MO": 80, "en_US": 70, "en_UK": 80 }
     </init>
@@ -3439,7 +3439,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 通常 `reduce` 元素会形成另外一个可迭代数据，然后我们可以嵌套 `iterate` 等元素执行后续动作。比如下面的 HVML 代码片段：
 
-```html
+```hvml
     <div id="the-user-statistics">
         <h2>User regions (totally <span></span> users):</h2>
         <dl>
@@ -3476,7 +3476,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 假设执行归约操作后的结果同前述 JSON 格式给出的数据，则执行上述操作后获得的文档片段为：
 
-```html
+```hvml
     <div id="the-user-statistics">
         <h2>User regions (totally <span>19</span> users):</h2>
         <dl>
@@ -3503,7 +3503,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 如下代码对 `$users` 执行排序：
 
-```html
+```hvml
     <init as="users">
         [
             { "id": 3, "avatar": "/img/avatars/3.png", "name": "David", "region": "en_US" }
@@ -3531,7 +3531,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们可以用 `by` 属性指定一个执行排序的外部函数执行器。如：
 
-```html
+```hvml
     <sort on="$?.regions" by="FUNC: mySort">
         ...
     </sort>
@@ -3573,7 +3573,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 本质上，以上 HVML 代码和下面使用 `choose` 然后使用 `sort` 的结果一致：
 
-```html
+```hvml
     <choose on="$regions" by="KEY: ALL FOR KV">
         <sort on="$?" against="v" descendingly>
             <iterate on="$?" in="> dl" by="RANGE: ALL">
@@ -3591,7 +3591,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `define` 元素通过 `as` 属性定义操作组的名称，其中包含了一组动作标签定义的子元素。`include` 元素将切换执行上下文到 `with` 属性指定的操作组中，`on` 属性传入的参数将作为结果数据（即 `$?` 变量的值）供操作组使用，而 `include` 元素通过内容定义的数据，将成为 `$^` 变量的值。如：
 
-```html
+```hvml
         <archetype name="dir_entry">
             <item class="$?.type">$?.name</item>
         </archetype>
@@ -3631,7 +3631,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 本质上，`include` 元素完成的工作相当于复制指定的操作组到当前的位置执行，我们称之为就地执行（execute in place）。比如以上代码，若不使用 `define` 和 `include`，则相当于：
 
-```html
+```hvml
         <archetype name="dir_entry">
             <item class="$?.type">$?.name</item>
         </archetype>
@@ -3679,7 +3679,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `include` 就地执行操作组的效果类似于其他编程语言的闭包（closure）。比如以上的 `fillDirEntries` 操作组中使用了 `dir_entry` 这个模板，而该模板只定义了一次。但如果稍作修改，就可以在包含操作组之前，通过定义一个新的名为 `dir_entry` 的模板，即可覆盖默认的 `dir_entry` 模板。请注意其中的注释：
 
-```html
+```hvml
         <archetype name="dir_entry">
             <item class="$?.type">Name: $?.name</item>
         </archetype>
@@ -3725,7 +3725,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 比如，我们在 `/module/html/listitems.hvml` 中定义了一个展示数组成员的操作组：
 
-```html
+```hvml
     <ol>
         <iterate on="$?" by="RANGE: FROM 0">
             <li>$?</li>
@@ -3735,7 +3735,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 而默认的操作组向标准输出流写入数组成员：
 
-```html
+```hvml
     <define as="listitems" from="/module/$CRTN.target/listitems.hvml">
         <inherit>
             $STREAM.stdout.writelines($?)
@@ -3763,7 +3763,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 下面的代码通过 `iterate` 动作元素装载多个 HVML 片段：
 
-```html
+```hvml
 <hvml target="html" lang="en">
     <head>
         <base href="$CRTN.base(! 'file:///' )" />
@@ -3795,7 +3795,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 按照以上规则，上述定义多个操作组的方法，亦可按以下方式编码：
 
-```html
+```hvml
 <hvml target="html" lang="en">
     <head>
         <base href="$CRTN.base(! 'file:///' )" />
@@ -3820,7 +3820,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `include` 元素的 `on` 属性定义的值，将成为 `define` 对应栈帧的结果数据；类似地，`call` 元素的 `with` 属性定义的值，将成为 `define` 对应栈帧的果数据。为书写方便，当传递给操作组的数据是 `object` 时，解释器应将该对象中所有键名符合 HVML `literal_variable_token` 词法单元的属性，设置为 `define` 对应栈帧中的临时命名变量，从而获得类似函数形参的效果。比如如下代码计算两个正整数的最大公约数（greatest common divisor）：
 
-```html
+```hvml
     <define as "calcGreatestCommonDivisor">
         <test with $L.or($L.le($x, 0), $L.le($y, 0)) >
             <return with undefined />
@@ -3869,7 +3869,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 下面的代码从远程服务器上获得当前的用户信息，但使用异步请求：
 
-```html
+```hvml
     <init as="users" from="http://foo.bar.com/get_all_users" async />
 
     <archetype name="user_item">
@@ -3912,7 +3912,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 假设文档通过本地总线机制（本例中是 `hiBus`）监听来自系统的状态改变事件，如电池电量、WiFi 信号强度、移动网络信号强度等信息，并在文档使用相应的图标来表示这些状态的改变。为此，我们可以编写如下的 HVML 程序：
 
-```html
+```hvml
 <hvml>
     <head>
         <init as="databus" with="$STREAM.open('unix:///var/run/hibus.sock','default','hibus')"/>
@@ -3997,7 +3997,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 类似地，我们要在状态栏上显示当前的 WiFi 名称或者移动网络的运营商名称时：
 
-```html
+```hvml
     <choose on=$databus.subscribe('@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED')>
         <observe on="$databus" for="event:$?" in="#the-header">
             <update on="span.mobile-operator" at="textContent" with="$?.name">
@@ -4014,7 +4014,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 - 通过监听 `MQTT` 数据包获得后台用户的新增或者删除时间，从而动态更改用户列表。
 - 通过监听用户列表的父元素（容器元素）上的变化事件，动态更新用户统计信息。
 
-```html
+```hvml
 <hvml lang="en">
     <head>
         <init as="mqtt" with=$STREAM.open('tcp://foo.bar.com:1366','default','mqtt') />
@@ -4093,7 +4093,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当我们要解除在某个特定数据或者元素之上对某个事件的观察时，使用 `forget` 标签。也就是说，`forget` 是 `observe` 的反操作。
 
-```html
+```hvml
     <forget on="#the-user-list" for="change:content" />
 ```
 
@@ -4101,7 +4101,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 在 HVML 代码中，除了被动等待事件的发生之外，代码也可以直接使用 `fire` 标签主动地激发一个事件：
 
-```html
+```hvml
     <init as="new_user">
         { "id": "5", "avatar": "/img/avatars/5.png", "name": "Vincent", "region": "zh_CN" }
     </init>
@@ -4119,7 +4119,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 对同一个事件，我们可以在 HVML 程序的多个地方进行观察并执行不同的动作。当我们需要撤销特定的观察时，可以在 `observe` 标签中使用 `as` 属性为这个观察命名，之后使用 `init` 将该变量重置为 `undefine` 即可移除这个观察：
 
-```html
+```hvml
     <choose on="$TIMERS" by="FILTER: AS 'foo'">
         <update on="$?" at=".active" with="yes" />
     </choose>
@@ -4157,7 +4157,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 比如：
 
-```html
+```hvml
     <forget on="$TIMERS" for="expired:*" />
 ```
 
@@ -4169,7 +4169,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `include` 元素完成的工作相当于复制指定的操作组到当前的位置执行（就地执行，execute in place），所以和传统编程语言中的函数调用并不相同。如果要获得和函数调用相同的效果，使用 `call` 和 `return` 标签：
 
-```html
+```hvml
         <define as="fillDirEntries">
             <choose on="$?" by="CLASS: CDirEntries">
                 <iterate on="$?" by="RANGE: FROM 0">
@@ -4213,7 +4213,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们可以在 `call` 元素中使用 `within` 属性指定不同于当前行者的名称。此时，我们可在另一个行者中执行指定的操作组。由于每个 HVML 行者对应有自己的虚拟机实例，而不同的虚拟机实例通常运行在操作系统的不同线程或者不同进程当中，故而我们可通过这种方式实现基于线程或进程的并发处理。当我们在当前行者使用 `concurrently` 属性，则会在当前虚拟机实例中创建一个新的协程来执行指定的操作组。我们将上述两种调用行为称之为 `并发调用（call concurrently）`。此时，如果使用 `asynchronously` 副词属性，`call` 元素将在创建新的协程（以及可能的新虚拟机实例）之后立即返回，然后使用 `observe` 观察其结果，否则将等待并发调用的结果返回。如：
 
-```html
+```hvml
     <define as="collectAllDirEntriesRecursively">
         <init as="allEntries" with=[] temporarily />
 
@@ -4292,7 +4292,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 由于并发调用通常用来执行一些耗时的计算任务，故而我们将对应协程的目标文档类型设定为 `void`，从而可避免新创建的行者以及协程关联到渲染器上。但通过并发调用操作组，我们也可用来创建一个关联到渲染器的普通行者。比如：
 
-```html
+```hvml
         <define as="newRunner">
             <test with="$RDR.connect('purcmc', 'unix:///var/tmp/purcmc.sock')" >
 
@@ -4346,7 +4346,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 并发调用操作组时，由于我们将对应的 HVML 程序限制在了一个 vDOM 子树上，故而无法访问在原 HVML 程序中操作组所在闭包中的变量。这点和常规的调用存在较大的差别。比如如下的代码：
 
-```html
+```hvml
     <body>
         <init as="allEntries" with=[] >
             <define as="collectAllDirEntriesRecursively" at="_grandparent">
@@ -4387,20 +4387,20 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 定义了一个操作组，该操作组使用了其所在闭包中的静态变量 `$allEntries`。因此，如果不使用并发调用，该操作组可正常工作：
 
-```html
+```hvml
         <call on="$collectAllDirEntriesRecursively" with="/" />
 ```
 
 但如果使用并发调用，则该操作组将因为找不到 `$allEntries` 变量而抛出异常：
 
-```html
+```hvml
         <call on="$collectAllDirEntriesRecursively" with="/"
                 within="newRunner" concurrently asynchronously />
 ```
 
 因此，我们需要使用局部变量，并在最后返回局部变量：
 
-```html
+```hvml
     <define as="collectAllDirEntriesRecursively">
         <init as="allEntries" with=[] temporarily />
 
@@ -4425,13 +4425,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `bind` 标签定义一个执行绑定表达式操作的动作元素，该元素会创建一个表达式变量，故而可使用 `as` 属性和 `at` 属性指定该变量的名称以及变量作用域。通常，表达式变量对应的是一个可求值的表达式，该表达式可使用 `on` 属性指定，也可以使用 `bind` 元素的内容来定义。如：
 
-```html
+```hvml
     <bind on="$users[0]" as="me" />
 ```
 
 或，
 
-```html
+```hvml
     <bind as="me">
         {
             "id": "$currUser.id",
@@ -4450,7 +4450,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当我们使用这个变量时，我们调用其上的 `eval` 方法获得该表达式对应的具体数据。因此，下面的 `init` 和 `bind` 元素的执行效果是不一样的：
 
-```html
+```hvml
     <init as="sysClock">
         $SYS.time
     </init>
@@ -4470,7 +4470,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 比如，
 
-```html
+```hvml
     <bind on="$SYS.time" as="rtClock" />
 
     <observe on="$rtClock" for="change">
@@ -4482,7 +4482,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 另外，我们可以将某个目标文档元素的属性或者内容绑定到某个变量上，然后使用 `observe` 元素处理其上的 `change` 事件：
 
-```html
+```hvml
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
     <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name">
         <observe on="$user_name" for="change">
@@ -4497,7 +4497,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `catch` 标签定义一个执行异常捕获操作的动作元素，该元素可作为任意动作元素的子元素，定义该执行该动作的过程中出现异常时要执行的操作。和 `except` 元素不同，`catch` 元素定义了出现异常时的程序分支。如：
 
-```html
+```hvml
     <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
         <update on="p > a" at="textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
         <catch for="NoData" raw>
@@ -4533,7 +4533,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 比如我们使用 `iterate` 生成小于 100 的偶数数列时，如果使用 `back` 标签，则可如下编码：
 
-```html
+```hvml
     <init as="evenNumbers" with=[0,] >
         <iterate on=$?[0] with=$MATH.add($0<,2) nosetotail>
             <test on=$?>
@@ -4565,7 +4565,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 使用 `with` 属性值定义可替代回退后上下文变量之结果数据的操作，给程序控制执行逻辑带来了帮助。比如，捕捉到异常时：
 
-```html
+```hvml
 <body>
     <init as="dirEntries" with=[] />
 
@@ -4608,7 +4608,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们可以使用 `request` 元素在一个目标文档位置上发起一个方法调用请求，比如，操控 HTML 的 `video` 元素快速跳转到指定的位置：
 
-```html
+```hvml
     <video id="my-video" width="320" height="240" autoplay muted>
         <source src="movie.mp4" type="video/mp4">
         <source src="movie.ogg" type="video/ogg">
@@ -4635,7 +4635,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 当我们使用 `to` 属性指定一个简单的方法时，`with` 属性的值将作为参数传递给这个方法。如下面的例子：
 
-```html
+```hvml
     <request on="#my-video" to="doSomething" with="['value for foo', 'value for bar']" />
 ```
 
@@ -4647,13 +4647,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们在 `to` 属性中使用具有 `get:` 或者 `set:` 前缀的方法名，可用来获取或者设置特定文档元素的动态属性值。比如下面的代码将 `#myInput` 元素设置为禁止，并使用 `noreturn` 副词属性，忽略响应。
 
-```html
+```hvml
     <request on="#myInput" to="set:disabled" with=true noreturn />
 ```
 
 下面的代码获取输入框中的内容：
 
-```html
+```hvml
     <request on="#myInput" to="get:value" />
 ```
 
@@ -4665,7 +4665,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 此时，我们在 `to` 属性值中使用 `call:` 前缀：
 
-```html
+```hvml
     <request on="#myModal" to="call:bootstrap.Carousel.getInstance(ELEMENT).to(ARG)" with=0 />
 ```
 
@@ -4680,7 +4680,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 我们也可以使用上面这种方法获取或者设置特定文档元素的动态属性值。比如下面的代码将 `#myInput` 元素设置为禁止，并使用 `noreturn` 副词属性，忽略响应。
 
-```html
+```hvml
     <request on="#myInput" to="call:ELEMENT.disabled=true" with=0 noreturn />
 ```
 
@@ -4698,7 +4698,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 如下面的代码所示，一个协程定义了一个操作组 `echo`，将传入的参数追加一个前缀后原样返回：
 
-```html
+```hvml
 <!DOCTYPE hvml>
 <hvml>
   <doby>
@@ -4738,7 +4738,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 我们使用 `request` 标签，还可以向渲染器发送一个请求，比如新建窗口组，移除一个窗口组等。此时，指定 `on` 属性值为预定义变量 `$RDR`。至于具体要执行的请求操作以及参数，通过 `to` 属性和 `with` 属性传递，其含义和要求和具体的渲染器协议有关。比如在使用 PURCMC 协议时，我们可以向渲染器发送如下的请求来添加窗口组：
 
-```html
+```hvml
     <request on="$RDR" to="addWindowGroups" >
         '<section id="newGroup1"></section><section id="newGroup2"><article id="newGroupBody2" class="tabbedwindow"></article></section>'
     </request>
@@ -4750,7 +4750,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 `load` 元素用来装载并执行一个由 `on` 属性指定的 HVML 代码（字符串）或者 `from` 属性指定的新 HVML 程序，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQ` 变量）传递给子协程。如：
 
-```html
+```hvml
     <load from="b.hvml" as="userProfile" onto="user@main" />
         $user
     </load>
@@ -4790,7 +4790,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 `load` 元素的内容数据，将作为参数传递给新的协程，在新的协程中，可使用 `$REQ` 变量访问。
 
-```html
+```hvml
     <init as="request">
         {
             hvml: "<hvml target='html'><body><h1>$REQ.text</h1><p>$REQ.hvml</p></body></hvml>",
@@ -4812,7 +4812,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 该程序最终生成的 HTML 文档内容如下：
 
-```html
+```hvml
 <html>
     <body>
         <h1>Hello, world!</h1>
@@ -4830,7 +4830,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 假定我们使用 `load` 标签装载一个用来创建新用户的 HVML 程序，如果使用同步装载方式：
 
-```html
+```hvml
     <load from="new_user.hvml" onto="newUser@mainBody" synchronously>
         <update on="#the-user-list" to="append" with="$?" />
 
@@ -4842,7 +4842,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 如果使用异步装载方式，则需要 `as` 属性并使用 `observe` 标签创建一个观察者，用于观察子协程的 `corState:exited`（退出）事件：
 
-```html
+```hvml
     <load from="new_user.hvml" as="newUser" onto="newUser@mainBody" asynchronously>
         <observe on="$newUser" for="corState:exited">
             <update on="#the-user-list" to="append" with="$user_item" />
@@ -4856,7 +4856,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 和 `load` 元素配合，我们通常在被装载的程序中使用 `exit` 标签主动退出协程的运行并定义协程的返回数据。如：
 
-```html
+```hvml
     <init as="user_info">
         { "id": "5", "avatar": "/img/avatars/5.png", "name": "Vincent", "region": "en_US" },
     </init>
@@ -4868,7 +4868,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 当我们在当前行者中创建子协程，并在一个已有的渲染器页面（比如将 `onto` 属性值设置为 `_self`）中渲染子协程的文档内容时，该页面对应的协程之渲染状态将因为渲染器页面被占用而被设置为被压制（suppressed）。如下面的代码：
 
-```html
+```hvml
 <hvml>
     <body>
         ...
@@ -4898,7 +4898,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 通常，我们使用 `inherit` 元素分隔具有不同逻辑功能的代码，也经常利用其内容来执行由动态对象提供的功能。下面的代码展示了 `inherit` 标签的多种使用场景：
 
-```html
+```hvml
 <!DOCTYPE hvml>
 
 <!-- $REQ contains the startup options -->
@@ -4976,7 +4976,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 如下面的示例代码：
 
-```html
+```hvml
     <!-- 休眠 0 ~ 10.0 秒中的随机时间 -->
     <sleep with="$SYS.random(10.0)" />
 
@@ -5005,7 +5005,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 该执行器作用于字典数据上，使用给定的键名或键名列表返回键名、键值或键值对象列表，或者使用匹配某个规则的键名列表，返回键名、键值或者键值对象列表。比如对下面的数据：
 
-```html
+```hvml
     <init as="regionStats">
         { "zh_CN" : 100, "zh_TW" : 90，"zh_HK": 90, "zh_SG": 90, "zh_MO": 80, "en_US": 70, "en_UK": 80 }
     </init>
@@ -5062,7 +5062,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 该执行器作用于数组和集合数据上，使用下标范围来返回对应的数组单元列表（集合可视为不包含重复数据单元的数组）。比如对下面的数据：
 
-```html
+```hvml
     <init as="regionStats">
         [ "zh_CN", 100, "zh_TW", 90, "zh_HK", 90, "zh_SG", 90, "zh_MO", 80, "en_US", 30, "en_UK", 20 ]
     </init>
@@ -5107,7 +5107,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 该执行器作用于数组、对象和集合上，使用特定的条件过滤容器中的元素。比如对下面的数据：
 
-```html
+```hvml
     <init as="myArray" uniquely>
         [ 100, 95, 95, 95, 80, 30, 55, 20 ]
     </init>
@@ -5347,7 +5347,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 SQL（structured query language）是关系型数据库管理系统用来查询结构化数据的语言。考虑到 HVML 中大部分数据使用字典数据形成的数组表达，所以，HVML 引入了内建的 SQL 执行器。通过 SQL 执行器，我们可以非常方便地从 `on` 属性指定的数据集中查询获得特定的数据子集，且能够很容易地指定查询的匹配条件。比如针对下面的数据：
 
-```html
+```hvml
     <init as="regionStats">
         [
             { "locale" : "zh_CN", "rank" : 100 },
@@ -5376,7 +5376,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 
 另外，在 HVML 内置 SQL 解释器的 `SELECT` 语句中，除了使用 `*` 表示返回所有可能字段之外，还可以使用 `&` 返回符合给定条件的整个数据；当数据是数组、字典或者原生实体对象时，可使用 `update` 语句操作修改其内容。如：
 
-```html
+```hvml
     <choose on="$TIMERS" by="SQL: SELECT & WHERE id = 'foo'">
         <update on="$?" at=".active" with="yes" />
     </choose>
@@ -5388,7 +5388,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 
 如针对下面的 DOM 树：
 
-```html
+```hvml
 <ul>
     <li id="user-1" class="user-item" data-value="1" data-region="zh_CN">
         <img class="avatar" src="/avatars/foo.png" />
@@ -5574,7 +5574,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 
 当我们需要将 DOM 子树中的部分元素之属性或内容映射到目标数据或者目标元素时，我们使用这一内建执行器。如：
 
-```html
+```hvml
         <archedata name="item_user">
             {
                 "id": "$?.attr[data-value]", "avatar": "$?.content[0].attr.src",
@@ -5672,7 +5672,7 @@ def sorter(on_value, with_value,
 
 比如我们要从全局 `$TIMERS` 变量定义的数据中选择指定的定时器，我们可以使用内建的 SQL 执行器，也可以使用一个外部执行器 `FUNC: ChooseTimer`。
 
-```html
+```hvml
     <head>
         <update on="$TIMERS" to="unite">
             [
@@ -5752,7 +5752,7 @@ class HVMLIterator:
 
 比如对下面迭代并克隆模板插入到指定位置的操作：
 
-```html
+```hvml
     <archetype name="user_item">
         <li class="user-item">
             <img class="avatar" />
@@ -5806,7 +5806,7 @@ class IUser (HVMLIterator):
 
 根据以上描述，我们可以在执行器的规则表达式中使用变量，如下所示：
 
-```html
+```hvml
         <init as="fibonacci">
             [0, 1, ]
         </init>
@@ -5844,7 +5844,7 @@ class IUser (HVMLIterator):
 
 所谓响应式（responsive）更新，是指对如下的 HVML 代码：
 
-```html
+```hvml
     <init as="message">
         "hello, world"
     </init>
@@ -5858,7 +5858,7 @@ class IUser (HVMLIterator):
 
 在 HVML 提供的表达式绑定能力支持下，响应式处理的支持变得异常简单。我们只需在外部标签中使用 `hvml:responsively` 副词属性，即可标记该元素的文本内容是响应式的：
 
-```html
+```hvml
     <init as="user_name">
         "Tom"
     </init>
@@ -5885,7 +5885,7 @@ class IUser (HVMLIterator):
 
 HVML 解释器通过为需要响应式处理的表达式隐式添加绑定关系，并观察绑定后的变量来实现。比如，以上代码相当于：
 
-```html
+```hvml
     <p>
         $hello$user_name
 
@@ -5906,7 +5906,7 @@ HVML 解释器通过为需要响应式处理的表达式隐式添加绑定关系
 
 下面的例子，将用户名称和输入框中输入的姓名绑定在一起；通过响应式处理，当用户改变输入框中的内容时，`p` 元素的文本内容将自动改变。
 
-```html
+```hvml
     <init as="user_name">
         "Tom"
     </init>
@@ -5921,7 +5921,7 @@ HVML 解释器通过为需要响应式处理的表达式隐式添加绑定关系
 
 当我们需要针对骨架元素的属性使用响应式更新时，我们在属性值的引号前添加 `&`。如：
 
-```html
+```hvml
     <p style = &'display:$display' hvml:responsively>
         Hello, $user_name
     </p>
@@ -5997,7 +5997,7 @@ HVML 程序中的注释有两种形式，一种是 `<!-- 注释内容 -->` 形�
 
 DOCTYPE 定义了文档格式以及 HVML 标签使用的前缀。
 
-```html
+```hvml
 <!DOCTYPE hvml>
 ```
 
@@ -6045,7 +6045,7 @@ SYSTEM 标识符字符串的格式如下：
 
 > For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: MATH FILE.FS FILE.FILE:F">`, you can add the specific prefix to some HVML tags:
 
-```html
+```hvml
 <!DOCTYPE hvml SYSTEM "hvml: MATH FILE:FS FILE:FILE">
 <hvml target="html" lang="en">
     <head>
@@ -6134,7 +6134,7 @@ SYSTEM 标识符字符串的格式如下：
 
 数据动作元素用于定义数据内容，可包含其他普通元素以及可作为骨架元素使用的外部元素。当包含有子元素时，其数据内容只能出现一次，且前置于任何子元素之前。如下例所示：
 
-```html
+```hvml
         <init as="breakingNews" from="assets/breaking-news-{$SYS.locale}.json" async>
             {
                 "title": "This is an absolute breaking news!",
@@ -6252,7 +6252,7 @@ SYSTEM 标识符字符串的格式如下：
 
 > In the following example, the `uniquely` attribute is given with the empty attribute syntax:
 
-```html
+```hvml
     <init as="foo" uniquely against="id">
 ```
 
@@ -6270,7 +6270,7 @@ SYSTEM 标识符字符串的格式如下：
 
 > In the following example, the value attribute is given with the unquoted attribute value syntax:
 
-```html
+```hvml
     <init as=foo uniquely against=id>
 ```
 
@@ -6288,7 +6288,7 @@ SYSTEM 标识符字符串的格式如下：
 
 > In the following example, the type attribute is given with the single-quoted attribute value syntax:
 
-```html
+```hvml
     <init as='foo' uniquely against='id'>
 ```
 
@@ -6306,7 +6306,7 @@ If an attribute using the single-quoted attribute syntax is to be followed by an
 
 > In the following example, the name attribute is given with the double-quoted attribute value syntax:
 
-```html
+```hvml
     <choose on="$2.payload" in="#the-user-list" with="$user_item">
 ```
 
@@ -6428,7 +6428,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 
 我们可以整个省略 `head` 元素。此种情况下，若目标文档支持 `head` 元素，将在目标文档中创建一个空的 `head` 元素。
 
-```html
+```hvml
 <!DOCTYPE hvml>
 <hvml target="html">
     <body>
@@ -6441,7 +6441,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 
 我们可以整个省略 `body` 元素。此种情况下，我们无法通过指定 `body` 的 `id` 属性来执行不同的本体代码。若目标文档支持 `body` 元素，则将在目标文档中创建一个空的 `body` 元素，且 HVML 程序生成的目标文档内容，将插入到 `body` 元素内。若目标文档不支持 `body` 元素，则生成的内容将插入到目标文档的根元素内。
 
-```html
+```hvml
 <!DOCTYPE hvml SYSTEM 'v: MATH'>
 <hvml target="void">
     <iterate on 0 onlyif $L.lt($0<, 10) with $MATH.add($0<, 1) >
@@ -6455,7 +6455,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 
 如下所示由外部元素定义的 HVML 片段：
 
-```html
+```hvml
     <div>
         <p>台湾是中国领土<strong>不可分割的一部分！
     </div>
@@ -6464,7 +6464,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 我们省略了 `</strong>` 和 `</p>` 终止标签，上述片段将被解析为：
 
 
-```html
+```hvml
     <div>
         <p>台湾是中国领土<strong>不可分割的一部分！</strong></p>
     </div>
@@ -6472,7 +6472,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 
 注意，HVML 解析器不能处理 HTML 规范定义的可选标签处理规则。如：
 
-```html
+```hvml
     <ul>
         <li>苹果
         <li>菠萝
@@ -6482,7 +6482,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 
 按照 HTML 规范，应被解析为：
 
-```html
+```hvml
     <ul>
         <li>苹果</li>
         <li>菠萝</li>
@@ -6492,7 +6492,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 
 但会被 HVML 解析器解析为：
 
-```html
+```hvml
     <ul>
         <li>苹果
             <li>菠萝
@@ -6512,7 +6512,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 
 HVML 的 `init` 和 `archedata` 元素中包含的文本内容必须为一个完整的 JSON 表述（其中可使用 JSON 求值表达式）。如：
 
-```html
+```hvml
 <init as="foo">
     [
         "<p>There is an unrecoverable error!</p>",
@@ -6525,7 +6525,7 @@ HVML 的 `init` 和 `archedata` 元素中包含的文本内容必须为一个完
 
 另外，在动作元素的 `on`、 `with` 等属性值中指定操作数据时，我们可直接使用 JSON 表述（其中可嵌入 JSON 求值表达式），如：
 
-```html
+```hvml
 <choose on='[$foo, $bar, true, false, null]'>
 </choose>
 ```
@@ -6534,13 +6534,13 @@ HVML 的 `init` 和 `archedata` 元素中包含的文本内容必须为一个完
 
 在其他的属性值中，我们可嵌入 JSON 表达式，如：
 
-```html
+```hvml
 <init as='foo' with="foo-$bar" />
 ```
 
 在模板数据中，我们可嵌入 JSON 表达式，如：
 
-```html
+```hvml
 <archetype>
     <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
         <img class="avatar" src="$?.avatar" />
@@ -6573,7 +6573,7 @@ HVML 中的新行必须表达为 U+000D CARRIAGE RETURN（CR）字符、U+000A L
 
 1) 当内容不以换行字符（U+000A LF 或 U+000D CR 字符）开头时，则按普通 HTML 元素的文本内容进行解析，并支持 HTML 字符引用。如：
 
-```html
+```hvml
 <foo id=text> 123456&amp;</foo>
 
 <foo id=number>
@@ -6719,7 +6719,7 @@ CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被�
 
 > CDATA sections can only be used in foreign content. In this example, a CDATA section is used to escape the contents of a MathML ms element:
 
-```html
+```hvml
 <p>You can add a string to a number, but this stringifies the number:</p>
 <math>
  <ms><![CDATA[x<y]]></ms>
@@ -6785,7 +6785,7 @@ CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被�
 
 为满足以上的交互处理需求，我们使用 HVML 来描述这个界面的动态生成以及交互过程：
 
-```html
+```hvml
 <!DOCTYPE hvml>
 <hvml target="xml">
 
@@ -6879,7 +6879,7 @@ CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被�
 
 如果我们使用 HybridOS 中提到的直接执行本地系统命令的扩展图式（lcmd），我们甚至都不需要编写任何代码，而只需要使用 `init`：
 
-```html
+```hvml
         <init as="lcmdParams">
             { "cmdLine": "ls $fileInfo.curr_path" }
         <init>
@@ -6901,7 +6901,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 但如果我们使用 HVML，则可以通过云端来控制设备的界面显示。运行在云端的 HVML 代码如下所示：
 
-```html
+```hvml
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
@@ -7556,7 +7556,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 比如，如下代码的实际效果是将文件 `src.txt` 中的内容追加到 `dst.txt` 中。
 
-```html
+```hvml
     <pipe   on="$STREAM.open('file://src.txt', 'read')"
             with="$STREAM.open('file://dst.txt', 'write append')">
     </pipe>
@@ -7564,7 +7564,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 我们还可以将输出流管接到一个执行特定程序的子进程上，然后再将子进程的输出流管接到标准输出上：
 
-```html
+```hvml
     <pipe   on="HVML" with="$STREAM.open('exe:///usr/bin/wc')">
         <pipe on="$?" with="$STREAM.stdout" />
     </pipe>
@@ -7576,7 +7576,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 我们可以使用 `asynchronously` 副词属性，从而异步执行 `pipe` 操作：
 
-```html
+```hvml
     <pipe   on="$STREAM.in" with="$STREAM.open('exe:///usr/bin/wc')"
             as="myPipe" async>
         <observe on="myPipe" for="pipe:done" >
@@ -7591,7 +7591,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 `send` 标签用于在一个已连接的长连接数据源上发出一个同步或者异步的消息。比如在通过 MQTT 或者本地数据总线发送请求到外部模块或者远程计算机时，我们使用 `send` 元素发出一个异步消息，然后在另外一个 `observe` 标签定义的 HVML 元素中做相应的处理。比如，我们要通过 hiDataBus 协议向系统守护进程发出一个获得当前可用 WiFi 热点列表的远程过程调用：
 
-```html
+```hvml
 </hvml>
     <head>
         <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus"/>
@@ -7618,7 +7618,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 正常情况下，使用同步请求时，`send` 元素的执行结果数据就是请求的返回结果；如果使用异步请求，`send` 元素的操作结果数据为字符串 `ok`。异步请求时，一般应该在对应的 `observe` 元素中做后续处理。
 
-```html
+```hvml
     <body>
         <button id="theBtnWifiList">Click to fetch WiFi List</button>
 
@@ -7715,7 +7715,7 @@ def on_battery_changed (on_value, with_value, root_in_scope):
 
 从外部数据源中获取数据时，我们使用 `at` 属性指定 URL，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）：
 
-```html
+```hvml
     <request at="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
         <observe on="$foo" for="result:success">
             ...
@@ -7725,7 +7725,7 @@ def on_battery_changed (on_value, with_value, root_in_scope):
 
 以上用法和 `init` 类似，但 `request` 可以通过 `to` 属性指定请求结果的处理方法，比如将请求结果保存到指定的文件当中：
 
-```html
+```hvml
     <request at="http://foo.bar.com/foo" with="$params" via="POST" to="save:/tmp/foo.tmp" as="foo" async>
         <observe on="$foo" for="result:success">
             ...
