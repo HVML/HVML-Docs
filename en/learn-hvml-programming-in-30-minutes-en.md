@@ -387,3 +387,26 @@ save it as `hello-html-timer.hvml`:
 </hvml>
 ```
 
+[Beijing FMSoft Technologies Co., Ltd.]: https://www.fmsoft.cn
+[FMSoft Technologies]: https://www.fmsoft.cn
+[FMSoft]: https://www.fmsoft.cn
+[HybridOS Official Site]: https://hybridos.fmsoft.cn
+[HybridOS]: https://hybridos.fmsoft.cn
+
+[HVML]: https://github.com/HVML
+[MiniGUI]: http:/www.minigui.com
+[WebKit]: https://webkit.org
+[HTML 5.3]: https://www.w3.org/TR/html53/
+[DOM Specification]: https://dom.spec.whatwg.org/
+[WebIDL Specification]: https://heycam.github.io/webidl/
+[CSS 2.2]: https://www.w3.org/TR/CSS22/
+[CSS Box Model Module Level 3]: https://www.w3.org/TR/css-box-3/
+
+[Vincent Wei]: https://github.com/VincentWei
+
+[React.js]: https://reactjs.org
+[Vue.js]: https://vuejs.org
+
+[HVML Specifiction V1.0]: https://github.com/HVML/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md
+[HVML Predefined Variables V1.0]: https://github.com/HVML/hvml-docs/blob/master/zh/hvml-spec-predefined-variables-v1.0-zh.md
+
