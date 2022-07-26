@@ -18,14 +18,15 @@
 HVML is the acronym of `Hybrid Virtual Markup Language`.
 It is a new-style, general-purpose, and easy-to-learn programming language proposed by [Vincent Wei], who is the author of the China-first open source project [MiniGUI].
 
-HVML is a programmable markup language.
-You know HTML uses markups to define a static document and text, while HVML uses markups to define a program structure and data.
+Vincent Wei defines HVML as a programmable markup language.
+This is definitely a brand new programming language, unlike any programming language you are familiar with.
+
+You know HTML uses markups to define a static document and text in the document, while HVML uses markups to define a program structure and the data.
 In other words, HTML is static but HVML is programmable and dynamic.
 
 For example, the following HTML file defines a document with a paragraph which contains `Hello, world!`:
 
 ```html
-<!DOCTYPE html>
 <html>
     <body>
         <p>Hello, world!</p>
@@ -37,7 +38,6 @@ However, if we change all occurrences of `html` to `hvml` in the above HTML file
     and add a new attribute `target="html"` to the root element, you will get your first HVML program:
 
 ```hvml
-<!DOCTYPE hvml>
 <hvml target="html">
     <body>
         <p>Hello, world!</p>
@@ -45,29 +45,310 @@ However, if we change all occurrences of `html` to `hvml` in the above HTML file
 </hvml>
 ```
 
-Like a Python, PHP, or JavaScript script, you need an interperter to run this this HVML program.
-The interpreter will execute the HVML program from the `hvml` element.
-Because the `target` attribute have the value `html`, the interperter will generate a HTML document.
-After executed the `hvml` element, the iterperter continues to execute the `body` element and the `p` element in sequence.
-For now, you known that the interpreter will just copy the contents of `body` and `p` elements to the target HTML document.
-As a result, the HVML program generate a HTML document, which is same as the HTML file given earlier.
+Like a Python, PHP, or JavaScript script, we need an interperter to run this HVML program.
+From the interpreter's perspective, each element in an HVML program defines an action to execute.
+You know that a valid HTML document defines a DOM (Document Object Model) tree, and a web browser can render the HTML document in a window.
+Similarly, a valid HVML program also defines a DOM tree, and the interpreter can execute the HVML program.
+In other words, a browser renders an HTML document, while an HVML interprerter executes an HVML program.
 
-The great thing about HVML is that, you can use action elements with special tag names and attributes to define a program structure which has a complex control flow.
+The interpreter executes the HVML program from the root element, i.e., the `hvml` element, in depth-first order.
+When executing the `hvml` element, because the `target` attribute have the value `html`, the interperter will generate an HTML document.
+After executed the `hvml` element, the iterperter continues to execute the `body` element and the `p` element in sequence.
+After execute the `p` element, because there is no any element in the DOM tree, the interpreter will stop.
+For now, you know that the interpreter will just copy the contents of `body` and `p` elements to the target HTML document.
+As a result, the HVML program generates an HTML document, which is same as the HTML file I given earlier.
+
+The great thing about HVML is that, you can use markups to define a program which may have a complex control flow.
 You can also use flexible expressions to generate dynamic contents for your target document.
 
-This tutorial will show you the most exciting features of HVML.
-You will find you that you can master the basic principles and methods of HVML programming in a short time.
+This tutorial will show you the most exciting features of HVML,
+     especially those features that are different from common programming languages.
+You will find that you can master the basic principles and methods of HVML programming in a very short time, say, in 30 minutes.
 
 Let's enjoy it.
 
-## Build HTML Development Environment
+## Preparation
 
 Before looking deeply the principles of HVML, let's build a developing environment for HVML first.
 If you have built the environment, you can skip this section.
 
-### Prerequisites
-
 The HVML community has released an open source HVML interperter called `PurC`.
+Please refer to the public repository of `PurC` for the detailed instructions to build and install it:
+
+<https://github.com/HVML/PurC>
+
+Assuming that you have installed PurC to your system, you can save the contents of your first HVML program to a file named `hello-world.hvml`:
+
+```hvml
+<hvml target="html">
+    <body>
+        <p>Hello, world!</p>
+    </body>
+</hvml>
+```
+
+and run the HVML program by using the following command:
+
+```bash
+$ purc -b hello-world.hvml
+```
+
+The command line above will give you the following text:
+
+```
+purc 0.8.0
+Copyright (C) 2022 FMSoft Technologies.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Executing HVML program from `file:///srv/devel/hvml/purc/build/hello-world.hvml`...
+
+>> The document generated:
+<html>
+  <head>
+  </head>
+  <body>
+    <p>
+      Hello, world!
+    </p>
+  </body>
+</html>
+
+
+>> The execute result:
+undefined
+```
+
+You saw that this program generated a HTML document, which is same as the one we talked earlier.
+
+## Expressions
+
+However, if you run the HVML program without the flag `-b`, you will get nothing:
+
+```hvml
+$ purc hello-world.hvml
+$
+```
+
+The flag `-b` (or the corresponding long option `--verbose`) tells the interpreter to print verbose information when executing a program.
+The HVML program generates an HTML document, but does not do anything to output information to your terminal.
+Therefore, if you run `purc` without the `-b` flag, you will see nothing.
+
+So, if you want to print some text to the terminal, how to program in HVML?
+
+We can revise the first HVML program as follow:
+
+```hvml
+<!-- Version 1 -->
+<hvml target="html">
+
+    $STREAM.stdout.writelines('Hello, world!')
+
+    <body>
+        <p>Hello, world!</p>
+    </body>
+</hvml>
+```
+
+We call the initial version of the first HVML program as Version 0, and this revised version as Version 1.
+When you use `purc` to run Version 1, you will get the following output:
+
+```bash
+$ purc hello-world.hvml
+Hello, world!
+```
+
+Obviously, the newly added statement `$STREAM.stdout.writelines('Hello, world!')` outputs `Hello, world!` to your terminal.
+
+Furthermore, if you execute the HVML program with the flag `-b`:
+
+```bash
+$ purc -b hello-world.hvml
+purc 0.8.0
+Copyright (C) 2022 FMSoft Technologies.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Executing HVML program from `file:///srv/devel/hvml/purc/build/hello-world.hvml`...
+Hello, world!
+
+>> The document generated:
+<html>
+  <head>
+  </head>
+  <body>
+    <p>
+      Hello, world!
+    </p>
+  </body>
+</html>
+
+
+>> The execute result:
+14
+```
+
+Comparing this output with the output of Version 0, you will find that the later shows an execute result `14` instead of `undefined`.
+
+The statement like `$STREAM.stdout.writelines('Hello, world!')` is an EJSON expression defined by HVML.
+We can use an EJSON expression to access a property of an object, or call a method of an object.
+Every expression will have an evaluation result, and the result can be used to define the attribute values or contents of an element.
+
+Let's take a closer look at the various components in the expression.
+
+$STREAM` refers to an object named `STREAM`.
+That is, `STREAM` is a variable, HVML uses `$` as the prefix when referring a variable.
+As a convention, one variable like `STREAM` which are uppercase is a predefined variable.
+You can use the predefined variables to access the system functions or perform common tasks.
+Currently, HVML defines the following predefined variables:
+
+- `SYS`: You can use `SYS` to get or set information about your system.
+For example, the current locale, time, working directory, and so on.
+- `STR`: You can use `STR` to manipulate strings.
+For example, concatenate multiple strings or extract a substring, and so on.
+- `STREAM`: You can use `STREAM` to open a stream and read/write data from/to the stream.
+- `MATH`: As the name suggests, you can use `MATH` to perform the mathematical calculation based on floating point numbers.
+- `FS` and `FILE`: You can use `FS` and `FILE` to perform operations on file systems and files.
+- `EJSON`: You can use `EJSON` to convert among various data types.
+- `L`: You can use `L` to perform the logical operations based on one or more data.
+- `DATETIME`: You can use `DATETIME` to perform operations based on date and time.
+- `URL`: You can use `URL` to perform operations based on URL and queries.
+
+Per the expression `$STREAM.stdout.writelines('Hello, world!')`, it calls the method `writelines` on `stdout` object of the predefined variable `STREAM`.
+It prints the `Hello, world!` on your terminal, and returns the bytes wrotten to the stream (`stdout`) totally.
+Here it should be 14 - length of the string `Hello, world!` plus the `\n` character wrotten to the terminal.
+
+Because the expression appeared as the content of the `hvml` element, the result of this expression will be recorded as the result of executing the `hvml` element.
+And because the `hvml` element is the root element, the result of executing the `hvml` element will become the result of the whole HVML program.
+Therefore, `purc` gives the execute result of the HVML program: `14`.
+
+We call the returned value of an expression as `evaluating result`.
+
+## Control Flow
+
+We can use the evaluating result of one expression as the attribute value or the text content of an element.
+Now, let's try to enhance the HVML program to generate different contents according to the current system locale.
+
+```hvml
+<!-- Version 2 -->
+
+<!--
+    $SYS.locale returns the current system locale such as `en_US` or `zh_CN`
+    $STR.substr returns a substring of the given string.
+-->
+<hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
+
+    $STREAM.stdout.writelines('Start of `Hello, world!`')
+
+    <body>
+
+        <!-- the `test` element checks whether the system locale starts with `zh` -->
+        <test with = $STR.starts_with($SYS.locale, 'zh') >
+
+            <h1>我的第一个 HVML 程序</h1>
+            <p>世界，您好！</p>
+
+            <!-- If the system locale does not start with `zh` -->
+            <differ>
+                <h1>My First HVML Program</h1>
+                <p>Hello, world!</p>
+            </differ>
+        </test>
+
+    </body>
+
+    $STREAM.stdout.writelines('End of `Hello, world!`')
+
+</hvml>
+```
+
+You can easily find that the code in Version 2 introduces some intersting stuff:
+
+1. Expression to define the value of the `lang` attribute: `$STR.substr($SYS.locale, 0, 2)`.
+1. Elements with tag names using verbs, such as `test` and `differ`.
+1. A special attribute having name `with` in `test` element, and the value is defined by an expression `$STR.starts_with($SYS.locale, 'zh')`.
+
+Except for the above stuff, the code looks still like HTML:
+
+1. The code uses `<` to define a open tag and `</` to define a close tag.
+1. It uses the same synatx as HTML to define the attributes such as `target="html"`.
+1. It uses `<!--` and `-->` to define comments, and so on.
+
+The expression `$STR.substr($SYS.locale, 0, 2)` makes a substring of the
+system locale (in pattern `zh_CN` or `en_US`),  and uses the result as the
+value of `lang` attribute.
+
+However, the elements `test` and `differ` act like the conditionl control statements
+such as `if` and `else` in C or JavaScript. The `test` element uses the expression
+defined by `with` attribute, i.e., `$STR.starts_with($SYS.locale, 'zh')`, as
+the condition. If the evaluating result of the expression is true, that is,
+the system locale starts with `zh`, this HVML program will clone the `h1` and `p`
+elements in `test` element to the target document, and ignore the `differ` element.
+If the evaluation result is false, the elements in `differ` element will
+be cloned to the target document.
+
+Although the code does not like any program in C, JavaScript, or other common
+programming languages, if you are told that the original design goal of HVML is
+to allow developers can easily generate and operate HTML documents without
+a web server using JavaScript in a web browser, you can easily guess
+what's the code do:
+
+1) The attribute `target="html"` in `hvml` element defines the target document
+type of this HVML program: HTML. That is, this HVML program will genenrate an HTML
+document.
+
+3) The elements defined by HTML tags, such as `body`, `h1`, and `p` will be cloned
+to the target document according to the execute path of the HVML program.
+
+Therefore, if the system locale is `zh_CN` or `zh_TW` when you execute
+the HVML program, the ultimate document generated by the program will look like:
+
+```html
+<html lang="zh">
+
+    <head>
+    </head>
+
+    <body>
+        <h1>我的第一个 HVML 程序</h1>
+        <p>世界，您好！</p>
+    </body>
+
+</html>
+```
+
+But if the system locale is `en_US` or something else which does not
+start with `zh`, the ultimate document generated by the program will look like:
+
+```html
+<html lang="en">
+
+    <head>
+    </head>
+
+    <body>
+        <h1>My First HVML Program</h1>
+        <p>Hello, world!</p>
+    </body>
+
+</html>
+```
+
+We can revise the first HVML program as follow:
+
+```hvml
+<!-- Version 1 -->
+<hvml target="html">
+
+    $STREAM.stdout.writelines('Hello, world!')
+
+    <body>
+        <p>Hello, world!</p>
+    </body>
+</hvml>
+```
 
 ### Run HVML Program
 
@@ -85,7 +366,6 @@ Please save the following contents in a file named `hello-world.hvml` as your fi
 To run this HVML program, you can use `purc` in the following way:
 
 ```bash
-$ purc hello-world.hvml
 ```
 
 You will see that your first HVML program prints `Hello, world!` on your terminal and quit:
@@ -112,7 +392,7 @@ then run `hello.hvml` directly from the command line:
 $ ./hello.hvml
 ```
 
-Now, we hope that our HVML program can generate a HTML file instead of printing to the terminal. For this purpose, we enhance `hello-10.hvml` once more:
+Now, we hope that our HVML program can generate an HTML file instead of printing to the terminal. For this purpose, we enhance `hello-10.hvml` once more:
 
 ```hvml
 <!DOCTYPE hvml>
@@ -253,109 +533,6 @@ save it as `hello-html-timer.hvml`:
 
 
 
-For an easy sample, if we want the HVML program generates different contents according to the current system locale,
-    we can enhace the program as follow:
-
-```hvml
-<!DOCTYPE hvml>
-
-<!--
-    $SYS.locale returns the current system locale such as `en_US` or `zh_CN`
-    $STR.substr returns a substring of the given string.
--->
-<hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
-
-    <body>
-
-        <!-- the `test` element checks whether the system locale starts with `zh` -->
-        <test with = $STR.starts_with($SYS.locale, 'zh') >
-
-            <h1>我的第一个 HVML 程序</h1>
-            <p>世界，您好！</p>
-
-            <!-- If the system locale does not start with `zh` -->
-            <differ>
-                <h1>My First HVML Program</h1>
-                <p>Hello, world!</p>
-            </differ>
-        </test>
-
-    </body>
-
-</hvml>
-```
-
-If you are familiar with HTML, you know that the above code looks like HTML.
-For example, the code uses `<` to define a open tag and `</` to define a close tag,
-    it uses the same synatx as HTML to define the attributes such as `target="html"`,
-    and it also uses `<!--` and `-->` to define comments, and so on.
-
-However, you can also find that the code introduces some intersting stuff:
-
-1. Expressions start with a special `$` character, such as `$STR.substr($SYS.locale, 0, 2)`.
-1. Elements with tag names using verbs, such as `test` and `differ`.
-1. A special attribute having name `with` in `test` element.
-
-Although the code does not like any program in C, JavaScript, or other common
-programming languages, if you are told that the original design goal of HVML is
-to allow developers can easily generate and operate HTML documents without
-a web server using JavaScript in a web browser, you can easily guess
-what's the code do:
-
-1) The attribute `target="html"` in `hvml` element defines the target document
-type of this HVML program: HTML. That is, this HVML program will genenrate a HTML
-document.
-
-2) The expression `$STR.substr($SYS.locale, 0, 2)` makes a substring of the
-system locale (in pattern `zh_CN` or `en_US`),  and uses the result as the
-value of `lang` attribute.
-
-3) The elements defined by HTML tags, such as `body`, `h1`, and `p` will be cloned
-to the target document according to the execute path of the HVML program.
-
-4)  The elements `test` and `differ` act like the conditionl control statements
-such as `if` and `else` in C or JavaScript. The `test` element uses the expression
-defined by `with` attribute, i.e., `$STR.starts_with($SYS.locale, 'zh')`, as
-the condition. If the evaluation result of the expression is true, that is,
-the system locale starts with `zh`, this HVML program will clone the `h1` and `p`o
-elements in `test` element to the target document, and ignore the `differ` elements.
-If the evaluation result is false, the elements in `differ` element will
-be cloned to the target document.
-
-Therefore, if the system locale is `zh_CN` or `zh_TW` when you execute
-the HVML program, the ultimate document generated by the program will look like:
-
-```html
-<html lang="zh">
-
-    <head>
-    </head>
-
-    <body>
-        <h1>我的第一个 HVML 程序</h1>
-        <p>世界，您好！</p>
-    </body>
-
-</html>
-```
-
-But if the system locale is `en_US` or something else which does not
-start with `zh`, the ultimate document generated by the program will look like:
-
-```html
-<html lang="en">
-
-    <head>
-    </head>
-
-    <body>
-        <h1>My First HVML Program</h1>
-        <p>Hello, world!</p>
-    </body>
-
-</html>
-```
-
 The original design goal of HVML is to allow developers who are familiar with
 C/C++, Python, or other programming languages to easily develop GUI applications
 by using Web front-end technologies (such as HTML/SVG, DOM and CSS), instead of
@@ -368,7 +545,7 @@ front-end technologies in the C/C++ runtime environment, but also use HVML
 as a general script language.
 
 For example, you can re-write the above HVML program to print some lines
-on your terminal instead of generating a HTML docuement:
+on your terminal instead of generating an HTML docuement:
 
 ```hvml
 <!DOCTYPE hvml>
@@ -403,7 +580,7 @@ on your terminal instead of generating a HTML docuement:
 ```
 
 When you execute the revised HVML program, it will print the lines
-on your terminal instead of generating a HTML document:
+on your terminal instead of generating an HTML document:
 
 ```
 我的第一个 HVML 程序
