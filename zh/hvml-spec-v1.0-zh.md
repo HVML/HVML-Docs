@@ -2282,7 +2282,7 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
     regular_expression: A regular expression conforms to POSIX.1-2001.
 
     event_name: <literal_variable_token>[':'<literal_alnum_token>['/'<literal_alnum_token>]]
-    page_name: <literal_variable_token>'@'<literal_alnum_token>
+    page_identifier: [ 'widget:' | 'plainwin:' ]<literal_variable_token>['@' [ <literal_variable_token> '/' ] <literal_alnum_token> ]
 
     coroutine_identifier: <cross_host_coroutine_identifier> | <local_host_coroutine_identifier>
     cross_host_coroutine_identifier: '//' <host_name> '/' <app_name> '/' <runner_name> '/' <coroutine_token>
@@ -4791,13 +4791,15 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 - `as`：当我们异步装载新的 HVML 程序时，我们使用该属性将新的 HVML 协程和一个变量名称绑定，从而可观察该协程的状态。
 - `at`：和 `init` 类似，在 `load` 标签中使用 `as` 属性命名一个 HVML 程序时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
 - `within` 属性指定行者名称。不指定该属性或者使用保留字 `_self` 作为行者名称，表示当前行者。和 `call` 元素不同，`load` 元素指定的行者必须已经存在，也就是说，`load` 元素不会主动创建新的行者。
-- `onto`：指定用于渲染目标文档的渲染器页面名称，使用 `[<page_type>:]<page_name>[@[<workspace_name>/]<group_name>]` 这样的形式，用于指定页面名称和所在的页面组。其中 `<page_type>` 指定页面的类型，可使用 `plainwin`（默认） 或 `widget`，分别表示创建小构件作为页面或创建一个普通窗口作为页面。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
-   - `_null`：表示空页面。此时，新创建的协程所生成的文档内容及其变更信息将不会同步到渲染器。
+- `onto`：指定用于渲染目标文档的渲染器页面标识符，使用 `[<page_type>:]<page_name>[@[<workspace_name>/]<group_name>]` 这样的形式，用于指定页面名称和所在的页面组。其中 `<page_type>` 指定页面的类型，可使用 `plainwin`（默认） 或 `widget`，分别表示创建小构件作为页面或创建一个普通窗口作为页面；`workspace_name` 和 `group_name` 分别表示页面所在的工作区名称以及页面组名称，`page_name` 是页面在指定页面组中的唯一性名称。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
+   - `_null`：表示空页面。此时，新创建的协程所生成的文档内容及其变更信息将不会同步到渲染器。当不指定 `onto` 属性时，视作创建空页面。
    - `_inherit`：若新创建的子协程和当前协程属于同一行者，则表示该协程将继承父协程的文档内容，且使用相同的渲染器页面。
    - `_self`：表示当前页面。在当前页面中渲染新的 HVML 程序，通常意味着当前页面对应的 HVML 协程将被压制（suppressed），页面中的文档内容将被新 HVML 协程覆盖。但当子协程继承父协程的目标文档时，子协程和父协程可同时更新该文档，且其更新将同时反映到当前页面上。使用该页面名称时，将忽略页面分组以及页面类型信息。
    - `_active`：表示当前 HVML 程序对应分组中的当前活动页面；当前活动页面对应的 HVML 协程将被压制。
    - `_first`：表示当前 HVML 程序对应分组中的第一个页面；第一个页面对应的 HVML 协程将被压制。
    - `_last`：表示当前 HVML 程序对应分组中的最后一个页面；最后一个页面对应的 HVML 协程将被压制。
+
+当 `from` 属性值指定的 URL 定义有片段（使用 `#` 符号）时，`load` 元素将尝试执行该 HVML 程序中的指定的本体，即另一个 `body` 子树定义的操作组。
 
 当同时指定 `on` 属性和 `from` 属性时，按如下规则处理：
 
@@ -4806,13 +4808,15 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 1. 同时使用字符串内容和外部资源时，若装载和解析外部资源的过程中出现异常，且设置有 `silently` 属性时，则转而使用字符串内容作为 HVML 程序；若一切正常，则使用外部资源。也就是说，字符串内容作为垫底（fallback）程序使用。
 1. 若字符串内容或者外部资源均不可用，则抛出不可忽略异常 `NoData`。
 
-除保留名称之外，`onto` 属性指定的页面名称必须符合本规范定义的 `page_name` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法的页面名称样例：
+除保留名称之外，`onto` 属性指定的页面标识符必须符合本规范定义的 `page_identifier` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法的页面标识符样例：
 
-- `user`
-- `user@Users`
-- `user@Users:tab`
+- `user`：创建一个名为 `user` 的普通窗口。
+- `user@Users`：在默认工作区的 `Users` 页面组中创建一个名为 `user` 的普通窗口。
+- `user@main/Users`：在 `main` 工作区的 `Users` 页面组中创建一个名为 `user` 的普通窗口。
+- `plainwin:user@main/Users`：在 `main` 工作区的 `Users` 页面组中创建一个名为 `user` 的普通窗口。
+- `widget:user@main/Users`：在 `main` 工作区的 `Users` 页面组中创建一个名为 `user` 的构件。
 
-当给定的页面名称不存在时，意味着在指定分组中创建一个新的页面，并赋予该页面给定的名称；若指定的页面分组不存在时，将使用第一个分组。当我们创建一个新的渲染器页面时，可通过其 `with` 属性值的 `_renderer` 键名指定传递给渲染器的页面参数，如类名、标题和样式。
+当给定的页面名称不存在时，意味着在指定分组中创建一个新的页面，并赋予该页面给定的名称；若指定的页面分组不存在时，将使用第一个分组。当我们创建一个新的渲染器页面时，可通过其 `with` 属性值的 `_renderer` 键名指定传递给渲染器的页面参数，如类名、标题和样式等。
 
 `load` 元素的内容数据，将作为参数传递给新的协程，在新的协程中，可使用 `$REQ` 变量访问。
 
@@ -4846,8 +4850,6 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     </body>
 </html>
 ```
-
-当 `from` 属性值指定的 URL 定义有片段（使用`#`符号）时，`load` 元素将尝试装载该 HVML 程序中的另一个本体，即另一个 `body` 子树定义的内容。
 
 `load` 标签支持如下副词属性：
 
