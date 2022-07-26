@@ -288,7 +288,7 @@ Regardless of success or failure, the expression calls `$STREAM.stdout.writeline
 
 ## Control Flow
 
-As we said before, you can use the evaluating result of one expression as the attribute value or the text content of an element.
+As said before, you can use the evaluating result of one expression as the attribute value or the text content of an element.
 Now, let's try to enhance the HVML program to generate different contents according to the current system locale.
 Please see Version 3 of the HVML program:
 
@@ -337,11 +337,17 @@ Except for the above stuff, the code looks still like HTML:
 1. It uses the same synatx as HTML to define the attributes such as `target="html"`.
 1. It uses `<!--` and `-->` to define comments, and so on.
 
-The expression `$STR.substr($SYS.locale, 0, 2)` makes a substring of the system locale (in pattern `zh_CN` or `en_US`),
+The expression `$STR.substr($SYS.locale, 0, 2)` makes a substring of the system locale (a string like `zh_CN` or `en_US`),
     and uses the result as the value of `lang` attribute.
 
-The elements `test` and `differ` act like the conditionl control statements such as `if` and `else` in C or JavaScript.
-The `test` element uses the expression defined by `with` attribute, i.e., `$STR.starts_with($SYS.locale, 'zh')`, as the condition.
+The elements `test` and `differ` act like the conditionl control statements such as `if` and `else` in a traditional programming language, such as C or JavaScript.
+However, HVML does not use statements to write a program.
+Instead, we use elements and expressions to write program.
+Generally, an element performs a specific operation with the attributes and select a child element to continue.
+When there is no child element, it return back to the parent element, until the root (`hvml`) element.
+You can think of an element of HVML as a function and the attributes as the arguments to call the function.
+
+For example, in Version 3, the `test` element uses the expression defined by `with` attribute, i.e., `$STR.starts_with($SYS.locale, 'zh')`, as the condition.
 If the evaluating result of the expression is true, that is, the system locale starts with `zh`,
    this HVML program will clone the `h1` and `p` elements in `test` element to the target document, and ignore the `differ` element.
 If the evaluation result is false, the elements in `differ` element will be cloned to the target document.
@@ -350,15 +356,12 @@ Therefore, if the system locale is `zh_CN` or `zh_TW` when you execute the HVML 
 
 ```html
 <html lang="zh">
-
     <head>
     </head>
-
     <body>
         <h1>我的第一个 HVML 程序</h1>
         <p>世界，您好！</p>
     </body>
-
 </html>
 ```
 
@@ -366,17 +369,24 @@ But if the system locale is `en_US` or something else which does not start with 
 
 ```html
 <html lang="en">
-
     <head>
     </head>
-
     <body>
         <h1>My First HVML Program</h1>
         <p>Hello, world!</p>
     </body>
-
 </html>
 ```
+
+## Data Driven Programming
+
+## Templates and Substitution
+
+## Stack-based Virtual Machine
+
+## Event Driven Programming
+
+## Coroutines and Concurrency
 
 Although the code is not like any program in C, JavaScript, or other common
 programming languages, if you are told that the original design goal of HVML is
