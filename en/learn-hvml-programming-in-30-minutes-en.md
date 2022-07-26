@@ -227,8 +227,8 @@ Therefore, `purc` gives the executing result of the HVML program: `14UL`.
 
 We call the returned value of an expression as `evaluating result`.
 
-In HVML, you can use syntax like [JSON] to define a simple data like undefined, null, a boolean, a number, a string, or a container like an array or an object.
-We can use the expressions when defining a string or a container.
+In HVML, you can use syntax like [JSON] to define a simple data like undefined, null, a boolean, a number, a string, or a container like an array or an object,
+   and you can use the expressions when defining a string or a container.
 We enhanced the syntax of JSON to support more data type, such as long integers, unsigned long integers, long double numbers, and so on.
 Therefore, We refer to them collectively as EJSON expressions.
 Here are some examples:
@@ -254,7 +254,7 @@ For example, you can use the following expression to define the executing result
 </hvml>
 ```
 
-The executing result of Version 2 would be an array: `[ 14UL, 6UL ]`. A number with postfix `UL` means it is a unsigned long integer.
+The executing result of Version 2 would be an array: `[ 14UL, 6UL ]`. A number with postfix `UL` means it is an unsigned long integer.
 
 For another example, you can use the following expression to calculate the area of a circle:
 
@@ -262,17 +262,20 @@ For another example, you can use the following expression to calculate the area 
 $MATH.eval('PI * r * r', { r: 3 })
 ```
 
-The method `eval` of `$MATH` evaluating a parameterized mathematical formula (`PI * r * r` in this sample), while `r` is given by `{ r: 3 }` as the second argument of `eval` method. The executing result of the expression will be about `28.26`.
+The method `eval` of `$MATH` evaluating a parameterized mathematical formula (`PI * r * r` in this sample),
+    while `r` is given by an object `{ r: 3 }` as the second argument of `eval` method.
+Therefore, The executing result of the expression will be about `28.26`.
 
 Moreover, HVML defines the compound EJSON expressions to have a simple logical control.
 A compound EJSON expression consists of multiple EJSON expressions.
-They are surrounded by `{{` and `}}`, and separated by `;`, `&&`, or `||`.
-You can use a compound EJSON expression to implement a simple `if-then-else` logical contro.
+It is surrounded by `{{` and `}}`, and separated by `;`, `&&`, or `||`.
+Just like you execute multiple commands in one shell command line,
+     you can use a compound EJSON expression to implement a simple `if-then-else` logical control.
 
 For example, the following compound expression tries to change the current working directory to `/root`.
-If it succeeded, it will call `$FS.list_ptr` to get the directory entry list in `/root`.
-If it failed, it returns an failure prompt.
-The expression uses `$STREAM.stdout.writelines` to print the entry list or the failure prompt ultimately.
+If it succeeded, it will call `$FS.list_ptr` to get the directory entry list (a string array) in `/root`.
+If it failed, it returns a failure prompt.
+Regardless of success or failure, the expression calls `$STREAM.stdout.writelines` to print the entry list or the failure prompt ultimately.
 
 ```hvml
 {{
