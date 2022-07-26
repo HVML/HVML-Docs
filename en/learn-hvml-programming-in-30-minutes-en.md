@@ -7,9 +7,9 @@
 [//]:# (START OF TOC)
 
 - [Introduction](#introduction)
-- [Build HTML Development Environment](#build-html-development-environment)
-   + [Prerequisites](#prerequisites)
-   + [Run `Hello, world!` Program](#run-hello-world-program)
+- [Preparation](#preparation)
+- [Expressions](#expressions)
+- [Control Flow](#control-flow)
 
 [//]:# (END OF TOC)
 
@@ -299,7 +299,7 @@ what's the code do:
 type of this HVML program: HTML. That is, this HVML program will genenrate an HTML
 document.
 
-3) The elements defined by HTML tags, such as `body`, `h1`, and `p` will be cloned
+2) The elements defined by HTML tags, such as `body`, `h1`, and `p` will be cloned
 to the target document according to the execute path of the HVML program.
 
 Therefore, if the system locale is `zh_CN` or `zh_TW` when you execute
@@ -349,8 +349,6 @@ We can revise the first HVML program as follow:
     </body>
 </hvml>
 ```
-
-### Run HVML Program
 
 Please save the following contents in a file named `hello-world.hvml` as your first HVML program in your working directory:
 
