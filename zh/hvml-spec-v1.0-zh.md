@@ -2176,11 +2176,11 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
         '$'<json_variable_addressing_expression>
         '{$'<json_variable_addressing_expression>'}'
         '${'<json_variable_name_evaluation_expression>'}'
-        '{{' [ws] <complex_json_evaluation_expression> [ws] '}}'
+        '{{' [ws] <compound_json_evaluation_expression> [ws] '}}'
 
     <extended_json>: 见本文档“3.1.3.2) 扩展 JSON 语法”，其中的 JSON value 可以是一个 JSON 求值表达式。
 
-    <complex_json_evaluation_expression>:
+    <compound_json_evaluation_expression>:
         <json_evaluation_expression> | <extended_json> [[ws] < ';' | '&&' | '||' > [ws] <json_evaluation_expression> | <extended_json>, ...]
 
     <json_variable_name_evaluation_expression>:
@@ -2221,7 +2221,7 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 需要说明的是，我们允许在使用 `[ ]` 引用数组或者集合的成员时，使用负数作为索引值。当使用负数作为索引值时，其范围是 -1 到数组或集合的成员个数，以最后一个成员为起点。
 
-复合 JSON 求值表达式（complex JSON evaluation expression，缩写为 CJSONEE）是一项重要扩展。CJSONEE 本质上由一个或多个 JSONEE 组成，但带有一定的逻辑控制能力。其效果类似 Unix Shell 命令行中一次执行多条命令时使用分号或者 `&&`、`||` 的效果。如下是一些例子：
+复合 JSON 求值表达式（compound JSON evaluation expression，缩写为 CJSONEE）是一项重要扩展。CJSONEE 本质上由一个或多个 JSONEE 组成，但带有一定的逻辑控制能力。其效果类似 Unix Shell 命令行中一次执行多条命令时使用分号或者 `&&`、`||` 的效果。如下是一些例子：
 
 ```js
 // 调用 $SYS.cwd 将当前工作路径切换到 `/etc` 目录下，然后调用 $FS.list
@@ -7456,7 +7456,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 ##### RC2.12) CJSONEE
 
-支持 CJSONEE（complex JSON evaluation expression，复合 JSON 求值表达式）。
+支持 CJSONEE（compound JSON evaluation expression，复合 JSON 求值表达式）。
 
 相关章节：
 

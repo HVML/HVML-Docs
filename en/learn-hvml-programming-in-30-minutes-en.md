@@ -192,14 +192,15 @@ Hello, world!
 
 Comparing this output with the output of Version 0, you will find that the later shows an executing result `14` instead of `undefined`.
 
-The statement like `$STREAM.stdout.writelines('Hello, world!')` is an EJSON expression defined by HVML.
+The statement like `$STREAM.stdout.writelines('Hello, world!')` is an EJSON expression in HVML.
 We can use an EJSON expression to access a property of an object, or call a method of an object.
 Every expression will have an evaluation result, and the result can be used to define the attribute values or contents of an element.
 
-Let's take a closer look at the various components in the expression.
+Let's take a closer look at the components in the expression.
 
-$STREAM` refers to an object named `STREAM`.
+`$STREAM` refers to an object named `STREAM`.
 That is, `STREAM` is a variable, HVML uses `$` as the prefix when referring a variable.
+Because we can embed an EJSON expresion in a string, HVML uses `$` to distinguish an EJSON expression with other literal text in a string.
 As a convention, one variable like `STREAM` which are uppercase is a predefined variable.
 You can use the predefined variables to access the system functions or perform common tasks.
 Currently, HVML defines the following predefined variables:
@@ -218,7 +219,7 @@ For example, concatenate multiple strings or extract a substring, and so on.
 
 Per the expression `$STREAM.stdout.writelines('Hello, world!')`, it calls the method `writelines` on `stdout` object of the predefined variable `STREAM`.
 The method `writelines` prints the `Hello, world!` on your terminal, and returns the bytes wrotten to the stream (`stdout`) totally.
-Here it should be 14 - length of the string `Hello, world!` plus the newline (`\n`) character wrotten to the terminal.
+Here it should be 14 - the length of the string `Hello, world!` plus the newline (`\n`) character wrotten to the terminal.
 
 Because the expression appeared as the content of the `hvml` element, the result of this expression will be recorded as the result of executing the `hvml` element.
 And because the `hvml` element is the root element, the result of executing the `hvml` element will become the result of the whole HVML program.
@@ -226,9 +227,18 @@ Therefore, `purc` gives the executing result of the HVML program: `14UL`.
 
 We call the returned value of an expression as `evaluating result`.
 
-In HVML, you can use syntax like [JSON] to define a simple data like number, string, or a complex container like an array or an object.
-We refer to them collectively as EJSON expressions.
-Here EJSON means `extended JSON`, because enhance the JSON to have more data type, such as long integer, unsigned long integer, long double, set, and native entity.
+In HVML, you can use syntax like [JSON] to define a simple data like undefined, null, a boolean, a number, a string, or a container like an array or an object.
+We can use the expressions when defining a string or a container.
+We enhanced the syntax of JSON to support more data type, such as long integers, unsigned long integers, long double numbers, and so on.
+Therefore, We refer to them collectively as EJSON expressions.
+Here are some examples:
+
+- A single-quoted string: 'This is a literal text, $SYS.locale will not be evaluated.'
+- A double-quoted string: "$SYS.locale will be evaluated in this text."
+- A long integer (64-bit): 5L.
+- An unsigned long integer (64-bit): -1UL (0xFFFFFFFFFFFFFFFF in C).
+- A random number array: [ $SYS.random(1.0), $SYS.random(2.0), $SYS.random(3.0) ]
+- An object: { locale: $SYS.locale, timezone: $SYS.timezone }
 
 For example, you can use the following expression to define the executing result of the HVML program as an array:
 
