@@ -116,7 +116,7 @@ Executing HVML program from `file:///srv/devel/hvml/purc/build/hello-world.hvml`
 </html>
 
 
->> The execute result:
+>> The executing result:
 undefined
 ```
 
@@ -186,11 +186,11 @@ Hello, world!
 </html>
 
 
->> The execute result:
+>> The executing result:
 14
 ```
 
-Comparing this output with the output of Version 0, you will find that the later shows an execute result `14` instead of `undefined`.
+Comparing this output with the output of Version 0, you will find that the later shows an executing result `14` instead of `undefined`.
 
 The statement like `$STREAM.stdout.writelines('Hello, world!')` is an EJSON expression defined by HVML.
 We can use an EJSON expression to access a property of an object, or call a method of an object.
@@ -217,22 +217,70 @@ For example, concatenate multiple strings or extract a substring, and so on.
 - `URL`: You can use `URL` to perform operations based on URL and queries.
 
 Per the expression `$STREAM.stdout.writelines('Hello, world!')`, it calls the method `writelines` on `stdout` object of the predefined variable `STREAM`.
-It prints the `Hello, world!` on your terminal, and returns the bytes wrotten to the stream (`stdout`) totally.
-Here it should be 14 - length of the string `Hello, world!` plus the `\n` character wrotten to the terminal.
+The method `writelines` prints the `Hello, world!` on your terminal, and returns the bytes wrotten to the stream (`stdout`) totally.
+Here it should be 14 - length of the string `Hello, world!` plus the newline (`\n`) character wrotten to the terminal.
 
 Because the expression appeared as the content of the `hvml` element, the result of this expression will be recorded as the result of executing the `hvml` element.
 And because the `hvml` element is the root element, the result of executing the `hvml` element will become the result of the whole HVML program.
-Therefore, `purc` gives the execute result of the HVML program: `14`.
+Therefore, `purc` gives the executing result of the HVML program: `14UL`.
 
 We call the returned value of an expression as `evaluating result`.
 
-## Control Flow
+In HVML, you can use syntax like [JSON] to define a simple data like number, string, or a complex container like an array or an object.
+We refer to them collectively as EJSON expressions.
+Here EJSON means `extended JSON`, because enhance the JSON to have more data type, such as long integer, unsigned long integer, long double, set, and native entity.
 
-We can use the evaluating result of one expression as the attribute value or the text content of an element.
-Now, let's try to enhance the HVML program to generate different contents according to the current system locale.
+For example, you can use the following expression to define the executing result of the HVML program as an array:
 
 ```hvml
 <!-- Version 2 -->
+<hvml target="html">
+
+    [ $STREAM.stdout.writelines('Hello, world!'), $STREAM.stdout.writelines($DATETIME.fmttime('%H:%M')) ]
+
+    <body>
+        <p>Hello, world!</p>
+    </body>
+</hvml>
+```
+
+The executing result of Version 2 would be an array: `[ 14UL, 6UL ]`. A number with postfix `UL` means it is a unsigned long integer.
+
+For another example, you can use the following expression to calculate the area of a circle:
+
+```
+$MATH.eval('PI * r * r', { r: 3 })
+```
+
+The method `eval` of `$MATH` evaluating a parameterized mathematical formula (`PI * r * r` in this sample), while `r` is given by `{ r: 3 }` as the second argument of `eval` method. The executing result of the expression will be about `28.26`.
+
+Moreover, HVML defines the compound EJSON expressions to have a simple logical control.
+A compound EJSON expression consists of multiple EJSON expressions.
+They are surrounded by `{{` and `}}`, and separated by `;`, `&&`, or `||`.
+You can use a compound EJSON expression to implement a simple `if-then-else` logical contro.
+
+For example, the following compound expression tries to change the current working directory to `/root`.
+If it succeeded, it will call `$FS.list_ptr` to get the directory entry list in `/root`.
+If it failed, it returns an failure prompt.
+The expression uses `$STREAM.stdout.writelines` to print the entry list or the failure prompt ultimately.
+
+```hvml
+{{
+    $STREAM.stdout.writelines({{
+                $SYS.cwd(! '/root') && $FS.list_prt ||
+                    'Cannot change directory to "/root"'
+            }})
+}}
+```
+
+## Control Flow
+
+As we said before, you can use the evaluating result of one expression as the attribute value or the text content of an element.
+Now, let's try to enhance the HVML program to generate different contents according to the current system locale.
+Please see Version 3 of the HVML program:
+
+```hvml
+<!-- Version 3 -->
 
 <!--
     $SYS.locale returns the current system locale such as `en_US` or `zh_CN`
@@ -264,7 +312,7 @@ Now, let's try to enhance the HVML program to generate different contents accord
 </hvml>
 ```
 
-You can easily find that the code in Version 2 introduces some intersting stuff:
+You can easily find that the code in Version 3 introduces some intersting stuff:
 
 1. Expression to define the value of the `lang` attribute: `$STR.substr($SYS.locale, 0, 2)`.
 1. Elements with tag names using verbs, such as `test` and `differ`.
@@ -276,34 +324,16 @@ Except for the above stuff, the code looks still like HTML:
 1. It uses the same synatx as HTML to define the attributes such as `target="html"`.
 1. It uses `<!--` and `-->` to define comments, and so on.
 
-The expression `$STR.substr($SYS.locale, 0, 2)` makes a substring of the
-system locale (in pattern `zh_CN` or `en_US`),  and uses the result as the
-value of `lang` attribute.
+The expression `$STR.substr($SYS.locale, 0, 2)` makes a substring of the system locale (in pattern `zh_CN` or `en_US`),
+    and uses the result as the value of `lang` attribute.
 
-However, the elements `test` and `differ` act like the conditionl control statements
-such as `if` and `else` in C or JavaScript. The `test` element uses the expression
-defined by `with` attribute, i.e., `$STR.starts_with($SYS.locale, 'zh')`, as
-the condition. If the evaluating result of the expression is true, that is,
-the system locale starts with `zh`, this HVML program will clone the `h1` and `p`
-elements in `test` element to the target document, and ignore the `differ` element.
-If the evaluation result is false, the elements in `differ` element will
-be cloned to the target document.
+The elements `test` and `differ` act like the conditionl control statements such as `if` and `else` in C or JavaScript.
+The `test` element uses the expression defined by `with` attribute, i.e., `$STR.starts_with($SYS.locale, 'zh')`, as the condition.
+If the evaluating result of the expression is true, that is, the system locale starts with `zh`,
+   this HVML program will clone the `h1` and `p` elements in `test` element to the target document, and ignore the `differ` element.
+If the evaluation result is false, the elements in `differ` element will be cloned to the target document.
 
-Although the code does not like any program in C, JavaScript, or other common
-programming languages, if you are told that the original design goal of HVML is
-to allow developers can easily generate and operate HTML documents without
-a web server using JavaScript in a web browser, you can easily guess
-what's the code do:
-
-1) The attribute `target="html"` in `hvml` element defines the target document
-type of this HVML program: HTML. That is, this HVML program will genenrate an HTML
-document.
-
-2) The elements defined by HTML tags, such as `body`, `h1`, and `p` will be cloned
-to the target document according to the execute path of the HVML program.
-
-Therefore, if the system locale is `zh_CN` or `zh_TW` when you execute
-the HVML program, the ultimate document generated by the program will look like:
+Therefore, if the system locale is `zh_CN` or `zh_TW` when you execute the HVML program, the ultimate document generated by the program will look like:
 
 ```html
 <html lang="zh">
@@ -319,8 +349,7 @@ the HVML program, the ultimate document generated by the program will look like:
 </html>
 ```
 
-But if the system locale is `en_US` or something else which does not
-start with `zh`, the ultimate document generated by the program will look like:
+But if the system locale is `en_US` or something else which does not start with `zh`, the ultimate document generated by the program will look like:
 
 ```html
 <html lang="en">
@@ -335,6 +364,19 @@ start with `zh`, the ultimate document generated by the program will look like:
 
 </html>
 ```
+
+Although the code is not like any program in C, JavaScript, or other common
+programming languages, if you are told that the original design goal of HVML is
+to allow developers can easily generate and operate HTML documents without
+a web server using JavaScript in a web browser, you can easily guess
+what's the code do:
+
+1) The attribute `target="html"` in `hvml` element defines the target document
+type of this HVML program: HTML. That is, this HVML program will genenrate an HTML
+document.
+
+2) The elements defined by HTML tags, such as `body`, `h1`, and `p` will be cloned
+to the target document according to the execute path of the HVML program.
 
 We can revise the first HVML program as follow:
 
@@ -482,7 +524,7 @@ Executing HVML program from `file:///srv/devel/hvml/purc/build/hvml/hello-html.h
 </html>
 
 
->> The execute result:
+>> The executing result:
 null
 ```
 
@@ -528,8 +570,6 @@ save it as `hello-html-timer.hvml`:
     </body>
 </hvml>
 ```
-
-
 
 The original design goal of HVML is to allow developers who are familiar with
 C/C++, Python, or other programming languages to easily develop GUI applications
@@ -611,6 +651,7 @@ Obviously, HVML differs from any existing programming language you know.
 
 [Vincent Wei]: https://github.com/VincentWei
 
+[JSON]: https://json.org
 [React.js]: https://reactjs.org
 [Vue.js]: https://vuejs.org
 
