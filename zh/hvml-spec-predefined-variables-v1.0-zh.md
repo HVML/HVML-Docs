@@ -2746,8 +2746,8 @@ $EJSON.base64_decode( 'SFZNTA==' )
 ```js
 $EJSON.arith(
         <' + | - | * | / | % | ^ ' $arithmetic_operation>,
-        <null | boolean | real $data1>,
-        <null | boolean | real $data2>
+        <any $data1>,
+        <any $data2>
 ) longint | undefined
 ```
 
@@ -2777,8 +2777,8 @@ $EJSON.arith( '+', 3, 2 )
 ```js
 $EJSON.bitwise(
         <' & | "|" | ~ | ^ | < | > ' $bitwise_operation>,
-        <null | boolean | real $data1>
-        [, <null | boolean | real $data2> ]
+        <any $data1>
+        [, <any $data2> ]
 ) ulongint | undefined
 ```
 

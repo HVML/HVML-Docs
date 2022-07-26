@@ -1005,7 +1005,14 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ##### 2.1.6.3) `$RUNNER`
 
-`$RUNNER` 是一个必要的行者级动态变量，主要用于获取行者相关的信息，并提供给用户在当前行者的不同协程之间共享数据的机制。
+`$RUNNER` 是一个必要的行者级动态变量，主要用于获取行者相关的信息，并提供给用户在当前行者的不同协程之间共享数据的机制。比如：
+
+1. `$RUNNER.app`：获取当前行者的应用名。
+1. `$RUNNER.runner`：获取当前行者的行者名。
+1. `$RUNNER.rid`：获取当前行者的行者标识符。
+1. `$RUNNER.uri`：获取当前行者的 URI。
+1. `$RUNNER.myObj`：静态属性，用户自定义对象。
+1. `$RUNNER.user`：获取或设置 `$RUNNER.myObj` 对象的属性。
 
 ##### 2.1.6.4) `$CRTN`
 
@@ -1016,6 +1023,8 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 1. `$CRTN.max_recursion_depth`：获取或设置 HVML 程序在递归执行某个功能时的最大递归深度，以防止栈溢出。
 1. `$CRTN.max_embedded_levels`：获取或设置 HVML 程序在解析或者处理嵌套的容器数据时，允许的最大嵌套层级。
 1. `$CRTN.timeout`：获取或设置获取外部数据时的超时值。
+1. `$CRTN.cid`：获取当前协程的协程标识符。
+1. `$CRTN.uri`：获取当前协程的 URI。
 
 另外，我们还可以通过 `$CRTN` 对象观察一些全局事件以及当前协程渲染状态的变化，从而优雅地处理渲染器页面被用户关闭或者渲染器丢失等的情形。这些事件有：
 
@@ -1149,6 +1158,8 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 1. `$EJSON.numberify(<any>, ["number | longint | ulongint | longdouble": the number subtype to return])`：对给定的数据执行数值化，结果数据的类型为指定的实数类型，默认为 `number`。
 1. `$EJSON.stringify(<any>)`：对给定数据执行字符串化，结果数据的类型为字符串。
 1. `$EJSON.serilize(<any>, <string: options>)`：对给定数据执行 EJSON 序列化，结果数据的类型为字符串。
+1. `$EJSON.arith(<arithmetic operation>, <any: operand>, <any: operand>)`：将给定的两项数据强制转换为 `longint`，然后执行指定的四则运算（加、减等）并返回结果。
+1. `$EJSON.bitwise(<bitwise operation>, <any: operand>[, <any: operand>])`：将给定的一项或两项数据强制转换为 `ulongint`，然后执行指定的位运算（与、或等）并返回结果。
 1. `$EJSON.select(<container>, <string: selector>[, <boolean: recursively])`：按照给定的选择器返回给定容器数据中符合条件的数据项或一个数据汇集。
 
 各数据类型的数据项个数规则如下：
@@ -4774,13 +4785,13 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 `load` 元素支持如下介词属性：
 
 - `on`：指定 HVML 代码（字符串）。
-- `from`：指定的 HVML 程序的 URL；若使用保留字 `_self`，表示使用和当前 HVML 协程相同的 HVML 程序来启动新协程。
+- `from`：指定的 HVML 程序的 URL；若为空，表示使用和当前 HVML 协程相同的 HVML 程序来启动新协程。若 `URL` 中使用 `#` 指定了定位锚（anchor），则用于指定作为程序入口的 `body` 标识符。若以 `#` 打头，则表示使用和当前协程相同的 HVML 程序启动新协程，但通过 `#` 指定了 `body` 入口标识符。注意，依据给定的值确定有效 URL 时，`$CRTN.base` 起效。
 - `with`：若 `from` 属性指定了一个合法的 URL 字符串，指定从外部资源中装载 HVML 程序时的请求参数。
 - `via`：若 `from` 属性指定了一个合法的 URL 字符串，则该属性指定从外部资源中装载 HVML 程序时的请求方法，默认为 `GET`。
 - `as`：当我们异步装载新的 HVML 程序时，我们使用该属性将新的 HVML 协程和一个变量名称绑定，从而可观察该协程的状态。
 - `at`：和 `init` 类似，在 `load` 标签中使用 `as` 属性命名一个 HVML 程序时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
 - `within` 属性指定行者名称。不指定该属性或者使用保留字 `_self` 作为行者名称，表示当前行者。和 `call` 元素不同，`load` 元素指定的行者必须已经存在，也就是说，`load` 元素不会主动创建新的行者。
-- `onto`：指定用于渲染目标文档的渲染器页面名称，使用 `[widget:]<page_name>[@<group_name>]` 这样的形式，用于指定页面名称和所在的页面组。使用 `widget:` 前缀时，表示创建小构件作为页面，不使用这个前缀时，或使用 `plainwin:` 前缀时，表示创建一个普通窗口展示页面。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
+- `onto`：指定用于渲染目标文档的渲染器页面名称，使用 `[<page_type>:]<page_name>[@[<workspace_name>/]<group_name>]` 这样的形式，用于指定页面名称和所在的页面组。其中 `<page_type>` 指定页面的类型，可使用 `plainwin`（默认） 或 `widget`，分别表示创建小构件作为页面或创建一个普通窗口作为页面。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
    - `_null`：表示空页面。此时，新创建的协程所生成的文档内容及其变更信息将不会同步到渲染器。
    - `_inherit`：若新创建的子协程和当前协程属于同一行者，则表示该协程将继承父协程的文档内容，且使用相同的渲染器页面。
    - `_self`：表示当前页面。在当前页面中渲染新的 HVML 程序，通常意味着当前页面对应的 HVML 协程将被压制（suppressed），页面中的文档内容将被新 HVML 协程覆盖。但当子协程继承父协程的目标文档时，子协程和父协程可同时更新该文档，且其更新将同时反映到当前页面上。使用该页面名称时，将忽略页面分组以及页面类型信息。
@@ -4808,7 +4819,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 ```hvml
     <init as="request">
         {
-            hvml: "<hvml target='html'><body><h1>$REQ.text</h1><p>$REQ.hvml</p></body></hvml>",
+            hvml: '<hvml target="html"><body><h1>$REQ.text</h1><p>$REQ.hvml</p></body></hvml>',
             text: "Hello, world!",
             _renderer: {
                 title: 'Hello, world!',
