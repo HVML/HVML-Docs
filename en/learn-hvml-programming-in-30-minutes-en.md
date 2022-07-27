@@ -7,22 +7,46 @@
 [//]:# (START OF TOC)
 
 - [Introduction](#introduction)
+- [Fundamental](#fundamental)
 - [Preparation](#preparation)
 - [Expressions](#expressions)
 - [Control Flow](#control-flow)
+- [Data Driven Programming](#data-driven-programming)
+- [Templates and Substitution](#templates-and-substitution)
+- [Stack-based Virtual Machine](#stack-based-virtual-machine)
+- [Event Driven Programming](#event-driven-programming)
+- [Coroutines and Concurrency](#coroutines-and-concurrency)
 
 [//]:# (END OF TOC)
 
 ## Introduction
 
 HVML is the acronym of `Hybrid Virtual Markup Language`.
-It is a new-style, general-purpose, and easy-to-learn programming language proposed by [Vincent Wei], who is the author of the China-first open source project [MiniGUI].
+It is a general-purpose and easy-to-learn programming language proposed by [Vincent Wei], who is the author of the China-first open source project [MiniGUI].
 
-Vincent Wei defines HVML as a programmable markup language.
-This is definitely a brand new programming language, unlike any programming language you are familiar with.
+Vincent Wei says that HVML is a programmable markup language with new principles, new structure, and new design patterns.
+It is definitely unlike any programming language you are familiar with:
 
-You know HTML uses markups to define a static document and text in the document, while HVML uses markups to define a program structure and the data.
-In other words, HTML is static but HVML is programmable and dynamic.
+- It uses markups to define the program structure and the control flow.
+- It uses the extended JSON with dynamic capabilities to define the data; this makes it ideal as a glue to bond different system components.
+- It introduces the data driven programming model; this allows developers to focus more on data generation and processing, rather than program logic.
+- It is dynamic; developers can not only fetch data, templates, HVML fragment from a remote data source, but also delete an exisiting variable.
+- It supports coroutines, threads, closures, ..., which are those features you saw in popular modern programming languages.
+- It is flexible; developers can use HVML to write simple scripting tools, or they can use it to develop complex GUI applications.
+- It is fast; HVML uses a simple and effecient stack-based virtual machine, and it does not use any garbage collector.
+
+This tutorial will show you the most exciting features of HVML,
+     especially those features that are different from common programming languages.
+If you are familiar with a script language such as Python or JavaScript,
+   you will find that you can master the basic principles and methods of HVML programming in a very short time, say, in 30 minutes.
+
+Let's enjoy it.
+
+## Fundamental
+
+As said before, HVML is programmable markup language.
+You know that HTML uses markups to define a static document and text in the document, while HVML uses markups to define a program structure and the data.
+In other words, HTML is static, while HVML is programmable and dynamic.
 
 For example, the following HTML file defines a document with a paragraph which contains `Hello, world!`:
 
@@ -34,7 +58,7 @@ For example, the following HTML file defines a document with a paragraph which c
 </html>
 ```
 
-However, if we change all occurrences of `html` to `hvml` in the above HTML file,
+If you change all occurrences of `html` to `hvml` in the above HTML file,
     and add a new attribute `target="html"` to the root element, you will get your first HVML program:
 
 ```hvml
@@ -46,26 +70,35 @@ However, if we change all occurrences of `html` to `hvml` in the above HTML file
 ```
 
 Like a Python, PHP, or JavaScript script, we need an interperter to run this HVML program.
-From the interpreter's perspective, each element in an HVML program defines an action to execute.
-You know that a valid HTML document defines a DOM (Document Object Model) tree, and a web browser can render the HTML document in a window.
-Similarly, a valid HVML program also defines a DOM tree, and the interpreter can execute the HVML program.
+From the interpreter's perspective, each element in an HVML program defines an operation to perform.
+You know that a valid HTML document defines a DOM (Document Object Model) tree, and a web browser renders the DOM tree in a window.
+Similarly, a valid HVML program also defines a DOM tree, and the interpreter executes the DOM tree.
 In other words, a browser renders an HTML document, while an HVML interprerter executes an HVML program.
 
-The interpreter executes the HVML program from the root element, i.e., the `hvml` element, in depth-first order.
-When executing the `hvml` element, because the `target` attribute have the value `html`, the interperter will generate an HTML document.
+The interpreter executes the DOM tree from the root element, i.e., the `hvml` element, in depth-first order.
+When executing the `hvml` element, because the `target` attribute has the value `html`, the interperter will generate an HTML document.
 After executed the `hvml` element, the iterperter continues to execute the `body` element and the `p` element in sequence.
-After execute the `p` element, because there is no any element in the DOM tree, the interpreter will stop.
-For now, you know that the interpreter will just copy the contents of `body` and `p` elements to the target HTML document.
+When the interpreter executed the `p` element, because there is no any element in the DOM tree, the interpreter will stop to execute the DOM tree.
+
+The interpreter perform every element according to the tag name, the attributes, and the content.
+The tag name defines the operation to perform, and the attributes and the contents defines the arguments when performing the operation.
+For ease of understanding, you can think of an HVML element as a function and the attributes and the contents as the arguments when calling the function.
+
+HVML introduces about 20 tags for different operations:
+
+- `hvml`, `head`, and `body` are called `frame tags`; they are used to define the frame of an HVML program.
+- `archetype`, `achedata`, `error`, and `except` are called `template tags`; they are used to define parameterized templates.
+- `init`, `test`, `iterate`, `define`, `call`, `include`, `load`, `exit`, `return`, `update`, `back`, and other tags use verbs are called `verb tags`, they are used to define an action to operate a data, the target document, or the virtual machine.
+
+Any tags other than the above are called `foreign tags`.
+For an element defined by a foreign tag, HVML assigns a default and uniform operation:
+evaluting the attribute values and the contents, then copying them to the target document.
+
+For your first HVML program, the interpreter will generate an empty HTML document, and just copy the contents of `body` and `p` elements to the target HTML document.
 As a result, the HVML program generates an HTML document, which is same as the HTML file I given earlier.
 
 The great thing about HVML is that, you can use markups to define a program which may have a complex control flow.
 You can also use flexible expressions to generate dynamic contents for your target document.
-
-This tutorial will show you the most exciting features of HVML,
-     especially those features that are different from common programming languages.
-You will find that you can master the basic principles and methods of HVML programming in a very short time, say, in 30 minutes.
-
-Let's enjoy it.
 
 ## Preparation
 
@@ -345,7 +378,6 @@ However, HVML does not use statements to write a program.
 Instead, we use elements and expressions to write program.
 Generally, an element performs a specific operation with the attributes and select a child element to continue.
 When there is no child element, it return back to the parent element, until the root (`hvml`) element.
-You can think of an element of HVML as a function and the attributes as the arguments to call the function.
 
 For example, in Version 3, the `test` element uses the expression defined by `with` attribute, i.e., `$STR.starts_with($SYS.locale, 'zh')`, as the condition.
 If the evaluating result of the expression is true, that is, the system locale starts with `zh`,
