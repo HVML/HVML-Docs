@@ -548,11 +548,8 @@ Here is Version 5 of your first HVML program:
 </hvml>
 ```
 
-We use two new verb elements in Version 5:
-
-1. The `init` element initializes a variables called `helloInVarLangs` with an string array defined in the content of the element in JSON.
-1. The `iterate` element iterates over the data specified by `on` attribute: the array initialized just now.
-
+We use two new verb elements in Version 5: `init` and `iterate`.
+Based on the meaning of these two verbs, you can immediately guess what they do.
 Run Version 5 with `purc`, the HVML program gives you the expected result:
 
 ```
@@ -595,7 +592,188 @@ End of `Hello, world!`
 23
 ```
 
+Distinctly, it is easy to understand the verb elements introduced in Version 5:
+
+1. The `init` element initializes a variables called `helloInVarLangs` with an string array defined in the content of the element in JSON.
+1. The `iterate` element iterates over the data specified by `on` attribute: the array initialized just now.
+
+But what does `$?` mean?
+
+You should remember, HVML uses `$` as the prefix when referring a variable.
+Therefore, `$?` must be a variable.
+In HVML, a variable named with a special symbol like `?` is called `a context variable`.
+Here, `$?` referring to the executed result of the prepositive operation.
+The parent element is `iterate`, it iterates over each member in the array, and sets one member of the array as the executed result for each iteration.
+Therefore, this HVML program will generate four paragraphs for `Hello, world!` in different languages, as you see in the result.
+
+Unlike other programming languages, HVML makes heavy use of context variables:
+
+- Essentially, context variables are temporary and have a very short lifespan. This will help us avoid unnecessary static variables and save memory usage.
+- The context variables can rescue programmers from naming difficulties.
+
+Except for `?`, HVML also defines other context variables:
+
+- `@`: The current position of the target document; usually defined by the `in` attribute.
+- `^`: The content data evaluated in prepositive operation.
+- `:`: If the executed result is a property of an object, this variable representing the property name.
+- `=`: If the executed result is a property of an object, this variable representing the property value.
+- `%`：When the prepositive operation is an iteration, this variable representing the index (a number) for the current iteration.
+- `<`：When the prepositive operation is an iteration, this variable representing the input data for the current iteration.
+
 ## Data Driven Programming
+
+Indeed, the `init` element in Version 5 is redundant.
+You can revised it as follow:
+
+```hvml
+<!-- Version 6 -->
+
+<!--
+    $SYS.locale returns the current system locale such as `en_US` or `zh_CN`
+    $STR.substr returns a substring of the given string.
+-->
+<hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
+
+    $STREAM.stdout.writelines('Start of `Hello, world!`')
+
+    <body>
+
+        <h1>我的第一个 HVML 程序</h1>
+
+        <iterate on [ "世界，您好！", "Hello, world!", "Bonjour le monde!", "Salve, mundi!", ] >
+            <p>$?</p>
+        </iterate>
+
+    </body>
+
+    $STREAM.stdout.writelines('End of `Hello, world!`')
+
+</hvml>
+```
+
+Version 6 shows a very important coding philosophy of HVML: Use less or no variables.
+
+In Version 5 and Version 6, we hard code the array in the `init` or `iterate`.
+This usually does not correspond to the actual situation.
+In practice, the data must be from a foreign source, e.g, a locale file or a remote URL.
+
+Most programming languages do not provide methods to fetch data from a URL, but HVML does.
+You can use `init` to fetch data from a file or a remote URL:
+
+```hvml
+<!-- Version 7 -->
+
+<!--
+    $SYS.locale returns the current system locale such as `en_US` or `zh_CN`
+    $STR.substr returns a substring of the given string.
+-->
+<hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
+
+    $STREAM.stdout.writelines('Start of `Hello, world!`')
+
+    <body>
+
+        <h1>我的第一个 HVML 程序</h1>
+
+        <init as "helloInVarLangs" from "file://{$SYS.cwd}/hello-world.json" />
+
+        <iterate on $helloInVarLangs >
+            <p>$?</p>
+        </iterate>
+
+    </body>
+
+    $STREAM.stdout.writelines('End of `Hello, world!`')
+
+</hvml>
+```
+
+Before running Version 7, please prepare a file named `hello-world.json` in your current working directory:
+
+```json
+[ "世界，您好！", "Hello, world!", "Bonjour le monde!", "Salve, mundi!" ]
+```
+
+You will get the same result if you run Version 7.
+By using `from` attribute in the `init` element, the HVML program can fetch data from the specified URL.
+Here, it is a local file in the current working directory.
+
+In contrast to other programming languages, HVML provides the ability to fetch data directly from a specific URL.
+This provides developers with great convenience, and frees developers from complicated network protocol details.
+More than that, the interpreter impelments the fetching operation as an asynchronous task.
+This can help developers to develop programs with high concurrency capabilities by using HVML.
+
+Version 6 and Version 7 also disclose another coding philosophy of HVML: data driven programming.
+In an HVML program, you focus more on the sourcing and processing of the data and less on how to name and manage them.
+
+For another example of data driven programming, let's move to the Version 8 of your first HVML program:
+
+```hvml
+<!-- Version 8 -->
+
+<!--
+    $SYS.locale returns the current system locale such as `en_US` or `zh_CN`
+    $STR.substr returns a substring of the given string.
+-->
+<hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
+
+    $STREAM.stdout.writelines("Start of `Hello, world!`")
+
+    <head>
+        <update on "$TIMERS" to "unite">
+            [
+                { "id" : "foobar", "interval" : 500, "active" : "yes" },
+            ]
+        </update>
+    </head>
+
+    <body>
+
+        <h1>我的第一个 HVML 程序</h1>
+
+        <init as "helloInVarLangs" from "file://{$SYS.cwd}/hello-world.json" />
+
+        <iterate on $helloInVarLangs >
+            <p>$?</p>
+        </iterate>
+
+        <observe on $TIMERS for 'expired:foobar' >
+            $STREAM.stdout.writelines('Timer foobar observed')
+
+            <inherit>
+                $STREAM.stdout.writelines('Timer foobar expired')
+            </inherit>
+        </observe>
+    </body>
+
+    $STREAM.stdout.writelines('End of `Hello, world!`')
+
+</hvml>
+```
+
+In Version 8, the code uses two new verb elements.
+According to the tag names and the attribute names, you migth have the following conjectures:
+
+1. The `update` element seems to change a predefined variable called `TIMERS` with the data defined as its content.
+1. The `observe` element seems to create a listener to observe an event named `expired:foobar`.
+
+If you look deeper into the code, it's not diffcult to find:
+
+1. The `update` element will _unite_ the content, an array containing only one object, with the existing data of `TIMERS`.
+1. The object in the array seems to define an active timer, with the identifier `foobar`, and the interval `500`.
+1. The event which was listening by the `observe` element contains the identifier of the timer (`foobar`).
+
+However, you did not find any code to create and activate the timer called `foobar`.
+
+In HVML, you change the data representing by `TIMERS` to create, activate, deactivate, or destroy a timer.
+You do not need to call a method to manage the timers.
+For example, if you want to remove a timer, just subtract the member in the array representing by `TIMERS`:
+
+```hvml
+    <update on $TIMERS to "subtract" with { id : "foo" } />
+```
+
+This reflects the idea of data-driven programming once more: change data directly instead of call methods to manage them.
 
 ## Templates and Substitution
 
