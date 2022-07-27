@@ -44,7 +44,7 @@ Let's enjoy it.
 
 ## Fundamental
 
-As said before, HVML is programmable markup language.
+As said before, HVML is a programmable markup language.
 You know that HTML uses markups to define a static document and text in the document, while HVML uses markups to define a program structure and the data.
 In other words, HTML is static, while HVML is programmable and dynamic.
 
@@ -77,10 +77,11 @@ In other words, a browser renders an HTML document, while an HVML interprerter e
 
 The interpreter executes the DOM tree from the root element, i.e., the `hvml` element, in depth-first order.
 When executing the `hvml` element, because the `target` attribute has the value `html`, the interperter will generate an HTML document.
+In terms of HVML, this HTML document is called `the target document`.
 After executed the `hvml` element, the iterperter continues to execute the `body` element and the `p` element in sequence.
 When the interpreter executed the `p` element, because there is no any element in the DOM tree, the interpreter will stop to execute the DOM tree.
 
-The interpreter perform every element according to the tag name, the attributes, and the content.
+The interpreter performs every element according to the tag name, the attributes, and the content.
 The tag name defines the operation to perform, and the attributes and the contents defines the arguments when performing the operation.
 For ease of understanding, you can think of an HVML element as a function and the attributes and the contents as the arguments when calling the function.
 
@@ -90,12 +91,12 @@ HVML introduces about 20 tags for different operations:
 - `archetype`, `achedata`, `error`, and `except` are called `template tags`; they are used to define parameterized templates.
 - `init`, `test`, `iterate`, `define`, `call`, `include`, `load`, `exit`, `return`, `update`, `back`, and other tags use verbs are called `verb tags`, they are used to define an action to operate a data, the target document, or the virtual machine.
 
-Any tags other than the above are called `foreign tags`.
+Tags other than the above are called `foreign tags`.
 For an element defined by a foreign tag, HVML assigns a default and uniform operation:
-evaluting the attribute values and the contents, then copying them to the target document.
+    evaluting the attribute values and the contents, then copying them to the target document.
 
-For your first HVML program, the interpreter will generate an empty HTML document, and just copy the contents of `body` and `p` elements to the target HTML document.
-As a result, the HVML program generates an HTML document, which is same as the HTML file I given earlier.
+For your first HVML program, the interpreter will generate an empty HTML document, and copy the contents of `body` and `p` elements to the target HTML document.
+As a result, the HVML program generates an HTML document, which is same as the HTML file given earlier.
 
 The great thing about HVML is that, you can use markups to define a program which may have a complex control flow.
 You can also use flexible expressions to generate dynamic contents for your target document.
@@ -150,7 +151,7 @@ Executing HVML program from `file:///srv/devel/hvml/purc/build/hello-world.hvml`
 
 
 >> The executing result:
-undefined
+null
 ```
 
 You saw that this program generated a HTML document, which is same as the one we talked earlier.
@@ -159,7 +160,7 @@ You saw that this program generated a HTML document, which is same as the one we
 
 However, if you run the HVML program without the flag `-b`, you will get nothing:
 
-```hvml
+```bash
 $ purc hello-world.hvml
 $
 ```
@@ -223,7 +224,7 @@ Hello, world!
 14
 ```
 
-Comparing this output with the output of Version 0, you will find that the later shows an executing result `14` instead of `undefined`.
+Comparing this output with the output of Version 0, you will find that the later shows an executing result `14` instead of `null`.
 
 The statement like `$STREAM.stdout.writelines('Hello, world!')` is an EJSON expression in HVML.
 We can use an EJSON expression to access a property of an object, or call a method of an object.
