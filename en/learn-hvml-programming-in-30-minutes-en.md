@@ -325,7 +325,7 @@ Regardless of success or failure, the expression calls `$STREAM.stdout.writeline
 As said before, you can use the evaluated result of one expression as the attribute value or the text content of an element.
 Now, let's try to enhance the HVML program to generate different contents according to the current system locale.
 
-### Two branches
+### Alternative branching and preposition attributes
 
 Please see Version 3 of the HVML program:
 
@@ -420,9 +420,10 @@ But if the system locale is `en_US` or something else which does not start with 
 </html>
 ```
 
-### Multiple branches
+### Multiple branching and adverb attributes
 
-If you want to support more languages, you can use `match` elements as the `test` element. For example:
+If you want to support more languages, you can use `match` elements as the children elements of the `test` element.
+For example:
 
 ```hvml
 <!-- Version 4 -->
@@ -437,12 +438,13 @@ If you want to support more languages, you can use `match` elements as the `test
 
     <body>
 
-        <!-- the `test` element gives the $SYS.locale as the source data -->
+        <!-- the language identifier like `zh` or `en` will
+             be the executed result of the `test` element -->
         <test on $STR.substr($SYS.locale, 0, 2) >
 
             <!--
                 this `match` element checks the evaluated result of the parent element
-                is whether like 'zh' (Chinese).
+                is whether same as 'zh' (Chinese).
             -->
             <match for "AS 'zh'" exclusively>
                 <h1>我的第一个 HVML 程序</h1>
@@ -451,7 +453,7 @@ If you want to support more languages, you can use `match` elements as the `test
 
             <!--
                 this `match` element checks the evaluated result of the parent element
-                is whether like 'en' (English).
+                is whether same as 'en' (English).
             -->
             <match for "AS 'en'" exclusively>
                 <h1>My First HVML Program</h1>
@@ -460,18 +462,16 @@ If you want to support more languages, you can use `match` elements as the `test
 
             <!--
                 this `match` element checks the evaluated result of the parent element
-                is whether like 'fr' (French).
+                is whether same as 'fr' (French).
             -->
             <match for "AS 'fr'" exclusively>
                 <h1>Mon premier programme HVML</h1>
                 <p>Bonjour le monde!</p>
             </match>
 
-            <!--
-                Anyting else, use Latin.
-            -->
+            <!-- Anyting else, treat it as Latin.  -->
             <match for "ANY">
-                <h1><Primum mihi HVML Programma/h1>
+                <h1>Primum mihi HVML Programma</h1>
                 <p>Salve, mundi!</p>
             </match>
         </test>
@@ -483,11 +483,11 @@ If you want to support more languages, you can use `match` elements as the `test
 </hvml>
 ```
 
-In Version 4, we use `on` attribute in `test` element and use multiple `match` elements with different `for` attribute values.
-When use `on` attribute with a verb element, the evulated result of the `on` attribute value will become the executed result of the verb element.
+In Version 4, we use `on` attribute in the `test` element and use multiple `match` elements with different `for` attribute values.
+When using `on` attribute with a verb element, the evulated result of the `on` attribute value will become the executed result of the verb element.
 Here, the executed result of the `test` element will be a string having only two letters like `zh`, `en`, `fr`, and so on.
 
-Obviously, you can easily see that the `test` element and its child `match` elements define a muliple-branche control flow
+Obviously, you can easily see that the `test` element and its child `match` elements define a multiple branching control flow
 like `if-else if-else if-else` or `switch-case` in other programming languages.
 
 You may notice that we use a special attribute called `exclusively` in some `match` elements.
@@ -499,13 +499,101 @@ Here the attribute `exclusively` shows that the branch is exclusive, that is,
 
 Other usual adverb attributes are shown as follow:
 
-- `uniquely`: used to define a set in `init` element.
+- `uniquely`: used to define a set in an `init` element.
 - `temporarily`: use to define a temporary variable in `init` element.
 - `asynchronously`: used to define an asynchronous operation or start a coroutine asynchronously.
-- `concurrently`：in `call` element, used to define a concurrent call.
-- `nosetotail`: in `iterate` element, used to reset the input data with the last evaluated result.
-- `ascendingly` and `descendingly: in `sort` element, used to define the sorting order.
-- `silently`: evaluating the expressions silently intead of generating exceptions.
+- `concurrently`：in a `call` element, used to define a concurrent call.
+- `nosetotail`: in an `iterate` element, used to reset the input data with the last evaluated result.
+- `ascendingly` and `descendingly: in a `sort` element, used to define the sorting order.
+- `silently`: evaluating the expressions in an element silently intead of generating exceptions.
+
+### Looping and Context Variables
+
+Now, you want to generate all `Hello, world!` paragraphs in various languages.
+You can use an `iterate` element for this purpose.
+Here is Version 5 of your first HVML program:
+
+```hvml
+<!-- Version 5 -->
+
+<!--
+    $SYS.locale returns the current system locale such as `en_US` or `zh_CN`
+    $STR.substr returns a substring of the given string.
+-->
+<hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
+
+    $STREAM.stdout.writelines('Start of `Hello, world!`')
+
+    <body>
+
+        <h1>我的第一个 HVML 程序</h1>
+
+        <init as "helloInVarLangs">
+            [
+                "世界，您好！",
+                "Hello, world!",
+                "Bonjour le monde!",
+                "Salve, mundi!",
+            ]
+        </init>
+
+        <iterate on $helloInVarLangs >
+            <p>$?</p>
+        </iterate>
+
+    </body>
+
+    $STREAM.stdout.writelines('End of `Hello, world!`')
+
+</hvml>
+```
+
+We use two new verb elements in Version 5:
+
+1. The `init` element initializes a variables called `helloInVarLangs` with an string array defined in the content of the element in JSON.
+1. The `iterate` element iterates over the data specified by `on` attribute: the array initialized just now.
+
+Run Version 5 with `purc`, the HVML program gives you the expected result:
+
+```
+$ purc -b hello-world-5.hvml
+purc 0.8.0
+Copyright (C) 2022 FMSoft Technologies.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Executing HVML program from `file:///srv/devel/hvml/purc/build/hello-world-5.hvml`...
+Start of `Hello, world!`
+End of `Hello, world!`
+
+>> The document generated:
+<html lang="en">
+  <head>
+  </head>
+  <body>
+    <h1>
+      我的第一个 HVML 程序
+    </h1>
+    <p>
+      世界，您好！
+    </p>
+    <p>
+      Hello, world!
+    </p>
+    <p>
+      Bonjour le monde!
+    </p>
+    <p>
+      Salve, mundi!
+    </p>
+  </body>
+</html>
+
+
+>> The executing result:
+23
+```
 
 ## Data Driven Programming
 
