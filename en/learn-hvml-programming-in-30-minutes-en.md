@@ -11,11 +11,13 @@
 - [Preparation](#preparation)
 - [Expressions](#expressions)
 - [Control Flow](#control-flow)
-- [Data Driven Programming](#data-driven-programming)
+   + [Alternative branching and preposition attributes](#alternative-branching-and-preposition-attributes)
+   + [Multiple branching and adverb attributes](#multiple-branching-and-adverb-attributes)
+   + [Looping and Context Variables](#looping-and-context-variables)
+- [Data/Event Driven Programming](#dataevent-driven-programming)
 - [Templates and Substitution](#templates-and-substitution)
-- [Stack-based Virtual Machine](#stack-based-virtual-machine)
-- [Event Driven Programming](#event-driven-programming)
 - [Coroutines and Concurrency](#coroutines-and-concurrency)
+- [Summary](#summary)
 
 [//]:# (END OF TOC)
 
@@ -620,7 +622,7 @@ Except for `?`, HVML also defines other context variables:
 - `%`：When the prepositive operation is an iteration, this variable representing the index (a number) for the current iteration.
 - `<`：When the prepositive operation is an iteration, this variable representing the input data for the current iteration.
 
-## Data Driven Programming
+## Data/Event Driven Programming
 
 Indeed, the `init` element in Version 5 is redundant.
 You can revised it as follow:
@@ -777,11 +779,9 @@ This reflects the idea of data-driven programming once more: change data directl
 
 ## Templates and Substitution
 
-## Stack-based Virtual Machine
-
-## Event Driven Programming
-
 ## Coroutines and Concurrency
+
+## Summary
 
 Although the code is not like any program in C, JavaScript, or other common
 programming languages, if you are told that the original design goal of HVML is
