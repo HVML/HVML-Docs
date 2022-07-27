@@ -123,7 +123,7 @@ Assuming that you have installed PurC to your system, you can save the contents 
 
 and run the HVML program by using the following command:
 
-```bash
+```
 $ purc -b hello-world.hvml
 ```
 
@@ -160,7 +160,7 @@ You saw that this program generated a HTML document, which is same as the one we
 
 However, if you run the HVML program without the flag `-b`, you will get nothing:
 
-```bash
+```
 $ purc hello-world.hvml
 $
 ```
@@ -188,7 +188,7 @@ We can revise the first HVML program as follow:
 We call the initial version of the first HVML program as Version 0, and this revised version as Version 1.
 When you use `purc` to run Version 1, you will get the following output:
 
-```bash
+```
 $ purc hello-world.hvml
 Hello, world!
 ```
@@ -197,7 +197,7 @@ Obviously, the newly added statement `$STREAM.stdout.writelines('Hello, world!')
 
 Furthermore, if you execute the HVML program with the flag `-b`:
 
-```bash
+```
 $ purc -b hello-world.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
