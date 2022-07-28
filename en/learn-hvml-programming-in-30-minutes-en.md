@@ -15,7 +15,8 @@
    + [Multiple branching and adverb attributes](#multiple-branching-and-adverb-attributes)
    + [Looping and Context Variables](#looping-and-context-variables)
 - [Data/Event Driven Programming](#dataevent-driven-programming)
-- [Templates and Substitution](#templates-and-substitution)
+- [Templates and Substitutions](#templates-and-substitutions)
+- [Variables and Closures](#variables-and-closures)
 - [Coroutines and Concurrency](#coroutines-and-concurrency)
 - [Summary](#summary)
 
@@ -804,10 +805,6 @@ For another example of data driven programming, let's move to the Version 8 of y
 ```hvml
 <!-- Version 8 -->
 
-<!--
-    $SYS.locale returns the current system locale such as `en_US` or `zh_CN`
-    $STR.substr returns a substring of the given string.
--->
 <hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
 
     $STREAM.stdout.writelines("Start of `Hello, world!`")
@@ -823,18 +820,13 @@ For another example of data driven programming, let's move to the Version 8 of y
     <body>
 
         <h1>我的第一个 HVML 程序</h1>
-
-        <init as "helloInVarLangs" from "file://{$SYS.cwd}/hello-world.json" />
-
-        <iterate on $helloInVarLangs >
-            <p>$?</p>
-        </iterate>
+        <p>世界，您好！</p>
 
         <observe on $TIMERS for 'expired:foobar' >
             $STREAM.stdout.writelines('Timer foobar observed')
 
             <inherit>
-                $STREAM.stdout.writelines('Timer foobar expired')
+                $STREAM.stdout.writelines($STR.join('Timer foobar expired: ', $DATETIME.fmttime('%H:%M:%S')))
             </inherit>
         </observe>
     </body>
@@ -844,6 +836,29 @@ For another example of data driven programming, let's move to the Version 8 of y
 </hvml>
 ```
 
+If you run Version 8 with `purc`, you will get the following output:
+
+```
+$ purc hello-world-8.hvml
+Start of `Hello, world!`
+Timer foobar observed
+End of `Hello, world!`
+Timer foobar expired: 13:21:00
+Timer foobar expired: 13:21:00
+Timer foobar expired: 13:21:01
+Timer foobar expired: 13:21:01
+Timer foobar expired: 13:21:02
+Timer foobar expired: 13:21:02
+Timer foobar expired: 13:21:03
+Timer foobar expired: 13:21:03
+...
+```
+
+If you did not interrupt the execution of the HVML program by using `Ctrl+C`, the program will continually print the prompts with the current time.
+
+Obviously, this version activates a timer with the interval about 0.5s (500ms).
+
+New let's look deeper into the code.
 In Version 8, the code uses two new verb elements.
 According to the tag names and the attribute names, you migth have the following conjectures:
 
@@ -866,9 +881,70 @@ For example, if you want to remove a timer, just subtract the member in the arra
     <update on $TIMERS to "subtract" with { id : "foobar" } />
 ```
 
-This reflects the idea of data-driven programming once more: changing data directly instead of calling methods to manage them.
+This reflects the idea of data-driven programming once more:
+Changing data directly instead of calling methods to manage them.
 
-## Templates and Substitution
+This version also illustrates the event-driven programming in HVML:
+We observe a data for a specific event, then handle the event by a group of predefined operations which locates in the `observe` element.
+
+In HVML, the execution of an HVML program can be divided into two stages:
+
+1. The first stage called `first round of run`. In this stage, the program executes every elements in depth-first order.
+For any `observe` element, the interperter creates a listener for the specific events, but defers the execution of the elements in the `observe` element.
+If there is no event to listen, the program will exit after the first round of run.
+1. The second stage called `event-driven stage`. After the execution of the first stage, once the event listened arrived, the interperter continues to execute the elements defined by the corresponding `observe` element. The HVML program keeps in this stage until it encounters an exception or an `exit` element.
+
+Therefore, Version 8 will continue to print the prompts with the current time if you did not interrupt the execution.
+
+If you want the program exit gracefully, you can modify it as follow:
+
+```hvml
+<!-- Version 9 -->
+
+<hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
+
+    $STREAM.stdout.writelines("Start of `Hello, world!`")
+
+    <head>
+        <update on "$TIMERS" to "unite">
+            [
+                { "id" : "foobar", "interval" : 500, "active" : "yes" },
+            ]
+        </update>
+    </head>
+
+    <body>
+
+        <h1>我的第一个 HVML 程序</h1>
+        <p>世界，您好！</p>
+
+        <init as "startTime" with $SYS.time />
+
+        <observe on $TIMERS for 'expired:foobar' >
+            $STREAM.stdout.writelines('Timer foobar observed')
+
+            <inherit>
+                $STREAM.stdout.writelines($STR.join('Timer foobar expired: ', $DATETIME.fmttime('%H:%M:%S')))
+            </inherit>
+
+            <test with $L.gt($EJSON.arith('-', $SYS.time, $startTime), 10) >
+                <exit with "Ok" />
+            </test>
+
+        </observe>
+    </body>
+
+    $STREAM.stdout.writelines('End of `Hello, world!`')
+
+</hvml>
+```
+
+In this version, the program compares the current time with the start time.
+When the elapsed time (`$EJSON.arith('-', $SYS.time, $startTime)`) exceeds 10 seconds (`$L.gt(..., 10)`), the program exits with a result "Ok".
+
+## Templates and Substitutions
+
+## Variables and Closures
 
 ## Coroutines and Concurrency
 
