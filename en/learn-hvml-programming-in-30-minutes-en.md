@@ -944,6 +944,159 @@ When the elapsed time (`$EJSON.arith('-', $SYS.time, $startTime)`) exceeds 10 se
 
 ## Templates and Substitutions
 
+Now, let's consider a slightly more complicated example, which generates a HTML document listing your friends.
+The friends are given by an object array.
+Each object in the array gives some properties of one friend, including the identifier, the avatar URL, the nickname, the region, and the age.
+
+You may prepare the friends information by using an `init` element:
+
+```hvml
+    <init as "myFriends">
+        [
+            { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom",
+                "region": "en_US", "age": 2 },
+            { "id": 2, "avatar": "/img/avatars/2.png", "name": "呼噜猫",
+                "region": "zh_CN", "age": 3 }
+        ]
+    </init>
+```
+
+You want to show a different greeting according to your firend's region.
+You can write the code generating the HTML fragment showing your friend list in this way:
+
+```hvml
+    <ul>
+        <iterate on "$myFriends">
+            <init as oneFriend with $? temp />
+
+            <test on $?.region >
+
+                <match for 'LIKE "zh*"' exclusively>
+                    <li class="user-item" id="user-$oneFriend.id"
+                            data-value="$oneFriend.id" data-region="$oneFriend.region">
+                        <img class="avatar" src="$oneFriend.avatar" />
+                        <span>您好，$oneFriend.name</span>
+                    </li>
+                </match>
+
+                <match for 'ANY'>
+                    <li class="user-item" id="user-$oneFriend.id"
+                            data-value="$oneFriend.id" data-region="$oneFriend.region">
+                        <img class="avatar" src="$oneFriend.avatar" />
+                        <span>Hello, $oneFriend.name</span>
+                    </li>
+                </match>
+            </test>
+
+        </iterate>
+    </ul>
+```
+
+Apparently, the code is awkward, especially when your friends come from all over the world.
+Because you have to copy and paste multiple times for different languages.
+
+To deal with this situation, HVML provides an effcient way for you:
+Use templates.
+
+Version 10 gives the complete HVML program using templates:
+
+```hvml
+<!-- Version 10 -->
+
+<hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
+  <body>
+
+    <init as "myFriends">
+        [
+            { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom",
+                "region": "en_US", "age": 2 },
+            { "id": 2, "avatar": "/img/avatars/2.png", "name": "呼噜猫",
+                "region": "zh_CN", "age": 3 }
+        ]
+    </init>
+
+    <init as "greetings">
+        { "zh": "您好，", "en": "Hello, " }
+    </init>
+
+    <archetype name="friendItem">
+        <li class="friend-item" id="friend-$?.id"
+                data-value="$?.id" data-region="$?.region">
+            <img class="avatar" src="$?.avatar" />
+            <span>$?.greeting$?.name</span>
+        </li>
+    </archetype>
+
+    <ul class="friend-list">
+        <iterate on "$myFriends">
+            <init as oneFriend with $? temp />
+            <update on $oneFriend to "merge" with { greeting: $greetings[$STR.substr($oneFriend.region, 0, 2)] } />
+
+            <choose on $oneFriend>
+                <update on $@ to "append" with $friendItem />
+            </choose>
+        </iterate>
+    </ul>
+
+  </body>
+</hvml>
+```
+
+If you run Version 10 with `purc`, you will get the following result:
+
+```
+$ purc -b hvml/hello-world-a.hvml
+purc 0.8.0
+Copyright (C) 2022 FMSoft Technologies.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Executing HVML program from `file:///srv/devel/hvml/purc/build/hvml/hello-world-a.hvml`...
+
+>> The document generated:
+<html lang="en">
+  <head>
+  </head>
+  <body>
+    <ul class="friend-list">
+      <li class="friend-item" id="friend-1" data-value="1" data-region="en_US">
+        <img class="avatar" src="/img/avatars/1.png">
+        <span>
+          Hello, Tom
+        </span>
+      </li>
+
+      <li class="friend-item" id="friend-2" data-value="2" data-region="zh_CN">
+        <img class="avatar" src="/img/avatars/2.png">
+        <span>
+          您好，呼噜猫
+        </span>
+      </li>
+    </ul>
+  </body>
+</html>
+
+>> The executed result:
+null
+```
+
+This version shows the usage of templates.
+The `archetype` element defines a template with some EJSON expression embedded in it.
+The interpreter will substitue them with the evaluated results by referring to the executed result of the prepositive operation when using the template.
+Here, the executed result of the prepositive operation is given by the `on` attribute of the `choose` element.
+While the data represented by the temporory varaible `oneFriend` is initialized by an `init` element with the executed result of one iteration,
+      and it is merged a new property called `greeting` with the subsequent `update` element.
+The value of the `greeting` property in turn comes from the variable `greetings` initialized by the second `init` element.
+
+Essentially, an `archetype` element defines a variable with the contents in the element.
+The contents defined by the element will be substituded and always be a string as the result.
+The string then can be used by `update` to insert to the target document.
+
+Similarly, HVML also provides `archedate` tag to define data templates:
+When an `archedata` template was substituded, the result will be any type of data instead of a string.
+And you can use the result data to insert to a container or replace a member of the container by using an `update` element.
+
 ## Variables and Closures
 
 ## Coroutines and Concurrency
