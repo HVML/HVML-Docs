@@ -9,7 +9,7 @@
 - [Introduction](#introduction)
 - [Fundamental](#fundamental)
 - [Preparation](#preparation)
-- [Expressions](#expressions)
+- [Target Document Types and Expressions](#target-document-types-and-expressions)
 - [Control Flow](#control-flow)
    + [Alternative branching and preposition attributes](#alternative-branching-and-preposition-attributes)
    + [Multiple branching and adverb attributes](#multiple-branching-and-adverb-attributes)
@@ -24,20 +24,21 @@
 ## Introduction
 
 HVML is the acronym of `Hybrid Virtual Markup Language`.
-It is a general-purpose and easy-to-learn programming language proposed by [Vincent Wei], who is the author of the China-first open source project [MiniGUI].
+It is a general-purpose and easy-to-learn programming language proposed and designed by [Vincent Wei],
+   who is the author of the China-first open source project [MiniGUI].
 
-Vincent Wei says that HVML is a programmable markup language with new principles, new structure, and new design patterns.
+Vincent Wei says that HVML is a programmable markup language with new structure, new principles, and new design patterns.
 It is definitely unlike any programming language you are familiar with:
 
-- It uses markups to define the program structure and the control flow.
+- It uses markups to define the program structure and the control flow; this greatly improves the readability of the program.
 - It uses the extended JSON with dynamic capabilities to define the data; this makes it ideal as a glue to bond different system components.
-- It introduces the data driven programming model; this allows developers to focus more on data generation and processing, rather than program logic.
-- It is dynamic; developers can not only fetch data, templates, HVML fragment from a remote data source, but also delete an exisiting variable.
-- It supports coroutines, threads, closures, ..., which are those features you saw in popular modern programming languages.
+- It introduces the data driven programming model; this allows developers to focus more on data generation and processing, rather than the control flow.
+- It is dynamic; developers can not only fetch data, templates, HVML fragments from a remote data source, but also delete an exisiting variable.
+- It provides a unique way to support coroutines, threads, closures, ..., which are those features you saw in modern programming languages.
 - It is flexible; developers can use HVML to write simple scripting tools, or they can use it to develop complex GUI applications.
 - It is fast; HVML uses a simple and effecient stack-based virtual machine, and it does not use any garbage collector.
 
-This tutorial will show you the most exciting features of HVML,
+In this tutorial, we will show you the most exciting features of HVML,
      especially those features that are different from common programming languages.
 If you are familiar with a script language such as Python or JavaScript,
    you will find that you can master the basic principles and methods of HVML programming in a very short time, say, in 30 minutes.
@@ -47,7 +48,7 @@ Let's enjoy it.
 ## Fundamental
 
 As said before, HVML is a programmable markup language.
-You know that HTML uses markups to define a static document and text in the document, while HVML uses markups to define a program structure and the data.
+You know that HTML uses markups to define a static document and the text contents in a document, while HVML uses markups to define a program structure and the data.
 In other words, HTML is static, while HVML is programmable and dynamic.
 
 For example, the following HTML file defines a document with a paragraph which contains `Hello, world!`:
@@ -72,8 +73,8 @@ If you change all occurrences of `html` to `hvml` in the above HTML file,
 ```
 
 Like a Python, PHP, or JavaScript script, we need an interperter to run this HVML program.
-From the interpreter's perspective, each element in an HVML program defines an operation to perform.
-You know that a valid HTML document defines a DOM (Document Object Model) tree, and a web browser renders the DOM tree in a window.
+From the HVML interpreter's perspective, each element in an HVML program defines an operation to perform.
+You know that a valid HTML document defines a DOM (Document Object Model) tree, and a web browser can render the DOM tree in a window.
 Similarly, a valid HVML program also defines a DOM tree, and the interpreter executes the DOM tree.
 In other words, a browser renders an HTML document, while an HVML interprerter executes an HVML program.
 
@@ -81,31 +82,62 @@ The interpreter executes the DOM tree from the root element, i.e., the `hvml` el
 When executing the `hvml` element, because the `target` attribute has the value `html`, the interperter will generate an HTML document.
 In terms of HVML, this HTML document is called `the target document`.
 After executed the `hvml` element, the iterperter continues to execute the `body` element and the `p` element in sequence.
-When the interpreter executed the `p` element, because there is no any element in the DOM tree, the interpreter will stop to execute the DOM tree.
+After the interpreter executed the `p` element, because there is no any element in the DOM tree, the interpreter will stop to execute the DOM tree.
 
 The interpreter performs every element according to the tag name, the attributes, and the content.
 The tag name defines the operation to perform, and the attributes and the contents defines the arguments when performing the operation.
-For ease of understanding, you can think of an HVML element as a function and the attributes and the contents as the arguments when calling the function.
+For ease of understanding, you can think of an HVML element as a function and the attributes and the contents as the arguments passed to it when calling the function.
 
 HVML introduces about 20 tags for different operations:
 
 - `hvml`, `head`, and `body` are called `frame tags`; they are used to define the frame of an HVML program.
 - `archetype`, `achedata`, `error`, and `except` are called `template tags`; they are used to define parameterized templates.
-- `init`, `test`, `iterate`, `define`, `call`, `include`, `load`, `exit`, `return`, `update`, `back`, and other tags use verbs are called `verb tags`, they are used to define an action to operate a data, the target document, or the virtual machine.
+- `init`, `test`, `iterate`, `define`, `call`, `include`, `load`, `exit`, `return`, `update`, `back`, and other tags use verbs are called `verb tags`,
+    they are used to define an action to manipulate a data, update the target document, or control the virtual machine.
 
-Tags other than the above are called `foreign tags`.
+Tags other than the above tags are called `foreign tags`.
 For an element defined by a foreign tag, HVML assigns a default and uniform operation:
     evaluting the attribute values and the contents, then copying them to the target document.
 
-For your first HVML program, the interpreter will generate an empty HTML document, and copy the contents of `body` and `p` elements to the target HTML document.
+You may have a question: what if a foreign tag name conflicts with an HVML tag name?
+The answer is using a prefix for HVML tags.
+
+In the head of an HVML program, there can be an optional `DOCTYPE` node to define the document type and the prefix to use for HVML tags:
+
+```hvml
+<!DOCTYPE hvml SYSTEM "v:">
+```
+
+In this way, any tag with the prefix `v:` will be treated as a HVML tags, and others without the prefix are the foreign tags.
+For example:
+
+```hvml
+<!DOCTYPE hvml SYSTEM "v:">
+
+<v:hvml target="html">
+    <v:body>
+        <p>Hello, world!</p>
+    </v:body>
+</v:hvml>
+```
+
+Fortunately, we don't need to use this prefix in most cases, because HVML's tag names are significantly different from ones defined by HTML.
+
+For your first HVML program, the interpreter will generate an empty HTML document, and copy the contents of `p` elements to the `body` of the target HTML document.
 As a result, the HVML program generates an HTML document, which is same as the HTML file given earlier.
+
+Note that, the `body` tag is not a foreign tag, it is a frame tag of HVML. It is used to define an entry body of an HVML program.
+In deed, you can define multiple `body` elements in an HVML program, and tell the interpreter to use a specific body as the entry.
+
+HVML also uses `head` tag to define an operation group to execute for any `body` entry.
+This can be used to initialize some global data for each `body` entry.
 
 The great thing about HVML is that, you can use markups to define a program which may have a complex control flow.
 You can also use flexible expressions to generate dynamic contents for your target document.
 
 ## Preparation
 
-Before looking deeply the principles of HVML, let's build a developing environment for HVML first.
+Before looking deeply the principles of HVML, let's build a practice environment first.
 If you have built the environment, you can skip this section.
 
 The HVML community has released an open source HVML interperter called `PurC`.
@@ -152,15 +184,71 @@ Executing HVML program from `file:///srv/devel/hvml/purc/build/hello-world.hvml`
 </html>
 
 
->> The executing result:
+>> The executed result:
 null
 ```
 
 You saw that this program generated a HTML document, which is same as the one we talked earlier.
 
-## Expressions
+On a Unix-like operating system, you can execute your first HVML program directly from a command line.
+To do this, add the following line as the first line of your first HVML program:
 
-However, if you run the HVML program without the flag `-b`, you will get nothing:
+```hvml
+#!/usr/local/bin/purc -b
+```
+
+And make the file to have executing permission, then try to run the program:
+
+```bash
+$ chmod +x hello-world.hvml
+$ ./hello-world.hvml
+```
+
+You will get the same result as before.
+
+## Target Document Types and Expressions
+
+When you reach here, you may have a new question: Does an HVML program have to generate an HTML document?
+The answer is NO.
+
+In fact, HVML supports multiple document types:
+
+- `void`: all foreign elements will be ignored.
+- `html`: generating an HTML document.
+- `xml`: generating an XML document (not supported by PurC so far).
+- `plain`: only the text contents will be kept as plain text (not supported by PurC so far).
+
+So if you change the value of `target` of the `hvml` element to `void`, the HVML program will generate a void document,
+   that is, all foreign elements in the HVML programs will be ignored.
+
+```hvml
+<hvml target="void">
+    <body>
+        <p>Hello, world!</p>
+    </body>
+</hvml>
+```
+
+If you save the revised version to `hello-world-void.hvml` and run it by using `purc`, you will get the following output:
+
+```
+$ purc -b hello-world-void.hvml
+purc 0.8.0
+Copyright (C) 2022 FMSoft Technologies.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Executing HVML program from `file:///srv/devel/hvml/purc/build/hvml/hello-world-0.hvml`...
+
+>> The document generated:
+
+
+>> The executed result:
+null
+```
+
+Moreover, if you run the HVML program without the flag `-b`, you will get nothing:
 
 ```
 $ purc hello-world.hvml
@@ -173,7 +261,7 @@ Therefore, if you run `purc` without the `-b` flag, you will see nothing.
 
 So, if you want to print some text to the terminal, how to program in HVML?
 
-We can revise the first HVML program as follow:
+You can revise your first HVML program as follow:
 
 ```hvml
 <!-- Version 1 -->
@@ -222,15 +310,17 @@ Hello, world!
 </html>
 
 
->> The executing result:
+>> The executed result:
 14
 ```
 
-Comparing this output with the output of Version 0, you will find that the later shows an executing result `14` instead of `null`.
+Comparing this output with the output of Version 0, you will find that the later shows an executed result `14` instead of `null`.
 
 The statement like `$STREAM.stdout.writelines('Hello, world!')` is an EJSON expression in HVML.
 We can use an EJSON expression to access a property of an object, or call a method of an object.
-Every expression will have an evaluation result, and the result can be used to define the attribute values or contents of an element.
+Every expression will have an evaluated result, and the result can be used to define the attribute values or contents of an element.
+Note that, even if you set the type of the target document is `void`,
+     the attribute values or the contents of a foreign element will still be evaluated during execution.
 
 Let's take a closer look at the components in the expression.
 
@@ -258,15 +348,15 @@ The method `writelines` prints the `Hello, world!` on your terminal, and returns
 Here it should be 14 - the length of the string `Hello, world!` plus the newline (`\n`) character wrotten to the terminal.
 
 Because the expression appeared as the content of the `hvml` element, the result of this expression will be recorded as the result of executing the `hvml` element.
-And because the `hvml` element is the root element, the result of executing the `hvml` element will become the result of the whole HVML program.
-Therefore, `purc` gives the executing result of the HVML program: `14UL`.
+And because the `hvml` element is the root element, the executed result of the `hvml` element will become the result of the whole HVML program.
+Therefore, `purc` gives the executed result of the HVML program: `14UL`.
 
 We call the returned value of an expression as `the evaluated result`.
 
 In HVML, you can use syntax like [JSON] to define a simple data like undefined, null, a boolean, a number, a string, or a container like an array or an object,
    and you can use the expressions when defining a string or a container.
-We enhanced the syntax of JSON to support more data type, such as long integers, unsigned long integers, long double numbers, and so on.
-Therefore, We refer to them collectively as EJSON expressions.
+We enhanced the syntax of JSON to support more data types, such as long integers, unsigned long integers, long double numbers, and so on.
+Whether it is an ordinary JSON or an EJSON expression, we refer to them collectively as EJSON expressions.
 Here are some examples:
 
 - A single-quoted string: 'This is a literal text, $SYS.locale will not be evaluated.'
@@ -276,7 +366,7 @@ Here are some examples:
 - A random number array: [ $SYS.random(1.0), $SYS.random(2.0), $SYS.random(3.0) ]
 - An object: { locale: $SYS.locale, timezone: $SYS.timezone }
 
-For example, you can use the following expression to define the executing result of the HVML program as an array:
+For example, you can use the following expression to define the executed result of the HVML program as an array:
 
 ```hvml
 <!-- Version 2 -->
@@ -290,7 +380,8 @@ For example, you can use the following expression to define the executing result
 </hvml>
 ```
 
-The executing result of Version 2 would be an array: `[ 14UL, 6UL ]`. A number with postfix `UL` means it is an unsigned long integer.
+The executed result of Version 2 would be an array: `[ 14UL, 6UL ]`.
+A number with postfix `UL` means it is an unsigned long integer.
 
 For another example, you can use the following expression to calculate the area of a circle:
 
@@ -300,7 +391,7 @@ $MATH.eval('PI * r * r', { r: 3 })
 
 The method `eval` of `$MATH` evaluating a parameterized mathematical formula (`PI * r * r` in this sample),
     while `r` is given by an object `{ r: 3 }` as the second argument of `eval` method.
-Therefore, The executing result of the expression will be about `28.26`.
+Therefore, The executed result of the expression will be about `28.26`.
 
 Moreover, HVML defines the compound EJSON expressions to have a simple logical control.
 A compound EJSON expression consists of multiple EJSON expressions.
@@ -590,7 +681,7 @@ End of `Hello, world!`
 </html>
 
 
->> The executing result:
+>> The executed result:
 23
 ```
 
@@ -765,17 +856,17 @@ If you look deeper into the code, it's not diffcult to find:
 1. The object in the array seems to define an active timer, with the identifier `foobar`, and the interval `500`.
 1. The event which was listening by the `observe` element contains the identifier of the timer (`foobar`).
 
-However, you did not find any code to create and activate the timer called `foobar`.
+However, you did not write any code to create and activate the timer called `foobar`.
 
-In HVML, you change the data representing by `TIMERS` to create, activate, deactivate, or destroy a timer.
-You do not need to call a method to manage the timers.
+Indeed, in HVML, you change the data representing by `TIMERS` to create, activate, deactivate, or destroy a timer.
+You do not need to call methods to manage the timers.
 For example, if you want to remove a timer, just subtract the member in the array representing by `TIMERS`:
 
 ```hvml
-    <update on $TIMERS to "subtract" with { id : "foo" } />
+    <update on $TIMERS to "subtract" with { id : "foobar" } />
 ```
 
-This reflects the idea of data-driven programming once more: change data directly instead of call methods to manage them.
+This reflects the idea of data-driven programming once more: changing data directly instead of calling methods to manage them.
 
 ## Templates and Substitution
 
@@ -942,7 +1033,7 @@ Executing HVML program from `file:///srv/devel/hvml/purc/build/hvml/hello-html.h
 </html>
 
 
->> The executing result:
+>> The executed result:
 null
 ```
 
