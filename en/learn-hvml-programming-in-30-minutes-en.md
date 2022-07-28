@@ -109,17 +109,17 @@ In the head of an HVML program, there can be an optional `DOCTYPE` node to defin
 <!DOCTYPE hvml SYSTEM "v:">
 ```
 
-In this way, any tag with the prefix `v:` will be treated as a HVML tags, and others without the prefix are the foreign tags.
+In this way, any tag with the prefix `v:` will be treated as an HVML tags, and others without the prefix are the foreign tags.
 For example:
 
 ```hvml
 <!DOCTYPE hvml SYSTEM "v:">
 
-<v:hvml target="html">
+<hvml target="html">
     <v:body>
         <p>Hello, world!</p>
     </v:body>
-</v:hvml>
+</hvml>
 ```
 
 Fortunately, we don't need to use this prefix in most cases, because HVML's tag names are significantly different from ones defined by HTML.
@@ -189,7 +189,7 @@ Executing HVML program from `file:///srv/devel/hvml/purc/build/hello-world.hvml`
 null
 ```
 
-You saw that this program generated a HTML document, which is same as the one we talked earlier.
+You saw that this program generated an HTML document, which is same as the one we talked earlier.
 
 On a Unix-like operating system, you can execute your first HVML program directly from a command line.
 To do this, add the following line as the first line of your first HVML program:
@@ -944,7 +944,7 @@ When the elapsed time (`$EJSON.arith('-', $SYS.time, $startTime)`) exceeds 10 se
 
 ## Templates and Substitutions
 
-Now, let's consider a slightly more complicated example, which generates a HTML document listing your friends.
+Now, let's consider a slightly more complicated example, which generates an HTML document listing your friends.
 The friends are given by an object array.
 Each object in the array gives some properties of one friend, including the identifier, the avatar URL, the nickname, the region, and the age.
 
