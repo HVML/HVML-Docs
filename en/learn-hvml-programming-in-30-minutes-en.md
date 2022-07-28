@@ -98,7 +98,7 @@ HVML introduces about 20 tags for different operations:
 
 Tags other than the above tags are called `foreign tags`.
 For an element defined by a foreign tag, HVML assigns a default and uniform operation:
-    evaluting the attribute values and the contents, then copying them to the target document.
+Evaluting the attribute values and the contents, then copying them to the target document.
 
 You may have a question: what if a foreign tag name conflicts with an HVML tag name?
 The answer is using a prefix for HVML tags.
@@ -1093,7 +1093,7 @@ Essentially, an `archetype` element defines a variable with the contents in the 
 The contents defined by the element will be substituded and always be a string as the result.
 The string then can be used by `update` to insert to the target document.
 
-Similarly, HVML also provides `archedate` tag to define data templates:
+Similarly, HVML also provides `archedate` tag to define data templates.
 When an `archedata` template was substituded, the result will be any type of data instead of a string.
 And you can use the result data to insert to a container or replace a member of the container by using an `update` element.
 
