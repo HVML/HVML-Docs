@@ -38,6 +38,7 @@ It is definitely unlike any programming language you are familiar with:
 - It provides a unique way to support coroutines, threads, closures, ..., which are those features you saw in modern programming languages.
 - It is flexible; developers can use HVML to write simple scripting tools, or they can use it to develop complex GUI applications.
 - It is fast; HVML uses a simple and effecient stack-based virtual machine, and it does not use any garbage collector.
+- It provides a higher level of abstraction than other scripting languages, so we can do more with less code.
 
 In this tutorial, we will show you the most exciting features of HVML,
      especially those features that are different from common programming languages.
@@ -101,26 +102,30 @@ For an element defined by a foreign tag, HVML assigns a default and uniform oper
 Evaluting the attribute values and the contents, then copying them to the target document.
 
 You may have a question: what if a foreign tag name conflicts with an HVML tag name?
-The answer is using a prefix for HVML tags.
+The answer is using a prefix for foreign tags.
 
-In the head of an HVML program, there can be an optional `DOCTYPE` node to define the document type and the prefix to use for HVML tags:
+In the head of an HVML program, there can be an optional `DOCTYPE` node to define the document type and the prefix to use for foreign tags:
 
 ```hvml
-<!DOCTYPE hvml SYSTEM "v:">
+<!DOCTYPE hvml SYSTEM "f:">
 ```
 
-In this way, any tag with the prefix `v:` will be treated as an HVML tags, and others without the prefix are the foreign tags.
+In this way, any tag with the prefix `f:` will be treated as a foreign tag.
 For example:
 
 ```hvml
-<!DOCTYPE hvml SYSTEM "v:">
+<!DOCTYPE hvml SYSTEM "f:">
 
 <hvml target="html">
-    <v:body>
-        <p>Hello, world!</p>
-    </v:body>
+    <body>
+        <f:error>Hello, world!</f:error>
+    </body>
 </hvml>
 ```
+
+In the above code, we use the prefix `f:` for an `error` element.
+As mentioned before, `error` is a template tag defined by HVML.
+When you need to refer to a foreign element which has the same tag name as HVML, you use the prefix.
 
 Fortunately, we don't need to use this prefix in most cases, because HVML's tag names are significantly different from ones defined by HTML.
 
