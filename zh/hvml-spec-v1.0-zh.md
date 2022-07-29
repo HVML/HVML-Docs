@@ -524,7 +524,7 @@ Language: Chinese
 1. 在页面底部展示一个搜索引擎连接。具体的搜索引擎根据系统所在的语言地区（locale）信息确定。
 
 ```hvml
-<!DOCTYPE hvml SYSTEM "v: MATH">
+<!DOCTYPE hvml SYSTEM "f: MATH">
 <hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
     <head>
     </head>
@@ -653,7 +653,7 @@ Language: Chinese
 
 首先，HVML 采用了类似 HTML 的标签来定义文档的整体结构：
 
-- 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。我们还使用了 `DOCTYPE` 的 `SYSTEM` 标识符来定义该 HVML 文档使用的标签前缀以及需要预先装载的外部模块。
+- 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。我们还使用了 `DOCTYPE` 的 `SYSTEM` 标识符来定义该 HVML 文档使用的外部标签前缀以及需要预先装载的外部模块。
 - `hvml` 标签用于定义整个 HVML 文档。可包含如下属性：
    1. `target`：定义 HVML 文档的目标标记语言，取 `html`、 `xml`、 `void` 等值。
    1. 其他属性（如 `lang` 属性，用来定义语言，取值如 `en`、 `zh` 等），将被解释器在求值后克隆到目标文档的根元素。
@@ -4301,7 +4301,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 按上述步骤，相当于动态构建一个下面的 HVML 程序，并在新行者或新协程中运行该程序：
 
 ```
-<!DOCTYPE hvml SYSTEM "v: FILE:FS">
+<!DOCTYPE hvml SYSTEM "f: FILE:FS">
 <hvml target="void">
     <!-- this is the cloned operation group -->
     <define as "theOpGroup">
@@ -6059,7 +6059,7 @@ SYSTEM 标识符字符串的格式如下：
 1. 一个由 ASCII 字符组成，且匹配 `SYSTEM` 的字符串，大小写敏感。
 1. 一个或多个 ASCII 空白字符。
 1. 一个 U+0022 QUOTATION MARK 字符（双引号，`"`）或 U+0027 APOSTROPHE 字符（单引号，`'`）。
-1. 一个指定系统标识符的字面字符串，由一个或者多个被 U+0020 SPACE 字符（空格，` `）分隔的词元组成，比如 `v: MATH`。第一个词元必须由ASCII 字母打头并以 U+003A COLON MARK（冒号，`:`）结尾；该词元定义了 HVML 标签的前缀。其他的词元定义了应该为当前文档装载并绑定的全局变量，比如 `MATH`、 `FILE.FS`、 `FILE.FILE:F` 等。
+1. 一个指定系统标识符的字面字符串，由一个或者多个被 U+0020 SPACE 字符（空格，` `）分隔的词元组成，比如 `f: MATH`。第一个词元必须由 ASCII 字母打头并以 U+003A COLON MARK（冒号，`:`）结尾；该词元定义了当前 HVML 文档中使用的外部标签的前缀。其他的词元定义了应该为当前文档装载并绑定的全局变量，比如 `MATH`、 `FILE.FS`、 `FILE.FILE:F` 等。
 1. 一个 U+0022 QUOTATION MARK 字符（双引号）或 U+0027 APOSTROPHE 字符（单引号），需匹配先前使用的引号。
 
 > 1. One or more ASCII whitespace.
@@ -6069,12 +6069,12 @@ SYSTEM 标识符字符串的格式如下：
 > 1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: MATH". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The other tokens defines the variables should be bound for this document, such as `MATH`, `FILE.FS`, `FILE.FILE:F`, and so on.
 > 1. A matching U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (i.e. the same character as in the earlier step labeled quote mark).
 
-比如，如果 DOCTYPE 元素被书写为 `<!DOCTYPE hvml SYSTEM "hvml: MATH FILE.FS FILE.FILE:F">`，则可在 HVML 标签之前添加指定的前缀，以免和目标标记语言的标签名称发生冲突：
+比如，如果 DOCTYPE 元素被书写为 `<!DOCTYPE hvml SYSTEM "ext: MATH FILE.FS FILE.FILE:F">`，则可在外部标签之前添加指定的前缀，以免和 HVML 标签名称发生冲突：
 
-> For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "hvml: MATH FILE.FS FILE.FILE:F">`, you can add the specific prefix to some HVML tags:
+> For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "ext: MATH FILE.FS FILE.FILE:F">`, you can add the specific prefix to some HVML tags:
 
 ```hvml
-<!DOCTYPE hvml SYSTEM "hvml: MATH FILE:FS FILE:FILE">
+<!DOCTYPE hvml SYSTEM "ext: MATH FILE:FS FILE:FILE">
 <hvml target="html" lang="en">
     <head>
     </head>
@@ -6101,17 +6101,17 @@ SYSTEM 标识符字符串的格式如下：
             <img class="battery-status" />
         </header>
 
-        <ul class="user-list">
+        <ext:ul class="user-list">
             <iterate on="$users" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <hvml:except type="NoData">
+                <except type="NoData">
                     <img src="wait.png" />
-                </hvml:except>
-                <hvml:except type="NotIterable">
+                </except>
+                <except type="NotIterable">
                     <p>Bad user data!</p>
-                </hvml:except>
+                </except>
             </iterate>
-        </ul>
+        </ext:ul>
      </body>
 </hvml>
 ```
@@ -6449,7 +6449,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 我们可以整个省略 `DOCTYPE` 元素。此种情况下，解析器按如下默认的 `DOCTYPE` 处理：
 
 ```
-<!DOCTYPE hvml SYSTEM "v:">
+<!DOCTYPE hvml SYSTEM "f:">
 ```
 
 2) 整个省略 `head` 元素
@@ -6470,7 +6470,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 我们可以整个省略 `body` 元素。此种情况下，我们无法通过指定 `body` 的 `id` 属性来执行不同的本体代码。若目标文档支持 `body` 元素，则将在目标文档中创建一个空的 `body` 元素，且 HVML 程序生成的目标文档内容，将插入到 `body` 元素内。若目标文档不支持 `body` 元素，则生成的内容将插入到目标文档的根元素内。
 
 ```hvml
-<!DOCTYPE hvml SYSTEM 'v: MATH'>
+<!DOCTYPE hvml SYSTEM 'f: MATH'>
 <hvml target="void">
     <iterate on 0 onlyif $L.lt($0<, 10) with $MATH.add($0<, 1) >
         $STREAM.stdout.writelines(
@@ -7120,6 +7120,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 1. `archetype` 标签增加 `type` 属性用于定义文本类型。
 1. `include` 或者 `call` 元素应用操作组时，若传递的实参为对象，可利用临时变量处理为多个形参，方便代码书写。
 1. 增加对表达式 `${...}` 的描述：用于构建一个有效变量名。
+1. 修正 DOCTYPE 中 SYSTEM 标识符所定义的前缀的用途：用在可能和 HVML 标签冲突的外部标签上，而不是 HVML 标签上。
 
 相关章节：
 
@@ -7132,6 +7133,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - [2.4.1) `archetype` 标签](#241-archetype-标签)
 - [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
 - [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法)
+- [3.1.1) DOCTYPE](#311-doctype)
 
 #### RC4) 220601
 
