@@ -1199,7 +1199,116 @@ null
 
 ### Static variables vs. temporary variables
 
+You have used the `init` tag many times.
+As the tag name implies, an `init` element initializes a data and bound the data with a name.
+You can use the `with` attribute of an `init` element to specify an expression, the evaluated result of the expression will be the data bound to the variable.
+You can also use the content of the `init` element to specify a complex EJSON expression.
+You also saw that we use an adverb attribute called `temporarily` or `temp` within an `init` element:
+
+```hvml
+    <init as "friendList" with [] />
+
+    <iterate on $myFriends>
+        <init as oneFriend with $? temp />
+        <update on $oneFriend to "merge" with { greeting: $greetings[$STR.substr($oneFriend.region, 0, 2)] } />
+        <update on $oneFriend to "merge" with { country: $countries[$STR.substr($oneFriend.region, 3, 2)] } />
+
+        <choose on $oneFriend>
+            <update on $friendList to "append" with $friendLine />
+        </choose>
+    </iterate>
+```
+
+You can easily understand that by using the adverb attribute `temp`, you will create a temporary variable.
+The variable will automatically removed after all operations in the subtree where the `init` element located executed.
+That is, in the above HVML fragment, the temporary variable `oneFrind` only available for the operations in the `iterate` element.
+
+On the contrary, the variable named `friendList` will always available until the HVML program exits. We call those variables as `static variables`.
+
+However, different from other programming language, HVML allows you to remove a static variable.
+For this purpose, you use `undefined` to initialize a variable.
+For example:
+
+```hvml
+    <init as "friendList" with [] />
+
+    <iterate on $myFriends>
+        <init as oneFriend with $? temp />
+        <update on $oneFriend to "merge" with { greeting: $greetings[$STR.substr($oneFriend.region, 0, 2)] } />
+        <update on $oneFriend to "merge" with { country: $countries[$STR.substr($oneFriend.region, 3, 2)] } />
+
+        <choose on $oneFriend>
+            <update on $friendList to "append" with $friendLine />
+        </choose>
+    </iterate>
+
+    <!-- this will remove the $friendList -->
+    <init as "friendList" with undefiend />
+```
+
 ### Set
+
+If you familiar with Python, you must know you can create a set to manage members with unique values.
+
+HVML provides support for set as well, but more features than other languages.
+In HVML, a set created in Python-like fashion is called a generic set.
+You can create a set based on objects, and specify the unique condition on some properties of the objects.
+This feature gives us an amazing ability:
+We can manage data like a database table, and setup one or more column as the primary key of the table.
+
+To initialize a set, use `init` tag with the adverb attribute called `uniquely`.
+If you want to specify the unique key(s) for the set, use the preposition attribute called `against`.
+For example, the following HVML code initializes a static `myFriends` variable,
+    which is a set with the unique key called `id`:
+
+```hvml
+    <init as "myFriends" uniquely against "id">
+        [
+            { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom",
+                "region": "en_US", "age": 2 },
+            { "id": 2, "avatar": "/img/avatars/2.png", "name": "呼噜猫",
+                "region": "zh_CN", "age": 3 },
+            { "id": 2, "avatar": "/img/avatars/2.png", "name": "呼噜猫",
+                "region": "zh_CN", "age": 4 }
+        ]
+    </init>
+```
+
+The `init` element will use the members in the array defined in the content to create the set.
+You must notice that there is a duplicate member in the array with the same `id` value.
+The initialize will fail, because the data breaks the consistency constraints of the set.
+As a result, an exception will arise.
+
+However, in most cases, you may just want to ignore the execption,
+    and replace old data with newer data.
+For this purpose, you use the adverb attribute `silently`.
+
+```hvml
+    <init as "myFriends" uniquely against "id" silently>
+        [
+            { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom",
+                "region": "en_US", "age": 2 },
+            { "id": 2, "avatar": "/img/avatars/2.png", "name": "呼噜猫",
+                "region": "zh_CN", "age": 3 },
+            { "id": 2, "avatar": "/img/avatars/2.png", "name": "呼噜猫",
+                "region": "zh_CN", "age": 4 }
+        ]
+    </init>
+```
+
+After executed the `init` element, the members in the `$myFriends` set will be:
+
+```json
+    [
+        { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom",
+            "region": "en_US", "age": 2 },
+        { "id": 2, "avatar": "/img/avatars/2.png", "name": "呼噜猫",
+            "region": "zh_CN", "age": 4 }
+    ]
+```
+
+That is, the second member in the array will be replaced by the third member.
+As a result, only two members in the set.
 
 ### Reset or remove a variable
 
