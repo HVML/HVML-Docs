@@ -19,7 +19,7 @@
 - [Variables and Closures](#variables-and-closures)
    + [Static variables vs. temporary variables](#static-variables-vs-temporary-variables)
    + [Set](#set)
-   + [Reset or remove a variable](#reset-or-remove-a-variable)
+   + [Variable Scope](#variable-scope)
    + [Executing in place or calling](#executing-in-place-or-calling)
 - [Coroutines and Concurrency](#coroutines-and-concurrency)
 - [Connecting to Renderer](#connecting-to-renderer)
@@ -1225,25 +1225,32 @@ That is, in the above HVML fragment, the temporary variable `oneFrind` only avai
 
 On the contrary, the variable named `friendList` will always available until the HVML program exits. We call those variables as `static variables`.
 
-However, different from other programming language, HVML allows you to remove a static variable.
-For this purpose, you use `undefined` to initialize a variable.
-For example:
+However, different from other programming language, HVML allows you to remove a variable.
+For this purpose, you use `undefined` to reset a variable.
+
+Look the following HVML fragment and the comments:
 
 ```hvml
-    <init as "friendList" with [] />
+...
+    <body id='theBody' >
 
-    <iterate on $myFriends>
-        <init as oneFriend with $? temp />
-        <update on $oneFriend to "merge" with { greeting: $greetings[$STR.substr($oneFriend.region, 0, 2)] } />
-        <update on $oneFriend to "merge" with { country: $countries[$STR.substr($oneFriend.region, 3, 2)] } />
+        <!-- this initializes $users with an array -->
+        <init as 'users'>
+            [
+                { "id": "1", "avatar": "/img/avatars/101.png", "name": "Jerry", "region": "en_US" }
+                { "id": "2", "avatar": "/img/avatars/102.png", "name": "Tom", "region": "en_US" }
+                { "id": "3", "avatar": "/img/avatars/103.png", "name": "Mike", "region": "en_US" }
+            ]
+        </init>
 
-        <choose on $oneFriend>
-            <update on $friendList to "append" with $friendLine />
-        </choose>
-    </iterate>
+        <!-- this resets $users with an empty array -->
+        <init as 'users' with [] />
 
-    <!-- this will remove the $friendList -->
-    <init as "friendList" with undefiend />
+        <!-- this removes $users  -->
+        <init as 'users' with undefined />
+
+     </body>
+...
 ```
 
 ### Set
@@ -1308,9 +1315,77 @@ After executed the `init` element, the members in the `$myFriends` set will be:
 ```
 
 That is, the second member in the array will be replaced by the third member.
-As a result, only two members in the set.
+As a result, there are only two members in the final set.
 
-### Reset or remove a variable
+### Variable Scope
+
+In HVML, when you create a static variable by using an `init` element,
+   it will be visible for any elements in the subtree defined by the parent element of the `init` element.
+Indeed, the interpreter binds the variable to the parent element.
+So when an element after the `init` element referring to the variable, the interpretr can find it immediately.
+
+Look the following code fragment and the comments:
+
+```hvml
+...
+    <body id='theBody' >
+
+        <!-- this initailizes $users at the parent `body` element -->
+        <init as 'users' uniquely against 'id'>
+            [
+                { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+                { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+            ]
+        </init>
+
+        <div>
+            <!-- this element refers to $users scoped at the `body` element -->
+            <choose on $users>
+                ...
+            </choose>
+
+            <!-- this initializes $users at the parent `div` element -->
+            <init as 'users'>
+                [
+                    { "id": "1", "avatar": "/img/avatars/101.png", "name": "Jerry", "region": "en_US" }
+                    { "id": "2", "avatar": "/img/avatars/102.png", "name": "Tom", "region": "en_US" }
+                    { "id": "3", "avatar": "/img/avatars/103.png", "name": "Mike", "region": "en_US" }
+                ]
+            </init>
+
+            <!-- this element refers to $users at the parent `div` element,
+                 no the one with the same name at the `body` element -->
+            <iterate on $users>
+                ...
+            </iterate>
+
+            <!-- this resets $users at the ancestor `body` element with null -->
+            <init as 'users' at '#theBody' with null />
+
+        </div>
+
+
+        <!-- this resets $users at the parent `body` element with an empty array -->
+        <init as 'users' with [] />
+
+        <!-- this removes $users at the parent `body` element -->
+        <init as 'users' with undefined />
+
+     </body>
+...
+```
+
+We use the parent element to define the scope of a variable.
+We often say that a variable is scoped at a specific element.
+In fact, if the interpreter did not find a variable at the parent element,
+   it will keep looking for it in ancestor elements until the root element.
+
+For example, the `iterate` element in the above code will use `$users` which is scoped at the parent `div` element,
+   not the one with the same name which is scoped at the `body` element.
+
+If you want to initialize or reset a users scoped at an ancestor element,
+   you may use the `at` attribute in the `init` element.
+In the above code, we use `at '#theBody'` to specify the scope of `$users` explicitly.
 
 ### Executing in place or calling
 
