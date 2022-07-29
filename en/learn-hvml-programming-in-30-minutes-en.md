@@ -17,7 +17,12 @@
 - [Data/Event Driven Programming](#dataevent-driven-programming)
 - [Templates and Substitutions](#templates-and-substitutions)
 - [Variables and Closures](#variables-and-closures)
+   + [Static variables vs. temporary variables](#static-variables-vs-temporary-variables)
+   + [Set](#set)
+   + [Reset or remove a variable](#reset-or-remove-a-variable)
+   + [Executing in place or calling](#executing-in-place-or-calling)
 - [Coroutines and Concurrency](#coroutines-and-concurrency)
+- [Connecting to Renderer](#connecting-to-renderer)
 - [Summary](#summary)
 
 [//]:# (END OF TOC)
@@ -894,14 +899,14 @@ We observe a data for a specific event, then handle the event by a group of pred
 
 In HVML, the execution of an HVML program can be divided into two stages:
 
-1. The first stage called `first round of run`. In this stage, the program executes every elements in depth-first order.
+1. The first stage is called `the first round of run`. In this stage, the program executes every elements in depth-first order.
 For any `observe` element, the interperter creates a listener for the specific events, but defers the execution of the elements in the `observe` element.
 If there is no event to listen, the program will exit after the first round of run.
-1. The second stage called `event-driven stage`. After the execution of the first stage, once the event listened arrived, the interperter continues to execute the elements defined by the corresponding `observe` element. The HVML program keeps in this stage until it encounters an exception or an `exit` element.
+1. The second stage is called `the event-driven stage`. After the execution of the first stage, once the event listened arrived, the interperter continues to execute the elements defined by the corresponding `observe` element. The HVML program keeps run in this stage until it encounters an exception or an `exit` element.
 
 Therefore, Version 8 will continue to print the prompts with the current time if you did not interrupt the execution.
 
-If you want the program exit gracefully, you can modify it as follow:
+If you want the program to exit gracefully, you can modify it as follow:
 
 ```hvml
 <!-- Version 9 -->
@@ -946,6 +951,20 @@ If you want the program exit gracefully, you can modify it as follow:
 
 In this version, the program compares the current time with the start time.
 When the elapsed time (`$EJSON.arith('-', $SYS.time, $startTime)`) exceeds 10 seconds (`$L.gt(..., 10)`), the program exits with a result "Ok".
+
+If your HVML program has connected to an HVML renderer,
+   you can observe the event `rdrState:pageClosed` on the `$CRTN` variable,
+   which is predefined variable representing the currrent running HVML program instance.
+This event means that the user has closed the window created by the HVML renderer for your HVML program,
+     so it is the perfect time for the program to exit safely.
+
+```hvml
+    <observe on $CRTN for 'rdrState:pageClosed'>
+        <exit with "Ok" />
+    </observe>
+```
+
+For more information, please see the section [Connecting to Renderer](#connecting-to-renderer).
 
 ## Templates and Substitutions
 
@@ -1102,9 +1121,93 @@ Similarly, HVML also provides `archedate` tag to define data templates.
 When an `archedata` template was substituded, the result will be any type of data instead of a string.
 And you can use the result data to insert to a container or replace a member of the container by using an `update` element.
 
+Version 11 gives a sample using `archetype` element.
+It converts the object array to a string array:
+
+```hvml
+<!-- Version 11 -->
+
+<hvml target="void" lang="$STR.substr($SYS.locale, 0, 2)">
+  <body>
+
+    <init as "myFriends">
+        [
+            { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom",
+                "region": "en_US", "age": 2 },
+            { "id": 2, "avatar": "/img/avatars/2.png", "name": "呼噜猫",
+                "region": "zh_CN", "age": 3 }
+        ]
+    </init>
+
+    <init as "greetings">
+        { "zh": "您好，", "en": "Hello, " }
+    </init>
+
+    <init as "countries">
+        { "CN": "中国", "US": "美国" }
+    </init>
+
+    <archedata name="friendLine">
+        "$?.greeting $?.name: you come from $?.country"
+    </archedata>
+
+    <init as "friendList" with [] />
+
+    <iterate on $myFriends>
+        <init as oneFriend with $? temp />
+        <update on $oneFriend to "merge" with { greeting: $greetings[$STR.substr($oneFriend.region, 0, 2)] } />
+        <update on $oneFriend to "merge" with { country: $countries[$STR.substr($oneFriend.region, 3, 2)] } />
+
+        <choose on $oneFriend>
+            <update on $friendList to "append" with $friendLine />
+        </choose>
+    </iterate>
+
+    <!-- output the friend list to stdout -->
+    $STREAM.stdout.writelines("My Friends:")
+    <iterate on $friendList >
+        $STREAM.stdout.writelines($?)
+    </iterate>
+
+  </body>
+</hvml>
+```
+
+Here is the output of Version 11 when you run it by using `purc`:
+
+```
+$ purc -b hvml/hello-world-b.hvml
+purc 0.8.0
+Copyright (C) 2022 FMSoft Technologies.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Executing HVML program from `file:///srv/devel/hvml/purc/build/hvml/hello-world-b.hvml`...
+My Friends:
+Hello,  Tom: you come from 美国
+您好， 呼噜猫: you come from 中国
+
+>> The document generated:
+
+
+>> The executed result:
+null
+```
+
 ## Variables and Closures
 
+### Static variables vs. temporary variables
+
+### Set
+
+### Reset or remove a variable
+
+### Executing in place or calling
+
 ## Coroutines and Concurrency
+
+## Connecting to Renderer
 
 ## Summary
 
