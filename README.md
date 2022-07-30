@@ -4,6 +4,16 @@ Articles and documents about HVML.
 
 This repository contains some articles, guides, and documents about HVML.
 
+## Documents in English
+
+To quickly learn how to program with HVML, please refer to the tutorial (80% complete):
+
+- [Learn HVML Programming in 30 Minutes](en/learn-hvml-programming-in-30-minutes-en.md)
+
+For an detailed introduction to HVML, please refer to the article (10% complete):
+
+- [HVML, a Programable Markup Language](en/an-introduction-to-hvml-en.md)
+
 ## Documents in Chinese
 
 ### Introducation
