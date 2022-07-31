@@ -1387,6 +1387,21 @@ If you want to initialize or reset a users scoped at an ancestor element,
    you can use the `at` attribute in the `init` element.
 In the above code, we use `at '#theBody'` to specify the scope of `$users` explicitly.
 
+In HVML programs, you can also refer to a temporay variable defined by the prepositive operations.
+The interpreter pushes the topmost stack frame for the root (`hvml`) element, and always pushes a stack frames when executing an child element.
+If there is no child element to execute, the interpreter popes the stack frame corresponding to the current element,
+   and try to execute one sibling element of the current element.
+
+All temporary variables reside in their corresponding stack frame.
+When the interpreter executing an element, the expressions defined by the element can refer to any temporory variables which reside in the prepositive stack frame.
+Generally, when you use `$?`, you refer to the executed result in the last stack frame,
+    and you can access the executed result in the next stack frame of last stack frame by insert the number `2` between `$` and `?`: `$2?`.
+
+For any named temporary variables in the prepositive stack frame, we can use the pattern of `$<N>!.<var_name>` to refer to them.
+You can even access a context variable evaluated when executing the current element by use the number `0`.
+Indeed, the default usage of a context variable such as `$?` is equivalent to `$1?`:
+We just omit the number `1` between `$` and `?`.
+
 ### Executing in place or calling
 
 Like other programming language, HVML also supports an operation like calling a function.
@@ -1434,7 +1449,7 @@ Version 12 gives a sample which defines a group of operation to calculate the gr
 
         </iterate>
 
-        <return with 3L />
+        <return with 1L />
 
     </define>
 
@@ -1461,7 +1476,97 @@ This because that if you passed an object as the argument,
      the interpreter will automatically setup a named temporary varaible for each property in the object if the property name is a valid variable name.
 This provides a certain convenience for developers.
 
-Apart from the traditional `function` call, HVML also provides a pattern called `execute in place` to use an operation group.
+Apart from the traditional function-like call, HVML provides a special coding pattern called `execute in place` to use an operation group.
+For example:
+
+```hvml
+    <!-- This operation group generates HTML fragment -->
+    <define as "output_html">
+        <h1>HVML</h1>
+        <p>$?</p>
+    </define>
+
+    <!-- This operation group prints text to your terminal -->
+    <define as "output_void">
+        <inherit>
+            $STREAM.stdout.writelines($?)
+        </inherit>
+    </define>
+
+    <!-- use `include` element to execute one of the above operation groups
+        in place, according to the target document type of
+        the current HVML coroutine -->
+    <include with ${output_$CRTN.target} on 'Hello, world!' />
+```
+
+Here, the `include` element uses the operation group `output_html` or `output_void` according to the evaluated reseult of the expression `${output_$CRTN.target}`.
+
+If the target document type of this HVML program is `hvml`,
+   the above `include` element is equivalent to the following elements:
+
+```hvml
+    <choose on 'Hello, world!' >
+        <h1>HVML</h1>
+        <p>$?</p>
+    </choose>
+```
+
+If the target document type of this HVML program is `void`,
+   the above `include` element is equivalent to the following elements:
+
+```hvml
+    <choose on 'Hello, world!' >
+        <inherit>
+            $STREAM.stdout.writelines($?)
+        </inherit>
+    </choose>
+```
+
+If we use a named variable in a named operation group,
+   the actual data referred to by the variable depends on the position where the operation group is called or included.
+As a result, the operation group and the different variable collection visible to the it when using it together make up different closures.
+
+See the following HVML code fragment and the comments:
+
+```hvml
+        <archetype name="dir_entry">
+            <item class="$?.type">Name: $?.name</item>
+        </archetype>
+
+        <define as "fillDirEntries">
+            <!-- Open the directory -->
+            <choose on $FS.opendir($?) >
+
+                <!-- iterate with the expression `$?.read()`, this expression
+                    will return `false` on reaching the end of the directory stream.  -->
+                <iterate with $?.read() >
+                    <!-- the actual template used by the `update` element
+                         depends on the position calling or including this operation group -->
+                    <update on $@ to "append" with $dir_entry />
+                </iterate>
+            </choose>
+        </define>
+
+        <listbox id="entries">
+            <!-- This `dir_entry` template add the /home/` prefix
+                 before the directory entry name. -->
+            <archetype name="dir_entry">
+                <item class="$?.type">/home/$?.name</item>
+            </archetype>
+
+            <!-- The operation group $fillDirEntries will use the template defined
+                 by the sibling `archetype` -->
+            <include with $fillDirEntries on "/home" in "#entries" />
+        </listbox>
+
+        <observe on "#goRoot" for "click">
+            <clear on "#entries" />
+
+            <!-- The operation group $fillDirEntries will use the template defined
+                 by the first `archetype` element in this fragment -->
+            <include with $fillDirEntries on "/" in "#entries" />
+        </observe>
+```
 
 ## Coroutines and Concurrency
 
