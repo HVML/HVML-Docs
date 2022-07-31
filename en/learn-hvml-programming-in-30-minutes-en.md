@@ -47,7 +47,7 @@ It is definitely unlike any programming language you are familiar with:
 
 In this tutorial, we will show you the most exciting features of HVML,
      especially those features that are different from common programming languages.
-If you are familiar with a script language such as Python or JavaScript,
+If you are familiar with a programming language such as C/C++, Python, or JavaScript,
    you will find that you can master the basic principles and methods of HVML programming in a very short time, say, in 30 minutes.
 
 Let's enjoy it.
@@ -1384,10 +1384,84 @@ For example, the `iterate` element in the above code will use `$users` which is 
    not the one with the same name which is scoped at the `body` element.
 
 If you want to initialize or reset a users scoped at an ancestor element,
-   you may use the `at` attribute in the `init` element.
+   you can use the `at` attribute in the `init` element.
 In the above code, we use `at '#theBody'` to specify the scope of `$users` explicitly.
 
 ### Executing in place or calling
+
+Like other programming language, HVML also supports an operation like calling a function.
+However, in HVML, we never use the term `function`, instead,
+    we use the term `an operation group` or `a group of operations`.
+In HVML, we can refer to any subtree in the DOM tree as an operation group.
+For example, the `observe` tag mentioned earlier defines an operation group,
+    which will be executed after the interpreter got the specified event.
+You can use the verb tag `define` to define a named operation group.
+Again, you can easily guess that you use the `as` attribute to name the group of operations.
+Moreover, HVML provides two methods to use a named operation group: `include` or `call`.
+
+Version 12 gives a sample which defines a group of operation to calculate the greatest common divisor of two positive integers:
+
+```hvml
+<!-- Version 12 -->
+
+<!DOCTYPE hvml>
+<hvml target="void">
+
+    <define as "calcGreatestCommonDivisor">
+        <test with $L.or($L.le($x, 0), $L.le($y, 0)) >
+            <return with undefined />
+        </test>
+
+        <!-- We use the compound EJSON expression to have the same result
+             like `(x > y) ? x : y` in C language -->
+        <init as "big" with {{ $L.gt($x, $y) && $x || $y }} temp />
+        <init as "small" with {{ $L.lt($x, $y) && $x || $y }} temp />
+
+        <test with $L.eq($EJSON.arith('%', $big, $small), 0) >
+            <return with $small />
+        </test>
+
+        <!-- Note that `$0<` refers to the context variable `<`
+            in the current stack frame -->
+        <iterate on $EJSON.arith('/', $small, 2) onlyif $L.gt($0<, 0)
+                with $EJSON.arith('-', $0<, 1) nosetotail >
+
+            <test with $L.eval('a == 0 && b == 0',
+                    { a: $EJSON.arith('%', $big, $?),
+                      b: $EJSON.arith('%', $small, $?) }) >
+                <return with $? />
+            </test>
+
+        </iterate>
+
+        <return with 3L />
+
+    </define>
+
+    <call on $calcGreatestCommonDivisor with { x: 3L, y: 6L } >
+        <exit with $? />
+    </call>
+
+</hvml>
+```
+
+Version 12 illustrates a classical implementation of `calling a function` like other traditional programming languages.
+
+It is obvious that you can use the `with` attribute of the `call` element to define the arguments,
+  which will be passed to the operation group.
+Here it is an object specifying two integers.
+
+Like a traditional function call, the HVML interpreter will push the data passed through `with` arttribute to a stack frame.
+The data then becomes in turn the result data for the elements in the named operation group.
+It can be referred to by the context variable `?` when executing the elements in the named operation group.
+
+As a result, in Version 12, we can refer to the argument in the operation group by the expressions `$?.x` and `$?.y`.
+However, the code use `$x` and `$y` instead.
+This because that if you passed an object as the argument,
+     the interpreter will automatically setup a named temporary varaible for each property in the object if the property name is a valid variable name.
+This provides a certain convenience for developers.
+
+Apart from the traditional `function` call, HVML also provides a pattern called `execute in place` to use an operation group.
 
 ## Coroutines and Concurrency
 
