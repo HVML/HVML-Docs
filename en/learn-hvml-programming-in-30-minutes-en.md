@@ -1571,7 +1571,7 @@ See the following HVML code fragment and the comments:
 
 ## Coroutines and Concurrency
 
-Unlike other programming language, HVML provides an implicit way to support coroutines.
+Unlike other programming language, HVML provides a simple way to support coroutines.
 
 For example, Version 12 is a revised `Hello, world!` program.
 It prints `你好，世界：台湾是中国不可分割的一部分` 10 times.
@@ -1713,6 +1713,7 @@ You can see that the child coroutine exited with the simple HTML document genera
 
 You can create another coroutine of the current HVML program by using a `load` element.
 See the following HVML program called `Load Another Body`.
+
 In this program, we load another body of the current HVML program synchronously.
 
 ```hvml
@@ -1736,6 +1737,83 @@ In this program, we load another body of the current HVML program synchronously.
 
     </body>
 </hvml>
+```
+
+Another way to create a new coroutine is using `call` element.
+In HVML, we give `call` element more capabilities.
+We can not only create a coroutine to execute a group of operations,
+   but also create a new interpreter instance (for PurC, it is a thread) to execute a group of operations.
+In terms of HVML, we name these manners as `concurrent invocation` or `calling concurrently`.
+
+The following program named `Call Concurrently` call an operation group concurrently and asynchronously.
+Note that we use the `within` attribute to specify a new runner.
+The interpreter will create a new instance in a new system thread if new such runner existinge to execute the operation group.
+
+The operation group simulates a time consuming task by using an `sleep` element,
+    and evalutes a math expression.
+Finnaly, it returns the exected result.
+
+In order for you to see the effect of concurrency,
+   the main coroutine observes the event for `idle` event on `$CRTN`,
+   and prints the current time.
+The main coroutine also observes the `callState:success` event on the variable representing the child coroutine running in another interpreter instance.
+Once the event reaches, the main coroutine exits with the return value of the concurrent invocation.
+
+```hvml
+# RESULT: 15
+
+<!-- Call Concurrently -->
+<!DOCTYPE hvml SYSTEM "v: MATH">
+<hvml target="void">
+
+    <define as "aTimeConsumingTask">
+        <sleep for "5s" />
+        <return with $MATH.eval($?) />
+    </define>
+
+    <call on $aTimeConsumingTask as "myTask" within "newRunner" with "5 * 3" concurrently asynchronously />
+
+    <observe on $CRTN for "idle">
+
+        <inherit>
+            $STREAM.stdout.writelines($DATETIME.fmttime('%H:%M:%S'))
+        </inherit>
+    </observe>
+
+    <observe on $myTask for "callState:success">
+        <exit with $? />
+    </observe>
+</hvml>
+```
+
+When you run this program by using `purc`, you will get the following output:
+
+```
+$ purc -b hvml/call-concurrently.hvml
+purc 0.8.0
+Copyright (C) 2022 FMSoft Technologies.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Executing HVML program from `file:///srv/devel/hvml/purc/build/hvml/call-concurrently.hvml`...
+17:45:48
+17:45:48
+17:45:48
+
+...
+
+17:45:53
+17:45:53
+17:45:53
+17:45:53
+17:45:53
+
+The main coroutine exited.
+>> The document generated:
+
+>> The executed result:
+15
 ```
 
 ## Connecting to Renderer
