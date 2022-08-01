@@ -1414,10 +1414,11 @@ You can use the verb tag `define` to define a named operation group.
 Again, you can easily guess that you use the `as` attribute to name the group of operations.
 Moreover, HVML provides two methods to use a named operation group: `include` or `call`.
 
-Version 12 gives a sample which defines a group of operation to calculate the greatest common divisor of two positive integers:
+The following HVML program (Greatest Common Divisor) gives a sample,
+    which defines a group of operation to calculate the greatest common divisor of two positive integers:
 
 ```hvml
-<!-- Version 12 -->
+<!-- Greatest Common Divisor -->
 
 <!DOCTYPE hvml>
 <hvml target="void">
@@ -1460,17 +1461,17 @@ Version 12 gives a sample which defines a group of operation to calculate the gr
 </hvml>
 ```
 
-Version 12 illustrates a classical implementation of `calling a function` like other traditional programming languages.
+The above program illustrates a classical implementation of `calling a function` like other traditional programming languages.
 
 It is obvious that you can use the `with` attribute of the `call` element to define the arguments,
   which will be passed to the operation group.
 Here it is an object specifying two integers.
 
-Like a traditional function call, the HVML interpreter will push the data passed through `with` arttribute to a stack frame.
-The data then becomes in turn the result data for the elements in the named operation group.
-It can be referred to by the context variable `?` when executing the elements in the named operation group.
+Like a traditional function call, the HVML interpreter will push the data passed through `with` arttribute to the last stack frame.
+The data then becomes in turn the result data for the first element in the named operation group.
+It can be referred to by the context variable `?` when executing the first element in the named operation group.
 
-As a result, in Version 12, we can refer to the argument in the operation group by the expressions `$?.x` and `$?.y`.
+As a result, in Greatest Common Divisor, we can refer to the argument in the operation group by the expressions `$?.x` and `$?.y`.
 However, the code use `$x` and `$y` instead.
 This because that if you passed an object as the argument,
      the interpreter will automatically setup a named temporary varaible for each property in the object if the property name is a valid variable name.
@@ -1524,7 +1525,7 @@ If the target document type of this HVML program is `void`,
 
 If we use a named variable in a named operation group,
    the actual data referred to by the variable depends on the position where the operation group is called or included.
-As a result, the operation group and the different variable collection visible to the it when using it together make up different closures.
+As a result, the operation group and the different variable collection visible to it when using it together make up different closures.
 
 See the following HVML code fragment and the comments:
 
@@ -1569,6 +1570,173 @@ See the following HVML code fragment and the comments:
 ```
 
 ## Coroutines and Concurrency
+
+Unlike other programming language, HVML provides an implicit way to support coroutines.
+
+For example, Version 12 is a revised `Hello, world!` program.
+It prints `你好，世界：台湾是中国不可分割的一部分` 10 times.
+
+```hvml
+<!-- Versoin 12 -->
+
+<!DOCTYPE hvml>
+<hvml target="void">
+    <iterate on 0 onlyif $L.lt($0<, 10) with $EJSON.arith('+', $0<, 1) nosetotail >
+        $STREAM.stdout.writelines("$0<) 你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE-$CRTN.cid")
+    </iterate>
+</hvml>
+```
+
+Assume you named this version as `hello-world-c.hvml`,
+       we can run the program as two coroutines in parallel by specifying the command line flag `-l`:
+
+```bash
+$ purc -l hello-world-c.hvml hello-world-c.hvml
+```
+
+You will see the following output on your terminal:
+
+```
+0)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #3
+0)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #4
+1)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #3
+1)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #4
+2)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #3
+2)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #4
+3)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #3
+3)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #4
+4)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #3
+4)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #4
+5)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #3
+5)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #4
+6)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #3
+6)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #4
+7)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #3
+7)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #4
+8)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #3
+8)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #4
+9)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #3
+9)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #4
+```
+
+In the above output, `HVML COROUTINE 3` and `HVML COROUTINE 4` contain the coroutine identifier allocated by PurC for two running instances of the program.
+You see that PurC schedules the running instances to execute alternately, i.e., in the manner of coroutines.
+
+In an HVML program, you can easily create a new coroutine to execute in parallel.
+For this purpose, you use `load` tag or `call` tag.
+
+The following program called `Load String HVML` loads a HVML program specified by a string asynchronously.
+After this, it observes the event `corState:exited` on `$newCrtn`.
+When the event reaches, the program exits with the attached data of the event.
+In deed, the attached data of the event `corState:exited` is the executed result of the new coroutine.
+
+```hvml
+<!-- Load String HVML -->
+
+<hvml target="void">
+
+    <init as "request">
+        {
+            hvml: '<hvml target="html"><body><h1>$REQ.text</h1><p>$REQ.hvml</p></body>"success"</hvml>',
+            text: "Hello, world!",
+        }
+    </init>
+
+    <!-- we use content data instead of `with` attribute -->
+    <load on "$request.hvml" as "newCrtn" onto="_null" async >
+        $request
+    </load>
+
+    <!-- we observe the corState:exited event -->
+    <observe on $newCrtn for="corState:exited">
+        <exit with $? />
+    </observe>
+
+</hvml>
+```
+
+Here is the HVML program defined by the string in a better format:
+
+```hvml
+<hvml target="html">
+    <body>
+        <h1>$REQ.text</h1>
+        <p>$REQ.hvml</p>
+    </body>
+
+    "success"
+</hvml>
+```
+
+The above program generates a simple HTML document,
+    and has the executed result `success`.
+
+If you run Load String HVML by using `purc`, you will get the following result:
+
+```
+$ purc -b hvml/load-string-hvml.hvml
+purc 0.8.0
+Copyright (C) 2022 FMSoft Technologies.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Executing HVML program from `file:///srv/devel/hvml/purc/build/hvml/load-string-hvml.hvml`...
+
+A child coroutine exited.
+>> The document generated:
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>
+      Hello, world!
+    </h1>
+    <p>
+      &lt;hvml target=&quot;html&quot;&gt;&lt;body&gt;&lt;h1&gt;$REQ.text&lt;/h1&gt;&lt;p&gt;$REQ.hvml&lt;/p&gt;&lt;/body&gt;&quot;success&quot;&lt;/hvml&gt;
+    </p>
+  </body>
+</html>
+
+>> The executed result:
+"success"
+
+The main coroutine exited.
+>> The document generated:
+
+>> The executed result:
+"success"
+```
+
+You can see that the child coroutine exited with the simple HTML document generated,
+    and the executed result of the child coroutine was passed to the main coroutine.
+
+You can create another coroutine of the current HVML program by using a `load` element.
+See the following HVML program called `Load Another Body`.
+In this program, we load another body of the current HVML program synchronously.
+
+```hvml
+<!-- Load Another Body -->
+
+# RESULT: 'failure'
+
+<hvml target="void">
+    <body>
+
+        <load from "#errorPage" onto "_null">
+            <exit with $? />
+        </load>
+
+    </body>
+
+    <body id="errorPage">
+
+        <p>We encountered a fatal error!</p>
+        <exit with "failure" />
+
+    </body>
+</hvml>
+```
 
 ## Connecting to Renderer
 
