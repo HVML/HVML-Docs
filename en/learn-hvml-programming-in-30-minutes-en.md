@@ -1571,7 +1571,7 @@ See the following HVML code fragment and the comments:
 
 ## Coroutines and Concurrency
 
-Unlike other programming language, HVML provides a simple way to support coroutines.
+Unlike other programming languages, HVML provides a simple way to support coroutines.
 
 For example, Version 12 is a revised `Hello, world!` program.
 It prints `你好，世界：台湾是中国不可分割的一部分` 10 times.
@@ -1619,14 +1619,16 @@ You will see the following output on your terminal:
 9)你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE #4
 ```
 
-In the above output, `HVML COROUTINE 3` and `HVML COROUTINE 4` contain the coroutine identifier allocated by PurC for two running instances of the program.
+In the above output, `HVML COROUTINE #3` and `HVML COROUTINE #4` contain the coroutine identifier assigned by PurC for two running instances of the program.
 You see that PurC schedules the running instances to execute alternately, i.e., in the manner of coroutines.
+You do not need any explicit use of a `yield` element.
+In fact, there is no `yield` tag in HVML at all.
 
 In an HVML program, you can easily create a new coroutine to execute in parallel.
 For this purpose, you use `load` tag or `call` tag.
 
 The following program called `Load String HVML` loads a HVML program specified by a string asynchronously.
-After this, it observes the event `corState:exited` on `$newCrtn`.
+After this, it observes the event `corState:exited` on `$newCrtn` to wait for the exit of the new coroutine.
 When the event reaches, the program exits with the attached data of the event.
 In deed, the attached data of the event `corState:exited` is the executed result of the new coroutine.
 
@@ -1745,17 +1747,17 @@ We can not only create a coroutine to execute a group of operations,
    but also create a new interpreter instance (for PurC, it is a thread) to execute a group of operations.
 In terms of HVML, we name these manners as `concurrent invocation` or `calling concurrently`.
 
-The following program named `Call Concurrently` call an operation group concurrently and asynchronously.
+The following program named `Call Concurrently` calls an operation group concurrently and asynchronously.
 Note that we use the `within` attribute to specify a new runner.
-The interpreter will create a new instance in a new system thread if new such runner existinge to execute the operation group.
+The interpreter will create a new instance in a new system thread if no such runner existing to execute the operation group.
 
 The operation group simulates a time consuming task by using an `sleep` element,
-    and evalutes a math expression.
-Finnaly, it returns the exected result.
+    and evalutes a math expression after waking up.
+Finnaly, it returns the evaluated result of the math expression as the return value of the operation group.
 
 In order for you to see the effect of concurrency,
-   the main coroutine observes the event for `idle` event on `$CRTN`,
-   and prints the current time.
+   the main coroutine observes the event `idle` on `$CRTN`,
+   and prints the current time continuously.
 The main coroutine also observes the `callState:success` event on the variable representing the child coroutine running in another interpreter instance.
 Once the event reaches, the main coroutine exits with the return value of the concurrent invocation.
 
@@ -1820,274 +1822,8 @@ The main coroutine exited.
 
 ## Summary
 
-Although the code is not like any program in C, JavaScript, or other common
-programming languages, if you are told that the original design goal of HVML is
-to allow developers can easily generate and operate HTML documents without
-a web server using JavaScript in a web browser, you can easily guess
-what's the code do:
-
-1) The attribute `target="html"` in `hvml` element defines the target document
-type of this HVML program: HTML. That is, this HVML program will genenrate an HTML
-document.
-
-2) The elements defined by HTML tags, such as `body`, `h1`, and `p` will be cloned
-to the target document according to the execute path of the HVML program.
-
-We can revise the first HVML program as follow:
-
-```hvml
-<!-- Version 1 -->
-<hvml target="html">
-
-    $STREAM.stdout.writelines('Hello, world!')
-
-    <body>
-        <p>Hello, world!</p>
-    </body>
-</hvml>
-```
-
-Please save the following contents in a file named `hello-world.hvml` as your first HVML program in your working directory:
-
-```hvml
-<!DOCTYPE hvml>
-<hvml target="void">
-
-    $STREAM.stdout.writelines('Hello, world!')
-
-</hvml>
-```
-
-To run this HVML program, you can use `purc` in the following way:
-
-```bash
-```
-
-You will see that your first HVML program prints `Hello, world!` on your terminal and quit:
-
-```
-Hello, world!
-```
-
-You can also run this HVML program directly as a script if you prepend the following line as the first line in the HVML program:
-
-```
-#!/usr/local/bin/purc
-```
-
-After this, run the following command to change the mode of the file to have the execute permission:
-
-```bash
-$ chmod +x hello.hvml
-```
-
-then run `hello.hvml` directly from the command line:
-
-```bash
-$ ./hello.hvml
-```
-
-Now, we hope that our HVML program can generate an HTML file instead of printing to the terminal. For this purpose, we enhance `hello-10.hvml` once more:
-
-```hvml
-<!DOCTYPE hvml>
-<hvml target="html">
-    <head>
-        <title>Hello, world!</title>
-    <head>
-
-    <body>
-        <ul>
-            <iterate on 0 onlyif $L.lt($0<, 10) with $EJSON.arith('+', $0<, 1) >
-                <li>$?) Hello, world! --from COROUTINE-$CRTN.cid</li>
-            </iterate>
-        </ul>
-    </body>
-</hvml>
-```
-
-and save the contents in `hello-html.hvml` file. Note that there are two key
-differences:
-
-1. The value of `target` attribute of `hvml` element changed to `html`.
-1. We used HTML tags such as `head`, `body`, `ul`, and `li` directly in
-   the HVML program.
-
-If you run `hello-html.hvml` program by using `purc` without any option, `purc`
-will use the renderer called `HEADLESS`. This renderer will record the messages
-sent by PurC to the renderer to a local file. Because this revised HVML program
-did not use `$STREM.stdout` any more, you will see nothing on your terminal.
-But you can use the option `--verbose` (or the short option `-b`) to show the
-HTML contents generated by the HVML program in your terminal:
-
-```bash
-    $ purc -b hello-html.hvml
-```
-
-The command will give you the following output:
-
-```
-purc 0.8.0
-Copyright (C) 2022 FMSoft Technologies.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
-
-Executing HVML program from `file:///srv/devel/hvml/purc/build/hvml/hello-html.hvml`...
-
->> The document generated:
-<html>
-  <head>
-    <title>
-      Hello, world!
-    </title>
-  </head>
-  <body>
-    <ul>
-      <li>
-        0) Hello, world! --from COROUTINE-3
-      </li>
-      <li>
-        1) Hello, world! --from COROUTINE-3
-      </li>
-      <li>
-        2) Hello, world! --from COROUTINE-3
-      </li>
-      <li>
-        3) Hello, world! --from COROUTINE-3
-      </li>
-      <li>
-        4) Hello, world! --from COROUTINE-3
-      </li>
-      <li>
-        5) Hello, world! --from COROUTINE-3
-      </li>
-      <li>
-        6) Hello, world! --from COROUTINE-3
-      </li>
-      <li>
-        7) Hello, world! --from COROUTINE-3
-      </li>
-      <li>
-        8) Hello, world! --from COROUTINE-3
-      </li>
-      <li>
-        9) Hello, world! --from COROUTINE-3
-      </li>
-    </ul>
-  </body>
-</html>
-
-
->> The executed result:
-null
-```
-
-However, we need to enhace the HVML program once more, in order that the program
-will not exit immediately after generated the HTML contents. Otherwise,
-the window created by xGUI Pro for this HVML program will disappeared
-after `purc` exited.
-
-We enhance `hello-html.hvml` to install a timer and update the document and
-save it as `hello-html-timer.hvml`:
-
-```hvml
-<!DOCTYPE hvml>
-<hvml target="html">
-    <head>
-        <title>My First HVML Program</title>
-
-        <update on="$TIMERS" to="unite">
-            [
-                { "id" : "clock", "interval" : 500, "active" : "yes" },
-            ]
-        </update>
-    </head>
-
-    <body>
-        <h1>My First HVML Program</h1>
-        <p>Current Time: <span id="clock">$DATETIME.time_prt()</span></p>
-
-        <ul>
-            <iterate on 0 onlyif $L.lt($0<, 10) with $EJSON.arith('+', $0<, 1L) nosetotail >
-                <li>$<) Hello, world! --from COROUTINE-$CRTN.cid</li>
-            </iterate>
-        </ul>
-
-        <observe on $TIMERS for "expired:clock">
-            <update on "#clock" at "textContent" to "displace" with "$DATETIME.time_prt()" />
-        </observe>
-
-        <observe on $CRTN for "rdrState:closed">
-            <exit with "closed" />
-        </observe>
-
-    </body>
-</hvml>
-```
-
-The original design goal of HVML is to allow developers who are familiar with
-C/C++, Python, or other programming languages to easily develop GUI applications
-by using Web front-end technologies (such as HTML/SVG, DOM and CSS), instead of
-using JavaScript programming language in a web browser or Node.js.
-
-We achieved this design goal and also designed HVML as a new-style and
-general-purpose programming language. Now, we can not only use HVML as
-a programming language to rapidly develop GUI applications based on Web
-front-end technologies in the C/C++ runtime environment, but also use HVML
-as a general script language.
-
-For example, you can re-write the above HVML program to print some lines
-on your terminal instead of generating an HTML docuement:
-
-```hvml
-<!DOCTYPE hvml>
-
-<!--
-    $SYS.locale returns the current system locale such as `en_US` or `zh_CN`
-    $STR.substr returns a substring of the given string.
--->
-<hvml target="void" lang="$STR.substr($SYS.locale, 0, 2)">
-
-    <body>
-
-        <!-- the `test` element checks whether the system locale starts with `zh` -->
-        <test with = $STR.starts_with($SYS.locale, 'zh') >
-            {{
-                 $STEAM.stdout.writelines('我的第一个 HVML 程序');
-                 $STEAM.stdout.writelines('世界，您好！');
-            }}
-
-            <!-- If the system locale does not start with `zh` -->
-            <differ>
-                {{
-                     $STEAM.stdout.writelines('My First HVML Program');
-                     $STEAM.stdout.writelines('Hello, world!');
-                }}
-            </differ>
-        </test>
-
-    </body>
-
-</hvml>
-```
-
-When you execute the revised HVML program, it will print the lines
-on your terminal instead of generating an HTML document:
-
-```
-我的第一个 HVML 程序
-世界，您好！
-```
-
-or,
-
-```
-My First HVML Program
-Hello, world!
-```
-
 Obviously, HVML differs from any existing programming language you know.
+
 
 [Beijing FMSoft Technologies Co., Ltd.]: https://www.fmsoft.cn
 [FMSoft Technologies]: https://www.fmsoft.cn
