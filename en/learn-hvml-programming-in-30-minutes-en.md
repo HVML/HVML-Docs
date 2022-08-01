@@ -402,7 +402,7 @@ $MATH.eval('PI * r * r', { r: 3 })
 
 The method `eval` of `$MATH` evaluating a parameterized mathematical formula (`PI * r * r` in this sample),
     while `r` is given by an object `{ r: 3 }` as the second argument of `eval` method.
-Therefore, The executed result of the expression will be about `28.26`.
+Therefore, the executed result of the expression will be about `28.26`.
 
 Moreover, HVML defines the compound EJSON expressions to have a simple logical control.
 A compound EJSON expression consists of multiple EJSON expressions.
@@ -485,15 +485,17 @@ The elements `test` and `differ` act like the conditionl control statements such
 However, HVML does not use statements to write a program.
 Instead, we use elements and expressions to write program.
 Generally, an element performs a specific operation with the attributes and select a child element to continue.
-When there is no child element, it return back to the parent element, until the root (`hvml`) element.
+When there is no child element, it returns back to the parent element,
+     then selects a sibling element of the parent element or returns back to the grandparent element,
+     until the root (`hvml`) element.
 
 For example, in Version 3, the `test` element uses the expression defined by `with` attribute, i.e., `$STR.starts_with($SYS.locale, 'zh')`, as the condition.
 If the evaluated result of the expression is true, that is, the system locale starts with `zh`,
    this HVML program will clone the `h1` and `p` elements in `test` element to the target document, and ignore the `differ` element.
-If the evaluation result is false, the elements in `differ` element will be cloned to the target document.
+If the evaluated result is false, the elements in `differ` element will be cloned to the target document.
 
 Like the `with` attribute in `test` element, HVML uses some prepositions as the attribute names of verb elments, such as `on`, `with`, `for`, `via`, `against`, and so on.
-By using the verb tags and preposition attributes, you can easily undertand what does the operation the element define.
+By using the verb tags and preposition attributes, you can easily undertand what operation is defined by an element.
 In Version 3, `test with $STR.starts_with($SYS.locale, 'zh')` means checking the evaluated result of `$STR.starts_with($SYS.locale, 'zh')` to see whether it is true or false.
 Note that HVML allows to omit the equal sign (`=`) between the preposition attribute name and the expression as the attribute value.
 This gives HVML code better readability.
@@ -591,8 +593,27 @@ In Version 4, we use `on` attribute in the `test` element and use multiple `matc
 When using `on` attribute with a verb element, the evulated result of the `on` attribute value will become the executed result of the verb element.
 Here, the executed result of the `test` element will be a string having only two letters like `zh`, `en`, `fr`, and so on.
 
-Obviously, you can easily see that the `test` element and its child `match` elements define a multiple branching control flow
-like `if-else if-else if-else` or `switch-case` in other programming languages.
+Obviously, you can easily see that the `test` element and its child `match` elements define a multiple branching control flow,
+    like `if-else if-else if-else` or `switch-case` in other programming languages.
+Note that, we can use regular expression or wildcard characters for the attribute value of `for` attribute.
+For example:
+
+```hvml
+    <test on $SYS.locale, 0, 2 >
+        <match for 'LIKE /^zh/' exclusively>
+            ...
+        </match>
+
+        <match for 'LIKE /^en/' exclusively>
+            ...
+        </match>
+
+        <!-- Anyting else...  -->
+        <match for "ANY">
+            ...
+        </match>
+    </test>
+```
 
 You may notice that we use a special attribute called `exclusively` in some `match` elements.
 The attribute uses an adverb and does not define any value.
@@ -607,7 +628,7 @@ Other usual adverb attributes are shown as follow:
 - `temporarily`: use to define a temporary variable in `init` element.
 - `asynchronously`: used to define an asynchronous operation or start a coroutine asynchronously.
 - `concurrently`：in a `call` element, used to define a concurrent call.
-- `nosetotail`: in an `iterate` element, used to reset the input data with the last evaluated result.
+- `nosetotail`: in an `iterate` element, used to reset the input data (defined by `on` attribute) with the last evaluated result.
 - `ascendingly` and `descendingly: in a `sort` element, used to define the sorting order.
 - `silently`: evaluating the expressions in an element silently intead of generating exceptions.
 
