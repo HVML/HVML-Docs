@@ -22,6 +22,7 @@
    + [Variable Scope](#variable-scope)
    + [Executing in place or calling](#executing-in-place-or-calling)
 - [Coroutines and Concurrency](#coroutines-and-concurrency)
+- [Asynchronous Operations](#asynchronous-operations)
 - [Connecting to Renderer](#connecting-to-renderer)
 - [Summary](#summary)
 
@@ -987,6 +988,21 @@ This event means that the user has closed the window created by the HVML rendere
 
 For more information, please see the section [Connecting to Renderer](#connecting-to-renderer).
 
+HVML provides a very intersting feature: you can observe an expression for the change of the evaluated result.
+For example, the following program fragment binds an expression to a variable called `rtClock`.
+After this, we can observe on the variable for the change of the evaluated result.
+
+```hvml
+    <bind on $SYS.time as "rtClock" />
+
+    <observe on "$rtClock" for "change">
+       ...
+    </observe>
+```
+
+Because the evaluated result of `$SYS.time` is the Unix time stamp in seconds,
+        the operations in the `observe` element will be execuated every second.
+
 ## Templates and Substitutions
 
 Now, let's consider a slightly more complicated example, which generates an HTML document listing your friends.
@@ -1837,6 +1853,87 @@ The main coroutine exited.
 
 >> The executed result:
 15
+```
+
+## Asynchronous Operations
+
+You have seen that we use the adverb attribute `asynchronously` or `async` many times.
+As you might imagine, this adverb attribute makes an element perfoms the operation asynchronously.
+You can use this adverb in many verb elements including `init`, `define`, `load`, `call`, and `request`.
+Generally, when you use `async`, you need to use `as` attribute to create a named variable.
+
+You have seen the usage of the adverb attribute `asynchronously` in a `load` or `call` element.
+The named variable will be bound to a native entity data which representing the coroutine,
+    then you observe on the data for the event `corState:exit`, `corState:terminated`, `callState:success`, and so on.
+
+Per `init` elements, HVML provides an intersting feature for an asynchronous initialization.
+When you initialize a data by using an `init` element asynchronously,
+     you can observe against the variable for an event indicating that the operation succeed or failed.
+
+For example, the following HTML program fragment initializes a variable named `users` from a remote URL asynchronously,
+    and observe `change:attached` event on the varialbe:
+
+```hvml
+    <init as "users" from "http://foo.bar.com/get_all_users" async />
+
+    <archetype name="user_item">
+        <li class="user-item">
+            <img class="avatar" src="" />
+            <span></span>
+        </li>
+    </archetype>
+
+    <ul class="user-list">
+        <img src="wait.png" />
+    </ul>
+
+    <observe against "users" for "change:attached" in "#user-list">
+        <clear on "$@" />
+        <iterate on "$users" by "RANGE: FROM 0">
+            <update on "$@" to "append" with "$user_item" />
+        </iterate>
+    </observe>
+```
+
+If you are careful, you will find we use `against` attribute instead of `on` attribute in the `observe` element.
+When you use the `against` attribute in an `observe` element,
+     the element will observe the events on a named variable and the attribute value gives the variable name,
+     whereas it will observe the events on the data referred by the variable if you use `on` attribute.
+
+The events can occur on a variable including the following ones:
+
+- `change:attached`: a data is bound to the variable.
+- `change:displaced`: the old data bound to the variable has been displaced with a new data.
+- `except:<exceptionName>`: an exception raised when initializing the variable.
+
+By observing the events, you can easily handle the changes against the named variable.
+
+Note that, you can only observe against a named static variable.
+That is, you can not observe against a temporary variable.
+
+Another intersting feature about an asynchronous initialization is that we can assign a default value to a variable,
+        and update the target document when you got the `change:displaced` event against the varaible,
+        as illustrated in the following code:
+
+```hvml
+    <!-- the breakingNews has a default value given
+         through the content of the `init` element -->
+    <init as "breakingNews" from "assets/breaking-news-{$SYS.locale}.json" async>
+        {
+            "title": "This is an absolute breaking news!",
+            "shortDesc": "The Zhang family's rooster has laid eggs!",
+            "longDesc": 'Yesterday, the second son of the Zhang family came to me and said, "My rooster has laid eggs!"',
+            "detailedUrl": "#",
+            "time": $SYS.time.iso8601
+        }
+
+        <update on "#breaking-news" to "displace" with $realCardBody />
+
+        <observe against "breakingNews" for "change:displace" in "#breaking-news" >
+            <!-- the content will be displaced by using the new data -->
+            <update on $@ to "displace" with $realCardBody />
+        </observe>
+    </init>
 ```
 
 ## Connecting to Renderer

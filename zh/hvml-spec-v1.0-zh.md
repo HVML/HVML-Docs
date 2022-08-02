@@ -6174,7 +6174,7 @@ SYSTEM 标识符字符串的格式如下：
 
             <update on="#breaking-news" to="displace" with="$realCardBody" />
 
-            <observe against="breakingNews" for="change:attached" in="#breaking-news">
+            <observe against="breakingNews" for="change:displaced" in="#breaking-news">
                 <update on="$@" to="displace" with="$realCardBody" />
             </observe>
         </init>
