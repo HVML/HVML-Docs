@@ -137,11 +137,11 @@ Fortunately, we don't need to use this prefix in most cases, because HVML's tag 
 For your first HVML program, the interpreter will generate an empty HTML document, and copy the contents of `p` elements to the `body` of the target HTML document.
 As a result, the HVML program generates an HTML document, which is same as the HTML file given earlier.
 
-Note that, the `body` tag is not a foreign tag, it is a frame tag of HVML. It is used to define an entry body of an HVML program.
-In deed, you can define multiple `body` elements in an HVML program, and tell the interpreter to use a specific body as the entry.
+Note that, the `body` tag is not a foreign tag, it is a frame tag of HVML. It is used to define an entrance body of an HVML program.
+In deed, you can define multiple `body` elements in an HVML program, and tell the interpreter to use a specific body as the entrance.
 
-HVML also uses `head` tag to define an operation group to execute for any `body` entry.
-This can be used to initialize some global data for each `body` entry.
+HVML also uses `head` tag to define an operation group to execute for any `body` entrance.
+This can be used to initialize some global data for each `body` entrance.
 
 The great thing about HVML is that, you can use markups to define a program which may have a complex control flow.
 You can also use flexible expressions to generate dynamic contents for your target document.
@@ -629,7 +629,7 @@ Other usual adverb attributes are shown as follow:
 - `asynchronously`: used to define an asynchronous operation or start a coroutine asynchronously.
 - `concurrently`：in a `call` element, used to define a concurrent call.
 - `nosetotail`: in an `iterate` element, used to reset the input data (defined by `on` attribute) with the last evaluated result.
-- `ascendingly` and `descendingly: in a `sort` element, used to define the sorting order.
+- `ascendingly` and `descendingly`: in a `sort` element, used to define the sorting order.
 - `silently`: evaluating the expressions in an element silently intead of generating exceptions.
 
 ### Looping and Context Variables
