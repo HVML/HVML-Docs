@@ -784,7 +784,7 @@ Version 6 shows a very important coding philosophy of HVML: Use less or no varia
 
 In Version 5 and Version 6, we hard code the array in the `init` or `iterate`.
 This usually does not correspond to the actual situation.
-In practice, the data must be from a foreign source, e.g, a locale file or a remote URL.
+In practice, the data must be from a foreign source, e.g, a local file or a remote URL.
 
 Most programming languages do not provide methods to fetch data from a URL, but HVML does.
 You can use `init` to fetch data from a file or a remote URL:
@@ -1161,7 +1161,7 @@ Similarly, HVML also provides `archedate` tag to define data templates.
 When an `archedata` template was substituded, the result will be any type of data instead of a string.
 And you can use the result data to insert to a container or replace a member of the container by using an `update` element.
 
-Version 11 gives a sample using `archetype` element.
+Version 11 gives a sample using `archedata` element.
 It converts the object array to a string array:
 
 ```hvml
@@ -1394,7 +1394,7 @@ Look the following code fragment and the comments:
             </init>
 
             <!-- this element refers to $users at the parent `div` element,
-                 no the one with the same name at the `body` element -->
+                 not the one with the same name at the `body` element -->
             <iterate on $users>
                 ...
             </iterate>
