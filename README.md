@@ -19,8 +19,8 @@ For an detailed introduction to HVML, please refer to the article (10% complete)
 ### 入门
 
 - [30 分钟学会 HVML 编程](zh/learn-hvml-programming-in-30-minutes-zh.md)
-- [漫谈 HVML：它的由来和未来](zh/brief-introduction-to-hvml-zh.md)
 - [用 HVML 写一个计算器](zh/writing-a-calculator-by-using-hvml-step-by-step.md)
+- [漫谈 HVML：它的由来和未来](zh/brief-introduction-to-hvml-zh.md)
 
 ### 规范
 
