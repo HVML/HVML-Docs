@@ -2043,6 +2043,7 @@ Because the HVML program ovserve the event `rdrState:pageClosed` on `$CRTN`.
 
 For a complete sample program which gives a better experience,
     the following program implements an arbitrary precision calculator.
+Please note the comments in the program.
 
 ```
 <!-- Arbitrary Precision Calculator -->
@@ -2058,7 +2059,9 @@ For a complete sample program which gives a better experience,
         <link rel="stylesheet" href="//localhost/_renderer/_builtin/-/assets/bootstrap-icons-1.8.3/bootstrap-icons.css" />
 
         <!-- $T provides the same function like GNU getext for localization.
-             If you remove this element, the program will generate the UI in English. -->
+             If you remove this element, the program will generate the target document in English.
+             In practice, you can use the `from` attribute of the `update` element to fetch the text map from
+             a local file or a remote URL.  -->
         <update on="$T.map" to="merge">
             {
                 "HVML Arbitrary Precision Calculator": "HVML 任意精度计算器",
@@ -2070,6 +2073,7 @@ For a complete sample program which gives a better experience,
             }
         </update>
 
+        <!-- set a timer here -->
         <update on="$TIMERS" to="unite">
             [
                 { "id" : "clock", "interval" : 500, "active" : "yes" },
@@ -2080,18 +2084,20 @@ For a complete sample program which gives a better experience,
     </head>
 
     <body>
+        <!-- the following foreign elements define the header of the calculator -->
         <div class="px-4 my-5 border-bottom">
             <div class="text-center">
                 <h1 class="display-4 fw-bold">$T.get('HVML Arbitrary Precision Calculator')</h1>
                 <p class="lead">$T.get('Current Time: ')<span id="clock">$DATETIME.time_prt()</span></p>
 
-                <!-- update the time -->
+                <!-- update the time in the above `span` element when got the `expired:clock` event. -->
                 <observe on="$TIMERS" for="expired:clock">
                     <update on="#clock" at="textContent" with="$DATETIME.time_prt()" />
                 </observe>
             </div>
         </div>
 
+        <!-- create a static variable to hold the scale and the expression -->
         <init as="myResult">
             {
                 scale: 10,
@@ -2100,7 +2106,7 @@ For a complete sample program which gives a better experience,
             }
         </init>
 
-        <!-- initialize data for buttons on UI */
+        <!-- initialize data for buttons of the calculator -->
         <init as="buttons">
             [
                 { id: "theBtn7",            exp: "7",    text: "7",              class: "btn-outline-primary btn-for-input", idx: "0" },
@@ -2126,7 +2132,7 @@ For a complete sample program which gives a better experience,
             ]
         </init>
 
-        <!-- generate the HTML elements for the calculator */
+        <!-- generate the HTML elements for the main area of the calcultor -->
         <div class="container">
             <div class="mb-3">
                 <label id="resultScale" class="form-label">$T.get('The result scale (')<strong id="theScale">$myResult.scale</strong>$T.get(' decimals)')</label>
@@ -2145,6 +2151,7 @@ For a complete sample program which gives a better experience,
                 </div>
             </archetype>
 
+            <!-- here are the buttons of the calculator -->
             <div class="border border-3 pt-3">
                 <iterate on=0 onlyif=$L.lt($0<,4) with=$MATH.add($0<,1) nosetotail>
                     <div class="row mb-3">
@@ -2156,17 +2163,20 @@ For a complete sample program which gives a better experience,
             </div>
         </div>
 
+        <!-- handle the change event of the scale range -->
         <observe on="#theScaleRange" for="change">
             <update on="$myResult" at=".scale" with="$EJSON.numberify($?.targetValue)" />
             <update on="#theScale" at="textContent" with="$?.targetValue" />
         </observe>
 
+        <!-- handle the click event of the symbol/digital buttons -->
         <observe on=".btn-for-input" for="click">
             <update on="$myResult" at=".exp" with="$STR.join($myResult.exp, $buttons[$?.targetValue].text)" />
             <update on="$myResult" at=".expr" with="$STR.join($myResult.expr, $buttons[$?.targetValue].exp)" />
             <update on="#theExpression" at="textContent" with="$myResult.exp" />
         </observe>
 
+        <!-- handle the click event of the back button -->
         <observe on="#theBtnBack" for="click">
             <update on="$myResult" at=".exp" with="$STR.substr($myResult.exp, 0, -1)" />
             <update on="$myResult" at=".expr" with="$STR.substr($myResult.expr, 0, -1)" />
@@ -2180,12 +2190,14 @@ For a complete sample program which gives a better experience,
             </test>
         </observe>
 
+        <!-- handle the click event of the clear button -->
         <observe on="#theBtnClear" for="click">
             <update on="$myResult" at=".exp" with="" />
             <update on="$myResult" at=".expr" with="" />
             <update on="#theExpression" at="textContent" with="0" />
         </observe>
 
+        <!-- handle the click event of the toggle sign button -->
         <observe on="#theBtnToggleSign" for="click">
             <test with="$myResult.exp">
                 <update on="$myResult" at=".exp" with="$STR.join('-(', $myResult.exp, ')')" />
@@ -2194,6 +2206,7 @@ For a complete sample program which gives a better experience,
             </test>
         </observe>
 
+        <!-- handle the click event of the percent button -->
         <observe on="#theBtnPercent" for="click">
             <test with="$myResult.exp">
                 <update on="$myResult" at=".exp" with="$STR.join('(', $myResult.exp, ')/100')" />
@@ -2202,20 +2215,27 @@ For a complete sample program which gives a better experience,
             </test>
         </observe>
 
+        <!-- handle the click event of the equal button -->
         <observe on="#theBtnEqual" for="click">
+
+            <!-- Here, we use $STREAM to open a pipe and start a child process to run `/usr/bin/bc`.
+                 Then write the expression to the pipe and read the result form the pipe. -->
             <choose on="$STREAM.open('pipe:///usr/bin/bc?ARG1=--quiet')">
                 <choose on={{ $?.writelines(["scale=$myResult.scale", $myResult.expr]) && $?.writeeof() && $?.readlines(1) }}>
                     <update on="#theExpression" at="textContent" with="$?[0]" />
                 </choose>
 
+                <!-- close the pipe -->
                 <choose on="$STREAM.close($?)" />
 
+                <!-- catch any except here -->
                 <catch for='*'>
                     <update on="#theExpression" at="textContent" with="ERROR" />
                 </catch>
             </choose>
         </observe>
 
+        <!-- the following foreign elements define the footer of the calculator -->
         <div class="container">
             <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
                 <div class="col-md-4 d-flex align-items-center">
@@ -2233,6 +2253,7 @@ For a complete sample program which gives a better experience,
             </footer>
         </div>
 
+        <!-- wait for the event when the window is closed by the user -->
         <observe on $CRTN for "rdrState:pageClosed">
             <exit with 'Ok' />
         </observe>
@@ -2250,7 +2271,7 @@ Note that xGUI Pro integrates Bootstrap 5.1, so you can use the CSS and JavaScri
 
 ### Planetary Resonance
 
-The following HVML program called Planetary Resonance.
+The following HVML program is called Planetary Resonance.
 It shows the Planetary Resonance by using SVG markups.
 
 ```hvml
@@ -2261,12 +2282,15 @@ It shows the Planetary Resonance by using SVG markups.
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
+        <!-- Setup a timer with the interval 60ms. -->
         <update on="$TIMERS" to="unite">
             [
                 { "id" : "rate", "interval" : 60, "active" : "yes" },
             ]
         </update>
 
+        <!-- `hvml:raw` is a HVML-specific attribute for foreign elements.
+             Use this attribute when you do not want to evalute the contents in a foreign element. -->
         <style hvml:raw>
 body {
   margin: 0;
@@ -2302,6 +2326,7 @@ svg {
     </head>
 
     <body>
+        <!-- create the SVG, all lines in the SVG element are invisible initially. -->
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500">
             <g id="orbits">
                 <circle id="venusorbit" cx="250" cy="250" r="120" />
@@ -2317,6 +2342,7 @@ svg {
             <circle id="sol" cx="250" cy="250" r="16" />
         </svg>
 
+        <!-- The parameters. -->
         <init as params >
             {
                 n: 0,
@@ -2328,6 +2354,7 @@ svg {
             }
         </init>
 
+        <!-- when the timer is expired, update the position of earth, venus, and the lines -->
         <observe on $TIMERS for "expired:rate" >
 
             <update on '#earth' at "attr.transform" with $STR.join('rotate(', $params.i, ' ', $params.centre, ' ', $params.centre, ')') />
@@ -2364,6 +2391,7 @@ svg {
 
         </observe>
 
+        <!-- wait for the event when the window is closed by the user -->
         <observe on $CRTN for "rdrState:pageClosed">
             <exit with 'Ok' />
         </observe>
