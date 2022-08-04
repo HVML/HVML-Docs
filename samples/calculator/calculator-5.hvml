@@ -1,4 +1,4 @@
-<!DOCTYPE hvml SYSTEM 'v: MATH'>
+<!DOCTYPE hvml SYSTEM 'f: MATH'>
 <hvml target="html" lang="en">
     <head>
         <base href="$CRTN.base(! 'http://files.fmsoft.cn/calculator/' )" />

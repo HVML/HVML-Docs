@@ -184,15 +184,13 @@
 
 我们不打算仔细改造这些细节之处，所以最终的 HVML 程序中，会保留在头部声明的 `style` 标签内容，但由于内容过多，我们会省略其中的样式信息。
 
-另外，HVML 的一个重要目标是内嵌的 JavaScript 代码，故而也不会在头部包含 JavaScript 代码。
-
 ## 数据驱动生成 HTML 内容
 
 首先，我们看到原始 HTML 中有 12 个用来输入数字的按钮，以及八个用于表示四则运算、删除字符、清零的功能按钮。我们可以使用 HVML 的 `iterate` 动作标签完成这些重复性的 HTML 内容的生成。为此，我们首先准备一个全局的数据：
 
-```html
+```hvml
 <!DOCTYPE hvml>
-<hvml target="html" script="python" lang="en">
+<hvml target="html" lang="en">
     <head>
         <title>计算器</title>
         <style type="text/css">
@@ -201,26 +199,26 @@
 
         <init as="buttons">
             [
-                { "letters": "7", "class": "number" },
-                { "letters": "8", "class": "number" },
-                { "letters": "9", "class": "number" },
-                { "letters": "←", "class": "c_blue backspace" },
-                { "letters": "C", "class": "c_blue clear" },
-                { "letters": "4", "class": "number" },
-                { "letters": "5", "class": "number" },
-                { "letters": "6", "class": "number" },
-                { "letters": "×", "class": "c_blue multiplication" },
-                { "letters": "÷", "class": "c_blue division" },
-                { "letters": "1", "class": "number" },
-                { "letters": "2", "class": "number" },
-                { "letters": "3", "class": "number" },
-                { "letters": "+", "class": "c_blue plus" },
-                { "letters": "-", "class": "c_blue subtraction" },
-                { "letters": "0", "class": "number" },
-                { "letters": "00", "class": "number" },
-                { "letters": ".", "class": "number" },
-                { "letters": "%", "class": "c_blue percent" },
-                { "letters": "=", "class": "c_yellow equal" },
+                { "idx":"0",    "id": "btn_7",      "exp": "7",    "letters": "7",     "class": "btn number"                   },
+                { "idx":"1",    "id": "btn_8",      "exp": "8",    "letters": "8",     "class": "btn number"                   },
+                { "idx":"2",    "id": "btn_9",      "exp": "9",    "letters": "9",     "class": "btn number"                   },
+                { "idx":"3",    "id": "btn_back",   "exp": "←",    "letters": "←",     "class": "c_blue backspace"             },
+                { "idx":"4",    "id": "btn_clear",  "exp": "C",    "letters": "C",     "class": "c_blue clear"                 },
+                { "idx":"5",    "id": "btn_4",      "exp": "4",    "letters": "4",     "class": "btn number"                   },
+                { "idx":"6",    "id": "btn_5",      "exp": "5",    "letters": "5",     "class": "btn number"                   },
+                { "idx":"7",    "id": "btn_6",      "exp": "6",    "letters": "6",     "class": "btn number"                   },
+                { "idx":"8",    "id": "btn_mul",    "exp": "*",    "letters": "x",     "class": "btn c_blue multiplication"    },
+                { "idx":"9",    "id": "btn_div",    "exp": "/",    "letters": "÷",     "class": "btn c_blue division"          },
+                { "idx":"10",   "id": "btn_1",      "exp": "1",    "letters": "1",     "class": "btn number"                   },
+                { "idx":"11",   "id": "btn_2",      "exp": "2",    "letters": "2",     "class": "btn number"                   },
+                { "idx":"12",   "id": "btn_3",      "exp": "3",    "letters": "3",     "class": "btn number"                   },
+                { "idx":"13",   "id": "btn_plus",   "exp": "+",    "letters": "+",     "class": "btn c_blue plus"              },
+                { "idx":"14",   "id": "btn_sub",    "exp": "-",    "letters": "-",     "class": "btn c_blue subtraction"       },
+                { "idx":"15",   "id": "btn_0",      "exp": "0",    "letters": "0",     "class": "btn number"                   },
+                { "idx":"16",   "id": "btn_00",     "exp": "00",   "letters": "00",    "class": "btn number"                   },
+                { "idx":"17",   "id": "btn_dot",    "exp": ".",    "letters": ".",     "class": "btn number"                   },
+                { "idx":"18",   "id": "btn_pct",    "exp": "%",    "letters": "%",     "class": "btn c_blue percent"           },
+                { "idx":"19",   "id": "btn_eq",     "exp": "=",    "letters": "=",     "class": "c_yellow equal"               },
             ]
         </init>
     </head>
@@ -235,190 +233,121 @@
 
 对应的 HVML `body` 标签内容如下：
 
-```html
+```hvml
     <body>
         <div id="calculator">
 
             <div id="c_title">
-                <h2>计算器</h2>
+                <h2 id="c_title">$T.get('HVML Calculator')
+                    <small>$T.get('Current Time: ')<span id="clock">$DATETIME.time_prt()</span></small>
+                </h2>
+
+                <observe on="$TIMERS" for="expired:clock">
+                    <update on="#clock" at="textContent" with="$DATETIME.time_prt()" />
+                </observe>
             </div>
 
             <div id="c_text">
-                <input type="text" id="text" value="0" readonly="readonly" />
+                <input type="text" id="expression" value="0" readonly="readonly" />
             </div>
 
             <div id="c_value">
                 <archetype name="button">
-                    <li class="$?.class">$?.letters</li></li>
+                    <li class="$?.class" id="$?.id" value="$?.idx" hvml-events="click">$?.letters</li>
                 </archetype>
 
                 <ul>
                     <iterate on="$buttons">
                         <update on="$@" to="append" with="$button" />
-                        <except>
+                        <except type="NoData" raw>
                             <p>Bad data!</p>
                         </except>
                     </iterate>
                 </ul>
             </div>
 
-        </div>
-    </body>
+        ...
 ```
 
 注意，在上述代码中，除了使用了 HVML `iterate` 动作标签之外，我们还使用了 `archetype` 标签，用于定义一个 HTML 片段模板。
 
-## 响应式输出
+## 处理表达式输入
 
 随着用户点击按钮，解释器输出框中的内容将随之改变。为此，我们设定一个全局的字符串变量，用于保存计算器输出框中的字符串，当用户点击按钮时，该字符串的值将发生变化，而计算器输出框中显示的内容也将相应发生变化。
 
 这一改变涉及两处：
-- 在头部新增一个全局的 `expression` 变量。
-- 修改 `input` 标签。
+
+- 在头部新增一个全局的 `myResult` 变量。
+- 监听具有类名 `.btn` 元素之 `click` 事件，更新表达式并重置输入框的文本内容。
 
 如下所示：
 
-```html
+```hvml
     <head>
 
         ...
 
-        <init as="expression">0</init>
+        <init as="myResult">
+            {
+                exp: "",
+                expr: "",
+            }
+        </init>
     </head>
 
     <body>
         <div id="calculator">
-
-            <div id="c_title">
-                <h2>计算器</h2>
-            </div>
-
-            <div id="c_text">
-                <input type="text" id="text" value="$expression" readonly="readonly" />
-                <bind on="$expression" as="listener_exp">
-                    <observe on="$listener_exp" for="change">
-                        <update on="#text" at="attr.value" with="$listener_exp.eval" />
-                    </observe>
-                </bind>
-            </div>
-
             ...
-
         </div>
+
+        <observe on=".btn" for="click">
+            <update on="$myResult" at=".exp" with="$STR.join($myResult.exp, $buttons[$?.targetValue].letters)" />
+            <update on="$myResult" at=".expr" with="$STR.join($myResult.expr, $buttons[$?.targetValue].exp)" />
+            <update on="#expression" at="attr.value" with="$myResult.exp" />
+        </observe>
     </body>
 ```
 
-## 处理按钮事件
+## 处理其他按钮事件
 
-接下来，我们使用 HVML 的 `observe` 标签处理按钮事件，并重置 `expression` 变量的值。首先清除（C）按钮，是最容易处理的：
-
-```hvml
-        <observe on=".clear" for="click">
-            <init as="expression" at="_root">0</init>
-        </observe>
-```
-
-其次是 1、2、3 等数字按钮，我们先简化处理，每次在表达式之后追加按钮元素的文本内容：
+接下来，我们使用 HVML 的 `observe` 标签处理其他按钮上的事件。其中清除（C）按钮是最容易处理的：
 
 ```hvml
-        <observe on=".letters" for="click">
-            <init as="expression" at="_root" with="$expression$@.textContent" />
-        </observe>
+            <observe on="#btn_clear" for="click">
+                <update on="$myResult" at=".exp" with="" />
+                <update on="$myResult" at=".expr" with="" />
+                <update on="#expression" at="attr.value" with="0" />
+            </observe>
 ```
 
-上述 HVML 代码，在 `letters` 类按钮收到 `click` 事件时执行，最终在原先的 `$expression` 变量上追加了发生该事件的按钮（由内置变量 `$@` 指代）的 `textContent` 属性值。
+回退（backspace）按钮的处理，要稍微麻烦一些。对字符串操作，我们通常使用由 HVML 解释器实现的内置动态对象（如 `$STR`），通过调用该对象提供的动态方法 `substr` 实现：
 
-其他按钮功能，比如回退（backspace），要稍微麻烦一些，是因为 HVML 语言本身未定义字符串的操作方法。对字符串操作，我们通常使用由 HVML 解释器实现的内置动态 JSON 对象（如 `$STR.），通过调用该对象提供的动态方法构件 JSON 求值表达式来实现。
+```hvml
+            <observe on="#btn_back" for="click">
+                <update on="$myResult" at=".exp" with="$STR.substr($myResult.exp, 0, -1)" />
+                <update on="$myResult" at=".expr" with="$STR.substr($myResult.expr, 0, -1)" />
+                <test with="$myResult.exp">
+                    <update on="#expression" at="attr.value" with="$myResult.exp" />
 
-假定我们使用 HVML 解释器提供了一个内置的动态 JSON 对象 `$STR.，该对象提供了常见的字符串操作方法。比如本文中要用到的方法：
-
-- `strip`：用于删除字符串尾部的一个或者多个字符。
-- `strcat`：用于在一个已有字符串中追加另一个字符串。
-- `strlen`：用于返回一个字符串的长度（字符个数）。
-
-那么，我们可以使用如下的代码来处理 `←`（回退）按钮上的单击事件：
-
-```html
-        <observe on=".backspace" for="click">
-            <init as="expression" at="_root" with="$STR.strip($expression, 1)" />
-        </observe>
+                    <differ>
+                        <update on="#expression" at="attr.value" with="0" />
+                    </differ>
+                </test>
+            </observe>
 ```
 
-对 `=` 按钮的处理，我们可以使用外部脚本实现一个相当于 JavaScript `eval` 功能的外部执行器，提供给 `choose` 标签使用：
+对 `=` 按钮的处理，我们直接使用预定义变量 `$MATH` 提供的 `eval` 方法：
 
-```html
-        <observe on=".equal" for="click">
-            <choose on="$expression" by="CLASS: CEval">
-                <init as="expression" at="_root" with="$?" />
-            </choose>
-        </observe>
-```
+```hvml
+            <observe on="#btn_eq" for="click">
+                <choose on="$MATH.eval($myResult.expr)">
+                    <update on="#expression" at="attr.value" with="$?" />
+                    <catch for='*'>
+                        <update on="#expression" at="attr.value" with="ERR" />
+                    </catch>
+                </choose>
+            </observe>
 
-本例中，我们使用 Python 脚本，因此，我们可以如下实现 `CEval` 这个外部选择器：
-
-```python
-class CEval (HVMLChooser):
-    def __init__ (self):
-        pass
-
-    def choose (self, on_value, in_value):
-        return eval (on_value)
-```
-
-和 Web 版本的实现类似，这里我们直接使用 Python 的 `eval` 函数来对运算表达式求值。
-
-如果我们将 `eval` 这类函数的功能实现为全局动态对象（`$MATH`）的一个方法，则相应的代码可简化为：
-
-```html
-        <observe on=".equal" for="click">
-            <init as="expression" at="_root" with="$MATH.eval($expression)" />
-        </observe>
-```
-
-## 交互过程的细节处理
-
-在上面的代码中，我们没有处理用户单击按钮时，对运算表达式正确性的基本判断，另外，我们也忽略了各种可能的错误情形，比如求值表达式错误，或者被零除等。在本节中，我们加上相关的代码。
-
-```html
-        <observe on=".letters" for="click">
-            <test on="$expression">
-                <match for="LIKE 'err*'" exclusively>
-                    <init as="expression" at="_root" with="$@.textContent" />
-                </match>
-                <match for="ANY">
-                    <init as="expression" at="_root" with="$expression$@.textContent" />
-                </match>
-            </test>
-        </observe>
-```
-
-在上述代码中，当运算表达式求值错误的情况下，会显示 `ERROR`，此时将替换表达式字符串变量的值为按钮元素对应的文本内容。
-
-对回退按钮，我们增加一个当前表达式字符串长度的判断，并在当前长度为 1 时，始终重置为 `0`：
-
-```html
-        <observe on=".backspace" for="click">
-            <test on="$STR.strlen($expression)">
-                <match for="EQ 1" exclusively>
-                    <init as="expression" at="_root" with="0" />
-                </match>
-                <match for="ANY">
-                    <init as="expression" at="_root" with="$STR.strip($expression, 1)" />
-                </match>
-            </test>
-        </observe>
-```
-
-而在等号按钮的处理中，我们增加了对异常的捕获处理（注意，`catch` 是新增的用来捕获异常的动作标签）：
-
-```html
-        <observe on=".equal" for="click">
-            <init as="expression" at="_root" with="$MATH.eval($expression)">
-                <catch for="*">
-                    <init as="expression" at="_root" with="ERROR" />
-                </catch>
-            </init>
-        </observe>
 ```
 
 ## 完整的计算器程序源代码
@@ -427,109 +356,134 @@ class CEval (HVMLChooser):
 
 注：为节省篇幅，我们把 CSS 部分保存到了单独的外部文件中。
 
-```html
-<!DOCTYPE hvml>
-<hvml target="html" script="python" lang="en">
+```hvml
+<!DOCTYPE hvml SYSTEM 'f: MATH'>
+<hvml target="html" lang="en">
     <head>
-        <title>计算器</title>
+        <base href="$CRTN.base(! 'http://files.fmsoft.cn/calculator/' )" />
 
-        <link rel="stylesheet" href="https://github.com/HVML/hvml-docs/raw/master/zh/calculator.css" />
+        <update on="$T.map" from="assets/{$SYS.locale}.json" to="merge" />
+
+        <init as="myResult">
+            {
+                exp: "",
+                expr: "",
+            }
+        </init>
 
         <init as="buttons">
             [
-                { "letters": "7", "class": "number" },
-                { "letters": "8", "class": "number" },
-                { "letters": "9", "class": "number" },
-                { "letters": "←", "class": "c_blue backspace" },
-                { "letters": "C", "class": "c_blue clear" },
-                { "letters": "4", "class": "number" },
-                { "letters": "5", "class": "number" },
-                { "letters": "6", "class": "number" },
-                { "letters": "×", "class": "c_blue multiplication" },
-                { "letters": "÷", "class": "c_blue division" },
-                { "letters": "1", "class": "number" },
-                { "letters": "2", "class": "number" },
-                { "letters": "3", "class": "number" },
-                { "letters": "+", "class": "c_blue plus" },
-                { "letters": "-", "class": "c_blue subtraction" },
-                { "letters": "0", "class": "number" },
-                { "letters": "00", "class": "number" },
-                { "letters": ".", "class": "number" },
-                { "letters": "%", "class": "c_blue percent" },
-                { "letters": "=", "class": "c_yellow equal" },
+                { "idx":"0",    "id": "btn_7",      "exp": "7",    "letters": "7",     "class": "btn number"                   },
+                { "idx":"1",    "id": "btn_8",      "exp": "8",    "letters": "8",     "class": "btn number"                   },
+                { "idx":"2",    "id": "btn_9",      "exp": "9",    "letters": "9",     "class": "btn number"                   },
+                { "idx":"3",    "id": "btn_back",   "exp": "←",    "letters": "←",     "class": "c_blue backspace"             },
+                { "idx":"4",    "id": "btn_clear",  "exp": "C",    "letters": "C",     "class": "c_blue clear"                 },
+                { "idx":"5",    "id": "btn_4",      "exp": "4",    "letters": "4",     "class": "btn number"                   },
+                { "idx":"6",    "id": "btn_5",      "exp": "5",    "letters": "5",     "class": "btn number"                   },
+                { "idx":"7",    "id": "btn_6",      "exp": "6",    "letters": "6",     "class": "btn number"                   },
+                { "idx":"8",    "id": "btn_mul",    "exp": "*",    "letters": "x",     "class": "btn c_blue multiplication"    },
+                { "idx":"9",    "id": "btn_div",    "exp": "/",    "letters": "÷",     "class": "btn c_blue division"          },
+                { "idx":"10",   "id": "btn_1",      "exp": "1",    "letters": "1",     "class": "btn number"                   },
+                { "idx":"11",   "id": "btn_2",      "exp": "2",    "letters": "2",     "class": "btn number"                   },
+                { "idx":"12",   "id": "btn_3",      "exp": "3",    "letters": "3",     "class": "btn number"                   },
+                { "idx":"13",   "id": "btn_plus",   "exp": "+",    "letters": "+",     "class": "btn c_blue plus"              },
+                { "idx":"14",   "id": "btn_sub",    "exp": "-",    "letters": "-",     "class": "btn c_blue subtraction"       },
+                { "idx":"15",   "id": "btn_0",      "exp": "0",    "letters": "0",     "class": "btn number"                   },
+                { "idx":"16",   "id": "btn_00",     "exp": "00",   "letters": "00",    "class": "btn number"                   },
+                { "idx":"17",   "id": "btn_dot",    "exp": ".",    "letters": ".",     "class": "btn number"                   },
+                { "idx":"18",   "id": "btn_pct",    "exp": "%",    "letters": "%",     "class": "btn c_blue percent"           },
+                { "idx":"19",   "id": "btn_eq",     "exp": "=",    "letters": "=",     "class": "c_yellow equal"               },
             ]
         </init>
 
-        <init as="expression">0</init>
+        <title>$T.get('HVML Calculator')</title>
+
+        <update on="$TIMERS" to="unite">
+            [
+                { "id" : "clock", "interval" : 1000, "active" : "yes" },
+            ]
+        </update>
+
+        <link rel="stylesheet" type="text/css" href="assets/calculator.css" />
+        <style>
+            #expression {
+                /*margin-left: 200px;*/
+                padding-right: 10px;
+                width: 1000px;
+                height: 50px;
+                font-size: 25px;font-family: "微软雅黑";color: #666666;
+                text-align: right;border: 1px white;
+                border: double 1px;
+            }
+        </style>
     </head>
 
     <body>
         <div id="calculator">
 
             <div id="c_title">
-                <h2>计算器</h2>
+                <h2 id="c_title">$T.get('HVML Calculator')
+                    <small>$T.get('Current Time: ')<span id="clock">$DATETIME.time_prt()</span></small>
+                </h2>
+
+                <observe on="$TIMERS" for="expired:clock">
+                    <update on="#clock" at="textContent" with="$DATETIME.time_prt()" />
+                </observe>
             </div>
 
             <div id="c_text">
-                <input type="text" id="text" value="$expression" readonly="readonly" />
-                <bind on="$expression" as="listener_exp">
-                    <observe on="$listener_exp" for="change">
-                        <update on="#text" at="attr.value" with="$listener_exp.eval" />
-                    </observe>
-                </bind>
+                <input type="text" id="expression" value="0" readonly="readonly" />
             </div>
 
             <div id="c_value">
                 <archetype name="button">
-                    <li class="$?.class">$?.letters</li></li>
+                    <li class="$?.class" id="$?.id" value="$?.idx" hvml-events="click">$?.letters</li>
                 </archetype>
 
                 <ul>
                     <iterate on="$buttons">
                         <update on="$@" to="append" with="$button" />
-                        <except>
+                        <except type="NoData" raw>
                             <p>Bad data!</p>
                         </except>
                     </iterate>
                 </ul>
             </div>
 
+            <observe on="#btn_clear" for="click">
+                <update on="$myResult" at=".exp" with="" />
+                <update on="$myResult" at=".expr" with="" />
+                <update on="#expression" at="attr.value" with="0" />
+            </observe>
+
+            <observe on="#btn_back" for="click">
+                <update on="$myResult" at=".exp" with="$STR.substr($myResult.exp, 0, -1)" />
+                <update on="$myResult" at=".expr" with="$STR.substr($myResult.expr, 0, -1)" />
+                <test with="$myResult.exp">
+                    <update on="#expression" at="attr.value" with="$myResult.exp" />
+
+                    <differ>
+                        <update on="#expression" at="attr.value" with="0" />
+                    </differ>
+                </test>
+            </observe>
+
+            <observe on="#btn_eq" for="click">
+                <choose on="$MATH.eval($myResult.expr)">
+                    <update on="#expression" at="attr.value" with="$?" />
+                    <catch for='*'>
+                        <update on="#expression" at="attr.value" with="ERR" />
+                    </catch>
+                </choose>
+            </observe>
+
+            <observe on=".btn" for="click">
+                <update on="$myResult" at=".exp" with="$STR.join($myResult.exp, $buttons[$?.targetValue].letters)" />
+                <update on="$myResult" at=".expr" with="$STR.join($myResult.expr, $buttons[$?.targetValue].exp)" />
+                <update on="#expression" at="attr.value" with="$myResult.exp" />
+            </observe>
         </div>
-
-        <observe on=".clear" for="click">
-            <init as="expression" at="_root" with="0" />
-        </observe>
-
-        <observe on=".number" for="click">
-            <test on="$expression">
-                <match for="LIKE 'ERR*'" exclusively>
-                    <init as="expression" at="_root" with="$@.textContent" />
-                </match>
-                <match for="ANY">
-                    <init as="expression" at="_root" with="$expression$@.textContent" />
-                </match>
-            </test>
-        </observe>
-
-        <observe on=".backspace" for="click">
-            <test on="$STR.strlen($expression)">
-                <match for="EQ 1" exclusively>
-                    <init as="expression" at="_root" with="0" />
-                </match>
-                <match for="ANY">
-                    <init as="expression" at="_root" with="$STR.strip($expression, 1)" />
-                </match>
-            </test>
-        </observe>
-
-        <observe on=".equal" for="click">
-            <init as="expression" at="_root" with="$MATH.eval($expression)">
-                <catch for="*">
-                    <init as="expression" at="_root" with="ERROR" />
-                </catch>
-            </init>
-        </observe>
-
     </body>
+
 </hvml>
 ```
