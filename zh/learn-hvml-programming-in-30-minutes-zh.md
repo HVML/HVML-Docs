@@ -1762,9 +1762,7 @@ $ purc --rdr-prot=purcmc fibonacci-numbers.hvml
 
 您将在一个由 Fibonacci Numbers 创建的 xGUI Pro 窗口中看到内容：
 
-![斐波那契数列](articles/Fibonacci_Numbers.png) 
-
-斐波那契数列
+![fibonacci-numbers](https://files.fmsoft.cn/hvml/screenshots/fibonacci-html-temp.png)
 
 当你关闭窗口时，`purc` 也会退出。因为 HVML 程序在 `$CRTN` 上观察事件 `rdrState: pageClosed`。
 
@@ -1992,9 +1990,7 @@ $ purc --rdr-prot=purcmc fibonacci-numbers.hvml
 
 这是上面程序的截图。
 
-![任意精度计算器](articles/Arbitrary_Precision_Calculator.png) 
-
-任意精度计算器
+![the Arbitrary Precision Calculator](https://files.fmsoft.cn/hvml/screenshots/calculator-bc.png)
 
 请注意，xGUI Pro 集成了 Bootstrap 5.1，因此您可以直接使用 Bootstrap 的 CSS 和 JavaScript 资源。
 
@@ -2131,7 +2127,7 @@ svg {
 
 这是行星共振的截图：
 
-![行星共振](articles/Planetary_Resonance.png) 
+![the Planetary Resonance](https://files.fmsoft.cn/hvml/screenshots/planetary-resonance.png)
 
 行星共振
 
