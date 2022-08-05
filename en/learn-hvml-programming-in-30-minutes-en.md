@@ -1927,12 +1927,12 @@ Another intersting feature about an asynchronous initialization is that we can a
             "shortDesc": "The Zhang family's rooster has laid eggs!",
             "longDesc": 'Yesterday, the second son of the Zhang family came to me and said, "My rooster has laid eggs!"',
             "detailedUrl": "#",
-            "time": $SYS.time.iso8601
+            "time": DATETIME.time_prt.iso8601
         }
 
         <update on "#breaking-news" to "displace" with $realCardBody />
 
-        <observe against "breakingNews" for "change:displace" in "#breaking-news" >
+        <observe against "breakingNews" for "change:displaced" in "#breaking-news" >
             <!-- the content will be displaced by using the new data -->
             <update on $@ to "displace" with $realCardBody />
         </observe>

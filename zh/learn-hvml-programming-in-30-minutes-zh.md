@@ -1616,3 +1616,530 @@ The main coroutine exited.
 15
 ````
 
+## 异步操作
+
+您已经看到我们多次使用副词属性 `asynchronously` 或 `async`。正如您所想的那样，这个副词属性使元素异步地执行一项操作。您可以在许多动词元素中使用这个副词，包括 `init`、`load`、`call` 和 `request`。通常，当您使用 `async` 时，您需要使用 `as` 属性来创建一个命名变量，以便观察这个变量上的事件。
+
+您已经看到了在 `load` 或 `call` 元素中副词属性 `asynchronously` 的用法。通过 `as` 属性，我们可以将一个命名变量绑定到表示协程的原生实体数据上，然后您可以在这个变量上观察对应的事件：`corState:exit`、`corState:terminated`、`callState:success` 等。
+
+对于 `init` 元素，HVML 为异步初始化数据提供了一个有趣的特性。当您使用 `init` 元素异步初始化数据时，您可以在该变量上观察操作成功或失败的事件。
+
+例如，下面的 HTML 程序片段从一个远程 URL 异步初始化一个名为 `users` 的变量，并观察变量上的 `change:attached` 事件：
+
+```hvml
+    <init as "users" from "http://foo.bar.com/get_all_users" async />
+
+    <archetype name="user_item">
+        <li class="user-item">
+            <img class="avatar" src="" />
+            <span></span>
+        </li>
+    </archetype>
+
+    <ul class="user-list">
+        <img src="wait.png" />
+    </ul>
+
+    <observe against "users" for "change:attached" in "#user-list">
+        <clear on "$@" />
+        <iterate on "$users" by "RANGE: FROM 0">
+            <update on "$@" to "append" with "$user_item" />
+        </iterate>
+    </observe>
+```
+
+您会发现我们在 `observe` 元素中使用了 `against` 属性而不是 `on` 属性。当您在 `observe` 元素中使用 `against` 属性时，该元素将观察命名变量上的事件，属性值表示的是变量的名称，而如果使用 `on` 属性，它将观察变量引用的数据上的事件。
+
+在使用异步获取的数据初始化一个变量时，可能产生如下事件：
+
+- `change:attached`：数据成功获得并绑定到变量。
+- `change:displaced`：绑定到变量的旧数据已被新数据取代。
+- `except:<exceptionName>`: 初始化变量时引发异常。
+
+通过观察这些事件，您可以轻松处理命名变量上的变化。
+
+请注意，您只能对命名的静态变量进行观察。也就是说，您不能对临时变量进行观察。
+
+关于异步初始化的另一个有趣的特性是，我们可以给变量赋一个默认值，并在获得变量的 `change:displaced` 事件时更新目标文档，如下代码所示:
+
+```
+    <!-- 使用 `init` 元素的内容给变量 breakingNews 设定一条假新闻 -->
+    <init as "breakingNews" from "assets/breaking-news-{$SYS.locale}.json" async>
+        {
+            "title": "惊爆新闻来袭",
+            "shortDesc": "张家的公鸡下蛋了！",
+            "longDesc": '昨日，张家的二儿子跑来跟我说，“天有异象，天有异象啊！我家的公鸡下蛋了！”',
+            "detailedUrl": "#",
+            "time": DATETIME.time_prt.iso8601
+        }
+
+        <update on "#breaking-news" to "displace" with $realCardBody />
+
+        <observe against "breakingNews" for "change:displaced" in "#breaking-news" >
+            <!-- 使用获得数据（真实新闻数据）覆盖对应的内容 -->
+            <update on $@ to "displace" with $realCardBody />
+        </observe>
+    </init>
+```
+
+请注意，如果您想从远程 URL 获取数据，您必须首先构建和安装 [PurC Fetcher](https://github.com/HVML/PurC-Fetcher) 。
+
+## 连接到渲染器
+
+您已经看到 HVML 可以生成用 HTML 等标记语言描述的文档。但是我们如何在窗口中显示文档并与用户交互呢？为此，我们使用 HVML 渲染器。HVML 渲染器可以像浏览器一样以图形方式渲染由 HTML 程序生成的文档，或者仅以文本模式显示 DOM 树。
+
+PurC 提供了三种方式（协议）来连接一个 HVML 解释器实例和 HVML 渲染器：
+
+- `HEADLESS`：PurC 中内置的虚拟 HVML 渲染器。
+- `PURCMC`：HVML 渲染器作为服务器运行，HVML 解释器实例可以通过 Unix 域套接字或 Web 套接字连接到渲染器。
+- `THREAD`：HVML 渲染器和 HVML 解释器实例运行在同一个进程中，而 HVML 渲染器运行在独立的系统线程中。
+
+目前，HVML 社区提供了两种 HVML 渲染器的实现：
+
+- [xGUI Pro](https://github.com/HVML/xGUI-Pro)：基于 WebKit 的高级 HVML 渲染器。
+- [PurC Midnight Commander](https://github.com/HVML/PurC-Midnight-Commander)：文本模式下的 HVML 渲染器，用于开发和调试。
+
+两种实现都使用 `PURCMC` 协议。据我所知，到目前为止还没有 `THREAD` 协议的实现。
+
+让我们看一个例子。
+
+下面名为 Fibonacci Numbers 的 HVML 程序生成一个 HTML 文档，列出 18 个小于 2000 的斐波那契数列。
+
+```hvml
+# RESULT: [ 18, 1597L ]
+
+<!-- Fibonacci Numbers -->
+<!DOCTYPE hvml>
+<hvml target="html">
+    <head>
+        <title>Fibonacci Numbers</title>
+    </head>
+
+    <body id="theBody">
+        <h1>Fibonacci Numbers less than 2000</h1>
+
+        <init as "count" at "_topmost" with 2 temp />
+        <init as "last_one" with 0L temp />
+        <init as "last_two" with 1L temp />
+
+        <ol>
+            <li>$last_one</li>
+            <li>$last_two</li>
+
+            <iterate on $last_two onlyif $L.lt($0<, 2000L) with $EJSON.arith('+', $0<, $last_one) nosetotail >
+                <init as "last_one" at "3" with $last_two temp />
+                <init as "last_two" at "3" with $? temp />
+                <!-- init as "last_two" at "#theBody" with $? temp / -->
+
+                <update on "$4!" at ".count" to "displace" with += 1 />
+
+                <li>$?</li>
+            </iterate>
+        </ol>
+
+        <p>Totally $count numbers</p>
+
+        <observe on $CRTN for "rdrState:pageClosed">
+            <exit with [$count, $last_two] />
+        </observe>
+
+    </body>
+
+</hvml>
+```
+
+如果您不带任何选项使用 `purc` 运行此程序，`purc` 将使用名为 `HEADLESS` 的内置渲染器。这个渲染器将记录从任何 HVML 解释器实例接收到的消息到一个本地文件：在 `Linux` 上默认为 `/dev/null`。因为这个 HVML 程序没有使用 `$STREM.stdout`，所以您在终端上看不到任何内容。但是您可以像以前一样使用选项 `-b` 在终端中显示 HVML 程序生成的 HTML 内容。
+
+您还可以直接将 `purc` 连接到 `PURCMC` 渲染器，例如 `xGUI Pro`。具体操作，请参考 https://github.com/HVML/xGUI-Pro 了解安装 xGUI Pro 的详细说明。
+
+假设您已经在系统上安装了 xGUI Pro，您可以运行 `purc` 在 xGUI Pro 的窗口中显示最终的 HTML 内容。
+
+假设您已经从另一个终端启动了 xGUI Pro，那么请使用以下选项运行 `purc`：
+
+```
+$ purc --rdr-prot=purcmc fibonacci-numbers.hvml
+```
+
+您将在一个由 Fibonacci Numbers 创建的 xGUI Pro 窗口中看到内容：
+
+![斐波那契数列](articles/Fibonacci_Numbers.png) 
+
+斐波那契数列
+
+当你关闭窗口时，`purc` 也会退出。因为 HVML 程序在 `$CRTN` 上观察事件 `rdrState: pageClosed`。
+
+## 两个综合示例
+
+### 任意精度计算器
+
+为了提供更好的了解 HVML，我们展示一个的完整示例程序，以下程序实现了任意精度计算器（Arbitrary Precision Calculator）。
+
+```hvml
+<!-- Arbitrary Precision Calculator -->
+<!DOCTYPE hvml SYSTEM 'f: MATH'>
+<hvml target="html" lang="$STR.substr($SYS.locale, 0, 2)">
+    <head>
+        <!-- 这些 meta 标签将出现在目标文档的 head 元素中 -->
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+        <!-- 导入渲染器中内置的 Bootstrap 资源 -->
+        <link rel="stylesheet" href="//localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="//localhost/_renderer/_builtin/-/assets/bootstrap-icons-1.8.3/bootstrap-icons.css" />
+
+        <!-- $T 为本地化提供了与 GNU getext 相同的功能。
+             如果删除此元素，程序将生成英文用户界面。-->
+        <update on="$T.map" to="merge">
+            {
+                "HVML Arbitrary Precision Calculator": "HVML 任意精度计算器",
+                "Current Time: ": "当前时间：",
+                "←": "删",
+                "C": "清",
+                "The result scale (": "结果精度（",
+                " decimals)": " 位小数）",
+            }
+        </update>
+
+        <!-- 在这里设置一个定时器 -->
+        <update on="$TIMERS" to="unite">
+            [
+                { "id" : "clock", "interval" : 500, "active" : "yes" },
+            ]
+        </update>
+
+        <title>$T.get('HVML Arbitrary Precision Calculator')</title>
+    </head>
+
+    <body>
+        <!-- 以下外部元素定义计算器的标题 -->
+        <div class="px-4 my-5 border-bottom">
+            <div class="text-center">
+                <h1 class="display-4 fw-bold">$T.get('HVML Arbitrary Precision Calculator')</h1>
+                <p class="lead">$T.get('Current Time: ')<span id="clock">$DATETIME.time_prt()</span></p>
+
+                <!-- 当获得 'expired:clock ' 事件时，用当前时间更新上面的 'span' 元素内容 -->
+                <observe on="$TIMERS" for="expired:clock">
+                    <update on="#clock" at="textContent" with="$DATETIME.time_prt()" />
+                </observe>
+            </div>
+        </div>
+
+        <!-- 创建一个静态变量来保存精度（小数点位数）和表达式及其结果 -->
+        <init as="myResult">
+            {
+                scale: 10,
+                exp: "",
+                expr: "",
+            }
+        </init>
+
+        <!-- 初始化计算器按钮的数据 -->
+        <init as="buttons">
+            [
+                { id: "theBtn7",            exp: "7",    text: "7",              class: "btn-outline-primary btn-for-input", idx: "0" },
+                { id: "theBtn8",            exp: "8",    text: "8",              class: "btn-outline-primary btn-for-input", idx: "1" },
+                { id: "theBtn9",            exp: "9",    text: "9",              class: "btn-outline-primary btn-for-input", idx: "2" },
+                { id: "theBtnBack",         exp: "←",    text: "$T.get('←')",    class: "btn-outline-warning",               idx: "3" },
+                { id: "theBtnClear",        exp: "C",    text: "$T.get('C')",    class: "btn-outline-danger",                idx: "4" },
+                { id: "theBtn4",            exp: "4",    text: "4",              class: "btn-outline-primary btn-for-input", idx: "5" },
+                { id: "theBtn5",            exp: "5",    text: "5",              class: "btn-outline-primary btn-for-input", idx: "6" },
+                { id: "theBtn6",            exp: "6",    text: "6",              class: "btn-outline-primary btn-for-input", idx: "7" },
+                { id: "theBtnTimes",        exp: "*",    text: "×",              class: "btn-outline-success btn-for-input", idx: "8" },
+                { id: "theBtnDivision",     exp: "/",    text: "÷",              class: "btn-outline-success btn-for-input", idx: "9" },
+                { id: "theBtn1",            exp: "1",    text: "1",              class: "btn-outline-primary btn-for-input", idx: "10" },
+                { id: "theBtn2",            exp: "2",    text: "2",              class: "btn-outline-primary btn-for-input", idx: "11" },
+                { id: "theBtn3",            exp: "3",    text: "3",              class: "btn-outline-primary btn-for-input", idx: "12" },
+                { id: "theBtnPlus",         exp: "+",    text: "+",              class: "btn-outline-success btn-for-input", idx: "13" },
+                { id: "theBtnMinus",        exp: "-",    text: "-",              class: "btn-outline-success btn-for-input", idx: "14" },
+                { id: "theBtn0",            exp: "0",    text: "0",              class: "btn-outline-primary btn-for-input", idx: "15" },
+                { id: "theBtnDot",          exp: ".",    text: ".",              class: "btn-outline-primary btn-for-input", idx: "16" },
+                { id: "theBtnToggleSign",   exp: "±",    text: "±",              class: "btn-outline-success",               idx: "17" },
+                { id: "theBtnPercent",      exp: "%",    text: "%",              class: "btn-outline-success",               idx: "18" },
+                { id: "theBtnEqual",        exp: "=",    text: "=",              class: "btn-success",                       idx: "19" },
+            ]
+        </init>
+
+        <!-- 生成计算器主要区域的 HTML 元素 -->
+        <div class="container">
+            <div class="mb-3">
+                <label id="resultScale" class="form-label">$T.get('The result scale (')<strong id="theScale">$myResult.scale</strong>$T.get(' decimals)')</label>
+                <input type="range" class="form-range" min="0" max="100" value="$myResult.scale" hvml-events="change" id="theScaleRange" />
+            </div>
+
+            <div class="shadow-none p-3 mb-5 bg-light rounded">
+                <p id="theExpression" class="fs-1 text-nowrap fw-bold overflow-scroll text-end">0</p>
+            </div>
+
+            <archetype name="button">
+                <div class="col">
+                    <div class="d-grid gap-2 col-10 mx-auto">
+                        <button class="btn $?.class" id="$?.id" value="$?.idx" hvml-events="click" type="button">$?.text</button>
+                    </div>
+                </div>
+            </archetype>
+
+            <!-- 这里生成计算器的各个按钮 -->
+            <div class="border border-3 pt-3">
+                <iterate on=0 onlyif=$L.lt($0<,4) with=$MATH.add($0<,1) nosetotail>
+                    <div class="row mb-3">
+                        <iterate on="$buttons" by="RANGE: FROM $MATH.mul($2?, 5) TO $MATH.add($MATH.mul($2?, 5), 5)">
+                            <update on="$@" to="append" with="$button" />
+                        </iterate>
+                    </div>
+                </iterate>
+            </div>
+        </div>
+
+        <!-- 处理用于表示精度的 range 小构件的变化事件 -->
+        <observe on="#theScaleRange" for="change">
+            <update on="$myResult" at=".scale" with="$EJSON.numberify($?.targetValue)" />
+            <update on="#theScale" at="textContent" with="$?.targetValue" />
+        </observe>
+
+        <!-- 处理符号/数字按钮的点击事件 -->
+        <observe on=".btn-for-input" for="click">
+            <update on="$myResult" at=".exp" with="$STR.join($myResult.exp, $buttons[$?.targetValue].text)" />
+            <update on="$myResult" at=".expr" with="$STR.join($myResult.expr, $buttons[$?.targetValue].exp)" />
+            <update on="#theExpression" at="textContent" with="$myResult.exp" />
+        </observe>
+
+        <!-- 处理后退按钮的单击事件 -->
+        <observe on="#theBtnBack" for="click">
+            <update on="$myResult" at=".exp" with="$STR.substr($myResult.exp, 0, -1)" />
+            <update on="$myResult" at=".expr" with="$STR.substr($myResult.expr, 0, -1)" />
+
+            <test with="$myResult.exp">
+                <update on="#theExpression" at="textContent" with="$myResult.exp" />
+
+                <differ>
+                    <update on="#theExpression" at="textContent" with="0" />
+                </differ>
+            </test>
+        </observe>
+
+        <!-- 处理清除按钮的单击事件 -->
+        <observe on="#theBtnClear" for="click">
+            <update on="$myResult" at=".exp" with="" />
+            <update on="$myResult" at=".expr" with="" />
+            <update on="#theExpression" at="textContent" with="0" />
+        </observe>
+
+        <!-- 处理切换符号按钮的单击事件 -->
+        <observe on="#theBtnToggleSign" for="click">
+            <test with="$myResult.exp">
+                <update on="$myResult" at=".exp" with="$STR.join('-(', $myResult.exp, ')')" />
+                <update on="$myResult" at=".expr" with="$STR.join('-(', $myResult.expr, ')')" />
+                <update on="#theExpression" at="textContent" with="$myResult.exp" />
+            </test>
+        </observe>
+
+        <!-- 处理百分比按钮的单击事件 -->
+        <observe on="#theBtnPercent" for="click">
+            <test with="$myResult.exp">
+                <update on="$myResult" at=".exp" with="$STR.join('(', $myResult.exp, ')/100')" />
+                <update on="$myResult" at=".expr" with="$STR.join('(', $myResult.expr, ')/100')" />
+                <update on="#theExpression" at="textContent" with="$myResult.exp" />
+            </test>
+        </observe>
+
+        <!-- 处理相等按钮的单击事件 -->
+        <observe on="#theBtnEqual" for="click">
+
+            <!--在这里，我们使用 $STREAM 打开一个管道并启动一个子进程来运行 ' /usr/bin/bc '。
+                然后将表达式写入管道，并从管道读取结果。-->
+            <choose on="$STREAM.open('pipe:///usr/bin/bc?ARG1=--quiet')">
+                <choose on={{ $?.writelines(["scale=$myResult.scale", $myResult.expr]) && $?.writeeof() && $?.readlines(1) }}>
+                    <update on="#theExpression" at="textContent" with="$?[0]" />
+                </choose>
+
+                <!-- 关闭管道 -->
+                <choose on="$STREAM.close($?)" />
+
+                <!-- 捕获任何异常 -->
+                <catch for='*'>
+                    <update on="#theExpression" at="textContent" with="ERROR" />
+                </catch>
+            </choose>
+        </observe>
+
+        <!-- 以下外部元素定义计算器的页脚 -->
+        <div class="container">
+            <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+                <div class="col-md-4 d-flex align-items-center">
+                    <a href="https://hvml.fmsoft.cn" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
+                        <img class="d-block mx-auto mb-4" src="//localhost/_renderer/_builtin/-/assets/hvml.png" alt="" width="32" height="32" />
+                    </a>
+                    <span class="mb-3 mb-md-0 text-muted">© 2022 HVML Community</span>
+                </div>
+
+                <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+                    <li class="ms-3"><a class="text-muted" href="https://github.com/HVML"><i class="bi bi-github"></i></a></li>
+                    <li class="ms-3"><a class="text-muted" href="https://store.fmsoft.cn/campaign/denoteoss-lt"><i class="bi bi-coin"></i></a></li>
+                    <li class="ms-3"><a class="text-muted" href="mailto:hvml@fmsoft.cn"><i class="bi bi-envelope-heart-fill"></i></a></li>
+                </ul>
+            </footer>
+        </div>
+
+        <!-- 当窗口被用户关闭时，优雅地退出程序 -->
+        <observe on $CRTN for "rdrState:pageClosed">
+            <exit with 'Ok' />
+        </observe>
+
+    </body>
+
+</hvml>
+```
+
+这是上面程序的截图。
+
+![任意精度计算器](articles/Arbitrary_Precision_Calculator.png) 
+
+任意精度计算器
+
+请注意，xGUI Pro 集成了 Bootstrap 5.1，因此您可以直接使用 Bootstrap 的 CSS 和 JavaScript 资源。
+
+### 行星共振
+
+以下 HVML 程序称为 Planetary Resonance。它使用 SVG 标记显示行星共振（地球和金星）的动态效果（Planetary Resonance）。
+
+```hvml
+<!-- Planetary Resonance -->
+<!DOCTYPE hvml SYSTEM 'f: MATH'>
+<hvml target="html">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+        <!-- 设置一个间隔为 60ms 的定时器。-->
+        <update on="$TIMERS" to="unite">
+            [
+                { "id" : "rate", "interval" : 60, "active" : "yes" },
+            ]
+        </update>
+
+        <!-- ' hvml:raw '是一个针对外部元素的 hvml 特定属性。
+             当您不希望解释器对外部元素的内容进行求值时，请使用此属性。 -->
+        <style hvml:raw>
+body {
+  margin: 0;
+  background: #000;
+  overflow: hidden;
+}
+svg {
+  display: block;
+  margin: 0 auto;
+  width: 50%;
+}
+#orbits circle {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3px;
+}
+#lineGroup line {
+  stroke-width: 1px;
+}
+#earth {
+  fill: blue;
+}
+#venus {
+  fill: hsl(60,80%,80%)
+}
+#sol {
+  fill: yellow;
+}
+        </style>
+
+        <title>Planetary Resonance</title>
+
+    </head>
+
+    <body>
+        <!-- 创建 SVG 时，SVG 元素中的所有线条（line 元素定义）最初都是不可见的。 -->
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500">
+            <g id="orbits">
+                <circle id="venusorbit" cx="250" cy="250" r="120" />
+                <circle id="earthorbit" cx="250" cy="250" r="165" />
+            </g>
+            <g id="lineGroup" transform="rotate(-90 250 250)">
+                <iterate on 0 onlyif $L.le($0<, 300) with $EJSON.arith('+', $0<, 1) nosetotail >
+                    <line id="line$?" x1="0" y1="0" x2="1" y2="1" stroke="hsla(0, 50%, 50%, 0)" />
+                </iterate>
+            </g>
+            <circle id="earth" cx="250" cy="85" r="8" />
+            <circle id="venus" cx="250" cy="130" r="5" />
+            <circle id="sol" cx="250" cy="250" r="16" />
+        </svg>
+
+        <!-- 行星的参数。 -->
+        <init as params >
+            {
+                n: 0,
+                i: 0,
+                earthDeg: 5, earthOrbits: 8, venusOrbits: 13,
+                resonance: $MATH.div(8, 13), centre: 250,
+                earthDist: $MATH.sub(250, 85),
+                venusDist: $MATH.sub(250, 130),
+            }
+        </init>
+
+        <!-- 当定时器过期时，更新地球、金星和线的位置 -->
+        <observe on $TIMERS for "expired:rate" >
+
+            <update on '#earth' at "attr.transform" with $STR.join('rotate(', $params.i, ' ', $params.centre, ' ', $params.centre, ')') />
+            <update on '#venus' at "attr.transform" with $STR.join('rotate(', $MATH.div($params.i, $params.resonance), ' ', $params.centre, ' ', $params.centre, ')') />
+
+            <init as result temp>
+                {
+                    i: $params.i,
+                    earthX: $MATH.eval("cos(i*PI/180) * earthDist + centre", $params),
+                    earthY: $MATH.eval("sin(i*PI/180) * earthDist + centre", $params),
+                    venusX: $MATH.eval("cos((i/(earthOrbits/13))*PI/180) * venusDist + centre", $params),
+                    venusY: $MATH.eval("sin((i/(earthOrbits/13))*PI/180) * venusDist + centre", $params),
+                }
+            </init>
+
+            <update on "#line$params.n" at "attr.x1" with "$result.earthX" />
+            <update on "#line$params.n" at "attr.y1" with "$result.earthY" />
+            <update on "#line$params.n" at "attr.x2" with "$result.venusX" />
+            <update on "#line$params.n" at "attr.y2" with "$result.venusY" />
+            <update on "#line$params.n" at "attr.stroke" with "hsla($result.i , 50%, 50%, 0.5)" />
+
+            <update on $params at '.n' to 'displace' with += 1 />
+            <update on $params at '.i' to 'displace' with += $params.earthDeg />
+
+            <!-- inherit>
+                {{ $STREAM.stdout.writelines($STR.join("Params.i: ", $params.i));
+                    $STREAM.stdout.writelines($STR.join("Max: ", $MATH.eval('360 * earthOrbits + earthDeg', $params))
+                 }}
+            </inherit -->
+
+            <test with $L.ge($params.n, 300)) >
+                <update on $TIMES to "subtract" with { id: "rate" } />
+            </test>
+
+        </observe>
+
+        <!-- 当窗口被用户关闭时，等待事件 -->
+        <observe on $CRTN for "rdrState:pageClosed">
+            <exit with 'Ok' />
+        </observe>
+
+    </body>
+
+</hvml>
+```
+
+这是行星共振的截图：
+
+![行星共振](articles/Planetary_Resonance.png) 
+
+行星共振
+
+## 总结
+
+希望通过本教程，您可以快速了解 HVML 的基本原理和主要编程模式。
+
+但由于篇幅所限，本教程并未涵盖诸多细节。也许我们可以把这项工作留给更加擅长写作的其他人。
+
+显然，HVML 不同于您所知道的任何现有编程语言，它创造了一种全新的编程语言形态。欢迎加入 HVML 社区，一起创造未来！
+
