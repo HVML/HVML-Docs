@@ -155,6 +155,9 @@ Language: Chinese
 - [5) 总结](#5-总结)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RC6) 220901](#rc6-220901)
+         - [RC6.1) 增强变量名](#rc61-增强变量名)
+         - [RC6.2) 增强 `request` 标签](#rc62-增强-request-标签)
       * [RC5) 220701](#rc5-220701)
          - [RC5.1) 调整对 `include` 标签的描述](#rc51-调整对-include-标签的描述)
          - [RC5.2) 调整 `request` 标签](#rc52-调整-request-标签)
@@ -365,6 +368,17 @@ Language: Chinese
    - `ASCII 小写字母`是一个范围在 U+0061（`a`）到 U+007A（`z`）（含）的码点。
    - `ASCII 字母`要么是一个 ASCII 大写字母，要么是一个 ASCII 小写字母。
    - `ASCII 字母数字`要么是一个 ASCII 数字，要么是一个 ASCII 字母。
+   - `Unihan 表意字符` 是如下范围的码点：
+      + U+4E00 到 U+9FFC（含）
+      + U+F900 到 U+FAD9（含）
+      + U+3400 到 U+4DBF（含）
+      + U+20000 到 U+2A6DD（含）
+      + U+2A700 到 U+2B734（含）
+      + U+2B740 到 U+2B81D（含）
+      + U+2B820 到 U+2CEA1（含）
+      + U+2CEB0 到 U+2EBE0（含）
+      + U+2F800 到 U+2FA1D（含）
+      + U+30000 到 U+3134A（含）
 
 比如，表情符号 🤔 的码点是 U+1F914，可表述为 U+1F914（🤔），也可以表述为 U+1F914 THINKING FACE（🤔）。
 
@@ -1923,12 +1937,12 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 `init` 以及其他从外部资源装载数据的元素，会根据资源的 MIME 来确定装载后的数据类型：
 
-- `text/html`：字符串
+- `text/html`：用于代表一个 DOM 文档的原生实体
 - `text/css`：字符串
 - `text/javascript`：字符串
 - `text/plain`：字符串
 - `text/*`：字符串
-- `application/xml`：字符串
+- `application/xml`：用于代表一个 DOM 文档的原生实体
 - `application/json`：eJSON
 - `application/octet-stream`：字节序列
 - `application/*`：字节序列
@@ -1995,6 +2009,10 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 当我们需要引用另外一个主机上的协程时，可使用如下的写法：
 
 `//otherhost/otherAppName/otherRunner/3cc8f9e2ff74f872f09518ffd3db6f2b`
+
+在 `hvml+cor` 图式中，我们保留如下的特殊协程名称：
+
+- `_main`：表示主协程，即指定行者启动的第一个协程。
 
 ### 2.2) 规则、表达式及方法的描述语法
 
@@ -2208,12 +2226,16 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
     <literal_positive_integer>: /^[0-9]*[1-9][0-9]*$/
 
-    <literal_variable_token_first_char>: /[A-Za-z_]/
-    <literal_variable_token_other_char>: /[A-Za-z0-9_]/
-
     <literal_variable_token>: <literal_variable_token_first_char>[<literal_variable_token_other_char>, ...]
 
+    <literal_variable_token_first_char>: [ '_' | ascii_letter | unihan_ideograph ]
+    <literal_variable_token_other_char>: [ '_' | ascii_letter | ascii_digit | unihan_ideograph]
+
     <quoted_key_name>: '''<literal_char_sequence>''' | '"'<literal_char_sequence>'"'
+
+    <ascii_letter>: /A-Za-z/
+    <ascii_digit>: /0-9/
+    <unihan_ideograph>: /\u{4E00}-\u{9FFC}\u{F900}-\u{FAD9}\u{3400}-\u{4DBF}\u{20000}-\u{2A6DD}\u{2A700}-\u{2B734}\u{2B740}-\u{2B81D}\u{2B820}-\u{2CEA1}\u{2CEB0}-\u{2EBE0}\u{2F800}-\u{2FA1D}\u{30000}-\u{3134A}/
 
     <ws>: /[ \t\f\n\r]+/    # white space
     <hws>: /[ \t]+/         # horinzontal white space
@@ -2281,19 +2303,19 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
         and `*` or `?` as the wildcard characters.
     regular_expression: A regular expression conforms to POSIX.1-2001.
 
-    event_name: <literal_variable_token>[':'<literal_alnum_token>['/'<literal_alnum_token>]]
-    page_identifier: [ 'widget:' | 'plainwin:' ]<literal_variable_token>['@' [ <literal_variable_token> '/' ] <literal_alnum_token> ]
+    event_name: <literal_limited_alnum_token>[':'<literal_alnum_token>['/'<literal_alnum_token>]]
+    page_identifier: [ 'widget:' | 'plainwin:' ]<literal_limited_alnum_token>['@' [ <literal_limited_alnum_token> '/' ] <literal_alnum_token> ]
 
     coroutine_identifier: <cross_host_coroutine_identifier> | <local_host_coroutine_identifier>
     cross_host_coroutine_identifier: '//' <host_name> '/' <app_name> '/' <runner_name> '/' <coroutine_token>
     local_host_coroutine_identifier: '/' <app_name> '/' <runner_name> '/' <coroutine_token>
     host_name: <ip_literal> | <ipv4_address> | <reg_host_name>
-    app_name: <literal_variable_token>[['.'<literal_variable_token>], ...]
-    runner_name: <literal_variable_token>
+    app_name: <literal_limited_alnum_token>[['.'<literal_limited_alnum_token>], ...]
+    runner_name: <literal_limited_alnum_token>
     coroutine_token: <literal_alnum_token>
 
     literal_alnum_token: /[A-Za-z0-9_][A-Za-z0-9_]*$/
-    literal_variable_token: /^[A-Za-z_][A-Za-z0-9_]*$/
+    literal_limited_alnum_token: /^[A-Za-z_][A-Za-z0-9_]*$/
     literal_integer: /^-?[0-9]*[1-9][0-9]*$/
     literal_positive_integer: /^[0-9]*[1-9][0-9]*$/
     literal_non_negative_integer: /^[0-9]+$/
@@ -4710,15 +4732,15 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     <request on="#myInput" to="call:ELEMENT.disabled=true" with=0 noreturn />
 ```
 
-我们使用 `request` 标签，可以向另一个协程发送一个请求，此时，我们指定 `on` 属性值为目标协程的标识符，`to` 属性值构成请求的操作名称，`with` 属性或者元素内容为请求的参数。通过 `request` 标签提供的这一功能，我们可以让目标协程在它的执行上下文环境中调用指定的操作组，然后返回结果给调用者。由于该请求可以跨行者发送，故而相当于执行远程过程调用。
+我们使用 `request` 标签，可以向本行者中的另一个协程发送一个请求，此时，我们指定 `on` 属性值为目标协程的标识符或者代表目标协程的原生实体，`to` 属性值构成请求的操作名称，`with` 属性或者元素内容为请求的参数。通过 `request` 标签提供的这一功能，我们可以让目标协程在它的执行上下文环境中调用指定的操作组，然后返回结果给调用者。由于该请求可以跨行者发送，故而相当于执行远程过程调用。
 
-注意，我们不能使用 `request` 向当前协程发送请求，也不允许跨应用发送请求。
+注意，我们不能使用 `request` 向当前协程发送请求，也不允许跨应用发送请求。但我们可以向当前应用的另一个行者发送请求。通常的应用场景下，作为请求处理的行者会在主协程中接收请求，然后分发给其他协程处理，然后将子协程的处理结果作为响应转发给请求方。这种情况下，发起请求的一方无需知悉具体的协程令牌，而使用 `_main` 作为协程令牌即可。
 
 目标协程的标识符格式为 `[//hostName]/appName/<runnerName>/<coroutineToken>`。对应本规范定义的被指名词法单元 `coroutine_identifier`，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。此处，我们可以使用 `-` 指代当前主机、当前应用或当前行者，如：
 
 - `//-/-/-/3dfedf`：指当前主机、当前应用、当前行者中的 `3dfedf` 号协程。
 - `/-/-/3dfedf`：指当前主机、当前应用、当前行者中的 `3dfedf` 号协程。
-- `/-/otherRunner/3dfedf`：指当前主机、当前应用 `otherRunner` 行者中的 `3dfedf` 号协程。
+- `/-/otherRunner/_main`：指当前主机、当前应用中名为 `otherRunner` 行者的主协程。
 
 通常，用于完成请求的目标协程的运行状态在进入到事件轮询阶段之后，才能响应来自其他协程的请求并在执行对应的操作组后返回结果给发起请求的协程。为此，协程应在 `$CRTN` 变量上观察 `request:<operationName>` 事件。
 
@@ -7013,11 +7035,34 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
+- 2022 年 09 月 01 日：发布 V1.0 RC6，标记为 'v1.0-rc6-220901'。
 - 2022 年 07 月 01 日：发布 V1.0 RC5，标记为 'v1.0-rc5-220701'。
 - 2022 年 06 月 01 日：发布 V1.0 RC4，标记为 'v1.0-rc4-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
+
+#### RC6) 220901
+
+##### RC6.1) 增强变量名
+
+主要修订内容如下：
+
+1. 允许在变量名中使用 Unihan 表意字符
+
+相关章节：
+
+- [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法)
+
+##### RC6.2) 增强 `request` 标签
+
+主要修订内容如下：
+
+1. 增强 `request` 标签，允许向其他行者的主协程发送请求。
+
+相关章节：
+
+- [2.5.16) `request` 标签](#2516-request-标签)
 
 #### RC5) 220701
 
