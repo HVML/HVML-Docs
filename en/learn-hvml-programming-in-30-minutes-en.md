@@ -1542,7 +1542,7 @@ For example:
 
 Here, the `include` element uses the operation group `output_html` or `output_void` according to the evaluated reseult of the expression `${output_$CRTN.target}`.
 
-If the target document type of this HVML program is `hvml`,
+If the target document type of this HVML program is `html`,
    the above `include` element is equivalent to the following elements:
 
 ```hvml

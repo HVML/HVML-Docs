@@ -1330,7 +1330,7 @@ HVML 也提供对集合的支持，但比其他语言有更多的特性。在 HV
 
 这里，根据表达式 `${output_$CRTN.target}` 的求值结果，`include` 元素使用操作组 `output_html` 或 `output_void`。
 
-如果这个 HVML 程序的目标文档类型为 `hvml`，则上面的 `include` 元素等价于以下元素：
+如果这个 HVML 程序的目标文档类型为 `html`，则上面的 `include` 元素等价于以下元素：
 
 ```hvml
     <choose on 'Hello, world!' >
