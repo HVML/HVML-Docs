@@ -74,7 +74,7 @@ Language: Chinese
       * [2.1.18) MIME 类型](#2118-mime-类型)
       * [2.1.19) HVML URI 图式](#2119-hvml-uri-图式)
          - [2.1.19.1) `hvml` 图式](#21191-hvml-图式)
-         - [2.1.19.2) `hvml+cor` 图式](#21192-hvmlcor-图式)
+         - [2.1.19.2) `hvml+run` 图式](#21192-hvmlrun-图式)
    + [2.2) 规则、表达式及方法的描述语法](#22-规则表达式及方法的描述语法)
       * [2.2.1) 规则描述语法](#221-规则描述语法)
       * [2.2.2) JSON 求值表达式的语法](#222-json-求值表达式的语法)
@@ -158,6 +158,7 @@ Language: Chinese
       * [RC6) 220901](#rc6-220901)
          - [RC6.1) 增强变量名](#rc61-增强变量名)
          - [RC6.2) 增强 `request` 标签](#rc62-增强-request-标签)
+         - [RC6.3) 调整 HVML URI 图式](#rc63-调整-hvml-uri-图式)
       * [RC5) 220701](#rc5-220701)
          - [RC5.1) 调整对 `include` 标签的描述](#rc51-调整对-include-标签的描述)
          - [RC5.2) 调整 `request` 标签](#rc52-调整-request-标签)
@@ -1027,6 +1028,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 1. `$RUNNER.uri`：获取当前行者的 URI。
 1. `$RUNNER.myObj`：静态属性，用户自定义对象。
 1. `$RUNNER.user`：获取或设置 `$RUNNER.myObj` 对象的属性。
+1. `$RUNNER.channel`：创建通道。
 
 ##### 2.1.6.4) `$CRTN`
 
@@ -1611,6 +1613,7 @@ HVML 定义的异常如下：
    - `NotDesiredEntity`：表示传递了一个未预期的实体。
    - `EntityNotFound`：未找到指定的实体（如文件）。
    - `EntityExists`：创建新实体（如文件）时，该实体已存在。
+   - `EntityGone`：实体已消失。
    - `NoStorageSpace`：表示存储空间不足（如写入文件）时。
    - `BrokenPipe`：管道的另一端已经关闭。
    - `ConnectionAborted`：连接中断。
@@ -1992,25 +1995,26 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 `hvml://localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css`
 
-##### 2.1.19.2) `hvml+cor` 图式
+##### 2.1.19.2) `hvml+run` 图式
 
-该图式主要用于定义一个运行中的 HVML 协程，和 `ftp` 图式类似，完整的 `hvml+cor` 图式包括主机名、应用名、行者名和协程令牌（coroutine token），如：
+该图式主要用于定义属于特定行者的协程或者通道，和 `ftp` 图式类似，完整的 `hvml+run` 图式包括主机名、应用名、行者名、资源类型（表示协程的 `CRTN` 或者表示通道的 `CHAN`）及资源标志符，如协程令牌（coroutine token）或通道名称，如：
 
-`hvml+cor://localhost/appName/myRunner/3cc8f9e2ff74f872f09518ffd3db6f29`
+`hvml+run://localhost/appName/myRunner/CRTN/3cc8f9e2ff74f872f09518ffd3db6f29`
 
-在 HVML 程序中，我们可以通过 `request` 等动作元素和当前应用的其他协程交互。方便起见，我们无需指定图式名称和主机名称，并可使用 `-` 指代当前应用，这样就可以如下简写方式引用当前主机、当前应用中属于指定行者的协程，如：
+在 HVML 程序中，我们可以通过 `request` 等动作元素和当前应用的其他协程交互。方便起见，我们无需指定图式名称和主机名称，并可使用 `-` 指代当前应用，这样就可以如下简写方式引用当前主机、当前应用中属于指定行者的协程或通道，如：
 
-`/-/otherRunner/3cc8f9e2ff74f872f09518ffd3db6f2a`
+- 引用指定协程：`/-/otherRunner/CRTN/3cc8f9e2ff74f872f09518ffd3db6f2a`
+- 引用指定通道：`/-/otherRunner/CHAN/channel0`
 
 类似地，我们也可以使用 `-` 指代当前行者，即可引用当前主机、当前应用、当前行者中的指定协程，如：
 
-`/-/-/3cc8f9e2ff74f872f09518ffd3db6f2a`
+`/-/-/CRTN/3cc8f9e2ff74f872f09518ffd3db6f2a`
 
 当我们需要引用另外一个主机上的协程时，可使用如下的写法：
 
-`//otherhost/otherAppName/otherRunner/3cc8f9e2ff74f872f09518ffd3db6f2b`
+`//otherhost/otherAppName/otherRunner/CRTN/3cc8f9e2ff74f872f09518ffd3db6f2b`
 
-在 `hvml+cor` 图式中，我们保留如下的特殊协程名称：
+在 `hvml+run` 图式中，我们保留如下的特殊协程名称：
 
 - `_main`：表示主协程，即指定行者启动的第一个协程。
 
@@ -2307,12 +2311,18 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
     page_identifier: [ 'widget:' | 'plainwin:' ]<literal_limited_alnum_token>['@' [ <literal_limited_alnum_token> '/' ] <literal_alnum_token> ]
 
     coroutine_identifier: <cross_host_coroutine_identifier> | <local_host_coroutine_identifier>
-    cross_host_coroutine_identifier: '//' <host_name> '/' <app_name> '/' <runner_name> '/' <coroutine_token>
-    local_host_coroutine_identifier: '/' <app_name> '/' <runner_name> '/' <coroutine_token>
+    cross_host_coroutine_identifier: '//' <host_name> '/' <app_name> '/' <runner_name> '/CRTN/' <coroutine_token>
+    local_host_coroutine_identifier: '/' <app_name> '/' <runner_name> '/CRTN/' <coroutine_token>
+
+    channel_identifier: <cross_host_channel_identifier> | <local_host_channel_identifier>
+    cross_host_channel_identifier: '//' <host_name> '/' <app_name> '/' <runner_name> '/CHAN/' <channel_name>
+    local_host_channel_identifier: '/' <app_name> '/' <runner_name> '/CHAN/' <channel_name>
+
     host_name: <ip_literal> | <ipv4_address> | <reg_host_name>
     app_name: <literal_limited_alnum_token>[['.'<literal_limited_alnum_token>], ...]
     runner_name: <literal_limited_alnum_token>
     coroutine_token: <literal_alnum_token>
+    channel_name: <literal_variable_token>
 
     literal_alnum_token: /[A-Za-z0-9_][A-Za-z0-9_]*$/
     literal_limited_alnum_token: /^[A-Za-z_][A-Za-z0-9_]*$/
@@ -4376,11 +4386,11 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 异步地并发调用操作组时，`call` 元素的结果数据是代表新协程的原生实体，该原生实体应该至少提供一个 `id` 属性，用来返回新协程的标识符。
 
-协程标识符的格式为 `[//hostname]/<appName>/<runnerName>/<coroutineToken>`，必须符合本规范定义的 `coroutine_identifier` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法的协程标识符样例：
+协程标识符的格式为 `[//hostname]/<appName>/<runnerName>/CRTN/<coroutineToken>`，必须符合本规范定义的 `coroutine_identifier` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法的协程标识符样例：
 
-- `//localhost/cn.fmsoft.hvml.sample/Runner0/3cc8f9e2ff74f872f09518ffd3db6f29`
-- `/cn.fmsoft.hvml.sample/Runner0/3cc8f9e2ff74f872f09518ffd3db6f29`
-- `/cn.fmsoft.hvml.sample/myRunner/3cc8f`
+- `//localhost/cn.fmsoft.hvml.sample/Runner0/CRTN/3cc8f9e2ff74f872f09518ffd3db6f29`
+- `/cn.fmsoft.hvml.sample/Runner0/CRTN/3cc8f9e2ff74f872f09518ffd3db6f29`
+- `/cn.fmsoft.hvml.sample/myRunner/CRTN/3cc8f`
 
 其中，协程令牌是由解释器自动分配的唯一性标识符，可用来标识一个协程。我们不使用协程名称这一术语，是因为通过 `load` 元素，我们可以创建单个 HVML 程序的多个协程实例。
 
@@ -4729,18 +4739,33 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 我们也可以使用上面这种方法获取或者设置特定文档元素的动态属性值。比如下面的代码将 `#myInput` 元素设置为禁止，并使用 `noreturn` 副词属性，忽略响应。
 
 ```hvml
-    <request on="#myInput" to="call:ELEMENT.disabled=true" with=0 noreturn />
+    <request on "#myInput" to "call:ELEMENT.disabled=true" with 0 noreturn />
 ```
 
 我们使用 `request` 标签，可以向本行者中的另一个协程发送一个请求，此时，我们指定 `on` 属性值为目标协程的标识符或者代表目标协程的原生实体，`to` 属性值构成请求的操作名称，`with` 属性或者元素内容为请求的参数。通过 `request` 标签提供的这一功能，我们可以让目标协程在它的执行上下文环境中调用指定的操作组，然后返回结果给调用者。由于该请求可以跨行者发送，故而相当于执行远程过程调用。
 
-注意，我们不能使用 `request` 向当前协程发送请求，也不允许跨应用发送请求。但我们可以向当前应用的另一个行者发送请求。通常的应用场景下，作为请求处理的行者会在主协程中接收请求，然后分发给其他协程处理，然后将子协程的处理结果作为响应转发给请求方。这种情况下，发起请求的一方无需知悉具体的协程令牌，而使用 `_main` 作为协程令牌即可。
+注意，我们不能使用 `request` 向当前协程发送请求，也不允许跨应用发送请求。但我们可以向当前应用的另一个行者发送请求。
 
-目标协程的标识符格式为 `[//hostName]/appName/<runnerName>/<coroutineToken>`。对应本规范定义的被指名词法单元 `coroutine_identifier`，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。此处，我们可以使用 `-` 指代当前主机、当前应用或当前行者，如：
+比如，我们也可以向当前应用的另一个行者创建的通道发送数据，此时，我们使用目标通道标识符：`[//hostName]/appName/<runnerName>/CHAN/<channelName>`。对应本规范定义的被指名词法单元 `channel_identifier`，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。此处，我们可以使用 `-` 指代当前主机或当前应用，如：
 
-- `//-/-/-/3dfedf`：指当前主机、当前应用、当前行者中的 `3dfedf` 号协程。
-- `/-/-/3dfedf`：指当前主机、当前应用、当前行者中的 `3dfedf` 号协程。
-- `/-/otherRunner/_main`：指当前主机、当前应用中名为 `otherRunner` 行者的主协程。
+- `//-/-/AnotherRunner/CHAN/channel0`：指当前主机、当前应用中名为 `AnotherRunner` 行者的 `channel0` 通道。
+- `/-/AnotherRunner/CHAN/channel1`：指当前主机、当前应用中名为 `AnotherRunner` 行者的 `channel1` 通道。
+
+向另一个行者的通道发送请求时，我们只能执行 `send` 操作或 `post` 操作，如：
+
+```hvml
+    <request on "/-/AnotherRunner/CHAN/channel0" to "send" with { data: 'I am here', channel: 'got' } noreturn />
+```
+
+`send` 操作会等待目标行者接收数据（或者超时返回），而 `post` 操作会在通道满时立即返回一个错误响应。
+
+另外，我们也可以向当前应用的另一个行者创建的指定协程发送请求。通常的应用场景下，作为请求处理的行者会在主协程中接收请求并分发给其他协程处理，然后将子协程的处理结果作为响应转发给请求方。这种情况下，发起请求的一方无需知悉具体的协程令牌，而使用 `_main` 作为协程令牌即可。
+
+目标协程的标识符格式为 `[//hostName]/appName/<runnerName>/CRTN/<coroutineToken>`。对应本规范定义的被指名词法单元 `coroutine_identifier`，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。此处，我们可以使用 `-` 指代当前主机或当前应用，如：
+
+- `//-/-/AnotherRunner/CRTN/3dfedf`：指当前主机、当前应用中名为 `AnotherRunner` 行者的 `3dfedf` 号协程。
+- `/-/AnotherRunner/CRTN/3dfedf`：指当前主机、当前应用中名为 `AnotherRunner` 行者的 `3dfedf` 号协程。
+- `/-/AnotherRunner/CRTN/_main`：指当前主机、当前应用中名为 `AnotherRunner` 行者的主协程。
 
 通常，用于完成请求的目标协程的运行状态在进入到事件轮询阶段之后，才能响应来自其他协程的请求并在执行对应的操作组后返回结果给发起请求的协程。为此，协程应在 `$CRTN` 变量上观察 `request:<operationName>` 事件。
 
@@ -7059,10 +7084,23 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 主要修订内容如下：
 
 1. 增强 `request` 标签，允许向其他行者的主协程发送请求。
+1. 增强 `request` 标签，允许向其他行者的指定通道发送数据。
 
 相关章节：
 
 - [2.5.16) `request` 标签](#2516-request-标签)
+
+##### RC6.3) 调整 HVML URI 图式
+
+主要修订内容如下：
+
+1. 调整 `hvml+cor` 图式为 `hvml+run` 图式。
+1. 增强 `hvml+run` 图式，使之可以用来指定协程或者通道。
+
+相关章节：
+
+- [2.1.19.2) `hvml+run` 图式](#21192-hvmlrun-图式)
+- [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)
 
 #### RC5) 220701
 

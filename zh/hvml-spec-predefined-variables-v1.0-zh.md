@@ -59,6 +59,10 @@ Language: Chinese
       * [3.2.4) `uri` 方法](#324-uri-方法)
       * [3.2.5) `myObj` 静态属性](#325-myobj-静态属性)
       * [3.2.6) `user` 方法](#326-user-方法)
+      * [3.2.7) `channel` 方法](#327-channel-方法)
+         - [3.2.7.1) 通道实体的 `send` 方法](#3271-通道实体的-send-方法)
+         - [3.2.7.2) 通道实体的 `receive` 方法](#3272-通道实体的-receive-方法)
+         - [3.2.7.3) 通道实体上的事件](#3273-通道实体上的事件)
    + [3.3) `DATETIME`](#33-datetime)
       * [3.3.1) `time_prt` 方法](#331-time_prt-方法)
       * [3.3.2) `utctime` 方法](#332-utctime-方法)
@@ -175,18 +179,18 @@ Language: Chinese
       * [3.10.6) `assemble` 方法](#3106-assemble-方法)
    + [3.11) `STREAM`](#311-stream)
       * [3.11.1) `open` 方法](#3111-open-方法)
+         - [3.11.1.1) 流实体的 `readstruct` 方法](#31111-流实体的-readstruct-方法)
+         - [3.11.1.2) 流实体的 `writestruct` 方法](#31112-流实体的-writestruct-方法)
+         - [3.11.1.3) 流实体的 `readlines` 方法](#31113-流实体的-readlines-方法)
+         - [3.11.1.4) 流实体的 `writelines` 方法](#31114-流实体的-writelines-方法)
+         - [3.11.1.5) 流实体的 `readbytes` 方法](#31115-流实体的-readbytes-方法)
+         - [3.11.1.6) 流实体的 `writebytes` 方法](#31116-流实体的-writebytes-方法)
+         - [3.11.1.7) 流实体的 `seek` 方法](#31117-流实体的-seek-方法)
       * [3.11.2) `close` 方法](#3112-close-方法)
       * [3.11.3) `stdin` 静态属性](#3113-stdin-静态属性)
       * [3.11.4) `stdout` 静态属性](#3114-stdout-静态属性)
       * [3.11.5) `stderr` 静态属性](#3115-stderr-静态属性)
-      * [3.11.6) 流实体的 `readstruct` 方法](#3116-流实体的-readstruct-方法)
-      * [3.11.7) 流实体的 `writestruct` 方法](#3117-流实体的-writestruct-方法)
-      * [3.11.8) 流实体的 `readlines` 方法](#3118-流实体的-readlines-方法)
-      * [3.11.9) 流实体的 `writelines` 方法](#3119-流实体的-writelines-方法)
-      * [3.11.10) 流实体的 `readbytes` 方法](#31110-流实体的-readbytes-方法)
-      * [3.11.11) 流实体的 `writebytes` 方法](#31111-流实体的-writebytes-方法)
-      * [3.11.12) 流实体的 `seek` 方法](#31112-流实体的-seek-方法)
-      * [3.11.13) `pipe` 流实体](#31113-pipe-流实体)
+      * [3.11.6) `pipe` 流实体](#3116-pipe-流实体)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -249,9 +253,9 @@ Language: Chinese
       * [4.2.28) `unlink` 方法](#4228-unlink-方法)
       * [4.2.29) `file_contents` 方法](#4229-file_contents-方法)
       * [4.2.30) `opendir` 方法](#4230-opendir-方法)
+         - [4.2.30.1) 目录流实体的 `read` 方法](#42301-目录流实体的-read-方法)
+         - [4.2.30.2) 目录流实体的 `rewind` 方法](#42302-目录流实体的-rewind-方法)
       * [4.2.31) `closedir` 方法](#4231-closedir-方法)
-      * [4.2.32) 目录流实体的 `read` 方法](#4232-目录流实体的-read-方法)
-      * [4.2.33) 目录流实体的 `rewind` 方法](#4233-目录流实体的-rewind-方法)
    + [4.3) `FILE`](#43-file)
       * [4.3.1) 文本文件](#431-文本文件)
          - [4.3.1.1) `txt.head` 方法](#4311-txthead-方法)
@@ -1246,6 +1250,115 @@ $RUNNER.user(! 'userId', '20220213' )
 $RUNNER.user(! 'userId', undefined )
     // true
 ```
+
+#### 3.2.7) `channel` 方法
+
+获取或者创建通道。
+
+**描述**
+
+```js
+$RUNNER.channel(
+        <string $name: `the user defined channel name`>
+) native/channel | undefined : `the native entity representing the channel or undefined if not found.`
+```
+
+该方法获取指定通道名称对应的原生实体。返回的数据对应一个代表通道（channel）的原生实体，称为“通道实体（channel）”。通道实体提供如下方法：
+
+- `$channel.send()`：发送一个数据到通道；当通道满时，该调用将阻塞当前协程，直到数据被读取或者超时。
+- `$channel.receive()`：从通道中读取数据；当通道空时，该调用将阻塞当前协程，直到有数据或者超时。
+
+```js
+$RUNNER.channel(!
+        <string $name: `the user defined channel name`>
+        [,
+            <ulongint $cap = 1: `the capability of the channel.`>
+        ]
+) boolean : `@true for success or @false when error.`
+```
+
+该方法创建或关闭（容量为 0 时）一个新通道。
+
+**异常**
+
+以上方法可能产生的异常：
+
+- `ArgumentMissed`：未指定必要参数。可忽略异常；静默求值时返回 `false` 或 `undefined` 。
+- `WrongDataType`：无效参数类型。可忽略异常；静默求值时返回 `false` 或 `undefined`。
+- `InvalidValue`：无效容量值。可忽略异常；静默求值时返回 `false` 或 `undefined`。
+- `BadName`：错误的通道名称。可忽略异常；静默求值时返回 `false` 或 `undefined`。
+- `EntityNotFound`：未找到指定的通道。可忽略异常；静默求值时返回 `false` 或 `undefined`。
+- `EntityExists`：指定的通道已存在。可忽略异常；静默求值时返回 `false` 或 `undefined`。
+
+**示例**
+
+```js
+// 创建 `channel0` 通道
+$RUNNER.channel(! 'channel0', 10 )
+    // true (assumed that `channel0` was not created)
+
+// 获取 `channel0` 通道
+$RUNNER.channel( 'channel0' )
+    // native/channel
+
+// 关闭 `channel0` 通道
+$RUNNER.user(! 'channel0', 0 )
+    // true
+
+// 获取 `channel0` 通道
+$RUNNER.user( 'channel0' )
+    // undefined
+```
+
+##### 3.2.7.1) 通道实体的 `send` 方法
+
+向通道发送数据。
+
+**描述**
+
+```js
+$channel.send(
+        <any: data>
+) boolean
+```
+
+该方法向指定的通道发送数据；当通道满时，该调用将阻塞当前协程，直到数据被读取或者超时。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `EntityGone`：通道消失（已关闭）。可忽略异常；静默求值时返回 `false`。
+- `Timeout`：超时。可忽略异常；静默求值时返回 `false`。
+
+**示例**
+
+##### 3.2.7.2) 通道实体的 `receive` 方法
+
+从通道实体中接收数据。
+
+**描述**
+
+```js
+$channel.receive() any | undefined
+```
+
+该方法从通道中读取数据；当通道空时，该调用将阻塞当前协程，直到有数据或者超时。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `EntityGone`：通道消失（已关闭）。可忽略异常；静默求值时返回 `undefined`。
+- `Timeout`：超时。可忽略异常；静默求值时返回 `undefined`。
+
+##### 3.2.7.3) 通道实体上的事件
+
+在通道实体上，可观察如下事件：
+
+- `sendable`：可发送数据（缓冲区有空位）。
+- `receivable`：可接收数据（缓冲区有空位）。
+- `closed`：被关闭。
 
 ### 3.3) `DATETIME`
 
@@ -5063,55 +5176,7 @@ $STREAM.open(
 $STREAM.open("file://abc.md", "read write")
 ```
 
-#### 3.11.2) `close` 方法
-
-关闭流。
-
-**描述**
-
-```js
-$STREAM.close(
-        < stream $stream: `the stream entity to close.` >
-) boolean
-```
-
-该方法关闭由 `$STREAM.open` 打开的流实体，以便释放该流实体占用的系统资源。成功时返回 `true`，若流已关闭，也视作成功。
-
-注意，若没有调用该方法，流的关闭将在最终释放对应的原生实体值时自动进行。
-
-**异常**
-
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
-
-**示例**
-
-```js
-// 创建并清空
-$STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
-```
-
-#### 3.11.3) `stdin` 静态属性
-
-这是一个静态属性，对应一个流实体，其值可用于流式读写的读取接口，是 C 语言标准输入流的封装。
-
-#### 3.11.4) `stdout` 静态属性
-
-这是一个静态属性，对应一个流实体，其值可用于流式读写的写入接口，是 C 语言标准输出流的封装。
-
-**示例**
-
-```
-// 将内核名称（如 `Linux`）输出到标准输出。
-$STREAM.stdout.writelines($SYS.uname_prt('kernel-name'))
-```
-
-#### 3.11.5) `stderr` 静态属性
-
-这是一个静态属性，其对应一个流实体，值可用于流式读写的写入接口，是 C 语言标准错误流的封装。
-
-#### 3.11.6) 流实体的 `readstruct` 方法
+##### 3.11.1.1) 流实体的 `readstruct` 方法
 
 从流中读取一个二进制结构，并转换为适当的数据。
 
@@ -5150,7 +5215,7 @@ $stream.readstruct('i16le i32le')
     // array: [10, 10]
 ```
 
-#### 3.11.7) 流实体的 `writestruct` 方法
+##### 3.11.1.2) 流实体的 `writestruct` 方法
 
 将多个数据按照指定的结构格式写入流。
 
@@ -5204,7 +5269,7 @@ $stream.writestruct("i16le:2 i32le", [10, 15], 255)
 // 写入文件(16进制)：0x0a 0x00 0x0f 0x00 0xff 0x00 0x00 0x00
 ```
 
-#### 3.11.8) 流实体的 `readlines` 方法
+##### 3.11.1.3) 流实体的 `readlines` 方法
 
 从流中读取给定行数，返回字符串数组。
 
@@ -5245,7 +5310,7 @@ $stream.readlines(10)
     // array: ["This is the string to write", "Second line"]
 ```
 
-#### 3.11.9) 流实体的 `writelines` 方法
+##### 3.11.1.4) 流实体的 `writelines` 方法
 
 将字符串写入流中。
 
@@ -5285,7 +5350,7 @@ $STREAM.stdout.writelines(["This is the string to write", "Second line"])
     // Second line
 ```
 
-#### 3.11.10) 流实体的 `readbytes` 方法
+##### 3.11.1.5) 流实体的 `readbytes` 方法
 
 从流中读取一个字节序列，返回一个字节序列。
 
@@ -5326,7 +5391,7 @@ $STREAM.stdin.readbytes(10)
     // bsequence: bx77726974652073747269
 ```
 
-#### 3.11.11) 流实体的 `writebytes` 方法
+##### 3.11.1.6) 流实体的 `writebytes` 方法
 
 将一个字节序列写入流。
 
@@ -5366,7 +5431,7 @@ $STREAM.stdout.writebytes("write string")
 
 注意：字符串作为字节序列写入时，应该写入结尾的空字符。
 
-#### 3.11.12) 流实体的 `seek` 方法
+##### 3.11.1.7) 流实体的 `seek` 方法
 
 在流中执行定位操作。
 
@@ -5408,7 +5473,55 @@ $stream.seek(10, 'set')
     // ulongint: 10L
 ```
 
-#### 3.11.13) `pipe` 流实体
+#### 3.11.2) `close` 方法
+
+关闭流。
+
+**描述**
+
+```js
+$STREAM.close(
+        < stream $stream: `the stream entity to close.` >
+) boolean
+```
+
+该方法关闭由 `$STREAM.open` 打开的流实体，以便释放该流实体占用的系统资源。成功时返回 `true`，若流已关闭，也视作成功。
+
+注意，若没有调用该方法，流的关闭将在最终释放对应的原生实体值时自动进行。
+
+**异常**
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```js
+// 创建并清空
+$STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
+```
+
+#### 3.11.3) `stdin` 静态属性
+
+这是一个静态属性，对应一个流实体，其值可用于流式读写的读取接口，是 C 语言标准输入流的封装。
+
+#### 3.11.4) `stdout` 静态属性
+
+这是一个静态属性，对应一个流实体，其值可用于流式读写的写入接口，是 C 语言标准输出流的封装。
+
+**示例**
+
+```
+// 将内核名称（如 `Linux`）输出到标准输出。
+$STREAM.stdout.writelines($SYS.uname_prt('kernel-name'))
+```
+
+#### 3.11.5) `stderr` 静态属性
+
+这是一个静态属性，其对应一个流实体，值可用于流式读写的写入接口，是 C 语言标准错误流的封装。
+
+#### 3.11.6) `pipe` 流实体
 
 **查询参数**
 
@@ -6942,7 +7055,7 @@ $FS.file_contents(!
 ```js
 $FS.opendir(
         < string $pathname: Path to the directory. >
-) native/dirStream
+) native/dirStream | false
 ```
 
 该方法打开指定的路径，用于读取其中的目录项，返回的数据对应一个代表目录流（directory stream）的原生实体，称为“目录流实体（dirStream）”。目录实体提供如下方法：
@@ -6961,6 +7074,38 @@ $FS.opendir(
 **参见**
 
 - PHP `opendir()` 函数：<https://www.php.net/manual/en/function.opendir.php>
+
+##### 4.2.30.1) 目录流实体的 `read` 方法
+
+读取下一个目录项。
+
+**描述**
+
+```js
+$dirStream.read object | false
+```
+
+**示例**
+
+**参见**
+
+- PHP `readdir()` 函数：<https://www.php.net/manual/en/function.readdir.php>
+
+##### 4.2.30.2) 目录流实体的 `rewind` 方法
+
+重置目录流。
+
+**描述**
+
+```js
+$dirStream.rewind boolean
+```
+
+**示例**
+
+**参见**
+
+- PHP `rewinddir()` 函数：<https://www.php.net/manual/en/function.rewinddir.php>
 
 #### 4.2.31) `closedir` 方法
 
@@ -6987,38 +7132,6 @@ $FS.closedir(
 **参见**
 
 - PHP `opendir()` 函数：<https://www.php.net/manual/en/function.opendir.php>
-
-#### 4.2.32) 目录流实体的 `read` 方法
-
-读取下一个目录项。
-
-**描述**
-
-```js
-$dirStream.read object | false
-```
-
-**示例**
-
-**参见**
-
-- PHP `readdir()` 函数：<https://www.php.net/manual/en/function.readdir.php>
-
-#### 4.2.33) 目录流实体的 `rewind` 方法
-
-重置目录流。
-
-**描述**
-
-```js
-$dirStream.rewind boolean
-```
-
-**示例**
-
-**参见**
-
-- PHP `rewinddir()` 函数：<https://www.php.net/manual/en/function.rewinddir.php>
 
 ### 4.3) `FILE`
 
