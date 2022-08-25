@@ -59,9 +59,9 @@ Language: Chinese
       * [3.2.4) `uri` 方法](#324-uri-方法)
       * [3.2.5) `myObj` 静态属性](#325-myobj-静态属性)
       * [3.2.6) `user` 方法](#326-user-方法)
-      * [3.2.7) `channel` 方法](#327-channel-方法)
+      * [3.2.7) `chan` 方法](#327-chan-方法)
          - [3.2.7.1) 通道实体的 `send` 方法](#3271-通道实体的-send-方法)
-         - [3.2.7.2) 通道实体的 `receive` 方法](#3272-通道实体的-receive-方法)
+         - [3.2.7.2) 通道实体的 `recv` 方法](#3272-通道实体的-recv-方法)
          - [3.2.7.3) 通道实体的 `cap` 属性](#3273-通道实体的-cap-属性)
          - [3.2.7.4) 通道实体的 `len` 属性](#3274-通道实体的-len-属性)
          - [3.2.7.5) 通道实体上的事件](#3275-通道实体上的事件)
@@ -1253,25 +1253,25 @@ $RUNNER.user(! 'userId', undefined )
     // true
 ```
 
-#### 3.2.7) `channel` 方法
+#### 3.2.7) `chan` 方法
 
 获取或者创建通道。
 
 **描述**
 
 ```js
-$RUNNER.channel(
+$RUNNER.chan(
         <string $name: `the user defined channel name`>
 ) native/channel | undefined : `the native entity representing the channel or undefined if not found.`
 ```
 
-该方法获取指定通道名称对应的原生实体。返回的数据对应一个代表通道（channel）的原生实体，称为“通道实体（channel）”。通道实体提供如下方法：
+该方法获取指定通道名称对应的原生实体。返回的数据对应一个代表通道（channel）的原生实体，称为“通道实体（channel entity）”。通道实体提供如下方法：
 
 - `$channel.send()`：发送一个数据到通道；当通道满时，该调用将阻塞当前协程，直到数据被读取或者超时。
-- `$channel.receive()`：从通道中读取数据；当通道空时，该调用将阻塞当前协程，直到有数据或者超时。
+- `$channel.recv()`：从通道中读取数据；当通道空时，该调用将阻塞当前协程，直到有数据或者超时。
 
 ```js
-$RUNNER.channel(!
+$RUNNER.chan(!
         <string $name: `the user defined channel name`>
         [,
             <ulongint $cap = 1: `the capability of the channel.`>
@@ -1279,7 +1279,7 @@ $RUNNER.channel(!
 ) boolean : `@true for success or @false when error.`
 ```
 
-该方法创建或关闭（容量为 0 时）一个新通道。
+该方法创建或关闭（容量为 0 时）一个通道；亦可用于改变已有通道的容量（仅已有数据个数小于等于待设置容量时）。
 
 **异常**
 
@@ -1296,19 +1296,23 @@ $RUNNER.channel(!
 
 ```js
 // 创建 `channel0` 通道
-$RUNNER.channel(! 'channel0', 10 )
+$RUNNER.chan(! 'channel0', 10 )
     // true (assumed that `channel0` was not created)
 
-// 获取 `channel0` 通道
-$RUNNER.channel( 'channel0' )
+// 改变 `channel0` 通道的容量到 20
+$RUNNER.chan(! 'channel0', 20 )
+    // true
+
+// 获取 `chan` 通道
+$RUNNER.chan( 'channel0' )
     // native/channel
 
-// 关闭 `channel0` 通道
-$RUNNER.user(! 'channel0', 0 )
+// 通过设置通道容量为 0 而关闭 `channel0` 通道
+$RUNNER.chan(! 'channel0', 0 )
     // true
 
 // 获取 `channel0` 通道
-$RUNNER.user( 'channel0' )
+$RUNNER.chan( 'channel0' )
     // undefined
 ```
 
@@ -1335,14 +1339,14 @@ $channel.send(
 
 **示例**
 
-##### 3.2.7.2) 通道实体的 `receive` 方法
+##### 3.2.7.2) 通道实体的 `recv` 方法
 
 从通道实体中接收数据。
 
 **描述**
 
 ```js
-$channel.receive() any | undefined
+$channel.recv() any | undefined
 ```
 
 该方法从通道中读取数据；当通道空时，该调用将阻塞当前协程，直到有数据或者超时。
@@ -1361,7 +1365,7 @@ $channel.receive() any | undefined
 **描述**
 
 ```js
-$channel.cap ulongint | undefined
+$channel.cap ulongint | false
 ```
 
 该属性返回通道实体的容量大小。
@@ -1370,7 +1374,7 @@ $channel.cap ulongint | undefined
 
 该方法可能产生的异常：
 
-- `EntityGone`：通道消失（已关闭）。可忽略异常；静默求值时返回 `undefined`。
+- `EntityGone`：通道消失（已关闭）。可忽略异常；静默求值时返回 `false`。
 
 ##### 3.2.7.4) 通道实体的 `len` 属性
 
@@ -1379,7 +1383,7 @@ $channel.cap ulongint | undefined
 **描述**
 
 ```js
-$channel.len ulongint | undefined
+$channel.len ulongint | false
 ```
 
 该属性返回通道中待读取的数据数量。
@@ -1388,7 +1392,7 @@ $channel.len ulongint | undefined
 
 该方法可能产生的异常：
 
-- `EntityGone`：通道消失（已关闭）。可忽略异常；静默求值时返回 `undefined`。
+- `EntityGone`：通道消失（已关闭）。可忽略异常；静默求值时返回 `false`。
 
 ##### 3.2.7.5) 通道实体上的事件
 
