@@ -2281,7 +2281,7 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 {{
     $STREAM.stdout.writelines({{
                 $SYS.cwd(! '/root') && $FS.list_prt ||
-                    'Cannot change directory to "/root"''
+                    'Cannot change directory to "/root"'
             }})
 }}
 ```
