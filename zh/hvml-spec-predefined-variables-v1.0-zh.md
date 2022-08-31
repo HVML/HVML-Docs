@@ -53,8 +53,8 @@ Language: Chinese
       * [3.1.11) `random_sequence` 方法](#3111-random_sequence-方法)
       * [3.1.12) `random` 方法](#3112-random-方法)
    + [3.2) `RUNNER`](#32-runner)
-      * [3.2.1) `app` 方法](#321-app-方法)
-      * [3.2.2) `runner` 方法](#322-runner-方法)
+      * [3.2.1) `app_name` 方法](#321-app_name-方法)
+      * [3.2.2) `run_name` 方法](#322-run_name-方法)
       * [3.2.3) `rid` 方法](#323-rid-方法)
       * [3.2.4) `uri` 方法](#324-uri-方法)
       * [3.2.5) `myObj` 静态属性](#325-myobj-静态属性)
@@ -1073,14 +1073,14 @@ $SYS.random(-10FL)
 
 该变量是一个行者级内置变量，解释器在创建一个新的行者时，会自动创建并绑定。该变量主要用于行者相关的信息，并提供给用户在当前行者的不同协程之间共享数据的机制。
 
-#### 3.2.1) `app` 方法
+#### 3.2.1) `app_name` 方法
 
 获取当前行者的应用名称。
 
 **描述**
 
 ```js
-$RUNNER.app
+$RUNNER.app_name
     string : `the app name of current runner.`
 ```
 
@@ -1093,18 +1093,18 @@ $RUNNER.app
 **示例**
 
 ```js
-$RUNNER.app
+$RUNNER.app_name
     // string: 'cn.fmsoft.hvml.sample'
 ```
 
-#### 3.2.2) `runner` 方法
+#### 3.2.2) `run_name` 方法
 
 获取当前行者的行者名称。
 
 **描述**
 
 ```js
-$RUNNER.runner
+$RUNNER.run_name
     string : `the runner name of current runner.`
 ```
 
@@ -1117,7 +1117,7 @@ $RUNNER.runner
 **示例**
 
 ```js
-$RUNNER.runner
+$RUNNER.run_name
     // string: 'hello'
 ```
 
@@ -7296,8 +7296,8 @@ $FILE.bin.tail($file, -5)
 #### RC3) 220601
 
 1. 新增接口：
-   - `$RUNNER.app`：返回当前行者的应用名称。
-   - `$RUNNER.runner`：返回当前行者的行者名称。
+   - `$RUNNER.app_name`：返回当前行者的应用名称。
+   - `$RUNNER.run_name`：返回当前行者的行者名称。
 1. 移除全局级动态变量的提法。
 1. 将 `$SYS` 调整为行者级动态变量。
 1. 调整 `$FS.rename` 方法返回值类型（boolean）。
