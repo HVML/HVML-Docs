@@ -160,8 +160,8 @@ Language: Chinese
          - [RC6.2) 增强 `request` 标签](#rc62-增强-request-标签)
          - [RC6.3) 调整 HVML URI 图式](#rc63-调整-hvml-uri-图式)
          - [RC6.4) 新增元组容器类型](#rc64-新增元组容器类型)
+         - [RC6.5) 重新求值](#rc65-重新求值)
       * [RC5) 220701](#rc5-220701)
-         - [RC6.5) 再次求值](#rc65-再次求值)
          - [RC5.1) 调整对 `include` 标签的描述](#rc51-调整对-include-标签的描述)
          - [RC5.2) 调整 `request` 标签](#rc52-调整-request-标签)
          - [RC5.3) 调整 `load` 和 `call` 标签](#rc53-调整-load-和-call-标签)
@@ -530,91 +530,48 @@ Language: Chinese
 
 除此之外，HVML 还允许两个协程之间互相发送请求，且两个协程可以处于不同的虚拟机实例，这提供了一种统一和高效的跨协程及虚拟机的通讯机制。
 
-第八，HVML 要求解释器提供对表达式的再次求值（evaluating again）能力，从而可以在对表达式求值时，可根据需要阻塞当前协程的执行，并在相应的条件到达时唤醒该协程，之后再次对该表达式进行求值，以获得期望的结果。这有助于实现更细粒度的协程调度能力，并提供对通道（channel，类似 Go 语言）等机制的支持，从而可实现简单高效的协程间通讯机制。
+第八，HVML 要求解释器提供对表达式的重新求值（evaluating again）能力，从而可以在对表达式求值时，可根据需要阻塞当前协程的执行，并在相应的条件到达时唤醒该协程，之后再次对该表达式进行求值，以获得期望的结果。这有助于实现更细粒度的协程调度能力，并提供对通道（channel，类似 Go 语言）等机制的支持，从而可实现简单高效的协程间通讯机制。
 
-比如下面的代码片段，在对 `init` 元素的内容表达式求值时，其中的 `$SYS.sleep(2)` 将阻塞当前的协程，从而可让出虚拟机并让其他协程继续执行：
-
-```hvml
-    <init as result >
-    {{
-         $STREAM.stdout.writelines("$DATETIME.time_prt: I will sleep 2 seconds");
-         $SYS.sleep(2);
-         $STREAM.stdout.writelines("$DATETIME.time_prt: I am awake.");
-    }}
-    </init>
-```
-
-当被阻塞的协程休眠时间达到两秒时，该协程将被调度器唤醒，并继续执行。此时，上述表达式将被再次求值，但会从 `$SYS.sleep(2)` 处继续。因此，上述代码的输出大致为：
-
-```
-2022-08-24T11:27:05+08:00: I will sleep 2 seconds.
-2022-08-24T11:27:07+08:00: I am awake.
-```
-
-类似地，当某个协程要从一个没有数据的通道中接收数据时，该协程将被阻塞，而当其他协程向该通道写入数据后，该协程将被唤醒。下面的代码创建了两个子协程分别充当发送者和接收者，并通过通道实现了协程间的通讯：
+比如下面的 HVML 程序，在对其中两个复合表达式求值时，`$SYS.sleep` 方法将阻塞当前的协程，从而可让出虚拟机并让其他协程继续执行：
 
 ```hvml
 <hvml target="void">
     <body>
 
-        <!-- open a channel named `myChannel` -->
-        <init as chan with $RUNNER.chan(! 'myChannel' ) />
+        <load from "#repeater" onto '_null' async />
 
-        <!-- start the writer coroutine asynchronously -->
-        <load from "#writer" asynchronously />
-
-        <!-- start the reader coroutine and wait for the result -->
-        <load from "#reader">
-            $STREAM.stdout.writelines("The result got from the reader: `$?`")
-        </load>
-
-    </body>
-
-    <body id="writer">
-        <init as chan with $RUNNER.chan('myChannel') />
-
-        <iterate on [ 'H', 'V', 'M', 'L' ]>
-            $chan.send($?)
-
-            <sleep for '1s' />
-
-        </iterate>
-
-        <!-- close the channel -->
         <inherit>
-            $RUNNER.chan(! 'myChannel', 0)
+            {{
+                 $STREAM.stdout.writelines("COROUTINE-$CRTN.cid: $DATETIME.time_prt: I will sleep 5 seconds");
+                 $SYS.sleep(5);
+                 $STREAM.stdout.writelines("COROUTINE-$CRTN.cid: $DATETIME.time_prt: I am awake.");
+            }}
         </inherit>
 
     </body>
 
-    <body id="reader">
-        <choose on $RUNNER.chan('myChannel')>
+    <body id="repeater">
 
-            <init as result with '' />
+        <iterate on 0 onlyif $L.lt($0<, 5) with $EJSON.arith('+', $0<, 1) nosetotail >
+            $STREAM.stdout.writelines("COROUTINE-$CRTN.cid: $DATETIME.time_prt")
 
-            <!-- the channel has been closed if $chan.recv() returns false -->
-            <iterate with $?.recv() silently>
-                $STREAM.stdout.writelines("$DATETIME.time_prt: the data received: $?");
-
-                <init as result at '_parent' with "$result$?" />
-            </iterate>
-
-            <exit with $result />
-        </choose>
+            <sleep for '1s' />
+        </iterate>
 
     </body>
-
 </hvml>
 ```
 
-以上代码，最终会的输出结果将大致如下：
+该程序首先会异步装载另一个本体在子协程中执行，该子协程间隔一秒输出一行信息，而主协程则会在输出 `I will sleep 5 seconds` 之后立即被 `$SYS.sleep(5)` 阻塞。当五秒时间到期后，主协程将被调度器唤醒，并继续执行。此时，上述表达式将被重新求值，但会从 `$SYS.sleep(5)` 处继续。因此，上述程序的输出大致为：
 
 ```
-2022-08-24T12:27:00+08:00: the data received: H
-2022-08-24T12:27:01+08:00: the data received: V
-2022-08-24T12:27:02+08:00: the data received: M
-2022-08-24T12:27:03+08:00: the data received: L
-2022-08-24T12:27:03+08:00: The result got from the reader: HVML
+COROUTINE-3: 2022-09-01T14:50:40+0800: I will sleep 5 seconds
+COROUTINE-4: 2022-09-01T14:50:40+0800
+COROUTINE-4: 2022-09-01T14:50:41+0800
+COROUTINE-4: 2022-09-01T14:50:42+0800
+COROUTINE-4: 2022-09-01T14:50:43+0800
+COROUTINE-4: 2022-09-01T14:50:44+0800
+COROUTINE-3: 2022-09-01T14:50:45+0800: I am awake.
 ```
 
 #### 2.1.1) 程序结构
@@ -1123,6 +1080,74 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 1. `$RUNNER.user`：获取或设置 `$RUNNER.myObj` 对象的属性。
 1. `$RUNNER.chan`：创建通道。
 
+通道（channel）是一项重要的协程间通讯机制。
+
+通道的运行机制非常简单：当某个协程要从一个没有数据的通道中接收数据时，该协程将被阻塞，而当其他协程向该通道写入数据后，该协程将被自动唤醒。下面的程序创建了两个子协程分别充当发送者和接收者，并通过通道实现了协程间的通讯：
+
+```hvml
+<hvml target="void">
+    <body>
+
+        <!-- open a channel named `myChannel` -->
+        <init as chan with $RUNNER.chan(! 'myChannel' ) />
+
+        <!-- start the writer coroutine asynchronously -->
+        <load from "#writer" asynchronously />
+
+        <!-- start the reader coroutine and wait for the result -->
+        <load from "#reader">
+            $STREAM.stdout.writelines("The result got from the reader: `$?`")
+        </load>
+
+    </body>
+
+    <body id="writer">
+        <init as chan with $RUNNER.chan('myChannel') />
+
+        <iterate on [ 'H', 'V', 'M', 'L' ]>
+            $chan.send($?)
+
+            <sleep for '1s' />
+
+        </iterate>
+
+        <!-- close the channel -->
+        <inherit>
+            $RUNNER.chan(! 'myChannel', 0)
+        </inherit>
+
+    </body>
+
+    <body id="reader">
+        <choose on $RUNNER.chan('myChannel')>
+
+            <init as result with '' />
+
+            <!-- the channel has been closed if $chan.recv() returns false -->
+            <iterate with $?.recv() silently>
+                $STREAM.stdout.writelines("$DATETIME.time_prt: the data received: $?");
+
+                <init as result at '_parent' with "$result$?" />
+            </iterate>
+
+            <exit with $result />
+        </choose>
+
+    </body>
+
+</hvml>
+```
+
+以上代码，最终会的输出结果将大致如下：
+
+```
+2022-08-24T12:27:00+08:00: the data received: H
+2022-08-24T12:27:01+08:00: the data received: V
+2022-08-24T12:27:02+08:00: the data received: M
+2022-08-24T12:27:03+08:00: the data received: L
+2022-08-24T12:27:03+08:00: The result got from the reader: HVML
+```
+
 ##### 2.1.6.4) `$CRTN`
 
 `$CRTN` 是一个动态对象，该对象表述的是当前正在执行的 HVML 程序实例（协程）本身，用以设置当前协程相关的参数。比如：
@@ -1563,7 +1588,7 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 通常，一个解释器实例对应一个虚拟机实例。理论上，前述虚拟机可同时运行多个 HVML 程序，此时，每个 HVML 程序对应一个执行栈，通过某种机制切换当前执行栈就可以实现多个 HVML 程序的并发执行。这和真实的物理计算实现多任务的机制是类似的。在实践中，解释器通常以独立的协程（coroutine）形式执行同一虚拟机实例中装载的多个 HVML 程序实例，并在如下时机切换协程：
 
 1. 每执行完一次元素动作后，解释器将强制当前协程让出（yield）对虚拟机的使用，使得其他就绪状态的协程可获得执行的机会。
-1. 在调用动态对象的方法时，若对应的方法返回表示重试的错误值，表明该方法阻塞了当前协程，解释器可调度其他就绪状态的协程工作，直到该协程的执行状态被重新设置为就绪状态。此时，解释器将对被阻塞的表达式执行再次求值。
+1. 在调用动态对象的方法时，若对应的方法返回表示重试的错误值，表明该方法阻塞了当前协程，解释器可调度其他就绪状态的协程工作，直到该协程的执行状态被重新设置为就绪状态。此时，解释器将对被阻塞的表达式执行重新求值。
 
 #### 2.1.8) 框架元素
 
@@ -7220,19 +7245,20 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - [2.1.3) 扩展数据类型](#213-扩展数据类型)
 - [3.1.3.2) 扩展 JSON 语法](#3132-扩展-json-语法)
 
-#### RC5) 220701
-
-##### RC6.5) 再次求值
+##### RC6.5) 重新求值
 
 主要修订内容如下：
 
-1. 增加对再次求值的描述
+1. 增加对重新求值的描述
 1. 增加对协程调度时机的描述
 
 相关章节：
 
 - [2.1) 基本原理](#21-基本原理)
 - [2.1.7) 栈式虚拟机](#217-栈式虚拟机)
+- [2.1.6.3) `$RUNNER`](#2163-runner)
+
+#### RC5) 220701
 
 ##### RC5.1) 调整对 `include` 标签的描述
 
