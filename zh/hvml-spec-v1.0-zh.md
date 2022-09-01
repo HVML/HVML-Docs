@@ -5,7 +5,7 @@ Version: 1.0-RC5
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: July 1, 2022  
+Last Modified Date: Sep. 1, 2022  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese

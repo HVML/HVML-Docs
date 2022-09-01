@@ -1,11 +1,11 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RC4  
+Version: 1.0-RC5  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: July 1, 2022  
+Last Modified Date: Sep. 1, 2022  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -7270,6 +7270,7 @@ $FILE.bin.tail($file, -5)
 
 发布历史：
 
+- 2022 年 09 月 01 日：发布 V1.0 RC5，标记为 'v1.0-pv-rc5-220901'。
 - 2022 年 07 月 01 日：发布 V1.0 RC4，标记为 'v1.0-pv-rc4-220701'。
 - 2022 年 06 月 01 日：发布 V1.0 RC3，标记为 'v1.0-pv-rc3-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
