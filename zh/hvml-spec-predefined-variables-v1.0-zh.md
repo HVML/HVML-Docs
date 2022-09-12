@@ -420,7 +420,7 @@ Language: Chinese
 #### 2.1.1) 批量新增定时器
 
 ```html
-    <update on="$TIMERS" to="unite">
+    <update on "$TIMERS" to "unite">
         [
             { "id" : "foo", "interval" : 1000, "active" : "no" },
             { "id" : "bar", "interval" : 2000, "active" : "no" },
@@ -2064,13 +2064,13 @@ $DOC.doctype
 如此实现后，HVML 动作元素中通过 CSS 选择器引用元素时，如：
 
 ```html
-<update on="#the-user-stats > h2 > span" at="textContent attr.class" with='["10", "text-warning"]' />
+<update on '#the-user-stats > h2 > span' at 'textContent attr.class' with ["10", "text-warning"] />
 ```
 
 相当于：
 
 ```html
-<update on="$DOC.query('#the-user-stats > h2 > span')" at="textContent attr.class" with='["10", "text-warning"]' />
+<update on $DOC.query('#the-user-stats > h2 > span') at 'textContent attr.class' with ["10", "text-warning"] />
 ```
 
 通常在这些键名上会设定有相应的获取器或设置器函数，于是即可实现 HVML 规范中要求的表达式：
