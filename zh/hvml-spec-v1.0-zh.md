@@ -1127,7 +1127,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
             <iterate with $?.recv() silently>
                 $STREAM.stdout.writelines("$DATETIME.time_prt: the data received: $?");
 
-                <init as result at '_parent' with "$result$?" />
+                <init as result at '_grandparent' with "$result$?" />
             </iterate>
 
             <exit with $result />
@@ -2373,26 +2373,31 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 复合 JSON 求值表达式（compound JSON evaluation expression，缩写为 CJSONEE）是一项重要扩展。CJSONEE 本质上由一个或多个 JSONEE 组成，但带有一定的逻辑控制能力。其效果类似 Unix Shell 命令行中一次执行多条命令时使用分号或者 `&&`、`||` 的效果。如下是一些例子：
 
 ```js
-// 调用 $SYS.cwd 将当前工作路径切换到 `/etc` 目录下，然后调用 $FS.list
-// 获得所有目录项对象数组。
-{{ $SYS.cwd(! '/etc'); $FS.list }}
-
-// 尝试改变工作路径到 `/root` 目录下，如果成功则调用 $FS.list 获得该目录下
-// 所有目录项对象数组，否则向标准输出（$STREAM.stdout）打印提示信息，
-// 并改变工作路径到 `/` 下，若成功，则获得该目录下所有目录项对象数组，
-// 否则将 `false` 作为该 CJSONEE 的最终求值结果。
 {{
-     $SYS.cwd(! '/root') &&
-        $FS.list ||
-        $STREAM.stdout.writelines(
-                'Cannot change directory to "/root"'); $SYS.cwd(! '/' ) &&
-                    $FS.list || false
+    // 调用 $SYS.cwd 将当前工作路径切换到 `/etc` 目录下，然后调用 $FS.list
+    // 获得所有目录项对象数组。
+    $SYS.cwd(! '/etc'); $FS.list
 }}
 
-// 尝试改变工作路径到 `/root` 目录下，如果成功则调用 $FS.list_prt 获得该目录下
-// 所有目录项清单（字符串），否则返回提示信息。最终将目录项清单或者错误信息
-// 输出到标准输出。
 {{
+    // 尝试改变工作路径到 `/root` 目录下
+    $SYS.cwd(! '/root') &&
+        // 如果成功则调用 $FS.list 获得该目录下的所有目录项对象数组
+        $FS.list ||
+            // 否则向标准输出（$STREAM.stdout）打印提示信息
+            $STREAM.stdout.writelines('Cannot change directory to "/root"');
+            // 并改变工作路径到 `/` 下
+            $SYS.cwd(! '/' ) &&
+                // 若成功，则获得该目录下所有目录项对象数组
+                $FS.list ||
+                    // 否则将 `false` 作为该 CJSONEE 的最终求值结果
+                    false
+}}
+
+{{
+# 尝试改变工作路径到 `/root` 目录下，如果成功则调用 $FS.list_prt 获得该目录下
+# 所有目录项清单（字符串），否则返回提示信息。最终将目录项清单或者错误信息
+# 输出到标准输出。
     $STREAM.stdout.writelines({{
                 $SYS.cwd(! '/root') && $FS.list_prt ||
                     'Cannot change directory to "/root"'
@@ -2404,6 +2409,7 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 1. 对一个 CJSONEE 的求值结果，指该 CJSONEE 中执行求值的最后一个 JSONEE 的结果；所有中间结果将被废弃。
 1. 一个 CJSONEE 中可嵌套另一个 CJSONEE。
+1. 可使用 `//` 或者 `#` 在表达式之间定义行注释。
 
 处理步骤如下：
 
