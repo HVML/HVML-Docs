@@ -1,7 +1,7 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0-RC5  
+Version: 1.0-RC6  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
@@ -161,6 +161,7 @@ Language: Chinese
          - [RC6.3) 调整 HVML URI 图式](#rc63-调整-hvml-uri-图式)
          - [RC6.4) 新增元组容器类型](#rc64-新增元组容器类型)
          - [RC6.5) 重新求值](#rc65-重新求值)
+         - [RC6.6) 增强 `bind` 标签](#rc66-增强-bind-标签)
       * [RC5) 220701](#rc5-220701)
          - [RC5.1) 调整对 `include` 标签的描述](#rc51-调整对-include-标签的描述)
          - [RC5.2) 调整 `request` 标签](#rc52-调整-request-标签)
@@ -1493,6 +1494,21 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
         </observe>
     </bind>
 ```
+
+另外，我们还可以在被绑定变量的 `eval` 和 `eval_const` 方法中使用参数，并在原始表达式中使用预定义变量名 `$_ARG<N>` 和 `$_ARGS` 来引用传入的参数，从而实现类似表达式别名的功能。其中，`$_ARG<N>` 中的 `<N>` 取 0 或者正整数，表示传入 `eval` 方法的第 `<N>` 个参数；`$_ARGS` 表示传入 `eval` 和 `eval_const` 的所有参数。
+
+比如在下面的代码片段中，
+
+```hvml
+    <bind on "$STREAM.stdout.writelines($_ARGS)" as "puts" />
+    <inherit>
+        $puts.eval('Hello, world!')
+    </inherit>
+```
+
+当我们使用 `$puts.eval('Hello, world!')` 这个表达式时，对应的最终表达式为 `$STREAM.stdout.writelines('Hello, world!')`。
+
+如此，我们可以为一些常用的表达式创建对应的简洁别名，从而方便我们的使用。
 
 #### 2.1.7) 栈式虚拟机
 
@@ -7261,6 +7277,16 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - [2.1) 基本原理](#21-基本原理)
 - [2.1.7) 栈式虚拟机](#217-栈式虚拟机)
 - [2.1.6.3) `$RUNNER`](#2163-runner)
+
+##### RC6.6) 增强 `bind` 标签
+
+主要修订内容如下：
+
+1. 增强 `bind` 标签，使得被绑定的表达式可支持参数
+
+相关章节：
+
+- [2.5.17) `bind` 标签](#2517-bind-标签)
 
 #### RC5) 220701
 
