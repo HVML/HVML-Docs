@@ -1,11 +1,11 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0-RC6  
+Version: 1.0-RC7  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Sep. 1, 2022  
+Last Modified Date: Otc. 31, 2022  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -155,13 +155,14 @@ Language: Chinese
 - [5) 总结](#5-总结)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RC7) 221031](#rc7-221031)
+         - [RC7.1) 增强 `bind` 标签](#rc71-增强-bind-标签)
       * [RC6) 220901](#rc6-220901)
          - [RC6.1) 增强变量名](#rc61-增强变量名)
          - [RC6.2) 增强 `request` 标签](#rc62-增强-request-标签)
          - [RC6.3) 调整 HVML URI 图式](#rc63-调整-hvml-uri-图式)
          - [RC6.4) 新增元组容器类型](#rc64-新增元组容器类型)
          - [RC6.5) 重新求值](#rc65-重新求值)
-         - [RC6.6) 增强 `bind` 标签](#rc66-增强-bind-标签)
       * [RC5) 220701](#rc5-220701)
          - [RC5.1) 调整对 `include` 标签的描述](#rc51-调整对-include-标签的描述)
          - [RC5.2) 调整 `request` 标签](#rc52-调整-request-标签)
@@ -1473,42 +1474,18 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
 当我们需要对绑定的表达式求值时，使用 `$me.eval`。由于上面的示例表达式使用了 `$MATH` 的 `random` 方法，所以每次求值将获得不同的结果。
 
-我们还可以使用 `$me.eval_const` 方法。该方法将只求值一次，其后的每次调用将返回第一次求值的结果。在实际应用中，该方法可以用来定义一个特定表达式产生的常量。比如：
-
-```hvml
-    <bind on="$MATH.div(1.0, $MATH.sqrt(2.0))" as="reciprocal_of_sqrt_2" />
-```
-
-之后，我们就可以使用 `$reciprocal_of_sqrt_2.eval_const` 来获得 2 的平方根之倒数，而且只需要计算一次。
-
-注意，当表达式在不同的上下文环境中执行时，由于所引用变量的作用域发生了变化，所得到的结果也会出现不同。
-
 我们可以使用 `observe` 标签观察一个绑定了表达式的变量，从而根据变量值的变化做出一些相应的处理。
 
 比如，我们可以将某个目标文档元素的属性或者内容绑定到某个变量上，然后使用 `observe` 元素处理其上的 `change` 事件：
 
 ```hvml
-    <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
-    <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name">
-        <observe on="$user_name" for="change">
-        </observe>
-    </bind>
+<input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
+<bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name">
+    <observe on="$user_name" for="change">
+        ...
+    </observe>
+</bind>
 ```
-
-另外，我们还可以在被绑定变量的 `eval` 和 `eval_const` 方法中使用参数，并在原始表达式中使用预定义变量名 `$_ARG<N>` 和 `$_ARGS` 来引用传入的参数，从而实现类似表达式别名的功能。其中，`$_ARG<N>` 中的 `<N>` 取 0 或者正整数，表示传入 `eval` 方法的第 `<N>` 个参数；`$_ARGS` 表示传入 `eval` 和 `eval_const` 的所有参数。
-
-比如在下面的代码片段中，
-
-```hvml
-    <bind on "$STREAM.stdout.writelines($_ARGS)" as "puts" />
-    <inherit>
-        $puts.eval('Hello, world!')
-    </inherit>
-```
-
-当我们使用 `$puts.eval('Hello, world!')` 这个表达式时，对应的最终表达式为 `$STREAM.stdout.writelines('Hello, world!')`。
-
-如此，我们可以为一些常用的表达式创建对应的简洁别名，从而方便我们的使用。
 
 #### 2.1.7) 栈式虚拟机
 
@@ -4697,7 +4674,34 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </bind>
 ```
 
-和 `init` 类似，在 `bin` 标签中使用 `as` 属性命名一个表达式变量时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
+我们还可以在被绑定变量的 `eval` 方法中使用参数，并在原始表达式中使用预定义变量名 `$_ARG<N>` 和 `$_ARGS` 来引用传入的参数，从而实现类似表达式别名的功能。其中，`$_ARG<N>` 中的 `<N>` 取 0 或者正整数，表示传入 `eval` 方法的第 `<N>` 个参数；`$_ARGS` 表示传入 `eval` 和 `eval_const` 的所有参数。
+
+比如在下面的代码片段中，
+
+```hvml
+    <bind on "$STREAM.stdout.writelines($_ARG0)" as "puts" />
+    <inherit>
+        $puts.eval('Hello, world!')
+    </inherit>
+```
+
+当我们使用 `$puts.eval('Hello, world!')` 这个表达式时，对应的最终表达式为 `$STREAM.stdout.writelines('Hello, world!')`。
+
+如此，我们可以为一些常用的表达式创建对应的简洁别名，从而方便我们的使用。
+
+注意，当表达式在不同的上下文环境中执行时，由于所引用变量的作用域发生了变化，所得到的结果也会出现不同。
+
+在实现时，解释器可将绑定的表达式使用一个原生实体来表示，并在其上提供 `eval` 属性的获取器。在调用该原生实体的 `eval` 获取器时，可在当前栈帧中创建临时变量 `_ARG<N>` 和 `_ARGS`，前者对应传入的每个参数，后者对应一个由所有传入的参数构建成的元组，之后对该原生实体对应的表达式执行正常的求值即可。
+
+我们还可以使用 `$me.eval_const` 方法。该方法对相同的参数只求值一次，其后使用相同的参数调用时将返回第一次求值的结果。在实际应用中，该方法可以用来定义一个特定表达式产生的常量。比如：
+
+```hvml
+    <bind on $MATH.div(1.0, $MATH.sqrt($_ARG0))" as 'reciprocal_of_sqrt' />
+```
+
+之后，我们就可以使用 `$reciprocal_of_sqrt.eval_const(2.0)` 来获得 2.0 的平方根之倒数，而且只需要真正执行一次求值，其后对该表达式以及参数 2.0 的求值将直接返回第一次求值的结果，而无需执行重复的求值。
+
+和 `init` 类似，在 `bind` 标签中使用 `as` 属性命名一个表达式变量时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
 
 #### 2.5.14) `catch` 标签
 
@@ -7212,12 +7216,25 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
+- 2022 年 10 月 31 日：发布 V1.0 RC7，标记为 'v1.0-rc7-221031'。
 - 2022 年 09 月 01 日：发布 V1.0 RC6，标记为 'v1.0-rc6-220901'。
 - 2022 年 07 月 01 日：发布 V1.0 RC5，标记为 'v1.0-rc5-220701'。
 - 2022 年 06 月 01 日：发布 V1.0 RC4，标记为 'v1.0-rc4-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
+
+#### RC7) 221031
+
+##### RC7.1) 增强 `bind` 标签
+
+主要修订内容如下：
+
+1. 增强 `bind` 标签，使得被绑定的表达式可支持参数
+
+相关章节：
+
+- [2.5.13) `bind` 标签](#2513-bind-标签)
 
 #### RC6) 220901
 
@@ -7277,16 +7294,6 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - [2.1) 基本原理](#21-基本原理)
 - [2.1.7) 栈式虚拟机](#217-栈式虚拟机)
 - [2.1.6.3) `$RUNNER`](#2163-runner)
-
-##### RC6.6) 增强 `bind` 标签
-
-主要修订内容如下：
-
-1. 增强 `bind` 标签，使得被绑定的表达式可支持参数
-
-相关章节：
-
-- [2.5.17) `bind` 标签](#2517-bind-标签)
 
 #### RC5) 220701
 
@@ -7723,7 +7730,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 相关章节：
 
-- [2.5.17) `bind` 标签](#2517-bind-标签)
+- [2.5.13) `bind` 标签](#2513-bind-标签)
 
 ##### RC2.12) CJSONEE
 
