@@ -56,7 +56,8 @@ Language: Chinese
          - [2.1.6.10) `$STREAM`](#21610-stream)
          - [2.1.6.11) `$RDR`](#21611-rdr)
          - [2.1.6.12) 集合变量](#21612-集合变量)
-         - [2.1.6.13) 表达式变量](#21613-表达式变量)
+         - [2.1.6.13) 表达式变量和替身表达式](#21613-表达式变量和替身表达式)
+         - [2.1.6.14) 变量名约定](#21614-变量名约定)
       * [2.1.7) 栈式虚拟机](#217-栈式虚拟机)
       * [2.1.8) 框架元素](#218-框架元素)
       * [2.1.9) 模板元素](#219-模板元素)
@@ -156,7 +157,7 @@ Language: Chinese
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RC7) 221031](#rc7-221031)
-         - [RC7.1) 增强 `bind` 标签](#rc71-增强-bind-标签)
+         - [RC7.1) 替身表达式](#rc71-替身表达式)
       * [RC6) 220901](#rc6-220901)
          - [RC6.1) 增强变量名](#rc61-增强变量名)
          - [RC6.2) 增强 `request` 标签](#rc62-增强-request-标签)
@@ -510,7 +511,7 @@ HVML 是 HybridOS（合璧操作系统）的首选应用编程语言。
 ```hvml
     <bind on $SYS.time as "rtClock" />
 
-    <observe on "$rtClock" for "change">
+    <observe against "rtClock" for "change">
        ...
     </observe>
 ```
@@ -1462,17 +1463,17 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并集、交集、差集、异或集等。详情见 `update` 标签的描述。
 
-##### 2.1.6.13) 表达式变量
+##### 2.1.6.13) 表达式变量和替身表达式
 
 HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 
 ```hvml
-    <bind on="$users[$MATH.random(10)]" as="me" />
+    <bind on $users[$MATH.random(10)] as "me" />
 ```
 
-这个变量对应的并不是上述标签定义的元素被执行时 `$users[$MATH.random(10)]` 的值，而是 `$users[$MATH.random(10)]` 这个表达式。
+这个变量对应的并不是上述标签定义的元素被执行时 `$users[$MATH.random(10)]` 的值，而是 `$users[$MATH.random(10)]` 这个表达式；我们将这种变量称为“表达式变量（expression variable）”
 
-当我们需要对绑定的表达式求值时，使用 `$me.eval`。由于上面的示例表达式使用了 `$MATH` 的 `random` 方法，所以每次求值将获得不同的结果。
+当我们需要对绑定的表达式求值时，使用 `$me.eval`；我们将 `$me.eval` 这类表达式称为替身表达式（substitue expression）。由于上面的示例表达式使用了 `$MATH` 的 `random` 方法，所以每次求值将获得不同的结果。
 
 我们可以使用 `observe` 标签观察一个绑定了表达式的变量，从而根据变量值的变化做出一些相应的处理。
 
@@ -1481,11 +1482,20 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 ```hvml
 <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
 <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name">
-    <observe on="$user_name" for="change">
+    <observe against 'user_name' for "change">
         ...
     </observe>
 </bind>
 ```
+
+##### 2.1.6.14) 变量名约定
+
+解释器可自行实现一些预定义的行者级变量或者协程级变量，作为约定，解释器自行实现的全局变量，其名称应以 ASCII U+005F LOW LINE（`_`）打头，使用全大写字母并添加解释器前缀。如 `_PURC_VAR`。而一般的变量，使用全小写字母。
+
+另外，如下的变量名被保留用于特定场合：
+
+- `_ARG<N>`：用于指代传入替身表达式（substitue expression）的参数，其中 `$_ARG<N>` 中的 `<N>` 取 0 或者正整数，表示第 `<N>` 个参数。
+- `_ARGS`：用于指代传入替身表达式的所有参数。
 
 #### 2.1.7) 栈式虚拟机
 
@@ -4654,9 +4664,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 比如，
 
 ```hvml
-    <bind on="$SYS.time" as="rtClock" />
+    <bind on $SYS.time as 'rtClock' />
 
-    <observe on="$rtClock" for="change">
+    <observe against 'rtClock for "change">
        ...
     </observe>
 ```
@@ -4667,31 +4677,30 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```hvml
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
-    <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name">
-        <observe on="$user_name" for="change">
+
+    <bind on $DOC.query('#the-user-name')[0].attr.value as 'user_name'>
+        <observe against 'user_name' for 'change'>
             ...
         </observe>
     </bind>
 ```
 
-我们还可以在被绑定变量的 `eval` 方法中使用参数，并在原始表达式中使用预定义变量名 `$_ARG<N>` 和 `$_ARGS` 来引用传入的参数，从而实现类似表达式别名的功能。其中，`$_ARG<N>` 中的 `<N>` 取 0 或者正整数，表示传入 `eval` 方法的第 `<N>` 个参数；`$_ARGS` 表示传入 `eval` 和 `eval_const` 的所有参数。
+我们还可以在被绑定变量的 `eval` 方法中使用参数，并在原始表达式中使用变量名 `$_ARG<N>` 和 `$_ARGS` 来引用传入的参数，从而实现替身表达式（substitue expression）的功能。其中，`$_ARG<N>` 中的 `<N>` 取 0 或者正整数，表示传入 `eval` 方法的第 `<N>` 个参数；`$_ARGS` 表示传入 `eval` 的所有参数。
 
-比如在下面的代码片段中，
+比如在下面的代码片段中，我们将输出字符串到标准输出的表达式，绑定为一个变量 `console`，并使用 `at` 属性指定了 `eval` 方法的另一个别名 `puts`：
 
 ```hvml
-    <bind on "$STREAM.stdout.writelines($_ARG0)" as "puts" />
+    <bind on "$STREAM.stdout.writelines($_ARG0)" as "console" at 'puts' />
     <inherit>
-        $puts.eval('Hello, world!')
+        $console.puts('Hello, world!')
     </inherit>
 ```
 
-当我们使用 `$puts.eval('Hello, world!')` 这个表达式时，对应的最终表达式为 `$STREAM.stdout.writelines('Hello, world!')`。
+当我们使用 `$console.puts('Hello, world!')` 这个替身表达式时，对应的最终表达式为 `$STREAM.stdout.writelines('Hello, world!')`。如此，我们可以为一些常用的表达式创建对应的简洁别名，从而方便我们的使用。
 
-如此，我们可以为一些常用的表达式创建对应的简洁别名，从而方便我们的使用。
+注意，当表达式在不同的上下文环境中执行时，由于所引用变量的作用域发生了变化，所得到的结果可能会出现不同。另外，当我们使用 `observe` 元素观察某个表达式变量的变化时，将无法传递参数。
 
-注意，当表达式在不同的上下文环境中执行时，由于所引用变量的作用域发生了变化，所得到的结果也会出现不同。
-
-在实现时，解释器可将绑定的表达式使用一个原生实体来表示，并在其上提供 `eval` 属性的获取器。在调用该原生实体的 `eval` 获取器时，可在当前栈帧中创建临时变量 `_ARG<N>` 和 `_ARGS`，前者对应传入的每个参数，后者对应一个由所有传入的参数构建成的元组，之后对该原生实体对应的表达式执行正常的求值即可。
+在实现时，解释器可将被绑定的表达式使用一个原生实体来表示，并在其上提供 `eval` 属性或者通过 `at` 属性指定的替代属性名称之获取器。在调用该原生实体的 `eval` 获取器时，可在当前求值栈帧中创建临时变量 `_ARG<N>` 和 `_ARGS`，前者对应传入的每个参数，后者对应一个由所有传入的参数构建成的元组，之后对该原生实体对应的表达式执行正常的求值，求值结束后移除这些临时变量。
 
 我们还可以使用 `$me.eval_const` 方法。该方法对相同的参数只求值一次，其后使用相同的参数调用时将返回第一次求值的结果。在实际应用中，该方法可以用来定义一个特定表达式产生的常量。比如：
 
@@ -4699,9 +4708,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <bind on $MATH.div(1.0, $MATH.sqrt($_ARG0))" as 'reciprocal_of_sqrt' />
 ```
 
-之后，我们就可以使用 `$reciprocal_of_sqrt.eval_const(2.0)` 来获得 2.0 的平方根之倒数，而且只需要真正执行一次求值，其后对该表达式以及参数 2.0 的求值将直接返回第一次求值的结果，而无需执行重复的求值。
-
-和 `init` 类似，在 `bind` 标签中使用 `as` 属性命名一个表达式变量时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
+之后，我们就可以使用 `$reciprocal_of_sqrt.eval_const(2.0)` 来获得 2.0 的平方根之倒数，而且只需要执行一次真正的求值过程，其后对该表达式以及参数 2.0 的求值将直接返回第一次求值的结果，而无需执行重复的真实求值过程。
 
 #### 2.5.14) `catch` 标签
 
@@ -7226,14 +7233,18 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 #### RC7) 221031
 
-##### RC7.1) 增强 `bind` 标签
+##### RC7.1) 替身表达式
 
 主要修订内容如下：
 
-1. 增强 `bind` 标签，使得被绑定的表达式可支持参数
+1. 引入替身表达式（substitute expression）术语
+1. 增强 `bind` 标签以支持替身表达式
+1. 新增变量名约定一节
 
 相关章节：
 
+- [2.1.6.13) 表达式变量和替身表达式](#21613-表达式变量和替身表达式)
+- [2.1.6.14) 变量名约定](#21614-变量名约定)
 - [2.5.13) `bind` 标签](#2513-bind-标签)
 
 #### RC6) 220901
