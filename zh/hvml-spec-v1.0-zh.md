@@ -511,7 +511,7 @@ HVML 是 HybridOS（合璧操作系统）的首选应用编程语言。
 ```hvml
     <bind on $SYS.time as "rtClock" />
 
-    <observe against "rtClock" for "change">
+    <observe on $rtClock for 'change'>
        ...
     </observe>
 ```
@@ -1482,7 +1482,7 @@ HVML 允许使用 `bind` 标签将一个表达式绑定到一个变量：
 ```hvml
 <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
 <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name">
-    <observe against 'user_name' for "change">
+    <observe on $user_name for "change">
         ...
     </observe>
 </bind>
@@ -4668,7 +4668,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 ```hvml
     <bind on $SYS.time as 'rtClock' />
 
-    <observe against 'rtClock for "change">
+    <observe on $rtClock for "change">
        ...
     </observe>
 ```
@@ -4681,7 +4681,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
 
     <bind on $DOC.query('#the-user-name')[0].attr.value as 'user_name'>
-        <observe against 'user_name' for 'change'>
+        <observe on $user_name for 'change'>
             ...
         </observe>
     </bind>
