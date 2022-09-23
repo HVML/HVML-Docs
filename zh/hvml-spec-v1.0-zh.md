@@ -1969,6 +1969,7 @@ HVML 定义的异常如下：
 - `noreturn`：在 `request` 元素中，用于定义忽略该请求的返回值。
 - `concurrently`：在 `call` 元素中，用于定义一个并发调用。
 - `constantly`：在 `bind` 元素中，用于说明被绑定的表达式将对同一参数返回不变的值。
+- `must-yield`：表明每执行一次具有该属性的元素，应强制当前协程出让（yield）处理器；在外部元素中使用 `hvml:must-yield` 这一写法。
 
 注意：在 HVML 中，我们无需为副词属性赋值。
 
