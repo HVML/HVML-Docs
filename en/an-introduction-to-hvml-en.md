@@ -1,4 +1,4 @@
-# HVML, a Programable Markup Language
+# HVML, a Descriptive Programming Language
 
 **Table of Contents**
 
@@ -87,25 +87,30 @@
 
 ## Abstract
 
-During the development of [HybridOS], [Vincent Wei] proposed a new-style,
-general-purpose, and easy-to-learn programming language called `HVML`.
+This article describes the motivation behind HVML, the design goals, and its open source implementation.
 
-The original design goal of HVML is to allow developers who are familiar with
-C/C++, Python, or other programming languages to easily develop GUI applications
-by using Web front-end technologies (such as HTML/SVG, DOM and CSS), instead of
-using JavaScript programming language in a web browser or Node.js.
+HVML is a descriptive programming language that uses an XML-like syntax, so it can also be considered a programmable markup language.
 
-We achieved this design goal and also designed HVML as a new-style and
-general-purpose programming language. Now, we can not only use HVML as
-a programming language to rapidly develop GUI applications based on Web
-front-end technologies in the C/C++ runtime environment, but also use HVML
-as a general script language.
+The original design goal of HVML is to allow developers who are familiar with C/C++, Rust,
+    or other programming languages to easily develop GUI applications by using Web technologies directly in C/C++ runtime environment,
+    instead of using JavaScript programming language in a web browser or Node.js environment.
+We achieved this design goal and also designed HVML as a general-purpose programming language with some interesting features.
+
+This article introduces the technical features of HVML, including inherent data/event driven programming, the stacked virtual machine for running HVML programs, easy asynchronous and concurrent programming, flexible dynamics, etc.
+
+This article also introduces the open source implementation of HVML: PurC and xGUI Pro.
+
+By using the open source implementation of HVML,
+   you can not only use HVML to quickly develop GUI applications in the C/C++ runtime environment without having to worry about the details of toolkits, layouts, styles, and so on,
+   but also use HVML to quickly develop scripts that support coroutine and have high concurrency.
 
 In this article, we describe the design and the implementation of HVML.
 
 ## 1) Introduction
 
 ### 1.1) Problems
+
+During the development of [HybridOS], [Vincent Wei] proposed a descriptive programming language called `HVML`.
 
 With the development of Internet and applications, the Web front-end
 development technologies around HTML/CSS/JavaScript has evolved rapidly.
