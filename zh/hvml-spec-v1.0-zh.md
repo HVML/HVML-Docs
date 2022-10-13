@@ -1798,13 +1798,33 @@ HVML 还定义有如下一些动作元素用于操控事件循环、渲染器、
 - `error`：出现错误时，尝试用其中包含的内容插入到目标文档的当前位置。`error` 元素支持 `type` 属性，用来指定对应的错误类型。如：
    - `BusError`：表示总线错误（错误内存访问）。
    - `SegFault`：表示段故障（无效内存引用）。
-   - `Terminated`：表示进程被人为终止。
+   - `Terminated`：表示解释器实例被人为终止。
    - `CPUTimeLimitExceeded`：表示达到 CPU 时间上限。
    - `FileSizeLimitExceeded`：表示达到文件大小上限。
 - `except`：出现未被捕获的异常时，插入其中包含的内容到目标文档的当前位置。`except` 元素支持 `type` 属性，用来指定对应的异常类型。
 
 HVML 定义的异常如下：
 
+- 通用：
+   - `Conflict`：表示指定的操作条件互相冲突。
+   - `Gone`：表示指定的数据或实体已消失。
+   - `Incompleted`：表示未遂的调用，比如被信号打断的系统调用。
+   - `MismatchedVersion`：版本不匹配。
+   - `NotReady`：表示指定的命名变量对应的数据尚未就绪。
+   - `NotImplemented`：表示某个特性尚未实现。
+   - `NotFound`：表示未找到，如找不到指定的变量名字空间。
+   - `NotAllowed`：表示不允许的操作，如执行器的数据类型不正确。
+   - `NotAcceptable`：表示指定的操作条件不可接受，如错误的介词属性值。
+   - `Timeout`：超时。
+   - `TooSmall`：表示太小（如缓冲区大小）。
+   - `TooMany`：表示太多（如符号链接）。
+   - `TooLong`：表示太长（如路径名称）。
+   - `TooLarge`：表示太大（如数据包大小）。
+   - `TooEarly`：表示太早（如指定的服务尚未准备就绪）。
+   - `Unauthorized`：表示未经身份验证。
+   - `UnavailableLegally`：由于法律原因而不可用。
+   - `UnmetPrecondition`：未满足前置条件。
+   - `Unsupported`：表示不支持某个特性或者某个要求的信息，比如某些区域（locale）分类。
 - 解析相关：
    - `BadEncoding`：表示错误的字符编码。
    - `BadHVMLTag`：表示错误的、不适合的标签，或者不匹配的 HVML 关闭标签。
@@ -1815,57 +1835,46 @@ HVML 定义的异常如下：
    - `BadTargetXGML`：表示解析目标标签文档（XGML）时出现错误。
    - `BadTargetXML`：表示解析目标标签文档（XML）时出现错误。
 - 解释器相关：
+   - `ArgumentMissed`：缺少必要参数。
    - `BadExpression`：表示错误的表达式，在对 EJSON 表达式求值时产生。
    - `BadExecutor`：表示错误的执行器，在解析执行器时产生。
-   - `BadName`：表示错误的变量名称。通常发生在对 EJSON 求值表达式进行求值时，当指定的变量名不符合规范要求的情况。
-   - `DuplicateName`：重复名称，当要初始化的变量名称已经被占用时。
-   - `NoData`：表示不存在指定的数据，或者指定的变量名未绑定到任何数据。
-   - `NotIterable`：表示指定的元素或数据不是可迭代的。
    - `BadIndex`：索引错误，发生在引用数组或元组元素时，通常指索引值超出了数组或元组范围。
-   - `NoSuchKey`：字典中的键值错误，通常指引用了一个不存在的键值。
+   - `BadName`：表示错误的变量名称。通常发生在对 EJSON 求值表达式进行求值时，当指定的变量名不符合规范要求的情况。
+   - `ChildTerminated`：子协程被强制终止。
+   - `DuplicateName`：重复名称，当要初始化的变量名称已经被占用时。
    - `DuplicateKey`：重复键，通常发生在合并对象或集合时。
-   - `ArgumentMissed`：缺少必要参数。
-   - `WrongDataType`：表示错误的数据类型。
+   - `eDOMFailure`：表示在构建 eDOM 时遇到问题。
+   - `InternalFailure`：解释器内部错误。
    - `InvalidValue`：表示错误的、无法接受的值。通常发生在传入了不可接受的数值时。
+   - `LostRenderer`：丢失到渲染器的连接。
    - `MaxIterationCount`：表示达到最大迭代次数。
    - `MaxRecursionDepth`：表示达到最大递归深度。
-   - `Unauthorized`：表示连接时出现身份验证错误。
-   - `Timeout`：出现超时错误。
-   - `eDOMFailure`：表示在构建 eDOM 时遇到问题。
-   - `LostRenderer`：丢失到渲染器的连接。
    - `MemoryFailure`：内存错误，如内部堆太小，内存分配失败。
-   - `InternalFailure`：解释器内部错误。
-   - `ChildTerminated`：子协程被强制终止。
+   - `NoData`：表示不存在指定的数据，或者指定的变量名未绑定到任何数据。
+   - `NoSuchKey`：字典中的键值错误，通常指引用了一个不存在的键值。
+   - `NotIterable`：表示指定的元素或数据不是可迭代的。
+   - `WrongDataType`：表示错误的数据类型。
 - 浮点数相关：
-   - `ZeroDivision`：表示遇到被零除错误。
+   - `InvalidFloat`：表示传入了无效的浮点数。比如在调用 `$MATH.asin` 时，传入了不在 `[-1, 1]` 范围内的实数。
    - `Overflow`：表示浮点数运算时出现向上溢出错误。
    - `Underflow`：表示浮点数运算时出现向下溢出错误。
-   - `InvalidFloat`：表示传入了无效的浮点数。比如在调用 `$MATH.asin` 时，传入了不在 `[-1, 1]` 范围内的实数。
+   - `ZeroDivision`：表示遇到被零除错误。
 - 操作系统相关：
    - `AccessDenied`：表示拒绝访问或者权限不足。
-   - `IOFailure`：表示输入输出错误。
-   - `TooSmall`：表示太小（如缓冲区大小）。
-   - `TooMany`：表示太多（如符号链接）。
-   - `TooLong`：表示太长（如路径名称）。
-   - `TooLarge`：表示太大（如数据包大小）。
-   - `NotDesiredEntity`：表示传递了一个未预期的实体。
-   - `EntityNotFound`：未找到指定的实体（如文件）。
-   - `EntityExists`：创建新实体（如文件）时，该实体已存在。
-   - `EntityGone`：实体已消失。
-   - `NoStorageSpace`：表示存储空间不足（如写入文件）时。
    - `BrokenPipe`：管道的另一端已经关闭。
    - `ConnectionAborted`：连接中断。
    - `ConnectionRefused`：连接被拒绝。
    - `ConnectionReset`：连接被重置。
+   - `EntityNotFound`：未找到指定的实体（如文件）。
+   - `EntityExists`：创建新实体（如文件）时，该实体已存在。
+   - `EntityGone`：实体已消失。
+   - `IOFailure`：表示输入输出错误。
+   - `NotDesiredEntity`：表示传递了一个未预期的实体。
+   - `NoStorageSpace`：表示存储空间不足（如写入文件）时。
    - `NameResolutionFailed`：名称解析失败。该异常应定义额外信息以便应用程序可以知晓解析失败的具体名称。
+   - `OSFailure`：表示遇到未明确定义为异常的一般性操作系统错误。该异常应定义额外信息以便应用程序可以获得具体的错误信息，如 Unix 类系统中的 `errno`。
    - `RequestFailed`：请求失败。该异常应定义额外信息以便应用程序可以获得具体的请求失败信息，如 HTTP 协议状态码。
    - `SysFault`：不可恢复的操作系统故障，通常对应系统的 `EFAULT`。
-   - `OSFailure`：表示遇到未明确定义为异常的一般性操作系统错误。该异常应定义额外信息以便应用程序可以获得具体的错误信息，如 Unix 类系统中的 `errno`。
-- 其他：
-   - `NotReady`：表示指定的命名变量对应的数据尚未就绪。
-   - `NotImplemented`：表示某个特性尚未实现。
-   - `Unsupported`：表示不支持某个要求的信息，比如某些区域（locale）分类。
-   - `Incompleted`：表示未遂的调用，比如被信号打断的系统调用。
 
 另外，HVML 提供了 `catch` 动作标签，可用来捕获特定的异常并进行处理。
 
