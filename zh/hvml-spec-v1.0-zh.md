@@ -1,11 +1,11 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0-RC7  
+Version: 1.0-RC8  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Otc. 31, 2022  
+Last Modified Date: Nov. 30, 2022  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -736,10 +736,10 @@ HVML 还提供一个称为替身表达式的功能，可以让我们将一个表
         <ul class="user-list">
             <iterate on="$users" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <except type="NoData">
+                <except type=`NoData`>
                     <img src="wait.png" />
                 </except>
-                <except type="NotIterable">
+                <except type=`NotIterable`>
                     <p>Bad user data!</p>
                 </except>
             </iterate>
@@ -768,13 +768,13 @@ HVML 还提供一个称为替身表达式的功能，可以让我们将一个表
                 <match for="ANY">
                     <update on="$@" with="$footer_def" />
                 </match>
-                <except type="NoData" raw>
+                <except type=`NoData` raw>
                     <p>You forget to define the $global variable!</p>
                 </except>
-                <except type="NoSuchKey">
+                <except type=`NoSuchKey`>
                     <p>Bad global data!</p>
                 </except>
-                <except type="IdentifierError">
+                <except type=`IdentifierError`>
                     <p>Bad archetype data!</p>
                 </except>
             </test>
@@ -1878,6 +1878,8 @@ HVML 定义的异常如下：
 
 另外，HVML 提供了 `catch` 动作标签，可用来捕获特定的异常并进行处理。
 
+在 `catch`、`except` 和 `error` 标签中，我们必须使用反引号 U+0060 GRAVE ACCENT 字符（\`）包围异常或者错误的名称。`ANY` 用于任意的错误或异常，是一个保留字。
+
 错误和异常的处理说明如下：
 
 1. 在 `error` 和 `except` 标签中，我们一般使用目标标记语言的标签定义一个文档片段，也称为错误和异常模板。
@@ -1921,10 +1923,10 @@ HVML 定义的异常如下：
                     <update on="$@" to="displace" with="$footer_def" />
                 </match>
 
-                <except type="NoData" raw>
+                <except type=`NoData` raw>
                     <p>You forget to define the $global variable!</p>
                 </except>
-                <except type="NoSuchKey">
+                <except type=`NoSuchKey`>
                     <p>Bad global data!</p>
                 </except>
             </test>
@@ -2298,10 +2300,10 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
             <update on="$@" to="displace" with="$footer_def" />
         </match>
 
-        <except type="NoData" raw>
+        <except type=`NoData` raw>
             <p>You forget to define the $global variable!</p>
         </except>
-        <except type="NoSuchKey">
+        <except type=`NoSuchKey`>
             <p>Bad global data!</p>
         </except>
     </test>
@@ -2850,9 +2852,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 #### 2.4.3) `error` 标签
 
-`error` 标签用于定义一个针对错误的文档片段模板，可使用 `type` 属性指定对应的错误名称，但无需指定 `name` 属性。
+`error` 标签用于定义一个针对错误的文档片段模板，可使用 `type` 属性指定对应的错误名称，但无需指定 `name` 属性。定义错误名称时，必须使用反引号属性值语法。
 
-当未指定 `type` 属性时，表示默认的错误模板。
+当未指定 `type` 属性时，或使用 `ANY` 值时，表示默认的错误模板，可匹配任意错误。
 
 本质上，`error` 标签定义的内容设置了 `ERROR` 变量对应 `type` 键名的键值，故而如下两个标签的功能是一样的：
 
@@ -2868,9 +2870,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 #### 2.4.4) `except` 标签
 
-`except` 标签用于定义一个针对异常的文档片段模板，可使用 `type` 属性指定对应的异常名称，但无需指定 `name` 属性。
+`except` 标签用于定义一个针对异常的文档片段模板，可使用 `type` 属性指定对应的异常名称，但无需指定 `name` 属性。定义异常名称时，必须使用反引号属性值语法。
 
-当未指定 `type` 属性时，表示默认的异常模板。
+当未指定 `type` 属性时，或使用 `ANY` 值时，表示默认的异常模板，可匹配任意异常。
 
 本质上，`except` 标签定义的内容设置了 `EXCEPT` 变量对应 `type` 键名的键值，故而如下两个标签的功能是一样的：
 
@@ -2879,12 +2881,12 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         <p>There is an uncaught exception.</p>
     </except>
 
-    <update on="$EXCEPT" at=".*">
+    <update on="$EXCEPT" at=".ANY">
         "<p>There is an uncaught exception.</p>"
     </update>
 ```
 
-注意在上面定义异常模板时，我们未指定 `type` 属性，表示默认的异常模板。在 `update` 标签，我们改变的是 `$EXCEPT` 数据上的键名 `*` 的键值，这表示我们使用 `*` 键名保存默认的异常模板。
+注意在上面定义异常模板时，我们未指定 `type` 属性，表示默认的异常模板。在 `update` 标签，我们改变的是 `$EXCEPT` 数据上的键名 `ANY` 的键值，这表示我们使用 `ANY` 键名保存默认的异常模板。
 
 ### 2.5) 动作标签详解
 
@@ -3448,10 +3450,10 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
                 <update on="$@" to="displace" with="$footer_def" />
             </match>
 
-            <except type="NoData" raw>
+            <except type=`NoData` raw>
                 <p>You forget to define the $global variable!</p>
             </except>
-            <except type="NoSuchKey">
+            <except type=`NoSuchKey`>
                 <p>Bad global data!</p>
             </except>
         </test>
@@ -3577,13 +3579,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
     <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
         <update on="p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
-        <catch for="NoData">
+        <catch for `NoData`>
             <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
         </catch>
-        <catch for="NoSuchKey">
+        <catch for `NoSuchKey`>
             <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
         </catch>
-        <catch for="*">
+        <catch for `ANY`>
             <update on="p" at="textContent" with='Bad $locales/$global data!' />
         </catch>
     </choose>
@@ -3626,10 +3628,10 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         <ul id="the-user-list" class="user-list">
             <iterate on="$users" in="#the-user-list" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <except type="BadData">
+                <except type=`BadData`>
                     <img src="wait.gif" />
                 </except>
-                <except type="NotIterable">
+                <except type=`NotIterable`>
                     <p>Bad user data!</p>
                 </except>
             </iterate>
@@ -4537,13 +4539,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
         <define as="collectAllDirEntries" >
             <choose on=$FS.opendir($?) >
-                <catch for="ANY">
+                <catch for `ANY`>
                     <return with=false />
                 </catch>
 
                 <!-- no more directory entry if $?.read() returns false -->
                 <iterate with=$?.read() >
-                    <catch for="ANY">
+                    <catch for `ANY`>
                         <return with=false />
                     </catch>
 
@@ -4672,13 +4674,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
                 <define as="collectAllDirEntries" >
                     <choose on=$FS.opendir($?) >
-                        <catch for="ANY">
+                        <catch for `ANY`>
                             <return with=false />
                         </catch>
 
                         <!-- no more directory entry if $?.read() returns false -->
                         <iterate with=$?.read() >
-                            <catch for="ANY">
+                            <catch for `ANY`>
                                 <return with=false />
                             </catch>
 
@@ -4848,10 +4850,10 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 ```hvml
     <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
         <update on="p > a" at="textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
-        <catch for="NoData" raw>
+        <catch for `NoData` raw>
             <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
         </catch>
-        <catch for="NoSuchKey">
+        <catch for `NoSuchKey`>
             <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
         </catch>
         <catch>
@@ -4860,11 +4862,11 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </choose>
 ```
 
-我们使用 `for` 介词属性来定义要捕获的异常具体名称或模式（pattern）。
+我们使用 `for` 介词属性来定义要捕获的异常具体名称，必须使用反引号属性值语法。
 
 `for` 属性值的取值有如下规则：
 
-- 若未定义 `for` 属性，或 `for` 的属性值为 `*` 或空字符串，则相当于匹配任意异常。
+- 若未定义 `for` 属性，或 `for` 的属性值为 `ANY`，则相当于匹配任意异常。
 - 多个异常，可使用空白字符分隔。
 
 #### 2.5.15) `back` 标签
@@ -4919,7 +4921,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
     <ul id="theUL">
         <choose on=$FS.opendir($REQ.dir) >
-            <catch for="ANY">
+            <catch for `ANY`>
                 <back to="3">
                     "Exception when calling '$FS.opendir($REQ.dir)': $?"
                 </back>
@@ -4927,7 +4929,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
             <!-- no directory entry if $?.read() returns false -->
             <iterate with=$?.read() >
-                <catch for="ANY">
+                <catch for `ANY`>
                     <back to="#theUL">
                         "Exception when calling '$FS.opendir($REQ.dir).read($REQ.dir)': $?"
                     </back>
@@ -5200,7 +5202,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
         <update on="#the-user-list" to="append" with="$?" />
 
         <!-- 对子协程非正常退出的情形，通过捕获相应的异常进行处理 -->
-        <catch for="ChildTerminated">
+        <catch for `ChildTerminated`>
         </catch>
     </load>
 ```
@@ -6130,10 +6132,10 @@ class HVMLIterator:
         <ul id="the-user-list" class="user-list">
             <iterate on="$users" in="#the-user-list" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <except type="BadData">
+                <except type=`BadData`>
                     <img src="wait.gif" />
                 </except>
-                <except type="NotIterable">
+                <except type=`NotIterable`>
                     <p>Bad user data!</p>
                 </except>
             </iterate>
@@ -6441,10 +6443,10 @@ SYSTEM 标识符字符串的格式如下：
         <ext:ul class="user-list">
             <iterate on="$users" by="CLASS: IUser">
                 <update on="$@" to="append" with="$user_item" />
-                <except type="NoData">
+                <except type=`NoData`>
                     <img src="wait.png" />
                 </except>
-                <except type="NotIterable">
+                <except type=`NotIterable`>
                     <p>Bad user data!</p>
                 </except>
             </iterate>
@@ -6603,9 +6605,9 @@ SYSTEM 标识符字符串的格式如下：
 
 > Attribute values are a mixture of text and character references, except with the additional restriction that the text cannot contain an ambiguous ampersand.
 
-属性可以如下四种方式指定：
+属性可以如下五种方式指定：
 
-> Attributes can be specified in four different ways:
+> Attributes can be specified in five different ways:
 
 1) 空属性语法/Empty attribute syntax
 
@@ -6678,6 +6680,34 @@ If an attribute using the single-quoted attribute syntax is to be followed by an
 如果一个使用双引号属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
 
 If an attribute using the double-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
+
+5) 反引号属性值语法/Grave-quoted attribute value syntax
+
+反引号属性值语法，通常用于必须使用系统预定义关键词的场合，比如引用某个错误或者异常的名称。此时，
+
+属性名之后跟随有零个或多个 ASCII 空白字符，随后是 U+003D EQUALS SIGN 字符（`=`），随后是零个或者多个 ASCII 空白字符，随后是单个 U+0060 GRAVE ACCENT 字符（\`），随后是属性值，而这里的属性值，除了需满足上面提到的属性值要求之外，还不能包含任何字面的 U+0060 GRAVE ACCENT 字符（\`），最后由第二个单独的 U+0060 GRAVE ACCENT 字符（\`）结尾。
+
+在动词标签中，介词属性名之后的 U+003D EQUALS SIGN 字符（`=`）可以省略。
+
+在下面的例子中，属性由反引号属性值语法的形式给定：
+
+```hvml
+    <catch for `NoData`>
+        ...
+    </catch>
+
+    <except type=`NoData`>
+        ...
+    </except>
+```
+
+注意，当使用反引号定义属性值时，必须使用字面的预定义常量，且不做任何求值处理。
+
+如果一个使用反引号属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
+
+---
+
+注意，在动词标签中，介词属性名之后的 U+003D EQUALS SIGN 字符（`=`）可以省略。
 
 在同一起始标签内，不能有两个或更多属性具有相同的属性名。
 
@@ -7355,6 +7385,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
+- 2022 年 11 月 30 日：发布 V1.0 RC8，标记为 'v1.0-rc8-221130'。
 - 2022 年 10 月 31 日：发布 V1.0 RC7，标记为 'v1.0-rc7-221031'。
 - 2022 年 09 月 01 日：发布 V1.0 RC6，标记为 'v1.0-rc6-220901'。
 - 2022 年 07 月 01 日：发布 V1.0 RC5，标记为 'v1.0-rc5-220701'。
@@ -7362,6 +7393,22 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
+
+#### RC8) 221130
+
+##### RC8.1) 反引号属性值语法
+
+主要修订内容如下：
+
+1. 使用反引号属性值语法定义异常或错误名称。
+
+相关章节：
+
+- [2.1.11) 错误和异常的处理](#2111-错误和异常的处理)
+- [2.4.3) `error` 标签](#243-error-标签)
+- [2.4.4) `except` 标签](#244-except-标签)
+- [2.5.14) `catch` 标签](#2514-catch-标签)
+- [3.1.2.3) 属性](#3123-属性)
 
 #### RC7) 221031
 
