@@ -1,11 +1,11 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RC6  
+Version: 1.0-RC7  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Otc. 31, 2022  
+Last Modified Date: Nov. 30, 2022  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -91,7 +91,7 @@ Language: Chinese
       * [3.6.1) `type` 方法](#361-type-方法)
       * [3.6.2) `size` 方法](#362-size-方法)
       * [3.6.3) `count` 方法](#363-count-方法)
-      * [3.6.4) `numberify` 方法](#364-numberify-方法)
+      * [3.6.4) `numerify` 方法](#364-numerify-方法)
       * [3.6.5) `booleanize` 方法](#365-booleanize-方法)
       * [3.6.6) `stringify` 方法](#366-stringify-方法)
       * [3.6.7) `serialize` 方法](#367-serialize-方法)
@@ -113,6 +113,7 @@ Language: Chinese
       * [3.6.23) `base64_decode` 方法](#3623-base64_decode-方法)
       * [3.6.24) `arith` 方法](#3624-arith-方法)
       * [3.6.25) `bitwise` 方法](#3625-bitwise-方法)
+      * [3.6.26) `contains` 方法](#3626-contains-方法)
    + [3.7) `L`](#37-l)
       * [3.7.1) `not` 方法](#371-not-方法)
       * [3.7.2) `and` 方法](#372-and-方法)
@@ -267,6 +268,7 @@ Language: Chinese
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RC7) 221130](#rc7-221130)
       * [RC6) 221031](#rc6-221031)
       * [RC5) 220901](#rc5-220901)
       * [RC4) 220701](#rc4-220701)
@@ -2181,14 +2183,14 @@ $EJSON.count( [ 1.0, 2.0 ] )
     // ulongint: 2UL
 ```
 
-#### 3.6.4) `numberify` 方法
+#### 3.6.4) `numerify` 方法
 
 对给定数据做数值化处理。
 
 **描述**
 
 ```js
-$EJSON.numberify(
+$EJSON.numerify(
         [ <any $data> ]
 ) number
 ```
@@ -2202,10 +2204,10 @@ $EJSON.numberify(
 **示例**
 
 ```js
-$EJSON.numberify( "1.0" )
+$EJSON.numerify( "1.0" )
     // number: 1.0
 
-$EJSON.numberify
+$EJSON.numerify
     // number: 0
 ```
 
@@ -2953,6 +2955,58 @@ $EJSON.bitwise(
 ```js
 $EJSON.bitwise( '|', 0, 15 )
     // ulongint: 15UL
+```
+
+#### 3.6.26) `contains` 方法
+
+判断一个线性容器（如数组、元组、集合）中是否包含给定的值。
+
+**描述**
+
+```js
+$EJSON.contains(
+        <linctnr $haystack: `the linear container to search in.` >,
+        <any $needle: `the variant to search for in the haystack.` >
+        [, < 'exact | number | case | caseless | wildcard | regexp' $method = 'exact': `the search method:`
+            - 'exact':      `compaer two variants exactly.`
+            - 'number':     `comparing two variants as numbers.`
+            - 'case':       `comparing two variants as strings case-sensitively.`
+            - 'caseless':   `comparing two variants as strings case-insensitively.`
+            - 'wildcard':   `comparing two variants as strings and @needle as a whildcard.`
+            - 'regexp':     `comparing two variants as strings and @needle as a regular expression.`
+        >
+        ]
+) longint
+```
+
+判断线性容器 `haystack` 中是否包含指定的值 `needle`，并返回第一个匹配的值在线性容器中的索引值。
+
+**异常**
+
+- `ArgumentMissed`：可忽略异常；静默求值时返回 `-1L`。
+- `WrongDataType`：可忽略异常；静默求值时返回 `-1L`。
+
+**参数**
+
+- `haystack`  
+被搜索的线性容器。
+- `needle`  
+要搜索的变体。
+- `method`  
+指定匹配方法，可选精确（exact）、数值（numeric）、区分大小写（case）、不区分大小写（caseless）四种方法。
+
+**返回值**
+
+如果 `needle` 在 `haystack` 当中，返回 >= 0 的索引值，否则返回 `-1L`。
+
+**示例**
+
+```js
+$EJSON.contains([1, 2, 3], 3)
+    // longint: 2L
+
+$STR.contains(['a', 'b'], 'c')
+    // longint: -1L
 ```
 
 ### 3.7) `L`
@@ -7271,15 +7325,22 @@ $FILE.bin.tail($file, -5)
 
 发布历史：
 
-- 2022 年 10 月 31 日：发布 V1.0 RC6，标记为 'v1.0-pv-rc5-221031'。
+- 2022 年 11 月 30 日：发布 V1.0 RC7，标记为 'v1.0-pv-rc7-221130'。
+- 2022 年 10 月 31 日：发布 V1.0 RC6，标记为 'v1.0-pv-rc6-221031'。
 - 2022 年 09 月 01 日：发布 V1.0 RC5，标记为 'v1.0-pv-rc5-220901'。
 - 2022 年 07 月 01 日：发布 V1.0 RC4，标记为 'v1.0-pv-rc4-220701'。
 - 2022 年 06 月 01 日：发布 V1.0 RC3，标记为 'v1.0-pv-rc3-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
 
+#### RC7) 221130
+
+1. 调整 `$EJSON.numberify` 名称为 `$EJSON.numerify`。
+1. 新增 `$EJSON.contains` 方法。
+
 #### RC6) 221031
 
+（无修订）
 
 #### RC5) 220901
 
