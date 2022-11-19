@@ -114,6 +114,7 @@ Language: Chinese
       * [3.6.24) `arith` 方法](#3624-arith-方法)
       * [3.6.25) `bitwise` 方法](#3625-bitwise-方法)
       * [3.6.26) `contains` 方法](#3626-contains-方法)
+      * [3.6.27) `has` 方法](#3627-has-方法)
    + [3.7) `L`](#37-l)
       * [3.7.1) `not` 方法](#371-not-方法)
       * [3.7.2) `and` 方法](#372-and-方法)
@@ -2974,8 +2975,7 @@ $DATA.contains(
             - 'caseless':   `comparing two variants as strings case-insensitively.`
             - 'wildcard':   `comparing two variants as strings and @needle as a whildcard.`
             - 'regexp':     `comparing two variants as strings and @needle as a regular expression.`
-        >
-        ]
+        > ]
 ) longint
 ```
 
@@ -3005,8 +3005,60 @@ $DATA.contains(
 $DATA.contains([1, 2, 3], 3)
     // longint: 2L
 
-$STR.contains(['a', 'b'], 'c')
+$DATA.contains(['a', 'b'], 'c')
     // longint: -1L
+```
+
+#### 3.6.27) `has` 方法
+
+判断一个对象中是否包含由指定键名定义的属性。
+
+**描述**
+
+```js
+$DATA.has(
+        <object $haystack: `the object to search in.` >,
+        <any $needle: `the key value to search for in the haystack.` >
+        [, < 'exact | number | case | caseless | wildcard | regexp' $method = 'exact': `the search method:`
+            - 'exact':      `compaer two variants exactly.`
+            - 'number':     `comparing two variants as numbers.`
+            - 'case':       `comparing two variants as strings case-sensitively.`
+            - 'caseless':   `comparing two variants as strings case-insensitively.`
+            - 'wildcard':   `comparing two variants as strings and @needle as a whildcard.`
+            - 'regexp':     `comparing two variants as strings and @needle as a regular expression.`
+        > ]
+) any | undefined
+```
+
+判断对象 `haystack` 中是否包含由指定键名 `needle` 定义的属性，若有则返回对应的属性值，否则产生异常或者返回 `undefined`。
+
+**异常**
+
+- `ArgumentMissed`：可忽略异常；静默求值时返回 `undefined`。
+- `WrongDataType`：可忽略异常；静默求值时返回 `undefined`。
+- `NoSuchKey`：可忽略异常；静默求值时返回 `undefined`。
+
+**参数**
+
+- `haystack`  
+被搜索的对象。
+- `needle`  
+要搜索的键名。
+- `method`  
+指定匹配方法，可选精确（exact）、数值（numeric）、区分大小写（case）、不区分大小写（caseless）四种方法。
+
+**返回值**
+
+如果 `needle` 指定的键名在 `haystack` 中有任何匹配的属性，则返回第一个匹配的属性值。
+
+**示例**
+
+```js
+$DATA.has({ "a": 1, "b": 2, "c": 3}, "a")
+    // 1
+
+$DATA.has({ "a": 1, "b": 2, "c": 3}, "C", 'caseless')
+    // 3
 ```
 
 ### 3.7) `L`
@@ -7335,8 +7387,10 @@ $FILE.bin.tail($file, -5)
 
 #### RC7) 221130
 
+1. 重命名 `$EJSON` 为 `$DATA`。
 1. 调整 `$DATA.numberify` 名称为 `$DATA.numerify`。
-1. 新增 `$DATA.contains` 方法。
+1. 增强 `$STREAM.stdout.writelines` 以支持多项参数。
+1. 新增 `$DATA.contains` 和 `$DATA.has` 方法。
 
 #### RC6) 221031
 
