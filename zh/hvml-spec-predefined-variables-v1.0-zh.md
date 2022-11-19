@@ -87,7 +87,7 @@ Language: Chinese
    + [3.5) `DOC`](#35-doc)
       * [3.5.1) `doctype` 方法](#351-doctype-方法)
       * [3.5.2) `query` 方法](#352-query-方法)
-   + [3.6) `EJSON`](#36-ejson)
+   + [3.6) `DATA`](#36-data)
       * [3.6.1) `type` 方法](#361-type-方法)
       * [3.6.2) `size` 方法](#362-size-方法)
       * [3.6.3) `count` 方法](#363-count-方法)
@@ -1000,7 +1000,7 @@ $SYS.random_sequence(
 
 ```js
 // 从内核获得随机数据用于当前行者的随机数发生器种子。
-$SYS.random(! $EJSON.fetchreal($SYS.random_sequence(4), 'u32') )
+$SYS.random(! $DATA.fetchreal($SYS.random_sequence(4), 'u32') )
     // boolean: true
 ```
 
@@ -2090,7 +2090,7 @@ $DOC.query("#foo").attr(! "bar", "qux")
 
 参阅：<https://api.jquery.com/category/attributes/>
 
-### 3.6) `EJSON`
+### 3.6) `DATA`
 
 该动态变量为行者级内置变量，用于返回数据的类型、成员个数等信息。
 
@@ -2101,7 +2101,7 @@ $DOC.query("#foo").attr(! "bar", "qux")
 **描述**
 
 ```js
-$EJSON.type(
+$DATA.type(
         [ <any $data> ]
 ) string
 ```
@@ -2115,10 +2115,10 @@ $EJSON.type(
 **示例**
 
 ```js
-$EJSON.type
+$DATA.type
     // string: `undefined`
 
-$EJSON.type( 3.5 )
+$DATA.type( 3.5 )
     // string: `number`
 ```
 
@@ -2129,7 +2129,7 @@ $EJSON.type( 3.5 )
 **描述**
 
 ```js
-$EJSON.size(
+$DATA.size(
         [ <any $data> ]
 ) ulongint
 ```
@@ -2145,10 +2145,10 @@ $EJSON.size(
 **示例**
 
 ```js
-$EJSON.size
+$DATA.size
     // ulongint: 32UL
 
-$EJSON.size( "HVML" )
+$DATA.size( "HVML" )
     // ulongint: 32UL
 ```
 
@@ -2159,7 +2159,7 @@ $EJSON.size( "HVML" )
 **描述**
 
 ```js
-$EJSON.count(
+$DATA.count(
         [ <any $data> ]
 ) ulongint
 ```
@@ -2173,13 +2173,13 @@ $EJSON.count(
 **示例**
 
 ```js
-$EJSON.count
+$DATA.count
     // ulongint: 0
 
-$EJSON.count( 3.5 )
+$DATA.count( 3.5 )
     // ulongint: 1UL
 
-$EJSON.count( [ 1.0, 2.0 ] )
+$DATA.count( [ 1.0, 2.0 ] )
     // ulongint: 2UL
 ```
 
@@ -2190,7 +2190,7 @@ $EJSON.count( [ 1.0, 2.0 ] )
 **描述**
 
 ```js
-$EJSON.numerify(
+$DATA.numerify(
         [ <any $data> ]
 ) number
 ```
@@ -2204,10 +2204,10 @@ $EJSON.numerify(
 **示例**
 
 ```js
-$EJSON.numerify( "1.0" )
+$DATA.numerify( "1.0" )
     // number: 1.0
 
-$EJSON.numerify
+$DATA.numerify
     // number: 0
 ```
 
@@ -2218,7 +2218,7 @@ $EJSON.numerify
 **描述**
 
 ```js
-$EJSON.booleanize(
+$DATA.booleanize(
         [ <any $data> ]
 ) boolean
 ```
@@ -2232,7 +2232,7 @@ $EJSON.booleanize(
 **示例**
 
 ```js
-$EJSON.booleanize
+$DATA.booleanize
     // boolean: false
 ```
 
@@ -2243,7 +2243,7 @@ $EJSON.booleanize
 **描述**
 
 ```js
-$EJSON.stringify(
+$DATA.stringify(
         <any $data>
 ) string
 ```
@@ -2260,10 +2260,10 @@ $EJSON.stringify(
 **示例**
 
 ```js
-$EJSON.stringify
+$DATA.stringify
     // string: 'undefined'
 
-$EJSON.stringify(123)
+$DATA.stringify(123)
     // string: '123'
 ```
 
@@ -2274,13 +2274,13 @@ $EJSON.stringify(123)
 **描述**
 
 ```js
-$EJSON.serialize(
+$DATA.serialize(
         <any $data>
         [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape' $options = `real-json runtime-null plain bseq-hex-string`:
             - 'real-json':          `use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
             - 'real-ejson':         `use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
-            - 'runtime-null':       `treat all eJSON-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
-            - 'runtime-string':     `use string placehodlers for EJSON-specific runtime types: "<undefined>", "<dynamic>", and "<native>".`
+            - 'runtime-null':       `treat all HVML-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
+            - 'runtime-string':     `use string placehodlers for HVML-specific runtime types: "<undefined>", "<dynamic>", and "<native>".`
             - 'plain':              `do not use any extra formatting characters (whitespace, newline, or tab).`
             - 'spaced':             `use minimal space characters to format the output.`
             - 'pretty':             `use two-space to beautify the output.`
@@ -2308,16 +2308,16 @@ $EJSON.serialize(
 **示例**
 
 ```js
-$EJSON.serialize
+$DATA.serialize
     // string: 'null'
 
-$EJSON.serialize(undefined, 'runtime-string')
+$DATA.serialize(undefined, 'runtime-string')
     // string: '"<undefined>"'
 
-$EJSON.serialize("123")
+$DATA.serialize("123")
     // string: '"123"'
 
-$EJSON.serialize([1, 2])
+$DATA.serialize([1, 2])
     // string: '[1,2]'
 ```
 
@@ -2328,7 +2328,7 @@ $EJSON.serialize([1, 2])
 **描述**
 
 ```js
-$EJSON.sort(
+$DATA.sort(
         < array | set $data >,
         < 'asc | desc' $method = 'asc': sorting ascendingly or descendingly >
         [, < 'auto | number | case | caseless' $method = 'auto':
@@ -2353,7 +2353,7 @@ $EJSON.sort(
 **示例**
 
 ```js
-$EJSON.sort([3, 4, 1, 0], 'asc')
+$DATA.sort([3, 4, 1, 0], 'asc')
     // array: [0, 1, 3, 4]
 ```
 
@@ -2364,7 +2364,7 @@ $EJSON.sort([3, 4, 1, 0], 'asc')
 **描述**
 
 ```js
-$EJSON.shuffle(
+$DATA.shuffle(
         < array | set $data >,
 ) $data | false
 ```
@@ -2381,7 +2381,7 @@ $EJSON.shuffle(
 **示例**
 
 ```js
-$EJSON.shuffle([1, 2, 3, 4, 5])
+$DATA.shuffle([1, 2, 3, 4, 5])
     // array: [4, 3, 2, 5, 1]
 ```
 
@@ -2392,7 +2392,7 @@ $EJSON.shuffle([1, 2, 3, 4, 5])
 **描述**
 
 ```js
-$EJSON.compare(
+$DATA.compare(
         < any: the first data >,
         < any: the second data >
         [, < 'auto | number | case | caseless' = 'auto':
@@ -2421,23 +2421,23 @@ $EJSON.compare(
 **示例**
 
 ```js
-$EJSON.compare(1, "1")
+$DATA.compare(1, "1")
     // number: 0
 ```
 
 #### 3.6.11) `parse` 方法
 
-解析 JSON/EJSON 字符串，返回 EJSON 数据。
+解析 JSON/eJSON 字符串，返回数据。
 
 **描述**
 
 ```js
-$EJSON.parse(
+$DATA.parse(
         < string: $string: the JSON/EJSON string to be parsed. >
 ) any | undefined
 ```
 
-该方法解析 JSON/EJSON 字符串，返回 EJSON 数据。
+该方法解析 JSON/EJSON 字符串，返回数据。
 
 **异常**
 
@@ -2449,10 +2449,10 @@ $EJSON.parse(
 **示例**
 
 ```js
-#EJSON.parse("false")
+#DATA.parse("false")
     // boolean: false
 
-#EJSON.parse("[]")
+#DATA.parse("[]")
     // array: []
 ```
 
@@ -2463,7 +2463,7 @@ $EJSON.parse(
 **描述**
 
 ```js
-$EJSON.isequal(
+$DATA.isequal(
         < any: the first data >,
         < any: the second data >
 ) boolean | undefined
@@ -2480,10 +2480,10 @@ $EJSON.isequal(
 **示例**
 
 ```js
-#EJSON.isequal(false, 0)
+#DATA.isequal(false, 0)
     // boolean: false
 
-#EJSON.isequal(false, false)
+#DATA.isequal(false, false)
     // boolean: true
 ```
 
@@ -2494,7 +2494,7 @@ $EJSON.isequal(
 **描述**
 
 ```js
-$EJSON.fetchstr( <bsequece $bytes>,
+$DATA.fetchstr( <bsequece $bytes>,
         < 'utf8 | utf16 | utf32 | utf16le | utf32le | utf16be | utf32be' $encoding: `the encoding; see Binary Format Notation.` >
         [, < null | real $length = null: `the length to decode in bytes.` >
             [, < real $offset = 0: `the offset in the byte sequence.` > ]
@@ -2528,11 +2528,11 @@ $EJSON.fetchstr( <bsequece $bytes>,
 
 ```js
 // UTF8: 北京上海
-$EJSON.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8', 6, -6 )
+$DATA.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8', 6, -6 )
     // string: "上海"
 
 // UTF8: 北京上海
-$EJSON.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8:6' )
+$DATA.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8:6' )
     // string: "北京"
 ```
 
@@ -2541,7 +2541,7 @@ $EJSON.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8:6' )
 该方法在给定的二进制序列的指定位置，按指定的实数类型（以及大小头顺序）提取实数，返回相应的实数类型。
 
 ```js
-$EJSON.fetchreal( <bsequece $bytes>,
+$DATA.fetchreal( <bsequece $bytes>,
         <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128 ...' $binary_format: `the binary format and/or endianness; see Binary Format Notation`>
         [, < real $offset = 0: `the offset in the byte sequence.` > ]
 ) real | array | undefined
@@ -2561,10 +2561,10 @@ $EJSON.fetchreal( <bsequece $bytes>,
 **示例**
 
 ```js
-$EJSON.fetchreal( bx0a00, 'i16le', 0 )
+$DATA.fetchreal( bx0a00, 'i16le', 0 )
     // longint: 10L
 
-$EJSON.fetchreal( bx0a00, 'i8:2', 0 )
+$DATA.fetchreal( bx0a00, 'i8:2', 0 )
     // array: [ 10L, 00L ]
 ```
 
@@ -2575,7 +2575,7 @@ $EJSON.fetchreal( bx0a00, 'i8:2', 0 )
 **描述**
 
 ```js
-$EJSON.crc32(
+$DATA.crc32(
         < any $data>
         < 'CRC-32 | CRC-32/BZIP2 | CRC-32/MPEG-2 | CRC-32/POSIX | CRC-32/XFER | CRC-32/ISCSI | CRC-32C | CRC-32/BASE91-D | CRC-32D | CRC-32/JAMCRC | CRC-32/AIXM | CRC-32Q' $algo = 'CRC-32': `the name of CRC32 algorithm; use @null for default algorithm.`>
         < 'ulongint | binary | uppercase | lowercase' $type = 'ulongint': `the type of return data:`
@@ -2598,7 +2598,7 @@ $EJSON.crc32(
 **示例**
 
 ```
-$EJSON.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
+$DATA.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
     // string: '7AD1CDE5'
 ```
 
@@ -2615,7 +2615,7 @@ $EJSON.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
 **描述**
 
 ```js
-$EJSON.md5(
+$DATA.md5(
         < any $data >
         < 'binary | uppercase | lowercase' $type = 'binary': `the type of return data:`
             'binary'    - `the MD5 digest is returned as a binary sequence (totally 16 bytes).`
@@ -2640,7 +2640,7 @@ $EJSON.md5(
 **描述**
 
 ```js
-$EJSON.sha1(
+$DATA.sha1(
         < any $data >
         < 'binary | uppercase | lowercase' $type = 'binary': `the type of return data:`
             'binary'    - `the MD5 digest is returned as a binary sequence (totally 20 bytes).`
@@ -2665,7 +2665,7 @@ $EJSON.sha1(
 **描述**
 
 ```js
-$EJSON.pack(
+$DATA.pack(
         <string $format: `the format string; see Binary Format Notation.` >,
         <real | string | bsequence | array $first: `the first data.` >
         [,  <real | string | bsequence | array $second: `the second data.` >
@@ -2679,7 +2679,7 @@ $EJSON.pack(
 该函数将传入的多个实数、实数数组、字符串或字节序列按照 `$format` 指定的二进制格式打包为字节序列。
 
 ```js
-$EJSON.pack(
+$DATA.pack(
         < string $format: `the format string; see Binary Format Notation.` >,
         < array $data >
 ) string
@@ -2703,13 +2703,13 @@ $EJSON.pack(
 **示例**
 
 ```js
-$EJSON.pack( "i16le i32le", 10, 10)
+$DATA.pack( "i16le i32le", 10, 10)
     // bsequence: bx0a000a000000
 
-$EJSON.pack( "i16le:2 i32le", [[10, 15], 255])
+$DATA.pack( "i16le:2 i32le", [[10, 15], 255])
     // bsequence: bx0A000F00FF000000
 
-$EJSON.pack( "i16le:2 i32le", [10, 15], 255)
+$DATA.pack( "i16le:2 i32le", [10, 15], 255)
     // bsequence: bx0A000F00FF000000
 ```
 
@@ -2724,7 +2724,7 @@ $EJSON.pack( "i16le:2 i32le", [10, 15], 255)
 **描述**
 
 ```js
-$EJSON.unpack(
+$DATA.unpack(
         <string $format: `the format string; see Binary Format Notation.` >,
         <bsequence $data: `the data.`>
 ) array | real | string | bsequenc
@@ -2744,10 +2744,10 @@ $EJSON.unpack(
 **示例**
 
 ```js
-$EJSON.unpack( "i16le i32le", bx0a000a000000)
+$DATA.unpack( "i16le i32le", bx0a000a000000)
     // array: [10L, 10L]
 
-$EJSON.unpack( "i16le", bx0a000a000000)
+$DATA.unpack( "i16le", bx0a000a000000)
     // longint: 10L
 ```
 
@@ -2762,7 +2762,7 @@ $EJSON.unpack( "i16le", bx0a000a000000)
 **描述**
 
 ```js
-$EJSON.bin2hex(
+$DATA.bin2hex(
         <string | bsequence $data>
         [, < 'lowercase | uppercase' $options = 'lowercase':
             - 'lowercase': `use lowercase letters for hexadecimal digits.`
@@ -2784,7 +2784,7 @@ $EJSON.bin2hex(
 **示例**
 
 ```js
-$EJSON.bin2hex( bb0000.1111.1111.0000, 'uppercase')
+$DATA.bin2hex( bb0000.1111.1111.0000, 'uppercase')
     // string: '0FF0'
 ```
 
@@ -2799,7 +2799,7 @@ $EJSON.bin2hex( bb0000.1111.1111.0000, 'uppercase')
 **描述**
 
 ```js
-$EJSON.hex2bin(
+$DATA.hex2bin(
         < string $data >
 ) bsequence
 ```
@@ -2817,7 +2817,7 @@ $EJSON.hex2bin(
 **示例**
 
 ```js
-$EJSON.hex2bin( '0FF0' )
+$DATA.hex2bin( '0FF0' )
     // bsequence: bb0000.1111.1111.0000
 ```
 
@@ -2832,7 +2832,7 @@ $EJSON.hex2bin( '0FF0' )
 **描述**
 
 ```js
-$EJSON.base64_encode(
+$DATA.base64_encode(
         < string | bsequence $data >
 ) string
 ```
@@ -2849,10 +2849,10 @@ $EJSON.base64_encode(
 **示例**
 
 ```js
-$EJSON.base64_encode( bx48564D4C )
+$DATA.base64_encode( bx48564D4C )
     // string: 'SFZNTA=='
 
-$EJSON.base64_encode('HVML 是全球首款可编程标记语言')
+$DATA.base64_encode('HVML 是全球首款可编程标记语言')
     // string: 'SFZNTCDmmK/lhajnkIPpppbmrL7lj6/nvJbnqIvmoIforrDor63oqIA='
 ```
 
@@ -2868,7 +2868,7 @@ $EJSON.base64_encode('HVML 是全球首款可编程标记语言')
 **描述**
 
 ```js
-$EJSON.base64_decode(
+$DATA.base64_decode(
         <string $data>,
 ) bsequence
 ```
@@ -2886,7 +2886,7 @@ $EJSON.base64_decode(
 **示例**
 
 ```js
-$EJSON.base64_decode( 'SFZNTA==' )
+$DATA.base64_decode( 'SFZNTA==' )
     // bsequence: bx48564D4C
 ```
 
@@ -2902,7 +2902,7 @@ $EJSON.base64_decode( 'SFZNTA==' )
 **描述**
 
 ```js
-$EJSON.arith(
+$DATA.arith(
         <' + | - | * | / | % | ^ ' $arithmetic_operation>,
         <any $data1>,
         <any $data2>
@@ -2922,7 +2922,7 @@ $EJSON.arith(
 **示例**
 
 ```js
-$EJSON.arith( '+', 3, 2 )
+$DATA.arith( '+', 3, 2 )
     // longint: 5L
 ```
 
@@ -2933,7 +2933,7 @@ $EJSON.arith( '+', 3, 2 )
 **描述**
 
 ```js
-$EJSON.bitwise(
+$DATA.bitwise(
         <' & | "|" | ~ | ^ | < | > ' $bitwise_operation>,
         <any $data1>
         [, <any $data2> ]
@@ -2953,7 +2953,7 @@ $EJSON.bitwise(
 **示例**
 
 ```js
-$EJSON.bitwise( '|', 0, 15 )
+$DATA.bitwise( '|', 0, 15 )
     // ulongint: 15UL
 ```
 
@@ -2964,7 +2964,7 @@ $EJSON.bitwise( '|', 0, 15 )
 **描述**
 
 ```js
-$EJSON.contains(
+$DATA.contains(
         <linctnr $haystack: `the linear container to search in.` >,
         <any $needle: `the variant to search for in the haystack.` >
         [, < 'exact | number | case | caseless | wildcard | regexp' $method = 'exact': `the search method:`
@@ -3002,7 +3002,7 @@ $EJSON.contains(
 **示例**
 
 ```js
-$EJSON.contains([1, 2, 3], 3)
+$DATA.contains([1, 2, 3], 3)
     // longint: 2L
 
 $STR.contains(['a', 'b'], 'c')
@@ -4036,7 +4036,7 @@ $STR.scan_c('Tom is 9 years old, while Jerry is 7 years old.',
 
 #### 3.9.10) `format_p` 方法
 
-使用占位符格式化任意数据，对 EJSON 数据，使用序列化后的字符串。
+使用占位符格式化任意数据，对非字符串数据，使用序列化后的字符串。
 
 ```js
 $STR.format_p(
@@ -4948,7 +4948,7 @@ $URL.rawencode('HVML: 全球首款可编程标记语言!', 'rfc3986')
 
 **参见**
 
-- [`$EJSON.decode` 方法](#3102-decode-方法)
+- [`$DATA.decode` 方法](#3102-decode-方法)
 - [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
 - [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
 - PHP `urlencode()` 函数：<https://www.php.net/manual/en/function.urlencode.php>
@@ -4999,7 +4999,7 @@ $URL.decode('HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7
 
 **参见**
 
-- [`$EJSON.encode` 方法](#3101-encode-方法)
+- [`$DATA.encode` 方法](#3101-encode-方法)
 - [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
 - [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
 - PHP `urldecode()` 函数：<https://www.php.net/manual/en/function.urldecode.php>
@@ -7335,8 +7335,8 @@ $FILE.bin.tail($file, -5)
 
 #### RC7) 221130
 
-1. 调整 `$EJSON.numberify` 名称为 `$EJSON.numerify`。
-1. 新增 `$EJSON.contains` 方法。
+1. 调整 `$DATA.numberify` 名称为 `$DATA.numerify`。
+1. 新增 `$DATA.contains` 方法。
 
 #### RC6) 221031
 
@@ -7350,8 +7350,8 @@ $FILE.bin.tail($file, -5)
 1. 新增 `$CRTN.curator`、 `$CRTN.native_crtn` 属性获取器。
 1. 新增 `$RUNNER.rid`、 `$RUNNER.uri` 属性获取器。
 1. 增强 `$MATH.eval` 及 `$MATH.eval_l`，使之支持常量及函数。
-1. 新增 `$EJSON.arith` 及 `$EJSON.bitwise` 方法。
-1. 新增 `$EJSON.size` 方法。
+1. 新增 `$DATA.arith` 及 `$DATA.bitwise` 方法。
+1. 新增 `$DATA.size` 方法。
 1. 新增 `$STR.nr_bytes` 方法。
 
 #### RC4) 220701
@@ -7387,8 +7387,8 @@ $FILE.bin.tail($file, -5)
 
 1. 新增方法
    - `$SYS.sleep`
-   - `$EJSON.pack`
-   - `$EJSON.unpack`
+   - `$DATA.pack`
+   - `$DATA.unpack`
    - `$STR.scan_c`
    - `$STR.scan_p`
 
@@ -7414,7 +7414,7 @@ $FILE.bin.tail($file, -5)
 1. 在 `$SYS` 中增加 `random_sequence` 方法。
 1. 将 `$RUNNER` 中的 `env` 和 `cwd` 方法转移到 `$SYS` 方法。
 1. 在二进制格式表示法中增加 `utf16` 和 `utf32` 两种编码。
-1. 新增 `$EJSON.fetchstr` 和 `$EJSON.fetchreal`，可使用二进制格式表示法从一个字节序列中抽取实数或者字符串。
+1. 新增 `$DATA.fetchstr` 和 `$DATA.fetchreal`，可使用二进制格式表示法从一个字节序列中抽取实数或者字符串。
 1. 增强元素汇集原生实体的方法，使之可以生成指定元素汇集的子集。
 
 #### BRC) 220201
