@@ -1602,8 +1602,8 @@ HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并
 
 在本文档中，求值表达式被简称为 `HEE`，是 `Hybrid Evaluation Expression（混合求值表达式）` 的缩写。求值表达式的语法，见本文档 [2.2.2) 求值表达式的语法](#222-求值表达式的语法) 一节。
 
-- 求值表达式可嵌入到使用 eJSON 语法描述的结构化数据中，从而构成一个参数化数据（parametric data），如 `[$SYS.time, $SYS.locale, null, true, 2022]`。
-- 求值表达式可嵌入到双引号（或者三双引号）包围的字符串中，从而构成一个参数化字符串（parametric string），如 `"The system time is: $SYS.time"`。本质上，参数化字符串是参数化数据的一种特例。
+- 求值表达式可嵌入到使用 eJSON 语法描述的结构化数据中，从而构成一个参数化数据（parameterized data），如 `[$SYS.time, $SYS.locale, null, true, 2022]`。
+- 求值表达式可嵌入到双引号（或者三双引号）包围的字符串中，从而构成一个参数化字符串（parameterized string），如 `"The system time is: $SYS.time"`。本质上，参数化字符串是参数化数据的一种特例。
 - 在参数化字符串中，可使用一对 `{}` 包围单个求值表达式，防止出现混淆，比如：`"user-$?.id"` 和 `"user-{$?.id}"` 是一样的，但 `"$user_item"` 和 `"{$user}_item"` 是不一样的。
 - 在参数化字符串中，可使用 `\`（反斜杠）字符用于 `$` 、 `{`、 `}`、 `[`、 `]`、 `(`、 `)` 等字符的转义。
 - 在求值表达式的参数中，可使用参数化数据或者参数化字符串，如：`$DATA.count([1, 2, true, $SYS.time, "$user.id"])`
@@ -7464,8 +7464,8 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 1. 规范术语：
    - 求值表达式：Hybrid evaluation expression (HEE)。
    - 复合求值表达式：Compound hybrid evaluation expression（CHEE）。
-   - 参数化数据：Parametric Data。
-   - 参数化字符串：Parametric String。
+   - 参数化数据：Parameterized Data。
+   - 参数化字符串：Parameterized String。
 1. `$EJSON` 重命名为 `$DATA`。
 1. `$DATA.numberify` 重命名为 `$DATA.numerify`。
 1. 调整有关求值表达式语法、eJSON 语法的章节。
