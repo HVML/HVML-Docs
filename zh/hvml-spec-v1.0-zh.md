@@ -64,7 +64,7 @@ Language: Chinese
       * [2.1.14) 副词属性](#2114-副词属性)
       * [2.1.15) 引用元素或数据](#2115-引用元素或数据)
       * [2.1.16) 协程和虚拟机状态](#2116-协程和虚拟机状态)
-      * [2.1.17) 文档片段的 JSON 数据表达](#2117-文档片段的-json-数据表达)
+      * [2.1.17) 文档片段的结构化数据表达](#2117-文档片段的结构化数据表达)
       * [2.1.18) MIME 类型](#2118-mime-类型)
       * [2.1.19) HVML URI 图式](#2119-hvml-uri-图式)
          - [2.1.19.1) `hvml` 图式](#21191-hvml-图式)
@@ -149,6 +149,9 @@ Language: Chinese
 - [5) 总结](#5-总结)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RC9) 221231](#rc9-221231)
+         - [RC9.1) 定义骨架元素属性的响应式处理语法](#rc91-定义骨架元素属性的响应式处理语法)
+         - [RC9.2) 文档片段的结构化数据表达](#rc92-文档片段的结构化数据表达)
       * [RC8) 221130](#rc8-221130)
          - [RC8.1) 反引号属性值语法](#rc81-反引号属性值语法)
          - [RC8.2) 新的数据类型别名](#rc82-新的数据类型别名)
@@ -908,7 +911,7 @@ HVML 定义如下基本容器（basic container）类型：
 - 元组（tuple），可使用索引引用的多个数据项，一旦创建，其容量不可变，其成员不可移除，仅可置空。
 - 集合（set），特殊的数组，其中的成员可根据其值或者对象数组上的唯一性键值确保唯一性。
 
-以上扩展数据类型的表达方式使用本文档定义的 [2.2.5) eJSON 语法](#225-ejson-语法)。在本文中，“eJSON” 是 `extended JSON（扩展JSON）` 的缩写。
+以上扩展数据类型的表达方式使用本文档定义的 [2.2.5) eJSON 语法](#225-ejson-语法)。在本文中，“eJSON” 是 `extended JSON（扩展 JSON）` 的缩写。
 
 HVML 还定义有如下两种特殊数据类型：
 
@@ -1508,7 +1511,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ##### 2.1.6.4) 集合变量
 
-在 HVML 中，我们可以使用 JSON 数组来描述包含在一个集合中的数据，但 JSON 本身并不具有集合的概念。因此，HVML 提供了使用 JSON 数组来初始化一个集合变量的能力。也就是说，集合是具有某些特征的数组的一种内部表达，我们需要通过变量来访问集合数据。
+在 HVML 中，我们可以使用 JSON 数组来初始化包含在一个集合中的数据，但 JSON 本身并不具有集合的概念。因此，HVML 提供了使用数组来初始化一个集合变量的能力。也就是说，集合是具有某些特征的数组的一种内部表达，我们需要通过变量来访问集合数据。
 
 集合有如下特征：
 
@@ -2160,7 +2163,7 @@ HVML 协程可通过观察内置 `$CRTN` 变量上的渲染器事件来判断自
 
 #### 2.1.17) 文档片段的结构化数据表达
 
-HVML 解释器按照固定的策略将目标文档子树（文档片段）视作一个可以用 JSON 表达的数据来访问。比如对下面的 HTML 片段：
+HVML 解释器按照固定的策略将目标文档子树（文档片段）视作一个结构化数据来访问。比如对下面的 HTML 片段：
 
 ```hvml
     <li class="user-item">
@@ -2212,7 +2215,7 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
     }
 ```
 
-需要注意的是，将 DOM 文档结构用 JSON 数据表达时，可以有多种不同的转换策略。但 HVML 解释器会采用固定的结构来进行转换，以方便在其上执行结构化查询。具体来讲：
+需要注意的是，将 DOM 文档结构用结构化数据表达时，可以有多种不同的转换策略。但 HVML 解释器会采用固定的结构来进行转换，以方便在其上执行结构化查询。具体来讲：
 
 1. 每个元素使用一个字典数据来表述，用 `tag` 键值对来描述元素的标签，用 `attr` 键值对来描述元素的属性，用 `children` 键值对来描述该元素的子元素或者内容。
 1. 元素的所有属性构成了一个字典数据。
@@ -2507,8 +2510,8 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
         [ <literal_variable_token> ]<hybrid_evaluation_expression>[<literal_variable_token_other_char>, ...]
 
     <hybrid_variable_addressing_expression>: <literal_variable_name>[<hybrid_addressing_expression>, ...]
-       <literal_variable_name>: 用于直接引用一个已命名的 JSON 数据。
-       <hybrid_addressing_expression>：用于引用一个 JSON 容器的成员。
+       <literal_variable_name>: 用于直接引用一个已命名的数据。
+       <hybrid_addressing_expression>：用于引用一个容器的成员。
 
     <hybrid_expression>: <hybrid_evaluation_expression> | <extended_json>
 
@@ -2905,7 +2908,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 所有模板标签支持如下属性：
 
 - `silently` 属性。当定义有这个属性时，对属性值的求值将执行静默求值。
-- `raw` 属性。当定义有这个属性时，模板数据中 `$` 将被视作一个字面字符，而不执行 JSON 求值。
+- `raw` 属性。当定义有这个属性时，模板数据中 `$` 将被视作一个字面字符，而不执行表达式的求值处理。
 
 #### 2.4.1) `archetype` 标签
 
@@ -2979,7 +2982,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 在上面的例子中，`archedata` 标签定义了一个数据模板，其处理类似 `archetype`，但通常用于将一个数据映射到另一个结构不同的数据。
 
-本质上，`archedata` 定义了一个参数化的 JSON 数据，可通过 `name` 属性定义的变量名引用。
+本质上，`archedata` 定义了一个参数化数据，可通过 `name` 属性定义的变量名引用。
 
 #### 2.4.3) `error` 标签
 
@@ -3593,7 +3596,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 解释器在选择了某个匹配的 `match` 子元素后，若该 `match` 子元素定义了 `exclusively` 副词属性，则将不再检查其他 `match` 子元素定义的分支。另外，除 `catch` 子元素之外，`test` 元素中的其他非 `match` 子元素（包括外部元素）将被忽略。
 
-就上述示例代码而言，假定 `$global` 所指代的 JSON 数据 `locale` 定义为 `zh_CN`，则最终生成的 HTML 片段如下：
+就上述示例代码而言，假定 `$global` 所指代的数据之 `locale` 定义为 `zh_CN`，则最终生成的 HTML 片段如下：
 
 ```hvml
 <footer id="the-footer">
@@ -5878,7 +5881,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
     </choose>
 ```
 
-在 HVML 中，SQL 执行器也可以作用于 DOM 文档子树或者嵌套的 JSON 字典数据。为此，我们引入了一个新的 SQL SELECT 分句 `TRAVEL IN`，可选 `SLIBLINGS`、 `DEPTH`、 `BREADTH` 或者 `LEAVES`，分别表示使用兄弟节点遍历、深度优先（depth-first）遍历、广度优先（breadth-first）遍历和叶子节点遍历，其语法为：
+在 HVML 中，SQL 执行器也可以作用于 DOM 文档子树或者嵌套结构化字典数据。为此，我们引入了一个新的 SQL SELECT 分句 `TRAVEL IN`，可选 `SLIBLINGS`、 `DEPTH`、 `BREADTH` 或者 `LEAVES`，分别表示使用兄弟节点遍历、深度优先（depth-first）遍历、广度优先（breadth-first）遍历和叶子节点遍历，其语法为：
 
 - `"TRAVEL" <ws> "IN" <ws> [ "SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES" ]`：用于指定在树形数据上的遍历方式。
 
@@ -5986,7 +5989,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 }
 ```
 
-如果我们在上述 DOM 文档片段（或等价的 JSON 数据）上执行深度优先遍历，则 `SELECT tag, attr.id, textContent TRAVEL IN DEPTH` 语句的执行结果为：
+如果我们在上述 DOM 文档片段（或等价的结构化数据）上执行深度优先遍历，则 `SELECT tag, attr.id, textContent TRAVEL IN DEPTH` 语句的执行结果为：
 
 ```json
 [
@@ -6005,7 +6008,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 ]
 ```
 
-如果我们在上述 DOM 文档片段（或等价的 JSON 数据）上执行广度优先遍历，则 `SELECT tag, attr.id, textContent TRAVEL IN BREADTH` 语句的执行结果为：
+如果我们在上述 DOM 文档片段（或等价的结构化数据）上执行广度优先遍历，则 `SELECT tag, attr.id, textContent TRAVEL IN BREADTH` 语句的执行结果为：
 
 ```json
 [
@@ -6026,7 +6029,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 ]
 ```
 
-如果我们在上述 DOM 文档片段（或等价的 JSON 数据）上执行叶子节点遍历，则 `SELECT tag, attr.id, textContent TRAVEL IN LEAVES` 语句的执行结果为：
+如果我们在上述 DOM 文档片段（或等价的结构化数据）上执行叶子节点遍历，则 `SELECT tag, attr.id, textContent TRAVEL IN LEAVES` 语句的执行结果为：
 
 ```json
 [
@@ -6651,7 +6654,7 @@ SYSTEM 标识符字符串的格式如下：
 
 > The markup for the template contents of a template element is placed just after the template element's start tag and just before template element's end tag (as with other elements), and may consist of any text, character references, foreign elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
 
-数据模板元素用于定义一个 JSON 格式的数据模板，其内容定义在该元素的起始标签之后，终止标签之前。
+数据模板元素用于定义一个 eJSON 格式的数据模板，其内容定义在该元素的起始标签之后，终止标签之前。
 
 外部元素必须要么同时包含起始标签和终止标签，要么起始标签被标记为自终止。后者情形下，不能包含终止标签。
 
@@ -6860,7 +6863,7 @@ If an attribute using the double-quoted attribute syntax is to be followed by an
 
 除了上面所述无引号属性值语法之外，我们还可以在如下情形下省略介词属性值周围的单引号（U+0027 APOSTROPHE `'`）或者双引号（U+0022 QUOTATION MARK `"`）：
 
-1. 当使用 JSON 表述方法定义数组或对象作为介词属性值时。如，
+1. 当使用参数化数据定义数组或对象作为介词属性值时。如，
 
 ```
     <choose on ["zh_CN", "en_US"] to "append update" in #the-user-list with $user_item>
