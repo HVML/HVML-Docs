@@ -1,11 +1,11 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RC7  
+Version: 1.0-RC8  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Nov. 30, 2022  
+Last Modified Date: Dec. 31, 2022  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -53,12 +53,12 @@ Language: Chinese
       * [3.1.11) `random_sequence` 方法](#3111-random_sequence-方法)
       * [3.1.12) `random` 方法](#3112-random-方法)
    + [3.2) `RUNNER`](#32-runner)
-      * [3.2.1) `app_name` 方法](#321-app_name-方法)
-      * [3.2.2) `run_name` 方法](#322-run_name-方法)
-      * [3.2.3) `rid` 方法](#323-rid-方法)
-      * [3.2.4) `uri` 方法](#324-uri-方法)
+      * [3.2.1) `app_name` 属性](#321-app_name-属性)
+      * [3.2.2) `run_name` 属性](#322-run_name-属性)
+      * [3.2.3) `rid` 属性](#323-rid-属性)
+      * [3.2.4) `uri` 属性](#324-uri-属性)
       * [3.2.5) `myObj` 静态属性](#325-myobj-静态属性)
-      * [3.2.6) `user` 方法](#326-user-方法)
+      * [3.2.6) `user` 属性](#326-user-属性)
       * [3.2.7) `chan` 方法](#327-chan-方法)
          - [3.2.7.1) 通道实体的 `send` 方法](#3271-通道实体的-send-方法)
          - [3.2.7.2) 通道实体的 `recv` 方法](#3272-通道实体的-recv-方法)
@@ -73,16 +73,16 @@ Language: Chinese
       * [3.3.5) `fmttime` 方法](#335-fmttime-方法)
       * [3.3.6) `fmtbdtime` 方法](#336-fmtbdtime-方法)
    + [3.4) `CRTN`](#34-crtn)
-      * [3.4.1) `target` 方法](#341-target-方法)
-      * [3.4.2) `base` 方法](#342-base-方法)
-      * [3.4.3) `max_iteration_count` 方法](#343-max_iteration_count-方法)
-      * [3.4.4) `max_recursion_depth` 方法](#344-max_recursion_depth-方法)
-      * [3.4.5) `max_embedded_levels` 方法](#345-max_embedded_levels-方法)
-      * [3.4.6) `timeout` 方法](#346-timeout-方法)
-      * [3.4.7) `cid` 方法](#347-cid-方法)
-      * [3.4.8) `token` 方法](#348-token-方法)
-      * [3.4.9) `uri` 方法](#349-uri-方法)
-      * [3.4.10) `curator` 方法](#3410-curator-方法)
+      * [3.4.1) `target` 属性](#341-target-属性)
+      * [3.4.2) `base` 属性](#342-base-属性)
+      * [3.4.3) `max_iteration_count` 属性](#343-max_iteration_count-属性)
+      * [3.4.4) `max_recursion_depth` 属性](#344-max_recursion_depth-属性)
+      * [3.4.5) `max_embedded_levels` 属性](#345-max_embedded_levels-属性)
+      * [3.4.6) `timeout` 属性](#346-timeout-属性)
+      * [3.4.7) `cid` 属性](#347-cid-属性)
+      * [3.4.8) `token` 属性](#348-token-属性)
+      * [3.4.9) `uri` 属性](#349-uri-属性)
+      * [3.4.10) `curator` 属性](#3410-curator-属性)
       * [3.4.11) `native_crtn` 方法](#3411-native_crtn-方法)
    + [3.5) `DOC`](#35-doc)
       * [3.5.1) `doctype` 方法](#351-doctype-方法)
@@ -269,6 +269,7 @@ Language: Chinese
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RC8) 221231](#rc8-221231)
       * [RC7) 221130](#rc7-221130)
       * [RC6) 221031](#rc6-221031)
       * [RC5) 220901](#rc5-220901)
@@ -1077,7 +1078,7 @@ $SYS.random(-10FL)
 
 该变量是一个行者级内置变量，解释器在创建一个新的行者时，会自动创建并绑定。该变量主要用于行者相关的信息，并提供给用户在当前行者的不同协程之间共享数据的机制。
 
-#### 3.2.1) `app_name` 方法
+#### 3.2.1) `app_name` 属性
 
 获取当前行者的应用名称。
 
@@ -1101,7 +1102,7 @@ $RUNNER.app_name
     // string: 'cn.fmsoft.hvml.sample'
 ```
 
-#### 3.2.2) `run_name` 方法
+#### 3.2.2) `run_name` 属性
 
 获取当前行者的行者名称。
 
@@ -1125,7 +1126,7 @@ $RUNNER.run_name
     // string: 'hello'
 ```
 
-#### 3.2.3) `rid` 方法
+#### 3.2.3) `rid` 属性
 
 获取当前行者的行者标识符（runner identifier，简称 `rid`）。
 
@@ -1149,7 +1150,7 @@ $RUNNER.sid
     // ulongint: 3UL
 ```
 
-#### 3.2.4) `uri` 方法
+#### 3.2.4) `uri` 属性
 
 获取当前行者的 URI。
 
@@ -1160,7 +1161,7 @@ $RUNNER.uri
     string : `the URI of the current runner.`
 ```
 
-该方法获取当前行者的 URI，形似 `//localhost/cn.fmsoft.hvml.caculator/main/`。
+该方法获取当前行者的 URI，形似 `edpt://localhost/cn.fmsoft.hvml.caculator/main`。
 
 **异常**
 
@@ -1170,7 +1171,7 @@ $RUNNER.uri
 
 ```js
 $RUNNER.uri
-    // string: '//localhost/cn.fmsoft.hvml.caculator/main/'
+    // string: 'edpt://localhost/cn.fmsoft.hvml.caculator/main'
 ```
 
 #### 3.2.5) `myObj` 静态属性
@@ -1202,9 +1203,9 @@ $RUNNER.uri
     </observe>
 ```
 
-#### 3.2.6) `user` 方法
+#### 3.2.6) `user` 属性
 
-获取或设置用户键值对。
+通过该属性获取或设置用户键值对。
 
 **描述**
 
@@ -1382,7 +1383,7 @@ $channel.cap ulongint | false
 
 ##### 3.2.7.4) 通道实体的 `len` 属性
 
-获得通道实体中的数据项个数
+获得通道实体中的数据项个数。
 
 **描述**
 
@@ -1677,7 +1678,7 @@ $DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MAT
 
 ### 3.4) `CRTN`
 
-`CRTN` 是一个内置的协程级动态变量，该变量用于获取当前协程的基本信息或者设置当前协程的解释器参数。
+`CRTN` 是一个内置的协程级动态变量，该变量用于获取当前协程的基本信息或者设置当前协程的解释器参数等属性。
 
 另外，在 `$CRTN` 变量上，会产生如下渲染状态相关的事件：
 
@@ -1686,9 +1687,9 @@ $DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MAT
 1. `rdrState:lost`：协程所在行者丢失渲染器的连接，比如渲染器意外终止或者异常退出。
 1. `rdrState:regular`：当前协程和渲染器恢复到常规数据交换状态。
 
-#### 3.4.1) `target` 方法
+#### 3.4.1) `target` 属性
 
-获取 HVML 协程的目标文档类型。
+可通过该属性获取 HVML 协程的目标文档类型。
 
 **描述**
 
@@ -1700,7 +1701,7 @@ $CRTN.target string: `the target document type such as 'html'`
 
 **异常**
 
-该方法不产生异常。
+该属性的获取器不产生异常。
 
 **示例**
 
@@ -1709,15 +1710,15 @@ $CRTN.target
     // string: 'html'
 ```
 
-#### 3.4.2) `base` 方法
+#### 3.4.2) `base` 属性
 
-该方法获取或设置 HVML 协程的基础 URL。
+可通过该属性获取或设置 HVML 协程的基础 URL。
 
 ```js
 $CRTN.base string: `the base URL.`
 ```
 
-该方法返回当前的基础 URL，如 `file:///app/com.example.foo/hvml`。
+该属性获取器返回当前的基础 URL，如 `file:///app/com.example.foo/hvml`。
 
 ```js
 $CRTN.base(!
@@ -1725,12 +1726,16 @@ $CRTN.base(!
 ) string | false: `the new base URL normalized from $new_url or `false` for invalid $new_url.`
 ```
 
-该方法设置 HVML 协程的基础 URL 为预期值，返回正规化处理后的基础 URL。若传递的 `$new_url` 不是合法的或不支持的 URL，则抛出异常；或在静默求值时，对可忽略异常返回 `false`。
+该属性设置器设置 HVML 协程的基础 URL 为预期值，返回正规化处理后的基础 URL。若传递的 `$new_url` 不是合法的或不支持的 URL，则抛出异常；或在静默求值时，对可忽略异常返回 `false`。
 
 **异常**
 
-该方法可能产生的异常：
+该属性的获取器不产生的异常。
 
+该属性的设置器可产生如下异常，均为可忽略异常：
+
+- `ArgumentMissed`：设置器中未指定参数。
+- `WrongDataType`：设置器中指定的参数类型不正确。
 - `InvalidValue`：无效的 URL 字符串。
 
 **示例**
@@ -1740,9 +1745,9 @@ $CRTN.base(! "https://foo.example.com//app/hvml/" )
     // string: 'https://foo.example.com/app/hvml'
 ```
 
-#### 3.4.3) `max_iteration_count` 方法
+#### 3.4.3) `max_iteration_count` 属性
 
-该方法获取或设置 HVML 协程在执行 `iterate` 动作元素时的最大迭代次数，用于检测可能的死循环。
+可通过该属性获取或设置 HVML 协程在执行 `iterate` 动作元素时的最大迭代次数，用于检测可能的死循环。
 
 默认值为 64 位无符号整数的最大值：`2 ^ 64 - 1`。
 
@@ -1752,7 +1757,7 @@ $CRTN.base(! "https://foo.example.com//app/hvml/" )
 $CRTN.max_iteration_count ulongint: `the current maximal iteration count.`
 ```
 
-该方法返回当前的最大迭代次数值。
+该属性获取器返回当前的最大迭代次数值。
 
 ```js
 $CRTN.max_iteration_count(!
@@ -1760,12 +1765,16 @@ $CRTN.max_iteration_count(!
 ) ulongint | false : `the new maximal iteration count.`
 ```
 
-设置最大迭代次数值并返回设置后的值。当传入无效值（比如零）时抛出异常；或在静默求值时，对可忽略异常返回 `false`。
+该属性设置器设置最大迭代次数值并返回设置后的值。当传入无效值（比如零）时抛出异常；或在静默求值时，对可忽略异常返回 `false`。
 
 **异常**
 
-该方法可能产生的异常：
+该属性的获取器不产生的异常。
 
+该属性的设置器可产生如下异常，均为可忽略异常：
+
+- `ArgumentMissed`：设置器中未指定参数。
+- `WrongDataType`：设置器中指定的参数类型不正确。
 - `InvalidValue`：无效值，可忽略异常。
 
 **示例**
@@ -1774,9 +1783,9 @@ $CRTN.max_iteration_count(!
 $CRTN.max_iteration_count(! 10000UL )
 ```
 
-#### 3.4.4) `max_recursion_depth` 方法
+#### 3.4.4) `max_recursion_depth` 属性
 
-该方法获取或设置 HVML 协程在递归执行某个功能时的最大递归深度，以防止栈溢出。
+可通过该属性获取或设置 HVML 协程在递归执行某个功能时的最大递归深度，以防止栈溢出。
 
 默认值为 16 位无符号整数的最大值：`2 ^ 16 - 1`（65535）。
 
@@ -1786,7 +1795,7 @@ $CRTN.max_iteration_count(! 10000UL )
 $CRTN.max_recursion_depth ulongint: `the current maximal recursion depth value.`
 ```
 
-该方法返回当前的最大递归深度值。
+该属性获取器返回当前的最大递归深度值。
 
 ```js
 $CRTN.max_recursion_depth(!
@@ -1794,12 +1803,16 @@ $CRTN.max_recursion_depth(!
 ) ulongint | false: `the new maximal recursion depth value.`
 ```
 
-该方法设置最大递归深度值，返回设置后的值。当传入无效值时抛出异常；或在静默求值时，对可忽略异常返回 `false`。
+该属性设置器设置最大递归深度值，返回设置后的值。当传入无效值时抛出异常；或在静默求值时，对可忽略异常返回 `false`。
 
 **异常**
 
-该方法可能产生的异常：
+该属性的获取器不产生的异常。
 
+该属性的设置器可产生如下异常，均为可忽略异常：
+
+- `ArgumentMissed`：设置器中未指定参数。
+- `WrongDataType`：设置器中指定的参数类型不正确。
 - `InvalidValue`：无效值，可忽略异常。
 
 **示例**
@@ -1808,9 +1821,9 @@ $CRTN.max_recursion_depth(!
 $CRTN.max_recursion_depth(! 10000UL )
 ```
 
-#### 3.4.5) `max_embedded_levels` 方法
+#### 3.4.5) `max_embedded_levels` 属性
 
-该方法获取或设置解析 eJSON 数据或者处理容器数据时，允许的最大嵌套层级。
+该属性获取或设置解析 eJSON 数据或者处理容器数据时，允许的最大嵌套层级。
 
 默认值为 64。
 
@@ -1820,7 +1833,7 @@ $CRTN.max_recursion_depth(! 10000UL )
 $CRTN.max_embedded_levels ulongint: `the current maximal embedded levels.`
 ```
 
-该方法返回当前的最大容器数据嵌套层级。
+该属性获取器返回当前的最大容器数据嵌套层级。
 
 ```js
 $CRTN.max_embedded_levels(!
@@ -1828,12 +1841,16 @@ $CRTN.max_embedded_levels(!
 ) ulongint | false: `the new maximal embedded levels.`
 ```
 
-该方法设置最大允许的容器数据嵌套层级，返回设置后的值。当传入无效值时抛出异常；或在静默求值时，对可忽略异常返回 `false`。
+该属性设置器设置最大允许的容器数据嵌套层级，返回设置后的值。当传入无效值时抛出异常；或在静默求值时，对可忽略异常返回 `false`。
 
 **异常**
 
-该方法可能产生的异常：
+该属性的获取器不产生异常。
 
+该属性的设置器可产生如下异常，均为可忽略异常：
+
+- `ArgumentMissed`：设置器中未指定参数。
+- `WrongDataType`：设置器中指定的参数类型不正确。
 - `InvalidValue`：0 或者超过 16 位无符号整数最大值。
 
 **示例**
@@ -1842,9 +1859,9 @@ $CRTN.max_embedded_levels(!
 $CRTN.max_embedded_levels(! 64UL )
 ```
 
-#### 3.4.6) `timeout` 方法
+#### 3.4.6) `timeout` 属性
 
-该方法获取或设置 HVML 协程在通过数据获取器获取数据或者发送请求时的超时值（单位：秒）。
+可通过该属性获取或设置 HVML 协程在通过数据获取器获取数据或者发送请求时的超时值（单位：秒）。
 
 默认值为 10.0。
 
@@ -1854,7 +1871,7 @@ $CRTN.max_embedded_levels(! 64UL )
 $CRTN.timeout number : `the current timeout value (in seconds)`
 ```
 
-该方法返回当前超时值。
+该属性获取器返回当前超时值。
 
 ```js
 $CRTN.timeout(!
@@ -1862,11 +1879,13 @@ $CRTN.timeout(!
 ) number | false: `the new timeout value`
 ```
 
-该方法设置超时值，并返回设置后的值。当传入无效值时，抛出异常；或在静默求值时，对可忽略异常返回 `false`。
+该属性设置器设置超时值，并返回设置后的值。当传入无效值时，抛出异常；或在静默求值时，对可忽略异常返回 `false`。
 
 **异常**
 
-该方法可能产生的异常，均为可忽略异常：
+该属性的获取器不产生异常。
+
+该属性是设置器可产生如下异常，均为可忽略异常：
 
 - `ArgumentMissed`：设置器中未指定参数。
 - `WrongDataType`：设置器中指定了非实数类参数类型。
@@ -1880,9 +1899,9 @@ $CRTN.timeout(! 3.5 )
     // number: 3.5
 ```
 
-#### 3.4.7) `cid` 方法
+#### 3.4.7) `cid` 属性
 
-该方法获取当前 HVML 协程的标识符（coroutine identifier，简称 `cid`）。
+通过该属性可获取当前 HVML 协程的标识符（coroutine identifier，简称 `cid`）。
 
 **描述**
 
@@ -1892,7 +1911,7 @@ $CRTN.cid ulongint : `the corontine identifier`
 
 **异常**
 
-该方法不产生异常。
+该属性的获取器不产生异常。
 
 **示例**
 
@@ -1901,9 +1920,9 @@ $CRTN.cid
     // ulongint: 10UL
 ```
 
-#### 3.4.8) `token` 方法
+#### 3.4.8) `token` 属性
 
-该方法获取当前 HVML 协程的令牌（token）。
+通过该属性可获取或设置当前 HVML 协程的令牌（token）。
 
 **描述**
 
@@ -1911,22 +1930,42 @@ $CRTN.cid
 $CRTN.token string : `the corontine token`
 ```
 
-该方法获取当前 HVML 协程的令牌（token），形如 `COROUTINE-100`。
+该方法获取当前 HVML 协程的令牌（token），形如 `3cd5`。
+
+```js
+$CRTN.token(!
+        <string $new_token: `the new token for the coroutine`>
+) string | false: `the new token`
+```
+
+该方法设置当前 HVML 协程的令牌，并返回 `true` 或 `false`。当传入无效值（如下划线打头、不符合协程令牌规范）时，抛出异常；或在静默求值时，对可忽略异常返回 `false`。
 
 **异常**
 
-该方法不产生异常。
+该属性的获取器不产生的异常。
+
+该属性的设置器可产生如下异常，均为可忽略异常：
+
+- `ArgumentMissed`：未指定必要的参数。
+- `WrongDataType`：错误的参数类型。
+- `InvalidValue`：不符合协程令牌规范的值或者下划线打头的令牌名称。
 
 **示例**
 
 ```js
 $CRTN.token
-    // string: `COROUTINE-100`
+    // string: `7`
+
+$CRTN.token(! 'myTask' )
+    // string: `myTask`
+
+$CRTN.token
+    // string: `myTask`
 ```
 
-#### 3.4.9) `uri` 方法
+#### 3.4.9) `uri` 属性
 
-该方法获取当前 HVML 协程的 URI。
+通过该属性可获取当前 HVML 协程的 URI。
 
 **描述**
 
@@ -1934,22 +1973,22 @@ $CRTN.token
 $CRTN.uri string : `the corontine URI`
 ```
 
-该方法获取当前 HVML 协程的 URI，形如 `//localhost/cn.fmsoft.hvml.calculator/main/COROUTINE-100`。
+该方法获取当前 HVML 协程的 URI，形如 `//localhost/cn.fmsoft.hvml.calculator/main/CRTN/7`。
 
 **异常**
 
-该方法不产生异常。
+该属性的获取器不产生异常。
 
 **示例**
 
 ```js
 $CRTN.uri
-    // string: `//localhost/cn.fmsoft.hvml.calculator/main/COROUTINE-100`
+    // string: `//localhost/cn.fmsoft.hvml.calculator/main/CRTN/7`
 ```
 
-#### 3.4.10) `curator` 方法
+#### 3.4.10) `curator` 属性
 
-该方法获取当前 HVML 协程的监护协程标识符。
+通过该属性获取当前 HVML 协程的监护协程标识符。
 
 **描述**
 
@@ -1957,11 +1996,11 @@ $CRTN.uri
 $CRTN.curator ulongint : `the corontine identifier of the curator of the current coroutine`
 ```
 
-该方法获取当前 HVML 协程的监护协程标识符，若该协程没有监护协程，则返回 0UL。
+该属性获取器获取当前 HVML 协程的监护协程标识符，若该协程没有监护协程，则返回 0UL。
 
 **异常**
 
-该方法不产生异常。
+该属性获取器不产生异常。
 
 **示例**
 
@@ -1979,7 +2018,7 @@ $CRTN.curator
 ```js
 $CRTN.native_crtn(
     ulongint $cid: `the corontine identifier of one child coroutine`
-)
+) native/crtn | undefined
 ```
 
 该方法根据给定的协程标识符返回一个代表特定子协程，且可观察的原生实体。可用于观察子协程的退出状态。
@@ -7377,6 +7416,7 @@ $FILE.bin.tail($file, -5)
 
 发布历史：
 
+- 2022 年 12 月 31 日：发布 V1.0 RC8，标记为 'v1.0-pv-rc8-221231'。
 - 2022 年 11 月 30 日：发布 V1.0 RC7，标记为 'v1.0-pv-rc7-221130'。
 - 2022 年 10 月 31 日：发布 V1.0 RC6，标记为 'v1.0-pv-rc6-221031'。
 - 2022 年 09 月 01 日：发布 V1.0 RC5，标记为 'v1.0-pv-rc5-220901'。
@@ -7384,6 +7424,10 @@ $FILE.bin.tail($file, -5)
 - 2022 年 06 月 01 日：发布 V1.0 RC3，标记为 'v1.0-pv-rc3-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
+
+#### RC8) 221231
+
+1. 调整 `$CRTN.token` 属性，增加设置器。
 
 #### RC7) 221130
 

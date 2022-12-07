@@ -1284,6 +1284,9 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 1. `$CRTN.timeout`：获取或设置获取外部数据时的超时值。
 1. `$CRTN.cid`：获取当前协程的协程标识符。
 1. `$CRTN.uri`：获取当前协程的 URI。
+1. `$CRTN.token`：获取或设置当前协程的令牌（token）。
+
+其中，协程令牌是由解释器自动分配的行者内唯一的标识符，可用来标识一个协程。解释器可以取行者维护的新建协程之序号或者协程标志符对应的十进制字符串。协程可以通过调用 `$CRTN.token` 属性的设置器来覆盖这个自动分配的令牌。注意，我们保留下划线打头的令牌名称做特殊用途使用。比如 `_main` 表示行者创建的第一个协程。
 
 另外，我们还可以通过 `$CRTN` 对象观察一些全局事件以及当前协程渲染状态的变化，从而优雅地处理渲染器页面被用户关闭或者渲染器丢失等的情形。这些事件有：
 
@@ -2298,26 +2301,28 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 ##### 2.1.19.2) `hvml+run` 图式
 
-该图式主要用于定义属于特定行者的协程或者通道，和 `ftp` 图式类似，完整的 `hvml+run` 图式包括主机名、应用名、行者名、资源类型（表示协程的 `CRTN` 或者表示通道的 `CHAN`）及资源标志符，如协程令牌（coroutine token）或通道名称，如：
+该图式主要用于定义属于特定行者的协程或者通道，和 `ftp` 图式类似，完整的 `hvml+run` 图式包括主机名、应用名、行者名、资源类型（表示协程的 `CRTN` 或者表示通道的 `CHAN`）及资源标志符，如协程令牌或通道名称，如：
 
-`hvml+run://localhost/appName/myRunner/CRTN/3cc8f9e2ff74f872f09518ffd3db6f29`
+`hvml+run://localhost/appName/myRunner/CRTN/7`
 
 在 HVML 程序中，我们可以通过 `request` 等动作元素和当前应用的其他协程交互。方便起见，我们无需指定图式名称和主机名称，并可使用 `-` 指代当前应用，这样就可以使用如下简写方式引用当前主机、当前应用中属于指定行者的协程或通道，如：
 
-- 引用指定协程：`/-/otherRunner/CRTN/3cc8f9e2ff74f872f09518ffd3db6f2a`
+- 引用指定协程：`/-/otherRunner/CRTN/7`
 - 引用指定通道：`/-/otherRunner/CHAN/channel0`
 
 类似地，我们也可以使用 `-` 指代当前行者，即可引用当前主机、当前应用、当前行者中的指定协程，如：
 
-`/-/-/CRTN/3cc8f9e2ff74f872f09518ffd3db6f2a`
+`/-/-/CRTN/7`
 
 当我们需要引用另外一个主机上的协程时，可使用如下的写法：
 
-`//otherhost/otherAppName/otherRunner/CRTN/3cc8f9e2ff74f872f09518ffd3db6f2b`
+`//otherhost/otherAppName/otherRunner/CRTN/dispatcher`
 
-在 `hvml+run` 图式中，我们保留如下的特殊协程名称：
+在 `hvml+run` 图式中，我们保留如下的特殊协程令牌（相当于别名）：
 
-- `_main`：表示主协程，即指定行者启动的第一个协程。
+- `_main`：表示主协程，即指定行者创建的第一个协程。
+- `_first`：表示现有协程中的第一个协程。注意，当行者创建的第一个协程退出后，`_main` 将不可用，但 `_first` 是始终可用的。
+- `_last`：表示现有协程中的最后一个协程。注意，当协程中只有一个协程时，`_first` 和 `_last` 指向同一个协程。
 
 ### 2.2) 规则、表达式及方法的描述语法
 
@@ -4782,11 +4787,15 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 协程标识符的格式为 `[//hostname]/<appName>/<runnerName>/CRTN/<coroutineToken>`，必须符合本规范定义的 `coroutine_identifier` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法的协程标识符样例：
 
-- `//localhost/cn.fmsoft.hvml.sample/Runner0/CRTN/3cc8f9e2ff74f872f09518ffd3db6f29`
-- `/cn.fmsoft.hvml.sample/Runner0/CRTN/3cc8f9e2ff74f872f09518ffd3db6f29`
+- `//localhost/cn.fmsoft.hvml.sample/Runner0/CRTN/7`
+- `/cn.fmsoft.hvml.sample/Runner0/CRTN/foo`
 - `/cn.fmsoft.hvml.sample/myRunner/CRTN/3cc8f`
 
-其中，协程令牌是由解释器自动分配的唯一性标识符，可用来标识一个协程。我们不使用协程名称这一术语，是因为通过 `load` 元素，我们可以创建单个 HVML 程序的多个协程实例。
+这里，我们使用协程令牌来标识一个协程。我们不使用协程名称这一术语，是因为通过 `load` 元素，我们可以创建单个 HVML 程序的多个协程实例。另外，我们可以一些预定义协程令牌（通常使用下划线打头）来指定一个协程， 比如：
+
+- `_main`：表示主协程，即指定行者创建的第一个协程。
+- `_first`：表示现有协程中的第一个协程。注意，当行者创建的第一个协程退出后，`_main` 将不可用，但 `_first` 是始终可用的。
+- `_last`：表示现有协程中的最后一个协程。注意，当协程中只有一个协程时，`_first` 和 `_last` 指向同一个协程。
 
 针对 `within` 的属性值，我们保留 `_self` 作为预定义行者名称，特指当前行者。
 
