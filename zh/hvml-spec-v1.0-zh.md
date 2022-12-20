@@ -5185,13 +5185,11 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 - `//-/-/AnotherRunner/CHAN/channel0`：指当前主机、当前应用中名为 `AnotherRunner` 行者的 `channel0` 通道。
 - `/-/AnotherRunner/CHAN/channel1`：指当前主机、当前应用中名为 `AnotherRunner` 行者的 `channel1` 通道。
 
-向另一个行者的通道发送请求时，我们只能执行 `send` 操作或 `post` 操作，如：
+向另一个行者的通道发送请求时，我们只能执行 `post` 操作，该操作会在目标通道满时立即返回一个错误响应，如：
 
 ```hvml
-    <request on "/-/AnotherRunner/CHAN/channel0" to "send" with { data: 'I am here', channel: 'got' } noreturn />
+    <request on "/-/AnotherRunner/CHAN/channel0" to "post" with { data: 'I am here', channel: 'got' } noreturn />
 ```
-
-`send` 操作会等待目标行者接收数据（或者超时返回），而 `post` 操作会在通道满时立即返回一个错误响应。
 
 另外，我们也可以向当前应用的另一个行者创建的指定协程发送请求。通常的应用场景下，作为请求处理的行者会在主协程中接收请求并分发给其他协程处理，然后将子协程的处理结果作为响应转发给请求方。这种情况下，发起请求的一方无需知悉具体的协程令牌，而使用 `_main` 作为协程令牌即可。
 
