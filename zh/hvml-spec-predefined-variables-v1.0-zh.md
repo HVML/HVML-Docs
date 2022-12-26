@@ -81,11 +81,9 @@ Language: Chinese
       * [3.4.1) `doctype` 方法](#341-doctype-方法)
       * [3.4.2) `query` 方法](#342-query-方法)
    + [3.5) `RDR`](#35-rdr)
-      * [3.5.1) `status` 属性](#351-status-属性)
-      * [3.5.2) `comm` 属性](#352-comm-属性)
-      * [3.5.3) `uri` 属性](#353-uri-属性)
-      * [3.5.4) `connect` 方法](#354-connect-方法)
-      * [3.5.5) `disconn` 方法](#355-disconn-方法)
+      * [3.5.1) `state` 属性](#351-state-属性)
+      * [3.5.2) `connect` 方法](#352-connect-方法)
+      * [3.5.3) `disconn` 方法](#353-disconn-方法)
    + [3.6) `DATETIME`](#36-datetime)
       * [3.6.1) `time_prt` 方法](#361-time_prt-方法)
       * [3.6.2) `utctime` 方法](#362-utctime-方法)
@@ -1872,14 +1870,13 @@ $DOC.query("#foo").attr(! "bar", "qux")
 
 `RDR` 是一个内置的行者级动态变量，该变量用于访问当前行者连接的渲染器。
 
-#### 3.5.1) `status` 属性
+#### 3.5.1) `state` 属性
 
-该属性的获取器返回当前的渲染器状态，对象。该属性不提供设置器。
-
+该属性的获取器返回当前的渲染器状态对象。该属性不提供设置器。
 
 ```js
-$RDR.status object : `an object describing the current status of the renderer:`
-        - 'comm':               < string: `the communication method; an empty string for not connected.` >
+$RDR.state object : `an object describing the current state of the renderer:`
+        - 'comm':               < string: `the communication method; an empty string if not connected.` >
         - 'prot':               < string: `the protocol name, such as "PURCMC".` >
         - 'prot-version':       < string: `the protocol version` >
         - 'prot-ver-code':      < ulongint: `the protocol version code` >
@@ -1893,51 +1890,11 @@ $RDR.status object : `an object describing the current status of the renderer:`
 **示例**
 
 ```js
-$RDR.status
-    // html
+$RDR.state
+    // { 'comm': 'socket', 'prot': 'PURCMC', 'prot-version': '110', 'prot-ver-code': 110UL, 'uri': 'unix:///var/tmp/purcmc.sock'}
 ```
 
-#### 3.5.2) `comm` 属性
-
-该属性的获取器返回当前的渲染器通讯方式，字符串。该属性不提供设置器。
-
-```js
-$RDR.comm string : `a string prepresenting the communication method of the renderer`
-```
-
-空字符串表明当前行者未连接到渲染器。
-
-**异常**
-
-（无）
-
-**示例**
-
-```js
-$RDR.comm
-    // 'socket'
-```
-
-#### 3.5.3) `uri` 属性
-
-该属性的获取器返回当前的渲染器 URI，字符串。该属性不提供设置器。
-
-```js
-$RDR.uri string : `a string prepresenting the communication method of the renderer`
-```
-
-**异常**
-
-（无）
-
-**示例**
-
-```js
-$RDR.uri
-    // 'unix:///var/tmp/purcmc.sock'
-```
-
-#### 3.5.4) `connect` 方法
+#### 3.5.2) `connect` 方法
 
 该方法断开当前的渲染器并连接到指定的渲染器。
 
@@ -1963,7 +1920,7 @@ $RDR.connect('socket', 'unix:///var/tmp/purcmc.sock')
     // true
 ```
 
-#### 3.5.5) `disconn` 方法
+#### 3.5.3) `disconn` 方法
 
 该方法断开当前的渲染器。
 
