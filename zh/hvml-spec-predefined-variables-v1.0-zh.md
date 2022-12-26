@@ -65,136 +65,141 @@ Language: Chinese
          - [3.2.7.3) 通道实体的 `cap` 属性](#3273-通道实体的-cap-属性)
          - [3.2.7.4) 通道实体的 `len` 属性](#3274-通道实体的-len-属性)
          - [3.2.7.5) 通道实体上的事件](#3275-通道实体上的事件)
-   + [3.3) `DATETIME`](#33-datetime)
-      * [3.3.1) `time_prt` 方法](#331-time_prt-方法)
-      * [3.3.2) `utctime` 方法](#332-utctime-方法)
-      * [3.3.3) `localtime` 方法](#333-localtime-方法)
-      * [3.3.4) `mktime` 方法](#334-mktime-方法)
-      * [3.3.5) `fmttime` 方法](#335-fmttime-方法)
-      * [3.3.6) `fmtbdtime` 方法](#336-fmtbdtime-方法)
-   + [3.4) `CRTN`](#34-crtn)
-      * [3.4.1) `target` 属性](#341-target-属性)
-      * [3.4.2) `base` 属性](#342-base-属性)
-      * [3.4.3) `max_iteration_count` 属性](#343-max_iteration_count-属性)
-      * [3.4.4) `max_recursion_depth` 属性](#344-max_recursion_depth-属性)
-      * [3.4.5) `max_embedded_levels` 属性](#345-max_embedded_levels-属性)
-      * [3.4.6) `timeout` 属性](#346-timeout-属性)
-      * [3.4.7) `cid` 属性](#347-cid-属性)
-      * [3.4.8) `token` 属性](#348-token-属性)
-      * [3.4.9) `uri` 属性](#349-uri-属性)
-      * [3.4.10) `curator` 属性](#3410-curator-属性)
-      * [3.4.11) `native_crtn` 方法](#3411-native_crtn-方法)
-   + [3.5) `DOC`](#35-doc)
-      * [3.5.1) `doctype` 方法](#351-doctype-方法)
-      * [3.5.2) `query` 方法](#352-query-方法)
-   + [3.6) `DATA`](#36-data)
-      * [3.6.1) `type` 方法](#361-type-方法)
-      * [3.6.2) `size` 方法](#362-size-方法)
-      * [3.6.3) `count` 方法](#363-count-方法)
-      * [3.6.4) `numerify` 方法](#364-numerify-方法)
-      * [3.6.5) `booleanize` 方法](#365-booleanize-方法)
-      * [3.6.6) `stringify` 方法](#366-stringify-方法)
-      * [3.6.7) `serialize` 方法](#367-serialize-方法)
-      * [3.6.8) `sort` 方法](#368-sort-方法)
-      * [3.6.9) `shuffle` 方法](#369-shuffle-方法)
-      * [3.6.10) `compare` 方法](#3610-compare-方法)
-      * [3.6.11) `parse` 方法](#3611-parse-方法)
-      * [3.6.12) `isequal` 方法](#3612-isequal-方法)
-      * [3.6.13) `fetchstr` 方法](#3613-fetchstr-方法)
-      * [3.6.14) `fetchreal` 方法](#3614-fetchreal-方法)
-      * [3.6.15) `crc32` 方法](#3615-crc32-方法)
-      * [3.6.16) `md5` 方法](#3616-md5-方法)
-      * [3.6.17) `sha1` 方法](#3617-sha1-方法)
-      * [3.6.18) `pack` 方法](#3618-pack-方法)
-      * [3.6.19) `unpack` 方法](#3619-unpack-方法)
-      * [3.6.20) `bin2hex` 方法](#3620-bin2hex-方法)
-      * [3.6.21) `hex2bin` 方法](#3621-hex2bin-方法)
-      * [3.6.22) `base64_encode` 方法](#3622-base64_encode-方法)
-      * [3.6.23) `base64_decode` 方法](#3623-base64_decode-方法)
-      * [3.6.24) `arith` 方法](#3624-arith-方法)
-      * [3.6.25) `bitwise` 方法](#3625-bitwise-方法)
-      * [3.6.26) `contains` 方法](#3626-contains-方法)
-      * [3.6.27) `has` 方法](#3627-has-方法)
-   + [3.7) `L`](#37-l)
-      * [3.7.1) `not` 方法](#371-not-方法)
-      * [3.7.2) `and` 方法](#372-and-方法)
-      * [3.7.3) `or` 方法](#373-or-方法)
-      * [3.7.4) `xor` 方法](#374-xor-方法)
-      * [3.7.5) `eq` 方法](#375-eq-方法)
-      * [3.7.6) `ne` 方法](#376-ne-方法)
-      * [3.7.7) `gt` 方法](#377-gt-方法)
-      * [3.7.8) `ge` 方法](#378-ge-方法)
-      * [3.7.9) `lt` 方法](#379-lt-方法)
-      * [3.7.10) `le` 方法](#3710-le-方法)
-      * [3.7.11) `streq` 方法](#3711-streq-方法)
-      * [3.7.12) `strne` 方法](#3712-strne-方法)
-      * [3.7.13) `strgt` 方法](#3713-strgt-方法)
-      * [3.7.14) `strge` 方法](#3714-strge-方法)
-      * [3.7.15) `strlt` 方法](#3715-strlt-方法)
-      * [3.7.16) `strle` 方法](#3716-strle-方法)
-      * [3.7.17) `eval` 方法](#3717-eval-方法)
-   + [3.8) `T`](#38-t)
-      * [3.8.1) `map` 静态属性](#381-map-静态属性)
-      * [3.8.2) `get` 方法](#382-get-方法)
-   + [3.9) `STR`](#39-str)
-      * [3.9.1) `contains` 方法](#391-contains-方法)
-      * [3.9.2) `starts_with` 方法](#392-starts_with-方法)
-      * [3.9.3) `ends_with` 方法](#393-ends_with-方法)
-      * [3.9.4) `explode` 方法](#394-explode-方法)
-      * [3.9.5) `implode` 方法](#395-implode-方法)
-      * [3.9.6) `shuffle` 方法](#396-shuffle-方法)
-      * [3.9.7) `replace` 方法](#397-replace-方法)
-      * [3.9.8) `format_c` 方法](#398-format_c-方法)
-      * [3.9.9) `scan_c` 方法](#399-scan_c-方法)
-      * [3.9.10) `format_p` 方法](#3910-format_p-方法)
-      * [3.9.11) `scan_p` 方法](#3911-scan_p-方法)
-      * [3.9.12) `join` 方法](#3912-join-方法)
-      * [3.9.13) `nr_bytes` 方法](#3913-nr_bytes-方法)
-      * [3.9.14) `nr_chars` 方法](#3914-nr_chars-方法)
-      * [3.9.15) `tolower` 方法](#3915-tolower-方法)
-      * [3.9.16) `toupper` 方法](#3916-toupper-方法)
-      * [3.9.17) `substr` 方法](#3917-substr-方法)
-      * [3.9.18) `substr_compare` 方法](#3918-substr_compare-方法)
-      * [3.9.19) `substr_count` 方法](#3919-substr_count-方法)
-      * [3.9.20) `substr_replace` 方法](#3920-substr_replace-方法)
-      * [3.9.21) `strstr` 方法](#3921-strstr-方法)
-      * [3.9.22) `strpos` 方法](#3922-strpos-方法)
-      * [3.9.23) `strpbrk` 方法](#3923-strpbrk-方法)
-      * [3.9.24) `split` 方法](#3924-split-方法)
-      * [3.9.25) `chunk_split` 方法](#3925-chunk_split-方法)
-      * [3.9.26) `trim` 方法](#3926-trim-方法)
-      * [3.9.27) `pad` 方法](#3927-pad-方法)
-      * [3.9.28) `repeat` 方法](#3928-repeat-方法)
-      * [3.9.29) `reverse` 方法](#3929-reverse-方法)
-      * [3.9.30) `tokenize` 方法](#3930-tokenize-方法)
-      * [3.9.31) `translate` 方法](#3931-translate-方法)
-      * [3.9.32) `htmlentities_encode` 方法](#3932-htmlentities_encode-方法)
-      * [3.9.33) `htmlentities_decode` 方法](#3933-htmlentities_decode-方法)
-      * [3.9.34) `nl2br` 方法](#3934-nl2br-方法)
-      * [3.9.35) `rot13` 方法](#3935-rot13-方法)
-      * [3.9.36) `count_chars` 方法](#3936-count_chars-方法)
-      * [3.9.37) `count_bytes` 方法](#3937-count_bytes-方法)
-   + [3.10) `URL`](#310-url)
-      * [3.10.1) `encode` 方法](#3101-encode-方法)
-      * [3.10.2) `decode` 方法](#3102-decode-方法)
-      * [3.10.3) `build_query` 方法](#3103-build_query-方法)
-      * [3.10.4) `parse_query` 方法](#3104-parse_query-方法)
-      * [3.10.5) `parse` 方法](#3105-parse-方法)
-      * [3.10.6) `assemble` 方法](#3106-assemble-方法)
-   + [3.11) `STREAM`](#311-stream)
-      * [3.11.1) `open` 方法](#3111-open-方法)
-         - [3.11.1.1) 流实体的 `readstruct` 方法](#31111-流实体的-readstruct-方法)
-         - [3.11.1.2) 流实体的 `writestruct` 方法](#31112-流实体的-writestruct-方法)
-         - [3.11.1.3) 流实体的 `readlines` 方法](#31113-流实体的-readlines-方法)
-         - [3.11.1.4) 流实体的 `writelines` 方法](#31114-流实体的-writelines-方法)
-         - [3.11.1.5) 流实体的 `readbytes` 方法](#31115-流实体的-readbytes-方法)
-         - [3.11.1.6) 流实体的 `writebytes` 方法](#31116-流实体的-writebytes-方法)
-         - [3.11.1.7) 流实体的 `seek` 方法](#31117-流实体的-seek-方法)
-      * [3.11.2) `close` 方法](#3112-close-方法)
-      * [3.11.3) `stdin` 静态属性](#3113-stdin-静态属性)
-      * [3.11.4) `stdout` 静态属性](#3114-stdout-静态属性)
-      * [3.11.5) `stderr` 静态属性](#3115-stderr-静态属性)
-      * [3.11.6) `pipe` 流实体](#3116-pipe-流实体)
+   + [3.3) `CRTN`](#33-crtn)
+      * [3.3.1) `target` 属性](#331-target-属性)
+      * [3.3.2) `base` 属性](#332-base-属性)
+      * [3.3.3) `max_iteration_count` 属性](#333-max_iteration_count-属性)
+      * [3.3.4) `max_recursion_depth` 属性](#334-max_recursion_depth-属性)
+      * [3.3.5) `max_embedded_levels` 属性](#335-max_embedded_levels-属性)
+      * [3.3.6) `timeout` 属性](#336-timeout-属性)
+      * [3.3.7) `cid` 属性](#337-cid-属性)
+      * [3.3.8) `token` 属性](#338-token-属性)
+      * [3.3.9) `uri` 属性](#339-uri-属性)
+      * [3.3.10) `curator` 属性](#3310-curator-属性)
+      * [3.3.11) `native_crtn` 方法](#3311-native_crtn-方法)
+   + [3.4) `DOC`](#34-doc)
+      * [3.4.1) `doctype` 方法](#341-doctype-方法)
+      * [3.4.2) `query` 方法](#342-query-方法)
+   + [3.5) `RDR`](#35-rdr)
+      * [3.5.1) `status` 属性](#351-status-属性)
+      * [3.5.2) `comm` 属性](#352-comm-属性)
+      * [3.5.3) `uri` 属性](#353-uri-属性)
+      * [3.5.4) `connect` 方法](#354-connect-方法)
+   + [3.6) `DATETIME`](#36-datetime)
+      * [3.6.1) `time_prt` 方法](#361-time_prt-方法)
+      * [3.6.2) `utctime` 方法](#362-utctime-方法)
+      * [3.6.3) `localtime` 方法](#363-localtime-方法)
+      * [3.6.4) `mktime` 方法](#364-mktime-方法)
+      * [3.6.5) `fmttime` 方法](#365-fmttime-方法)
+      * [3.6.6) `fmtbdtime` 方法](#366-fmtbdtime-方法)
+   + [3.7) `DATA`](#37-data)
+      * [3.7.1) `type` 方法](#371-type-方法)
+      * [3.7.2) `size` 方法](#372-size-方法)
+      * [3.7.3) `count` 方法](#373-count-方法)
+      * [3.7.4) `numerify` 方法](#374-numerify-方法)
+      * [3.7.5) `booleanize` 方法](#375-booleanize-方法)
+      * [3.7.6) `stringify` 方法](#376-stringify-方法)
+      * [3.7.7) `serialize` 方法](#377-serialize-方法)
+      * [3.7.8) `sort` 方法](#378-sort-方法)
+      * [3.7.9) `shuffle` 方法](#379-shuffle-方法)
+      * [3.7.10) `compare` 方法](#3710-compare-方法)
+      * [3.7.11) `parse` 方法](#3711-parse-方法)
+      * [3.7.12) `isequal` 方法](#3712-isequal-方法)
+      * [3.7.13) `fetchstr` 方法](#3713-fetchstr-方法)
+      * [3.7.14) `fetchreal` 方法](#3714-fetchreal-方法)
+      * [3.7.15) `crc32` 方法](#3715-crc32-方法)
+      * [3.7.16) `md5` 方法](#3716-md5-方法)
+      * [3.7.17) `sha1` 方法](#3717-sha1-方法)
+      * [3.7.18) `pack` 方法](#3718-pack-方法)
+      * [3.7.19) `unpack` 方法](#3719-unpack-方法)
+      * [3.7.20) `bin2hex` 方法](#3720-bin2hex-方法)
+      * [3.7.21) `hex2bin` 方法](#3721-hex2bin-方法)
+      * [3.7.22) `base64_encode` 方法](#3722-base64_encode-方法)
+      * [3.7.23) `base64_decode` 方法](#3723-base64_decode-方法)
+      * [3.7.24) `arith` 方法](#3724-arith-方法)
+      * [3.7.25) `bitwise` 方法](#3725-bitwise-方法)
+      * [3.7.26) `contains` 方法](#3726-contains-方法)
+      * [3.7.27) `has` 方法](#3727-has-方法)
+   + [3.8) `L`](#38-l)
+      * [3.8.1) `not` 方法](#381-not-方法)
+      * [3.8.2) `and` 方法](#382-and-方法)
+      * [3.8.3) `or` 方法](#383-or-方法)
+      * [3.8.4) `xor` 方法](#384-xor-方法)
+      * [3.8.5) `eq` 方法](#385-eq-方法)
+      * [3.8.6) `ne` 方法](#386-ne-方法)
+      * [3.8.7) `gt` 方法](#387-gt-方法)
+      * [3.8.8) `ge` 方法](#388-ge-方法)
+      * [3.8.9) `lt` 方法](#389-lt-方法)
+      * [3.8.10) `le` 方法](#3810-le-方法)
+      * [3.8.11) `streq` 方法](#3811-streq-方法)
+      * [3.8.12) `strne` 方法](#3812-strne-方法)
+      * [3.8.13) `strgt` 方法](#3813-strgt-方法)
+      * [3.8.14) `strge` 方法](#3814-strge-方法)
+      * [3.8.15) `strlt` 方法](#3815-strlt-方法)
+      * [3.8.16) `strle` 方法](#3816-strle-方法)
+      * [3.8.17) `eval` 方法](#3817-eval-方法)
+   + [3.9) `T`](#39-t)
+      * [3.9.1) `map` 静态属性](#391-map-静态属性)
+      * [3.9.2) `get` 方法](#392-get-方法)
+   + [3.10) `STR`](#310-str)
+      * [3.10.1) `contains` 方法](#3101-contains-方法)
+      * [3.10.2) `starts_with` 方法](#3102-starts_with-方法)
+      * [3.10.3) `ends_with` 方法](#3103-ends_with-方法)
+      * [3.10.4) `explode` 方法](#3104-explode-方法)
+      * [3.10.5) `implode` 方法](#3105-implode-方法)
+      * [3.10.6) `shuffle` 方法](#3106-shuffle-方法)
+      * [3.10.7) `replace` 方法](#3107-replace-方法)
+      * [3.10.8) `format_c` 方法](#3108-format_c-方法)
+      * [3.10.9) `scan_c` 方法](#3109-scan_c-方法)
+      * [3.10.10) `format_p` 方法](#31010-format_p-方法)
+      * [3.10.11) `scan_p` 方法](#31011-scan_p-方法)
+      * [3.10.12) `join` 方法](#31012-join-方法)
+      * [3.10.13) `nr_bytes` 方法](#31013-nr_bytes-方法)
+      * [3.10.14) `nr_chars` 方法](#31014-nr_chars-方法)
+      * [3.10.15) `tolower` 方法](#31015-tolower-方法)
+      * [3.10.16) `toupper` 方法](#31016-toupper-方法)
+      * [3.10.17) `substr` 方法](#31017-substr-方法)
+      * [3.10.18) `substr_compare` 方法](#31018-substr_compare-方法)
+      * [3.10.19) `substr_count` 方法](#31019-substr_count-方法)
+      * [3.10.20) `substr_replace` 方法](#31020-substr_replace-方法)
+      * [3.10.21) `strstr` 方法](#31021-strstr-方法)
+      * [3.10.22) `strpos` 方法](#31022-strpos-方法)
+      * [3.10.23) `strpbrk` 方法](#31023-strpbrk-方法)
+      * [3.10.24) `split` 方法](#31024-split-方法)
+      * [3.10.25) `chunk_split` 方法](#31025-chunk_split-方法)
+      * [3.10.26) `trim` 方法](#31026-trim-方法)
+      * [3.10.27) `pad` 方法](#31027-pad-方法)
+      * [3.10.28) `repeat` 方法](#31028-repeat-方法)
+      * [3.10.29) `reverse` 方法](#31029-reverse-方法)
+      * [3.10.30) `tokenize` 方法](#31030-tokenize-方法)
+      * [3.10.31) `translate` 方法](#31031-translate-方法)
+      * [3.10.32) `htmlentities_encode` 方法](#31032-htmlentities_encode-方法)
+      * [3.10.33) `htmlentities_decode` 方法](#31033-htmlentities_decode-方法)
+      * [3.10.34) `nl2br` 方法](#31034-nl2br-方法)
+      * [3.10.35) `rot13` 方法](#31035-rot13-方法)
+      * [3.10.36) `count_chars` 方法](#31036-count_chars-方法)
+      * [3.10.37) `count_bytes` 方法](#31037-count_bytes-方法)
+   + [3.11) `URL`](#311-url)
+      * [3.11.1) `encode` 方法](#3111-encode-方法)
+      * [3.11.2) `decode` 方法](#3112-decode-方法)
+      * [3.11.3) `build_query` 方法](#3113-build_query-方法)
+      * [3.11.4) `parse_query` 方法](#3114-parse_query-方法)
+      * [3.11.5) `parse` 方法](#3115-parse-方法)
+      * [3.11.6) `assemble` 方法](#3116-assemble-方法)
+   + [3.12) `STREAM`](#312-stream)
+      * [3.12.1) `open` 方法](#3121-open-方法)
+         - [3.12.1.1) 流实体的 `readstruct` 方法](#31211-流实体的-readstruct-方法)
+         - [3.12.1.2) 流实体的 `writestruct` 方法](#31212-流实体的-writestruct-方法)
+         - [3.12.1.3) 流实体的 `readlines` 方法](#31213-流实体的-readlines-方法)
+         - [3.12.1.4) 流实体的 `writelines` 方法](#31214-流实体的-writelines-方法)
+         - [3.12.1.5) 流实体的 `readbytes` 方法](#31215-流实体的-readbytes-方法)
+         - [3.12.1.6) 流实体的 `writebytes` 方法](#31216-流实体的-writebytes-方法)
+         - [3.12.1.7) 流实体的 `seek` 方法](#31217-流实体的-seek-方法)
+      * [3.12.2) `close` 方法](#3122-close-方法)
+      * [3.12.3) `stdin` 静态属性](#3123-stdin-静态属性)
+      * [3.12.4) `stdout` 静态属性](#3124-stdout-静态属性)
+      * [3.12.5) `stderr` 静态属性](#3125-stderr-静态属性)
+      * [3.12.6) `pipe` 流实体](#3126-pipe-流实体)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -1407,276 +1412,7 @@ $channel.len ulongint | false
 - `receivable`：可接收数据（缓冲区有空位）。
 - `closed`：被关闭。
 
-### 3.3) `DATETIME`
-
-#### 3.3.1) `time_prt` 方法
-
-以给定的格式化规范/标准获得时间字符串。
-
-**描述**
-
-```js
-$DATETIME.time_prt(
-        <'atom | cookie | iso8601 | rfc822 | rfc850 | rfc1036 | rfc1036 | rfc1123 | rfc7231 | rfc2822 | rfc3339 | rfc3339-ex | rss | w3c' $format = 'iso8601':
-            - 'atom':       `Atom (example: 2005-08-15T15:52:01+00:00)`
-            - 'cookie':     `HTTP Cookies (example: Monday, 15-Aug-2005 15:52:01 UTC)`
-            - 'iso8601':    `Same as 'ATOM' (example: 2005-08-15T15:52:01+00:00)`
-            - 'rfc822':     `RFC 822 (example: Mon, 15 Aug 05 15:52:01 +0000)`
-            - 'rfc850':     `RFC 850 (example: Monday, 15-Aug-05 15:52:01 UTC)`
-            - 'rfc1036':    `RFC 1036 (example: Mon, 15 Aug 05 15:52:01 +0000)`
-            - 'rfc1123':    `RFC 1123 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
-            - 'rfc7231':    `RFC 7231 (since PHP 7.0.19 and 7.1.5) (example: Sat, 30 Apr 2016 17:52:13 GMT)`
-            - 'rfc2822':    `RFC 2822 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
-            - 'rfc3339':    `Same as 'ATOM'`
-            - 'rfc3339-ex': `RFC 3339 EXTENDED format (example: 2005-08-15T15:52:01.000+00:00)`
-            - 'rss':        `RSS (example: Mon, 15 Aug 2005 15:52:01 +0000)`
-            - 'w3c':        `World Wide Web Consortium (example: 2005-08-15T15:52:01+00:00)`
-        >
-        [, <null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for current calendar time.`>
-            [, <string $timezone>
-            ]
-        ]
-) string | false: `a date and time string in the given time format $format and the time zone $timezone for the specified calendar time $seconds.`
-```
-
-该方法获得指定日历时间在给定时区，以给定格式化标准/规范名称（如 ISO8601、RFC850）形式展示的时间字符串。
-
-**异常**
-
-该方法可能产生如下可忽略异常：
-
-- `WrongDataType`：错误的数据类型。
-- `InvalidValue`：非法数据，如不正确的格式规范名称、时间或者时区名称等。
-
-**示例**
-
-```js
-$DATETIME.time_prt
-    // string: '2020-06-24T11:27:05+08:00'
-
-$DATETIME.time_prt.iso8601
-    // string: '2020-06-24T11:27:05+08:00'
-
-$DATETIME.time_prt('iso8601')
-    // string: '2020-06-24T11:27:05+08:00'
-
-// 获取当前时间之前一个小时在上海时区（北京标准时间）的 ISO8601 标准字符串
-$DATETIME.time_prt('iso8601', $MATH.eval('x - 3600', { x: $SYS.time }), 'Asia/Shanghai')
-    // string: '2020-06-24T11:27:05+08:00'
-
-// 获取当前时间上海时区（北京标准时间）的 RFC822 标准字符串
-$DATETIME.time_prt('rfc822', null, 'Asia/Shanghai')
-    // string: 'Mon, 15 Aug 05 15:52:01 +0000'
-```
-
-**参见**
-
-- PHP: <https://www.php.net/manual/en/timezones.php>
-- PHP: <https://www.php.net/manual/en/ref.datetime.php>
-- PHP: <https://www.php.net/manual/en/datetime.formats.php>
-- PHP DateTime 类：<https://www.php.net/manual/en/class.datetime.php>
-
-#### 3.3.2) `utctime` 方法
-
-获取当前系统时间的 UTC 分解时间。
-
-**描述**
-
-```js
-$DATETIME.utctime object : `An object representing the current broken-down time in UTC.`
-```
-
-获取当前日历时间的 UTC（协调世界时）分解时间（broken-down time），返回类型为对象。
-
-```js
-$DATETIME.utctime(
-        <null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for the current calendar time.`>
-) object
-```
-
-获得给定日历时间的 UTC 分解时间（broken-down time），返回类型为对象。
-
-上述方法返回的分解时间对象包含如下属性：
-
-```js
-{
-   'usec':  <number: `The number of microseconds after the second, in the range 0 to 999,999.`>
-   'sec':   <number: `The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.`>
-   'min':   <number: `The number of minutes after the hour, in the range 0 to 59.`>
-   'hour':  <number: `The number of hours past midnight, in the range 0 to 23.`>
-   'mday':  <number: `The day of the month, in the range 1 to 31.`>
-   'mon':   <number: `The number of months since January, in the range 0 to 11.`>
-   'year':  <number: `The number of years since 1900.`>
-   'wday':  <number: `The number of days since Sunday, in the range 0 to 6.`>
-   'yday':  <number: `The number of days since January 1, in the range 0 to 365.`>
-   'isdst': <number: `A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving time is in effect, zero if it is not, and negative if the information is not available.`>
-   'tz':    <string: `The timezone name.`>
-}
-```
-
-**示例**
-
-```js
-// 获取当前时间在当前时区的分解时间
-$DATETIME.utctime
-    // object
-
-// 获取当前时间之前一个小时的分解时间
-$DATETIME.utctime($MATH.sub($SYS.time, 3600))
-    // object
-```
-
-**参见**
-
-- C 标准函数：`gmtime_r()`
-
-#### 3.3.3) `localtime` 方法
-
-获取指定时区的分解时间。
-
-**描述**
-
-```js
-$DATETIME.localtime object : `An object representing the current broken-down time in the current timezone.`
-```
-
-获得当前时间在当前时区的分解时间（broken-down time），返回类型为对象。
-
-
-```js
-$DATETIME.localtime(
-        [, <null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for the current calendar time.`>
-            [, <string $timezone>
-            ]
-        ]
-) object
-```
-
-获得给定时间在指定时区的分解时间（broken-down time），返回类型为对象。
-
-上述方法返回的分解时间对象包含如下属性：
-
-```js
-{
-   'usec':  <number: `The number of microseconds after the second, in the range 0 to 999,999.`>
-   'sec':   <number: `The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.`>
-   'min':   <number: `The number of minutes after the hour, in the range 0 to 59.`>
-   'hour':  <number: `The number of hours past midnight, in the range 0 to 23.`>
-   'mday':  <number: `The day of the month, in the range 1 to 31.`>
-   'mon':   <number: `The number of months since January, in the range 0 to 11.`>
-   'year':  <number: `The number of years since 1900.`>
-   'wday':  <number: `The number of days since Sunday, in the range 0 to 6.`>
-   'yday':  <number: `The number of days since January 1, in the range 0 to 365.`>
-   'isdst': <number: `A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving time is in effect, zero if it is not, and negative if the information is not available.`>
-   'tz':    <string: `The timezone name.`>
-}
-```
-
-**示例**
-
-```js
-// 获取当前时间在当前时区的分解时间
-$DATETIME.localtime
-    // object
-
-// 获取当前时间之前一个小时在上海时区（北京标准时间）的分解时间
-$DATETIME.localtime($MATH.sub($SYS.time, 3600), 'Asia/Shanghai')
-```
-
-**参见**
-
-- C 标准函数：`localtime_r()`
-
-#### 3.3.4) `mktime` 方法
-
-将分解时间转换为日历时间（Epoch 以来的秒数）。
-
-**描述**
-
-```js
-$DATETIME.mktime(
-        <object $tm>
-) longdouble : `seconds (including microseconds) since Epoch.`
-```
-
-转换分解时间为日历时间（Epoch 以来的秒数），返回值类型为 longdouble。
-
-**示例**
-
-**参见**
-
-- C 标准函数：`mktime_r()`
-
-#### 3.3.5) `fmttime` 方法
-
-格式化日历时间。
-
-**描述**
-
-```js
-$DATETIME.fmttime(
-        <string $format: `the format string`>
-        [, <null | number | longint | ulongint | longdouble: `the calendar time (seconds since Epoch); @null for the current calendar time.`>
-            [, <string $timezone>
-            ]
-        ]
-) string | false
-```
-
-该方法按指定的格式格式化一个日历时间，返回字符串。
-
-该方法使用的格式化修饰符同 C 标准函数 `strftime()`，但有如下例外或增强：
-
-1. 不支持 GNU 的扩展修饰符，如 `_` 等。
-1. `strftime()` 表示时区差异时，仅支持 `+0200` 这种输出形式，为支持 `+02:00` 这种形式，可在格式化字符串中使用 `{%z:}`。
-1. `strftime()` 不支持毫秒，为支持毫秒，可使用 `{m}`。
-1. 当格式字符串以 `{UTC}` 打头时，表示使用不将日历时间按当前时区转换为本地时间，而始终以协调世界时（UTC）格式化。
-1. 当格式字符串中需要表示字面的 `{` 和 `}` 符号时，前置转义字符 `\`。
-
-**示例**
-
-```js
-// 获得类似 `11:27` 的时间字符串
-$DATETIME.fmttime("It is %H:%M now")
-    // string: 'It is 11:27 now'
-
-// 获得类似 `11:27` 的时间字符串
-$DATETIME.fmttime("现在是中国标准时间 %H:%M", null, 'Asia/Shanghai')
-    // string: '现在是中国标准时间 11:27'
-```
-
-**参见**
-
-- C 标准函数：`strftime()`
-
-#### 3.3.6) `fmtbdtime` 方法
-
-格式化分解时间。
-
-**描述**
-
-```js
-$DATETIME.fmtbdtime(
-        <string $format: `the format string`>,
-        <null | object $bdtime: `the broken-down time object returned by utctime() or localtime(); @null for the current calendar time in current timzone.`
-) string | false
-```
-
-该方法按指定的格式格式化一个分解时间，返回字符串。
-
-**示例**
-
-```js
-// 获得类似 `08:55` 的时间字符串
-$DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MATH.sub($SYS.time, 3600), 'Asia/Shanghai'))
-    // string: 'It is 08:55 now in Asia/Shanghai'
-```
-
-**参见**
-
-- C 标准函数：`strftime()`
-
-### 3.4) `CRTN`
+### 3.3) `CRTN`
 
 `CRTN` 是一个内置的协程级动态变量，该变量用于获取当前协程的基本信息或者设置当前协程的解释器参数等属性。
 
@@ -1687,7 +1423,7 @@ $DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MAT
 1. `rdrState:lost`：协程所在行者丢失渲染器的连接，比如渲染器意外终止或者异常退出。
 1. `rdrState:regular`：当前协程和渲染器恢复到常规数据交换状态。
 
-#### 3.4.1) `target` 属性
+#### 3.3.1) `target` 属性
 
 可通过该属性获取 HVML 协程的目标文档类型。
 
@@ -1710,7 +1446,7 @@ $CRTN.target
     // string: 'html'
 ```
 
-#### 3.4.2) `base` 属性
+#### 3.3.2) `base` 属性
 
 可通过该属性获取或设置 HVML 协程的基础 URL。
 
@@ -1745,7 +1481,7 @@ $CRTN.base(! "https://foo.example.com//app/hvml/" )
     // string: 'https://foo.example.com/app/hvml'
 ```
 
-#### 3.4.3) `max_iteration_count` 属性
+#### 3.3.3) `max_iteration_count` 属性
 
 可通过该属性获取或设置 HVML 协程在执行 `iterate` 动作元素时的最大迭代次数，用于检测可能的死循环。
 
@@ -1783,7 +1519,7 @@ $CRTN.max_iteration_count(!
 $CRTN.max_iteration_count(! 10000UL )
 ```
 
-#### 3.4.4) `max_recursion_depth` 属性
+#### 3.3.4) `max_recursion_depth` 属性
 
 可通过该属性获取或设置 HVML 协程在递归执行某个功能时的最大递归深度，以防止栈溢出。
 
@@ -1821,7 +1557,7 @@ $CRTN.max_recursion_depth(!
 $CRTN.max_recursion_depth(! 10000UL )
 ```
 
-#### 3.4.5) `max_embedded_levels` 属性
+#### 3.3.5) `max_embedded_levels` 属性
 
 该属性获取或设置解析 eJSON 数据或者处理容器数据时，允许的最大嵌套层级。
 
@@ -1859,7 +1595,7 @@ $CRTN.max_embedded_levels(!
 $CRTN.max_embedded_levels(! 64UL )
 ```
 
-#### 3.4.6) `timeout` 属性
+#### 3.3.6) `timeout` 属性
 
 可通过该属性获取或设置 HVML 协程在通过数据获取器获取数据或者发送请求时的超时值（单位：秒）。
 
@@ -1899,7 +1635,7 @@ $CRTN.timeout(! 3.5 )
     // number: 3.5
 ```
 
-#### 3.4.7) `cid` 属性
+#### 3.3.7) `cid` 属性
 
 通过该属性可获取当前 HVML 协程的标识符（coroutine identifier，简称 `cid`）。
 
@@ -1920,7 +1656,7 @@ $CRTN.cid
     // ulongint: 10UL
 ```
 
-#### 3.4.8) `token` 属性
+#### 3.3.8) `token` 属性
 
 通过该属性可获取或设置当前 HVML 协程的令牌（token）。
 
@@ -1963,7 +1699,7 @@ $CRTN.token
     // string: `myTask`
 ```
 
-#### 3.4.9) `uri` 属性
+#### 3.3.9) `uri` 属性
 
 通过该属性可获取当前 HVML 协程的 URI。
 
@@ -1986,7 +1722,7 @@ $CRTN.uri
     // string: `//localhost/cn.fmsoft.hvml.calculator/main/CRTN/7`
 ```
 
-#### 3.4.10) `curator` 属性
+#### 3.3.10) `curator` 属性
 
 通过该属性获取当前 HVML 协程的监护协程标识符。
 
@@ -2009,7 +1745,7 @@ $CRTN.curator
     // ulongint: 5UL
 ```
 
-#### 3.4.11) `native_crtn` 方法
+#### 3.3.11) `native_crtn` 方法
 
 该方法返回一个可被观察的原生实体，用于代表一个特定的子协程。
 
@@ -2038,11 +1774,11 @@ $CRTN.native_crtn
     // native/crtn
 ```
 
-### 3.5) `DOC`
+### 3.4) `DOC`
 
 `DOC` 是一个内置的协程级动态变量，该变量用于访问 HVML 程序生成的 eDOM 树中的元素。
 
-#### 3.5.1) `doctype` 方法
+#### 3.4.1) `doctype` 方法
 
 该方法返回文档类型，字符串。
 
@@ -2059,7 +1795,7 @@ $DOC.doctype
     // html
 ```
 
-#### 3.5.2) `query` 方法
+#### 3.4.2) `query` 方法
 
 使用 CSS 选择器查询目标文档上的元素汇集（collection）。
 
@@ -2130,11 +1866,345 @@ $DOC.query("#foo").attr(! "bar", "qux")
 
 参阅：<https://api.jquery.com/category/attributes/>
 
-### 3.6) `DATA`
+### 3.5) `RDR`
+
+`RDR` 是一个内置的行者级动态变量，该变量用于访问当前行者连接的渲染器。
+
+#### 3.5.1) `status` 属性
+
+该属性获取器返回当前的渲染器状态，对象。
+
+```js
+$RDR.status object : `an object describing the current status of the renderer`
+```
+
+**示例**
+
+```js
+$RDR.status
+    // html
+```
+
+#### 3.5.2) `comm` 属性
+
+该属性获取器返回当前的渲染器通讯方式，字符串。
+
+```js
+$RDR.comm string : `a string prepresenting the communication method of the renderer`
+```
+
+**示例**
+
+```js
+$RDR.comm
+    // 'socket'
+```
+
+#### 3.5.3) `uri` 属性
+
+该属性获取器返回当前的渲染器 URI，字符串。
+
+```js
+$RDR.uri string : `a string prepresenting the communication method of the renderer`
+```
+
+**示例**
+
+```js
+$RDR.uri
+    // 'unix:///var/tmp/purcmc.sock'
+```
+
+#### 3.5.4) `connect` 方法
+
+该方法断开当前的渲染器并连接到指定的渲染器。
+
+```js
+$RDR.connect( string : `a string prepresenting the communication method of the renderer`
+```
+
+**示例**
+
+```js
+$RDR.connect
+    // 'unix:///var/tmp/purcmc.sock'
+```
+
+
+### 3.6) `DATETIME`
+
+#### 3.6.1) `time_prt` 方法
+
+以给定的格式化规范/标准获得时间字符串。
+
+**描述**
+
+```js
+$DATETIME.time_prt(
+        <'atom | cookie | iso8601 | rfc822 | rfc850 | rfc1036 | rfc1036 | rfc1123 | rfc7231 | rfc2822 | rfc3339 | rfc3339-ex | rss | w3c' $format = 'iso8601':
+            - 'atom':       `Atom (example: 2005-08-15T15:52:01+00:00)`
+            - 'cookie':     `HTTP Cookies (example: Monday, 15-Aug-2005 15:52:01 UTC)`
+            - 'iso8601':    `Same as 'ATOM' (example: 2005-08-15T15:52:01+00:00)`
+            - 'rfc822':     `RFC 822 (example: Mon, 15 Aug 05 15:52:01 +0000)`
+            - 'rfc850':     `RFC 850 (example: Monday, 15-Aug-05 15:52:01 UTC)`
+            - 'rfc1036':    `RFC 1036 (example: Mon, 15 Aug 05 15:52:01 +0000)`
+            - 'rfc1123':    `RFC 1123 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
+            - 'rfc7231':    `RFC 7231 (since PHP 7.0.19 and 7.1.5) (example: Sat, 30 Apr 2016 17:52:13 GMT)`
+            - 'rfc2822':    `RFC 2822 (example: Mon, 15 Aug 2005 15:52:01 +0000)`
+            - 'rfc3339':    `Same as 'ATOM'`
+            - 'rfc3339-ex': `RFC 3339 EXTENDED format (example: 2005-08-15T15:52:01.000+00:00)`
+            - 'rss':        `RSS (example: Mon, 15 Aug 2005 15:52:01 +0000)`
+            - 'w3c':        `World Wide Web Consortium (example: 2005-08-15T15:52:01+00:00)`
+        >
+        [, <null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for current calendar time.`>
+            [, <string $timezone>
+            ]
+        ]
+) string | false: `a date and time string in the given time format $format and the time zone $timezone for the specified calendar time $seconds.`
+```
+
+该方法获得指定日历时间在给定时区，以给定格式化标准/规范名称（如 ISO8601、RFC850）形式展示的时间字符串。
+
+**异常**
+
+该方法可能产生如下可忽略异常：
+
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：非法数据，如不正确的格式规范名称、时间或者时区名称等。
+
+**示例**
+
+```js
+$DATETIME.time_prt
+    // string: '2020-06-24T11:27:05+08:00'
+
+$DATETIME.time_prt.iso8601
+    // string: '2020-06-24T11:27:05+08:00'
+
+$DATETIME.time_prt('iso8601')
+    // string: '2020-06-24T11:27:05+08:00'
+
+// 获取当前时间之前一个小时在上海时区（北京标准时间）的 ISO8601 标准字符串
+$DATETIME.time_prt('iso8601', $MATH.eval('x - 3600', { x: $SYS.time }), 'Asia/Shanghai')
+    // string: '2020-06-24T11:27:05+08:00'
+
+// 获取当前时间上海时区（北京标准时间）的 RFC822 标准字符串
+$DATETIME.time_prt('rfc822', null, 'Asia/Shanghai')
+    // string: 'Mon, 15 Aug 05 15:52:01 +0000'
+```
+
+**参见**
+
+- PHP: <https://www.php.net/manual/en/timezones.php>
+- PHP: <https://www.php.net/manual/en/ref.datetime.php>
+- PHP: <https://www.php.net/manual/en/datetime.formats.php>
+- PHP DateTime 类：<https://www.php.net/manual/en/class.datetime.php>
+
+#### 3.6.2) `utctime` 方法
+
+获取当前系统时间的 UTC 分解时间。
+
+**描述**
+
+```js
+$DATETIME.utctime object : `An object representing the current broken-down time in UTC.`
+```
+
+获取当前日历时间的 UTC（协调世界时）分解时间（broken-down time），返回类型为对象。
+
+```js
+$DATETIME.utctime(
+        <null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for the current calendar time.`>
+) object
+```
+
+获得给定日历时间的 UTC 分解时间（broken-down time），返回类型为对象。
+
+上述方法返回的分解时间对象包含如下属性：
+
+```js
+{
+   'usec':  <number: `The number of microseconds after the second, in the range 0 to 999,999.`>
+   'sec':   <number: `The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.`>
+   'min':   <number: `The number of minutes after the hour, in the range 0 to 59.`>
+   'hour':  <number: `The number of hours past midnight, in the range 0 to 23.`>
+   'mday':  <number: `The day of the month, in the range 1 to 31.`>
+   'mon':   <number: `The number of months since January, in the range 0 to 11.`>
+   'year':  <number: `The number of years since 1900.`>
+   'wday':  <number: `The number of days since Sunday, in the range 0 to 6.`>
+   'yday':  <number: `The number of days since January 1, in the range 0 to 365.`>
+   'isdst': <number: `A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving time is in effect, zero if it is not, and negative if the information is not available.`>
+   'tz':    <string: `The timezone name.`>
+}
+```
+
+**示例**
+
+```js
+// 获取当前时间在当前时区的分解时间
+$DATETIME.utctime
+    // object
+
+// 获取当前时间之前一个小时的分解时间
+$DATETIME.utctime($MATH.sub($SYS.time, 3600))
+    // object
+```
+
+**参见**
+
+- C 标准函数：`gmtime_r()`
+
+#### 3.6.3) `localtime` 方法
+
+获取指定时区的分解时间。
+
+**描述**
+
+```js
+$DATETIME.localtime object : `An object representing the current broken-down time in the current timezone.`
+```
+
+获得当前时间在当前时区的分解时间（broken-down time），返回类型为对象。
+
+
+```js
+$DATETIME.localtime(
+        [, <null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for the current calendar time.`>
+            [, <string $timezone>
+            ]
+        ]
+) object
+```
+
+获得给定时间在指定时区的分解时间（broken-down time），返回类型为对象。
+
+上述方法返回的分解时间对象包含如下属性：
+
+```js
+{
+   'usec':  <number: `The number of microseconds after the second, in the range 0 to 999,999.`>
+   'sec':   <number: `The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.`>
+   'min':   <number: `The number of minutes after the hour, in the range 0 to 59.`>
+   'hour':  <number: `The number of hours past midnight, in the range 0 to 23.`>
+   'mday':  <number: `The day of the month, in the range 1 to 31.`>
+   'mon':   <number: `The number of months since January, in the range 0 to 11.`>
+   'year':  <number: `The number of years since 1900.`>
+   'wday':  <number: `The number of days since Sunday, in the range 0 to 6.`>
+   'yday':  <number: `The number of days since January 1, in the range 0 to 365.`>
+   'isdst': <number: `A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving time is in effect, zero if it is not, and negative if the information is not available.`>
+   'tz':    <string: `The timezone name.`>
+}
+```
+
+**示例**
+
+```js
+// 获取当前时间在当前时区的分解时间
+$DATETIME.localtime
+    // object
+
+// 获取当前时间之前一个小时在上海时区（北京标准时间）的分解时间
+$DATETIME.localtime($MATH.sub($SYS.time, 3600), 'Asia/Shanghai')
+```
+
+**参见**
+
+- C 标准函数：`localtime_r()`
+
+#### 3.6.4) `mktime` 方法
+
+将分解时间转换为日历时间（Epoch 以来的秒数）。
+
+**描述**
+
+```js
+$DATETIME.mktime(
+        <object $tm>
+) longdouble : `seconds (including microseconds) since Epoch.`
+```
+
+转换分解时间为日历时间（Epoch 以来的秒数），返回值类型为 longdouble。
+
+**示例**
+
+**参见**
+
+- C 标准函数：`mktime_r()`
+
+#### 3.6.5) `fmttime` 方法
+
+格式化日历时间。
+
+**描述**
+
+```js
+$DATETIME.fmttime(
+        <string $format: `the format string`>
+        [, <null | number | longint | ulongint | longdouble: `the calendar time (seconds since Epoch); @null for the current calendar time.`>
+            [, <string $timezone>
+            ]
+        ]
+) string | false
+```
+
+该方法按指定的格式格式化一个日历时间，返回字符串。
+
+该方法使用的格式化修饰符同 C 标准函数 `strftime()`，但有如下例外或增强：
+
+1. 不支持 GNU 的扩展修饰符，如 `_` 等。
+1. `strftime()` 表示时区差异时，仅支持 `+0200` 这种输出形式，为支持 `+02:00` 这种形式，可在格式化字符串中使用 `{%z:}`。
+1. `strftime()` 不支持毫秒，为支持毫秒，可使用 `{m}`。
+1. 当格式字符串以 `{UTC}` 打头时，表示使用不将日历时间按当前时区转换为本地时间，而始终以协调世界时（UTC）格式化。
+1. 当格式字符串中需要表示字面的 `{` 和 `}` 符号时，前置转义字符 `\`。
+
+**示例**
+
+```js
+// 获得类似 `11:27` 的时间字符串
+$DATETIME.fmttime("It is %H:%M now")
+    // string: 'It is 11:27 now'
+
+// 获得类似 `11:27` 的时间字符串
+$DATETIME.fmttime("现在是中国标准时间 %H:%M", null, 'Asia/Shanghai')
+    // string: '现在是中国标准时间 11:27'
+```
+
+**参见**
+
+- C 标准函数：`strftime()`
+
+#### 3.6.6) `fmtbdtime` 方法
+
+格式化分解时间。
+
+**描述**
+
+```js
+$DATETIME.fmtbdtime(
+        <string $format: `the format string`>,
+        <null | object $bdtime: `the broken-down time object returned by utctime() or localtime(); @null for the current calendar time in current timzone.`
+) string | false
+```
+
+该方法按指定的格式格式化一个分解时间，返回字符串。
+
+**示例**
+
+```js
+// 获得类似 `08:55` 的时间字符串
+$DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MATH.sub($SYS.time, 3600), 'Asia/Shanghai'))
+    // string: 'It is 08:55 now in Asia/Shanghai'
+```
+
+**参见**
+
+- C 标准函数：`strftime()`
+
+### 3.7) `DATA`
 
 该动态变量为行者级内置变量，用于返回数据的类型、成员个数等信息。
 
-#### 3.6.1) `type` 方法
+#### 3.7.1) `type` 方法
 
 返回数据的类型名称。
 
@@ -2162,7 +2232,7 @@ $DATA.type( 3.5 )
     // string: `number`
 ```
 
-#### 3.6.2) `size` 方法
+#### 3.7.2) `size` 方法
 
 返回数据占用的内存大小。
 
@@ -2192,7 +2262,7 @@ $DATA.size( "HVML" )
     // ulongint: 32UL
 ```
 
-#### 3.6.3) `count` 方法
+#### 3.7.3) `count` 方法
 
 返回数据的子数据项个数。
 
@@ -2223,7 +2293,7 @@ $DATA.count( [ 1.0, 2.0 ] )
     // ulongint: 2UL
 ```
 
-#### 3.6.4) `numerify` 方法
+#### 3.7.4) `numerify` 方法
 
 对给定数据做数值化处理。
 
@@ -2251,7 +2321,7 @@ $DATA.numerify
     // number: 0
 ```
 
-#### 3.6.5) `booleanize` 方法
+#### 3.7.5) `booleanize` 方法
 
 对给定的数据做布尔化处理。
 
@@ -2276,7 +2346,7 @@ $DATA.booleanize
     // boolean: false
 ```
 
-#### 3.6.6) `stringify` 方法
+#### 3.7.6) `stringify` 方法
 
 对给定的数据做字符串化处理。
 
@@ -2307,7 +2377,7 @@ $DATA.stringify(123)
     // string: '123'
 ```
 
-#### 3.6.7) `serialize` 方法
+#### 3.7.7) `serialize` 方法
 
 对给定的数据做字符串化处理。
 
@@ -2361,7 +2431,7 @@ $DATA.serialize([1, 2])
     // string: '[1,2]'
 ```
 
-#### 3.6.8) `sort` 方法
+#### 3.7.8) `sort` 方法
 
 对数组或者集合执行排序。
 
@@ -2397,7 +2467,7 @@ $DATA.sort([3, 4, 1, 0], 'asc')
     // array: [0, 1, 3, 4]
 ```
 
-#### 3.6.9) `shuffle` 方法
+#### 3.7.9) `shuffle` 方法
 
 随机打乱给定数组或者集合的成员顺序。
 
@@ -2425,7 +2495,7 @@ $DATA.shuffle([1, 2, 3, 4, 5])
     // array: [4, 3, 2, 5, 1]
 ```
 
-#### 3.6.10) `compare` 方法
+#### 3.7.10) `compare` 方法
 
 比较两个数据。
 
@@ -2465,7 +2535,7 @@ $DATA.compare(1, "1")
     // number: 0
 ```
 
-#### 3.6.11) `parse` 方法
+#### 3.7.11) `parse` 方法
 
 解析 JSON/eJSON 字符串，返回数据。
 
@@ -2496,7 +2566,7 @@ $DATA.parse(
     // array: []
 ```
 
-#### 3.6.12) `isequal` 方法
+#### 3.7.12) `isequal` 方法
 
 判断两个数据是否完全相等。
 
@@ -2527,7 +2597,7 @@ $DATA.isequal(
     // boolean: true
 ```
 
-#### 3.6.13) `fetchstr` 方法
+#### 3.7.13) `fetchstr` 方法
 
 从二进制字节序列中抽取指定编码的字符串。
 
@@ -2576,7 +2646,7 @@ $DATA.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8:6' )
     // string: "北京"
 ```
 
-#### 3.6.14) `fetchreal` 方法
+#### 3.7.14) `fetchreal` 方法
 
 该方法在给定的二进制序列的指定位置，按指定的实数类型（以及大小头顺序）提取实数，返回相应的实数类型。
 
@@ -2608,7 +2678,7 @@ $DATA.fetchreal( bx0a00, 'i8:2', 0 )
     // array: [ 10L, 00L ]
 ```
 
-#### 3.6.15) `crc32` 方法
+#### 3.7.15) `crc32` 方法
 
 计算任意数据的 CRC32 多项式值。
 
@@ -2648,7 +2718,7 @@ $DATA.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
 - [CRC 在线计算]<https://crccalc.com/>
 - [Catalogue of parametrised CRC algorithms](https://reveng.sourceforge.io/crc-catalogue/17plus.htm)
 
-#### 3.6.16) `md5` 方法
+#### 3.7.16) `md5` 方法
 
 计算任意数据的 MD5 散列值。
 
@@ -2673,7 +2743,7 @@ $DATA.md5(
 
 - PHP `md5()` 函数：<https://www.php.net/manual/en/function.md5.php>
 
-#### 3.6.17) `sha1` 方法
+#### 3.7.17) `sha1` 方法
 
 计算任意数据的 SHA1 散列值。
 
@@ -2698,7 +2768,7 @@ $DATA.sha1(
 
 - PHP `sha1()` 函数：<https://www.php.net/manual/en/function.sha1.php>
 
-#### 3.6.18) `pack` 方法
+#### 3.7.18) `pack` 方法
 
 将多个数据打包为二进制序列。
 
@@ -2757,7 +2827,7 @@ $DATA.pack( "i16le:2 i32le", [10, 15], 255)
 
 - [1.2) 二进制格式表示法](#12-二进制格式表示法)
 
-#### 3.6.19) `unpack` 方法
+#### 3.7.19) `unpack` 方法
 
 将二进制序列分解为多个数据。
 
@@ -2795,7 +2865,7 @@ $DATA.unpack( "i16le", bx0a000a000000)
 
 - [1.2) 二进制格式表示法](#12-二进制格式表示法)
 
-#### 3.6.20) `bin2hex` 方法
+#### 3.7.20) `bin2hex` 方法
 
 将字符串或者字节序列转换为十六进制字符串表达。
 
@@ -2832,7 +2902,7 @@ $DATA.bin2hex( bb0000.1111.1111.0000, 'uppercase')
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.bin2hex.php>
 
-#### 3.6.21) `hex2bin` 方法
+#### 3.7.21) `hex2bin` 方法
 
 十六进制字符串转换为字节序列。
 
@@ -2865,7 +2935,7 @@ $DATA.hex2bin( '0FF0' )
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.hex2bin.php>
 
-#### 3.6.22) `base64_encode` 方法
+#### 3.7.22) `base64_encode` 方法
 
 使用 MIME Base64 编码字符串或者字节序列。
 
@@ -2901,7 +2971,7 @@ $DATA.base64_encode('HVML 是全球首款可编程标记语言')
 - PHP `base64_encode()` 函数：<https://www.php.net/manual/en/function.base64-encode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.6.23) `base64_decode` 方法
+#### 3.7.23) `base64_decode` 方法
 
 解码使用 MIME Base64 编码的字符串。
 
@@ -2935,7 +3005,7 @@ $DATA.base64_decode( 'SFZNTA==' )
 - PHP `base64_decode()` 函数：<https://www.php.net/manual/en/function.base64-decode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.6.24) `arith` 方法
+#### 3.7.24) `arith` 方法
 
 基于两个数值做简单整数算术运算。
 
@@ -2966,7 +3036,7 @@ $DATA.arith( '+', 3, 2 )
     // longint: 5L
 ```
 
-#### 3.6.25) `bitwise` 方法
+#### 3.7.25) `bitwise` 方法
 
 基于两项数值的位元计算。
 
@@ -2997,7 +3067,7 @@ $DATA.bitwise( '|', 0, 15 )
     // ulongint: 15UL
 ```
 
-#### 3.6.26) `contains` 方法
+#### 3.7.26) `contains` 方法
 
 判断一个线性容器（如数组、元组、集合）中是否包含给定的值。
 
@@ -3048,7 +3118,7 @@ $DATA.contains(['a', 'b'], 'c')
     // longint: -1L
 ```
 
-#### 3.6.27) `has` 方法
+#### 3.7.27) `has` 方法
 
 判断一个对象中是否包含由指定键名定义的属性。
 
@@ -3100,13 +3170,13 @@ $DATA.has({ "a": 1, "b": 2, "c": 3}, "C", 'caseless')
     // 3
 ```
 
-### 3.7) `L`
+### 3.8) `L`
 
 该变量是一个行者级内置变量，主要用于逻辑运算。
 
 有关任何数据转换为逻辑真假值时的规则，请参阅 [HVML 1.0 规范 - 2.1.4) 任意数据类型的强制转换规则](hvml-spec-v1.0-zh.md#214-%E4%BB%BB%E6%84%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%BC%BA%E5%88%B6%E8%BD%AC%E6%8D%A2%E8%A7%84%E5%88%99)。
 
-#### 3.7.1) `not` 方法
+#### 3.8.1) `not` 方法
 
 逻辑取反运算。
 
@@ -3132,7 +3202,7 @@ $L.not( false )
     // boolean: true
 ```
 
-#### 3.7.2) `and` 方法
+#### 3.8.2) `and` 方法
 
 逻辑与运算。
 
@@ -3164,7 +3234,7 @@ $L.and( 1, 2, 3 )
     // boolean: true
 ```
 
-#### 3.7.3) `or` 方法
+#### 3.8.3) `or` 方法
 
 逻辑或运算。
 
@@ -3193,7 +3263,7 @@ $L.or( false, true )
     // boolean: true
 ```
 
-#### 3.7.4) `xor` 方法
+#### 3.8.4) `xor` 方法
 
 逻辑亦或运算。
 
@@ -3222,7 +3292,7 @@ $L.xor( false, true )
     // boolean: true
 ```
 
-#### 3.7.5) `eq` 方法
+#### 3.8.5) `eq` 方法
 
 对比两个数据在数值上是否相等。
 
@@ -3251,7 +3321,7 @@ $L.eq("1", 1)
     // boolean: true
 ```
 
-#### 3.7.6) `ne` 方法
+#### 3.8.6) `ne` 方法
 
 对比两个数据在数值上是否不相等。
 
@@ -3280,7 +3350,7 @@ $L.ne("1", 2)
     // boolean: true
 ```
 
-#### 3.7.7) `gt` 方法
+#### 3.8.7) `gt` 方法
 
 对比第一个数据在数值上是否大于第二个数据。
 
@@ -3309,7 +3379,7 @@ $L.gt("2", 1)
     // boolean: true
 ```
 
-#### 3.7.8) `ge` 方法
+#### 3.8.8) `ge` 方法
 
 对比第一个数据在数值上是否大于或等于第二个数据。
 
@@ -3341,7 +3411,7 @@ $L.ge("2", 2)
     // boolean: true
 ```
 
-#### 3.7.9) `lt` 方法
+#### 3.8.9) `lt` 方法
 
 对比第一个数据在数值上是否小于第二个数据。
 
@@ -3370,7 +3440,7 @@ $L.lt("2", 1)
     // boolean: false
 ```
 
-#### 3.7.10) `le` 方法
+#### 3.8.10) `le` 方法
 
 对比第一个数据在数值上是否小于或等于第二个数据。
 
@@ -3402,7 +3472,7 @@ $L.le("1", 2)
     // boolean: true
 ```
 
-#### 3.7.11) `streq` 方法
+#### 3.8.11) `streq` 方法
 
 对比两个数据的字符串形式是否相等或匹配。
 
@@ -3442,7 +3512,7 @@ $L.streq("regexp", "^zh", "zh_CN")
     // boolean: true
 ```
 
-#### 3.7.12) `strne` 方法
+#### 3.8.12) `strne` 方法
 
 对比两个数据的字符串形式是否不相等或不匹配。
 
@@ -3482,7 +3552,7 @@ $L.strne("regexp", "^zh", "zh_CN")
     // boolean: false
 ```
 
-#### 3.7.13) `strgt` 方法
+#### 3.8.13) `strgt` 方法
 
 对比第一个数据的字符串形式是否大于第二个数据的字符串形式。
 
@@ -3516,7 +3586,7 @@ $L.strgt("case", 'A', 'Z')
     // boolean: false
 ```
 
-#### 3.7.14) `strge` 方法
+#### 3.8.14) `strge` 方法
 
 对比第一个数据的字符串形式是否大于或等于第二个数据的字符串形式。
 
@@ -3551,7 +3621,7 @@ $L.strge("case", 'A', 'A')
 ```
 
 
-#### 3.7.15) `strlt` 方法
+#### 3.8.15) `strlt` 方法
 
 对比第一个数据的字符串形式是否小于第二个数据的字符串形式。
 
@@ -3585,7 +3655,7 @@ $L.strlt("case", 'A', 'Z')
     // boolean: true
 ```
 
-#### 3.7.16) `strle` 方法
+#### 3.8.16) `strle` 方法
 
 对比第一个数据的字符串形式是否小于或等于第二个数据的字符串形式。
 
@@ -3619,7 +3689,7 @@ $L.strle("case", 'A', 'Z')
     // boolean: true
 ```
 
-#### 3.7.17) `eval` 方法
+#### 3.8.17) `eval` 方法
 
 对参数化的逻辑运算表达式求值。
 
@@ -3641,13 +3711,13 @@ $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) }
     // boolean: true
 ```
 
-### 3.8) `T`
+### 3.9) `T`
 
 该变量是一个协程级内置变量，主要用于文本的本地化替代。
 
 - `get`：一个动态方法，用于返回替代字符串。
 
-#### 3.8.1) `map` 静态属性
+#### 3.9.1) `map` 静态属性
 
 `map` 是 `T` 的一个静态属性，用来定义字符串映射表，初始为空对象。程序可使用 `update` 元素设置其内容：
 
@@ -3672,7 +3742,7 @@ $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) }
 </hvml>
 ```
 
-#### 3.8.2) `get` 方法
+#### 3.9.2) `get` 方法
 
 **描述**
 
@@ -3696,7 +3766,7 @@ $T.get('Hello, world!')
     // string: '世界，您好！'
 ```
 
-### 3.9) `STR`
+### 3.10) `STR`
 
 `STR` 是一个内置的动态变量，该变量用于实现常见的字符串操作。
 
@@ -3706,7 +3776,7 @@ $T.get('Hello, world!')
 - `WrongDataType`：错误的参数类型。
 - `BadEncoding`：错误编码。
 
-#### 3.9.1) `contains` 方法
+#### 3.10.1) `contains` 方法
 
 判断一个字符串中是否包含给定的子字符串。
 
@@ -3757,7 +3827,7 @@ $STR.contains('Hello, world!', '')
 
 - PHP `str_contains()` 函数：<https://www.php.net/manual/en/function.str-contains.php>
 
-#### 3.9.2) `starts_with` 方法
+#### 3.10.2) `starts_with` 方法
 
 用于判断一个字符串是否以给定的字符串开头。
 
@@ -3808,7 +3878,7 @@ $STR.starts_with('Hello, world', '')
 
 - PHP `str_starts_with()` 函数：<https://www.php.net/manual/en/function.str-starts-with.php>
 
-#### 3.9.3) `ends_with` 方法
+#### 3.10.3) `ends_with` 方法
 
 用于判断一个字符串是否以给定的字符串结尾。
 
@@ -3855,7 +3925,7 @@ $STR.ends_with('Hello, world', '')
 
 - PHP `str_ends_with()` 函数：<https://www.php.net/manual/en/function.str-ends-with.php>
 
-#### 3.9.4) `explode` 方法
+#### 3.10.4) `explode` 方法
 
 使用指定的子字符串分隔一个字符串。
 
@@ -3914,7 +3984,7 @@ $STR.explode('中华人民共和国', '', 2)
 
 - PHP `explode()` 函数：<https://www.php.net/manual/en/function.explode.php>
 
-#### 3.9.5) `implode` 方法
+#### 3.10.5) `implode` 方法
 
 将一个数组的成员串接为一个新的字符串。使用指定的字符串串接字符串数组中的字符串。
 
@@ -3965,7 +4035,7 @@ $STR.implode(['汉', '字'])
 
 - PHP `implode()` 函数：<https://www.php.net/manual/en/function.implode.php>
 
-#### 3.9.6) `shuffle` 方法
+#### 3.10.6) `shuffle` 方法
 
 随机打乱一个字符串。
 
@@ -4003,7 +4073,7 @@ $STR.shuffle('beijing') // string: 'jbienig'
 
 - PHP `str_shuffle()` 函数：<https://www.php.net/manual/en/function.str-shuffle.php>
 
-#### 3.9.7) `replace` 方法
+#### 3.10.7) `replace` 方法
 
 子字符串替换。
 
@@ -4062,7 +4132,7 @@ $STR.replace("%body%", "black", "<body text=%BODY%>", true);
 - PHP `str_replace()` 函数：<https://www.php.net/manual/en/function.str-replace.php>
 - PHP `str_ireplace()` 函数：<https://www.php.net/manual/en/function.str-ireplace.php>
 
-#### 3.9.8) `format_c` 方法
+#### 3.10.8) `format_c` 方法
 
 格式化数值及字符串数据，格式字符串使用类似 C 语言的修饰符（specifier）。
 
@@ -4102,7 +4172,7 @@ $STR.format_c('Tom is %d years old, while Jerry is %d years old.', [9, 7])
 
 - PHP `sprintf()` 函数：<https://www.php.net/manual/en/function.sprintf.php>
 
-#### 3.9.9) `scan_c` 方法
+#### 3.10.9) `scan_c` 方法
 
 根据给定的格式解析指定的字符串，格式字符串使用类似 C 语言的修饰符（specifier）。
 
@@ -4125,7 +4195,7 @@ $STR.scan_c('Tom is 9 years old, while Jerry is 7 years old.',
 
 - PHP `sscanf()` 函数：<https://www.php.net/manual/en/function.sscanf.php>
 
-#### 3.9.10) `format_p` 方法
+#### 3.10.10) `format_p` 方法
 
 使用占位符格式化任意数据，对非字符串数据，使用序列化后的字符串。
 
@@ -4157,7 +4227,7 @@ $STR.format_p('There are two boys: #0 and #1', 'Tom', 'Jerry')
     // string: There are two boys: "Tom" and "Jerry"'
 ```
 
-#### 3.9.11) `scan_p` 方法
+#### 3.10.11) `scan_p` 方法
 
 根据给定的格式解析指定的字符串，格式字符串使用占位符。
 
@@ -4191,7 +4261,7 @@ $STR.scan_p('My name is "Tom"', 'My name is #?')
     // string: 'Tom'
 ```
 
-#### 3.9.12) `join` 方法
+#### 3.10.12) `join` 方法
 
 用于串接两个或更多个字符串。
 
@@ -4232,7 +4302,7 @@ $STR.join(1, ', ', 2, ', ', 3)
     // string: '1, 2, 3'
 ```
 
-#### 3.9.13) `nr_bytes` 方法
+#### 3.10.13) `nr_bytes` 方法
 
 返回字符串或字节序列的字节长度。
 
@@ -4263,7 +4333,7 @@ $STR.nr_bytes( bb )
     // ulongint: 0
 ```
 
-#### 3.9.14) `nr_chars` 方法
+#### 3.10.14) `nr_chars` 方法
 
 获得字符串的字符数量。
 
@@ -4301,7 +4371,7 @@ $STR.nr_chars('中国')
 
 **参见**
 
-#### 3.9.15) `tolower` 方法
+#### 3.10.15) `tolower` 方法
 
 将字符串转换为小写。
 
@@ -4335,7 +4405,7 @@ $STR.tolower('Hello, world')
 
 - PHP `strtolower()` 函数：<https://www.php.net/manual/en/function.strtolower.php>
 
-#### 3.9.16) `toupper` 方法
+#### 3.10.16) `toupper` 方法
 
 将字符串转换为大写。
 
@@ -4369,7 +4439,7 @@ $STR.toupper('Hello, world')
 
 - PHP `strtoupper()` 函数：<https://www.php.net/manual/en/function.strtoupper.php>
 
-#### 3.9.17) `substr` 方法
+#### 3.10.17) `substr` 方法
 
 返回字符串的子串。
 
@@ -4427,7 +4497,7 @@ $STR.substr('abcdef', -3, -1)
 
 - PHP `substr()` 函数：<https://www.php.net/manual/en/function.substr.php>
 
-#### 3.9.18) `substr_compare` 方法
+#### 3.10.18) `substr_compare` 方法
 
 比较子字符串（从指定的偏移位置开始比较指定的长度）。
 
@@ -4458,7 +4528,7 @@ $STR.substr_compare(
 
 - PHP `substr_compare()` 函数：<https://www.php.net/manual/en/function.substr-compare.php>
 
-#### 3.9.19) `substr_count` 方法
+#### 3.10.19) `substr_count` 方法
 
 计算子字符串出现的次数。
 
@@ -4485,7 +4555,7 @@ $STR.substr_count(
 
 - PHP `substr_count()` 函数：<https://www.php.net/manual/en/function.substr-count.php>
 
-#### 3.9.20) `substr_replace` 方法
+#### 3.10.20) `substr_replace` 方法
 
 在子字符串中做替换。
 
@@ -4512,7 +4582,7 @@ $STR.substr_replace(
 
 - PHP `substr_replace()` 函数：<https://www.php.net/manual/en/function.substr-replace.php>
 
-#### 3.9.21) `strstr` 方法
+#### 3.10.21) `strstr` 方法
 
 返回在目标字符串中，以指定字符串起始或结尾的子字符串。
 
@@ -4542,7 +4612,7 @@ $STR.strstr(
 - PHP `strstr()` 函数：<https://www.php.net/manual/en/function.strstr.php>
 - PHP `stristr()` 函数：<https://www.php.net/manual/en/function.stristr.php>
 
-#### 3.9.22) `strpos` 方法
+#### 3.10.22) `strpos` 方法
 
 返回在目标字符串中指定字符串第一次或者最后一次出现的位置。
 
@@ -4572,7 +4642,7 @@ $STR.strpos(
 - PHP `strpos()` 函数：<https://www.php.net/manual/en/function.strpos.php>
 - PHP `stripos()` 函数：<https://www.php.net/manual/en/function.stripos.php>
 
-#### 3.9.23) `strpbrk` 方法
+#### 3.10.23) `strpbrk` 方法
 
 在目标字符串中查找从一组字符的任何一个字符开始或结尾的子字符串。
 
@@ -4599,7 +4669,7 @@ $STR.strpbrk(
 
 - PHP `strpbrk()` 函数：<https://www.php.net/manual/en/function.strpbrk.php>
 
-#### 3.9.24) `split` 方法
+#### 3.10.24) `split` 方法
 
 将字符串按给定的长度切分成子字符串数组。
 
@@ -4622,7 +4692,7 @@ $STR.split(
 
 - PHP `str_split()` 函数：<https://www.php.net/manual/en/function.str-split.php>
 
-#### 3.9.25) `chunk_split` 方法
+#### 3.10.25) `chunk_split` 方法
 
 将字符串按给定的小块长度和分隔符切分，生成一个新的字符串。
 
@@ -4650,7 +4720,7 @@ $STR.chunk_split(
 
 - PHP `chunk_split()` 函数：<https://www.php.net/manual/en/function.chunk-split.php>
 
-#### 3.9.26) `trim` 方法
+#### 3.10.26) `trim` 方法
 
 删除字符串开头、结尾或两者处的空白字符（或其他字符）。
 
@@ -4677,7 +4747,7 @@ $STR.trim(
 - PHP `ltrim()` 函数：<https://www.php.net/manual/en/function.ltrim.php>
 - PHP `rtrim()` 函数：<https://www.php.net/manual/en/function.rtrim.php>
 
-#### 3.9.27) `pad` 方法
+#### 3.10.27) `pad` 方法
 
 使用另一个字符串填充字符串为指定长度。
 
@@ -4703,7 +4773,7 @@ $STR.pad(
 
 - PHP `str_pad()` 函数：<https://www.php.net/manual/en/function.str-pad.php>
 
-#### 3.9.28) `repeat` 方法
+#### 3.10.28) `repeat` 方法
 
 重复一个字符串。
 
@@ -4726,7 +4796,7 @@ $STR.repeat(
 
 - PHP `str_repeat()` 函数：<https://www.php.net/manual/en/function.str-repeat.php>
 
-#### 3.9.29) `reverse` 方法
+#### 3.10.29) `reverse` 方法
 
 反转一个字符串。
 
@@ -4748,7 +4818,7 @@ $STR.reverse(
 
 - PHP `strrev()` 函数：<https://www.php.net/manual/en/function.strrev.php>
 
-#### 3.9.30) `tokenize` 方法
+#### 3.10.30) `tokenize` 方法
 
 使用给定的词元分隔符分隔字符串，返回分隔后的词元数组。
 
@@ -4771,7 +4841,7 @@ $STR.tokenize(
 
 - PHP `strtok()` 函数：<https://www.php.net/manual/en/function.strtok.php>
 
-#### 3.9.31) `translate` 方法
+#### 3.10.31) `translate` 方法
 
 转换指定子字符串。
 
@@ -4800,7 +4870,7 @@ $STR.translate(
 
 - PHP `strtr()` 函数：<https://www.php.net/manual/en/function.strtr.php>
 
-#### 3.9.32) `htmlentities_encode` 方法
+#### 3.10.32) `htmlentities_encode` 方法
 
 转换字符为 HTML 实体。
 
@@ -4843,7 +4913,7 @@ $STR.htmlentities_encode(
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.htmlentities.php>
 - PHP `htmlspecialchars()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars.php>
 
-#### 3.9.33) `htmlentities_decode` 方法
+#### 3.10.33) `htmlentities_decode` 方法
 
 转换 HTML 实体为对应的字符。
 
@@ -4879,7 +4949,7 @@ $STR.htmlentities_decode(
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.html-entity-decode.php>
 - PHP `htmlspecialchars_decode()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars-decode.php>
 
-#### 3.9.34) `nl2br` 方法
+#### 3.10.34) `nl2br` 方法
 
 在字符串所有换行符之前插入 HTML 换行标记。
 
@@ -4911,7 +4981,7 @@ $STR.nl2br(
 
 - PHP `nl2br()` 函数：<https://www.php.net/manual/en/function.nl2br.php>
 
-#### 3.9.35) `rot13` 方法
+#### 3.10.35) `rot13` 方法
 
 对字符串执行 ROT13 转换。
 
@@ -4935,7 +5005,7 @@ $STR.rot13(
 
 - PHP `rot13()` 函数：<https://www.php.net/manual/en/function.rot13.php>
 
-#### 3.9.36) `count_chars` 方法
+#### 3.10.36) `count_chars` 方法
 
 统计字符串中的字符出现次数。
 
@@ -4963,7 +5033,7 @@ $STR.count_chars(
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
-#### 3.9.37) `count_bytes` 方法
+#### 3.10.37) `count_bytes` 方法
 
 统计字符串或二进制字节序中的各个字节（0...255）出现的次数。
 
@@ -4995,9 +5065,9 @@ $STR.count_bytes(
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
-### 3.10) `URL`
+### 3.11) `URL`
 
-#### 3.10.1) `encode` 方法
+#### 3.11.1) `encode` 方法
 
 编码 URL 字符串。
 
@@ -5045,7 +5115,7 @@ $URL.rawencode('HVML: 全球首款可编程标记语言!', 'rfc3986')
 - PHP `urlencode()` 函数：<https://www.php.net/manual/en/function.urlencode.php>
 - PHP `rawurlencode()` 函数：<https://www.php.net/manual/en/function.rawurlencode.php>
 
-#### 3.10.2) `decode` 方法
+#### 3.11.2) `decode` 方法
 
 解码经 URL 编码的字符串。
 
@@ -5096,7 +5166,7 @@ $URL.decode('HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7
 - PHP `urldecode()` 函数：<https://www.php.net/manual/en/function.urldecode.php>
 - PHP `rawurldecode()` 函数：<https://www.php.net/manual/en/function.rawurldecode.php>
 
-#### 3.10.3) `build_query` 方法
+#### 3.11.3) `build_query` 方法
 
 生成 URL 编码的查询字符串。
 
@@ -5140,7 +5210,7 @@ $URL.build_query(
 - [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
 - PHP `http_build_query()` 函数：<https://www.php.net/manual/en/function.http-build-query.php>
 
-#### 3.10.4) `parse_query` 方法
+#### 3.11.4) `parse_query` 方法
 
 解析 URL 编码的查询字符串。
 
@@ -5175,7 +5245,7 @@ $URL.parse_query(
 - [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
 - PHP `http_build_query()` 函数：<https://www.php.net/manual/en/function.http-build-query.php>
 
-#### 3.10.5) `parse` 方法
+#### 3.11.5) `parse` 方法
 
 解析 URL，返回其组成部分。
 
@@ -5202,7 +5272,7 @@ $URL.parse(
 
 - PHP `parse_url()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
-#### 3.10.6) `assemble` 方法
+#### 3.11.6) `assemble` 方法
 
 根据分解 URL 对象组装一个完整的 URL。
 
@@ -5225,7 +5295,7 @@ $URL.assemble(
 
 - PHP `parse_url()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
-### 3.11) `STREAM`
+### 3.12) `STREAM`
 
 `$STREAM` 是一个行者级内置变量，该变量用于实现基于读写流的操作。和 `$DOC` 变量的 `query` 方法类似，该变量上提供的 `open` 方法返回一个原生实体，在该原生实体上，我们提供用于从流中读取数据或者将数据写入流的接口。
 
@@ -5280,7 +5350,7 @@ $URL.assemble(
     </choose>
 ```
 
-#### 3.11.1) `open` 方法
+#### 3.12.1) `open` 方法
 
 打开流，返回一个代表流的原生实体值。这个原生实体可以被观察。
 
@@ -5364,7 +5434,7 @@ $STREAM.open(
 $STREAM.open("file://abc.md", "read write")
 ```
 
-##### 3.11.1.1) 流实体的 `readstruct` 方法
+##### 3.12.1.1) 流实体的 `readstruct` 方法
 
 从流中读取一个二进制结构，并转换为适当的数据。
 
@@ -5403,7 +5473,7 @@ $stream.readstruct('i16le i32le')
     // array: [10, 10]
 ```
 
-##### 3.11.1.2) 流实体的 `writestruct` 方法
+##### 3.12.1.2) 流实体的 `writestruct` 方法
 
 将多个数据按照指定的结构格式写入流。
 
@@ -5457,7 +5527,7 @@ $stream.writestruct("i16le:2 i32le", [10, 15], 255)
 // 写入文件(16进制)：0x0a 0x00 0x0f 0x00 0xff 0x00 0x00 0x00
 ```
 
-##### 3.11.1.3) 流实体的 `readlines` 方法
+##### 3.12.1.3) 流实体的 `readlines` 方法
 
 从流中读取给定行数，返回字符串数组。
 
@@ -5498,7 +5568,7 @@ $stream.readlines(10)
     // array: ["This is the string to write", "Second line"]
 ```
 
-##### 3.11.1.4) 流实体的 `writelines` 方法
+##### 3.12.1.4) 流实体的 `writelines` 方法
 
 将字符串写入流中。
 
@@ -5538,7 +5608,7 @@ $STREAM.stdout.writelines(["This is the string to write", "Second line"])
     // Second line
 ```
 
-##### 3.11.1.5) 流实体的 `readbytes` 方法
+##### 3.12.1.5) 流实体的 `readbytes` 方法
 
 从流中读取一个字节序列，返回一个字节序列。
 
@@ -5579,7 +5649,7 @@ $STREAM.stdin.readbytes(10)
     // bsequence: bx77726974652073747269
 ```
 
-##### 3.11.1.6) 流实体的 `writebytes` 方法
+##### 3.12.1.6) 流实体的 `writebytes` 方法
 
 将一个字节序列写入流。
 
@@ -5619,7 +5689,7 @@ $STREAM.stdout.writebytes("write string")
 
 注意：字符串作为字节序列写入时，应该写入结尾的空字符。
 
-##### 3.11.1.7) 流实体的 `seek` 方法
+##### 3.12.1.7) 流实体的 `seek` 方法
 
 在流中执行定位操作。
 
@@ -5661,7 +5731,7 @@ $stream.seek(10, 'set')
     // ulongint: 10L
 ```
 
-#### 3.11.2) `close` 方法
+#### 3.12.2) `close` 方法
 
 关闭流。
 
@@ -5690,11 +5760,11 @@ $STREAM.close(
 $STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
 ```
 
-#### 3.11.3) `stdin` 静态属性
+#### 3.12.3) `stdin` 静态属性
 
 这是一个静态属性，对应一个流实体，其值可用于流式读写的读取接口，是 C 语言标准输入流的封装。
 
-#### 3.11.4) `stdout` 静态属性
+#### 3.12.4) `stdout` 静态属性
 
 这是一个静态属性，对应一个流实体，其值可用于流式读写的写入接口，是 C 语言标准输出流的封装。
 
@@ -5705,11 +5775,11 @@ $STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
 $STREAM.stdout.writelines($SYS.uname_prt('kernel-name'))
 ```
 
-#### 3.11.5) `stderr` 静态属性
+#### 3.12.5) `stderr` 静态属性
 
 这是一个静态属性，其对应一个流实体，值可用于流式读写的写入接口，是 C 语言标准错误流的封装。
 
-#### 3.11.6) `pipe` 流实体
+#### 3.12.6) `pipe` 流实体
 
 **查询参数**
 
@@ -7428,6 +7498,7 @@ $FILE.bin.tail($file, -5)
 #### RC8) 221231
 
 1. 调整 `$CRTN.token` 属性，增加设置器。
+1. 新增 `$RDR` 变量。
 
 #### RC7) 221130
 
