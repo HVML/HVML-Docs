@@ -85,6 +85,7 @@ Language: Chinese
       * [3.5.2) `comm` 属性](#352-comm-属性)
       * [3.5.3) `uri` 属性](#353-uri-属性)
       * [3.5.4) `connect` 方法](#354-connect-方法)
+      * [3.5.5) `disconn` 方法](#355-disconn-方法)
    + [3.6) `DATETIME`](#36-datetime)
       * [3.6.1) `time_prt` 方法](#361-time_prt-方法)
       * [3.6.2) `utctime` 方法](#362-utctime-方法)
@@ -1872,11 +1873,21 @@ $DOC.query("#foo").attr(! "bar", "qux")
 
 #### 3.5.1) `status` 属性
 
-该属性获取器返回当前的渲染器状态，对象。
+该属性的获取器返回当前的渲染器状态，对象。该属性不提供设置器。
+
 
 ```js
-$RDR.status object : `an object describing the current status of the renderer`
+$RDR.status object : `an object describing the current status of the renderer:`
+        - 'comm':               < string: `the communication method; an empty string for not connected.` >
+        - 'prot':               < string: `the protocol name, such as "PURCMC".` >
+        - 'prot-version':       < string: `the protocol version` >
+        - 'prot-ver-code':      < ulongint: `the protocol version code` >
+        - 'uri':                < string: `machine hardware name` >
 ```
+
+**异常**
+
+（无）
 
 **示例**
 
@@ -1887,11 +1898,17 @@ $RDR.status
 
 #### 3.5.2) `comm` 属性
 
-该属性获取器返回当前的渲染器通讯方式，字符串。
+该属性的获取器返回当前的渲染器通讯方式，字符串。该属性不提供设置器。
 
 ```js
 $RDR.comm string : `a string prepresenting the communication method of the renderer`
 ```
+
+空字符串表明当前行者未连接到渲染器。
+
+**异常**
+
+（无）
 
 **示例**
 
@@ -1902,11 +1919,15 @@ $RDR.comm
 
 #### 3.5.3) `uri` 属性
 
-该属性获取器返回当前的渲染器 URI，字符串。
+该属性的获取器返回当前的渲染器 URI，字符串。该属性不提供设置器。
 
 ```js
 $RDR.uri string : `a string prepresenting the communication method of the renderer`
 ```
+
+**异常**
+
+（无）
 
 **示例**
 
@@ -1921,15 +1942,48 @@ $RDR.uri
 
 ```js
 $RDR.connect( string : `a string prepresenting the communication method of the renderer`
+        <'headless | thread | socket | hibus ' $comm = 'headless' >,
+        [, <string $uri: `URI of the target renderer.` > ]
+) true | false
 ```
+
+**异常**
+
+该方法可能产生如下可忽略异常：
+
+- `WrongDataType`：错误的数据类型。
+- `InvalidValue`：非法数据，如不正确的通讯方法和渲染器 URI 等。
+- 其他由底层操作系统产生的异常。
 
 **示例**
 
 ```js
-$RDR.connect
-    // 'unix:///var/tmp/purcmc.sock'
+$RDR.connect('socket', 'unix:///var/tmp/purcmc.sock')
+    // true
 ```
 
+#### 3.5.5) `disconn` 方法
+
+该方法断开当前的渲染器。
+
+```js
+$RDR.disconn(
+) true | false
+```
+
+**异常**
+
+该方法可能产生如下可忽略异常：
+
+- `EntityNotFound`：未找到指定的实体；当前未连接到任何渲染器。
+- 其他由底层操作系统产生的异常。
+
+**示例**
+
+```js
+$RDR.disconn()
+    // true
+```
 
 ### 3.6) `DATETIME`
 
