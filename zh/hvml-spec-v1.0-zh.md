@@ -5241,11 +5241,14 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 需要说明是，在上面的例子中，如果父协程指定的请求名称为 `echo1`，则得到结果为：`foo: How are you?`；而如果请求名称为 `echo2`，则结果应该为：`bar: How are you?`。
 
-我们使用 `request` 标签，还可以向渲染器发送一个请求，比如新建窗口组，移除一个窗口组等。此时，指定 `on` 属性值为预定义变量 `$RDR`。至于具体要执行的请求操作以及参数，通过 `to` 属性和 `with` 属性传递，其含义和要求和具体的渲染器协议有关。比如在使用 PURCMC 协议时，我们可以向渲染器发送如下的请求来添加窗口组：
+我们使用 `request` 标签，还可以向渲染器发送一个请求，比如新建窗口组，移除一个窗口组等。此时，指定 `on` 属性值为预定义变量 `$RDR`。至于具体要执行的请求操作以及参数，通过 `to` 属性和 `with` 属性传递，其含义和要求和具体的渲染器协议有关。比如在使用 PURCMC 协议时，我们可以向渲染器发送如下的请求向指定的工作区添加窗口组：
 
 ```hvml
     <request on="$RDR" to="addWindowGroups" >
-        '<section id="newGroup1"></section><section id="newGroup2"><article id="newGroupBody2" class="tabbedwindow"></article></section>'
+        {
+             workspace: 'main',
+             dataHtml: '<section id="newGroup1"></section><section id="newGroup2"><article id="newGroupBody2" class="tabbedwindow"></article></section>'
+        }
     </request>
 ```
 
