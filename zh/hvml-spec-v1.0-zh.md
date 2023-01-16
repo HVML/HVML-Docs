@@ -6440,7 +6440,7 @@ HVML 解释器通过为需要响应式处理的表达式隐式添加绑定关系
 
 注：本小节内容参考了 HTML 规范：<https://html.spec.whatwg.org/#syntax>。
 
-### 3.1) 书写 HVML 程序
+### 3.1) 书写 HVML 文档
 
 HVML 本质上采用 XML 语法描述程序中的各个元素。HVML 文档的书写需满足如下要点：
 
