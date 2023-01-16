@@ -1,11 +1,11 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RC8  
+Version: 1.0-RC9  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Dec. 31, 2022  
+Last Modified Date: Jan. 31, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -1778,6 +1778,8 @@ $CRTN.native_crtn
 
 `DOC` 是一个内置的协程级动态变量，该变量用于访问 HVML 程序生成的 eDOM 树中的元素。
 
+当使用 `init` 从外部数据源中装载 MIME 类型为 `text/html` 等的数据时，其结果数据是代表对应结构化文档（如 HTML、XML）等的动态对象，因此，也可以使用和 `$DOC` 变量一样的接口来访问该文档及其元素。
+
 #### 3.4.1) `doctype` 方法
 
 该方法返回文档类型，字符串。
@@ -1795,7 +1797,22 @@ $DOC.doctype
     // html
 ```
 
-#### 3.4.2) `query` 方法
+#### 3.4.2) `get_element_by_id` 方法
+
+根据元素标识符（id）获得元素并生成对应的元素汇集（collection）。
+
+```js
+$DOC.get_element_by_id(
+    string $id: `the element identifier to get`
+) native/elementCollection
+```
+
+该方法的返回值可能有如下两种情况：
+
+1. `undefined`：错误的标识符。
+1. 一个元素汇集实体，包含零个或单个元素。
+
+#### 3.4.3) `query` 方法
 
 使用 CSS 选择器查询目标文档上的元素汇集（collection）。
 
@@ -1804,6 +1821,8 @@ $DOC.doctype
 1. `undefined`：错误的 CSS 选择器或者参数。
 1. 一个元素汇集实体，包含零个或多个元素。
 
+#### 3.4.3) 元素汇集实体
+
 在元素汇集实体上，我们可以就如下键名获得对应的获取器：
 
 1. `.count()`：获取元素汇集中元素的个数。
@@ -1811,9 +1830,9 @@ $DOC.doctype
 1. `.select( <string: CSS selector )`：以 CSS 选择器在给定的元素汇集中的选择元素，形成一个新的元素汇集。
 1. `.attr( <string: attributeName> )`：获取元素汇集中第一个元素的指定属性值。
 1. `.content()`：获取元素汇集中第一个元素的内容（字符串，按目标标记语言序列化）。
-1. `.textContent()`：获得元素汇集中第一个元素（含子元素）的文本内容。
-1. `.jsonContent()`：获得元素汇集中第一个元素（含子元素）的数据内容，多个内容形成数组。
 1. `.hasClass( <string: className> )`：判断元素汇集中是否有任意元素被赋予指定的类名。
+1. `.textContent()`：获得元素汇集中第一个元素（含子元素）的文本内容。
+1. `.dataContent()`：获得元素汇集中第一个元素（含子元素）的数据内容，多个内容形成数组。
 
 在元素汇集实体上，我们可以就如下键名获得对应的设置器：
 
@@ -1821,7 +1840,7 @@ $DOC.doctype
 1. `.attr(! <object: attributes> )`：使用对象信息设置元素汇集中所有元素的多个属性值。
 1. `.content(! <string: content> )`：设置元素汇集中所有元素的内容。
 1. `.textContent(! <string: content> )`：设置元素汇集中所有元素的文本内容，将移除可能的子元素。
-1. `.jsonContent(! <any: content> )`：设置元素汇集中所有元素的数据内容，将移除可能的子元素。
+1. `.dataContent(! <any: content> )`：设置元素汇集中所有元素的数据内容，将移除可能的子元素。
 1. `.addClass(! <string: className> )`：为元素汇集中所有的元素添加指定的类名。
 1. `.addClass(! <array: classNames> )`：为元素汇集中所有的元素添加数组中指定的所有类名。
 1. `.removeAttr(! <string: attributeName> )`：移除元素汇集中所有元素的指定属性。
@@ -1829,18 +1848,7 @@ $DOC.doctype
 1. `.removeClass(! <string: className> )`：移除元素汇集中所有元素的指定类名。
 1. `.removeClass(! <array: classNames> )`：移除元素汇集中所有元素在数组中的所有类名。
 
-如下针对动态属性的获取器或设置器将被移除：
-
-1. `.prop( <string: propertyName> )`：获取元素汇集中第一个元素的指定状态值。
-1. `.prop(! <string: propertyName>, <any: value> )`：设置元素汇集中所有元素的状态值。
-1. `.prop(! <object: properties> )`：使用对象信息设置元素汇集中所有元素的多个状态值。
-1. `.style( <string: styleName> )`：获取元素汇集中第一个元素的指定样式值。
-1. `.style(! <string: styleName>, <string: value> )`：设置元素汇集中所有元素的样式值。
-1. `.style(! <object: styles> )`：使用对象信息设置元素汇集中所有元素的多个样式值。
-1. `.val()`：获得元素汇集中第一个元素的当前值。
-1. `.val(! newValue)`：设置元素汇集中所有元素的当前值。
-
-如此实现后，HVML 动作元素中通过 CSS 选择器引用元素时，如：
+在以上接口支持下，HVML 动作元素中通过 CSS 选择器引用元素时，如：
 
 ```html
 <update on '#the-user-stats > h2 > span' at 'textContent attr.class' with ["10", "text-warning"] />
@@ -7506,6 +7514,11 @@ $FILE.bin.tail($file, -5)
 - 2022 年 06 月 01 日：发布 V1.0 RC3，标记为 'v1.0-pv-rc3-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
+
+#### RC9) 230131
+
+1. 新增 `$DOC.get_element_by_id` 方法。
+1. 整理元素汇集实体的接口。
 
 #### RC8) 221231
 
