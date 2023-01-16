@@ -1808,11 +1808,11 @@ $DOC.doctype
 $DOC.select(
         < string $string: `The identifier, the class name(s), the tag name, or the value of name attribute of the element(s) to select.` >
         [, < 'id | class | tag | name' $type = `id`:
-            - 'id':         `Choose the element whose id property matches the specified string.`
-            - 'class':      `Choose all elements which have all of the given class name(s).`
-            - 'tag':        `Choose all elements with the given tag name.`
-            - 'name':       `Choose all elements with a given name attribute in the document.`
-            - 'nstag':      `Choose all elements with the given tag name belonging to the given namespace. Note that $string should contains the namespace and the tag name separated by a space character.`
+            - 'id':         `Select the element whose id property matches the specified string.`
+            - 'class':      `Select all elements which have all of the given class name(s).`
+            - 'tag':        `Select all elements with the given tag name.`
+            - 'name':       `Select all elements with a given name attribute in the document.`
+            - 'nstag':      `Select all elements with the given tag name belonging to the given namespace. Note that $string should contains the namespace and the tag name separated by a space character.`
            >
         ]
 ) native/elementCollection
