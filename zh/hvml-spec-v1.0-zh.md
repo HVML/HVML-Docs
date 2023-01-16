@@ -2999,8 +2999,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 本质上，`error` 标签定义的内容设置了 `ERROR` 变量对应 `type` 键名的键值，故而如下两个标签的功能是一样的：
 
 ```hvml
-    <error type="SegFault">
-        <p>Out of memory!</p>
+    <error type=`SegFault`>
+        <p>Memory error!</p>
     </error>
 
     <update on="$ERROR" at=".SegFault">
@@ -5102,8 +5102,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```hvml
     <video id="my-video" width="320" height="240" autoplay muted>
-        <source src="movie.mp4" type="video/mp4">
-        <source src="movie.ogg" type="video/ogg">
+        <source src="movie.mp4" type="video/mp4" />
+        <source src="movie.ogg" type="video/ogg" />
         Your browser does not support the video tag.
     </video>
 
