@@ -79,7 +79,7 @@ Language: Chinese
       * [3.3.11) `native_crtn` 方法](#3311-native_crtn-方法)
    + [3.4) `DOC`](#34-doc)
       * [3.4.1) `doctype` 方法](#341-doctype-方法)
-      * [3.4.2) `get_element_by_id` 方法](#342-get_element_by_id-方法)
+      * [3.4.2) `select` 方法](#342-select-方法)
       * [3.4.3) `query` 方法](#343-query-方法)
       * [3.4.4) 元素汇集实体](#344-元素汇集实体)
    + [3.5) `RDR`](#35-rdr)
@@ -1800,24 +1800,38 @@ $DOC.doctype
     // html
 ```
 
-#### 3.4.2) `get_element_by_id` 方法
+#### 3.4.2) `select` 方法
 
-根据元素标识符（id）获得元素并生成对应的元素汇集（collection）。
+根据元素的标识符（id）、类名、标签名称、名称属性值选择元素并生成对应的元素汇集（collection）。
 
 ```js
-$DOC.get_element_by_id(
-    string $id: `the element identifier to get`
+$DOC.select(
+        < string $string: `The identifier, the class name(s), the tag name, or the value of name attribute of the element(s) to select.` >
+        [, < 'id | class | tag | name' $type = `id`:
+            - 'id':         `Choose the element whose id property matches the specified string.`
+            - 'class':      `Choose all elements which have all of the given class name(s).`
+            - 'tag':        `Choose all elements with the given tag name.`
+            - 'name':       `Choose all elements with a given name attribute in the document.`
+            - 'nstag':      `Choose all elements with the given tag name belonging to the given namespace. Note that $string should contains the namespace and the tag name separated by a space character.`
+           >
+        ]
 ) native/elementCollection
 ```
 
 该方法的返回值可能有如下两种情况：
 
-1. `undefined`：错误的标识符。
+1. `undefined`：错误的标识符或参数类型。
 1. 一个元素汇集实体，包含零个或单个元素。
 
 #### 3.4.3) `query` 方法
 
 使用 CSS 选择器查询目标文档上的元素汇集（collection）。
+
+```js
+$DOC.query(
+    < string $selector: `the CSS selector.` >
+) native/elementCollection
+```
 
 该方法的返回值可能有如下两种情况：
 
@@ -1830,10 +1844,10 @@ $DOC.get_element_by_id(
 
 1. `.count()`：获取元素汇集中元素的个数。
 1. `.sub( <real: offset>, <real: length )`：以偏移量及长度为依据在给定的元素汇集中选择元素，形成新的元素汇集。
-1. `.select( <string: CSS selector )`：以 CSS 选择器在给定的元素汇集中的选择元素，形成一个新的元素汇集。
+1. `.select( <string: CSS selector )`：以 CSS 选择器在给定的元素汇集中选择元素，并形成一个新的元素汇集。
 1. `.attr( <string: attributeName> )`：获取元素汇集中第一个元素的指定属性值。
-1. `.content()`：获取元素汇集中第一个元素的内容（字符串，按目标标记语言序列化）。
 1. `.hasClass( <string: className> )`：判断元素汇集中是否有任意元素被赋予指定的类名。
+1. `.content()`：获取元素汇集中第一个元素的内容（字符串，按目标标记语言序列化）。
 1. `.textContent()`：获得元素汇集中第一个元素（含子元素）的文本内容。
 1. `.dataContent()`：获得元素汇集中第一个元素（含子元素）的数据内容，多个内容形成数组。
 
@@ -7520,7 +7534,7 @@ $FILE.bin.tail($file, -5)
 
 #### RC9) 230131
 
-1. 新增 `$DOC.get_element_by_id` 方法。
+1. 新增 `$DOC.select` 方法。
 1. 整理元素汇集实体的接口。
 
 #### RC8) 221231
