@@ -1,19 +1,19 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RC8  
+Version: 1.0-RC9  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Dec. 31, 2022  
+Last Modified Date: Feb. 28, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
 
 *Copyright Notice*
 
-版权所有 &copy; 2021, 2022 魏永明  
-版权所有 &copy; 2021, 2022 北京飞漫软件技术有限公司  
+版权所有 &copy; 2021, 2022, 2023 魏永明  
+版权所有 &copy; 2021, 2022, 2023 北京飞漫软件技术有限公司  
 保留所有权利
 
 此文档不受 HVML 相关软件开源许可证的管辖。
@@ -273,6 +273,7 @@ Language: Chinese
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RC9) 230228](#rc9-230228)
       * [RC8) 221231](#rc8-221231)
       * [RC7) 221130](#rc7-221130)
       * [RC6) 221031](#rc6-221031)
@@ -1810,18 +1811,18 @@ $DOC.doctype
 1. `.sub( <real: offset>, <real: length )`：以偏移量及长度为依据在给定的元素汇集中选择元素，形成新的元素汇集。
 1. `.select( <string: CSS selector )`：以 CSS 选择器在给定的元素汇集中的选择元素，形成一个新的元素汇集。
 1. `.attr( <string: attributeName> )`：获取元素汇集中第一个元素的指定属性值。
-1. `.content()`：获取元素汇集中第一个元素的内容（字符串，按目标标记语言序列化）。
+1. `.contents()`：获取元素汇集中第一个元素的内容（字符串，按目标标记语言序列化）。
 1. `.textContent()`：获得元素汇集中第一个元素（含子元素）的文本内容。
-1. `.jsonContent()`：获得元素汇集中第一个元素（含子元素）的数据内容，多个内容形成数组。
+1. `.dataContent()`：获得元素汇集中第一个元素（含子元素）的数据内容，多个内容形成数组。
 1. `.hasClass( <string: className> )`：判断元素汇集中是否有任意元素被赋予指定的类名。
 
 在元素汇集实体上，我们可以就如下键名获得对应的设置器：
 
 1. `.attr(! <string: attributeName>, <string: value> )`：设置元素汇集中所有元素的属性值。
 1. `.attr(! <object: attributes> )`：使用对象信息设置元素汇集中所有元素的多个属性值。
-1. `.content(! <string: content> )`：设置元素汇集中所有元素的内容。
+1. `.contents(! <string: content> )`：设置元素汇集中所有元素的内容。
 1. `.textContent(! <string: content> )`：设置元素汇集中所有元素的文本内容，将移除可能的子元素。
-1. `.jsonContent(! <any: content> )`：设置元素汇集中所有元素的数据内容，将移除可能的子元素。
+1. `.dataContent(! <any: content> )`：设置元素汇集中所有元素的数据内容，将移除可能的子元素。
 1. `.addClass(! <string: className> )`：为元素汇集中所有的元素添加指定的类名。
 1. `.addClass(! <array: classNames> )`：为元素汇集中所有的元素添加数组中指定的所有类名。
 1. `.removeAttr(! <string: attributeName> )`：移除元素汇集中所有元素的指定属性。
@@ -7498,6 +7499,7 @@ $FILE.bin.tail($file, -5)
 
 发布历史：
 
+- 2023 年 02 月 28 日：发布 V1.0 RC9，标记为 'v1.0-pv-rc9-230228'。
 - 2022 年 12 月 31 日：发布 V1.0 RC8，标记为 'v1.0-pv-rc8-221231'。
 - 2022 年 11 月 30 日：发布 V1.0 RC7，标记为 'v1.0-pv-rc7-221130'。
 - 2022 年 10 月 31 日：发布 V1.0 RC6，标记为 'v1.0-pv-rc6-221031'。
@@ -7506,6 +7508,11 @@ $FILE.bin.tail($file, -5)
 - 2022 年 06 月 01 日：发布 V1.0 RC3，标记为 'v1.0-pv-rc3-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
+
+#### RC9) 230228
+
+1. 重命名元素汇集实体的 `.content()` 属性名称为 `.contents()`。
+1. 重命名元素汇集实体的 `.jsonContent()` 属性名称为 `.dataContent()`。
 
 #### RC8) 221231
 
