@@ -112,14 +112,12 @@ In this article, we describe the design and the implementation of HVML.
 
 During the development of [HybridOS], [Vincent Wei] proposed a descriptive programming language called `HVML`.
 
-With the development of Internet and applications, the Web front-end
-development technologies around HTML/CSS/JavaScript has evolved rapidly.
-Since 2019, frameworks based on virtual DOM (Document Object Model) technology
-have been favored by front-end developers, such as [React.js] and [Vue.js].
+With the development of Internet and applications, the Web front-end development technologies around HTML/CSS/JavaScript has evolved rapidly.
+Since 2019, frameworks based on virtual DOM (Document Object Model) technology have been favored by front-end developers,
+      such as [React.js] and [Vue.js].
 
-The so-called "virtual DOM" refers to a front-end application that uses
-JavaScript to create and maintain a virtual DOM tree, and the application
-scripts do not directly manipulate the real DOM tree.
+The so-called "virtual DOM" refers to a front-end application that uses JavaScript to create and maintain a virtual DOM tree,
+    and the application scripts do not directly manipulate the real DOM tree.
 
 The virtual DOM technology provides the following benefits:
 
@@ -134,8 +132,8 @@ The virtual DOM technology provides the following benefits:
    interface to operate the DOM tree. This technology provides so-called
    "responsive" programming, which greatly reduces the workload of developers.
 
-On the other side, front-end frameworks represented by React.js and Vue.js have
-achieved great success, but have the following deficiencies and shortcomings:
+On the other side, front-end frameworks represented by React.js and Vue.js have achieved great success,
+   but have the following deficiencies and shortcomings:
 
 1. These technologies are based on multiple Web standards and require browsers
    that fully support the standards or specifications to run. Therefore,
@@ -173,18 +171,17 @@ achieved great success, but have the following deficiencies and shortcomings:
 
 (Say something about electron and other similiar open source projects.)
 
-
 ### 1.3) Our Solution
 
-HVML is a programmable markup language. Like HTML, HVML uses markups to define
-program structure and data, but unlike HTML, HVML is programmable and dynamic.
+HVML is a programmable markup language.
+Like HTML, HVML uses markups to define program structure and data,
+     but unlike HTML, HVML is programmable and dynamic.
 
-HVML realizes the dynamic generation and update function of data and XML/HTML
-documents through a limited number of action tags and dynamic JSON expressions
-that can be used to define attributes and content; HVML also provides mechanisms
-to interact with the runtime of an existing programming language, such as
-C/C++, Python, Lua, etc., so as to provide strong technical support for these
-programming languages to utilize Web front-end technologies outside the browser.
+HVML realizes the dynamic generation and update function of data and XML/HTML documents through a limited number of action tags and
+expressions that can be used to define attributes and content;
+HVML also provides mechanisms to interact with the runtime of an existing programming language,
+     such as C/C++, Python, Lua, etc., so as to provide strong technical support for these programming languages to
+     utilize Web front-end technologies outside the browser.
 From this perspective, HVML can also be regarded as a glue language.
 
 ## 2) Design of HVML
@@ -214,14 +211,12 @@ Obviously, the key statement of the above program is
 $STREAM.stdout.writelines('Hello, world!')
 ```
 
-This statement called the `writelines` method of `$STREAM.stdout`, and the
-method printed the `Hello, world!` to STDOUT, i.e., your terminal.
+This statement called the `writelines` method of `$STREAM.stdout`,
+     and the method printed the `Hello, world!` to STDOUT, i.e., your terminal.
 
-Now we rewrite the above program a little more complicated to have the following
-features:
+Now we rewrite the above program a little more complicated to have the following features:
 
-- Output a valid HTML document or a simple text line according to
-  a startup option.
+- Output a valid HTML document or a simple text line according to a startup option.
 - Support localization according to the current system locale.
 
 Please read the code below and the comments carefully:
@@ -229,19 +224,19 @@ Please read the code below and the comments carefully:
 ```html
 <!DOCTYPE hvml>
 
-<!-- $REQUEST contains the startup options -->
-<hvml target="$REQUEST.target">
+<!-- $REQ contains the startup options -->
+<hvml target="$REQ.target" lang="$REQ.lang">
   <body>
 
     <!--
-        $SYSTEM.locale returns the current system locale like `zh_CN'.
+        $SYS.locale returns the current system locale like `zh_CN'.
         This statement loads a JSON file which defined the map of
         localization messages, like:
         {
             "Hello, world!": "世界，您好！"
         }
     -->
-    <update on="$T.map" from="messages/$SYSTEM.locale" to="merge" />
+    <update on $T.map from 'messages/$SYS.locale' to 'merge' />
 
     <!--
         This statement defines an operation set, which output
@@ -250,7 +245,7 @@ Please read the code below and the comments carefully:
         An operation set of HVML is similiar to a function or a closure
         in other languages.
     -->
-    <define as="output_html">
+    <define as 'output_html'>
         <h1>HVML</h1>
         <p>$?</p>
     </define>
@@ -259,7 +254,7 @@ Please read the code below and the comments carefully:
         This statement defines an operation set, which output
         a text line to STDOUT.
     -->
-    <define as="output_void">
+    <define as 'output_void'>
         <inherit>
             $STREAM.stdout.writelines($?)
         </inherit>
@@ -270,14 +265,14 @@ Please read the code below and the comments carefully:
         according to the value of `target` attribute of `hvml` element,
         and pass the result returned by `$T.get('Hello, world!')`.
     -->
-    <include with=${output_$HVML.target} on="$T.get('Hello, world!')" />
+    <include with ${output_$HVML.target} on $T.get('Hello, world!') />
 
   </body>
 </hvml>
 ```
 
-The HVML program above will generate a HTML document if the current system
-locale is `zh_CN` and the value of the startup option `target` is `html`:
+The above HVML program will generate a HTML document if the current system locale is `zh_CN`,
+    and the value of the startup option `target` is `html`:
 
 ```html
 <html>
@@ -288,8 +283,8 @@ locale is `zh_CN` and the value of the startup option `target` is `html`:
 </html>
 ```
 
-But if the value of the startup option `target` is `void`, the HVML program
-above will print the following line on your terminal:
+But if the value of the startup option `target` is `void`,
+    the HVML program above will print the following line on your terminal:
 
 ```
 世界，您好！
@@ -400,7 +395,7 @@ programming method.
         </archetype>
 
         <footer id="the-footer">
-            <test on="$_SYSTEM.locale" in='the-footer'>
+            <test on="$SYS.locale" in='the-footer'>
                 <match for="AS 'zh_CN'" exclusively>
                     <update on="$@" to="displace" with="$footer_cn" />
                 </match>
@@ -423,7 +418,7 @@ programming method.
         </footer>
 
         <observe on="$TIMERS" for="expired:foo" in="#the-header" >
-            <update on="> span.local-time" at="textContent" with="$_SYSTEM.time('%H:%m')" />
+            <update on="> span.local-time" at="textContent" with="$SYS.time('%H:%m')" />
         </observe>
 
         <choose on=$systemStatus.subscribe('@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED')>
@@ -747,7 +742,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
     <body>
         <div class="clock" id="clock">
             <observe on="$TIMERS" for="expired:clock">
-                <update on="#clock" at="textContent" with="$_SYSTEM.time('%H:%m')" />
+                <update on="#clock" at="textContent" with="$SYS.time('%H:%m')" />
             </observe>
         </div>
 

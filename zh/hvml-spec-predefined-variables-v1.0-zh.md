@@ -79,7 +79,9 @@ Language: Chinese
       * [3.3.11) `native_crtn` 方法](#3311-native_crtn-方法)
    + [3.4) `DOC`](#34-doc)
       * [3.4.1) `doctype` 方法](#341-doctype-方法)
-      * [3.4.2) `query` 方法](#342-query-方法)
+      * [3.4.2) `select` 方法](#342-select-方法)
+      * [3.4.3) `query` 方法](#343-query-方法)
+      * [3.4.4) 元素汇集实体](#344-元素汇集实体)
    + [3.5) `RDR`](#35-rdr)
       * [3.5.1) `state` 属性](#351-state-属性)
       * [3.5.2) `connect` 方法](#352-connect-方法)
@@ -1779,6 +1781,8 @@ $CRTN.native_crtn
 
 `DOC` 是一个内置的协程级动态变量，该变量用于访问 HVML 程序生成的 eDOM 树中的元素。
 
+当使用 `init` 从外部数据源中装载 MIME 类型为 `text/html` 等的数据时，其结果数据是代表对应结构化文档（如 HTML、XML）等的动态对象，因此，也可以使用和 `$DOC` 变量一样的接口来访问该文档及其元素。
+
 #### 3.4.1) `doctype` 方法
 
 该方法返回文档类型，字符串。
@@ -1796,25 +1800,56 @@ $DOC.doctype
     // html
 ```
 
-#### 3.4.2) `query` 方法
+#### 3.4.2) `select` 方法
+
+根据元素的标识符（id）、类名、标签名称、名称属性值选择元素并生成对应的元素汇集（collection）。
+
+```js
+$DOC.select(
+        < string $string: `The identifier, the class name(s), the tag name, or the value of name attribute of the element(s) to select.` >
+        [, < 'id | class | tag | name' $type = `id`:
+            - 'id':         `Select the element whose id property matches the specified string.`
+            - 'class':      `Select all elements which have all of the given class name(s).`
+            - 'tag':        `Select all elements with the given tag name.`
+            - 'name':       `Select all elements with a given name attribute in the document.`
+            - 'nstag':      `Select all elements with the given tag name belonging to the given namespace. Note that $string should contains the namespace and the tag name separated by a space character.`
+           >
+        ]
+) native/elementCollection
+```
+
+该方法的返回值可能有如下两种情况：
+
+1. `undefined`：错误的标识符或参数类型。
+1. 一个元素汇集实体，包含零个或单个元素。
+
+#### 3.4.3) `query` 方法
 
 使用 CSS 选择器查询目标文档上的元素汇集（collection）。
+
+```js
+$DOC.query(
+    < string $selector: `the CSS selector.` >
+) native/elementCollection
+```
 
 该方法的返回值可能有如下两种情况：
 
 1. `undefined`：错误的 CSS 选择器或者参数。
 1. 一个元素汇集实体，包含零个或多个元素。
 
+#### 3.4.4) 元素汇集实体
+
 在元素汇集实体上，我们可以就如下键名获得对应的获取器：
 
 1. `.count()`：获取元素汇集中元素的个数。
 1. `.sub( <real: offset>, <real: length )`：以偏移量及长度为依据在给定的元素汇集中选择元素，形成新的元素汇集。
-1. `.select( <string: CSS selector )`：以 CSS 选择器在给定的元素汇集中的选择元素，形成一个新的元素汇集。
+1. `.select( <string: CSS selector )`：以 CSS 选择器在给定的元素汇集中选择元素，并形成一个新的元素汇集。
 1. `.attr( <string: attributeName> )`：获取元素汇集中第一个元素的指定属性值。
+1. `.hasClass( <string: className> )`：判断元素汇集中是否有任意元素被赋予指定的类名。
 1. `.contents()`：获取元素汇集中第一个元素的内容（字符串，按目标标记语言序列化）。
 1. `.textContent()`：获得元素汇集中第一个元素（含子元素）的文本内容。
 1. `.dataContent()`：获得元素汇集中第一个元素（含子元素）的数据内容，多个内容形成数组。
-1. `.hasClass( <string: className> )`：判断元素汇集中是否有任意元素被赋予指定的类名。
 
 在元素汇集实体上，我们可以就如下键名获得对应的设置器：
 
@@ -1830,18 +1865,7 @@ $DOC.doctype
 1. `.removeClass(! <string: className> )`：移除元素汇集中所有元素的指定类名。
 1. `.removeClass(! <array: classNames> )`：移除元素汇集中所有元素在数组中的所有类名。
 
-如下针对动态属性的获取器或设置器将被移除：
-
-1. `.prop( <string: propertyName> )`：获取元素汇集中第一个元素的指定状态值。
-1. `.prop(! <string: propertyName>, <any: value> )`：设置元素汇集中所有元素的状态值。
-1. `.prop(! <object: properties> )`：使用对象信息设置元素汇集中所有元素的多个状态值。
-1. `.style( <string: styleName> )`：获取元素汇集中第一个元素的指定样式值。
-1. `.style(! <string: styleName>, <string: value> )`：设置元素汇集中所有元素的样式值。
-1. `.style(! <object: styles> )`：使用对象信息设置元素汇集中所有元素的多个样式值。
-1. `.val()`：获得元素汇集中第一个元素的当前值。
-1. `.val(! newValue)`：设置元素汇集中所有元素的当前值。
-
-如此实现后，HVML 动作元素中通过 CSS 选择器引用元素时，如：
+在以上接口支持下，HVML 动作元素中通过 CSS 选择器引用元素时，如：
 
 ```html
 <update on '#the-user-stats > h2 > span' at 'textContent attr.class' with ["10", "text-warning"] />
@@ -7513,6 +7537,8 @@ $FILE.bin.tail($file, -5)
 
 1. 重命名元素汇集实体的 `.content()` 属性名称为 `.contents()`。
 1. 重命名元素汇集实体的 `.jsonContent()` 属性名称为 `.dataContent()`。
+1. 新增 `$DOC.select` 方法。
+1. 整理元素汇集实体的接口。
 
 #### RC8) 221231
 

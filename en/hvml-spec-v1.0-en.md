@@ -1,19 +1,19 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0-RC10  
+Version: 1.0-RC9  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Feb. 28, 2023  
+Last Modified Date: Dec. 31, 2022  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
 
 *Copyright Notice*
 
-版权所有 &copy; 2020, 2021, 2022, 2023 魏永明  
-版权所有 &copy; 2021, 2022, 2023 北京飞漫软件技术有限公司  
+版权所有 &copy; 2020, 2021, 2022 魏永明  
+版权所有 &copy; 2021, 2022 北京飞漫软件技术有限公司  
 保留所有权利
 
 此文档不受 HVML 相关软件开源许可证的管辖。
@@ -149,7 +149,6 @@ Language: Chinese
 - [5) 总结](#5-总结)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
-      * [RC10) 230228](#rc10-230228)
       * [RC9) 221231](#rc9-221231)
          - [RC9.1) 定义骨架元素属性的响应式处理语法](#rc91-定义骨架元素属性的响应式处理语法)
          - [RC9.2) 文档片段的结构化数据表达](#rc92-文档片段的结构化数据表达)
@@ -245,7 +244,7 @@ Language: Chinese
    * CSS：级联样式表（Cascading Style Sheets），用于定义 HTML 页面元素布局、渲染效果等的规范。在 CSS 2.2 <https://www.w3.org/TR/CSS22/> 之后，CSS 规范开始按照模块划分，各模块分头演进，目前普遍支持到 Level 3。在如下网页中可以看到 CSS 各模块的规范进展情况：<https://drafts.csswg.org>。
    * JavaScript/ECMAScript：一种符合 ECMAScript 规范的脚本编程语言，最初由网景公司设计给浏览器使用，用于操控 HTML 页面中的内容和渲染行为，现在由欧洲计算机制造商协会和国际标准化组织负责制定相关标准，最新的标准为 ECMA-262：<http://www.ecma-international.org/publications/standards/Ecma-262.htm>。
    * DOM：文档对象模型（Document Object Model），用于 XML/HTML 文档结构的内部表达。一个 XML/HTML 文档，会被 XML/HTML 解析器解析并生成一个 DOM 树，XML/HTML 文档中的每个元素构成 DOM 树上的元素结点，而每个元素的子元素、属性、文本内容等，又构成了这个元素节点的子节点。有关 DOM 的最新的规范可见：<https://dom.spec.whatwg.org/>。
-   * JSON：JavaScript 对象表述法（JavaScript Object Notation）是一种轻量级的信息互换格式。最初被用于 JavaScript 对象的字符串表达，易于被 JavaScript 脚本代码使用，现在被广泛使用在不同编程语言或软件模块之间的数据交换。有关 JSON 的描述，可见：<https://json.org/>。
+   * JSON：JavaScript 对象表述法（JavaScript Object Notation）是一种轻量级的信息互换格式。最初被用于 JavaScript 对象的字符串表达，易于被 JavaScript 脚本代码使用，现在被广泛使用在不同编程语言之间的数据交换。有关 JSON 的描述，可见：<https://json.org/>。
 - 用户代理（User Agent）是 HTML 规范的一个术语，用来指代可以解析 HTML、CSS 等 W3C 规范，并对 HTML 文档内容进行渲染，进而呈现给用户并实现用户交互的计算机程序。我们熟知的浏览器就是用户代理。但用户代理不限于浏览器，可以是一个软件组件，也可以是一个应用框架。比如，内嵌到电子邮件客户端程序中，用以解析和渲染 HTML 格式邮件的软件组件，本质上也是 HTML 用户代理。
 - XML：可扩展标记语言（The Extensible Markup Language）是由 W3C 组织制定的，用来表述结构化信息的一种简单文本格式。和 HTML 相比，XML 使用类似的结构，但更加严格且更为通用。XML 是当今共享结构化信息的最广泛使用的格式之一，不论是在程序之间，人与人之间，计算机与人之间，也不论是在本地还是跨网络共享信息。有关 XML 的介绍和规范可参阅：<https://www.w3.org/standards/xml/>。
 - 脚本编程语言。指类似 JavaScript 的计算机编程语言，通常解释执行，具有动态特征。除 JavaScript 之外，常见的脚本语言有 Python、Lua、PHP 等。
@@ -842,16 +841,16 @@ HVML 还提供一个称为替身表达式的功能，可以让我们将一个表
 
 首先，HVML 采用了类似 HTML 的标签来定义文档的整体结构：
 
-- 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。我们还使用了 `DOCTYPE` 的 `SYSTEM` 标识符来定义该 HVML 程序使用的外部标签前缀以及需要预先装载的外部模块。
-- `hvml` 标签用于定义整个 HVML 程序。可包含如下属性：
-   1. `target`：定义 HVML 程序的目标标记语言，取 `html`、 `xml`、 `void` 等值。
+- 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。我们还使用了 `DOCTYPE` 的 `SYSTEM` 标识符来定义该 HVML 文档使用的外部标签前缀以及需要预先装载的外部模块。
+- `hvml` 标签用于定义整个 HVML 文档。可包含如下属性：
+   1. `target`：定义 HVML 文档的目标标记语言，取 `html`、 `xml`、 `void` 等值。
    1. 其他属性（如 `lang` 属性，用来定义语言，取值如 `en`、 `zh` 等），将被解释器在求值后克隆到目标文档的根元素。
 - `head` 标签用于定义头部信息，其中可包含：
    1. 可被原样保留到目标文档的标签，如 HTML 文档的 `<meta>`、 `<link>` 标签。
    1. 全局数据的初始化或重置；使用 `init` 标签定义。
    1. 全局动态对象；使用 `init` 标签定义。
    1. 全局模板；使用 `archedata` 或 `archetype` 标签定义。
-- `body` 标签用于定义文档的本体内容。在 HVML 程序中，可以定义零个或多个 `body` 本地内容，使用 `id` 属性区别不同的本体内容。在执行过程中，可通过 `load` 元素装载不同的本体内容。
+- `body` 标签用于定义文档的本体内容。在 HVML 文档中，可以定义零个或多个 `body` 本地内容，使用 `id` 属性区别不同的本体内容。在执行过程中，可通过 `load` 元素装载不同的本体内容。
 
 其次，从上面的 HVML 程序看出，HVML 使用了类似 HTML 的标签（tag），同时也可混用 HTML 的标签。两者的区别在于：
 
@@ -927,7 +926,7 @@ HVML 还定义有如下两种特殊数据类型：
 
 在 HVML 中，我们扩展了对象的属性使之具有动态特性。一个动态属性，通常由 HVML 解释器或者外部程序定义或实现，要么是一个动态值，要么是一个原生实体。
 
-从 HVML 程序的角度看，访问一个动态属性的方法和访问一个常规属性的方法并无二致。比如，我们通过访问 `$SYS.time` 可获得当前的 UNIX 时间戳。但是，在不同的时刻访问 `$SYS.time`，获得的值将会不同。这是因为这里的 `time` 就是一个动态属性。
+从 HVML 文档的角度看，访问一个动态属性的方法和访问一个常规属性的方法并无二致。比如，我们通过访问 `$SYS.time` 可获得当前的 UNIX 时间戳。但是，在不同的时刻访问 `$SYS.time`，获得的值将会不同。这是因为这里的 `time` 就是一个动态属性。
 
 作为动态属性的另一个特性，我们可以将某个特定的属性视作对象而在其上提供虚拟的属性，比如当我们访问 `$SYS.uname_prt.default` 时，将获得当前的操作系统内核名称（如 `Linux`）。
 
@@ -1110,7 +1109,7 @@ HVML 不提供任何操作可以用来改变不可变数据，但开发者可以
 
 除了上述用于定义文档整体结构的标签外，HVML 提供了如下用于定义数据的标签：
 
-- `init`：该标签初始化一个变量；我们将有名字的数据称为变量。在 HVML 程序的头部（由 `head` 标签定义）使用 `init` 标签，将默认初始化一个全局变量。在 HVML 程序的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得。若通过 HTTP 请求时，使用 `from` 属性定义请求的 URL，`with` 属性定义请求的参数，`via` 属性定义请求的方法（如 `GET` 或 `POST`）。
+- `init`：该标签初始化一个变量；我们将有名字的数据称为变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将默认初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得。若通过 HTTP 请求时，使用 `from` 属性定义请求的 URL，`with` 属性定义请求的参数，`via` 属性定义请求的方法（如 `GET` 或 `POST`）。
 - `bind`：该标签用于定义一个表达式变量。
 
 ##### 2.1.6.1) 变量的类型
@@ -1132,7 +1131,7 @@ HVML 定义的上下文变量罗列如下：
 
 - `@`：指当前文档操作位置，由 eDOM 元素汇集（target element collection）表达，通常由前置操作中的介词属性 `in` 定义。
 - `?`：指前置操作的结果数据（result data）。
-- `!`：指用户自定义数据（user data），可用于引用临时变量。
+- `!`：指用户自定义数据（user data），用于定义临时数据。
 - `^`：指前置操作的内容数据（content data），仅针对动作元素和框架元素，其他情形下为未确定。
 - `:`：若前置操作的结果数据是一个键值对象，则该变量表示键名，其他情形下为未确定。
 - `=`：若前置操作的结果数据是一个键值对象，则该变量表示键值，其他情形下为未确定。
@@ -1180,13 +1179,13 @@ HVML 定义的上下文变量罗列如下：
 
 1) `$REQ`
 
-`$REQ`：主要用来表述装载程序时，由其他模块提供的请求数据，一般由 HVML 解释器在装载 HVML 程序时生成。比如下面的 Python 脚本装载一个 HVML 程序，并传递了 `nrUsers` 参数：
+`$REQ`：主要用来表述装载文档时，由其他模块提供的请求数据，一般由 HVML 解释器在装载 HVML 文档时生成。比如下面的 Python 脚本装载一个 HVML 文档，并传递了 `nrUsers` 参数：
 
 ```python
 hvml.load ("a.hvml", { "nrUsers" : 10 })
 ```
 
-在 HVML 程序中，我们可使用 `$REQ.nrUsers` 来引用上述脚本代码传入的值（`10`）。
+在 HVML 文档中，我们可使用 `$REQ.nrUsers` 来引用上述脚本代码传入的值（`10`）。
 
 `$REQ` 变量本质上是一个必要的协程级非动态对象。
 
@@ -2832,7 +2831,7 @@ $DATA.numerify(
 
 `hvml` 标签定义一个 HVML 程序（或 HVML 文档）。`hvml` 标签支持如下属性：
 
-- `target`：定义 HVML 程序的目标标记语言，取 `void`、 `html`、 `xml` 等值，通常是某种目标标记语言（或目标文档类型）的名称。HVML 解释器应至少支持 `void` 这一特殊的目标标记语言；顾名思义，`void` 类型不产生任何实际的目标文档内容，故而无需渲染器即可正常运行，此时，HVML 程序和一般的脚本程序并无本质区别。当目标标记语言定义为 `void` 时，解释器将维护一个特殊的 eDOM 树，对这个 eDOM 树的任何更新都将被完全忽略，而在其上执行 `$DOC.query` 将始终返回空的元素汇集。
+- `target`：定义 HVML 文档的目标标记语言，取 `void`、 `html`、 `xml` 等值，通常是某种目标标记语言（或目标文档类型）的名称。HVML 解释器应至少支持 `void` 这一特殊的目标标记语言；顾名思义，`void` 类型不产生任何实际的目标文档内容，故而无需渲染器即可正常运行，此时，HVML 程序和一般的脚本程序并无本质区别。当目标标记语言定义为 `void` 时，解释器将维护一个特殊的 eDOM 树，对这个 eDOM 树的任何更新都将被完全忽略，而在其上执行 `$DOC.query` 将始终返回空的元素汇集。
 
 注意，`target` 属性和所有 HVML 副词属性，都不应该被克隆到目标文档的根元素中。
 
@@ -3000,8 +2999,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 本质上，`error` 标签定义的内容设置了 `ERROR` 变量对应 `type` 键名的键值，故而如下两个标签的功能是一样的：
 
 ```hvml
-    <error type=`SegFault`>
-        <p>Memory error!</p>
+    <error type="SegFault">
+        <p>Out of memory!</p>
     </error>
 
     <update on="$ERROR" at=".SegFault">
@@ -3033,7 +3032,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 #### 2.5.1) `init` 标签
 
-`init` 标签定义一个执行初始化或者重置变量操作的元素。在 HVML 程序的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 程序的正文（由 `body` 标签定义）内使用 `init` 标签，默认将定义一个仅在其所在父元素定义的子树中有效的局部变量。
+`init` 标签定义一个执行初始化或者重置变量操作的元素。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，默认将定义一个仅在其所在父元素定义的子树中有效的局部变量。
 
 默认情况下，我们使用 `init` 标签初始化或者覆盖一个静态变量，但如果我们在 `init` 标签中使用 `temporarily` 副词属性，则会创建一个临时变量。
 
@@ -5103,8 +5102,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 ```hvml
     <video id="my-video" width="320" height="240" autoplay muted>
-        <source src="movie.mp4" type="video/mp4" />
-        <source src="movie.ogg" type="video/ogg" />
+        <source src="movie.mp4" type="video/mp4">
+        <source src="movie.ogg" type="video/ogg">
         Your browser does not support the video tag.
     </video>
 
@@ -6467,7 +6466,7 @@ HVML 程序中的注释有两种形式，一种是 `<!-- 注释内容 -->` 形�
 #!/usr/bin/purc
 # The above line makes the HVML program can be marked as an executable to
 # run it directly on the command line if you installed a correct
-# HVML interpreter, e.g., `/usr/bin/purc` in you system.
+# HVML interpreter, e.g., `/bin/purc` in you system.
 
 # This is a comment line
     # This is another comment line
@@ -6513,6 +6512,8 @@ DOCTYPE 定义了文档格式以及 HVML 标签使用的前缀。
 
 一个 `DOCTYPE` 必须按顺序由如下几个部分组成：
 
+> A DOCTYPE must consist of the following components, in this order:
+
 1. 一个由 ASCII 字符组成，且匹配 `<!DOCTYPE` 的字符串，大小写敏感。
 1. 一个或多个 ASCII 空白字符。
 1. 一个由 ASCII 字符组成，且匹配 `hvml` 的字符串，大小写敏感。
@@ -6520,7 +6521,16 @@ DOCTYPE 定义了文档格式以及 HVML 标签使用的前缀。
 1. 零个或多个 ASCII 空白字符。
 1. 一个 U+003E GREATER-THAN SIGN 字符（`>`）。
 
+> 1. A string that is an ASCII case-sensitive match for the string `"<!DOCTYPE"`.
+> 1. One or more ASCII whitespace.
+> 1. A string that is an ASCII case-sensitive match for the string `"hvml"`.
+> 1. Optionally, a DOCTYPE system information string.
+> 1. Zero or more ASCII whitespace.
+> 1. A U+003E GREATER-THAN SIGN character (`>`).
+
 通常书写为`<!DOCTYPE hvml>`，大小写敏感。
+
+> In other words, `<!DOCTYPE hvml>`, case-sensitively.
 
 在 HVML 文档中，当某个 HVML 标签可能和目标标记语言的标签冲突时，我们可以使用预定义前缀来标记 HVML 的标签，默认使用 `v:` 作为前缀，但我们也可以在 DOCTYPE 中自定义这个前缀。前缀字符串必须以字母打头，以冒号（`:`）结尾。
 
@@ -6533,7 +6543,16 @@ SYSTEM 标识符字符串的格式如下：
 1. 一个指定系统标识符的字面字符串，由一个或者多个被 U+0020 SPACE 字符（空格，` `）分隔的词元组成，比如 `f: MATH`。第一个词元必须由 ASCII 字母打头并以 U+003A COLON MARK（冒号，`:`）结尾；该词元定义了当前 HVML 文档中使用的外部标签的前缀。其他的词元定义了应该为当前文档装载并绑定的全局变量，比如 `MATH`、 `FILE.FS`、 `FILE.FILE:F` 等。
 1. 一个 U+0022 QUOTATION MARK 字符（双引号）或 U+0027 APOSTROPHE 字符（单引号），需匹配先前使用的引号。
 
+> 1. One or more ASCII whitespace.
+> 1. A string that is an ASCII case-sensitive match for the string "SYSTEM".
+> 1. One or more ASCII whitespace.
+> 1. A U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (the quote mark).
+> 1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: MATH". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The other tokens defines the variables should be bound for this document, such as `MATH`, `FILE.FS`, `FILE.FILE:F`, and so on.
+> 1. A matching U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (i.e. the same character as in the earlier step labeled quote mark).
+
 比如，如果 DOCTYPE 元素被书写为 `<!DOCTYPE hvml SYSTEM "ext: MATH FILE.FS FILE.FILE:F">`，则可在外部标签之前添加指定的前缀，以免和 HVML 标签名称发生冲突：
+
+> For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "ext: MATH FILE.FS FILE.FILE:F">`, you can add the specific prefix to some HVML tags:
 
 ```hvml
 <!DOCTYPE hvml SYSTEM "ext: MATH FILE:FS FILE:FILE">
@@ -6625,46 +6644,60 @@ SYSTEM 标识符字符串的格式如下：
 数据动作元素用于定义数据内容，可包含其他普通元素以及可作为骨架元素使用的外部元素。当包含有子元素时，其数据内容只能出现一次，且前置于任何子元素之前。如下例所示：
 
 ```hvml
-    <init as="breakingNews" from="assets/breaking-news-{$SYS.locale}.json" async>
-        {
-            "title": "This is an absolute breaking news!",
-            "shortDesc": "The Zhang family's rooster has laid eggs!",
-            "longDesc": 'Yesterday, the second son of the Zhang family came to me and said, "My rooster has laid eggs!"',
-            "detailedUrl": "#",
-            "time": $SYS.time.iso8601
-        }
+        <init as="breakingNews" from="assets/breaking-news-{$SYS.locale}.json" async>
+            {
+                "title": "This is an absolute breaking news!",
+                "shortDesc": "The Zhang family's rooster has laid eggs!",
+                "longDesc": 'Yesterday, the second son of the Zhang family came to me and said, "My rooster has laid eggs!"',
+                "detailedUrl": "#",
+                "time": $SYS.time.iso8601
+            }
 
-        <update on="#breaking-news" to="displace" with="$realCardBody" />
+            <update on="#breaking-news" to="displace" with="$realCardBody" />
 
-        <observe against="breakingNews" for="change:displaced" in="#breaking-news">
-            <update on="$@" to="displace" with="$realCardBody" />
-        </observe>
-    </init>
+            <observe against="breakingNews" for="change:displaced" in="#breaking-news">
+                <update on="$@" to="displace" with="$realCardBody" />
+            </observe>
+        </init>
 ```
 
 一个模板元素的内容位于该模板元素的起始标签之后，终止标签之前，可包含任意的文本、字符引用、外部元素以及注释，但文本不能包含 U+003C LESS-THAN SIGN (`<`) 或者含糊的 `＆` 符号。
+
+> The markup for the template contents of a template element is placed just after the template element's start tag and just before template element's end tag (as with other elements), and may consist of any text, character references, foreign elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
 
 数据模板元素用于定义一个 eJSON 格式的数据模板，其内容定义在该元素的起始标签之后，终止标签之前。
 
 外部元素必须要么同时包含起始标签和终止标签，要么起始标签被标记为自终止。后者情形下，不能包含终止标签。
 
+> Foreign elements must either have a start tag and an end tag, or a start tag that is marked as self-closing, in which case they must not have an end tag. 
+
 比如，HTML 的 `<br>` 元素，在 HVML 中作为外部元素使用时，必须书写为：`<br />`。
 
 当一个外部元素的起始标签被标记为自终止时，该元素不能包含任何内容（显然，没有终止标签就无法在起始标签和终止标签之间放置任何内容）。当一个外部元素的起始标签没有被标记为自终止时，该元素中可包含文本、字符引用、HEE、CDATA 段、注释以及其他外部元素或动作元素，但文本中不可包含 U+003C LESS-THAN SIGN (`<`) 或含糊的 & 符号。
+
+> Foreign elements whose start tag is marked as self-closing can't have any contents (since, again, as there's no end tag, no content can be put between the start tag and the end tag). Foreign elements whose start tag is not marked as self-closing can have text, character references, CDATA sections, other foreign elements or operation elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
 
 当一个外部元素包含 `hvml:raw` 属性时，该外部元素中只能包含可转义裸文本，此类元素统称为可转移文本元素（escapable raw text elements）。
 
 可转义裸文本元素中可包含文本和字符引用，但文本中不可包含任何含糊的 & 符号，另有后面所述之限制。
 
+> Escapable raw text elements can have text and character references, but the text must not contain an ambiguous ampersand. There are also further restrictions described below.
+
 框架和外部元素可包含文本、字符引用、其他普通元素或外部元素以及注释，但文本中不可包含 U+003C LESS-THAN SIGN (`<`) 或含糊的 & 符号。
 
+> Framework and foreign elements can have text, character references, other elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
+
 标签包含标签名称，给定了元素的名称。HVML 元素允许使用指定的前缀来避免出现标签名称的冲突。除该前缀中包含的冒号（:）字符之外，标签名称中仅使用 ASCII 字母及数字，且仅使用字母开头。
+
+> Tags contain a tag name, giving the element's name. HVML allows use a prefix for the tag of a HVML-only element. Except for the colon character as the end of the prefix, HVML elements all have names that only use ASCII alphanumerics. 
 
 注意，HVML 标签名称区别大小写。对于外部元素的标签，将保留其大小写形式。
 
 ##### 3.1.2.1) 起始标签
 
 起始标签必须具有如下格式：
+
+> Start tags must have the following format:
 
 1. 一个起始标签的第一个字符必须是 U+003C LESS-THAN SIGN 字符（`<`）。
 1. 该起始标签其后的几个字符必须是该元素的标签名称。
@@ -6674,9 +6707,19 @@ SYSTEM 标识符字符串的格式如下：
 1. 然后，如果该元素是一个空白（void）元素，或者该元素是一个外部元素，则可包含一个 U+002F SOLIDUS 字符（`/`）。该字符对空白元素无效，但对外部元素来讲，表明该起始标签是自关闭的（self-closing）。
 1. 最后，起始标签必须由一个 U+003E GREATER-THAN SIGN 字符（`>`）关闭.
 
+> 1. The first character of a start tag must be a U+003C LESS-THAN SIGN character (<).
+> 1. The next few characters of a start tag must be the element's tag name.
+> 1. If there are to be any attributes in the next step, there must first be one or more ASCII whitespace.
+> 1. Then, the start tag may have a number of attributes, the syntax for which is described below. Attributes must be separated from each other by one or more ASCII whitespace.
+> 1. After the attributes, or after the tag name if there are no attributes, there may be one or more ASCII whitespace. (Some attributes are required to be followed by a space. See the attributes section below.)
+> 1. Then, if the element is one of the void elements, or if the element is a foreign element, then there may be a single U+002F SOLIDUS character (/). This character has no effect on void elements, but on foreign elements it marks the start tag as self-closing.
+> 1. Finally, start tags must be closed by a U+003E GREATER-THAN SIGN character (>).
+
 ##### 3.1.2.2) 终止标签
 
 终止标签必须具有如下格式：
+
+> End tags must have the following format:
 
 1. 一个终止标签的第一个字符必须是 U+003C LESS-THAN SIGN 字符（`<`）。
 1. 一个终止标签的第二个字符必须是 U+002F SOLIDUS 字符（`/`）。
@@ -6684,21 +6727,39 @@ SYSTEM 标识符字符串的格式如下：
 1. 在标签名称之后，可以有一个或多个 ASCII 空白字符。
 1. 最后，终止标签必须由一个 U+003E GREATER-THAN SIGN 字符（`>`）关闭.
 
+> 1. The first character of an end tag must be a U+003C LESS-THAN SIGN character (<).
+> 1. The second character of an end tag must be a U+002F SOLIDUS character (/).
+> 1. The next few characters of an end tag must be the element's tag name.
+> 1. After the tag name, there may be one or more ASCII whitespace.
+> 1. Finally, end tags must be closed by a U+003E GREATER-THAN SIGN character (>).
+
 ##### 3.1.2.3) 属性
 
-一个元素的属性在元素的起始标签中表达。
+> 一个元素的属性在元素的起始标签中表达。
 
-属性有一个名称和一个值。属性名称必须由一个或者多个不是控制字符、U+0020 SPACE、 U+0022（`"`）、 U+0027（`'`）、 U+003E（`>`）、 U+002F（`/`）、  U+003D（`=`）以及非字符（noncharacter）的字符组成。
+> Attributes for an element are expressed inside the element's start tag.
+
+> 属性有一个名称和一个值。属性名称必须由一个或者多个不是控制字符、U+0020 SPACE、 U+0022（`"`）、 U+0027（`'`）、 U+003E（`>`）、 U+002F（`/`）、  U+003D（`=`）以及非字符（noncharacter）的字符组成。
+
+> Attributes have a name and a value. Attribute names must consist of one or more characters other than controls, U+0020 SPACE, U+0022 ("), U+0027 ('), U+003E (>), U+002F (/), U+003D (=), and noncharacters. In the HVML syntax, attribute names, even those for foreign elements, may be written with any mix of ASCII lower and ASCII upper alphas.
 
 属性值一般是文本和字符引用的混合体，且具有额外限制：文本中不能包含含糊的 `&` 符号。
 
+> Attribute values are a mixture of text and character references, except with the additional restriction that the text cannot contain an ambiguous ampersand.
+
 属性可以如下五种方式指定：
+
+> Attributes can be specified in five different ways:
 
 1) 空属性语法/Empty attribute syntax
 
 仅仅一个属性名，属性值被隐式指定为空字符串。
 
+> Just the attribute name. The value is implicitly the empty string.
+
 在下面的例子中，`uniquely` 属性以空属性语法的形式给定：
+
+> In the following example, the `uniquely` attribute is given with the empty attribute syntax:
 
 ```hvml
     <init as="foo" uniquely against="id">
@@ -6706,11 +6767,17 @@ SYSTEM 标识符字符串的格式如下：
 
 如果一个使用空属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
 
+> If an attribute using the empty attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
+
 2) 无引号属性值语法/Unquoted attribute value syntax
 
 属性名之后跟随有零个或多个 ASCII 空白字符，随后是 U+003D EQUALS SIGN 字符（`=`），随后是零个或者多个 ASCII 空白字符，随后是属性值，而这里的属性值，除了需满足上面提到的属性值要求之外，还不能包含任何字面的 ASCII 空白字符、 U+0022 QUOTATION MARK 字符（`"`）、 U+0027 APOSTROPHE 字符（`'`）、 U+003D EQUALS SIGN 字符（`=`）、 U+003C LESS-THAN SIGN 字符（`<`）、 U+003E GREATER-THAN SIGN 字符（`>`）或者 U+0060 GRAVE ACCENT 字符（`\``），而且不能是一个空字符串。
 
+> The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal ASCII whitespace, any U+0022 QUOTATION MARK characters ("), U+0027 APOSTROPHE characters ('), U+003D EQUALS SIGN characters (=), U+003C LESS-THAN SIGN characters (<), U+003E GREATER-THAN SIGN characters (>), or U+0060 GRAVE ACCENT characters (`), and must not be the empty string.
+
 在下面的例子中，属性由无引号属性值语法的形式给定：
+
+> In the following example, the value attribute is given with the unquoted attribute value syntax:
 
 ```hvml
     <init as=foo uniquely against=id>
@@ -6718,11 +6785,17 @@ SYSTEM 标识符字符串的格式如下：
 
 如果一个使用无引号属性语法的属性之后跟随另一个属性，或者随后是起始标签语法第 6 步中提到的可选 U+002F SOLIDUS 字符（`/`），则必须使用 ASCII 空白字符来分隔这两个东西。
 
+> If an attribute using the unquoted attribute syntax is to be followed by another attribute or by the optional U+002F SOLIDUS character (/) allowed in step 6 of the start tag syntax above, then there must be ASCII whitespace separating the two.
+
 3) 单引号属性值语法/Single-quoted attribute value syntax
 
 属性名之后跟随有零个或多个 ASCII 空白字符，随后是 U+003D EQUALS SIGN 字符（`=`），随后是零个或者多个 ASCII 空白字符，随后是单个 U+0027 APOSTROPHE 字符（`'`），随后是属性值，而这里的属性值，除了需满足上面提到的属性值要求之外，还不能包含任何字面的 U+0027 APOSTROPHE 字符（`'`），最后由第二个单独的 U+0027 APOSTROPHE 字符（`'`）结尾。
 
+>The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by a single U+0027 APOSTROPHE character ('), followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal U+0027 APOSTROPHE characters ('), and finally followed by a second single U+0027 APOSTROPHE character (').
+
 在下面的例子中，属性由单引号属性值语法的形式给定：
+
+> In the following example, the type attribute is given with the single-quoted attribute value syntax:
 
 ```hvml
     <init as='foo' uniquely against='id'>
@@ -6730,17 +6803,25 @@ SYSTEM 标识符字符串的格式如下：
 
 如果一个使用单引号属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
 
+If an attribute using the single-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
+
 4) 双引号属性值语法/Double-quoted attribute value syntax
 
 属性名之后跟随有零个或多个 ASCII 空白字符，随后是 U+003D EQUALS SIGN 字符（`=`），随后是零个或者多个 ASCII 空白字符，随后是单个 U+0022 QUOTATION MARK 字符（`"`），随后是属性值，而这里的属性值，除了需满足上面提到的属性值要求之外，还不能包含任何字面的 U+0022 QUOTATION MARK 字符（`"`），最后由第二个单独的 U+0022 QUOTATION MARK 字符（`"`）结尾。
 
+> The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by a single U+0022 QUOTATION MARK character ("), followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal U+0022 QUOTATION MARK characters ("), and finally followed by a second single U+0022 QUOTATION MARK character (").
+
 在下面的例子中，属性由双引号属性值语法的形式给定：
+
+> In the following example, the name attribute is given with the double-quoted attribute value syntax:
 
 ```hvml
     <choose on="$2.payload" in="#the-user-list" with="$user_item">
 ```
 
 如果一个使用双引号属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
+
+If an attribute using the double-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
 
 5) 反引号属性值语法/Grave-quoted attribute value syntax
 
@@ -6772,6 +6853,8 @@ SYSTEM 标识符字符串的格式如下：
 
 在同一起始标签内，不能有两个或更多属性具有相同的属性名。
 
+> There must never be two or more attributes on the same start tag whose names are an ASCII case-sensitive match for each other.
+
 ##### 3.1.2.4) 动作元素属性
 
 在 HVML 中，动作元素的属性值存在如下特殊之处：
@@ -6783,7 +6866,7 @@ SYSTEM 标识符字符串的格式如下：
 
 所有介词属性（仅在动作元素中）的赋值操作符（`=`）可以被忽略：
 
-```hvml
+```
     <choose on "$2.payload" to "append update" in "#the-user-list" with "$user_item">
         <update at = "textContent" with = "foo" />
     </choose>
@@ -6793,14 +6876,14 @@ SYSTEM 标识符字符串的格式如下：
 
 1. 当使用参数化数据定义数组或对象作为介词属性值时。如，
 
-```hvml
+```
     <choose on ["zh_CN", "en_US"] to "append update" in #the-user-list with $user_item>
     </choose>
 ```
 
 或，
 
-```hvml
+```
     <choose on {"zh_CN": 100, "en_US": 50} to "append update" in #the-user-list with $user_item>
     </choose>
 ```
@@ -6832,7 +6915,7 @@ SYSTEM 标识符字符串的格式如下：
 
 如，
 
-```hvml
+```
     <choose on "$2.payload" to "append update" in "#the-user-list" with "$user_item">
         <update at="attr.class" with %= "text-* text-info" />
     </choose>
@@ -7007,6 +7090,8 @@ SYSTEM 标识符字符串的格式如下：
 
 裸文本元素和可转义裸文本元素中的文本不能包含任何以 `</`（U+003C LESS-THAN SIGN, U+002F SOLIDUS）打头，且跟随以 ASCII 字母打头的标签名称以及 U+0009 CHARACTER TABULATION (tab)、U+000A LINE FEED (LF)、U+000C FORM FEED (FF)、U+000D CARRIAGE RETURN (CR)、U+0020 SPACE、U+003E GREATER-THAN SIGN (`>`)，或者 U+002F SOLIDUS (`/`) 字符之一的字符串。
 
+> The text in raw text and escapable raw text elements must not contain any occurrences of the string `</` (U+003C LESS-THAN SIGN, U+002F SOLIDUS) followed by a tag name started with an ASCII alpha letter and followed by one of U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), U+0020 SPACE, U+003E GREATER-THAN SIGN (`>`), or U+002F SOLIDUS (`/`).
+
 ##### 3.1.2.7) 数据内容和数据属性
 
 HVML 的 `init` 和 `archedata` 元素中包含的文本内容必须为一个合法的参数化数据。如：
@@ -7052,43 +7137,71 @@ HVML 的 `init` 和 `archedata` 元素中包含的文本内容必须为一个合
 
 在元素内部、属性值和注释中允许使用文本。有关文本使用的限制和使用文本的地方有关，并在其他小节中描述。
 
+> Text is allowed inside elements, attribute values, and comments. Extra constraints are placed on what is and what is not allowed in text based on where the text is to be put, as described in the other sections.
+
 ##### 3.1.3.1) 新行
 
 HVML 中的新行必须表达为 U+000D CARRIAGE RETURN（CR）字符、U+000A LINE FEED（LF）字符，或者成对出现的 U+000D CARRIAGE RETURN（CR）和 U+000A LINE FEED（LF）字符。
 
+> Newlines in HVML may be represented either as U+000D CARRIAGE RETURN (CR) characters, U+000A LINE FEED (LF) characters, or pairs of U+000D CARRIAGE RETURN (CR), U+000A LINE FEED (LF) characters in that order.
+
 在允许字符引用的情况下，U+000A LINE FEED 字符（但非 U+000D CARRIAGE RETURN 字符）的字符引用亦可表达一个新行。
+
+> Where character references are allowed, a character reference of a U+000A LINE FEED (LF) character (but not a U+000D CARRIAGE RETURN (CR) character) also represents a newline.
 
 #### 3.1.4) 字符引用
 
 在其他小节描述的特定情况下，文本中可混有字符应用。当文本中不能合法地包含某些字符时，字符引用可用于转义。
 
+> In certain cases described in other sections, text may be mixed with character references. These can be used to escape characters that couldn't otherwise legally be included in text.
+
 字符引用必须由一个 U+0026 AMPERSAND 字符（`&`）起始，之后是三种可能的字符引用类型：
+
+> Character references must start with a U+0026 AMPERSAND character (&). Following this, there are three possible kinds of character references:
 
 1) 被指名的字符引用/Named character references
 
 `&` 字符之后必须跟随 [HTML Specification] 中“被指名的字符引用”一节中给定的名称，且必须使用相同的大小写形式。名称必须是被 U+003B SEMICOLON 字符（`;`）终止的。
 
+> The ampersand must be followed by one of the names given in the named character references section in [HTML Specification], using the same case. The name must be one that is terminated by a U+003B SEMICOLON character (;).
+
 2) 十进制编号的字符引用/Decimal numeric character reference
 
 `&` 字符之后必须跟随一个 U+0023 NUMBER SIGN 字符（`#`），随后是一个或者多个 ASCII 数字，这些数字表示一个十进制的整数，对应于 下面的定义被允许的码点。数字之后必须由一个 U+003B SEMICOLON 字符（`;`）终止。
+
+> The ampersand must be followed by a U+0023 NUMBER SIGN character (#), followed by one or more ASCII digits, representing a base-ten integer that corresponds to a code point that is allowed according to the definition below. The digits must then be followed by a U+003B SEMICOLON character (;).
 
 3) 十六进制编号的字符引用/Hexadecimal numeric character reference
 
 `&` 字符之后必须跟随一个 U+0023 NUMBER SIGN 字符（`#`），随后是一个 U+0078 LATIN SMALL LETTER X 字符（`x`）或一个 U+0058 LATIN CAPITAL LETTER X 字符（`X`），随后是一个或多个 ASCII 十六进制数字，这些数字表示一个十六进制的整数，对应于 下面的定义被允许的码点。数字之后必须由一个 U+003B SEMICOLON 字符（`;`）终止。
 
+> The ampersand must be followed by a U+0023 NUMBER SIGN character (#), which must be followed by either a U+0078 LATIN SMALL LETTER X character (x) or a U+0058 LATIN CAPITAL LETTER X character (X), which must then be followed by one or more ASCII hex digits, representing a hexadecimal integer that corresponds to a code point that is allowed according to the definition below. The digits must then be followed by a U+003B SEMICOLON character (;).
+
 上面描述的两种编号的字符引用形式，不允许引用 U+000D CR、非字符（noncharacter）以及除 ASCII 空白字符之外的控制字符，其他任意码点均可引用。
 
+> The numeric character reference forms described above are allowed to reference any code point excluding U+000D CR, noncharacters, and controls other than ASCII whitespace.
+
 一个含糊的 `&` 字符是指，一个 U+0026 AMPERSAND 字符（`&`）之后跟随一个或多个 ASCII 字母及数字，随后是一个 U+003B SEMICOLON 字符（`;`），但这些字符并不能匹配 [HTML Specification] “被指名的字符引用”一节中给定的名称。
+
+> An ambiguous ampersand is a U+0026 AMPERSAND character (&) that is followed by one or more ASCII alphanumerics, followed by a U+003B SEMICOLON character (;), where these characters do not match any of the names given in the named character references section.
 
 #### 3.1.5) CDATA 段落
 
 CDATA 段落必须按给定的顺序包含如下组件：
 
+> CDATA sections must consist of the following components, in this order:
+
 1. 字符串 `<![CDATA[`。
 1. 可选的文本，但文本中不能包含字符串 `]]>`。
 1. 字符串 `]]>`。
 
+> 1. The string `<![CDATA[`.
+> 1. Optionally, text, with the additional restriction that the text must not contain the string `]]>`.
+> 1. The string `]]>`.
+
 CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被用于转义 MathML `ms` 元素的内容：
+
+> CDATA sections can only be used in foreign content. In this example, a CDATA section is used to escape the contents of a MathML ms element:
 
 ```hvml
 <p>You can add a string to a number, but this stringifies the number:</p>
@@ -7105,9 +7218,15 @@ CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被�
 
 注释必须具有如下的格式：
 
+> Comments must have the following format:
+
 1. 字符串 `<!--`。
 1. 可选文本，但文本中不能以字符串 `>` 打头，也不能以字符串 `->` 打头，也不能包含 `<!--`、 `-->` 或者 `--!>` 字符串，也不能以字符串 `<!-` 结尾。
 1. 字符串 `-->`。
+
+> 1. The string `<!--`.
+> 1. Optionally, text, with the additional restriction that the text must not start with the string `>`, nor start with the string `->`, nor contain the strings `<!--`, `-->`, or `--!>`, nor end with the string `<!-`.
+> 1. The string `-->`.
 
 ### 3.2) 解析 HVML 文档
 
@@ -7245,15 +7364,15 @@ CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被�
 如果我们使用 HybridOS 中提到的直接执行本地系统命令的扩展图式（lcmd），我们甚至都不需要编写任何代码，而只需要使用 `init`：
 
 ```hvml
-    <init as="lcmdParams">
-        { "cmdLine": "ls $fileInfo.curr_path" }
-    <init>
+        <init as="lcmdParams">
+            { "cmdLine": "ls $fileInfo.curr_path" }
+        <init>
 
-    <init from="lcmd:///bin/ls" with="$lcmdParams" via="GET" as="files" temporarily>
-        <iterate on="$files" in="#entries" by="RANGE: 0">
-            <update on="$@" to="append" with="$dir_entry" />
-        </iterate>
-    </init>
+        <init from="lcmd:///bin/ls" with="$lcmdParams" via="GET" as="files" temporarily>
+            <iterate on="$files" in="#entries" by="RANGE: 0">
+                <update on="$@" to="append" with="$dir_entry" />
+            </iterate>
+        </init>
 ```
 
 如此，开发者不需要做编写任何程序，即可实现一个简单的文件浏览和打开对话框。
@@ -7350,7 +7469,6 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
-- 2023 年 02 月 28 日：发布 V1.0 RC10，标记为 'v1.0-rc10-230228'。
 - 2022 年 12 月 31 日：发布 V1.0 RC9，标记为 'v1.0-rc9-221231'。
 - 2022 年 11 月 30 日：发布 V1.0 RC8，标记为 'v1.0-rc8-221130'。
 - 2022 年 10 月 31 日：发布 V1.0 RC7，标记为 'v1.0-rc7-221031'。
@@ -7360,8 +7478,6 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
-
-#### RC10) 230228
 
 #### RC9) 221231
 
