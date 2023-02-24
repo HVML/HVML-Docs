@@ -12,8 +12,8 @@ Language: Chinese
 
 *Copyright Notice*
 
-版权所有 &copy; 2021, 2022 魏永明  
-版权所有 &copy; 2021, 2022 北京飞漫软件技术有限公司  
+版权所有 &copy; 2021, 2022, 2023 魏永明  
+版权所有 &copy; 2021, 2022, 2023 北京飞漫软件技术有限公司  
 保留所有权利
 
 此文档不受 HVML 相关软件开源许可证的管辖。
@@ -1850,7 +1850,7 @@ $DOC.query(
 1. `.select( <string: CSS selector )`：以 CSS 选择器在给定的元素汇集中选择元素，并形成一个新的元素汇集。
 1. `.attr( <string: attributeName> )`：获取元素汇集中第一个元素的指定属性值。
 1. `.hasClass( <string: className> )`：判断元素汇集中是否有任意元素被赋予指定的类名。
-1. `.content()`：获取元素汇集中第一个元素的内容（字符串，按目标标记语言序列化）。
+1. `.contents()`：获取元素汇集中第一个元素的内容（字符串，按目标标记语言序列化）。
 1. `.textContent()`：获得元素汇集中第一个元素（含子元素）的文本内容。
 1. `.dataContent()`：获得元素汇集中第一个元素（含子元素）的数据内容，多个内容形成数组。
 
@@ -1858,7 +1858,7 @@ $DOC.query(
 
 1. `.attr(! <string: attributeName>, <string: value> )`：设置元素汇集中所有元素的属性值。
 1. `.attr(! <object: attributes> )`：使用对象信息设置元素汇集中所有元素的多个属性值。
-1. `.content(! <string: content> )`：设置元素汇集中所有元素的内容。
+1. `.contents(! <string: content> )`：设置元素汇集中所有元素的内容。
 1. `.textContent(! <string: content> )`：设置元素汇集中所有元素的文本内容，将移除可能的子元素。
 1. `.dataContent(! <any: content> )`：设置元素汇集中所有元素的数据内容，将移除可能的子元素。
 1. `.addClass(! <string: className> )`：为元素汇集中所有的元素添加指定的类名。
@@ -7553,6 +7553,8 @@ $FILE.bin.tail($file, -5)
 
 #### RC9) 230131
 
+1. 重命名元素汇集实体的 `.content()` 属性名称为 `.contents()`。
+1. 重命名元素汇集实体的 `.jsonContent()` 属性名称为 `.dataContent()`。
 1. 新增 `$DOC.select` 方法。
 1. 整理元素汇集实体的接口。
 
