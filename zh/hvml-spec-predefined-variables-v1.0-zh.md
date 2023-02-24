@@ -1,11 +1,11 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RC9  
+Version: 1.0-RCa  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Jan. 31, 2023  
+Last Modified Date: Feb. 28, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -201,6 +201,7 @@ Language: Chinese
       * [3.12.4) `stdout` 静态属性](#3124-stdout-静态属性)
       * [3.12.5) `stderr` 静态属性](#3125-stderr-静态属性)
       * [3.12.6) `pipe` 流实体](#3126-pipe-流实体)
+   + [3.13) `SOCK`](#313-sock)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -273,8 +274,10 @@ Language: Chinese
       * [4.3.2) 二进制文件](#432-二进制文件)
          - [4.3.2.1) `bin.head` 方法](#4321-binhead-方法)
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
+   + [4.4) `PY`](#44-py)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RCa) 230228](#rca-230228)
       * [RC9) 230131](#rc9-230131)
       * [RC8) 221231](#rc8-221231)
       * [RC7) 221130](#rc7-221130)
@@ -5846,6 +5849,10 @@ du -BM hvml-spec-v1.0-zh.md
 
 `pipe` 流实体应该额外提供 `status` 方法，用于检查子进程的状态。该方法返回一个数组，第一个成员是表示状态的字符串，第二个成员给出状态对应的值。
 
+### 3.13) `SOCK`
+
+`$SOCK` 是一个行者级内置变量，该变量用于创建套接字并监听该套接字上的连接请求。
+
 ## 4) 可选动态变量
 
 ### 4.1) `MATH`
@@ -7517,12 +7524,19 @@ $FILE.bin.tail($file, 5)
 $FILE.bin.tail($file, -5)
 ```
 
+### 4.4) `PY`
+
+`PY` 是一个可装载的动态变量，该变量用于装载 Python 模块并在其上调用指定函数或方法。
+
+
 ## 附录
 
 ### 附.1) 修订记录
 
 发布历史：
 
+- 2023 年 02 月 28 日：发布 V1.0 RCa，标记为 'v1.0-rca-230228'。
+- 2023 年 01 月 31 日：发布 V1.0 RC9，标记为 'v1.0-pv-rc9-230131'。
 - 2022 年 12 月 31 日：发布 V1.0 RC8，标记为 'v1.0-pv-rc8-221231'。
 - 2022 年 11 月 30 日：发布 V1.0 RC7，标记为 'v1.0-pv-rc7-221130'。
 - 2022 年 10 月 31 日：发布 V1.0 RC6，标记为 'v1.0-pv-rc6-221031'。
@@ -7531,6 +7545,11 @@ $FILE.bin.tail($file, -5)
 - 2022 年 06 月 01 日：发布 V1.0 RC3，标记为 'v1.0-pv-rc3-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
+
+#### RCa) 230228
+
+1. 新增必要动态变量 `$SOCK`。
+1. 新增可选动态变量 `$PY`。
 
 #### RC9) 230131
 

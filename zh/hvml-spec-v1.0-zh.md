@@ -1,11 +1,11 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0-RC10  
+Version: 1.0-RCa  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Jan. 31, 2023  
+Last Modified Date: Feb. 28, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -149,6 +149,8 @@ Language: Chinese
 - [5) 总结](#5-总结)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RCa) 230228](#rca-230228)
+         - [RCa.1) 调整 `DOCTYPE` 的 `SYSTEM` 标识符规则](#rca1-调整-doctype-的-system-标识符规则)
       * [RC9) 221231](#rc9-221231)
          - [RC9.1) 定义骨架元素属性的响应式处理语法](#rc91-定义骨架元素属性的响应式处理语法)
          - [RC9.2) 文档片段的结构化数据表达](#rc92-文档片段的结构化数据表达)
@@ -6579,19 +6581,19 @@ SYSTEM 标识符字符串的格式如下：
 
 注意，我们通常在目标标记语言定义的标签和 HVML 标签冲突时才使用前缀。
 
-当我们使用 `DOCTYPE` 的 `SYSTEM` 标志符定义需要预先装载的全局动态对象时，使用 `<pkg_name>`、 `<pkg_name>:<var_name>`、 `<pkg_name>.<obj_name>` 或者 `<pkg_name>.<obj_name>:<var_name>` 这样的表示法。以上四种表示法的含义分别解释如下：
+当我们使用 `DOCTYPE` 的 `SYSTEM` 标志符定义需要预先装载的行者级动态对象时，使用 `<pkg_name>`、 `<pkg_name>:<var_name>`、 `<pkg_name>.<obj_name>` 或者 `<pkg_name>.<obj_name>:<var_name>` 这样的表示法。以上四种表示法的含义分别解释如下：
 
-1. 表示从 `<pkg_name>` 对应的共享库中装载名称同包名 `<pkg_name>` 的动态对象，并绑定为名称是 `<pkg_name>` 的变量。
-1. 表示从 `<pkg_name>` 对应的共享库中装载名称同包名 `<pkg_name>` 的动态对象，并绑定为名称是 `<var_name>` 的变量。
-1. 表示从 `<pkg_name>` 对应的共享库中装载名称为 `<obj_name>` 的动态对象，并绑定为名称是 `<obj_name>` 的变量。
-1. 表示从 `<pkg_name>` 对应的共享库中装载名称为 `<obj_name>` 的动态对象，并绑定为变量 `<var_name>`。
+1. 表示从 `<pkg_name>` 对应的共享库中装载名称同包名 `<pkg_name>` 的动态对象，并绑定为名称是 `<pkg_name>` 的行者级变量。
+1. 表示从 `<pkg_name>` 对应的共享库中装载名称同包名 `<pkg_name>` 的动态对象，并绑定为名称是 `<var_name>` 的行者级变量。
+1. 表示从 `<pkg_name>` 对应的共享库中装载名称为 `<obj_name>` 的动态对象，并绑定为名称是 `<obj_name>` 的行者级变量。
+1. 表示从 `<pkg_name>` 对应的共享库中装载名称为 `<obj_name>` 的动态对象，并绑定为行者级变量 `<var_name>`。
 
 如 `DATETIME math:MATH FILE.FS FILE.FILE:F`，表示从：
 
-1. 从 `DATETIME` 库中装载动态对象 `DATETIME` 并绑定到全局 `DATETIME` 变量。
-1. 从 `math` 库中装载动态对象 `MATH` 并绑定到全局 `MATH` 变量。
-1. 从 `FILE` 库中装载动态对象 `FS` 并绑定到全局 `FS` 变量。
-1. 从 `FILE` 库中装载动态对象 `FILE` 并绑定到全局 `F` 变量。
+1. 从 `DATETIME` 库中装载动态对象 `DATETIME` 并绑定到行者级 `DATETIME` 变量。
+1. 从 `math` 库中装载动态对象 `MATH` 并绑定到行者级 `MATH` 变量。
+1. 从 `FILE` 库中装载动态对象 `FS` 并绑定到行者级 `FS` 变量。
+1. 从 `FILE` 库中装载动态对象 `FILE` 并绑定到行者级 `F` 变量。
 
 #### 3.1.2) 元素
 
@@ -7349,6 +7351,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
+- 2023 年 02 月 28 日：发布 V1.0 RCa，标记为 'v1.0-rca-230228'。
 - 2022 年 12 月 31 日：发布 V1.0 RC9，标记为 'v1.0-rc9-221231'。
 - 2022 年 11 月 30 日：发布 V1.0 RC8，标记为 'v1.0-rc8-221130'。
 - 2022 年 10 月 31 日：发布 V1.0 RC7，标记为 'v1.0-rc7-221031'。
@@ -7358,6 +7361,18 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
+
+#### RCa) 230228
+
+##### RCa.1) 调整 `DOCTYPE` 的 `SYSTEM` 标识符规则
+
+主要修订内容如下：
+
+1. 当使用 `DOCTYPE` 的 `SYSTEM` 标识符规则装载外部模块时，将对应的动态对象绑定到行者级变量上。
+
+相关章节：
+
+- [3.1.1) DOCTYPE](#311-doctype)
 
 #### RC9) 221231
 
