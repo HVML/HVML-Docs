@@ -202,6 +202,16 @@ Language: Chinese
       * [3.12.5) `stderr` 静态属性](#3125-stderr-静态属性)
       * [3.12.6) `pipe` 流实体](#3126-pipe-流实体)
    + [3.13) `SOCK`](#313-sock)
+      * [3.13.1) `stream` 方法](#3131-stream-方法)
+      * [3.13.2) `dgram` 方法](#3132-dgram-方法)
+         - [3.13.2.1) 流套接字实体的 `accept` 方法](#31321-流套接字实体的-accept-方法)
+         - [3.13.2.2) 流套接字实体的 `send` 方法](#31322-流套接字实体的-send-方法)
+         - [3.13.2.3) 流套接字实体的 `recv` 方法](#31323-流套接字实体的-recv-方法)
+         - [3.13.2.4) 流套接字实体的 `close` 方法](#31324-流套接字实体的-close-方法)
+         - [3.13.2.5) 流套接字实体的 `peer` 属性](#31325-流套接字实体的-peer-属性)
+         - [3.13.2.6) 数据报套接字实体的 `send` 方法](#31326-数据报套接字实体的-send-方法)
+         - [3.13.2.7) 数据报套接字实体的 `recv` 方法](#31327-数据报套接字实体的-recv-方法)
+         - [3.13.2.8) 数据报套接字实体的 `close` 方法](#31328-数据报套接字实体的-close-方法)
 - [4) 可选动态变量](#4-可选动态变量)
    + [4.1) `MATH`](#41-math)
       * [4.1.1) `pi` 方法](#411-pi-方法)
@@ -275,6 +285,10 @@ Language: Chinese
          - [4.3.2.1) `bin.head` 方法](#4321-binhead-方法)
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
    + [4.4) `PY`](#44-py)
+      * [4.4.1) `last_error` 属性](#441-last_error-属性)
+      * [4.4.2) `import` 方法](#442-import-方法)
+      * [4.4.3) `compile` 方法](#443-compile-方法)
+         - [4.4.3.1) CPython 代码对象实体的 `eval` 方法](#4431-cpython-代码对象实体的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RCa) 230228](#rca-230228)
@@ -5851,7 +5865,174 @@ du -BM hvml-spec-v1.0-zh.md
 
 ### 3.13) `SOCK`
 
-`$SOCK` 是一个行者级内置变量，该变量用于创建套接字并监听该套接字上的连接请求。
+`$SOCK` 是一个行者级内置变量，该变量用于创建流套接字或者数据报套接字，并监听该套接字上的连接请求或者接收消息或发送消息。
+
+下面的 HVML 代码，在指定的 UNIX 域套接字上监听连接请求，然后在表示流套接字的原生实体上调用 `accept` 方法：
+
+```html
+    <choose on $SOCK.listen('unix:///var/run/myapp.sock') >
+        <observe on $? for 'connRequest' >
+            <choose on $?.accept() >
+                ...
+            </choose>
+        </observe>
+    </choose>
+```
+
+`$SOCK.listen` 方法返回的原生实体，称为“流套接字（streamSocket）实体”。流套接字实体应提供如下基本接口：
+
+- `connRequest` 事件，用于通知一个新的连接请求。
+- `accept`：接受连接请求并创建一个流（stream）实体。
+
+#### 3.13.1) `stream` 方法
+
+创建并监听一个流套接字（streamSocket），返回一个代表流套接字的原生实体值。这个原生实体可以被观察。
+
+**描述**
+
+```js
+$SOCK.stream(
+        < string $uri: `the URI of the stream.` >
+        [, <'[create || truncate || nonblock] | default' $opt = 'default':
+               - 'create':      `If $uri does not exist, try to create it`
+               - 'nonblock':    `Open the $uri in nonblocking mode`
+               - 'default':     `equivalent to 'create nonblock'`
+           >
+                [, <longint $backlog: `the backlog.` >
+                ]
+            ]
+        ]
+) native/streamSocket | undefined
+```
+
+该方法创建并监听一个流套接字，返回一个代表流套接字的原生实体值。
+
+该方法使用 URI 指定要打开的流套接字位置，如：
+
+- `unix:///var/run/myapp.sock`：UNIX 套接字。
+- `tcp://foo.com:1100`：TCP 套接字。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
+
+**备注**
+
+1. 流套接字的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用 `$streamSocket.close` 方法释放流套接字实体占用的系统资源。
+
+**示例**
+
+```js
+$SOCK.stream("unix://var/run/myapp.sock")
+```
+
+#### 3.13.2) `dgram` 方法
+
+创建一个数据报套接字（dgramSocket），返回一个代表数据报套接字的原生实体值。这个原生实体可以被观察。
+
+**描述**
+
+```js
+$SOCK.dgram(
+        < string $uri: `the URI of the dgram socket.` >
+        [, <'[create || truncate || nonblock] | default' $opt = 'default':
+               - 'create':      `If $uri does not exist, try to create it`
+               - 'nonblock':    `Open the $uri in nonblocking mode`
+               - 'default':     `equivalent to 'create nonblock'`
+           >
+        ]
+) native/dgramSocket | undefined
+```
+
+该方法创建一个数据报套接字，返回一个代表数据报套接字的原生实体值。
+
+该方法使用 URI 指定要打开的流套接字位置，如：
+
+- `unix:///var/run/myapp.sock`：UNIX 数据报套接字。
+- `udp://foo.com:1100`：UDP 数据报套接字。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
+
+**备注**
+
+1. 流套接字的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用 `$streamSocket.close` 方法释放流套接字实体占用的系统资源。
+
+**示例**
+
+```js
+$SOCK.stream("unix://var/run/myapp.sock")
+```
+
+##### 3.13.2.1) 流套接字实体的 `accept` 方法
+
+接受来自客户端的连接请求，并创建对应的流实体。
+
+```js
+$streamSocket.accept(
+    [, <'[ssl | tls] || websocket || hibus || mqtt || http || ...' $filerts = '': `the filters will be used on the stream entity.`
+           - 'ssl':         `this filter uses SSL to encrypt and decrypt the data; only for TCP connections.`
+           - 'tls':         `this filter uses TLS to encrypt and decrypt the data; only for TCP connections.`
+           - 'websocket':   `this filter can handle WebSocket protocol, provide methods like ws_send() and ws_read()`
+           - 'hibus':       `this filter can handle hiBus protocol, provide methods like hibus_subscribe() and hibus_call_procedure()`
+           - 'mqtt':        `this filter can handle the MQTT protocol, privide methods like mqtt_subscribe() and mqtt_send_message()`
+           - 'http':        `this filter can handle the HTTP protocol, provide methods like http_send_request() and http_read_response_header()`
+       >
+        [, <object $filert_opts: `the options for fitlers.` >
+        ]
+    ]
+) native/stream | undefined
+```
+
+该方法接受流套接字上的连接请求，返回一个流实体。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回已读取数据。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回已读取数据。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
+- `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空数组。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空数组。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回空数组。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空数组。
+
+**示例**
+
+##### 3.13.2.2) 流套接字实体的 `send` 方法
+
+通过该方法发送消息。
+
+##### 3.13.2.3) 流套接字实体的 `recv` 方法
+
+通过该方法接收消息。
+
+##### 3.13.2.4) 流套接字实体的 `close` 方法
+
+关闭流套接字实体。
+
+##### 3.13.2.5) 流套接字实体的 `peer` 属性
+
+通过该属性，可获取接受连接请求的流套接字对应的对端（peer）地址信息。
+
+##### 3.13.2.6) 数据报套接字实体的 `send` 方法
+
+通过该方法发送消息。
+
+##### 3.13.2.7) 数据报套接字实体的 `recv` 方法
+
+通过该方法接收消息。
+
+##### 3.13.2.8) 数据报套接字实体的 `close` 方法
+
+关闭流套接字实体。
 
 ## 4) 可选动态变量
 
@@ -7526,8 +7707,134 @@ $FILE.bin.tail($file, -5)
 
 ### 4.4) `PY`
 
-`PY` 是一个可装载的动态变量，该变量用于装载 Python 模块并在其上调用指定函数或方法。
+`PY` 是一个可装载的动态变量，该变量使用 CPython 装载指定的 Python 模块并可在其上调用（或访问）已装载模块提供的函数、对象方法或对象属性。
 
+#### 4.4.1) `last_error` 属性
+
+该属性获取 `$PY` 动态变量上的错误信息。
+
+**描述**
+
+```js
+$PY.last_error
+    string : `the last error string reported by CPython.`
+```
+
+该方法返回 CPython 的最后错误信息。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$PY.last_error
+    // string: 'Ok'
+```
+
+#### 4.4.2) `import` 方法
+
+可通过该方法装载一个模块或其中的指定符号。
+
+**描述**
+
+```js
+$PY.import(
+    <string $module: `the Python module name`>
+    [,
+        <string $symbol: `the symbol to import`>
+    ]
+) true | false
+```
+
+该方法从指定的 Python 模块中导入指定的符号，之后可在 `$PY` 对象上使用该符号。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- `EntityNotFound`：未找到指定的模块；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：无效参数，比如不存在指定的符号；可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```js
+$PY.import("math")
+    // boolean: true
+$PY.math.pow(2, 2)
+    // number: 4
+
+$PY.import("math", "pow")
+    // boolean: true
+$PY.pow(2, 2)
+    // number: 4
+```
+
+#### 4.4.3) `compile` 方法
+
+可通过该方法编译一段指定的 Python 代码。
+
+**描述**
+
+```js
+$PY.compile(
+    string $py_code: `the Python code`
+) native/pyCodeObject | undefined
+```
+
+该方法编译一段 Python 代码，返回一个 CPython 的代码对象实体，之后可在该代码对象实体之上执行 `eval` 方法。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- ...
+
+**示例**
+
+```js
+$PY.compile('c = 4 + 2')
+    // native/pyCodeObject
+```
+
+##### 4.4.3.1) CPython 代码对象实体的 `eval` 方法
+
+执行 CPython 代码对象实体。
+
+**描述**
+
+```js
+$pyCodeObject.eval(
+    [
+        <object $globals: `the global variables defined by an object`>
+        [,
+            <object $locals: `the local variables defined by an object`>
+        ]
+    ]
+) any
+```
+
+该方法在指定的全局和局部环境中执行 CPython 代码对象。
+
+**异常**
+
+该方法可能产生的异常：
+
+
+**示例**
+
+```js
+$PY.compile('c = 4 + 2').eval()
+    // 6
+
+$PY.compile('c = x + y').eval( { x: 4, y: 5 } )
+    // 9
+```
 
 ## 附录
 
