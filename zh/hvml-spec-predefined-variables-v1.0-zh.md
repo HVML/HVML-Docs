@@ -7811,9 +7811,9 @@ $PY.compile('c = 4 + 2')
 ```js
 $pyCodeObject.eval(
     [
-        <object $globals: `the global variables defined by an object`>
+        <object $globals = {} : `the global variables defined by an object`>
         [,
-            <object $locals: `the local variables defined by an object`>
+            <object $locals = {} : `the local variables defined by an object`>
         ]
     ]
 ) any
@@ -7834,6 +7834,9 @@ $PY.compile('c = 4 + 2').eval()
 
 $PY.compile('c = x + y').eval( { x: 4, y: 5 } )
     // 9
+
+$PY.compile('math.pow(x, y)').eval( {}, { x: 2, y: 3 } )
+    // 8
 ```
 
 ## 附录
