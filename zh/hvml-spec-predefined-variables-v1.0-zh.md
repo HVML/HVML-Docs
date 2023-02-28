@@ -7719,7 +7719,7 @@ $FILE.bin.tail($file, -5)
 
 ```js
 $PY.last_error
-    string : `the last error string reported by CPython.`
+    string : `the version string of CPython.`
 ```
 
 该方法返回 CPython 版本号。
