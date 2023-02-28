@@ -285,10 +285,12 @@ Language: Chinese
          - [4.3.2.1) `bin.head` 方法](#4321-binhead-方法)
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
    + [4.4) `PY`](#44-py)
-      * [4.4.1) `last_error` 属性](#441-last_error-属性)
-      * [4.4.2) `import` 方法](#442-import-方法)
-      * [4.4.3) `compile` 方法](#443-compile-方法)
-         - [4.4.3.1) CPython 代码对象实体的 `eval` 方法](#4431-cpython-代码对象实体的-eval-方法)
+      * [4.4.1) `version` 属性](#441-version-属性)
+      * [4.4.2) `last_error` 属性](#442-last_error-属性)
+      * [4.4.3) `run` 方法](#443-run-方法)
+      * [4.4.4) `import` 方法](#444-import-方法)
+      * [4.4.5) `compile` 方法](#445-compile-方法)
+         - [4.4.5.1) CPython 代码对象实体的 `eval` 方法](#4451-cpython-代码对象实体的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RCa) 230228](#rca-230228)
@@ -7709,7 +7711,31 @@ $FILE.bin.tail($file, -5)
 
 `PY` 是一个可装载的动态变量，该变量使用 CPython 装载指定的 Python 模块并可在其上调用（或访问）已装载模块提供的函数、对象方法或对象属性。
 
-#### 4.4.1) `last_error` 属性
+#### 4.4.1) `version` 属性
+
+该属性获取 `$PY` 所使用的 CPython 库的版本号。
+
+**描述**
+
+```js
+$PY.last_error
+    string : `the last error string reported by CPython.`
+```
+
+该方法返回 CPython 版本号。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$PY.version
+    // string: '3.9.9'
+```
+
+#### 4.4.2) `last_error` 属性
 
 该属性获取 `$PY` 动态变量上的错误信息。
 
@@ -7733,7 +7759,44 @@ $PY.last_error
     // string: 'Ok'
 ```
 
-#### 4.4.2) `import` 方法
+#### 4.4.3) `run` 方法
+
+该方法执行一段 Python 程序或者以脚本形式执行一个模块。
+
+**描述**
+
+```js
+$PY.run(
+    <string $cmd_mod: `A program string or a module name`>
+        [, < '[cmd | mod] || skip-first-line || dont-write-byte-code' $options = 'cmd':
+            - 'cmd': `run a program.`
+            - 'mod': `run a library module as a script.`
+            - 'skip-first-line': `skip first line of source, allowing use of non-Unix forms of #!cmd.`
+            - 'dont-write-byte-code': `don't write .pyc files on import.`
+            >
+        ]
+) any
+```
+
+该方法执行一段指定的 Python 程序，或者以脚本形式执行一个指定的模块。`$cmd_mod` 指定程序或者模块名称；`$options` 指定执行选项。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- `EntityNotFound`：未找到指定的模块；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：无效参数，比如不存在指定的符号；可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```js
+$PY.run_cmd('print("Hello from Python")')
+    // undefined
+```
+
+#### 4.4.4) `import` 方法
 
 可通过该方法装载一个模块或其中的指定符号。
 
@@ -7773,7 +7836,7 @@ $PY.pow(2, 2)
     // number: 4
 ```
 
-#### 4.4.3) `compile` 方法
+#### 4.4.5) `compile` 方法
 
 可通过该方法编译一段指定的 Python 代码。
 
@@ -7802,7 +7865,7 @@ $PY.compile('c = 4 + 2')
     // native/pyCodeObject
 ```
 
-##### 4.4.3.1) CPython 代码对象实体的 `eval` 方法
+##### 4.4.5.1) CPython 代码对象实体的 `eval` 方法
 
 执行 CPython 代码对象实体。
 
