@@ -7761,16 +7761,17 @@ $PY.last_error
 
 #### 4.4.3) `run` 方法
 
-该方法执行一段 Python 程序或者以脚本形式执行一个模块。
+该方法执行一段 Python 程序，以脚本形式执行一个模块，或者执行一个 Python 脚本文件。
 
 **描述**
 
 ```js
 $PY.run(
-    <string $cmd_mod: `A program string or a module name`>
+    <string $cmd_mod_file: `A program string, a module name, or a file name`>
         [, < '[cmd | mod] || skip-first-line || dont-write-byte-code' $options = 'cmd':
-            - 'cmd': `run a program.`
-            - 'mod': `run a library module as a script.`
+            - 'cmd': `run a Python program as string.`
+            - 'mod': `run a Python library module as a script.`
+            - 'file': `run a Python file as a script.`
             - 'skip-first-line': `skip first line of source, allowing use of non-Unix forms of #!cmd.`
             - 'dont-write-byte-code': `don't write .pyc files on import.`
             >
@@ -7778,7 +7779,7 @@ $PY.run(
 ) any
 ```
 
-该方法执行一段指定的 Python 程序，或者以脚本形式执行一个指定的模块。`$cmd_mod` 指定程序或者模块名称；`$options` 指定执行选项。
+该方法执行一段指定的 Python 程序，以脚本形式执行一个指定的模块，或者执行一个 Python 脚本文件。`$cmd_mod` 指定程序、模块或者文件名称；`$options` 指定执行选项。
 
 **异常**
 
