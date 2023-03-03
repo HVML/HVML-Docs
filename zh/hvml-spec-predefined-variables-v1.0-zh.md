@@ -285,8 +285,8 @@ Language: Chinese
          - [4.3.2.1) `bin.head` 方法](#4321-binhead-方法)
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
    + [4.4) `PY`](#44-py)
-      * [4.4.1) `version` 属性](#441-version-属性)
-      * [4.4.2) `last_error` 属性](#442-last_error-属性)
+      * [4.4.1) `info` 属性](#441-info-属性)
+      * [4.4.2) `error` 属性](#442-error-属性)
       * [4.4.3) `run` 方法](#443-run-方法)
       * [4.4.4) `import` 方法](#444-import-方法)
       * [4.4.5) `compile` 方法](#445-compile-方法)
@@ -7711,38 +7711,56 @@ $FILE.bin.tail($file, -5)
 
 `PY` 是一个可装载的动态变量，该变量使用 CPython 装载指定的 Python 模块并可在其上调用（或访问）已装载模块提供的函数、对象方法或对象属性。
 
-#### 4.4.1) `version` 属性
+#### 4.4.1) `info` 属性
 
-该属性获取 `$PY` 所使用的 CPython 库的版本号。
+通过该属性获取 `$PY` 所使用的 CPython 库的版本号、编译器、平台、构建信息、版权等信息。
 
 **描述**
 
 ```js
-$PY.last_error
-    string : `the version string of CPython.`
+$PY.info(
+        ['version | platform | copyright | compiler | build-info' $which ]
+) object | string:
+    `an object contains the following properties:`
+        - 'version':        < string: `the version of this Python interpreter.` >
+        - 'platform':       < string: `the platform identifier for the current platform.` >
+        - 'copyright':      < string: `the official copyright string for the current Python version.` >
+        - 'compiler':       < string: `an indication of the compiler used to build the current Python version, in square brackets (e.g., [GCC 2.7.2.2])` >
+        - 'build-info':     < string: `information about the sequence number and build date and time of the current Python interpreter instance, e.g., "#67, Aug  1 1997, 22:34:28"` >
 ```
 
-该方法返回 CPython 版本号。
+该属性返回当前 CPython 解释器相关的信息；若未传递合法的 `$which` 参数，则返回一个描述当前 Python 解释器的完整对象，否则返回对应的信息字符串。
 
 **异常**
 
-该方法不产生异常。
+- `WrongDataType`：非字符串参数类型。可忽略异常；静默求值时返回 `undefined`。
 
 **示例**
 
 ```js
-$PY.version
-    // string: '3.9.9'
+$PY.info
+    /* object:
+       {
+            'version':      '3.3.9',
+            'platform':     'Linux',
+            'copyright':    'Copyright 1991-1995 Stichting Mathematisch Centrum, Amsterdam',
+            'compiler':     '[GCC 2.7.2.2]',
+            'build-info':   '#67, Aug 1 1997, 22:34:28',
+       }
+    */
+
+$PY.info('version')
+    // string: '3.3.9'
 ```
 
-#### 4.4.2) `last_error` 属性
+#### 4.4.2) `error` 属性
 
-该属性获取 `$PY` 动态变量上的错误信息。
+该属性获取 `$PY` 动态变量上的最后错误信息。
 
 **描述**
 
 ```js
-$PY.last_error
+$PY.error
     string : `the last error string reported by CPython.`
 ```
 
@@ -7755,7 +7773,7 @@ $PY.last_error
 **示例**
 
 ```js
-$PY.last_error
+$PY.error
     // string: 'Ok'
 ```
 
@@ -7793,7 +7811,7 @@ $PY.run(
 **示例**
 
 ```js
-$PY.run_cmd('print("Hello from Python")')
+$PY.run('print("Hello from Python")')
     // undefined
 ```
 
