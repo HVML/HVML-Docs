@@ -285,12 +285,13 @@ Language: Chinese
          - [4.3.2.1) `bin.head` 方法](#4321-binhead-方法)
          - [4.3.2.2) `bin.tail` 方法](#4322-bintail-方法)
    + [4.4) `PY`](#44-py)
-      * [4.4.1) `info` 属性](#441-info-属性)
-      * [4.4.2) `error` 属性](#442-error-属性)
-      * [4.4.3) `run` 方法](#443-run-方法)
-      * [4.4.4) `import` 方法](#444-import-方法)
-      * [4.4.5) `compile` 方法](#445-compile-方法)
-         - [4.4.5.1) CPython 代码对象实体的 `eval` 方法](#4451-cpython-代码对象实体的-eval-方法)
+      * [4.4.1) `impl` 属性](#441-impl-属性)
+      * [4.4.2) `info` 属性](#442-info-属性)
+      * [4.4.3) `error` 属性](#443-error-属性)
+      * [4.4.4) `run` 方法](#444-run-方法)
+      * [4.4.5) `import` 方法](#445-import-方法)
+      * [4.4.6) `compile` 方法](#446-compile-方法)
+         - [4.4.6.1) CPython 代码对象实体的 `eval` 方法](#4461-cpython-代码对象实体的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RCa) 230228](#rca-230228)
@@ -7711,16 +7712,51 @@ $FILE.bin.tail($file, -5)
 
 `PY` 是一个可装载的动态变量，该变量使用 CPython 装载指定的 Python 模块并可在其上调用（或访问）已装载模块提供的函数、对象方法或对象属性。
 
-#### 4.4.1) `info` 属性
+#### 4.4.1) `impl` 属性
+
+通过该属性获取 `$PY` 变量实现者的信息，包括开发商、作者、许可证等。
+
+**描述**
+
+```js
+$PY.impl object:
+    `an object contains the following properties:`
+        - 'vendor':         < string: `the vendor name of this dynamic object, e.g., "HVML Community"` >
+        - 'author':         < string: `the author name of this dynamic object, e.g., "Vincent Wei"` >
+        - 'verName':        < string: `the version name of this dynamic object, e.g., "0.1.0"` >
+        - 'verCode':        < string: `the version code fo this dynmaic object, e.g., "0"` >
+        - 'license':        < string: `the license of this implementation fo this dynmaic objec, e.g., "LGPLv3+"` >
+```
+
+该属性返回描述当前 CPython 解释器相关信息的对象。
+
+**异常**
+
+- 访问该属性不产生异常。
+
+**示例**
+
+```js
+$PY.impl
+    /* object:
+       {
+            'vendor':       'HVML Community',
+            'author':       'Vincent Wei',
+            'verName':      '0.1.0',
+            'verCode':      '0',
+            'license':      'LGPLv3+',
+       }
+    */
+```
+
+#### 4.4.2) `info` 属性
 
 通过该属性获取 `$PY` 所使用的 CPython 库的版本号、编译器、平台、构建信息、版权等信息。
 
 **描述**
 
 ```js
-$PY.info(
-        ['version | platform | copyright | compiler | build-info' $which ]
-) object | string:
+$PY.info object:
     `an object contains the following properties:`
         - 'version':        < string: `the version of this Python interpreter.` >
         - 'platform':       < string: `the platform identifier for the current platform.` >
@@ -7729,11 +7765,11 @@ $PY.info(
         - 'build-info':     < string: `information about the sequence number and build date and time of the current Python interpreter instance, e.g., "#67, Aug  1 1997, 22:34:28"` >
 ```
 
-该属性返回当前 CPython 解释器相关的信息；若未传递合法的 `$which` 参数，则返回一个描述当前 Python 解释器的完整对象，否则返回对应的信息字符串。
+该属性返回描述当前 CPython 解释器相关信息的对象。
 
 **异常**
 
-- `WrongDataType`：非字符串参数类型。可忽略异常；静默求值时返回 `undefined`。
+- 访问该属性不产生异常。
 
 **示例**
 
@@ -7746,14 +7782,14 @@ $PY.info
             'copyright':    'Copyright 1991-1995 Stichting Mathematisch Centrum, Amsterdam',
             'compiler':     '[GCC 2.7.2.2]',
             'build-info':   '#67, Aug 1 1997, 22:34:28',
+            'vendor':       'HVML Community',
+            'author':       'Vincent Wei',
+            '':       'Vincent Wei',
        }
     */
-
-$PY.info('version')
-    // string: '3.3.9'
 ```
 
-#### 4.4.2) `error` 属性
+#### 4.4.3) `error` 属性
 
 该属性获取 `$PY` 动态变量上的最后错误信息。
 
@@ -7777,7 +7813,7 @@ $PY.error
     // string: 'Ok'
 ```
 
-#### 4.4.3) `run` 方法
+#### 4.4.4) `run` 方法
 
 该方法执行一段 Python 程序，以脚本形式执行一个模块，或者执行一个 Python 脚本文件。
 
@@ -7786,7 +7822,7 @@ $PY.error
 ```js
 $PY.run(
     <string $cmd_mod_file: `A program string, a module name, or a file name`>
-        [, < '[cmd | mod] || skip-first-line || dont-write-byte-code' $options = 'cmd':
+        [, < '[cmd | mod | file] || skip-first-line || dont-write-byte-code' $options = 'cmd':
             - 'cmd': `run a Python program as string.`
             - 'mod': `run a Python library module as a script.`
             - 'file': `run a Python file as a script.`
@@ -7815,7 +7851,7 @@ $PY.run('print("Hello from Python")')
     // undefined
 ```
 
-#### 4.4.4) `import` 方法
+#### 4.4.5) `import` 方法
 
 可通过该方法装载一个模块或其中的指定符号。
 
@@ -7855,7 +7891,7 @@ $PY.pow(2, 2)
     // number: 4
 ```
 
-#### 4.4.5) `compile` 方法
+#### 4.4.6) `compile` 方法
 
 可通过该方法编译一段指定的 Python 代码。
 
@@ -7884,7 +7920,7 @@ $PY.compile('c = 4 + 2')
     // native/pyCodeObject
 ```
 
-##### 4.4.5.1) CPython 代码对象实体的 `eval` 方法
+##### 4.4.6.1) CPython 代码对象实体的 `eval` 方法
 
 执行 CPython 代码对象实体。
 
