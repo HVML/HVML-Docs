@@ -7884,11 +7884,17 @@ $PY.import("math")
     // boolean: true
 $PY.math.pow(2, 2)
     // number: 4
+// 使用 (! ) 以键值对形式传递函数参数。
+$PY.math.pow(! { x: 2, y: 3 } )
+    // number: 8
 
 $PY.import("math", "pow")
     // boolean: true
 $PY.pow(2, 2)
     // number: 4
+// 使用 (! ) 以键值对形式传递函数参数。
+$PY.pow(! { x: 2, y: 3 } )
+    // number: 8
 ```
 
 #### 4.4.6) `compile` 方法
