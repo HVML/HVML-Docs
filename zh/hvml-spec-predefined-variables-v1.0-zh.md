@@ -287,11 +287,12 @@ Language: Chinese
    + [4.4) `PY`](#44-py)
       * [4.4.1) `impl` 属性](#441-impl-属性)
       * [4.4.2) `info` 属性](#442-info-属性)
-      * [4.4.3) `error` 属性](#443-error-属性)
-      * [4.4.4) `run` 方法](#444-run-方法)
-      * [4.4.5) `import` 方法](#445-import-方法)
-      * [4.4.6) `compile` 方法](#446-compile-方法)
-         - [4.4.6.1) CPython 代码对象实体的 `eval` 方法](#4461-cpython-代码对象实体的-eval-方法)
+      * [4.4.3) `globals` 属性](#443-globals-属性)
+      * [4.4.4) `except` 属性](#444-except-属性)
+      * [4.4.5) `run` 方法](#445-run-方法)
+      * [4.4.6) `import` 方法](#446-import-方法)
+      * [4.4.7) `compile` 方法](#447-compile-方法)
+         - [4.4.7.1) CPython 代码对象实体的 `eval` 方法](#4471-cpython-代码对象实体的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RCa) 230228](#rca-230228)
@@ -7710,7 +7711,7 @@ $FILE.bin.tail($file, -5)
 
 ### 4.4) `PY`
 
-`PY` 是一个可装载的动态变量，该变量使用 CPython 装载指定的 Python 模块并可在其上调用（或访问）已装载模块提供的函数、对象方法或对象属性。
+`PY` 是一个可装载的动态对象，默认绑定为行者级变量。该对象使用 CPython 装载指定的 Python 模块并可在其上调用（或访问）已装载模块提供的函数、对象方法或对象属性。
 
 #### 4.4.1) `impl` 属性
 
@@ -7789,18 +7790,73 @@ $PY.info
     */
 ```
 
-#### 4.4.3) `error` 属性
+#### 4.4.3) `globals` 属性
 
-该属性获取 `$PY` 动态变量上的最后错误信息。
+该属性反映的是当前 Python 解释器 `__main__` 模块的全局变量字典。
 
 **描述**
 
 ```js
-$PY.error
-    string : `the last error string reported by CPython.`
+$PY.globals
+    object : `the global variables of the current Python interpreter.`
 ```
 
-该方法返回 CPython 的最后错误信息。
+```js
+$PY.globals(<string $name: `the global variable name`>) any | undefined
+```
+
+该属性获取器返回当前 Python 解释器 `__main__` 模块的指定全局变量的值。
+
+```js
+$PY.globals(!
+        <string $name: `the global variable name`>,
+        <any $value: `the value`>
+) true | false
+```
+
+该属性设置器设置当前 Python 解释器 `__main__` 模块的指定全局变量的值。
+
+**异常**
+
+该属性的获取器产生如下异常：
+
+- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `BadName`：错误的变量名；可忽略异常，静默求值时返回 `undefined`。
+
+该属性的设置器产生如下异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- `BadName`：错误的变量名；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：无效值，比如不支持的数据类型；可忽略异常，静默求值时返回 `undefined`。
+- `InternalFailure`：CPython 异常；可忽略异常，静默求值时返回 `undefined`。
+
+**示例**
+
+```js
+$PY.globals
+    // object: { }
+
+$SYS.globals(! 'x', 'zh_CN')
+    // boolean: true
+
+$SYS.globals('x')
+    // string: 'zh_CN'
+```
+
+#### 4.4.4) `except` 属性
+
+该属性获取 `$PY` 动态变量上的最后一个异常名称。
+
+**描述**
+
+```js
+$PY.except
+    null | string : `the last exception name reported by CPython.`
+```
+
+该方法返回 `$PY` 动态变量上的最后一个 Python 内部错误对应的异常名称，初始为 `null`。仅在 HVML 异常为 `InternalFailure` 时有效，用于进一步区别 Python 异常。
 
 **异常**
 
@@ -7809,11 +7865,11 @@ $PY.error
 **示例**
 
 ```js
-$PY.error
+$PY.except
     // string: 'Ok'
 ```
 
-#### 4.4.4) `run` 方法
+#### 4.4.5) `run` 方法
 
 该方法执行一段 Python 程序，以脚本形式执行一个模块，或者执行一个 Python 脚本文件。
 
@@ -7822,36 +7878,44 @@ $PY.error
 ```js
 $PY.run(
     <string $cmd_mod_file: `A program string, a module name, or a file name`>
-        [, < '[cmd | mod | file] || skip-first-line || dont-write-byte-code' $options = 'cmd':
-            - 'cmd': `run a Python program as string.`
-            - 'mod': `run a Python library module as a script.`
+        [, < '[command | module | file] || skip-first-line || dont-write-byte-code' $options = 'command':
+            - 'command': `run a Python program as string.`
+            - 'module': `run a Python library module as a script.`
             - 'file': `run a Python file as a script.`
             - 'skip-first-line': `skip first line of source, allowing use of non-Unix forms of #!cmd.`
             - 'dont-write-byte-code': `don't write .pyc files on import.`
             >
         ]
-) any
+) any | undefined
 ```
 
-该方法执行一段指定的 Python 程序，以脚本形式执行一个指定的模块，或者执行一个 Python 脚本文件。`$cmd_mod` 指定程序、模块或者文件名称；`$options` 指定执行选项。
+该方法执行一段指定的 Python 程序（命名），或以脚本形式执行一个指定的 Python 模块，或执行一个 Python 脚本文件。`$cmd_mod_file` 指定程序内容、模块名称或者脚本文件名；`$options` 指定执行选项。
+
+**返回值**
+
+如果执行一个指定的模块，则该方法返回模块的执行结果。
 
 **异常**
 
 该方法可能产生的异常：
 
-- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
-- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
-- `EntityNotFound`：未找到指定的模块；可忽略异常，静默求值时返回 `false`。
-- `InvalidValue`：无效参数，比如不存在指定的符号；可忽略异常，静默求值时返回 `false`。
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `EntityNotFound`：未找到指定的模块；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：无效参数，比如不存在指定的符号；可忽略异常，静默求值时返回 `undefined`。
+- `InternalFailure`：CPython 异常；可忽略异常，静默求值时返回 `undefined`。
 
 **示例**
 
 ```js
 $PY.run('print("Hello from Python")')
-    // undefined
+    // null
+
+$PY.run('pow(2,3)')
+    // 8L
 ```
 
-#### 4.4.5) `import` 方法
+#### 4.4.6) `import` 方法
 
 可通过该方法装载一个模块或其中的指定符号。
 
@@ -7859,14 +7923,20 @@ $PY.run('print("Hello from Python")')
 
 ```js
 $PY.import(
-    <string $module: `the Python module name`>
+    <string $name: `the Python module name`>
     [,
-        <string $symbol: `the symbol to import`>
+        <array $fromlist = []: `the names of objects or submodules that should be imported from the module given by $name.`>
     ]
 ) true | false
 ```
 
-该方法从指定的 Python 模块中导入指定的符号，之后可在 `$PY` 对象上使用该符号。
+该方法导入指定的 Python 模块，或者从指定的模块中导入指定的 Python 对象或 Python 子模块，之后可在 `$PY` 变量上使用导入的模块、对象或子模块。
+
+**备注**
+
+1. 在使用 `$name` 参数指定模块名时，可使用 `<package>.<module>:<aliase>` 的写法，用于指定包或者模块的别名。
+1. 在使用 `$fromlist` 参数中指定对象或者子模块时，可使用 `<object/submodule>:<aliase>` 的写法，用于指定对象或者子模块的别名。
+1. 当导入的对象是 Python 函数对象时，可使用对应符号上的设置器以键值对的形式传递函数参数。
 
 **异常**
 
@@ -7874,7 +7944,8 @@ $PY.import(
 
 - `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
 - `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
-- `EntityNotFound`：未找到指定的模块；可忽略异常，静默求值时返回 `false`。
+- `DuplicateName`：重复名称，当要导入的模块、子模块或对象之名称已经被占用时；可忽略异常，静默求值时返回 `false`。
+- `EntityNotFound`：未找到指定的模块、对象或子对象；可忽略异常，静默求值时返回 `false`。
 - `InvalidValue`：无效参数，比如不存在指定的符号；可忽略异常，静默求值时返回 `false`。
 
 **示例**
@@ -7888,16 +7959,17 @@ $PY.math.pow(2, 2)
 $PY.math.pow(! { x: 2, y: 3 } )
     // number: 8
 
-$PY.import("math", "pow")
+$PY.import('math', ['pow:power'])
     // boolean: true
-$PY.pow(2, 2)
+$PY.power(2, 2)
     // number: 4
+
 // 使用 (! ) 以键值对形式传递函数参数。
-$PY.pow(! { x: 2, y: 3 } )
+$PY.power(! { x: 2, y: 3 } )
     // number: 8
 ```
 
-#### 4.4.6) `compile` 方法
+#### 4.4.7) `compile` 方法
 
 可通过该方法编译一段指定的 Python 代码。
 
@@ -7926,7 +7998,7 @@ $PY.compile('c = 4 + 2')
     // native/pyCodeObject
 ```
 
-##### 4.4.6.1) CPython 代码对象实体的 `eval` 方法
+##### 4.4.7.1) CPython 代码对象实体的 `eval` 方法
 
 执行 CPython 代码对象实体。
 
