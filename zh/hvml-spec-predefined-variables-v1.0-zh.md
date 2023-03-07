@@ -287,13 +287,13 @@ Language: Chinese
    + [4.4) `PY`](#44-py)
       * [4.4.1) `impl` 属性](#441-impl-属性)
       * [4.4.2) `info` 属性](#442-info-属性)
-      * [4.4.3) `globals` 属性](#443-globals-属性)
-      * [4.4.4) `locals` 属性](#444-locals-属性)
+      * [4.4.3) `global` 属性](#443-global-属性)
+      * [4.4.4) `local` 属性](#444-local-属性)
       * [4.4.5) `except` 属性](#445-except-属性)
       * [4.4.6) `run` 方法](#446-run-方法)
       * [4.4.7) `import` 方法](#447-import-方法)
       * [4.4.8) `compile` 方法](#448-compile-方法)
-         - [4.4.8.1) CPython 代码对象实体的 `locals` 属性](#4481-cpython-代码对象实体的-locals-属性)
+         - [4.4.8.1) CPython 代码对象实体的 `local` 属性](#4481-cpython-代码对象实体的-local-属性)
          - [4.4.8.2) CPython 代码对象实体的 `eval` 方法](#4482-cpython-代码对象实体的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
@@ -7792,35 +7792,35 @@ $PY.info
     */
 ```
 
-#### 4.4.3) `globals` 属性
+#### 4.4.3) `global` 属性
 
 该属性反映的是当前 Python 解释器 `__main__` 模块的全局变量字典。
 
 **描述**
 
 ```js
-$PY.globals
+$PY.global
     object : `the global variables of the current __main__ module in the Python interpreter.`
 ```
 
 该属性获取器返回当前 Python 解释器 `__main__` 模块的全部全局变量及其值。
 
 ```js
-$PY.globals(<string $name: `the global variable name`>) any | undefined
+$PY.global(<string $name: `the global variable name`>) any | undefined
 ```
 
 该属性获取器返回当前 Python 解释器 `__main__` 模块的指定全局变量的值。
 
 ```js
-$PY.globals(!
-        <object $locals: `the object defined new local variables`>
+$PY.global(!
+        <object $local: `the object defined new local variables`>
 ) true | false
 ```
 
 该属性设置器将使用给定的对象设置当前 Python 解释器 `__main__` 模块的局部变量，已有的变量可能会被覆盖。
 
 ```js
-$PY.globals(!
+$PY.global(!
         <string $name: `the global variable name`>,
         <any $value: `the value`>
 ) true | false
@@ -7847,31 +7847,31 @@ $PY.globals(!
 **示例**
 
 ```js
-$PY.globals
+$PY.global
     // object: { }
 
-$PY.globals(! 'x', 'zh_CN')
+$PY.global(! 'x', 'zh_CN')
     // boolean: true
 
-$PY.globals('x')
+$PY.global('x')
     // string: 'zh_CN'
 ```
 
-#### 4.4.4) `locals` 属性
+#### 4.4.4) `local` 属性
 
 该属性反映的是执行 `$PY.run` 方法时的局部变量字典。
 
 **描述**
 
 ```js
-$PY.locals
+$PY.local
     object : `the local variables used when executing $PY.run().`
 ```
 
 该属性获取器返回当前的局部变量及其值。
 
 ```js
-$PY.locals(
+$PY.local(
         <string $name: `the local variable name`>
 ) any | undefined
 ```
@@ -7879,15 +7879,15 @@ $PY.locals(
 该属性获取器返回指定局部变量的值。
 
 ```js
-$PY.locals(!
-        <object $locals: `the object defined new local variables`>
+$PY.local(!
+        <object $local: `the object defined new local variables`>
 ) true | false
 ```
 
 该属性设置器将使用给定的对象设置局部变量，已有的变量可能会被覆盖。
 
 ```js
-$PY.locals(!
+$PY.local(!
         <string $name: `the local variable name`>,
         <any $value: `the value`>
 ) true | false
@@ -7914,13 +7914,13 @@ $PY.locals(!
 **示例**
 
 ```js
-$PY.locals
+$PY.local
     // object: { }
 
-$PY.locals(! 'x', 'zh_CN')
+$PY.local(! 'x', 'zh_CN')
     // boolean: true
 
-$PY.locals('x')
+$PY.local('x')
     // string: 'zh_CN'
 ```
 
@@ -8079,21 +8079,21 @@ $PY.compile('c = 4 + 2')
     // native/pyCodeObject
 ```
 
-##### 4.4.8.1) CPython 代码对象实体的 `locals` 属性
+##### 4.4.8.1) CPython 代码对象实体的 `local` 属性
 
 该属性反映的是执行指定代码对象实体 `eval()` 方法（`$pyCodeObject.eval`）时的局部变量字典。
 
 **描述**
 
 ```js
-$pyCodeObject.locals
+$pyCodeObject.local
     object : `the local variables used when executing $pyCodeObject.eval().`
 ```
 
 该属性获取器返回当前的局部变量及其值。
 
 ```js
-$pyCodeObject.locals(
+$pyCodeObject.local(
         <string $name: `the local variable name`>
 ) any | undefined
 ```
@@ -8101,15 +8101,15 @@ $pyCodeObject.locals(
 该属性获取器返回指定局部变量的值。
 
 ```js
-$pyCodeObject.locals(!
-        <object $locals: `the object defined new local variables`>
+$pyCodeObject.local(!
+        <object $local: `the object defined new local variables`>
 ) true | false
 ```
 
 该属性设置器将使用给定的对象设置局部变量，已有的变量可能会被覆盖。
 
 ```js
-$pyCodeObject.locals(!
+$pyCodeObject.local(!
         <string $name: `the local variable name`>,
         <any $value: `the value`>
 ) true | false
@@ -8136,13 +8136,13 @@ $pyCodeObject.locals(!
 **示例**
 
 ```js
-$pyCodeObject.locals
+$pyCodeObject.local
     // object: { }
 
-$pyCodeObject.locals(! 'x', 'zh_CN')
+$pyCodeObject.local(! 'x', 'zh_CN')
     // boolean: true
 
-$pyCodeObject.locals('x')
+$pyCodeObject.local('x')
     // string: 'zh_CN'
 ```
 
@@ -8163,7 +8163,7 @@ $pyCodeObject.eval(
 ) any
 ```
 
-该方法在指定的局部环境中执行 CPython 代码对象；若未指定 `globals`，则使用 `$PY.globals` 定义的全局变量；若未指定 `$locals`，则使用通过 `locals` 属性指定的局部变量。
+该方法在指定的局部环境中执行 CPython 代码对象；若未指定 `$globals`，则使用 `$PY.global` 定义的全局变量；若未指定 `$locals`，则使用通过 `local` 属性指定的局部变量。
 
 **异常**
 
