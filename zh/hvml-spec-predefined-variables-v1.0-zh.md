@@ -288,11 +288,13 @@ Language: Chinese
       * [4.4.1) `impl` 属性](#441-impl-属性)
       * [4.4.2) `info` 属性](#442-info-属性)
       * [4.4.3) `globals` 属性](#443-globals-属性)
-      * [4.4.4) `except` 属性](#444-except-属性)
-      * [4.4.5) `run` 方法](#445-run-方法)
-      * [4.4.6) `import` 方法](#446-import-方法)
-      * [4.4.7) `compile` 方法](#447-compile-方法)
-         - [4.4.7.1) CPython 代码对象实体的 `eval` 方法](#4471-cpython-代码对象实体的-eval-方法)
+      * [4.4.4) `locals` 属性](#444-locals-属性)
+      * [4.4.5) `except` 属性](#445-except-属性)
+      * [4.4.6) `run` 方法](#446-run-方法)
+      * [4.4.7) `import` 方法](#447-import-方法)
+      * [4.4.8) `compile` 方法](#448-compile-方法)
+         - [4.4.8.1) CPython 代码对象实体的 `locals` 属性](#4481-cpython-代码对象实体的-locals-属性)
+         - [4.4.8.2) CPython 代码对象实体的 `eval` 方法](#4482-cpython-代码对象实体的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RCa) 230228](#rca-230228)
@@ -7798,8 +7800,10 @@ $PY.info
 
 ```js
 $PY.globals
-    object : `the global variables of the current Python interpreter.`
+    object : `the global variables of the current __main__ module in the Python interpreter.`
 ```
+
+该属性获取器返回当前 Python 解释器 `__main__` 模块的全部全局变量及其值。
 
 ```js
 $PY.globals(<string $name: `the global variable name`>) any | undefined
@@ -7809,20 +7813,28 @@ $PY.globals(<string $name: `the global variable name`>) any | undefined
 
 ```js
 $PY.globals(!
+        <object $locals: `the object defined new local variables`>
+) true | false
+```
+
+该属性设置器将使用给定的对象设置当前 Python 解释器 `__main__` 模块的局部变量，已有的变量可能会被覆盖。
+
+```js
+$PY.globals(!
         <string $name: `the global variable name`>,
         <any $value: `the value`>
 ) true | false
 ```
 
-该属性设置器设置当前 Python 解释器 `__main__` 模块的指定全局变量的值。
+该属性设置器设置当前 Python 解释器 `__main__` 模块的指定全局变量的值；当 `$value` 为 `undefined` 时，将删除该全局变量。
 
 **异常**
 
 该属性的获取器产生如下异常：
 
-- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回 `undefined`。
 - `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `undefined`。
 - `BadName`：错误的变量名；可忽略异常，静默求值时返回 `undefined`。
+- `NoSuchKey`：不存在的全局变量；可忽略异常，静默求值时返回 `undefined`。
 
 该属性的设置器产生如下异常：
 
@@ -7838,16 +7850,83 @@ $PY.globals(!
 $PY.globals
     // object: { }
 
-$SYS.globals(! 'x', 'zh_CN')
+$PY.globals(! 'x', 'zh_CN')
     // boolean: true
 
-$SYS.globals('x')
+$PY.globals('x')
     // string: 'zh_CN'
 ```
 
-#### 4.4.4) `except` 属性
+#### 4.4.4) `locals` 属性
 
-该属性获取 `$PY` 动态变量上的最后一个异常名称。
+该属性反映的是执行 `$PY.run` 方法时的局部变量字典。
+
+**描述**
+
+```js
+$PY.locals
+    object : `the local variables used when executing $PY.run().`
+```
+
+该属性获取器返回当前的局部变量及其值。
+
+```js
+$PY.locals(
+        <string $name: `the local variable name`>
+) any | undefined
+```
+
+该属性获取器返回指定局部变量的值。
+
+```js
+$PY.locals(!
+        <object $locals: `the object defined new local variables`>
+) true | false
+```
+
+该属性设置器将使用给定的对象设置局部变量，已有的变量可能会被覆盖。
+
+```js
+$PY.locals(!
+        <string $name: `the local variable name`>,
+        <any $value: `the value`>
+) true | false
+```
+
+该属性设置器设置指定的局部变量的值；当 `$value` 为 `undefined` 时，将删除该局部变量。
+
+**异常**
+
+该属性的获取器产生如下异常：
+
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `BadName`：错误的变量名；可忽略异常，静默求值时返回 `undefined`。
+- `NoSuchKey`：不存在的全局变量；可忽略异常，静默求值时返回 `undefined`。
+
+该属性的设置器产生如下异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- `BadName`：错误的变量名；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：无效值，比如不支持的数据类型；可忽略异常，静默求值时返回 `undefined`。
+- `InternalFailure`：CPython 异常；可忽略异常，静默求值时返回 `undefined`。
+
+**示例**
+
+```js
+$PY.locals
+    // object: { }
+
+$PY.locals(! 'x', 'zh_CN')
+    // boolean: true
+
+$PY.locals('x')
+    // string: 'zh_CN'
+```
+
+#### 4.4.5) `except` 属性
+
+该属性获取 `$PY` 动态变量上的最后一个 Python 异常名称。
 
 **描述**
 
@@ -7856,7 +7935,7 @@ $PY.except
     null | string : `the last exception name reported by CPython.`
 ```
 
-该方法返回 `$PY` 动态变量上的最后一个 Python 内部错误对应的异常名称，初始为 `null`。仅在 HVML 异常为 `InternalFailure` 时有效，用于进一步区别 Python 异常。
+该方法返回 `$PY` 动态变量上的最后一个 Python 内部错误对应的异常名称，初始为 `null`，可用于进一步区别 Python 异常。
 
 **异常**
 
@@ -7866,10 +7945,12 @@ $PY.except
 
 ```js
 $PY.except
-    // string: 'Ok'
+    // null
+{{ $PY.run('2 / 0'); $PY.except }}
+    // string: 'ArithmeticError'
 ```
 
-#### 4.4.5) `run` 方法
+#### 4.4.6) `run` 方法
 
 该方法执行一段 Python 程序，以脚本形式执行一个模块，或者执行一个 Python 脚本文件。
 
@@ -7915,7 +7996,7 @@ $PY.run('pow(2,3)')
     // 8L
 ```
 
-#### 4.4.6) `import` 方法
+#### 4.4.7) `import` 方法
 
 可通过该方法装载一个模块或其中的指定符号。
 
@@ -7969,7 +8050,7 @@ $PY.power(! { x: 2, y: 3 } )
     // number: 8
 ```
 
-#### 4.4.7) `compile` 方法
+#### 4.4.8) `compile` 方法
 
 可通过该方法编译一段指定的 Python 代码。
 
@@ -7998,7 +8079,74 @@ $PY.compile('c = 4 + 2')
     // native/pyCodeObject
 ```
 
-##### 4.4.7.1) CPython 代码对象实体的 `eval` 方法
+##### 4.4.8.1) CPython 代码对象实体的 `locals` 属性
+
+该属性反映的是执行指定代码对象实体 `eval()` 方法（`$pyCodeObject.eval`）时的局部变量字典。
+
+**描述**
+
+```js
+$pyCodeObject.locals
+    object : `the local variables used when executing $pyCodeObject.eval().`
+```
+
+该属性获取器返回当前的局部变量及其值。
+
+```js
+$pyCodeObject.locals(
+        <string $name: `the local variable name`>
+) any | undefined
+```
+
+该属性获取器返回指定局部变量的值。
+
+```js
+$pyCodeObject.locals(!
+        <object $locals: `the object defined new local variables`>
+) true | false
+```
+
+该属性设置器将使用给定的对象设置局部变量，已有的变量可能会被覆盖。
+
+```js
+$pyCodeObject.locals(!
+        <string $name: `the local variable name`>,
+        <any $value: `the value`>
+) true | false
+```
+
+该属性设置器设置指定的局部变量的值；当 `$value` 为 `undefined` 时，将删除该局部变量。
+
+**异常**
+
+该属性的获取器产生如下异常：
+
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `BadName`：错误的变量名；可忽略异常，静默求值时返回 `undefined`。
+- `NoSuchKey`：不存在的全局变量；可忽略异常，静默求值时返回 `undefined`。
+
+该属性的设置器产生如下异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- `BadName`：错误的变量名；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：无效值，比如不支持的数据类型；可忽略异常，静默求值时返回 `undefined`。
+- `InternalFailure`：CPython 异常；可忽略异常，静默求值时返回 `undefined`。
+
+**示例**
+
+```js
+$pyCodeObject.locals
+    // object: { }
+
+$pyCodeObject.locals(! 'x', 'zh_CN')
+    // boolean: true
+
+$pyCodeObject.locals('x')
+    // string: 'zh_CN'
+```
+
+##### 4.4.8.2) CPython 代码对象实体的 `eval` 方法
 
 执行 CPython 代码对象实体。
 
@@ -8007,20 +8155,21 @@ $PY.compile('c = 4 + 2')
 ```js
 $pyCodeObject.eval(
     [
-        <object $globals = {} : `the global variables defined by an object`>
-        [,
-            <object $locals = {} : `the local variables defined by an object`>
-        ]
+        <object $globals = null: `the global variables defined by an object`>,
+        [
+            <object $locals = null : `the local variables defined by an object`>
+        ],
     ]
 ) any
 ```
 
-该方法在指定的全局和局部环境中执行 CPython 代码对象。
+该方法在指定的局部环境中执行 CPython 代码对象；若未指定 `globals`，则使用 `$PY.globals` 定义的全局变量；若未指定 `$locals`，则使用通过 `locals` 属性指定的局部变量。
 
 **异常**
 
 该方法可能产生的异常：
 
+- `InternalFailure`：Python 解释器异常；可通过 `$PY.except` 获得具体的 Python 异常名称。
 
 **示例**
 
