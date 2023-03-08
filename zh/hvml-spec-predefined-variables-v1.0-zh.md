@@ -7813,11 +7813,11 @@ $PY.global(<string $name: `the global variable name`>) any | undefined
 
 ```js
 $PY.global(!
-        <object $local: `the object defined new local variables`>
+        <object $globals: `the object defined new global variables`>
 ) true | false
 ```
 
-该属性设置器将使用给定的对象设置当前 Python 解释器 `__main__` 模块的局部变量，已有的变量可能会被覆盖。
+该属性设置器将使用给定的对象设置当前 Python 解释器 `__main__` 模块的全局变量，已有的变量可能会被覆盖。
 
 ```js
 $PY.global(!
@@ -7841,8 +7841,8 @@ $PY.global(!
 - `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
 - `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
 - `BadName`：错误的变量名；可忽略异常，静默求值时返回 `false`。
-- `InvalidValue`：无效值，比如不支持的数据类型；可忽略异常，静默求值时返回 `undefined`。
-- `InternalFailure`：CPython 异常；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：无效值，比如不支持的数据类型；可忽略异常，静默求值时返回 `false`。
+- `InternalFailure`：CPython 异常；可忽略异常，静默求值时返回 `false`。
 
 **示例**
 
@@ -7908,8 +7908,8 @@ $PY.local(!
 - `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
 - `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
 - `BadName`：错误的变量名；可忽略异常，静默求值时返回 `false`。
-- `InvalidValue`：无效值，比如不支持的数据类型；可忽略异常，静默求值时返回 `undefined`。
-- `InternalFailure`：CPython 异常；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：无效值，比如不支持的数据类型；可忽略异常，静默求值时返回 `false`。
+- `InternalFailure`：CPython 异常；可忽略异常，静默求值时返回 `false`。
 
 **示例**
 
@@ -7947,7 +7947,7 @@ $PY.except
 $PY.except
     // null
 {{ $PY.run('2 / 0'); $PY.except }}
-    // string: 'ArithmeticError'
+    // string: 'ZeroDivisionError'
 ```
 
 #### 4.4.6) `run` 方法
@@ -7974,7 +7974,7 @@ $PY.run(
 
 **返回值**
 
-如果执行一个指定的模块，则该方法返回模块的执行结果。
+该方法返回执行结果。
 
 **异常**
 
@@ -8163,7 +8163,7 @@ $pyCodeObject.eval(
 ) any
 ```
 
-该方法在指定的局部环境中执行 CPython 代码对象；若未指定 `$globals`，则使用 `$PY.global` 定义的全局变量；若未指定 `$locals`，则使用通过 `local` 属性指定的局部变量。
+该方法在指定的局部环境中执行 CPython 代码对象；若未指定 `$globals`，则使用 `$PY` 定义的全局变量；若未指定 `$locals`，则使用通过 `$pyCodeObject.local` 属性指定的局部变量。
 
 **异常**
 
