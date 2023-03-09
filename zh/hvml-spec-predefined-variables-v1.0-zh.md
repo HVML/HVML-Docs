@@ -290,12 +290,13 @@ Language: Chinese
       * [4.4.3) `global` 属性](#443-global-属性)
       * [4.4.4) `local` 属性](#444-local-属性)
       * [4.4.5) `except` 属性](#445-except-属性)
-      * [4.4.6) `run` 方法](#446-run-方法)
-      * [4.4.7) `import` 方法](#447-import-方法)
-      * [4.4.8) `stringify` 方法](#448-stringify-方法)
-      * [4.4.9) `compile` 方法](#449-compile-方法)
-         - [4.4.9.1) CPython 代码动态对象 `local` 属性](#4491-cpython-代码动态对象-local-属性)
-         - [4.4.9.2) CPython 代码动态对象的 `eval` 方法](#4492-cpython-代码动态对象的-eval-方法)
+      * [4.4.6) `pythonize` 方法](#446-pythonize-方法)
+      * [4.4.7) `run` 方法](#447-run-方法)
+      * [4.4.8) `import` 方法](#448-import-方法)
+      * [4.4.9) `stringify` 方法](#449-stringify-方法)
+      * [4.4.10) `compile` 方法](#4410-compile-方法)
+         - [4.4.10.1) CPython 代码动态对象 `local` 属性](#44101-cpython-代码动态对象-local-属性)
+         - [4.4.10.2) CPython 代码动态对象的 `eval` 方法](#44102-cpython-代码动态对象的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RCa) 230228](#rca-230228)
@@ -7964,7 +7965,61 @@ $PY.except
     // string: 'ZeroDivisionError'
 ```
 
-#### 4.4.6) `run` 方法
+#### 4.4.6) `pythonize` 方法
+
+该方法将根据一个 HVML 字符串、对象、数组和集合构建一个 CPython 原生实体对象，之后可在其上执行对应的方法。
+
+**描述**
+
+```js
+$PY.pythonize(
+    <string | object | array | tuple | set: $hvml_data: `A HVML string, object, array, tuple, or set`>
+) native/pyObject::any | undefined
+```
+
+该方法将使用给定的 HVML 字符串、对象、数组和集合构建一个 CPython 原生实体对象，之后可在其上执行对应的方法。
+
+注意，在 CPython 原生实体上对其本身执行获取器，将返回对应的 HVML 数据。比如，
+
+使用空数组构造一个 CPython 原生实体：
+
+```js
+$PY.pythonize([])
+    // native/pyObject::list
+```
+
+使用空数组构造一个 CPython 原生实体，并在其上执行默认获取器，将获得一个 HVML 的空数组。
+```
+
+$PY.pythonize([])()
+    // array: []
+```
+
+**返回值**
+
+该方法返回一个名称以 `pyObject::` 打头的原生实体。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `undefined`。
+
+**示例**
+
+```js
+$PY.pythonize([])
+    // native/pyObject::list
+
+$PY.pythonize(['apple', 'banana', 'cherry']).add('orange')
+    // native/pyObject::list
+
+$PY.pythonize(['apple', 'banana', 'cherry']).add('orange')()
+    // array: ['apple', 'banana', 'cherry', 'orange']
+```
+
+#### 4.4.7) `run` 方法
 
 该方法执行一段 Python 程序，以脚本形式执行一个模块，或者执行一个 Python 脚本文件。
 
@@ -7984,7 +8039,7 @@ $PY.run(
 ) any | undefined
 ```
 
-该方法执行一段指定的 Python 程序（命名），或以脚本形式执行一个指定的 Python 模块，或执行一个 Python 脚本文件。`$cmd_mod_file` 指定程序内容、模块名称或者脚本文件名；`$options` 指定执行选项。
+该方法执行一段指定的 Python 程序（命令），或以脚本形式执行一个指定的 Python 模块，或执行一个 Python 脚本文件。`$cmd_mod_file` 指定程序内容、模块名称或者脚本文件名；`$options` 指定执行选项。
 
 **返回值**
 
@@ -8010,7 +8065,7 @@ $PY.run('pow(2,3)')
     // 8L
 ```
 
-#### 4.4.7) `import` 方法
+#### 4.4.8) `import` 方法
 
 可通过该方法装载一个模块或其中的指定符号。
 
@@ -8060,7 +8115,7 @@ $PY.power(2, 2)
     // number: 4
 ```
 
-#### 4.4.8) `stringify` 方法
+#### 4.4.9) `stringify` 方法
 
 该方法将一个 Python 实体字符串化。
 
@@ -8088,7 +8143,7 @@ $PY.stringify({{ $PY.import('math'); $PY.math.pi }})
     // string: '3.1415926535897931'
 ```
 
-#### 4.4.9) `compile` 方法
+#### 4.4.10) `compile` 方法
 
 可通过该方法编译一段指定的 Python 代码。
 
@@ -8117,7 +8172,7 @@ $PY.compile('c = 4 + 2')
     // pyCodeObject
 ```
 
-##### 4.4.9.1) CPython 代码动态对象 `local` 属性
+##### 4.4.10.1) CPython 代码动态对象 `local` 属性
 
 该属性反映的是 CPython 代码动态对象的局部变量字典。
 
@@ -8186,7 +8241,7 @@ $pyCodeObject.local('x')
     // string: 'zh_CN'
 ```
 
-##### 4.4.9.2) CPython 代码动态对象的 `eval` 方法
+##### 4.4.10.2) CPython 代码动态对象的 `eval` 方法
 
 执行 CPython 代码动态对象。
 
