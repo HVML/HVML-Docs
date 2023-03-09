@@ -8058,10 +8058,6 @@ $PY.import('math', ['pow:power'])
     // boolean: true
 $PY.power(2, 2)
     // number: 4
-
-// 使用 (! ) 以键值对形式传递函数参数。
-$PY.power(! { x: 2, y: 3 } )
-    // number: 8
 ```
 
 #### 4.4.8) `stringify` 方法
@@ -8089,7 +8085,7 @@ $PY.stringify(
 
 ```js
 $PY.stringify({{ $PY.import('math'); $PY.math.pi }})
-    // string: "3.14"
+    // string: '3.1415926535897931'
 ```
 
 #### 4.4.9) `compile` 方法
@@ -8218,13 +8214,13 @@ $pyCodeObject.eval(
 **示例**
 
 ```js
-$PY.compile('c = 4 + 2').eval()
+$PY.compile('4 + 2').eval()
     // 6
 
-$PY.compile('c = x + y').eval( { x: 4, y: 5 } )
+$PY.compile('x + y').eval( { x: 4, y: 5 } )
     // 9
 
-$PY.compile('math.pow(x, y)').eval( {}, { x: 2, y: 3 } )
+$PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
     // 8
 ```
 
