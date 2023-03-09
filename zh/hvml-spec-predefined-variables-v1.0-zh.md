@@ -292,9 +292,10 @@ Language: Chinese
       * [4.4.5) `except` 属性](#445-except-属性)
       * [4.4.6) `run` 方法](#446-run-方法)
       * [4.4.7) `import` 方法](#447-import-方法)
-      * [4.4.8) `compile` 方法](#448-compile-方法)
-         - [4.4.8.1) CPython 代码对象实体的 `local` 属性](#4481-cpython-代码对象实体的-local-属性)
-         - [4.4.8.2) CPython 代码对象实体的 `eval` 方法](#4482-cpython-代码对象实体的-eval-方法)
+      * [4.4.8) `stringify` 方法](#448-stringify-方法)
+      * [4.4.9) `compile` 方法](#449-compile-方法)
+         - [4.4.9.1) CPython 代码对象实体的 `local` 属性](#4491-cpython-代码对象实体的-local-属性)
+         - [4.4.9.2) CPython 代码对象实体的 `eval` 方法](#4492-cpython-代码对象实体的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RCa) 230228](#rca-230228)
@@ -7828,6 +7829,8 @@ $PY.global(!
 
 该属性设置器设置当前 Python 解释器 `__main__` 模块的指定全局变量的值；当 `$value` 为 `undefined` 时，将删除该全局变量。
 
+该属性应被实现为原生实体，从而可通过 `$PY.global.x` 来获取全局变量 `x` 的值，或者使用 `$PY.global.x(! ... ) 来设置全局变量的值。
+
 **异常**
 
 该属性的获取器产生如下异常：
@@ -7855,6 +7858,15 @@ $PY.global(! 'x', 'zh_CN')
 
 $PY.global('x')
     // string: 'zh_CN'
+
+$PY.global.x
+    // string: 'zh_CN'
+
+$PY.global.x(! undefined )
+    // boolean: 'true'
+
+$PY.global.x
+    // exception: NoSuchKey
 ```
 
 #### 4.4.4) `local` 属性
@@ -7894,6 +7906,8 @@ $PY.local(!
 ```
 
 该属性设置器设置指定的局部变量的值；当 `$value` 为 `undefined` 时，将删除该局部变量。
+
+该属性应被实现为原生实体，从而可通过 `$PY.local.x` 来获取局部变量 `x` 的值，或者使用 `$PY.local.x(! ... ) 来设置局部变量的值。
 
 **异常**
 
@@ -8050,7 +8064,35 @@ $PY.power(! { x: 2, y: 3 } )
     // number: 8
 ```
 
-#### 4.4.8) `compile` 方法
+#### 4.4.8) `stringify` 方法
+
+该方法将一个 Python 实体字符串化。
+
+**描述**
+
+```js
+$PY.stringify(
+    string $py_code: `a native entity with name prefix "pyObject::"`
+) string | false
+```
+
+该方法将一个指定的 Python 原生实体执行字符串化操作。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```js
+$PY.stringify({{ $PY.import('math'); $PY.math.pi }})
+    // string: "3.14"
+```
+
+#### 4.4.9) `compile` 方法
 
 可通过该方法编译一段指定的 Python 代码。
 
@@ -8059,10 +8101,10 @@ $PY.power(! { x: 2, y: 3 } )
 ```js
 $PY.compile(
     string $py_code: `the Python code`
-) native/pyCodeObject | undefined
+) native/pyObject::code | undefined
 ```
 
-该方法编译一段 Python 代码，返回一个 CPython 的代码对象实体，之后可在该代码对象实体之上执行 `eval` 方法。
+该方法编译一段 Python 代码，返回一个 CPython 的代码对象实体（pyObject::code），之后可在该代码对象实体之上执行 `eval` 方法。
 
 **异常**
 
@@ -8076,24 +8118,24 @@ $PY.compile(
 
 ```js
 $PY.compile('c = 4 + 2')
-    // native/pyCodeObject
+    // native/pyObject::code
 ```
 
-##### 4.4.8.1) CPython 代码对象实体的 `local` 属性
+##### 4.4.9.1) CPython 代码对象实体的 `local` 属性
 
-该属性反映的是执行指定代码对象实体 `eval()` 方法（`$pyCodeObject.eval`）时的局部变量字典。
+该属性反映的是执行指定代码对象实体 `eval()` 方法（`$pyObject::code.eval`）时的局部变量字典。
 
 **描述**
 
 ```js
-$pyCodeObject.local
-    object : `the local variables used when executing $pyCodeObject.eval().`
+$pyObject::code.local
+    object : `the local variables used when executing $pyObject::code.eval().`
 ```
 
 该属性获取器返回当前的局部变量及其值。
 
 ```js
-$pyCodeObject.local(
+$pyObject::code.local(
         <string $name: `the local variable name`>
 ) any | undefined
 ```
@@ -8101,7 +8143,7 @@ $pyCodeObject.local(
 该属性获取器返回指定局部变量的值。
 
 ```js
-$pyCodeObject.local(!
+$pyObject::code.local(!
         <object $local: `the object defined new local variables`>
 ) true | false
 ```
@@ -8109,13 +8151,15 @@ $pyCodeObject.local(!
 该属性设置器将使用给定的对象设置局部变量，已有的变量可能会被覆盖。
 
 ```js
-$pyCodeObject.local(!
+$pyObject::code.local(!
         <string $name: `the local variable name`>,
         <any $value: `the value`>
 ) true | false
 ```
 
 该属性设置器设置指定的局部变量的值；当 `$value` 为 `undefined` 时，将删除该局部变量。
+
+该属性应被实现为原生实体，从而可通过 `$pyObject::code.local.x` 来获取局部变量 `x` 的值，或者使用 `$pyObject::code.local.x(! ... ) 来设置局部变量的值。
 
 **异常**
 
@@ -8136,24 +8180,24 @@ $pyCodeObject.local(!
 **示例**
 
 ```js
-$pyCodeObject.local
+$pyObject::code.local
     // object: { }
 
-$pyCodeObject.local(! 'x', 'zh_CN')
+$pyObject::code.local(! 'x', 'zh_CN')
     // boolean: true
 
-$pyCodeObject.local('x')
+$pyObject::code.local('x')
     // string: 'zh_CN'
 ```
 
-##### 4.4.8.2) CPython 代码对象实体的 `eval` 方法
+##### 4.4.9.2) CPython 代码对象实体的 `eval` 方法
 
 执行 CPython 代码对象实体。
 
 **描述**
 
 ```js
-$pyCodeObject.eval(
+$pyObject::code.eval(
     [
         <object $globals = null: `the global variables defined by an object`>,
         [
@@ -8163,7 +8207,7 @@ $pyCodeObject.eval(
 ) any
 ```
 
-该方法在指定的局部环境中执行 CPython 代码对象；若未指定 `$globals`，则使用 `$PY` 定义的全局变量；若未指定 `$locals`，则使用通过 `$pyCodeObject.local` 属性指定的局部变量。
+该方法在指定的局部环境中执行 CPython 代码对象；若未指定 `$globals`，则使用 `$PY` 定义的全局变量；若未指定 `$locals`，则使用通过 `$pyObject::code.local` 属性指定的局部变量。
 
 **异常**
 
