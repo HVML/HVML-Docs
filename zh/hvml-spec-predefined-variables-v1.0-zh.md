@@ -7967,19 +7967,19 @@ $PY.except
 
 #### 4.4.6) `pythonize` 方法
 
-该方法将根据一个 HVML 字符串、对象、数组和集合构建一个 CPython 原生实体对象，之后可在其上执行对应的方法。
+该方法将根据一个 HVML 字符串、对象、数组和集合（一般性集合）构建一个 CPython 原生实体对象，之后可在其上执行对应的方法。
 
 **描述**
 
 ```js
 $PY.pythonize(
-    <string | object | array | tuple | set: $hvml_data: `A HVML string, object, array, tuple, or set`>
+    <string | object | array | tuple | set: $hvml_data: `An HVML string, object, array, tuple, or generic set`>
 ) native/pyObject::any | undefined
 ```
 
 该方法将使用给定的 HVML 字符串、对象、数组和集合构建一个 CPython 原生实体对象，之后可在其上执行对应的方法。
 
-注意，在 CPython 原生实体上对其本身执行获取器，将返回对应的 HVML 数据。比如，
+注意，在 CPython 原生实体上对其本身调用默认获取器，将返回对应的 HVML 数据。比如，
 
 使用空数组构造一个 CPython 原生实体：
 
@@ -8017,6 +8017,9 @@ $PY.pythonize(['apple', 'banana', 'cherry']).add('orange')
 
 $PY.pythonize(['apple', 'banana', 'cherry']).add('orange')()
     // array: ['apple', 'banana', 'cherry', 'orange']
+
+$PY.pythonize('Hello, World!').upper()()
+    // string: 'HELLO, WORLD!'
 ```
 
 #### 4.4.7) `run` 方法
