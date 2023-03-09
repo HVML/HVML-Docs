@@ -7800,11 +7800,11 @@ $PY.info
 **描述**
 
 ```js
-$PY.global
+$PY.global()
     object : `the global variables of the current __main__ module in the Python interpreter.`
 ```
 
-该属性获取器返回当前 Python 解释器 `__main__` 模块的全部全局变量及其值。
+该属性获取器返回当前 Python 解释器 `__main__` 模块的全部全局变量及其值。注意，键名具有 `__` 前缀和 `__` 后缀的键值对将被忽略。
 
 ```js
 $PY.global(<string $name: `the global variable name`>) any | undefined
@@ -7850,7 +7850,7 @@ $PY.global(!
 **示例**
 
 ```js
-$PY.global
+$PY.global()
     // object: { }
 
 $PY.global(! 'x', 'zh_CN')
@@ -7876,7 +7876,7 @@ $PY.global.x
 **描述**
 
 ```js
-$PY.local
+$PY.local()
     object : `the local variables used when executing $PY.run().`
 ```
 
@@ -7928,7 +7928,7 @@ $PY.local(!
 **示例**
 
 ```js
-$PY.local
+$PY.local()
     // object: { }
 
 $PY.local(! 'x', 'zh_CN')
