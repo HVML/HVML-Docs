@@ -295,8 +295,9 @@ Language: Chinese
       * [4.4.8) `import` 方法](#448-import-方法)
       * [4.4.9) `stringify` 方法](#449-stringify-方法)
       * [4.4.10) `compile` 方法](#4410-compile-方法)
-         - [4.4.10.1) CPython 代码动态对象 `local` 属性](#44101-cpython-代码动态对象-local-属性)
-         - [4.4.10.2) CPython 代码动态对象的 `eval` 方法](#44102-cpython-代码动态对象的-eval-方法)
+         - [4.4.10.1) CPython 代码动态对象 `entity` 属性](#44101-cpython-代码动态对象-entity-属性)
+         - [4.4.10.2) CPython 代码动态对象 `local` 属性](#44102-cpython-代码动态对象-local-属性)
+         - [4.4.10.3) CPython 代码动态对象的 `eval` 方法](#44103-cpython-代码动态对象的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RCa) 230228](#rca-230228)
@@ -7715,7 +7716,14 @@ $FILE.bin.tail($file, -5)
 
 ### 4.4) `PY`
 
-`PY` 是一个可装载的动态对象，默认绑定为行者级变量。该对象使用 CPython 装载指定的 Python 模块并可在其上调用（或访问）已装载模块提供的函数、对象方法或对象属性。
+`PY` 是一个可装载的动态对象，默认绑定为行者级变量。该对象使用 CPython 完成如下功能：
+
+1. `$PY.global` 和 `$PY.local`：使用 HVML 数据访问（包括设置） Python 环境使用的全局变量或局部变量。
+1. `$PY.import`：装载指定的 Python 模块并可在其上调用（或访问）已装载模块提供的子模块、函数及属性。
+1. `$PY.run`：执行一段 Python 代码、一个 Python 脚本或者一个指定的模块，并获得结果。
+1. `$PY.pythonize`：将 HVML 字符串、数组、元组、集合、对象等数据转换为 Python 对象实体，然后在其上执行这些 Python 对象实体支持的方法。
+1. `$PY.stringify`：获取 Python 对象实体的字符串表达。
+1. `$PY.compile`：编译一段 Python 代码，之后可在结果上调用 `local` 设定局部变量或调用 `eval` 方法执行编译后的代码并获得结果。
 
 #### 4.4.1) `impl` 属性
 
@@ -7768,6 +7776,7 @@ $PY.info object:
         - 'copyright':      < string: `the official copyright string for the current Python version.` >
         - 'compiler':       < string: `an indication of the compiler used to build the current Python version, in square brackets (e.g., [GCC 2.7.2.2])` >
         - 'build-info':     < string: `information about the sequence number and build date and time of the current Python interpreter instance, e.g., "#67, Aug  1 1997, 22:34:28"` >
+        - 'path':           < dynamic: `to get or set the default module search path`.>
 ```
 
 该属性返回描述当前 CPython 解释器相关信息的对象。
@@ -7782,14 +7791,11 @@ $PY.info object:
 $PY.info
     /* object:
        {
-            'version':      '3.3.9',
+            'version':      '3.10.9',
             'platform':     'Linux',
             'copyright':    'Copyright 1991-1995 Stichting Mathematisch Centrum, Amsterdam',
             'compiler':     '[GCC 2.7.2.2]',
             'build-info':   '#67, Aug 1 1997, 22:34:28',
-            'vendor':       'HVML Community',
-            'author':       'Vincent Wei',
-            '':       'Vincent Wei',
        }
     */
 ```
@@ -7967,7 +7973,7 @@ $PY.except
 
 #### 4.4.6) `pythonize` 方法
 
-该方法将根据一个 HVML 字符串、对象、数组和集合（一般性集合）构建一个 CPython 原生实体对象，之后可在其上执行对应的方法。
+该方法将根据一个 HVML 字符串、对象、数组和集合构建为一个 CPython 原生实体对象，之后可在其上执行对应的方法。
 
 **描述**
 
@@ -7989,15 +7995,22 @@ $PY.pythonize([])
 ```
 
 使用空数组构造一个 CPython 原生实体，并在其上执行默认获取器，将获得一个 HVML 的空数组。
-```
 
+```js
 $PY.pythonize([])()
     // array: []
 ```
 
+使用 HVML 数组构造一个 CPython 原生实体，并在其上执行 `reverse()` 方法，之后在其上执行默认获取器，将获得一个反转的 HVML 数组。
+
+```js
+$PY.pythonize([1, 2, 3]).reverse()()
+    // array: [3, 2, 1]
+```
+
 **返回值**
 
-该方法返回一个名称以 `pyObject::` 打头的原生实体。
+该方法返回一个名称为 `pyObject::any` 的原生实体。
 
 **异常**
 
@@ -8030,9 +8043,11 @@ $PY.pythonize('Hello, World!').upper()()
 
 ```js
 $PY.run(
-    <string $cmd_mod_file: `A program string, a module name, or a file name`>
-        [, < '[command | module | file] || skip-first-line || dont-write-byte-code' $options = 'command':
-            - 'command': `run a Python program as string.`
+    <string $cmd_mod_file: `an isolated expressions, a single statement, an arbitrarily long Python source code, a module name, or a file name`>
+        [, < '[command | statement | source | module | file] || skip-first-line || dont-write-byte-code' $options = 'command':
+            - 'command': `evaluate an isolated expressions.`
+            - 'statement': `run a single statement.`
+            - 'source': `run an arbitrarily long Python source code.`
             - 'module': `run a Python library module as a script.`
             - 'file': `run a Python file as a script.`
             - 'skip-first-line': `skip first line of source, allowing use of non-Unix forms of #!cmd.`
@@ -8175,7 +8190,31 @@ $PY.compile('c = 4 + 2')
     // pyCodeObject
 ```
 
-##### 4.4.10.1) CPython 代码动态对象 `local` 属性
+##### 4.4.10.1) CPython 代码动态对象 `entity` 属性
+
+该属性的获取器返回 CPthon 代码动态对象对应的 CPython 对象原生实体。
+
+**描述**
+
+```js
+$pyCodeObject.entity
+    native/pyObject::code : `the pyObject::code entity of this pyCodeObject.`
+```
+
+该属性获取器返回 `$pyCodeObject` 对应的 CPython 代码对象原生实体。
+
+**异常**
+
+该属性的获取器不产生异常。
+
+**示例**
+
+```js
+$pyCodeObject.entity
+    // native/pyObject:code
+```
+
+##### 4.4.10.2) CPython 代码动态对象 `local` 属性
 
 该属性反映的是 CPython 代码动态对象的局部变量字典。
 
@@ -8244,7 +8283,7 @@ $pyCodeObject.local('x')
     // string: 'zh_CN'
 ```
 
-##### 4.4.10.2) CPython 代码动态对象的 `eval` 方法
+##### 4.4.10.3) CPython 代码动态对象的 `eval` 方法
 
 执行 CPython 代码动态对象。
 
