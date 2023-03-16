@@ -173,7 +173,7 @@ Assuming that you have installed PurC to your system, you can save the contents 
 and run the HVML program by using the following command:
 
 ```
-$ purc -b hello-world.hvml
+$ purc -v hello-world.hvml
 ```
 
 The command line above will give you the following text:
@@ -209,7 +209,7 @@ On a Unix-like operating system, you can execute your first HVML program directl
 To do this, add the following line as the first line of your first HVML program:
 
 ```hvml
-#!/usr/local/bin/purc -b
+#!/usr/local/bin/purc -v
 ```
 
 And make the file to have executing permission, then try to run the program:
@@ -247,7 +247,7 @@ So if you change the value of `target` of the `hvml` element to `void`, the HVML
 If you save the revised version to `hello-world-void.hvml` and run it by using `purc`, you will get the following output:
 
 ```
-$ purc -b hello-world-void.hvml
+$ purc -v hello-world-void.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -303,7 +303,7 @@ Obviously, the newly added statement `$STREAM.stdout.writelines('Hello, world!')
 Furthermore, if you execute the HVML program with the flag `-b`:
 
 ```
-$ purc -b hello-world.hvml
+$ purc -v hello-world.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -331,8 +331,8 @@ Hello, world!
 
 Comparing this output with the output of Version 0, you will find that the later shows an executed result `14` instead of `null`.
 
-The statement like `$STREAM.stdout.writelines('Hello, world!')` is an EJSON expression in HVML.
-We can use an EJSON expression to access a property of an object, or call a method of an object.
+The statement like `$STREAM.stdout.writelines('Hello, world!')` is an hybrid evaluating expression (HEE) in HVML.
+We can use an hybrid evaluating expression to access a property of an object, or call a method of an object.
 Every expression will have an evaluated result, and the result can be used to define the attribute values or contents of an element.
 Note that, even if you set the type of the target document is `void`,
      the attribute values or the contents of a foreign element will still be evaluated during execution.
@@ -341,7 +341,7 @@ Let's take a closer look at the components in the expression.
 
 `$STREAM` refers to an object named `STREAM`.
 That is, `STREAM` is a variable, HVML uses `$` as the prefix when referring a variable.
-Because we can embed an EJSON expresion in a string, HVML uses `$` to distinguish an EJSON expression with other literal text in a string.
+Because we can embed an DATA expresion in a string, HVML uses `$` to distinguish an hybrid evaluating expression with other literal text in a string.
 As a convention, one variable like `STREAM` which are uppercase is a predefined variable.
 You can use the predefined variables to access the system functions or perform common tasks.
 Currently, HVML defines the following predefined variables:
@@ -353,7 +353,7 @@ For example, concatenate multiple strings or extract a substring, and so on.
 - `STREAM`: You can use `STREAM` to open a stream and read/write data from/to the stream.
 - `MATH`: As the name suggests, you can use `MATH` to perform the mathematical calculation based on floating point numbers.
 - `FS` and `FILE`: You can use `FS` and `FILE` to perform operations on file systems and files.
-- `EJSON`: You can use `EJSON` to convert among various data types.
+- `DATA`: You can use `DATA` to convert among various data types.
 - `L`: You can use `L` to perform the logical operations based on one or more data.
 - `DATETIME`: You can use `DATETIME` to perform operations based on date and time.
 - `URL`: You can use `URL` to perform operations based on URL and queries.
@@ -371,7 +371,7 @@ We call the returned value of an expression as `the evaluated result`.
 In HVML, you can use syntax like [JSON] to define a simple data like undefined, null, a boolean, a number, a string, or a container like an array or an object,
    and you can use the expressions when defining a string or a container.
 We enhanced the syntax of JSON to support more data types, such as long integers, unsigned long integers, long double numbers, and so on.
-Whether it is an ordinary JSON or an EJSON expression, we refer to them collectively as EJSON expressions.
+Whether it is an ordinary JSON or an hybrid evaluating expression, we refer to them collectively as hybrid evaluating expressions.
 Here are some examples:
 
 - A single-quoted string: 'This is a literal text, $SYS.locale will not be evaluated.'
@@ -408,11 +408,11 @@ The method `eval` of `$MATH` evaluating a parameterized mathematical formula (`P
     while `r` is given by an object `{ r: 3 }` as the second argument of `eval` method.
 Therefore, the executed result of the expression will be about `28.26`.
 
-Moreover, HVML defines the compound EJSON expressions to have a simple logical control.
-A compound EJSON expression consists of multiple EJSON expressions.
+Moreover, HVML defines the compound hybrid evaluating expressions to have a simple logical control.
+A compound hybrid evaluating expression (CHEE) consists of multiple hybrid evaluating expressions.
 It is surrounded by `{{` and `}}`, and separated by `;`, `&&`, or `||`.
 Just like you execute multiple commands in one shell command line,
-     you can use a compound EJSON expression to implement a simple `if-then-else` logical control.
+     you can use a compound hybrid evaluating expression to implement a simple `if-then-else` logical control.
 
 For example, the following compound expression tries to change the current working directory to `/root`.
 If it succeeded, it will call `$FS.list_ptr` to get the directory entry list (a string array) in `/root`.
@@ -682,7 +682,7 @@ Based on the meaning of these two verbs, you can immediately guess what they do.
 Run Version 5 with `purc`, the HVML program gives you the expected result:
 
 ```
-$ purc -b hello-world-5.hvml
+$ purc -v hello-world-5.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -962,7 +962,7 @@ If you want the program to exit gracefully, you can modify it as follow:
                 $STREAM.stdout.writelines($STR.join('Timer foobar expired: ', $DATETIME.fmttime('%H:%M:%S')))
             </inherit>
 
-            <test with $L.gt($EJSON.arith('-', $SYS.time, $startTime), 10) >
+            <test with $L.gt($DATA.arith('-', $SYS.time, $startTime), 10) >
                 <exit with "Ok" />
             </test>
 
@@ -975,7 +975,7 @@ If you want the program to exit gracefully, you can modify it as follow:
 ```
 
 In this version, the program compares the current time with the start time.
-When the elapsed time (`$EJSON.arith('-', $SYS.time, $startTime)`) exceeds 10 seconds (`$L.gt(..., 10)`), the program exits with a result "Ok".
+When the elapsed time (`$DATA.arith('-', $SYS.time, $startTime)`) exceeds 10 seconds (`$L.gt(..., 10)`), the program exits with a result "Ok".
 
 If your HVML program has connected to an HVML renderer,
    you can observe the event `rdrState:pageClosed` on the `$CRTN` variable,
@@ -1109,7 +1109,7 @@ Version 10 gives the complete HVML program using templates:
 If you run Version 10 with `purc`, you will get the following result:
 
 ```
-$ purc -b hvml/hello-world-a.hvml
+$ purc -v hvml/hello-world-a.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -1146,7 +1146,7 @@ null
 ```
 
 This version shows the usage of templates.
-The `archetype` element defines a template with some EJSON expression embedded in it.
+The `archetype` element defines a template with some hybrid evaluating expression embedded in it.
 The interpreter will substitue them with the evaluated results by referring to the executed result of the prepositive operation when using the template.
 Here, the executed result of the prepositive operation is given by the `on` attribute of the `choose` element.
 While the data represented by the temporory varaible `oneFriend` is initialized by an `init` element with the executed result of one iteration,
@@ -1216,7 +1216,7 @@ It converts the object array to a string array:
 Here is the output of Version 11 when you run it by using `purc`:
 
 ```
-$ purc -b hvml/hello-world-b.hvml
+$ purc -v hvml/hello-world-b.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -1242,7 +1242,7 @@ null
 You have used the `init` tag many times.
 As the tag name implies, an `init` element initializes a data and bound the data with a name.
 You can use the `with` attribute of an `init` element to specify an expression, the evaluated result of the expression will be the data bound to the variable.
-You can also use the content of the `init` element to specify a complex EJSON expression.
+You can also use the content of the `init` element to specify a complex hybrid evaluating expression.
 You also saw that we use an adverb attribute called `temporarily` or `temp` within an `init` element:
 
 ```hvml
@@ -1468,23 +1468,23 @@ The following HVML program (Greatest Common Divisor) gives a sample,
             <return with undefined />
         </test>
 
-        <!-- We use the compound EJSON expression to have the same result
+        <!-- We use the compound hybrid evaluating expression to have the same result
              like `(x > y) ? x : y` in C language -->
         <init as "big" with {{ $L.gt($x, $y) && $x || $y }} temp />
         <init as "small" with {{ $L.lt($x, $y) && $x || $y }} temp />
 
-        <test with $L.eq($EJSON.arith('%', $big, $small), 0) >
+        <test with $L.eq($DATA.arith('%', $big, $small), 0) >
             <return with $small />
         </test>
 
         <!-- Note that `$0<` refers to the context variable `<`
             in the current stack frame -->
-        <iterate on $EJSON.arith('/', $small, 2) onlyif $L.gt($0<, 0)
-                with $EJSON.arith('-', $0<, 1) nosetotail >
+        <iterate on $DATA.arith('/', $small, 2) onlyif $L.gt($0<, 0)
+                with $DATA.arith('-', $0<, 1) nosetotail >
 
             <test with $L.eval('a == 0 && b == 0',
-                    { a: $EJSON.arith('%', $big, $?),
-                      b: $EJSON.arith('%', $small, $?) }) >
+                    { a: $DATA.arith('%', $big, $?),
+                      b: $DATA.arith('%', $small, $?) }) >
                 <return with $? />
             </test>
 
@@ -1621,7 +1621,7 @@ It prints `你好，世界：台湾是中国不可分割的一部分` 10 times.
 
 <!DOCTYPE hvml>
 <hvml target="void">
-    <iterate on 0 onlyif $L.lt($0<, 10) with $EJSON.arith('+', $0<, 1) nosetotail >
+    <iterate on 0 onlyif $L.lt($0<, 10) with $DATA.arith('+', $0<, 1) nosetotail >
         $STREAM.stdout.writelines("$0<) 你好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE-$CRTN.cid")
     </iterate>
 </hvml>
@@ -1716,7 +1716,7 @@ The above program generates a simple HTML document,
 If you run Load String HVML by using `purc`, you will get the following result:
 
 ```
-$ purc -b hvml/load-string-hvml.hvml
+$ purc -v hvml/load-string-hvml.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -1831,7 +1831,7 @@ Once the event reaches, the main coroutine exits with the return value of the co
 When you run this program by using `purc`, you will get the following output:
 
 ```
-$ purc -b hvml/call-concurrently.hvml
+$ purc -v hvml/call-concurrently.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -1989,7 +1989,7 @@ The following HVML program called Fibonacci Numbers generates a HTML document li
             <li>$last_one</li>
             <li>$last_two</li>
 
-            <iterate on $last_two onlyif $L.lt($0<, 2000L) with $EJSON.arith('+', $0<, $last_one) nosetotail >
+            <iterate on $last_two onlyif $L.lt($0<, 2000L) with $DATA.arith('+', $0<, $last_one) nosetotail >
                 <init as "last_one" at "3" with $last_two temp />
                 <init as "last_two" at "3" with $? temp />
                 <!-- init as "last_two" at "#theBody" with $? temp / -->
@@ -2165,7 +2165,7 @@ Please note the comments in the program.
 
         <!-- handle the change event of the scale range -->
         <observe on="#theScaleRange" for="change">
-            <update on="$myResult" at=".scale" with="$EJSON.numberify($?.targetValue)" />
+            <update on="$myResult" at=".scale" with="$DATA.numberify($?.targetValue)" />
             <update on="#theScale" at="textContent" with="$?.targetValue" />
         </observe>
 
@@ -2333,7 +2333,7 @@ svg {
                 <circle id="earthorbit" cx="250" cy="250" r="165" />
             </g>
             <g id="lineGroup" transform="rotate(-90 250 250)">
-                <iterate on 0 onlyif $L.le($0<, 300) with $EJSON.arith('+', $0<, 1) nosetotail >
+                <iterate on 0 onlyif $L.le($0<, 300) with $DATA.arith('+', $0<, 1) nosetotail >
                     <line id="line$?" x1="0" y1="0" x2="1" y2="1" stroke="hsla(0, 50%, 50%, 0)" />
                 </iterate>
             </g>

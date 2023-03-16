@@ -18,7 +18,7 @@
       * [2.3.2) Flow control](#232-flow-control)
       * [2.3.3) Event loop](#233-event-loop)
       * [2.3.4) Handling of errors and exceptions](#234-handling-of-errors-and-exceptions)
-   + [2.4) eJSON Evaluation Expressions](#24-ejson-evaluation-expressions)
+   + [2.4) Hybrid Evaluation Expressions](#24-ejson-evaluation-expressions)
       * [2.4.1) The extended JSON](#241-the-extended-json)
       * [2.4.2) eJSON Evaluation Expressions](#242-ejson-evaluation-expressions)
       * [2.4.3) Complex eJSON Evaluation Expressions](#243-complex-ejson-evaluation-expressions)
@@ -492,13 +492,13 @@ abstraction than common script languages such as JavaScript or Python.
 
 #### 2.3.4) Handling of errors and exceptions
 
-### 2.4) eJSON Evaluation Expressions
+### 2.4) Hybrid Evaluation Expressions
 
-#### 2.4.1) The extended JSON
+#### 2.4.1) The Extended JSON
 
-#### 2.4.2) eJSON Evaluation Expressions
+#### 2.4.2) Hybrid Evaluation Expressions
 
-#### 2.4.3) Complex eJSON Evaluation Expressions
+#### 2.4.3) Compound Hybrid Evaluation Expressions
 
 ### 2.5) Variables
 

@@ -135,7 +135,7 @@ HVML 社区发布了一个开源的 HVML 解释器 `PurC`。有关构建和安�
 并使用以下命令运行 HVML 程序：
 
 ```
-$ purc -b hello-world.hvml
+$ purc -v hello-world.hvml
 ```
 
 上面的命令行将输出如下文本到您的终端屏幕或者窗口中：
@@ -170,7 +170,7 @@ null
 在类 Unix 操作系统上，您可以直接从命令行执行您的第一个 HVML 程序。为此，添加以下行作为您的第一个 HVML 程序的第一行：
 
 ```
-#!/usr/local/bin/purc -b
+#!/usr/local/bin/purc -v
 ```
 
 并使文件具有执行权限，然后尝试运行程序：
@@ -206,7 +206,7 @@ $ ./hello-world.hvml
 如果您将修改后的版本保存到 `hello-world-void.hvml` 并使用 `purc` 运行它，您将获得以下输出：
 
 ```
-$ purc -b hello-world-void.hvml
+$ purc -v hello-world-void.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -222,14 +222,14 @@ Executing HVML program from `file:///srv/devel/hvml/purc/build/hvml/hello-world-
 null
 ```
 
-此外，如果您在没有 `-b` 标志的情况下运行 HVML 程序，您将一无所获：
+此外，如果您在没有 `-v` 标志的情况下运行 HVML 程序，您将一无所获：
 
 ```
 $ purc hello-world.hvml
 $
 ```
 
-该 `-b` 标志（或相应的长选项 `--verbose`）告诉解释器在执行程序时打印详细信息。HVML 程序生成一个 HTML 文档，但不做任何事情来将信息输出到您的终端。因此，如果您不加 `-b` 标志运行 `purc`，您什么也看不到。
+该 `-v` 标志（或相应的长选项 `--verbose`）告诉解释器在执行程序时打印详细信息。HVML 程序生成一个 HTML 文档，但不做任何事情来将信息输出到您的终端。因此，如果您不加 `-v` 标志运行 `purc`，您什么也看不到。
 
 那么，如果您想在终端打印一些文本，如何在 HVML 中编程呢？
 
@@ -256,10 +256,10 @@ Hello, world!
 
 显然，新添加的语句 `$STREAM.stdout.writelines('Hello, world!')` 输出了 `Hello, world!` 到您的终端。
 
-此外，如果您使用 `-b` 标志执行此 HVML 程序：
+此外，如果您使用 `-v` 标志执行此 HVML 程序：
 
 ```
-$ purc -b hello-world.hvml
+$ purc -v hello-world.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -287,18 +287,18 @@ Hello, world!
 
 将此输出与 Version 0 的输出进行比较，您会发现后者显示的是执行结果 `14`，而不是 `null`。
 
-类似 `$STREAM.stdout.writelines('Hello, world!')` 的语句是 HVML 中的 EJSON 表达式。我们可以使用 EJSON 表达式来访问对象的属性或者调用对象的方法。每个表达式都会有一个求值结果，结果可用于定义元素的属性或内容。请注意，即使您将目标文档的类型设置为 `void`，在执行期间仍会对外部元素的属性或内容求值。
+类似 `$STREAM.stdout.writelines('Hello, world!')` 的语句是 HVML 中的 HEE 表达式。我们可以使用 HEE 表达式来访问对象的属性或者调用对象的方法。每个表达式都会有一个求值结果，结果可用于定义元素的属性或内容。请注意，即使您将目标文档的类型设置为 `void`，在执行期间仍会对外部元素的属性或内容求值。
 
 让我们仔细看看表达式中的各个组成部分。
 
-`$STREAM` 指的是一个名为 `STREAM` 的对象。也就是说，`STREAM` 是一个变量，HVML 在引用变量时使用 `$` 作为前缀。因为我们可以在字符串中嵌入 EJSON 表达式，所以 HVML 用 `$` 将 EJSON 表达式与字符串中的其他字面文本区分开来。按照惯例，像 `STREAM` 这样的大写的变量是预定义变量。您可以使用预定义的变量来访问系统功能或执行常见任务。目前，HVML 定义了以下预定义变量：
+`$STREAM` 指的是一个名为 `STREAM` 的对象。也就是说，`STREAM` 是一个变量，HVML 在引用变量时使用 `$` 作为前缀。因为我们可以在字符串中嵌入 HEE 表达式，所以 HVML 用 `$` 将 HEE 表达式与字符串中的其他字面文本区分开来。按照惯例，像 `STREAM` 这样的大写的变量是预定义变量。您可以使用预定义的变量来访问系统功能或执行常见任务。目前，HVML 定义了以下预定义变量：
 
 - `SYS`：您可以用 `SYS` 来获取或设置有关您的系统的信息。例如，当前语言环境、时间、工作目录等。
 - `STR`: 可以用 `STR` 来操作字符串。例如，连接多个字符串或提取一个子字符串等等。
 - `STREAM`：您可以使用 `STREAM` 打开流并从流中读取/写入数据。
 - `MATH`：顾名思义，可以用 `MATH` 来进行基于浮点数的数学计算。
 - `FS` 和 `FILE`：您可以使用 `FS` 和 `FILE` 对文件系统和文件执行操作。
-- `EJSON`：您可以使用 `EJSON` 在各种数据类型之间进行转换。
+- `DATA`：您可以使用 `DATA` 在各种数据类型之间进行转换。
 - `L`：您可以使用 `L` 来执行基于一个或多个数据的逻辑操作。
 - `DATETIME`：您可以使用 `DATETIME` 来执行基于日期和时间的操作。
 - `URL`：您可以使用 `URL` 来执行针对 URL 和查询的操作。
@@ -309,7 +309,7 @@ Hello, world!
 
 我们将表达式的返回值称为 `求值结果（evaluated result）`。
 
-在 HVML 中，您可以使用类似 JSON 的语法来定义简单的数据，例如 undefined、null、boolean（布尔值）、数值（number）、字符串（string）或容器（例如数组或对象），并且可以在定义字符串或对象时使用表达式。我们增强了 JSON 的语法以支持更多的数据类型，例如长整数、无符号长整数、长双精度数等。无论是普通的 JSON 还是 EJSON 表达式，我们统称为 EJSON 表达式。这里有些例子：
+在 HVML 中，您可以使用类似 JSON 的语法来定义简单的数据，例如 undefined、null、boolean（布尔值）、数值（number）、字符串（string）或容器（例如数组或对象），并且可以在定义字符串或对象时使用表达式。我们增强了 JSON 的语法以支持更多的数据类型，例如长整数、无符号长整数、长双精度数等。无论是普通的 JSON 还是 eJSON 表达式，我们统称为 HEE 表达式。这里有些例子：
 
 - 单引号字符串：`'这是一个文字文本，$SYS.locale 不会被求值。'`
 - 双引号字符串：`"$SYS.locale 将在此文本中进行求值。"`
@@ -342,7 +342,7 @@ $MATH.eval('PI * r * r', { r: 3 })
 
 `$MATH` 的 `eval` 方法计算一个参数化的数学公式（在这个例子中是 `PI * r * r`），而 `r` 作为 `eval` 方法的第二个参数由一个对象 `{r: 3}` 给出。因此，该表达式的执行结果约为 `28.26`。
 
-此外，HVML 定义了复合 EJSON 表达式以具有简单的逻辑控制能力。复合 EJSON 表达式由多个 EJSON 表达式组成。它由 `{{` 和 `}}` 包围，由 `;`、`&&` 或 `||` 分隔。就像在一个 Shell 命令行中执行多个命令一样，可以使用复合 EJSON 表达式来实现简单的 `if-then-else` 逻辑控制。
+此外，HVML 定义了复合 HEE 表达式以具有简单的逻辑控制能力。复合 HEE 表达式由多个 HEE 表达式组成。它由 `{{` 和 `}}` 包围，由 `;`、`&&` 或 `||` 分隔。就像在一个 Shell 命令行中执行多个命令一样，可以使用复合 HEE 表达式来实现简单的 `if-then-else` 逻辑控制。
 
 例如，以下复合表达式尝试将当前工作目录更改为 `/root`。如果成功，它将调用 `$FS.List_ptr` 获取 `/root` 中的目录入口列表（一个字符串数组）。如果失败，则返回一个失败提示。不管成功还是失败，最终表达式都会调用 `$STREAM.stdout.writelines` 来打印目录项列表或失败提示。
 
@@ -559,7 +559,7 @@ $MATH.eval('PI * r * r', { r: 3 })
 我们在 Version 5 中使用了两个新的动词元素：`init` 和 `iterate`。根据这两个动词的含义，您可以立即猜出它们的作用。使用 `purc` 运行 Version 5，HVML 程序会为您提供预期的结果：
 
 ```
-$ purc -b hello-world-5.hvml
+$ purc -v hello-world-5.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -834,7 +834,7 @@ Timer foobar expired: 13:21:03
                 $STREAM.stdout.writelines($STR.join('Timer foobar expired: ', $DATETIME.fmttime('%H:%M:%S')))
             </inherit>
 
-            <test with $L.gt($EJSON.arith('-', $SYS.time, $startTime), 10) >
+            <test with $L.gt($DATA.arith('-', $SYS.time, $startTime), 10) >
                 <exit with "Ok" />
             </test>
 
@@ -846,7 +846,7 @@ Timer foobar expired: 13:21:03
 </hvml>
 ```
 
-在此版本中，程序将当前时间与开始时间进行比较。当程序的执行时间（`$EJSON.arith('-', $SYS.time, $startTime)`）超过 10 秒（`$L.gt(..., 10)`）时，程序退出并返回结果 “Ok”。
+在此版本中，程序将当前时间与开始时间进行比较。当程序的执行时间（`$DATA.arith('-', $SYS.time, $startTime)`）超过 10 秒（`$L.gt(..., 10)`）时，程序退出并返回结果 “Ok”。
 
 如果您的 HVML 程序已连接到 HVML 渲染器，您可以观察 `$CRTN` 变量上的事件 `rdrState:pageClosed`。`$CRTN` 这一预定义变量代表了当前运行的 HVML 程序实例，也就是协程。这个事件意味着用户已经关闭了 HVML 渲染器为您的 HVML 协程创建的窗口，所以收到这个事件的时刻便是程序安全退出的最佳时机。
 
@@ -968,7 +968,7 @@ Version 10 提供了使用模板的完整 HVML 程序：
 如果您使用 `purc` 运行 Version 10，您将获得以下结果：
 
 ```
-$ purc -b hvml/hello-world-a.hvml
+$ purc -v hvml/hello-world-a.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -1004,7 +1004,7 @@ Executing HVML program from `file:///srv/devel/hvml/purc/build/hvml/hello-world-
 null
 ```
 
-该版本展示了模板的使用方法。该 `archetype` 元素定义了一个模板，其中嵌入了一些 EJSON 表达式。解释器在使用模板时，会参考前置运算的执行结果，将其置换为求值结果。这里，前置运算的执行结果由 `choose` 元素的 `on` 属性给出。临时变量 `oneFriend` 表示的数据由 `init` 元素初始化，使用了一次迭代的执行结果，然后通过后续的 `update` 元素合并了一个新的属性 `greeting`。该属性的值又来自第二个 `init` 元素初始化的变量 `greetings`。
+该版本展示了模板的使用方法。该 `archetype` 元素定义了一个模板，其中嵌入了一些 HEE 表达式。解释器在使用模板时，会参考前置运算的执行结果，将其置换为求值结果。这里，前置运算的执行结果由 `choose` 元素的 `on` 属性给出。临时变量 `oneFriend` 表示的数据由 `init` 元素初始化，使用了一次迭代的执行结果，然后通过后续的 `update` 元素合并了一个新的属性 `greeting`。该属性的值又来自第二个 `init` 元素初始化的变量 `greetings`。
 
 本质上，一个 `archetype` 元素定义了一个包含元素内容的变量。元素定义的内容将被置换，并且总是将字符串作为结果。然后 `update` 可以使用该字符串插入目标文档。
 
@@ -1064,7 +1064,7 @@ Version 11 提供了一个使用 `archedata` 元素的示例。它将对象数�
 这是您使用 `purc` 运行时 Version 11 的输出：
 
 ```
-$ purc -b hvml/hello-world-b.hvml
+$ purc -v hvml/hello-world-b.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -1087,7 +1087,7 @@ null
 
 ### 静态变量与临时变量
 
-您已多次使用该 `init` 标签。正如标签名称所暗示的那样，`init` 元素初始化数据并用名称绑定数据。您可以使用 `init` 元素的 `with` 属性来指定表达式，表达式的计算结果将是绑定到变量的数据。您还可以使用 `init` 元素的内容来指定复杂的 EJSON 表达式。您还看到我们在 `init` 元素中使用了称为 `temporarily` 或 `temp` 的副词属性：
+您已多次使用该 `init` 标签。正如标签名称所暗示的那样，`init` 元素初始化数据并用名称绑定数据。您可以使用 `init` 元素的 `with` 属性来指定表达式，表达式的计算结果将是绑定到变量的数据。您还可以使用 `init` 元素的内容来指定复杂的 HEE 表达式。您还看到我们在 `init` 元素中使用了称为 `temporarily` 或 `temp` 的副词属性：
 
 ```hvml
     <init as "friendList" with [] />
@@ -1268,21 +1268,21 @@ HVML 也提供对集合的支持，但比其他语言有更多的特性。在 HV
             <return with undefined />
         </test>
 
-        <!-- 我们使用复合 EJSON 表达式来获得类似 C 语言表达式 `(x > y) ? x : y` 的效果 -->
+        <!-- 我们使用 CHEE 表达式来获得类似 C 语言表达式 `(x > y) ? x : y` 的效果 -->
         <init as "big" with {{ $L.gt($x, $y) && $x || $y }} temp />
         <init as "small" with {{ $L.lt($x, $y) && $x || $y }} temp />
 
-        <test with $L.eq($EJSON.arith('%', $big, $small), 0) >
+        <test with $L.eq($DATA.arith('%', $big, $small), 0) >
             <return with $small />
         </test>
 
         <!-- 注意，'$0<'  指的是在当前栈帧中的上下文变量 '<' -->
-        <iterate on $EJSON.arith('/', $small, 2) onlyif $L.gt($0<, 0)
-                with $EJSON.arith('-', $0<, 1) nosetotail >
+        <iterate on $DATA.arith('/', $small, 2) onlyif $L.gt($0<, 0)
+                with $DATA.arith('-', $0<, 1) nosetotail >
 
             <test with $L.eval('a == 0 && b == 0',
-                    { a: $EJSON.arith('%', $big, $?),
-                      b: $EJSON.arith('%', $small, $?) }) >
+                    { a: $DATA.arith('%', $big, $?),
+                      b: $DATA.arith('%', $small, $?) }) >
                 <return with $? />
             </test>
 
@@ -1402,7 +1402,7 @@ HVML 也提供对集合的支持，但比其他语言有更多的特性。在 HV
 
 <!DOCTYPE hvml>
 <hvml target="void">
-    <iterate on 0 onlyif $L.lt($0<, 10) with $EJSON.arith('+', $0<, 1) nosetotail >
+    <iterate on 0 onlyif $L.lt($0<, 10) with $DATA.arith('+', $0<, 1) nosetotail >
         $STREAM.stdout.writelines("$0<) 您好，世界：台湾是中国不可分割的一部分——来自 HVML COROUTINE-$CRTN.cid")
     </iterate>
 </hvml>
@@ -1488,7 +1488,7 @@ $ purc -l hello-world-c.hvml hello-world-c.hvml
 如果您使用 `purc` 运行加载字符串 HVML，您会得到以下结果:
 
 ```
-$ purc -b hvml/load-string-hvml.hvml
+$ purc -v hvml/load-string-hvml.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -1589,7 +1589,7 @@ The main coroutine exited.
 当您使用 `purc` 运行这个程序时，您会得到以下输出：
 
 ```
-$ purc -b hvml/call-concurrently.hvml
+$ purc -v hvml/call-concurrently.hvml
 purc 0.8.0
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -1726,7 +1726,7 @@ PurC 提供了三种方式（协议）来连接一个 HVML 解释器实例和 HV
             <li>$last_one</li>
             <li>$last_two</li>
 
-            <iterate on $last_two onlyif $L.lt($0<, 2000L) with $EJSON.arith('+', $0<, $last_one) nosetotail >
+            <iterate on $last_two onlyif $L.lt($0<, 2000L) with $DATA.arith('+', $0<, $last_one) nosetotail >
                 <init as "last_one" at "3" with $last_two temp />
                 <init as "last_two" at "3" with $? temp />
                 <!-- init as "last_two" at "#theBody" with $? temp / -->
@@ -1748,7 +1748,7 @@ PurC 提供了三种方式（协议）来连接一个 HVML 解释器实例和 HV
 </hvml>
 ```
 
-如果您不带任何选项使用 `purc` 运行此程序，`purc` 将使用名为 `HEADLESS` 的内置渲染器。这个渲染器将记录从任何 HVML 解释器实例接收到的消息到一个本地文件：在 `Linux` 上默认为 `/dev/null`。因为这个 HVML 程序没有使用 `$STREM.stdout`，所以您在终端上看不到任何内容。但是您可以像以前一样使用选项 `-b` 在终端中显示 HVML 程序生成的 HTML 内容。
+如果您不带任何选项使用 `purc` 运行此程序，`purc` 将使用名为 `HEADLESS` 的内置渲染器。这个渲染器将记录从任何 HVML 解释器实例接收到的消息到一个本地文件：在 `Linux` 上默认为 `/dev/null`。因为这个 HVML 程序没有使用 `$STREM.stdout`，所以您在终端上看不到任何内容。但是您可以像以前一样使用选项 `-v` 在终端中显示 HVML 程序生成的 HTML 内容。
 
 您还可以直接将 `purc` 连接到 `PURCMC` 渲染器，例如 `xGUI Pro`。具体操作，请参考 https://github.com/HVML/xGUI-Pro 了解安装 xGUI Pro 的详细说明。
 
@@ -1890,7 +1890,7 @@ $ purc --rdr-prot=purcmc fibonacci-numbers.hvml
 
         <!-- 处理用于表示精度的 range 小构件的变化事件 -->
         <observe on="#theScaleRange" for="change">
-            <update on="$myResult" at=".scale" with="$EJSON.numberify($?.targetValue)" />
+            <update on="$myResult" at=".scale" with="$DATA.numberify($?.targetValue)" />
             <update on="#theScale" at="textContent" with="$?.targetValue" />
         </observe>
 
@@ -2057,7 +2057,7 @@ svg {
                 <circle id="earthorbit" cx="250" cy="250" r="165" />
             </g>
             <g id="lineGroup" transform="rotate(-90 250 250)">
-                <iterate on 0 onlyif $L.le($0<, 300) with $EJSON.arith('+', $0<, 1) nosetotail >
+                <iterate on 0 onlyif $L.le($0<, 300) with $DATA.arith('+', $0<, 1) nosetotail >
                     <line id="line$?" x1="0" y1="0" x2="1" y2="1" stroke="hsla(0, 50%, 50%, 0)" />
                 </iterate>
             </g>
