@@ -208,7 +208,60 @@ Hello, world!
 1. 可将 HVML 字符串、数组、元组、集合、对象等数据转换为 Python 的内部对象，然后在其上执行这些 Python 内部对象支持的方法，或使用这些对象调用其他 Python 模块或函数。
 1. 将 Python 内部对象转换为对应的 HVML 数据，或者获取对应的字符串表达。
 
-## 示例程序：计算圆周率
+## 示例程序：寻找素数
+
+```hvml
+<!DOCTYPE hvml SYSTEM "f: PY">
+<hvml target="html">
+    <head>
+        <title>Embedded Python in HVML: Find Primes</title>
+    </head>
+
+    <body>
+        <init as 'pyCode'>
+'''
+def find_next_prime(start):
+    if start < 2:
+        start = 2
+
+    while True:
+        start += 1
+        for j in range(2, start + 1):
+            if start % j == 0:
+                break
+        if j == start:
+            return start
+'''
+        </init>
+
+        <inherit>
+            {{ $PY.run($pyCode, 'source') }}
+
+            <catch for `ExternalFailure`>
+                <exit with "A Python exception raised: $PY.except" />
+            </catch>
+        </inherit>
+
+        <h1>Embeding Python in HVML: Find Primes</h1>
+
+        <ul>
+            <choose on 2L>
+                <iterate on $? onlyif $L.lt($0<, 200L)
+                        with $PY.global.find_next_prime($0<) nosetotail >
+                    <li>$?</li>
+                </iterate>
+            </choose>
+        </ul>
+
+        <test with $L.streq('caseless', $RDR.state.comm, 'socket') >
+            <observe on $CRTN for "rdrState:pageClosed">
+                <exit with 'Ok' />
+            </observe>
+        </test>
+    </body>
+</hvml>
+
+```
 
 HVML 的解释器和渲染器分离设计，为我们的 GUI/CLI 设计带来非常多的便利。一方面，如内建的 Foil 字符渲染器和 xGUI Pro 图形渲染器表现的那样，我们可以通过 HVML 统一 CLI（命令行交互）和 GUI（图形用户交互）的开发，也就是说，今后在开发命令行程序时，也可以使用 HTML、CSS 等 Web 技术来表现内容并完成和用户的交互。另一方面，我们可以将渲染器运行在远程设备上，从而获得让一个应用程序跨端（cross-end）执行的能力。
 
