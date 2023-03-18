@@ -1,6 +1,6 @@
 # 在 HVML 程序中嵌入 Python
 
-2023 年 3 月，HVML 社区发布了 HVML 开源解释器 PurC 的 0.9.7 版本，其中增加了对 Python 的支持。
+2023 年 3 月，HVML 社区发布了 HVML 开源解释器 PurC 的 0.9.8 版本，其中增加了对 Python 的支持。
 
 使用这一增强，我们可以非常方便地在 HVML 程序中调用 Python 模块，利用 Python 生态中的丰富软件包或模块开发自己的 HVML 应用。与此同时，由 HVML 提供的跨平台、统一 GUI/CLI 应用开发框架以及跨端运行的能力，将弥补 Python 生态和 Web 生态之间几十年来难以跨越的鸿沟，从而极大提升 Python 应用的表现力以及和用户交互的能力。
 
@@ -8,9 +8,31 @@
 
 ## 准备工作
 
-在 Linux 上安装 PurC 和 xGUI Pro。
+截止目前，HVML 开源解释器 PurC 和图形渲染器 xGUI Pro 均支持在 Linux 或 macOS 桌面上运行。为执行本文提到的 Python 代码，需要提前安装好 Python 3.9+（Linux）或 Python 3.11+（macOS）运行时环境、开发时环境以及相关模块。
 
-安装 Python 以及 NumPy、Matplotlib 等第三方模块。
+比如，在 Ubuntu Linux 20.04 或以上系统中，首先安装常用开发工具，如 git、cmake、gcc 等，然后使用如下命令：
+
+```console
+$ sudo apt install python3 python3-pip python3-dev
+$ sudo apt install libwebkit2gtk-4.0-dev
+$ pip3 install numpy matplotlib
+```
+
+在 macOS 上，首先确保已安装 xCode 或者 xCode Command Line Tools，然后安装 macPorts。有关macPorts 的安装，可访问 macPorts 官网：<https://www.macports.org>。
+
+之后，在 macOS 的终端程序中，通过 macPorts 的 `port` 命令安装 Python 的运行时环境、开发时环境以及相关模块：
+
+```console
+$ sudo port install python311 py-pip
+$ sudo port install webkit2-gtk-devel
+$ sudo port install xorg-server
+$ sudo pip3 install numpy matplotlib
+```
+
+目前，需要开发者自行编译 HVML 的解释器和渲染器。在做好以上准备工作之后，请访问如下开源代码仓库获取源代码并根据其中的描述构建这两款软件：
+
+- [PurC](https://github.com/HVML/PurC)
+- [xGUI Pro](https://github.com/HVML/xGUI-Pro)
 
 ## 可装载动态对象 PY
 
