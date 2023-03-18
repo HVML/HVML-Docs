@@ -8,9 +8,9 @@
 
 ## 准备工作
 
-截止目前，HVML 开源解释器 PurC 和图形渲染器 xGUI Pro 均支持在 Linux 或 macOS 桌面上运行。为执行本文提到的 Python 代码，需要提前安装好 Python 3.9+（Linux）或 Python 3.11+（macOS）运行时环境、开发时环境以及相关模块。
+截止目前，HVML 解释器 PurC 和图形渲染器 xGUI Pro 均支持在 Linux 或 macOS 桌面上运行。为执行本文提到的 Python 代码，需要提前安装好 Python 3.9+（Linux）或 Python 3.11+（macOS）运行时环境、开发时环境以及相关模块。
 
-比如，在 Ubuntu Linux 20.04 或以上系统中，首先安装常用开发工具，如 git、cmake、gcc 等，然后使用如下命令：
+比如，在 Ubuntu Linux 20.04 或以上系统中，首先安装常用的开发工具，如 git、make 等，然后使用如下命令：
 
 ```console
 $ sudo apt install python3 python3-pip python3-dev
@@ -29,10 +29,36 @@ $ sudo port install xorg-server
 $ sudo pip3 install numpy matplotlib
 ```
 
-目前，需要开发者自行编译 HVML 的解释器和渲染器。在做好以上准备工作之后，请访问如下开源代码仓库获取源代码并根据其中的描述构建这两款软件：
+目前，需要开发者自行编译 HVML 的解释器 PurC 和图形渲染器 xGUI Pro。在做好以上准备工作之后，请访问如下开源代码仓库获取源代码并根据其中的描述构建这两款软件：
 
 - [PurC](https://github.com/HVML/PurC)
 - [xGUI Pro](https://github.com/HVML/xGUI-Pro)
+
+为构建上述软件，您可能还需要安装如下开发工具或函数库：
+
+1. 跨平台构建系统生成器：CMake 3.15 或更高版本
+1. 兼容 C11 和 CXX17 的编译器：GCC 8+ 或 Clang 6+
+1. Zlib 1.2.0 或更高版本
+1. Glib 2.44.0 或更高版本
+1. BISON 3.0 或更高版本
+1. FLEX 2.6.4 或更高版本
+1. Ncurses 5.0 或更高版本（可选；`purc` 中的 Foil 渲染器需要此函数库）
+
+请使用 Linux 发行版提供的包管理工具或者 macPorts 安装以上软件，并确保使用正确的版本。
+
+下面是针对 macOS 系统的一些补充说明：
+
+- HVML 解释器需要 Python 3.9 以上版本来支持和 Python 代码的互操作，而在 macOS 上通过 macPorts 安装 Python 3.11 的原因，主要是为了避免和 xCode Command Line Tools 中包含的 Python 3.9 相冲突。
+- 在使用 macPorts 构建 PurC 和 xGUI Pro 时，一定要通过 CMake 的 `-DCMAKE_INSTALL_PREFIX=/opt/local` 选项指定 PurC 和 xGUI Pro 的安装前缀为 `/opt/local`；若使用默认的 `/usr/local` 安装前缀，会出现找不到头文件的情形。
+- 在 macOS 上，如果不使用图形渲染器 xGUI Pro，而只使用 PurC 中内建的字符渲染器 Foil，也可以使用 Homebrew 系统来构建 PurC，而无需构建 xGUI Pro。但若要构建 xGUI Pro，则必须使用 macPorts。这主要是因为 Homebrew 未提供 WebKit2Gtk3 软件包。
+- 在 macOS 上使用 macPorts 安装了 `xorg-server` 后，需要重新登录才能生效。
+- 在 macOS 上编译 xGUI Pro 后，您需要手工在构建目录的 `lib/webext` 子目录下，创建一个后缀名为 `.so` 的符号链接指向构建好的 WebKit 扩展库：
+
+```console
+$ ln -s libWebExtensionHVML.so libWebExtensionHVML.dylib
+```
+
+## 快速了解 HVML 和 Python 之间的差异
 
 ## 可装载动态对象 PY
 
