@@ -64,14 +64,17 @@ $ sudo pip3 install numpy matplotlib
 下面是针对 macOS 系统的一些补充说明：
 
 - HVML 解释器需要 Python 3.9 以上版本来支持和 Python 代码的互操作，而在 macOS 上通过 macPorts 安装 Python 3.11 的原因，主要是为了避免和 xCode Command Line Tools 中包含的 Python 3.9 相冲突。
-- 在使用 macPorts 构建 PurC 和 xGUI Pro 时，一定要通过 CMake 的 `-DCMAKE_INSTALL_PREFIX=/opt/local` 选项指定 PurC 和 xGUI Pro 的安装前缀为 `/opt/local`；若使用默认的 `/usr/local` 安装前缀，会出现找不到头文件的情形。
 - 在 macOS 上，如果不使用图形渲染器 xGUI Pro，而只使用 PurC 中内建的字符渲染器 Foil，也可以使用 Homebrew 系统来构建 PurC，而无需构建 xGUI Pro。但若要构建 xGUI Pro，则必须使用 macPorts。这主要是因为 Homebrew 未提供 WebKit2Gtk3 软件包。
-- 在 macOS 上使用 macPorts 安装了 `xorg-server` 后，需要重新登录才能生效。
-- 在 macOS 上编译 xGUI Pro 后，您需要手工在构建目录的 `lib/webext` 子目录下，创建一个后缀名为 `.so` 的符号链接指向构建好的 WebKit 扩展库：
+- 在使用 macPorts 构建 PurC 和 xGUI Pro 时，一定要通过 CMake 的 `-DCMAKE_INSTALL_PREFIX=/opt/local` 选项指定 PurC 和 xGUI Pro 的安装前缀为 `/opt/local`；若使用默认的 `/usr/local` 安装前缀，会出现找不到头文件的情形。
+- 在 macOS 上使用 xGUI Pro 时，需要使用 macPorts 安装 `xorg-server` 包，安装后需要重新登录才能生效。
+- 在 macOS 上编译 xGUI Pro 后，需要手工在安装 WebKit 扩展库的目录下（如 `/opt/local/xguipro/lib/webext`），创建一个后缀名为 `.so` 的符号链接指向构建好的 WebKit 扩展库：
 
 ```console
-$ ln -s libWebExtensionHVML.so libWebExtensionHVML.dylib
+$ cd /opt/local/xguipro/lib/webext
+$ sudo ln -s libWebExtensionHVML.so libWebExtensionHVML.dylib
 ```
+
+这主要是因为 WebKit 在搜索扩展共享库时，只会搜索并装载后缀名为 `.so` 的共享库文件，而在 macOS 系统上，共享库的后缀名通常为 `.dylib`。
 
 ## 快速了解 HVML
 
@@ -427,32 +430,24 @@ def find_next_prime(start):
 
 ![Find Primes (Using p and span)](screenshots/embed-python-to-find-primes-using-p-span-xgui-pro.png)
 
-以上例子给出了在 HVML 中嵌入式 Python 程序的巨大好处：利用 HVML 我们可以使用描述式的 HTML 和 CSS 来轻松定义 Python 程序的执行结果。
-
-同时，HVML 的解释器和渲染器分离设计，为我们的 GUI/CLI 设计带来非常多的便利。如内建的 Foil 字符渲染器和 xGUI Pro 图形渲染器表现的那样，我们可以通过 HVML 统一 CLI（命令行交互）和 GUI（图形用户交互）的开发。换句话说，今后我们在开发命令行程序时，也可以使用 HTML、CSS 等 Web 技术来展现内容并完成和用户的交互，而无需通过复杂而不易调试的方式来控制字符的颜色、对齐等。更进一步，我们可以将渲染器运行在远程设备上，从而获得让一个应用程序跨端（cross-end）执行的能力。有兴趣的读者可以尝试使用 xGUI Pro 提供的 Web Socket 通讯能力。
+以上例子同时说明了在 HVML 中嵌入式 Python 程序的巨大好处：利用 HVML，我们可以使用描述式的 HTML 和 CSS 来轻松改变 Python 程序的输出效果。同时，HVML 的解释器和渲染器分离设计，为我们的 GUI/CLI 设计带来非常多的便利。如内建的 Foil 字符渲染器和 xGUI Pro 图形渲染器表现的那样，我们可以通过 HVML 统一 CLI（命令行交互）和 GUI（图形用户交互）的开发。换句话说，今后我们在开发命令行程序时，也可以使用 HTML、CSS 等 Web 技术来展现内容并完成和用户的交互，而无需通过复杂而不易调试的方式来控制字符的颜色、位置、对齐等。更进一步，我们可以将渲染器运行在远程设备上，从而获得让一个 HVML 应用程序跨端（cross-end）执行的能力。有兴趣的读者可以尝试使用 xGUI Pro 提供的 Web Socket 通讯能力。
 
 ## 示例程序：三维随机游走
 
-### 原始 Python 程序及其功能
+本节描述的三维随机游走程序，其原始版本来自 Matplotlib 官网的动画示例程序 Animated 3D random walk：
 
-<https://matplotlib.org/stable/gallery/animation/random_walk.html#sphx-glr-gallery-animation-random-walk-py>
+<https://matplotlib.org/stable/gallery/animation/random_walk.html>
+
+该程序使用 Python 生态中著名的 NumPy 和 Matplotlib 模块，实现了一个三维的随机游走程序。如果使用 Matplotlib 的交互式后端（backend），如 Tk、Gtk、Qt，可将其结果以动画形式展示在图形用户界面上。
+
+该程序利用了 Matplotlib 的 animation 子模块，通过 `update_lines` 函数周期性更新其中的线条，从而实现了动画效果。
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-# Fixing random state for reproducibility
-np.random.seed(19680801)
-
-
-def random_walk(num_steps, max_step=0.05):
-    """Return a 3D random walk as (num_steps, 3) array."""
-    start_pos = np.random.random(3)
-    steps = np.random.uniform(-max_step, max_step, size=(num_steps, 3))
-    walk = start_pos + np.cumsum(steps, axis=0)
-    return walk
-
+...
 
 def update_lines(num, walks, lines):
     for line, walk in zip(lines, walks):
@@ -461,22 +456,7 @@ def update_lines(num, walks, lines):
         line.set_3d_properties(walk[:num, 2])
     return lines
 
-
-# Data: 40 random walks as (num_steps, 3) arrays
-num_steps = 30
-walks = [random_walk(num_steps) for index in range(40)]
-
-# Attaching 3D axis to the figure
-fig = plt.figure()
-ax = fig.add_subplot(projection="3d")
-
-# Create lines initially without data
-lines = [ax.plot([], [], [])[0] for _ in walks]
-
-# Setting the axes properties
-ax.set(xlim3d=(0, 1), xlabel='X')
-ax.set(ylim3d=(0, 1), ylabel='Y')
-ax.set(zlim3d=(0, 1), zlabel='Z')
+...
 
 # Creating the Animation object
 ani = animation.FuncAnimation(
@@ -485,11 +465,15 @@ ani = animation.FuncAnimation(
 plt.show()
 ```
 
-### 改造 Python 代码并内嵌到 HVML 程序中
+上面给出了实现该动画的核心代码：`update_lines()` 函数以及创建动画的 `animation.FuncAnimation()` 函数调用。最终，程序调用 `plt.show()` 进入动画。若使用交互式后端，则当用户关闭 `plt.show()` 展示的所有窗口之后，该程序才会继续往下执行。
 
-### 动画和交互
+如果我们希望在 Python 程序中和用户实现就动画进行交互，比如重新执行这一动画，Matplotlib 目前提供的动画框架很难实现。其中的主要原因在于 Python 本质上属于过程式编程语言，缺乏对事件驱动机制的内建支持。在 Python 中，若要实现这一交互，就需要 Matplotlib 的动画框架提供某种回调机制，并就各种可能的交互情形定义对应的事件，然后交由开发者在回调函数中处理这些事件。这显然不是一件简单的事情，而且，如果考虑到不同的交互式后端——如 Tk、Gtk、Qt——之间的差异，其工程量将非常庞大。
 
-### 完整代码
+而 HVML 的方案则简洁而统一：界面的渲染和交互交给 HVML 处理，Python 只进行科学计算。就科学计算的可视化需求来讲，HVML 只需要 Matplotlib 生成 PNG 或者 SVG 就可以了。有了这个思路，我们对原始的 Python 程序稍作改动即可实现。其要点如下：
+
+1. 不使用 Matplotlib 的 Animation 框架，改由 HVML 的定时器驱动。
+1. 在 HVML 的定时器事件中，调用 Python 的 `update_lines()` 函数更新内容，并将结果保存为 PNG 或者 SVG 文件。
+1. 通过修改 HVML 目标文档中的 `img` 元素属性来更新其内容。
 
 ```hvml
 <!DOCTYPE hvml SYSTEM "f: PY">
@@ -641,6 +625,8 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
     </body>
 </hvml>
 ```
+
+注意，由于使用了 `img` 元素，该程序只能使用 xGUI Pro 图形渲染器。
 
 ## 结语
 
