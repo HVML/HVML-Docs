@@ -440,7 +440,7 @@ def find_next_prime(start):
 
 该程序使用 Python 生态中著名的 NumPy 和 Matplotlib 模块，实现了一个三维的随机游走程序。如果使用 Matplotlib 的交互式后端（backend），如 Tk、Gtk、Qt，可将其结果以动画形式展示在图形用户界面上。
 
-该程序利用了 Matplotlib 的 animation 子模块，通过 `update_lines` 函数周期性更新其中的线条，从而实现了动画效果。
+该程序利用了 Matplotlib 的 animation 子模块，通过 `update_lines()` 函数周期性更新其中的线条，从而实现了动画效果。
 
 ```python
 import numpy as np
@@ -475,16 +475,28 @@ plt.show()
 1. 在 HVML 的定时器事件中，调用 Python 的 `update_lines()` 函数更新内容，并将结果保存为 PNG 或者 SVG 文件。
 1. 通过修改 HVML 目标文档中的 `img` 元素属性来更新其内容。
 
+针对这一改造的 HVML 程序，其主要框架和寻找素数的 HVML 程序类似，但有如下一些显著不同：
+
+1. 为获得更好的渲染效果，该程序使用了 Web 开发中常用的前端框架 Bootstrap 5.1。
+1. 该程序创建了一个定时器，由定时器的到期事件驱动其动画的更新。
+1. 该程序在界面上展示了一个“Run again” 的按钮，用户点击该按钮后，将重新执行该动画。
+1. 该程序针对界面上的页头和页脚，添加了一些内容。
+
+下面是该程序的完整源代码，请阅读其中的注释以理解该程序。
+
 ```hvml
 <!DOCTYPE hvml SYSTEM "f: PY">
 <hvml target="html">
     <head>
         <title>Embedded Python in HVML: Animated 3D Random Walk</title>
 
-        <!-- import the Bootstrap assets built in the renderer -->
+        <!-- 导入内置在渲染器当中的 Bootstrap 5.1 资源 -->
         <link rel="stylesheet" href="//localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="//localhost/_renderer/_builtin/-/assets/bootstrap-icons-1.8.3/bootstrap-icons.css" />
 
+        <!--
+            通过修改 $TIMERS 系统变量创建一个定时器。这体现了 HVML 数据驱动的概念。
+        -->
         <update on $TIMERS to 'unite'>
             [
                 { "id" : "clock", "interval" : 100, "active" : "yes" },
@@ -493,6 +505,7 @@ plt.show()
     </head>
 
     <body>
+        <!-- 内嵌的 Python 代码。 -->
         <init as 'pyCode'>
 '''
 import numpy as np
@@ -536,16 +549,23 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
 '''
         </init>
 
-        <choose on true  >
+        <!--
+            执行内嵌的 Python 代码，保存第一张图片到 frame-orig.svg 文件中。
+            使用 catch 元素捕获可能的异常。
+        -->
+        <inherit>
             {{
                  $PY.global(! 'myseed', $SYS.time );
-                 $PY.run($pyCode, 'source')
+                 $PY.run($pyCode, 'source');
+                 $PY.global.fig.canvas.draw_idle();
+                 $PY.global.fig.savefig("frame-orig.svg");
             }}
             <catch for `ExternalFailure`>
                 <exit with "A Python exception raised: $PY.except" />
             </catch>
-        </choose>
+        </inherit>
 
+        <!-- 用户界面的头部。 -->
         <div class="px-4 my-5 border-bottom">
             <div class="text-center">
                 <h1>Embeding Python in HVML: Animated 3D Random Walk<br/>
@@ -558,11 +578,17 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
 
                 <div class="col" >
                     <div class="text-center">
-                        <img id="theFigure" width="638" height="476" />
+                        <!--
+                            用于展示 Matplotlib 结果的 img 元素。
+                            注意 src 属性初始设置为 `frame-orig.svg` 文件，并使用了 hvml:// 打头的 URL 来定位本地文件。
+                        -->
+                        <img id="theFigure" width="638" height="476" src="hvml://localhost/_system/_filesystem/-$SYS.cwd/frame-orig.svg?once=yes"/>
                     </div>
 
                     <init as 'step' at '#myNS' with 0L />
+
                     <observe on $TIMERS for 'expired:clock'>
+                        <!-- 定时器到期时，调用 Python 的 update_lines() 函数更新绘图并保存为新的图片。 -->
                         <inherit>
                             {{
                                     $STREAM.stdout.writelines("Going to handle Frame {$step}...");
@@ -573,7 +599,10 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
                             }}
                         </inherit>
 
+                        <!-- 更新目标文档中 img 元素的 src 属性。 -->
                         <update on '#theFigure' at 'attr.src' with "hvml://localhost/_system/_filesystem/-$SYS.cwd/frame-{$step}.svg?once=yes" />
+
+                        <!-- $step 加 1，若大于 30，则删除定时器。 -->
                         <init as 'step' at '#myNS' with $DATA.arith('+', $step, 1) />
                         <test with $L.gt($step, 30) >
                             <update on $TIMERS to 'subtract' with = [{ id : 'clock' }] />
@@ -585,6 +614,7 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
                     </catch>
                 </div>
 
+                <!-- Run agian 按钮 -->
                 <div class="col">
                     <div class="d-grid gap-2 col-10 mx-auto">
                         <button class="btn btn-outline-primary btn-for-input" id="runAgain" value="Run again" hvml-events="click" type="button">Run Again</button>
@@ -592,17 +622,21 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
                 </div>
 
                 <observe on '#runAgain' for 'click'>
+                    <!-- 当 Run Again 按钮被用户点击时，重置动画。 -->
                     <inherit>
                         {{
                             $PY.global.update_walks($DATA.arith('*', $step, 2))
                         }}
                     </inherit>
+
+                    <!-- 重启定时器。 -->
                     <init as 'step' at '#myNS' with 0L />
                     <update on $TIMERS to 'unite' with [{ "id" : "clock", "interval" : 100, "active" : "yes" }] />
                 </observe>
             </div>
         </div>
 
+        <!-- 用户界面的尾部。 -->
         <div class="container">
             <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
                 <div class="col-md-4 d-flex align-items-center">
@@ -626,7 +660,11 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
 </hvml>
 ```
 
-注意，由于使用了 `img` 元素，该程序只能使用 xGUI Pro 图形渲染器。
+注意，由于使用了 `img` 元素，该程序只能使用 xGUI Pro 图形渲染器。下图给出了使用 xGUI Pro 渲染器时，该 HVML 程序的效果：
+
+![Animated 3D Random Walk](screenshots/embed-python-animated-3d-random-walk.png)
+
+当用户按下“Run Again”按钮后，该程序将再次重新执行动画。
 
 ## 结语
 
