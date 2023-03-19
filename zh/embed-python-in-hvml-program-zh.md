@@ -99,6 +99,10 @@ Hello, world!
 
 ```
 
+在我的 macOS 系统上，效果如下图所示：
+
+![Hello, world!](screenshots/hello-world-with-style-foil.png)
+
 显然，相比第一次执行，我们看到了更多的内容。在支持颜色的终端程序中，你可以看到 `Hello, World!` 是红色的，而且居中显示。很明显，这些内容本质上是由 HVML 程序中夹杂的 `h1`、`p` 等元素定义的内容。我们还使用了 CSS 样式来定义了 `h1` 元素的颜色（`color:red`）和文本居中对齐（`text-align:center`）。
 
 和其他编程语言不同，HVML 将 `h1` 和 `p` 等元素视作动作执行，会将其内容插入到一个结构化的文档当中。而使用其他编程语言，我们可能需要通过特定的接口完成这些工作，比如在 Python 中使用类似 Jinja2 的模板引擎。
@@ -173,7 +177,7 @@ Hello, world!
 
 该命令将创建一个窗口，其中图形化展示上述的代码生成的内容。见下图。
 
-![Hello, world!](screenshots/hello-world.png)
+![Hello, world!](screenshots/hello-world-with-style-xgui-pro.png)
 
 当我们关闭该窗口后，上述 `purc` 命令才会退出。而如果我们使用 `-c thread` 选项执行上述 HVML 程序，则执行效果和之前一样：程序会立即退出。显然，我们新增的如下代码起了作用：
 
@@ -202,11 +206,60 @@ Hello, world!
 
 在 PurC 0.9.8 版本中，对 Python 的支持被实现为 HVML 的一个外部动态变体对象 `$PY`，利用该对象提供的功能，我们可以在 HVML 程序中完成如下功能：
 
-1. 装载指定的 Python 模块并可在其上访问或调用已装载模块提供的子模块、属性或函数。
-1. 执行一段 Python 代码、一个 Python 脚本或者一个指定的模块，并获得结果。
-1. 编译一段 Python 代码，之后可在编译后的 Python 代码对象上，在不同的上下文环境中对其进行求值并获得求值结果。
-1. 可将 HVML 字符串、数组、元组、集合、对象等数据转换为 Python 的内部对象，然后在其上执行这些 Python 内部对象支持的方法，或使用这些对象调用其他 Python 模块或函数。
-1. 将 Python 内部对象转换为对应的 HVML 数据，或者获取对应的字符串表达。
+1. 使用 `$PY.import()` 方法，可装载指定的 Python 模块并可在其上访问或调用已装载模块提供的子模块、属性或函数。
+1. 使用 `$PY.run()` 方法，可执行一段 Python 代码、一个 Python 脚本或者一个指定的模块，并获得结果。
+1. 使用 `$PY.compile()` 方法，可编译一段 Python 代码，之后可在编译得到的 Python 代码对象上，在不同的上下文环境中对其进行求值并获得求值结果。
+1. 使用 `$PY.pythonize()` 方法，可将 HVML 字符串、数组、元组、集合、对象等数据转换为 Python 的内部对象，然后在其上执行这些 Python 内部对象支持的方法，或使用这些对象调用其他 Python 模块或函数。
+1. 使用 `$PY.stringify()` 方法，可将 Python 内部对象转换为对应的 HVML 数据，或者获取对应的字符串表达，其作用类似 Python 的 `str()` 函数。
+1. 使用 `$PY.global` 属性，可通过其获取器或者设置器访问 Python 内置 `__main__` 模块的全局变量。
+1. 使用 `$PY.local` 属性，可通过其获取器或者设置器访问 Python 内置 `__main__` 模块的局部变量。注意，局部变量名字空间将优先于全局变量。
+
+下面我们使用一些 HVML 的复合混合求值表达式（Compound Hybrid Evaluating Expression，CHEE）来说明 `$PY` 的用法。
+
+```hee
+{{
+    $PY.import('math');
+    $PY.math.pow(2, 3)
+}}
+```
+
+以上 CHEE 首先导入了 `math` 模块，然后调用了 `math` 模块的 `pow` 函数，其结果为 8。
+
+```hee
+{{
+    $PY.import('datetime', ['datetime:dt', 'timedelta:td']);
+    $PY.stringify($PY.dt.fromtimestamp(1429417200.0))
+}}
+```
+
+以上 CHEE 的第一条语句从 `datetime` 包中导入了子模块 `datetime` 和 `timedelta`，并分别命名为 `dt` 和 `td`。这条语句和 Python 的如下语句等价：
+
+```python
+from datetime import datetime as dt, timedelta as td
+```
+
+以上 CHEE 的第二条语句根据给定的时间戳构造了一个 `datetime` 对象，然后在对象上使用 `$PY.stringify` 函数将其字符串化，其结果应该是：'2015-04-19 12:20:00'。
+
+```hee
+{{
+    $PY.local.x(! [1, 2, 2, 3] );
+    $PY.local.x.reverse();
+    $PY.local.x()()
+}}
+```
+
+以上 CHEE 的第一条语句使用一个数组设置了一个名为 `x` 的局部变量，之后在其上调用了 Python 的针对 List 的 `reverse()` 方法，然后使用 `$PY.local.x()()` 这一用法调用了 `x` 本身的获取器，这将返回 Python List 对象对应的 HVML 数据。因此，上述 CHEE 的执行结果是 [3, 2, 2, 1]。注意，`$PY.local.x()` 返回的是一个代表 Python 复杂对象的原生实体，在这个原生实体上再次调用其默认获取器，即 `$PY.local.x()()`，会执行数据类型转换，将 Python 的 Unicode 字符串、字节数组（bytes 或 byte array）、列表（List）、字典（dictionary）、集合（set）构建为一个对应的 HVML 数据类型，分别是字符串（string）、字节序列（byte sequence）、数组（array）、对象（array）和一般性集合（generic set）。如果不做此类转换，这些 Python 对象在 HVML 中以原生实体动态对象的方式表达。而 Python 中的 None、True、False、整数和浮点数，则不做此类处理，直接等价于 HVML 的 null、true、false、longint 和 number 类型。对无法执行转换的情形，比如一个自定义的 Python 类对象，在其上执行默认的获取器，将等价于在其上调用 Python 的 `str()` 函数。
+
+我们再来看看 Python 异常的处理。在执行 Python 代码或者调用 CPython 提供的接口时出现异常，HVML 会统一报告 `ExternalFailure` 异常，进一步的 Python 异常名称则由 `$PY.except` 给出。如下例所示：
+
+```hee
+{{
+    $PY.run('2 / 0');
+    $PY.except
+}}
+```
+
+上面的 CHEE 首先运行 Python 命令 `2 / 0`，这会抛出异常。如果我们捕获了该异常，然后再访问 `$PY.except`，将得到字符串：`ZeroDivisionError`。这是 Python 的标准错误名称。
 
 ## 示例程序：寻找素数
 
