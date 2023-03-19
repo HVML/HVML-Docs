@@ -1,5 +1,7 @@
 # 在 HVML 程序中嵌入 Python
 
+- 作者：魏永明
+
 2023 年 3 月，HVML 社区发布了 HVML 开源解释器 PurC 的 0.9.8 版本，其中增加了对 Python 的支持。
 
 使用这一增强，我们可以非常方便地在 HVML 程序中调用 Python 模块，利用 Python 生态中的丰富软件包或模块开发自己的 HVML 应用。与此同时，由 HVML 提供的跨平台、统一 GUI/CLI 应用开发框架以及跨端运行的能力，将弥补 Python 生态和 Web 生态之间几十年来难以跨越的鸿沟，从而极大提升 Python 应用的表现力以及和用户交互的能力。
@@ -99,7 +101,7 @@ Hello, world!
 
 ```
 
-在我的 macOS 系统上，效果如下图所示：
+在笔者的 Linux 系统上，效果如下图所示：
 
 ![Hello, world!](screenshots/hello-world-with-style-foil.png)
 
@@ -384,7 +386,7 @@ def find_next_prime(start):
 
 如果我们执行上述 HVML 程序，并使用 Foil 字符渲染器，将列出小于 100 的所有素数，如下图所示。
 
-![Find Primes (Using ul and li)](screenshots/embed-python-find-primes-using-ul-li.png)
+![Find Primes (Using ul and li)](screenshots/embed-python-to-find-primes-using-ul-li.png)
 
 如果我们要列出小于 1000L 的所有素数，以上程序当然也可以正常运行，但每行显示一个素数显然太浪费空间。因此，我们对上述代码生成文档部分稍作修改，使用 `p` 元素替代 `ul` 元素，使用 `span` 替代 `li` 元素，并交错使用不同的颜色来展示这些素数：
 
@@ -406,7 +408,7 @@ def find_next_prime(start):
 
 如果我们执行上述 HVML 程序，并使用 Foil 字符渲染器，将以紧凑形式列出小于 1000L 的所有素数，如下图所示。
 
-![Find Primes (Using ul and li)](screenshots/embed-python-find-primes-using-p-span.png)
+![Find Primes (Using p and span)](screenshots/embed-python-to-find-primes-using-p-span.png)
 
 HVML 的解释器和渲染器分离设计，为我们的 GUI/CLI 设计带来非常多的便利。一方面，如内建的 Foil 字符渲染器和 xGUI Pro 图形渲染器表现的那样，我们可以通过 HVML 统一 CLI（命令行交互）和 GUI（图形用户交互）的开发，也就是说，今后在开发命令行程序时，也可以使用 HTML、CSS 等 Web 技术来表现内容并完成和用户的交互。另一方面，我们可以将渲染器运行在远程设备上，从而获得让一个应用程序跨端（cross-end）执行的能力。
 
