@@ -197,7 +197,7 @@ Hello, world!
 
 这给出了 HVML 的第三个重要特征：事件驱动。
 
-除了以上三个重要特征之外，HVML 还针对模板处理、多协程、并发等现代编程技术提供了支持。更多详情，可参阅如下文章：
+除了以上三个重要特征之外，HVML 还对复合求值表达式、模板定义和置换、异常处理、多协程、并发等现代编程技术提供了支持。更多详情，可参阅如下文章：
 
 - [漫谈 HVML，它的由来和未来](a-brief-introduction-to-hvml-zh.md)
 - [30 分钟学会 HVML 编程](learn-hvml-programming-in-30-minutes-zh.md)
@@ -248,9 +248,11 @@ from datetime import datetime as dt, timedelta as td
 }}
 ```
 
-以上 CHEE 的第一条语句使用一个数组设置了一个名为 `x` 的局部变量，之后在其上调用了 Python 的针对 List 的 `reverse()` 方法，然后使用 `$PY.local.x()()` 这一用法调用了 `x` 本身的获取器，这将返回 Python List 对象对应的 HVML 数据。因此，上述 CHEE 的执行结果是 [3, 2, 2, 1]。注意，`$PY.local.x()` 返回的是一个代表 Python 复杂对象的原生实体，在这个原生实体上再次调用其默认获取器，即 `$PY.local.x()()`，会执行数据类型转换，将 Python 的 Unicode 字符串、字节数组（bytes 或 byte array）、列表（List）、字典（dictionary）、集合（set）构建为一个对应的 HVML 数据类型，分别是字符串（string）、字节序列（byte sequence）、数组（array）、对象（array）和一般性集合（generic set）。如果不做此类转换，这些 Python 对象在 HVML 中以原生实体动态对象的方式表达。而 Python 中的 None、True、False、整数和浮点数，则不做此类处理，直接等价于 HVML 的 null、true、false、longint 和 number 类型。对无法执行转换的情形，比如一个自定义的 Python 类对象，在其上执行默认的获取器，将等价于在其上调用 Python 的 `str()` 函数。
+以上 CHEE 的第一条语句使用一个数组设置了一个名为 `x` 的局部变量，之后在其上调用了 Python 的针对 List 的 `reverse()` 方法，然后使用 `$PY.local.x()()` 这一用法调用了 `x` 本身的获取器，这将返回 Python List 对象对应的 HVML 数据。因此，上述 CHEE 的执行结果是 [3, 2, 2, 1]。注意，`$PY.local.x()` 返回的是一个代表 Python 复杂对象的 HVML 原生实体（native entity），在这个原生实体上再次调用其默认获取器，即 `$PY.local.x()()`，会执行数据类型的转换，将 Python 的 Unicode 字符串、字节数组（bytes 或 byte array）、列表（List）、字典（dictionary）、集合（set）构建为对应的 HVML 数据类型，分别是字符串（string）、字节序列（byte sequence）、数组（array）、对象（array）和一般性集合（generic set）。如果不做此类转换，这些 Python 对象在 HVML 中以原生实体动态对象的方式表达。而 Python 中的 None、True、False、整数和浮点数，则不做此类处理，直接等价于 HVML 的 null、true、false、longint 和 number 数据类型。对无法执行转换的情形，比如一个自定义的 Python 类对象，在其上执行默认的获取器，将等价于在其上调用 Python 的 `str()` 函数。
 
-我们再来看看 Python 异常的处理。在执行 Python 代码或者调用 CPython 提供的接口时出现异常，HVML 会统一报告 `ExternalFailure` 异常，进一步的 Python 异常名称则由 `$PY.except` 给出。如下例所示：
+显然，通过 `$PY` 变量构造我们期望的混合求值表达式，将其用于 HVML 元素的属性值或者动作元素的内容，即可非常方便地将 Python 代码嵌入到 HVML 中，从而充分利用 Python 生态中丰富的模块及其功能。
+
+在查看内嵌 Python 的 HVML 程序之前，我们再来看看 Python 异常的处理。在执行 Python 代码或者调用 CPython 提供的接口时出现异常，HVML 会统一报告 `ExternalFailure` 异常，进一步的 Python 异常名称则由 `$PY.except` 给出。如下例所示：
 
 ```hee
 {{
@@ -263,7 +265,31 @@ from datetime import datetime as dt, timedelta as td
 
 ## 示例程序：寻找素数
 
+这一小节给出一个寻找素数的 HVML 程序，该程序使用了 Python 编写的一个函数：
+
+```python
+def find_next_prime(start):
+    if start < 2:
+        start = 2
+
+    while True:
+        start += 1
+        for j in range(2, start + 1):
+            if start % j == 0:
+                break
+        if j == start:
+            return start
+```
+
+该函数名为 `find_next_prim`，如其名称所暗示，该函数返回比给定的参数大的第一个素数。比如，我们传入 2，将返回 3，而传入 5 将返回 7。
+
+现在，我们尝试将该函数内嵌到 HVML 中，并使用 HTML 的 `ul` 和 `li` 元素列出调用上述 Python 函数获得的小于 200 的所有素数。代码如下，请注意其中的注释。
+
 ```hvml
+<!--
+    由于 $PY 被实现为一个可装载的动态对象，故而需要使用 DOCTYPE 的
+    SYSTEM 标识符装载该动态对象并将其绑定到 PY 变量上。
+-->
 <!DOCTYPE hvml SYSTEM "f: PY">
 <hvml target="html">
     <head>
@@ -271,6 +297,12 @@ from datetime import datetime as dt, timedelta as td
     </head>
 
     <body>
+        <!--
+            init 定义使用其内容，用 HVML ''' 语法定义了一个原样保留的字符串，
+            并绑定到 pyCode 变量上。
+            注意，我们也可以使用 init 元素的 from 属性，从指定的文件中初始化
+            pyCode 变量的内容，从而无需硬编码这段 Python 函数内容到 HVML 程序中。
+        -->
         <init as 'pyCode'>
 '''
 def find_next_prime(start):
@@ -287,9 +319,19 @@ def find_next_prime(start):
 '''
         </init>
 
+        <!--
+            我们利用 `inherit` 动作元素的内容执行了一条混合求值表达式。
+            该表达式执行 pyCode 变量中包含的 Python 代码。
+            注意，我们可以可以直接执行 Python 文件中的代码：
+
+                $PY.run('<the Python script file name>', 'file')
+        -->
         <inherit>
             {{ $PY.run($pyCode, 'source') }}
 
+            <!--
+                我们利用 `catch` 动作元素捕获在执行上述 Python 代码时可能出现的异常。
+            -->
             <catch for `ExternalFailure`>
                 <exit with "A Python exception raised: $PY.except" />
             </catch>
@@ -298,14 +340,30 @@ def find_next_prime(start):
         <h1>Embeding Python in HVML: Find Primes</h1>
 
         <ul>
-            <choose on 2L>
-                <iterate on $? onlyif $L.lt($0<, 200L)
-                        with $PY.global.find_next_prime($0<) nosetotail >
-                    <li>$?</li>
-                </iterate>
-            </choose>
+            <!--
+                这里利用 iterate 动作元素执行迭代，类似其他编程语言的 for 循环。
+                该迭代的初始输入数据为 2L。迭代的停止条件由 onlyif 属性的表达式决定：$L.lt($0~, 200L)。
+                其中 $0~ 表示当前的迭代输入数据；若当前的迭代输入数据 $0~ 大于等于 200L 时，
+                该表达式的求值结果为 false，整个迭代结束。
+                每次迭代时，输入数据将作为结果执行 iterate 中的其他元素。
+                若整个迭代未结束，则会在每次迭代后对 with 属性指定的表达式 `$PY.global.find_next_prime($0<)` 进行求值。
+                由于设定了 nosetotail（表示“首尾相接”）副词属性，with 属性的结果将被当做
+                下一次迭代的输入数据。
+            -->
+            <iterate on 2L onlyif $L.lt($0<, 200L)
+                    with $PY.global.find_next_prime($0<) nosetotail >
+
+                <!--
+                    在当前文档位置插入一个 li 元素，其内容为 $?，即上个动作元素的执行结果，
+                    也就是每次迭代的结果。
+                -->
+                <li>$?</li>
+            </iterate>
         </ul>
 
+        <!--
+            根据渲染器类型监听并处理 `rdrState:pageClosed` 事件。
+        -->
         <test with $L.streq('caseless', $RDR.state.comm, 'socket') >
             <observe on $CRTN for "rdrState:pageClosed">
                 <exit with 'Ok' />
@@ -313,7 +371,6 @@ def find_next_prime(start):
         </test>
     </body>
 </hvml>
-
 ```
 
 HVML 的解释器和渲染器分离设计，为我们的 GUI/CLI 设计带来非常多的便利。一方面，如内建的 Foil 字符渲染器和 xGUI Pro 图形渲染器表现的那样，我们可以通过 HVML 统一 CLI（命令行交互）和 GUI（图形用户交互）的开发，也就是说，今后在开发命令行程序时，也可以使用 HTML、CSS 等 Web 技术来表现内容并完成和用户的交互。另一方面，我们可以将渲染器运行在远程设备上，从而获得让一个应用程序跨端（cross-end）执行的能力。
