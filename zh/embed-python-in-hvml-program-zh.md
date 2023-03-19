@@ -250,6 +250,15 @@ from datetime import datetime as dt, timedelta as td
 
 以上 CHEE 的第一条语句使用一个数组设置了一个名为 `x` 的局部变量，之后在其上调用了 Python 的针对 List 的 `reverse()` 方法，然后使用 `$PY.local.x()()` 这一用法调用了 `x` 本身的获取器，这将返回 Python List 对象对应的 HVML 数据。因此，上述 CHEE 的执行结果是 [3, 2, 2, 1]。注意，`$PY.local.x()` 返回的是一个代表 Python 复杂对象的 HVML 原生实体（native entity），在这个原生实体上再次调用其默认获取器，即 `$PY.local.x()()`，会执行数据类型的转换，将 Python 的 Unicode 字符串、字节数组（bytes 或 byte array）、列表（List）、字典（dictionary）、集合（set）构建为对应的 HVML 数据类型，分别是字符串（string）、字节序列（byte sequence）、数组（array）、对象（array）和一般性集合（generic set）。如果不做此类转换，这些 Python 对象在 HVML 中以原生实体动态对象的方式表达。而 Python 中的 None、True、False、整数和浮点数，则不做此类处理，直接等价于 HVML 的 null、true、false、longint 和 number 数据类型。对无法执行转换的情形，比如一个自定义的 Python 类对象，在其上执行默认的获取器，将等价于在其上调用 Python 的 `str()` 函数。
 
+```hee
+{{
+    $PY.run('x = pow(2, 3)');
+    $PY.global.x;
+}}
+```
+
+以上 CHEE 的第一条语句执行了一段 Python 代码，该代码将 `pow(2, 3)` 的结果赋给了全局变量 `x`。在 HVML 程序中，我们可以使用 `$PY` 的 `global` 属性访问全局变量。故而上述 CHEE 的求值结果就是 Python 中全局变量 `x` 的值：8。
+
 显然，通过 `$PY` 变量构造我们期望的混合求值表达式，将其用于 HVML 元素的属性值或者动作元素的内容，即可非常方便地将 Python 代码嵌入到 HVML 中，从而充分利用 Python 生态中丰富的模块及其功能。
 
 在查看内嵌 Python 的 HVML 程序之前，我们再来看看 Python 异常的处理。在执行 Python 代码或者调用 CPython 提供的接口时出现异常，HVML 会统一报告 `ExternalFailure` 异常，进一步的 Python 异常名称则由 `$PY.except` 给出。如下例所示：
@@ -342,15 +351,15 @@ def find_next_prime(start):
         <ul>
             <!--
                 这里利用 iterate 动作元素执行迭代，类似其他编程语言的 for 循环。
-                该迭代的初始输入数据为 2L。迭代的停止条件由 onlyif 属性的表达式决定：$L.lt($0~, 200L)。
-                其中 $0~ 表示当前的迭代输入数据；若当前的迭代输入数据 $0~ 大于等于 200L 时，
+                该迭代的初始输入数据为 2L。迭代的停止条件由 onlyif 属性的表达式决定：$L.lt($0~, 100L)。
+                其中 $0~ 表示当前的迭代输入数据；若当前的迭代输入数据 $0~ 大于等于 100L 时，
                 该表达式的求值结果为 false，整个迭代结束。
                 每次迭代时，输入数据将作为结果执行 iterate 中的其他元素。
                 若整个迭代未结束，则会在每次迭代后对 with 属性指定的表达式 `$PY.global.find_next_prime($0<)` 进行求值。
                 由于设定了 nosetotail（表示“首尾相接”）副词属性，with 属性的结果将被当做
                 下一次迭代的输入数据。
             -->
-            <iterate on 2L onlyif $L.lt($0<, 200L)
+            <iterate on 2L onlyif $L.lt($0<, 100L)
                     with $PY.global.find_next_prime($0<) nosetotail >
 
                 <!--
@@ -372,6 +381,32 @@ def find_next_prime(start):
     </body>
 </hvml>
 ```
+
+如果我们执行上述 HVML 程序，并使用 Foil 字符渲染器，将列出小于 100 的所有素数，如下图所示。
+
+![Find Primes (Using ul and li)](screenshots/embed-python-find-primes-using-ul-li.png)
+
+如果我们要列出小于 1000L 的所有素数，以上程序当然也可以正常运行，但每行显示一个素数显然太浪费空间。因此，我们对上述代码生成文档部分稍作修改，使用 `p` 元素替代 `ul` 元素，使用 `span` 替代 `li` 元素，并交错使用不同的颜色来展示这些素数：
+
+```hvml
+        <!-- 使用 p 和 span 元素列出小于 10000L 的所有素数。 -->
+        <p id="myNS">
+            <iterate on 2L onlyif $L.lt($0~, 10000L)
+                    with $PY.global.find_next_prime($0~) nosetotail >
+                <test with $DATA.arith('%', $%, 2L)>
+                    <init as 'color' at '#myNS' with 'yellow' />
+                    <differ>
+                        <init as 'color' at '#myNS' with 'red' />
+                    </differ>
+                </test>
+                <span style="color:$color">$?, </span>
+            </iterate>
+        </p>
+```
+
+如果我们执行上述 HVML 程序，并使用 Foil 字符渲染器，将以紧凑形式列出小于 1000L 的所有素数，如下图所示。
+
+![Find Primes (Using ul and li)](screenshots/embed-python-find-primes-using-p-span.png)
 
 HVML 的解释器和渲染器分离设计，为我们的 GUI/CLI 设计带来非常多的便利。一方面，如内建的 Foil 字符渲染器和 xGUI Pro 图形渲染器表现的那样，我们可以通过 HVML 统一 CLI（命令行交互）和 GUI（图形用户交互）的开发，也就是说，今后在开发命令行程序时，也可以使用 HTML、CSS 等 Web 技术来表现内容并完成和用户的交互。另一方面，我们可以将渲染器运行在远程设备上，从而获得让一个应用程序跨端（cross-end）执行的能力。
 
