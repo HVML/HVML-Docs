@@ -25,7 +25,7 @@
 
 ## 准备工作
 
-截止目前，HVML 解释器 PurC 和图形渲染器 xGUI Pro 均支持在 Linux 或 macOS 桌面上运行。为完整执行本文提到的 Python 代码，需要提前安装好 Python 3.9+（Linux）或 Python 3.11+（macOS）运行时环境、开发时环境以及相关模块。
+截止目前，HVML 解释器 PurC 和图形渲染器 xGUI Pro 均支持在 Linux 或 macOS 桌面上运行。为完整执行本文提到的内嵌 Python 代码的 HVML 程序，需要提前安装好 Python 3.9+（Linux）或 Python 3.11+（macOS）运行时环境、开发时环境以及相关模块。
 
 比如，在 Ubuntu Linux 20.04 或以上系统中，首先安装常用的开发工具（如 git、make 等），然后使用如下命令：
 
