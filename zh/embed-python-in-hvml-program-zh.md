@@ -160,7 +160,7 @@ The main coroutine exited.
 
 以上的例子同时说明了 HVML 的第二个重要特征：解释器和渲染器分离。
 
-当我们在执行 `purc` 命令时不使用 `-c thread` 选项，就会默认使用一个称为 `headless` 的渲染器。顾名思义，这个渲染器会丢弃任何程序生成的文档内容。因此，我们看不到 `h1`、`p` 等元素定义的内容，而只能看到使用 `$STREAM.stdout.writelines()` 方法输出到终端上的内容。当我们使用 `-c thread` 选项执行 `purc` 命令时，将会使用内建于 `purc` 的一个字符渲染器，名叫 `Foil`（取著名科幻小说《三体》中“二向箔”之意）。和网页浏览器的工作原理类似，Foil 渲染器将解析这个 HVML 程序生成的 HTML 文档，并根据 CSS 样式信息格式化其中的内容。
+当我们在执行 `purc` 命令时不使用 `-c thread` 选项，就会默认使用一个称为 `headless` 的渲染器。顾名思义，这个渲染器不会展示任何由 HVML 程序生成的文档内容。因此，我们看不到 `h1`、`p` 等元素定义的内容，而只能看到使用 `$STREAM.stdout.writelines()` 方法输出到终端上的内容。当我们使用 `-c thread` 选项执行 `purc` 命令时，将会使用内建于 `purc` 的一个字符渲染器，名叫 `Foil`（取著名科幻小说《三体》中“二向箔”之意）。和网页浏览器的工作原理类似，Foil 渲染器将解析这个 HVML 程序生成的 HTML 文档，并根据 CSS 样式信息格式化其中的内容展现到终端上。
 
 你一定能想到，如果我们使用本文一开始提到的 xGUI Pro 图形渲染器，则可以在图形窗口中看到上述文档的内容。事实的确如此。启动 xGUI Pro，并在执行 `purc` 时将 `-c thread` 选项更换成 `-c socekt` 选项，便可以在窗口中看到以上内容。但是，因为目前我们编写的这个 HVML 程序在输出文档后立即退出，所以窗口会一闪而过。因此，我们还需要做一些额外的工作，在其中添加一些代码。
 
@@ -480,13 +480,13 @@ plt.show()
 
 而 HVML 的方案则简洁而统一：界面的渲染和交互交给 HVML 处理，Python 只进行科学计算。就科学计算的可视化需求来讲，HVML 只需要 Matplotlib 生成 PNG 或者 SVG 图片就可以了。有了这个思路，我们对原始的 Python 程序稍作改动即可实现我们的目标。其要点如下：
 
-1. 不使用 Matplotlib 的 Animation 框架，改由 HVML 的定时器驱动。
+1. 不使用 Matplotlib 的动画框架，改由 HVML 的定时器驱动。
 1. 在 HVML 的定时器事件中，调用 Python 的 `update_lines()` 函数更新绘制的内容，并将结果保存为 PNG 或者 SVG 文件。
-1. 通过修改 HVML 目标文档中的 `img` 元素属性来更新界面内容。
+1. 通过修改 HVML 目标文档中的 `img` 元素之 `src` 属性来更新界面内容。
 
-针对这一改造的 HVML 程序，其主要框架和寻找素数的 HVML 程序类似，但有如下一些显著不同：
+利用上述方案改造后的 HVML 程序，其主要框架和寻找素数的 HVML 程序类似，但有如下一些显著的不同：
 
-1. 为获得更好的渲染效果，该程序使用了 Web 开发中常用的前端框架 Bootstrap 5.1。
+1. 为获得更好的渲染效果，该程序将使用 Web 开发中常用的前端框架 Bootstrap 5.1。
 1. 该程序创建了一个间隔为 100ms 的定时器，由定时器的到期事件驱动动画。
 1. 该程序在界面上展示了一个“Run again” 的按钮，用户点击该按钮后，将重新执行该动画。
 1. 为了用户界面更加美观，该程序使用更多的界面元素来美化页面的头部和尾部。
@@ -559,8 +559,11 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
         </init>
 
         <!--
-            执行内嵌的 Python 代码，保存第一张图片到 frame-orig.svg 文件中。
-            使用 catch 元素捕获可能的异常。
+            `inherit` 动作元素的内容定义了一个 CHEE。
+            该 CHEE 执行使用 $PY.global 设置了一个 Python 全局变量 myseed，其值为系统的时间戳。
+            然后执行内嵌的 Python 代码，调用 Matplotlib 的接口保存第一张图片到当前工作路径的 frame-orig.svg 文件中。
+
+            注意其中的 catch 子元素可用于捕获对上述 CHEE 求值时可能出现的 Python 异常。
         -->
         <inherit>
             {{
@@ -569,6 +572,7 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
                  $PY.global.fig.canvas.draw_idle();
                  $PY.global.fig.savefig("frame-orig.svg");
             }}
+
             <catch for `ExternalFailure`>
                 <exit with "A Python exception raised: $PY.except" />
             </catch>
@@ -589,8 +593,9 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
                 <div class="col" >
                     <div class="text-center">
                         <!--
-                            用于展示 Matplotlib 结果的 img 元素。
+                            用于展示 Matplotlib 绘制结果的 img 元素。
                             注意 src 属性初始设置为 `frame-orig.svg` 文件，并使用了 hvml:// 打头的 URL 来定位本地文件。
+                            其中的 $SYS.cmd 返回执行该程序时的当前工作路径。
                         -->
                         <img id="theFigure" width="638" height="476" src="hvml://localhost/_system/_filesystem/-$SYS.cwd/frame-orig.svg?once=yes"/>
                     </div>
@@ -663,6 +668,8 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
                 </ul>
             </footer>
         </div>
+
+        <!-- 监听渲染器发送到当前协程的 rdrState:pageClosed 事件。-->
         <observe on $CRTN for "rdrState:pageClosed">
             <exit with 'Ok' />
         </observe>
@@ -670,7 +677,7 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
 </hvml>
 ```
 
-注意，由于使用了 `img` 元素，该程序只能使用 xGUI Pro 图形渲染器。下图给出了使用 xGUI Pro 渲染器时，该 HVML 程序的效果：
+注意，由于使用了 `img` 元素，该程序只能使用 xGUI Pro 图形渲染器（Foil 字符渲染器无法在字符终端中渲染图片）。下图给出了使用 xGUI Pro 渲染器时，该 HVML 程序的效果：
 
 ![Animated 3D Random Walk](screenshots/embed-python-animated-3d-random-walk.png)
 
@@ -680,10 +687,12 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
 
 HVML 是一种全新种类的编程语言：可编程标记语言，本文介绍了这一编程语言的与众不同之处，同时通过两个示例程序展示了将 HVML 和 Python 结合在一起产生的奇妙“化学反应”。
 
-通过在 HVML 开源解释器 PurC 0.9.8 中引入的对内嵌 Python 的支持，开发者现在可以非常方便地在 HVML 程序中调用 Python 模块，利用 Python 生态中的丰富软件包或模块开发自己的 HVML 应用。对 Python 生态而言，HVML 也将解决 Python 难以用来开发交互式应用的问题。
+利用 HVML 开源解释器 PurC 在 0.9.8 版本中引入的对内嵌 Python 的支持，开发者现在可以非常方便地在 HVML 程序中调用 Python 模块，从而利用 Python 生态中的丰富软件包或模块（比如在 AI 领域大热的 PyTorch 包）开发自己的 HVML 应用。对 Python 生态而言，利用 HVML 可以优雅解决 Python 难以用来开发交互式应用的问题。
 
 另外，通过本文中的若干示例程序，我们还看到了 HVML 应用框架解耦解释器和渲染器带来的一项重大好处：一个跨平台、且有望统一 GUI/CLI 开发的全新应用框架。当然，要彻底实现这一目标还有很多要做的工作，比如 PurC 中的 Foil 渲染器还缺乏对表格、输入、表单等的支持。但这一切正在迅速改变当中。
 
 作为 HVML 发明人以及 PurC 和 xGUI Pro 项目的创始人，笔者希望来自全世界的开源爱好者为 HVML 的快速成熟添砖加瓦！
 
 最后，欢迎访问 HVML 开源解释器 PurC 项目仓库：<https://github.com/HVML/PurC>，提交你的任何评论、建议、缺陷报告甚至代码合并请求！
+
+
