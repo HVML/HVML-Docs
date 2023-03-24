@@ -5,7 +5,7 @@ Version: 1.0-RCa
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Feb. 28, 2023  
+Last Modified Date: Mar. 31, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -300,7 +300,7 @@ Language: Chinese
          - [4.4.10.3) CPython 代码动态对象的 `eval` 方法](#44103-cpython-代码动态对象的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
-      * [RCa) 230228](#rca-230228)
+      * [RCa) 230331](#rca-230331)
       * [RC9) 230131](#rc9-230131)
       * [RC8) 221231](#rc8-221231)
       * [RC7) 221130](#rc7-221130)
@@ -8327,7 +8327,7 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 
 发布历史：
 
-- 2023 年 02 月 28 日：发布 V1.0 RCa，标记为 'v1.0-rca-230228'。
+- 2023 年 03 月 31 日：发布 V1.0 RCa，标记为 'v1.0-rca-230331'。
 - 2023 年 01 月 31 日：发布 V1.0 RC9，标记为 'v1.0-pv-rc9-230131'。
 - 2022 年 12 月 31 日：发布 V1.0 RC8，标记为 'v1.0-pv-rc8-221231'。
 - 2022 年 11 月 30 日：发布 V1.0 RC7，标记为 'v1.0-pv-rc7-221130'。
@@ -8338,7 +8338,7 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
 
-#### RCa) 230228
+#### RCa) 230331
 
 1. 新增必要动态变量 `$SOCK`。
 1. 新增可选动态变量 `$PY`。
