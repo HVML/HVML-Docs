@@ -5253,10 +5253,9 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 我们使用 `request` 标签，还可以向渲染器发送一个请求，比如新建窗口组，移除一个窗口组等。此时，指定 `on` 属性值为预定义变量 `$RDR`。至于具体要执行的请求操作以及参数，通过 `to` 属性和 `with` 属性传递，其含义和要求和具体的渲染器协议有关。比如在使用 PURCMC 协议时，我们可以向渲染器发送如下的请求向指定的工作区添加窗口组：
 
 ```hvml
-    <request on="$RDR" to="addPageGroups" >
+    <request on '$RDR' to 'addPageGroups' >
         {
-             target: 'workspace:main',
-             dataType: 'plain',
+             dataType: 'html',
              data: '<section id="newGroup1"></section><section id="newGroup2"><article id="newGroupBody2" class="tabbedwindow"></article></section>'
         }
     </request>
@@ -5265,10 +5264,9 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 再如，我们请求渲染器转储当前行者所属协程创建的页面内容时：
 
 ```hvml
-    <request on="$RDR" to="callMethod" >
+    <request on $RDR to 'callMethod' >
         {
-             target: "page:hello@main",
-             dataType: 'json',
+             element: "workspace:hello@main",
              data: {
                     method: 'dump',
                     arg: 'screenshot.png'
