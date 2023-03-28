@@ -151,6 +151,7 @@ Language: Chinese
    + [附.1) 修订记录](#附1-修订记录)
       * [RCa) 230331](#rca-230331)
          - [RCa.1) 调整 `DOCTYPE` 的 `SYSTEM` 标识符规则](#rca1-调整-doctype-的-system-标识符规则)
+         - [RCa.2) 调整 `catch` 动作元素的结果](#rca2-调整-catch-动作元素的结果)
       * [RC9) 221231](#rc9-221231)
          - [RC9.1) 定义骨架元素属性的响应式处理语法](#rc91-定义骨架元素属性的响应式处理语法)
          - [RC9.2) 文档片段的结构化数据表达](#rc92-文档片段的结构化数据表达)
@@ -5020,6 +5021,18 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 - 若未定义 `for` 属性，或 `for` 的属性值为 `ANY`，则相当于匹配任意异常。
 - 多个异常，可使用空白字符分隔。
 
+`catch` 标签定义的动作原始之执行结果，应是一个表示异常信息的对象，其中需包含如下必要属性：
+
+- `name`：表示异常名称。
+
+其他属性，可由解释器决定。用法如下所示：
+
+```hvml
+    <catch for `ANY`>
+        <exit with "Exception raised: $?.name" />
+    </catch>
+```
+
 #### 2.5.15) `back` 标签
 
 `back` 标签定义一个回退执行栈操作的动作元素，该元素用于控制当前的执行栈，以便回退到指定的前置栈帧。回退后，将从目标栈帧定义的下个执行位置开始执行程序。
@@ -5266,9 +5279,10 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 ```hvml
     <request on $RDR to 'callMethod' >
         {
-             element: "workspace:hello@main",
+             element: "main",
+             property: "plainwin:hello@main",
              data: {
-                    method: 'dump',
+                    method: 'dumpContents',
                     arg: 'screenshot.png'
              },
         }
@@ -7395,6 +7409,16 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 相关章节：
 
 - [3.1.1) DOCTYPE](#311-doctype)
+
+##### RCa.2) 调整 `catch` 动作元素的结果
+
+主要修订内容如下：
+
+1. `catch` 动作元素的结果，需定义为一个描述异常信息的对象。
+
+相关章节：
+
+- [2.5.14) `catch` 标签](#2514-catch-标签)
 
 #### RC9) 221231
 
