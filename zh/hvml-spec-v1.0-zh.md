@@ -5023,7 +5023,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 `catch` 标签定义的动作原始之执行结果，应是一个表示异常信息的对象，其中需包含如下必要属性：
 
-- `name`：表示异常名称。
+- `name`：表示异常名称，字符串。
+- `info`：异常的附加信息，字符串。
 
 其他属性，可由解释器决定。用法如下所示：
 
@@ -5384,6 +5385,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
         <!-- 对子协程非正常退出的情形，通过捕获相应的异常进行处理 -->
         <catch for `ChildTerminated`>
+            ...
         </catch>
     </load>
 ```
