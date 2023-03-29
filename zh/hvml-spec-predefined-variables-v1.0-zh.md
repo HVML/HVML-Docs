@@ -6979,9 +6979,9 @@ $FS.file_exists(
 ```js
 $FS.file_is(
         <string $filename: `the path to a file or directory.`>
-        <'[ dir | file | symlink | socket | pipe | block | char ] || [ executable | exe ] || [readable | read] || [writable write]' $which = 'file readable':
+        <'[ dir | regular | symlink | socket | pipe | block | char ] || [ executable | exe ] || [readable | read] || [writable write]' $which = 'regular readable':
             'dir' - `a directory.`
-            'file' - `a regular file.`
+            'regular' - `a regular file.`
             'symlink' - `a symbolic link.`
             'socket' - `a unix socket file.`
             'pipe' - ``a named pipe file or just a pipe file.``
@@ -8342,6 +8342,7 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 
 1. 新增必要动态变量 `$SOCK`。
 1. 新增可选动态变量 `$PY`。
+1. 调整 `$FS.file_is` 的关键词。
 
 #### RC9) 230131
 
