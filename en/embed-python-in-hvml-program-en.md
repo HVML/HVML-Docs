@@ -1,4 +1,4 @@
-# Embed Python in HVML program
+# Embedding Python in HVML program
 
 - Author: Vincent Wei
 - Date: March 2023
