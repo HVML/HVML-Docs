@@ -121,7 +121,7 @@ Hello, world!
 
 在笔者的 Linux 系统上，效果如下图所示：
 
-![Hello, world!](screenshots/hello-world-with-style-foil.png)
+![Hello, world!](/screenshots/hello-world-with-style-foil.png)
 
 显然，相比第一次执行，我们看到了更多的内容。在支持颜色的终端程序中，你可以看到 `Hello, World!` 是红色的，而且居中显示。很明显，这些内容本质上是由 HVML 程序中夹杂的 `h1`、`p` 等元素定义的。我们还使用了 CSS 样式定义了 `h1` 元素的颜色（`color:red`）和文本居中对齐（`text-align:center`）样式。
 
@@ -198,7 +198,7 @@ Hello, world!
 
 该命令将创建一个窗口，其中会展示上述代码生成的文档内容。见下图。
 
-![Hello, world!](screenshots/hello-world-with-style-xgui-pro.png)
+![Hello, world!](/screenshots/hello-world-with-style-xgui-pro.png)
 
 当我们关闭该窗口后，上述 `purc` 命令才会退出。而如果我们使用 `-c thread` 选项执行上述 HVML 程序，则执行效果和之前一样：程序会立即退出。显然，我们新增的如下代码起了作用：
 
@@ -411,7 +411,7 @@ def find_next_prime(start):
 
 如果我们执行上述 HVML 程序，并使用 Foil 字符渲染器，将列出小于 100 的所有素数，如下图所示。
 
-![Find Primes (Using ul and li)](screenshots/embed-python-to-find-primes-using-ul-li.png)
+![Find Primes (Using ul and li)](/screenshots/embed-python-to-find-primes-using-ul-li.png)
 
 如果我们要列出小于 1000L 的所有素数，以上程序当然也可以正常运行，但每行显示一个素数显然太浪费空间。因此，我们对上述代码生成文档部分稍作修改，使用 `p` 元素替代 `ul` 元素，使用 `span` 替代 `li` 元素，并交错使用不同的颜色来展示这些素数：
 
@@ -433,11 +433,11 @@ def find_next_prime(start):
 
 如果我们执行上述 HVML 程序，并使用 Foil 字符渲染器，将以紧凑形式列出小于 1000L 的所有素数，如下图所示（屏幕所限，仅显示后半部分）：
 
-![Find Primes (Using p and span)](screenshots/embed-python-to-find-primes-using-p-span.png)
+![Find Primes (Using p and span)](/screenshots/embed-python-to-find-primes-using-p-span.png)
 
 如果我们使用 xGUI Pro 图形渲染器，其效果如下所示（我们通过 `style="background-color:black"` 将 `p` 元素的背景颜色设置为黑色）：
 
-![Find Primes (Using p and span)](screenshots/embed-python-to-find-primes-using-p-span-xgui-pro.png)
+![Find Primes (Using p and span)](/screenshots/embed-python-to-find-primes-using-p-span-xgui-pro.png)
 
 以上例子说明了在 HVML 中嵌入 Python 程序的巨大好处：利用 HVML，我们可以使用描述式的 HTML 和 CSS 来轻松改变 Python 程序的输出效果。同时，HVML 的解释器和渲染器分离设计，为我们的 GUI/CLI 设计带来非常多的便利。如内建的 Foil 字符渲染器和 xGUI Pro 图形渲染器表现的那样，我们可以通过 HVML 统一 CLI（命令行交互）和 GUI（图形用户交互）的开发。换句话说，今后我们在开发命令行程序时，也可以使用 HTML、CSS 等 Web 技术来展现内容并完成和用户的交互，而无需通过复杂而不易调试的方式来控制字符的颜色、位置、对齐等。更进一步，我们可以将渲染器运行在远程设备上，从而获得让一个 HVML 应用程序跨端（cross-end）执行的能力。有兴趣的读者可以尝试使用 xGUI Pro 提供的 Web Socket 通讯能力。
 
@@ -679,7 +679,7 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
 
 注意，由于使用了 `img` 元素，该程序只能使用 xGUI Pro 图形渲染器（Foil 字符渲染器无法在字符终端中渲染图片）。下图给出了使用 xGUI Pro 渲染器时，该 HVML 程序的效果：
 
-![Animated 3D Random Walk](screenshots/embed-python-animated-3d-random-walk.png)
+![Animated 3D Random Walk](/screenshots/embed-python-animated-3d-random-walk.png)
 
 当用户按下“Run Again”按钮后，该程序将再次重新执行动画。
 
