@@ -329,7 +329,7 @@ Now, we try to embed this function in HVML and use the HTML `ul` and `li` elemen
 <!DOCTYPE hvml SYSTEM "f: PY">
 <hvml target="html">
      <head>
-         <title>Embedded Python in HVML: Find Primes</title>
+         <title>Embedding Python in HVML: Find Primes</title>
      </head>
 
      <body>
@@ -519,7 +519,7 @@ Below is the complete source code of the program, please read the comments to un
 <!DOCTYPE hvml SYSTEM "f: PY">
 <hvml target="html">
      <head>
-         <title>Embedded Python in HVML: Animated 3D Random Walk</title>
+         <title>Embedding Python in HVML: Animated 3D Random Walk</title>
 
          <!-- Import Bootstrap 5.1 resources built into the renderer -->
          <link rel="stylesheet" href="//localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css" />
