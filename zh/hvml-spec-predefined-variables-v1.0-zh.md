@@ -77,6 +77,8 @@ Language: Chinese
       * [3.3.9) `uri` 属性](#339-uri-属性)
       * [3.3.10) `curator` 属性](#3310-curator-属性)
       * [3.3.11) `native_crtn` 方法](#3311-native_crtn-方法)
+      * [3.3.12) `static` 属性](#3312-static-属性)
+      * [3.3.13) `temp` 属性](#3313-temp-属性)
    + [3.4) `DOC`](#34-doc)
       * [3.4.1) `doctype` 方法](#341-doctype-方法)
       * [3.4.2) `select` 方法](#342-select-方法)
@@ -1801,6 +1803,124 @@ $CRTN.native_crtn(
 ```js
 $CRTN.native_crtn
     // native/crtn
+```
+
+#### 3.3.12) `static` 属性
+
+该属性反射的是当前协程在当前执行栈对应的静态变量，可通过该属性的获取器和设置器来访问当前协程在当前命名空间中的静态变量。
+
+**描述**
+
+```js
+$CRTN.static(
+    < string $variable: `the variable name.` >
+    [,
+        < string | ulongint $namspace = 1L: `the name space of the variable`.
+    ]
+) any | undefined
+```
+
+该属性获取器获取指定变量值。`variable` 指定变量名称；`namespace` 用于指定变量的名字空间。
+
+```js
+$CRTN.static(!
+    < string $variable: `the variable name.` >,
+    < any $value: `the new value.` >,
+    [,
+        < string | ulongint $namspace = 1L: `the name space of the variable`.
+    ]
+) boolean
+```
+
+该属性设置器设置指定变量的值。`variable` 指定变量名称；`value` 指定新的值（使用 `undefined` 表示移除该变量）；`namespace` 用于指定变量的名字空间。
+
+**异常**
+
+该属性的获取器可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：无效参数，如非法变量名；可忽略异常，静默求值时返回 `undefined`。
+
+该属性的设置器可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：无效参数，如非法变量名；可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```js
+$CRTN.static('x', '_root')
+    // undefined
+
+$CRTN.static(!'x', [0, 1, 2], '_root')
+    // true
+
+$CRTN.static('x', '_root')
+    // array: [0, 1, 2]
+
+$CRTN.static.x
+    // array: [0, 1, 2]
+```
+
+#### 3.3.13) `temp` 属性
+
+该属性反射的是当前协程在当前执行栈对应的临时变量，可通过该属性的获取器和设置器来访问当前协程在当前命名空间中的临时变量。
+
+**描述**
+
+```js
+$CRTN.temp(
+    < string $variable: `the variable name.` >
+    [,
+        < string | ulongint $namspace = 1L: `the name space of the variable`.
+    ]
+) any | undefined
+```
+
+该属性获取器获取指定临时变量的值。`variable` 指定变量名称；`namespace` 用于指定变量的名字空间。
+
+```js
+$CRTN.temp(!
+    < string $variable: `the variable name.` >,
+    < any $value: `the new value.` >,
+    [,
+        < string | ulongint $namspace = 1L: `the name space of the variable`.
+    ]
+) boolean
+```
+
+该属性设置器设置指定变量的值。`variable` 指定变量名称；`value` 指定新的值（使用 `undefined` 表示移除该变量）；`namespace` 用于指定变量的名字空间。
+
+**异常**
+
+该属性的获取器可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：无效参数，如非法变量名；可忽略异常，静默求值时返回 `undefined`。
+
+该属性的设置器可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：无效参数，如非法变量名；可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```js
+$CRTN.temp('x', '_topmost')
+    // undefined
+
+$CRTN.temp(!'x', [0, 1, 2], '_topmost')
+    // true
+
+$CRTN.temp('x', '_topmost')
+    // array: [0, 1, 2]
+
+$CRTN.temp.x
+    // array: [0, 1, 2]
 ```
 
 ### 3.4) `DOC`
@@ -8340,6 +8460,7 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 
 #### RCa) 230331
 
+1. 新增 `$CRTN.static` 和 `$CRTN.temp` 两个动态属性。
 1. 新增必要动态变量 `$SOCK`。
 1. 新增可选动态变量 `$PY`。
 1. 调整 `$FS.file_is` 的关键词。
