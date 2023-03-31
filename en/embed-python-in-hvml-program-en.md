@@ -435,7 +435,7 @@ If we execute the above HVML program, and use the Foil character renderer, all p
 
 ![Find Primes (Using ul and li)](/screenshots/embed-python-to-find-primes-using-ul-li.png)
 
-If we want to list all prime numbers less than 1000L, of course, the above program can run normally, but it is obviously a waste of space to display one prime number per line. Therefore, we slightly modify the part of the above code to generate documents, use `p` elements instead of `ul` elements, use `span` instead of `li` elements, and use different colors interleaved to display these prime numbers:
+If we want to list all prime numbers less than 10000, of course, the above program can run normally, but it is obviously a waste of space to display one prime number per line. Therefore, we slightly modify the part of the above code to generate documents, use `p` elements instead of `ul` elements, use `span` instead of `li` elements, and use different colors interleaved to display these prime numbers:
 
 ```hvml
          <!-- Use 'p' and 'span' elements to list all prime numbers less than 10000L. -->
