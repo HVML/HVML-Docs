@@ -11,7 +11,7 @@
 - [Quickly understand HVML](#quickly-understand-hvml)
 - [Loadable Dynamic Object PY](#loadable-dynamic-object-py)
 - [Sample Program: Finding Prime Numbers](#sample-program-finding-prime-numbers)
-- [Example Program: 3D Random Walk](#example-program-3d-random-walk)
+- [Sample Program: 3D Random Walk](#sample-program-3d-random-walk)
 - [Conclusion](#conclusion)
 
 [//]:# (END OF TOC)
@@ -463,13 +463,13 @@ If we use the xGUI Pro graphics renderer, the effect is as follows (we set the b
 
 The above examples illustrate the great benefits of embedding Python programs in HVML: With HVML, we can use descriptive HTML and CSS to easily change the output of Python programs. At the same time, the separate design of HVML's interpreter and renderer brings a lot of convenience to our GUI/CLI design. As shown by the built-in Foil character renderer and xGUI Pro graphics renderer, we can unify the development of CLI (command line interaction) and GUI (graphical user interaction) through HVML. In other words, when we develop command-line programs in the future, we can also use Web technologies such as HTML and CSS to display content and complete interaction with users, without having to control the color, position, and alignment of text in a complicated and difficult-to-debug way. Going a step further, we can run the renderer on a remote device, thus gaining the ability to execute an HVML application cross-end. Interested readers can try to use the Web Socket communication capability provided by xGUI Pro.
 
-## Example Program: 3D Random Walk
+## Sample Program: 3D Random Walk
 
 The original version of the 3D random walk program described in this section comes from the animation example program "Animated 3D Random Walk" on the official website of Matplotlib:
 
 <https://matplotlib.org/stable/gallery/animation/random_walk.html>
 
-This program uses the famous NumPy and Matplotlib modules in the Python ecosystem to implement a three-dimensional random walk program. If you use Matplotlib's interactive backend (backend), such as Tk, Gtk, Qt, the results can be displayed on the graphical user interface in the form of animation.
+This program uses the popular NumPy and Matplotlib modules in the Python ecosystem to implement a three-dimensional random walk program. If you use Matplotlib's interactive backend (backend), such as Tk, Gtk, Qt, the results can be displayed on the graphical user interface in the form of animation.
 
 The program utilizes the animation submodule of Matplotlib, and periodically updates the lines in it through the `update_lines()` function, thus realizing the animation effect.
 
@@ -493,7 +493,7 @@ def update_lines(num, walks, lines):
 ani = animation.FuncAnimation(
      fig, update_lines, num_steps, fargs=(walks, lines), interval=100)
 
-plt. show()
+plt.show()
 ```
 
 The core code to implement the animation is given above: the `update_lines()` function and the `animation.FuncAnimation()` function call to create the animation. Finally, the program calls `plt.show()` to enter the animation. If Matplotlib's interactive backend is used, the program will not continue until the user closes all windows displayed by `plt.show()`.
