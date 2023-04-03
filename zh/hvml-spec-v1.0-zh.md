@@ -1,11 +1,11 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0-RCa  
+Version: 1.0-RCb  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Mar. 31, 2023  
+Last Modified Date: Apr. 30, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -149,9 +149,11 @@ Language: Chinese
 - [5) 总结](#5-总结)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RCb) 230430](#rcb-230430)
       * [RCa) 230331](#rca-230331)
          - [RCa.1) 调整 `DOCTYPE` 的 `SYSTEM` 标识符规则](#rca1-调整-doctype-的-system-标识符规则)
          - [RCa.2) 调整 `catch` 动作元素的结果](#rca2-调整-catch-动作元素的结果)
+         - [RCa.3) 微调 `update` 动作元素](#rca3-微调-update-动作元素)
       * [RC9) 221231](#rc9-221231)
          - [RC9.1) 定义骨架元素属性的响应式处理语法](#rc91-定义骨架元素属性的响应式处理语法)
          - [RC9.2) 文档片段的结构化数据表达](#rc92-文档片段的结构化数据表达)
@@ -7401,6 +7403,8 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
+
+#### RCb) 230430
 
 #### RCa) 230331
 

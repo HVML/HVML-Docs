@@ -1,11 +1,11 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RCa  
+Version: 1.0-RCb  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Mar. 31, 2023  
+Last Modified Date: Apr. 30, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -302,6 +302,7 @@ Language: Chinese
          - [4.4.10.3) CPython 代码动态对象的 `eval` 方法](#44103-cpython-代码动态对象的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RCb) 230430](#rcb-230430)
       * [RCa) 230331](#rca-230331)
       * [RC9) 230131](#rc9-230131)
       * [RC8) 221231](#rc8-221231)
@@ -1807,24 +1808,22 @@ $CRTN.native_crtn
 
 #### 3.3.12) `static` 属性
 
-该属性反射的是当前协程在当前执行栈对应的静态变量，可通过该属性的获取器和设置器来访问当前协程在当前命名空间中的静态变量。
+该属性反映的是当前协程在当前执行栈对应的静态变量，应被实现为原生实体。通过该原生实体的属性之获取器和设置器来访问当前协程在指定命名空间中的静态变量。
 
 **描述**
 
 ```js
-$CRTN.static(
-    < string $variable: `the variable name.` >
+$CRTN.static.<variable>(
     [,
         < string | ulongint $namspace = 1L: `the name space of the variable`.
     ]
 ) any | undefined
 ```
 
-该属性获取器获取指定变量值。`variable` 指定变量名称；`namespace` 用于指定变量的名字空间。
+该属性获取器获取指定变量的值。`variable` 是变量名称；`namespace` 用于指定变量的名字空间，默认取 1L。
 
 ```js
-$CRTN.static(!
-    < string $variable: `the variable name.` >,
+$CRTN.static.<variable>(!
     < any $value: `the new value.` >,
     [,
         < string | ulongint $namspace = 1L: `the name space of the variable`.
@@ -1832,17 +1831,17 @@ $CRTN.static(!
 ) boolean
 ```
 
-该属性设置器设置指定变量的值。`variable` 指定变量名称；`value` 指定新的值（使用 `undefined` 表示移除该变量）；`namespace` 用于指定变量的名字空间。
+该属性设置器设置指定变量的值。`variable` 是变量名称；`value` 指定新的值（使用 `undefined` 表示移除该变量）；`namespace` 用于指定变量的名字空间。
 
 **异常**
 
-该属性的获取器可能产生的异常：
+该原生实体的属性获取器可能产生的异常：
 
 - `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `undefined`。
 - `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `undefined`。
 - `InvalidValue`：无效参数，如非法变量名；可忽略异常，静默求值时返回 `undefined`。
 
-该属性的设置器可能产生的异常：
+该原生实体的属性设置器可能产生的异常：
 
 - `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
 - `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
@@ -1851,13 +1850,13 @@ $CRTN.static(!
 **示例**
 
 ```js
-$CRTN.static('x', '_root')
+$CRTN.static.x('_root')
     // undefined
 
-$CRTN.static(!'x', [0, 1, 2], '_root')
+$CRTN.static.x(![0, 1, 2], '_root')
     // true
 
-$CRTN.static('x', '_root')
+$CRTN.static.x('_root')
     // array: [0, 1, 2]
 
 $CRTN.static.x
@@ -1866,24 +1865,22 @@ $CRTN.static.x
 
 #### 3.3.13) `temp` 属性
 
-该属性反射的是当前协程在当前执行栈对应的临时变量，可通过该属性的获取器和设置器来访问当前协程在当前命名空间中的临时变量。
+该属性反映的是当前协程在执行栈中对应的临时变量，应被实现为原生实体。通过该原生实体的属性获取器和设置器来访问当前协程在指定命名空间中的临时变量。
 
 **描述**
 
 ```js
-$CRTN.temp(
-    < string $variable: `the variable name.` >
+$CRTN.temp.<variable>(
     [,
         < string | ulongint $namspace = 1L: `the name space of the variable`.
     ]
 ) any | undefined
 ```
 
-该属性获取器获取指定临时变量的值。`variable` 指定变量名称；`namespace` 用于指定变量的名字空间。
+通过上述属性获取器获取指定临时变量的值。`variable` 是变量名称；`namespace` 用于指定变量的名字空间，默认取 1L。
 
 ```js
-$CRTN.temp(!
-    < string $variable: `the variable name.` >,
+$CRTN.temp.<variable>(!
     < any $value: `the new value.` >,
     [,
         < string | ulongint $namspace = 1L: `the name space of the variable`.
@@ -1891,17 +1888,17 @@ $CRTN.temp(!
 ) boolean
 ```
 
-该属性设置器设置指定变量的值。`variable` 指定变量名称；`value` 指定新的值（使用 `undefined` 表示移除该变量）；`namespace` 用于指定变量的名字空间。
+通过上述属性设置器设置指定临时变量的值。`variable` 是变量名称；`value` 指定新的值（使用 `undefined` 表示移除该变量）；`namespace` 用于指定变量的名字空间。
 
 **异常**
 
-该属性的获取器可能产生的异常：
+该原生实体的属性获取器可能产生的异常：
 
 - `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `undefined`。
 - `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `undefined`。
 - `InvalidValue`：无效参数，如非法变量名；可忽略异常，静默求值时返回 `undefined`。
 
-该属性的设置器可能产生的异常：
+该原生实体的属性设置器可能产生的异常：
 
 - `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
 - `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
@@ -1910,13 +1907,13 @@ $CRTN.temp(!
 **示例**
 
 ```js
-$CRTN.temp('x', '_topmost')
+$CRTN.temp.x('_topmost')
     // undefined
 
-$CRTN.temp(!'x', [0, 1, 2], '_topmost')
+$CRTN.temp.x(! [0, 1, 2], '_topmost')
     // true
 
-$CRTN.temp('x', '_topmost')
+$CRTN.temp.x('_topmost')
     // array: [0, 1, 2]
 
 $CRTN.temp.x
@@ -8457,6 +8454,10 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 - 2022 年 06 月 01 日：发布 V1.0 RC3，标记为 'v1.0-pv-rc3-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
+
+#### RCb) 230430
+
+1. 调整 `$CRTN.static` 和 `$CRTN.temp` 两个属性的用法。
 
 #### RCa) 230331
 
