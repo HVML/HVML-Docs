@@ -220,7 +220,7 @@ This gives us the third important feature of HVML: event-driven.
 
 In addition, we saw through the simple HVML program above that we can use an expression like `$L.streq('caseless', $RDR.state.comm, 'socket')` to set the attribute value of the element. In HVML, such expressions are called Hybrid Evaluating Expressions (HEE). We can also use expressions composed of multiple HEEs with certain logic control capabilities. We compound these expressions into Compound Hybrid Evaluating Expressions (CHEE) and surround them with a pair of double curly braces; for example ` {{ $L.gt($x, $y) && $x || $y }}` means to compare the values of `$x` and `$y`, and take the larger one.
 
-Essentially, an HVML program consists of elements, including operation elements defined by HVML or external elements defined by markup languages such as HTML, and mixed evaluation expressions used to set element attributes and their contents.
+Essentially, an HVML program consists of elements, including action elements defined by HVML or external elements defined by markup languages such as HTML, and mixed evaluation expressions used to set element attributes and their contents.
 
 In addition to the above three important features, HVML also provides support for modern programming technologies such as template definition and substitution, exception handling, multi-coroutine, and concurrency. For more details, please refer to the following articles:
 
@@ -286,7 +286,7 @@ The first statement of CHEE above sets a Python local variable named `x` using a
 
 Among them, `$PY.local.x()` returns an HVML native entity representing a Python complex object, and its default getter is called again on this native entity, namely `$PY.local.x()()`, will perform data type conversion. This conversion will construct Python's Unicode string, bytes or byte array, list, dictionary, and set into corresponding HVML data types, which are string, byte sequence, array, object, and generic set respectively. Without such conversion, these Python objects are represented in HVML programs as native entity dynamic objects. `None`, `True`, `False`, integers, and floating numbers in Python do not do this kind of processing, and are directly equivalent to the `null`, `true`, `false`, `longint`, and `number` data types of HVML. For cases where the conversion cannot be performed, such as executing the default getter on a custom Python class object, it will be equivalent to calling Python's `str()` function on it.
 
-Obviously, by using `$PY` variable to construct our expected mixed evaluation expression, and using it for the attribute value of HVML element or the content of operation element, it is very convenient to embed Python code into HVML, thus taking full advantage of the rich modules and functions in the Python ecosystem.
+Obviously, by using `$PY` variable to construct our expected mixed evaluation expression, and using it for the attribute value of HVML element or the content of action element, it is very convenient to embed Python code into HVML, thus taking full advantage of the rich modules and functions in the Python ecosystem.
 
 Before entering the topic of this article, let's take a look at Python exception handling. If an exception occurs when executing Python code or calling the interface provided by the Python interpreter (currently using CPython), HVML will uniformly report the `ExternalFailure` exception, and the further Python exception name is given by `$PY.except`. As shown in the following example:
 
@@ -334,10 +334,10 @@ Now, we try to embed this function in HVML and use the HTML `ul` and `li` elemen
 
      <body>
          <!--
-             The init element is used to define a variable. Its content uses HVML's ''' syntax to define an as-is
-             reserved string, bound to the pyCode variable.
-             Note that we can also use the from attribute of the init element to initialize
-             the content of the pyCode variable from the specified file.
+             The 'init' element is used to define a variable. Its content uses HVML's ''' syntax
+             to define an literal string, bound to the 'pyCode' variable.
+             Note that we can also use the 'from' attribute of the 'init' element to initialize
+             the content of the 'pyCode' variable from a specified file.
              So that there is no need to hardcode the content of this Python function into the HVML program.
          -->
          <init as 'pyCode'>
@@ -357,8 +357,8 @@ def find_next_prime(start):
          </init>
 
          <!--
-             We perform a mixed-evaluation expression using the content of
-             the 'inherit' operation element.
+             We perform a hybrid evaluation expression using the content of
+             the 'inherit' action element.
 
              This expression executes the Python code contained in the 'pyCode' variable.
              Note that we can also directly execute the code from a Python file:
@@ -366,10 +366,10 @@ def find_next_prime(start):
                  $PY.run('<the Python script file name>', 'file')
          -->
          <inherit>
-             {{ $PY. run($pyCode, 'source') }}
+             {{ $PY.run($pyCode, 'source') }}
 
              <!--
-                 We utilize the 'catch' operation element to catch exceptions that may occur
+                 We utilize the 'catch' action element to catch exceptions that may occur
                  while executing the above Python code.
              -->
              <catch for `ExternalFailure`>
@@ -383,8 +383,8 @@ def find_next_prime(start):
 
          <ul>
              <!--
-                 The 'iterate' operation element is used here to perform iteration,
-                 similar to for loops in other programming languages.
+                 The 'iterate' action element is used here to perform iteration,
+                 similar to a loop in other programming languages.
 
                  The initial input data for this iteration is 2L, which is defined
                  by the 'on' attribute.
@@ -412,7 +412,7 @@ def find_next_prime(start):
                  <!--
                      Insert a 'li' element at the current document position,
                      and its content is '$?', which is the execution result of
-                     the last operation element, that is, the result of each iteration.
+                     the last action element, that is, the result of each iteration.
                  -->
                  <li>$?</li>
              </iterate>

@@ -284,7 +284,7 @@ from datetime import datetime as dt, timedelta as td
 
 以上 CHEE 的第一条语句使用 HVML 数组设置了一个名为 `x` Python 局部变量，之后在其上调用了 Python 针对列表的 `reverse()` 方法，然后使用 `$PY.local.x()()` 这一用法调用了 `x` 本身的获取器，这将返回 Python 列表对象对应的 HVML 数组。因此，上述 CHEE 的执行结果是 [3, 2, 2, 1]。
 
-其中，`$PY.local.x()` 返回的是一个代表 Python 复杂对象的 HVML 原生实体（native entity），在这个原生实体上再次调用其默认获取器，即 `$PY.local.x()()`，会执行数据类型的转换。该转换会将 Python 的 Unicode 字符串、字节数组（bytes 或 byte array）、列表（List）、字典（dictionary）、集合（set）构建为对应的 HVML 数据类型，分别是字符串（string）、字节序列（byte sequence）、数组（array）、对象（array）和一般性集合（generic set）。如果不做此类转换，这些 Python 对象在 HVML 程序中以原生实体动态对象的方式表达。而 Python 中的 None、True、False、整数和浮点数，则不做此类处理，直接等价于 HVML 的 null、true、false、longint 和 number 数据类型。对无法执行转换的情形，比如在一个自定义的 Python 类对象上执行默认的获取器，将等价于在其上调用 Python 的 `str()` 函数。
+其中，`$PY.local.x()` 返回的是一个代表 Python 复杂对象的 HVML 原生实体（native entity），在这个原生实体上再次调用其默认获取器，即 `$PY.local.x()()`，会执行数据类型的转换。该转换会将 Python 的 Unicode 字符串、字节数组（bytes 或 byte array）、列表（List）、字典（dictionary）、集合（set）构建为对应的 HVML 数据类型，分别是字符串（string）、字节序列（byte sequence）、数组（array）、对象（object）和一般性集合（generic set）。如果不做此类转换，这些 Python 对象在 HVML 程序中以原生实体动态对象的方式表达。而 Python 中的 None、True、False、整数和浮点数，则不做此类处理，直接等价于 HVML 的 null、true、false、longint 和 number 数据类型。对无法执行转换的情形，比如在一个自定义的 Python 类对象上执行默认的获取器，将等价于在其上调用 Python 的 `str()` 函数。
 
 显然，通过 `$PY` 变量构造我们期望的混合求值表达式，将其用于 HVML 元素的属性值或者动作元素的内容，即可非常方便地将 Python 代码嵌入到 HVML 中，从而充分利用 Python 生态中丰富的模块及其功能。
 
