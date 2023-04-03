@@ -220,7 +220,7 @@ This gives us the third important feature of HVML: event-driven.
 
 In addition, we saw through the simple HVML program above that we can use an expression like `$L.streq('caseless', $RDR.state.comm, 'socket')` to set the attribute value of the element. In HVML, such expressions are called Hybrid Evaluating Expressions (HEE). We can also use expressions composed of multiple HEEs with certain logic control capabilities. We compound these expressions into Compound Hybrid Evaluating Expressions (CHEE) and surround them with a pair of double curly braces; for example ` {{ $L.gt($x, $y) && $x || $y }}` means to compare the values of `$x` and `$y`, and take the larger one.
 
-Essentially, an HVML program consists of elements, including action elements defined by HVML or external elements defined by markup languages such as HTML, and mixed evaluation expressions used to set element attributes and their contents.
+Essentially, an HVML program consists of elements, including action elements defined by HVML or external elements defined by markup languages such as HTML, and hybrid evaluation expressions used to set element attributes and their contents.
 
 In addition to the above three important features, HVML also provides support for modern programming technologies such as template definition and substitution, exception handling, multi-coroutine, and concurrency. For more details, please refer to the following articles:
 
@@ -286,7 +286,7 @@ The first statement of CHEE above sets a Python local variable named `x` using a
 
 Among them, `$PY.local.x()` returns an HVML native entity representing a Python complex object, and its default getter is called again on this native entity, namely `$PY.local.x()()`, will perform data type conversion. This conversion will construct Python's Unicode string, bytes or byte array, list, dictionary, and set into corresponding HVML data types, which are string, byte sequence, array, object, and generic set respectively. Without such conversion, these Python objects are represented in HVML programs as native entity dynamic objects. `None`, `True`, `False`, integers, and floating numbers in Python do not do this kind of processing, and are directly equivalent to the `null`, `true`, `false`, `longint`, and `number` data types of HVML. For cases where the conversion cannot be performed, such as executing the default getter on a custom Python class object, it will be equivalent to calling Python's `str()` function on it.
 
-Obviously, by using `$PY` variable to construct our expected mixed evaluation expression, and using it for the attribute value of HVML element or the content of action element, it is very convenient to embed Python code into HVML, thus taking full advantage of the rich modules and functions in the Python ecosystem.
+Obviously, by using `$PY` variable to construct our expected hybrid evaluation expression, and using it for the attribute value of HVML element or the content of action element, it is very convenient to embed Python code into HVML, thus taking full advantage of the rich modules and functions in the Python ecosystem.
 
 Before entering the topic of this article, let's take a look at Python exception handling. If an exception occurs when executing Python code or calling the interface provided by the Python interpreter (currently using CPython), HVML will uniformly report the `ExternalFailure` exception, and the further Python exception name is given by `$PY.except`. As shown in the following example:
 
