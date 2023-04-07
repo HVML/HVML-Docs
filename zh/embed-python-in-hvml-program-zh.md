@@ -324,7 +324,7 @@ def find_next_prime(start):
 ```hvml
 <!--
     由于 $PY 被实现为一个可装载的动态对象，故而需要使用 DOCTYPE 的
-    SYSTEM 标识符装载该动态对象并将其绑定到 PY 变量上。
+    SYSTEM 标识符装载该动态对象并将其绑定到 'PY' 变量上。
 -->
 <!DOCTYPE hvml SYSTEM "f: PY">
 <hvml target="html">
@@ -334,10 +334,10 @@ def find_next_prime(start):
 
     <body>
         <!--
-            init 元素用于定义一个变量。其内容使用了 HVML 的 ''' 语法定义了一个原样
-            保留的字符串，并绑定到 pyCode 变量上。
-            注意，我们也可以使用 init 元素的 from 属性，从指定的文件中初始化
-            pyCode 变量的内容，从而无需硬编码这段 Python 函数内容到 HVML 程序中。
+            'init' 元素用于定义一个变量。其内容使用了 HVML 的 ''' 语法定义了一个原样
+            保留的字符串，并绑定到 'pyCode' 变量上。
+            注意，我们也可以使用 'init' 元素的 'from' 属性，从指定的文件中初始化
+            'pyCode' 变量的内容，从而无需硬编码这段 Python 函数内容到 HVML 程序中。
         -->
         <init as 'pyCode'>
 '''
@@ -357,7 +357,7 @@ def find_next_prime(start):
 
         <!--
             我们利用 `inherit` 动作元素的内容执行了一条混合求值表达式。
-            该表达式执行 pyCode 变量中包含的 Python 代码。
+            该表达式执行 'pyCode' 变量中包含的 Python 代码。
             注意，我们也可以直接执行 Python 文件中的代码：
 
                 $PY.run('<the Python script file name>', 'file')
@@ -379,13 +379,13 @@ def find_next_prime(start):
 
         <ul>
             <!--
-                这里利用 iterate 动作元素执行迭代，类似其他编程语言的 for 循环。
-                该迭代的初始输入数据为 2L。迭代的停止条件由 onlyif 属性的表达式决定：$L.lt($0~, 100L)。
+                这里利用 'iterate' 动作元素执行迭代，类似其他编程语言的 'for' 循环。
+                该迭代的初始输入数据为 2L。迭代的停止条件由 'onlyif' 属性的表达式决定：$L.lt($0~, 100L)。
                 其中 $0~ 表示当前的迭代输入数据；若当前的迭代输入数据 $0~ 大于等于 100L 时，
                 该表达式的求值结果为 false，整个迭代结束。
-                每次迭代时，输入数据将作为结果执行 iterate 定义的所有子孙元素。
-                若整个迭代未结束，则会在每次迭代后对 with 属性指定的表达式 `$PY.global.find_next_prime($0<)` 进行求值。
-                由于设定了 nosetotail（表示“首尾相接”）副词属性，with 属性的结果将被当做下一次迭代的输入数据。
+                每次迭代时，输入数据将作为结果执行 'iterate' 定义的所有子孙元素。
+                若整个迭代未结束，则会在每次迭代后对 'with' 属性指定的表达式 `$PY.global.find_next_prime($0<)` 进行求值。
+                由于设定了 'nosetotail'（表示“首尾相接”）副词属性，'with' 属性的结果将被当做下一次迭代的输入数据。
             -->
             <iterate on 2L onlyif $L.lt($0<, 100L)
                     with $PY.global.find_next_prime($0<) nosetotail >
