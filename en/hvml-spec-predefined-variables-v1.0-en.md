@@ -22,284 +22,284 @@ The copyright owner discloses the purpose of this document, which is used to exp
 
 For a detailed list of registered trademarks or trademarks of the copyright owners mentioned in this article, please refer to the end of the document.
 
-**Table of contents**
+**Table of Contents**
 
 [//]:# (START OF TOC)
 
-- [1) Introduction] (#1-Introduction)
-    + [1.1) Specifications and Terminology](#11-Specifications and Terminology)
-    + [1.2) Binary format notation](#12-Binary format notation)
-    + [1.3) Formatting modifiers](#13-Formatting modifiers)
-    + [1.4) Writing Requirements](#14-Writing Requirements)
-- [2) Non-Dynamic Variables] (#2-Non-Dynamic Variables)
+- [1) Introduction] (#1-introduction)
+    + [1.1) Specifications and Terms](#11-specifications and terms)
+    + [1.2) Binary Format Representation](#12-binary format representation)
+    + [1.3) Format Modifier](#13-format modifier)
+    + [1.4) Writing Requirements](#14-writing requirements)
+- [2) Non-Dynamic Variable] (#2-non-dynamic variable)
     + [2.1) `TIMERS`](#21-timers)
-       * [2.1.1) Add timers in batches](#211-Add timers in batches)
-       * [2.1.2) Add a timer](#212-Add a timer)
-       * [2.1.3) Remove a timer] (#213-Remove a timer)
-       * [2.1.4) Modify specific timer properties] (#214-Modify specific timer properties)
+       * [2.1.1) Add Timers in Batches](#211-add timers in batches)
+       * [2.1.2) Add a Timer](#212-add a timer)
+       * [2.1.3) Remove a Timer] (#213-remove a timer)
+       * [2.1.4) Modify Specific Timer Property] (#214-modify specific timer property)
     + [2.2) `REQ`](#22-req)
-- [3) Required dynamic variables] (#3-Required dynamic variables)
+- [3) Required Dynamic Variable] (#3-required dynamic variables)
     + [3.1) `SYS`](#31-sys)
-       * [3.1.1) `const` methods] (#311-const-methods)
-       * [3.1.2) `uname` method] (#312-uname-method)
-       * [3.1.3) `uname_prt` method] (#313-uname_prt-method)
-       * [3.1.4) `locale` method](#314-locale-method)
-       * [3.1.5) `time` method] (#315-time-method)
-       * [3.1.6) `time_us` method] (#316-time_us-method)
-       * [3.1.7) `sleep` method] (#317-sleep-method)
-       * [3.1.8) `timezone` method] (#318-timezone-method)
-       * [3.1.9) `cwd` method] (#319-cwd-method)
-       * [3.1.10) `env` method] (#3110-env-method)
-       * [3.1.11) `random_sequence` method] (#3111-random_sequence-method)
-       * [3.1.12) `random` method] (#3112-random-method)
+       * [3.1.1) `const` Method] (#311-const-method)
+       * [3.1.2) `uname` Method] (#312-uname-method)
+       * [3.1.3) `uname_prt` Method] (#313-uname_prt-method)
+       * [3.1.4) `locale` Method](#314-locale-method)
+       * [3.1.5) `time` Method] (#315-time-method)
+       * [3.1.6) `time_us` Method] (#316-time_us-method)
+       * [3.1.7) `sleep` Method] (#317-sleep-method)
+       * [3.1.8) `timezone` Method] (#318-timezone-method)
+       * [3.1.9) `cwd` Method] (#319-cwd-method)
+       * [3.1.10) `env` Method] (#3110-env-method)
+       * [3.1.11) `random_sequence` Method] (#3111-random_sequence-method)
+       * [3.1.12) `random` Method] (#3112-random-method)
     + [3.2) `RUNNER`](#32-runner)
-       * [3.2.1) `app_name` property] (#321-app_name-property)
-       * [3.2.2) `run_name` property] (#322-run_name-property)
-       * [3.2.3) `rid` attribute] (#323-rid-attribute)
-       * [3.2.4) `uri` attribute] (#324-uri-attribute)
-       * [3.2.5) `myObj` static properties] (#325-myobj-static-properties)
-       * [3.2.6) `user` attribute] (#326-user-attribute)
-       * [3.2.7) The `chan` method] (#327-chan-method)
-          - [3.2.7.1) `send` method of channel entity] (#3271-channel-entity-send-method)
-          - [3.2.7.2) `recv` method of channel entity] (#3272-channel-entity-recv-method)
-          - [3.2.7.3) `cap` property of channel entity] (#3273-cap-property of channel entity)
-          - [3.2.7.4) `len` property of channel entity] (#3274--len-property of channel entity)
-          - [3.2.7.5) Events on channel entities] (#3275-Events on channel entities)
+       * [3.2.1) `app_name` Property] (#321-app_name-property)
+       * [3.2.2) `run_name` Property] (#322-run_name-property)
+       * [3.2.3) `rid` Attribute] (#323-rid-attribute)
+       * [3.2.4) `uri` Attribute] (#324-uri-attribute)
+       * [3.2.5) `myObj` Static Property] (#325-myobj-static-properties)
+       * [3.2.6) `user` Attribute] (#326-user-attribute)
+       * [3.2.7) The `chan` Method] (#327-chan-method)
+          - [3.2.7.1) `send` Method of Channel Entity] (#3271-channel-entity-send-method)
+          - [3.2.7.2) `recv` Method of Channel Entity] (#3272-channel-entity-recv-method)
+          - [3.2.7.3) `cap` Property of Channel Entity] (#3273-cap-property of channel entity)
+          - [3.2.7.4) `len` Property of Channel Entity] (#3274--len-property of channel entity)
+          - [3.2.7.5) Events on Channel entity] (#3275-Events on channel entity)
     + [3.3) `CRTN`](#33-crtn)
-       * [3.3.1) `target` property] (#331-target-property)
-       * [3.3.2) `base` attribute] (#332-base-attribute)
-       * [3.3.3) `max_iteration_count` property] (#333-max_iteration_count-property)
-       * [3.3.4) `max_recursion_depth` property] (#334-max_recursion_depth-property)
-       * [3.3.5) `max_embedded_levels` property] (#335-max_embedded_levels-property)
-       * [3.3.6) `timeout` property] (#336-timeout-property)
-       * [3.3.7) `cid` attribute] (#337-cid-attribute)
-       * [3.3.8) `token` attribute] (#338-token-attribute)
-       * [3.3.9) `uri` attribute] (#339-uri-attribute)
-       * [3.3.10) `curator` property] (#3310-curator-property)
-       * [3.3.11) `native_crtn` method] (#3311-native_crtn-method)
-       * [3.3.12) `static` attribute] (#3312-static-attributes)
-       * [3.3.13) `temp` attribute] (#3313-temp-attribute)
+       * [3.3.1) `target` Property] (#331-target-property)
+       * [3.3.2) `base` Attribute] (#332-base-attribute)
+       * [3.3.3) `max_iteration_count` Property] (#333-max_iteration_count-property)
+       * [3.3.4) `max_recursion_depth` Property] (#334-max_recursion_depth-property)
+       * [3.3.5) `max_embedded_levels` Property] (#335-max_embedded_levels-property)
+       * [3.3.6) `timeout` Property] (#336-timeout-property)
+       * [3.3.7) `cid` Attribute] (#337-cid-attribute)
+       * [3.3.8) `token` Attribute] (#338-token-attribute)
+       * [3.3.9) `uri` Attribute] (#339-uri-attribute)
+       * [3.3.10) `curator` Property] (#3310-curator-property)
+       * [3.3.11) `native_crtn` Method] (#3311-native_crtn-method)
+       * [3.3.12) `static` Attribute] (#3312-static-attributes)
+       * [3.3.13) `temp` Attribute] (#3313-temp-attribute)
     + [3.4) `DOC`](#34-doc)
-       * [3.4.1) `doctype` method] (#341-doctype-method)
-       * [3.4.2) `select` method] (#342-select-method)
-       * [3.4.3) `query` method] (#343-query-method)
-       * [3.4.4) Element Collection Entity] (#344-Element Collection Entity)
+       * [3.4.1) `doctype` Method] (#341-doctype-method)
+       * [3.4.2) `select` Method] (#342-select-method)
+       * [3.4.3) `query` Method] (#343-query-method)
+       * [3.4.4) Element Collection Entity] (#344-element collection entity)
     + [3.5) `RDR`](#35-rdr)
-       * [3.5.1) `state` attribute] (#351-state-attribute)
-       * [3.5.2) `connect` method] (#352-connect-method)
-       * [3.5.3) `disconn` method] (#353-disconn-method)
+       * [3.5.1) `state` Attribute] (#351-state-attribute)
+       * [3.5.2) `connect` Method] (#352-connect-method)
+       * [3.5.3) `disconn` Method] (#353-disconn-method)
     + [3.6) `DATETIME`](#36-datetime)
-       * [3.6.1) `time_prt` method] (#361-time_prt-method)
-       * [3.6.2) `utctime` method] (#362-utctime-method)
-       * [3.6.3) `localtime` method](#363-localtime-method)
-       * [3.6.4) `mktime` method] (#364-mktime-method)
-       * [3.6.5) `fmttime` method] (#365-fmttime-method)
-       * [3.6.6) `fmtbdtime` method](#366-fmtbdtime-method)
+       * [3.6.1) `time_prt` Method] (#361-time_prt-method)
+       * [3.6.2) `utctime` Method] (#362-utctime-method)
+       * [3.6.3) `localtime` Method](#363-localtime-method)
+       * [3.6.4) `mktime` Method] (#364-mktime-method)
+       * [3.6.5) `fmttime` Method] (#365-fmttime-method)
+       * [3.6.6) `fmtbdtime` Method](#366-fmtbdtime-method)
     + [3.7) `DATA`](#37-data)
-       * [3.7.1) `type` method] (#371-type-method)
-       * [3.7.2) `size` method] (#372-size-method)
-       * [3.7.3) `count` method] (#373-count-method)
-       * [3.7.4) `numerify` method] (#374-numerify-method)
-       * [3.7.5) `booleanize` method] (#375-booleanize-method)
-       * [3.7.6) `stringify` method] (#376-stringify-method)
-       * [3.7.7) `serialize` method] (#377-serialize-method)
-       * [3.7.8) `sort` method] (#378-sort-method)
-       * [3.7.9) `shuffle` method] (#379-shuffle-method)
-       * [3.7.10) `compare` method] (#3710-compare-method)
-       * [3.7.11) `parse` method] (#3711-parse-method)
-       * [3.7.12) `isequal` method] (#3712-isequal-method)
-       * [3.7.13) `fetchstr` method] (#3713-fetchstr-method)
-       * [3.7.14) `fetchreal` method] (#3714-fetchreal-method)
-       * [3.7.15) `crc32` method] (#3715-crc32-method)
-       * [3.7.16) `md5` method] (#3716-md5-method)
-       * [3.7.17) `sha1` method] (#3717-sha1-method)
-       * [3.7.18) `pack` method] (#3718-pack-method)
-       * [3.7.19) `unpack` method] (#3719-unpack-method)
-       * [3.7.20) `bin2hex` method] (#3720-bin2hex-method)
-       * [3.7.21) `hex2bin` method] (#3721-hex2bin-method)
-       * [3.7.22) `base64_encode` method] (#3722-base64_encode-method)
-       * [3.7.23) `base64_decode` method] (#3723-base64_decode-method)
-       * [3.7.24) `arith` method] (#3724-arith-method)
-       * [3.7.25) `bitwise` method] (#3725-bitwise-method)
-       * [3.7.26) `contains` method] (#3726-contains-method)
-       * [3.7.27) `has` method] (#3727-has-method)
+       * [3.7.1) `type` Method] (#371-type-method)
+       * [3.7.2) `size` Method] (#372-size-method)
+       * [3.7.3) `count` Method] (#373-count-method)
+       * [3.7.4) `numerify` Method] (#374-numerify-method)
+       * [3.7.5) `booleanize` Method] (#375-booleanize-method)
+       * [3.7.6) `stringify` Method] (#376-stringify-method)
+       * [3.7.7) `serialize` Method] (#377-serialize-method)
+       * [3.7.8) `sort` Method] (#378-sort-method)
+       * [3.7.9) `shuffle` Method] (#379-shuffle-method)
+       * [3.7.10) `compare` Method] (#3710-compare-method)
+       * [3.7.11) `parse` Method] (#3711-parse-method)
+       * [3.7.12) `isequal` Method] (#3712-isequal-method)
+       * [3.7.13) `fetchstr` Method] (#3713-fetchstr-method)
+       * [3.7.14) `fetchreal` Method] (#3714-fetchreal-method)
+       * [3.7.15) `crc32` Method] (#3715-crc32-method)
+       * [3.7.16) `md5` Method] (#3716-md5-method)
+       * [3.7.17) `sha1` Method] (#3717-sha1-method)
+       * [3.7.18) `pack` Method] (#3718-pack-method)
+       * [3.7.19) `unpack` Method] (#3719-unpack-method)
+       * [3.7.20) `bin2hex` Method] (#3720-bin2hex-method)
+       * [3.7.21) `hex2bin` Method] (#3721-hex2bin-method)
+       * [3.7.22) `base64_encode` Method] (#3722-base64_encode-method)
+       * [3.7.23) `base64_decode` Method] (#3723-base64_decode-method)
+       * [3.7.24) `arith` Method] (#3724-arith-method)
+       * [3.7.25) `bitwise` Method] (#3725-bitwise-method)
+       * [3.7.26) `contains` Method] (#3726-contains-method)
+       * [3.7.27) `has` Method] (#3727-has-method)
 	+ [3.8) `L`](#38-l)
-       * [3.8.1) `not` method] (#381-not-method)
-       * [3.8.2) `and` method] (#382-and-method)
-       * [3.8.3) `or` method] (#383-or-method)
-       * [3.8.4) `xor` method] (#384-xor-method)
-       * [3.8.5) `eq` method] (#385-eq-method)
-       * [3.8.6) `ne` method] (#386-ne-method)
-       * [3.8.7) `gt` method] (#387-gt-method)
-       * [3.8.8) `ge` method] (#388-ge-method)
-       * [3.8.9) `lt` method] (#389-lt-method)
-       * [3.8.10) `le` method] (#3810-le-method)
-       * [3.8.11) `streq` method] (#3811-streq-method)
-       * [3.8.12) `strne` method] (#3812-strne-method)
-       * [3.8.13) `strgt` method] (#3813-strgt-method)
-       * [3.8.14) `strge` method] (#3814-strge-method)
-       * [3.8.15) `strlt` method] (#3815-strlt-method)
-       * [3.8.16) `strle` method] (#3816-strle-method)
-       * [3.8.17) `eval` method] (#3817-eval-method)
+       * [3.8.1) `not` Method] (#381-not-method)
+       * [3.8.2) `and` Method] (#382-and-method)
+       * [3.8.3) `or` Method] (#383-or-method)
+       * [3.8.4) `xor` Method] (#384-xor-method)
+       * [3.8.5) `eq` Method] (#385-eq-method)
+       * [3.8.6) `ne` Method] (#386-ne-method)
+       * [3.8.7) `gt` Method] (#387-gt-method)
+       * [3.8.8) `ge` Method] (#388-ge-method)
+       * [3.8.9) `lt` Method] (#389-lt-method)
+       * [3.8.10) `le` Method] (#3810-le-method)
+       * [3.8.11) `streq` Method] (#3811-streq-method)
+       * [3.8.12) `strne` Method] (#3812-strne-method)
+       * [3.8.13) `strgt` Method] (#3813-strgt-method)
+       * [3.8.14) `strge` Method] (#3814-strge-method)
+       * [3.8.15) `strlt` Method] (#3815-strlt-method)
+       * [3.8.16) `strle` Method] (#3816-strle-method)
+       * [3.8.17) `eval` Method] (#3817-eval-method)
     + [3.9) `T`](#39-t)
-       * [3.9.1) `map` static property] (#391-map-static-property)
-       * [3.9.2) `get` method] (#392-get-method)
+       * [3.9.1) `map` Static Property] (#391-map-static-property)
+       * [3.9.2) `get` Method] (#392-get-method)
     + [3.10) `STR`](#310-str)
-       * [3.10.1) `contains` method] (#3101-contains-method)
-       * [3.10.2) `starts_with` method] (#3102-starts_with-method)
-       * [3.10.3) `ends_with` method] (#3103-ends_with-method)
-       * [3.10.4) `explode` method] (#3104-explode-method)
-       * [3.10.5) `implode` method] (#3105-implode-method)
-       * [3.10.6) `shuffle` method] (#3106-shuffle-method)
-       * [3.10.7) `replace` method] (#3107-replace-method)
-       * [3.10.8) `format_c` method] (#3108-format_c-method)
-       * [3.10.9) `scan_c` method] (#3109-scan_c-method)
-       * [3.10.10) `format_p` method] (#31010-format_p-method)
-       * [3.10.11) `scan_p` method] (#31011-scan_p-method)
-       * [3.10.12) `join` method] (#31012-join-method)
-       * [3.10.13) `nr_bytes` method] (#31013-nr_bytes-method)
-       * [3.10.14) `nr_chars` method] (#31014-nr_chars-method)
-       * [3.10.15) `tolower` method] (#31015-tolower-method)
-       * [3.10.16) `toupper` method] (#31016-toupper-method)
-       * [3.10.17) `substr` method] (#31017-substr-method)
-       * [3.10.18) `substr_compare` method] (#31018-substr_compare-method)
-       * [3.10.19) `substr_count` method] (#31019-substr_count-method)
-       * [3.10.20) `substr_replace` method] (#31020-substr_replace-method)
-       * [3.10.21) `strstr` method] (#31021-strstr-method)
-       * [3.10.22) `strpos` method] (#31022-strpos-method)
-       * [3.10.23) `strpbrk` method] (#31023-strpbrk-method)
-       * [3.10.24) `split` method] (#31024-split-method)
-       * [3.10.25) `chunk_split` method] (#31025-chunk_split-method)
-       * [3.10.26) `trim` method] (#31026-trim-method)
-       * [3.10.27) `pad` method] (#31027-pad-method)
-       * [3.10.28) `repeat` method] (#31028-repeat-method)
-       * [3.10.29) `reverse` method] (#31029-reverse-method)
-       * [3.10.30) `tokenize` method] (#31030-tokenize-method)
-       * [3.10.31) `translate` method] (#31031-translate-method)
-       * [3.10.32) `htmlentities_encode` method] (#31032-htmlentities_encode-method)
-       * [3.10.33) `htmlentities_decode` method](#31033-htmlentities_decode-method)
-       * [3.10.34) `nl2br` method] (#31034-nl2br-method)
-       * [3.10.35) `rot13` method] (#31035-rot13-method)
-       * [3.10.36) `count_chars` method] (#31036-count_chars-method)
-       * [3.10.37) `count_bytes` method] (#31037-count_bytes-method)
+       * [3.10.1) `contains` Method] (#3101-contains-method)
+       * [3.10.2) `starts_with` Method] (#3102-starts_with-method)
+       * [3.10.3) `ends_with` Method] (#3103-ends_with-method)
+       * [3.10.4) `explode` Method] (#3104-explode-method)
+       * [3.10.5) `implode` Method] (#3105-implode-method)
+       * [3.10.6) `shuffle` Method] (#3106-shuffle-method)
+       * [3.10.7) `replace` Method] (#3107-replace-method)
+       * [3.10.8) `format_c` Method] (#3108-format_c-method)
+       * [3.10.9) `scan_c` Method] (#3109-scan_c-method)
+       * [3.10.10) `format_p` Method] (#31010-format_p-method)
+       * [3.10.11) `scan_p` Method] (#31011-scan_p-method)
+       * [3.10.12) `join` Method] (#31012-join-method)
+       * [3.10.13) `nr_bytes` Method] (#31013-nr_bytes-method)
+       * [3.10.14) `nr_chars` Method] (#31014-nr_chars-method)
+       * [3.10.15) `tolower` Method] (#31015-tolower-method)
+       * [3.10.16) `toupper` Method] (#31016-toupper-method)
+       * [3.10.17) `substr` Method] (#31017-substr-method)
+       * [3.10.18) `substr_compare` Method] (#31018-substr_compare-method)
+       * [3.10.19) `substr_count` Method] (#31019-substr_count-method)
+       * [3.10.20) `substr_replace` Method] (#31020-substr_replace-method)
+       * [3.10.21) `strstr` Method] (#31021-strstr-method)
+       * [3.10.22) `strpos` Method] (#31022-strpos-method)
+       * [3.10.23) `strpbrk` Method] (#31023-strpbrk-method)
+       * [3.10.24) `split` Method] (#31024-split-method)
+       * [3.10.25) `chunk_split` Method] (#31025-chunk_split-method)
+       * [3.10.26) `trim` Method] (#31026-trim-method)
+       * [3.10.27) `pad` Method] (#31027-pad-method)
+       * [3.10.28) `repeat` Method] (#31028-repeat-method)
+       * [3.10.29) `reverse` Method] (#31029-reverse-method)
+       * [3.10.30) `tokenize` Method] (#31030-tokenize-method)
+       * [3.10.31) `translate` Method] (#31031-translate-method)
+       * [3.10.32) `htmlentities_encode` Method] (#31032-htmlentities_encode-method)
+       * [3.10.33) `htmlentities_decode` Method](#31033-htmlentities_decode-method)
+       * [3.10.34) `nl2br` Method] (#31034-nl2br-method)
+       * [3.10.35) `rot13` Method] (#31035-rot13-method)
+       * [3.10.36) `count_chars` Method] (#31036-count_chars-method)
+       * [3.10.37) `count_bytes` Method] (#31037-count_bytes-method)
 	+ [3.11) `URL`](#311-url)
-       * [3.11.1) `encode` method] (#3111-encode-method)
-       * [3.11.2) `decode` method] (#3112-decode-method)
-       * [3.11.3) `build_query` method] (#3113-build_query-method)
-       * [3.11.4) `parse_query` method] (#3114-parse_query-method)
-       * [3.11.5) `parse` method] (#3115-parse-method)
-       * [3.11.6) `assemble` method] (#3116-assemble-method)
+       * [3.11.1) `encode` Method] (#3111-encode-method)
+       * [3.11.2) `decode` Method] (#3112-decode-method)
+       * [3.11.3) `build_query` Method] (#3113-build_query-method)
+       * [3.11.4) `parse_query` Method] (#3114-parse_query-method)
+       * [3.11.5) `parse` Method] (#3115-parse-method)
+       * [3.11.6) `assemble` Method] (#3116-assemble-method)
     + [3.12) `STREAM`](#312-stream)
-       * [3.12.1) `open` method] (#3121-open-method)
-          - [3.12.1.1) `readstruct` method of stream entity] (#31211-stream-entity-readstruct-method)
-          - [3.12.1.2) `writestruct` method of stream entity] (#31212--writestruct-method of stream entity)
-          - [3.12.1.3) `readlines` method of stream entity] (#31213--readlines-method of stream entity)
-          - [3.12.1.4) `writelines` method for stream entities] (#31214--writelines-method for stream entities)
-          - [3.12.1.5) `readbytes` method of stream entity] (#31215-stream-entity-readbytes-method)
-          - [3.12.1.6) `writebytes` method of stream entity] (#31216--writebytes-method of stream entity)
-          - [3.12.1.7) `seek` method of stream entity] (#31217--seek-method of stream entity)
-       * [3.12.2) `close` method] (#3122-close-method)
-       * [3.12.3) `stdin` static attribute] (#3123-stdin-static-attribute)
-       * [3.12.4) `stdout` static attribute] (#3124-stdout-static-attribute)
-       * [3.12.5) `stderr` static attribute] (#3125-stderr-static-attribute)
-       * [3.12.6) `pipe` stream entity] (#3126-pipe-stream-entity)
+       * [3.12.1) `open` Method] (#3121-open-method)
+          - [3.12.1.1) `readstruct` Method of Stream Entity] (#31211-stream-entity-readstruct-method)
+          - [3.12.1.2) `writestruct` Method of Stream Entity] (#31212--writestruct-method of stream entity)
+          - [3.12.1.3) `readlines` Method of Stream Entity] (#31213--readlines-method of stream entity)
+          - [3.12.1.4) `writelines` Method for Stream Entities] (#31214--writelines-method for stream entities)
+          - [3.12.1.5) `readbytes` Method of Stream Entity] (#31215-stream-entity-readbytes-method)
+          - [3.12.1.6) `writebytes` Method of Stream Entity] (#31216--writebytes-method of stream entity)
+          - [3.12.1.7) `seek` Method of Stream Entity] (#31217--seek-method of stream entity)
+       * [3.12.2) `close` Method] (#3122-close-method)
+       * [3.12.3) `stdin` Static Attribute] (#3123-stdin-static-attribute)
+       * [3.12.4) `stdout` Static Attribute] (#3124-stdout-static-attribute)
+       * [3.12.5) `stderr` Static Attribute] (#3125-stderr-static-attribute)
+       * [3.12.6) `pipe` Stream Entity] (#3126-pipe-stream-entity)
     + [3.13) `SOCK`](#313-sock)
-       * [3.13.1) `stream` method] (#3131-stream-method)
-       * [3.13.2) `dgram` method] (#3132-dgram-method)
-          - [3.13.2.1) `accept` method of stream-socket entity] (#31321--accept-method of stream-socket entity)
-          - [3.13.2.2) `send` method of stream-socket entity] (#31322--send-method of stream-socket entity)
-          - [3.13.2.3) `recv` method for stream-socket entities] (#31323--recv-method for stream-socket entities)
-          - [3.13.2.4) `close` method of stream-socket entity] (#31324--close-method of stream-socket entity)
-          - [3.13.2.5) `peer` attribute for stream-socket entities] (#31325 - -peer-attribute for stream-socket entities)
-          - [3.13.2.6) `send` method of datagram-socket entity] (#31326--send-method of datagram-socket entity)
-          - [3.13.2.7) `recv` method of datagram-socket entity] (#31327--recv-method of datagram-socket entity)
-          - [3.13.2.8) `close` method of datagram-socket entity] (#31328--close-method of datagram-socket entity)
-- [4) optional dynamic variables] (#4-optional dynamic variables)
+       * [3.13.1) `stream` Method] (#3131-stream-method)
+       * [3.13.2) `dgram` Method] (#3132-dgram-method)
+          - [3.13.2.1) `accept` Method of Stream-Socket Entity] (#31321--accept-method of stream-socket entity)
+          - [3.13.2.2) `send` Method of Stream-Socket Entity] (#31322--send-method of stream-socket entity)
+          - [3.13.2.3) `recv` Method for Stream-Socket Entity] (#31323--recv-method for stream-socket entity)
+          - [3.13.2.4) `close` Method of Stream-Socket Entity] (#31324--close-method of stream-socket entity)
+          - [3.13.2.5) `peer` Attribute for Stream-Socket entities] (#31325 - -peer-attribute for stream-socket entities)
+          - [3.13.2.6) `send` Method of Datagram-Socket Entity] (#31326--send-method of datagram-socket entity)
+          - [3.13.2.7) `recv` Method of Datagram-Socket Entity] (#31327--recv-method of datagram-socket entity)
+          - [3.13.2.8) `close` Method of Datagram-Socket Entity] (#31328--close-method of datagram-socket entity)
+- [4) Optional Dynamic Variables] (#4-optional dynamic variables)
     + [4.1) `MATH`](#41-math)
-       * [4.1.1) `pi` method] (#411-pi-method)
-       * [4.1.2) `e` method] (#412-e-method)
-       * [4.1.3) `const` methods] (#413-const-methods)
-       * [4.1.4) `add` method] (#414-add-method)
-       * [4.1.5) The `sub` method] (#415-sub-method)
-       * [4.1.6) `mul` method] (#416-mul-method)
-       * [4.1.7) `div` method] (#417-div-method)
-       * [4.1.8) `eval` and `eval_l` methods] (#418-eval-and-eval_l-methods)
-       * [4.1.9) `sin` and `sin_l` methods] (#419-sin-and-sin_l-methods)
-       * [4.1.10) `cos` and `cos_l` methods] (#4110-cos-and-cos_l-methods)
-       * [4.1.11) `tan` and `tan_l` methods] (#4111-tan-and-tan_l-methods)
-       * [4.1.12) `sinh` and `sinh_l` methods] (#4112-sinh-and-sinh_l-methods)
-       * [4.1.13) `cosh` and `cosh_l` methods] (#4113-cosh-and-cosh_l-methods)
-       * [4.1.14) `tanh` and `tanh_l` methods] (#4114-tanh-and-tanh_l-methods)
-       * [4.1.15) `asin` and `asin_l` methods] (#4115-asin-and-asin_l-methods)
-       * [4.1.16) `acos` and `acos_l` methods] (#4116-acos-and-acos_l-methods)
-       * [4.1.17) `atan` and `atan_l` methods] (#4117-atan-and-atan_l-methods)
-       * [4.1.18) `asinh` and `asinh_l` methods] (#4118-asinh-and-asinh_l-methods)
-       * [4.1.19) `acosh` and `acosh_l` methods] (#4119-acosh-and-acosh_l-methods)
-       * [4.1.20) `atanh` and `atanh_l` methods] (#4120-atanh-and-atanh_l-methods)
-       * [4.1.21) `fmod` and `fmod_l` methods] (#4121-fmod-and-fmod_l-methods)
-       * [4.1.22) `fabs` method] (#4122-fabs-method)
-       * [4.1.23) `log` and `log_l` methods] (#4123-log-and-log_l-methods)
-       * [4.1.24) `log10` and `log10_l` methods] (#4124-log10-and-log10_l-methods)
-       * [4.1.25) `pow` and `pow_l` methods] (#4125-pow-and-pow_l-methods)
-       * [4.1.26) `exp` and `exp_l` methods] (#4126-exp-and-exp_l-methods)
-       * [4.1.27) `floor` and `floor_l` methods] (#4127-floor-and-floor_l-methods)
-       * [4.1.28) `ceil` and `ceil_l` methods] (#4128-ceil-and-ceil_l-methods)
-       * [4.1.29) `sqrt` and `sqrt_l` methods] (#4129-sqrt-and-sqrt_l-methods)
+       * [4.1.1) `pi` Method] (#411-pi-method)
+       * [4.1.2) `e` Method] (#412-e-method)
+       * [4.1.3) `const` Method] (#413-const-methods)
+       * [4.1.4) `add` Method] (#414-add-method)
+       * [4.1.5) The `sub` Method] (#415-sub-method)
+       * [4.1.6) `mul` Method] (#416-mul-method)
+       * [4.1.7) `div` Method] (#417-div-method)
+       * [4.1.8) `eval` and `eval_l` Methods] (#418-eval-and-eval_l-methods)
+       * [4.1.9) `sin` and `sin_l` Methods] (#419-sin-and-sin_l-methods)
+       * [4.1.10) `cos` and `cos_l` Methods] (#4110-cos-and-cos_l-methods)
+       * [4.1.11) `tan` and `tan_l` Methods] (#4111-tan-and-tan_l-methods)
+       * [4.1.12) `sinh` and `sinh_l` Methods] (#4112-sinh-and-sinh_l-methods)
+       * [4.1.13) `cosh` and `cosh_l` Methods] (#4113-cosh-and-cosh_l-methods)
+       * [4.1.14) `tanh` and `tanh_l` Methods] (#4114-tanh-and-tanh_l-methods)
+       * [4.1.15) `asin` and `asin_l` Methods] (#4115-asin-and-asin_l-methods)
+       * [4.1.16) `acos` and `acos_l` Methods] (#4116-acos-and-acos_l-methods)
+       * [4.1.17) `atan` and `atan_l` Methods] (#4117-atan-and-atan_l-methods)
+       * [4.1.18) `asinh` and `asinh_l` Methods] (#4118-asinh-and-asinh_l-methods)
+       * [4.1.19) `acosh` and `acosh_l` Methods] (#4119-acosh-and-acosh_l-methods)
+       * [4.1.20) `atanh` and `atanh_l` Methods] (#4120-atanh-and-atanh_l-methods)
+       * [4.1.21) `fmod` and `fmod_l` Methods] (#4121-fmod-and-fmod_l-methods)
+       * [4.1.22) `fabs` Method] (#4122-fabs-method)
+       * [4.1.23) `log` and `log_l` Methods] (#4123-log-and-log_l-methods)
+       * [4.1.24) `log10` and `log10_l` Methods] (#4124-log10-and-log10_l-methods)
+       * [4.1.25) `pow` and `pow_l` Methods] (#4125-pow-and-pow_l-methods)
+       * [4.1.26) `exp` and `exp_l` Methods] (#4126-exp-and-exp_l-methods)
+       * [4.1.27) `floor` and `floor_l` Methods] (#4127-floor-and-floor_l-methods)
+       * [4.1.28) `ceil` and `ceil_l` Methods] (#4128-ceil-and-ceil_l-methods)
+       * [4.1.29) `sqrt` and `sqrt_l` Methods] (#4129-sqrt-and-sqrt_l-methods)
 	+ [4.2) `FS`](#42-fs)
-       * [4.2.1) `list` method] (#421-list-method)
-       * [4.2.2) `list_prt` method] (#422-list_prt-method)
-       * [4.2.3) `basename` method] (#423-basename-method)
-       * [4.2.4) `chgrp` method] (#424-chgrp-method)
-       * [4.2.5) `chmod` method] (#425-chmod-method)
-       * [4.2.6) `chown` method] (#426-chown-method)
-       * [4.2.7) `copy` method] (#427-copy-method)
-       * [4.2.8) `dirname` method] (#428-dirname-method)
-       * [4.2.9) `disk_usage` method] (#429-disk_usage-method)
-       * [4.2.10) `file_exists` method] (#4210-file_exists-method)
-       * [4.2.11) `file_is` method] (#4211-file_is-method)
-       * [4.2.12) `lchgrp` method] (#4212-lchgrp-method)
-       * [4.2.13) `lchown` method] (#4213-lchown-method)
-       * [4.2.14) `linkinfo` method] (#4214-linkinfo-method)
-       * [4.2.15) `lstat` method] (#4215-lstat-method)
-       * [4.2.16) `link` method] (#4216-link-method)
-       * [4.2.17) `mkdir` method] (#4217-mkdir-method)
-       * [4.2.18) `pathinfo` method] (#4218-pathinfo-method)
-       * [4.2.19) `readlink` method] (#4219-readlink-method)
-       * [4.2.20) `realpath` method] (#4220-realpath-method)
-       * [4.2.21) `rename` method] (#4221-rename-method)
-       * [4.2.22) `rmdir` method] (#4222-rmdir-method)
-       * [4.2.23) `stat` method] (#4223-stat-method)
-       * [4.2.24) `symlink` method] (#4224-symlink-method)
-       * [4.2.25) `tempname` method] (#4225-tempname-method)
-       * [4.2.26) `touch` method] (#4226-touch-method)
-       * [4.2.27) `umask` method] (#4227-umask-method)
-       * [4.2.28) `unlink` method] (#4228-unlink-method)
-       * [4.2.29) `file_contents` method] (#4229-file_contents-method)
-       * [4.2.30) `opendir` method] (#4230-opendir-method)
-          - [4.2.30.1) `read` method of directory-stream entity] (#42301--read-method of directory-stream entity)
-          - [4.2.30.2) `rewind` method of directory-stream entity] (#42302-rewind-method of directory-stream-entity)
-       * [4.2.31) `closedir` method] (#4231-closedir-method)
+       * [4.2.1) `list` Method] (#421-list-method)
+       * [4.2.2) `list_prt` Method] (#422-list_prt-method)
+       * [4.2.3) `basename` Method] (#423-basename-method)
+       * [4.2.4) `chgrp` Method] (#424-chgrp-method)
+       * [4.2.5) `chmod` Method] (#425-chmod-method)
+       * [4.2.6) `chown` Method] (#426-chown-method)
+       * [4.2.7) `copy` Method] (#427-copy-method)
+       * [4.2.8) `dirname` Method] (#428-dirname-method)
+       * [4.2.9) `disk_usage` Method] (#429-disk_usage-method)
+       * [4.2.10) `file_exists` Method] (#4210-file_exists-method)
+       * [4.2.11) `file_is` Method] (#4211-file_is-method)
+       * [4.2.12) `lchgrp` Method] (#4212-lchgrp-method)
+       * [4.2.13) `lchown` Method] (#4213-lchown-method)
+       * [4.2.14) `linkinfo` Method] (#4214-linkinfo-method)
+       * [4.2.15) `lstat` Method] (#4215-lstat-method)
+       * [4.2.16) `link` Method] (#4216-link-method)
+       * [4.2.17) `mkdir` Method] (#4217-mkdir-method)
+       * [4.2.18) `pathinfo` Method] (#4218-pathinfo-method)
+       * [4.2.19) `readlink` Method] (#4219-readlink-method)
+       * [4.2.20) `realpath` Method] (#4220-realpath-method)
+       * [4.2.21) `rename` Method] (#4221-rename-method)
+       * [4.2.22) `rmdir` Method] (#4222-rmdir-method)
+       * [4.2.23) `stat` Method] (#4223-stat-method)
+       * [4.2.24) `symlink` Method] (#4224-symlink-method)
+       * [4.2.25) `tempname` Method] (#4225-tempname-method)
+       * [4.2.26) `touch` Method] (#4226-touch-method)
+       * [4.2.27) `umask` Method] (#4227-umask-method)
+       * [4.2.28) `unlink` Method] (#4228-unlink-method)
+       * [4.2.29) `file_contents` Method] (#4229-file_contents-method)
+       * [4.2.30) `opendir` Method] (#4230-opendir-method)
+          - [4.2.30.1) `read` Method of Directory Stream Entity] (#42301--read-method of directory-stream entity)
+          - [4.2.30.2) `rewind` Method of Directory Stream Entity] (#42302-rewind-method of directory-stream-entity)
+       * [4.2.31) `closedir` Method] (#4231-closedir-method)
     + [4.3) `FILE`](#43-file)
-       * [4.3.1) Text files] (#431-Text files)
-          - [4.3.1.1) `txt.head` method] (#4311-txthead-method)
-          - [4.3.1.2) `txt.tail` method] (#4312-txttail-method)
-       * [4.3.2) Binaries] (#432-binaries)
-          - [4.3.2.1) `bin.head` method] (#4321-binhead-method)
-          - [4.3.2.2) `bin.tail` method] (#4322-bintail-method)
+       * [4.3.1) Text File] (#431-Text file)
+          - [4.3.1.1) `txt.head` Method] (#4311-txthead-method)
+          - [4.3.1.2) `txt.tail` Method] (#4312-txttail-method)
+       * [4.3.2) Binary] (#432-binary)
+          - [4.3.2.1) `bin.head` Method] (#4321-binhead-method)
+          - [4.3.2.2) `bin.tail` Method] (#4322-bintail-method)
     + [4.4) `PY`](#44-py)
-       * [4.4.1) `impl` attribute] (#441-impl-attribute)
-       * [4.4.2) `info` attribute] (#442-info-attribute)
-       * [4.4.3) `global` attribute] (#443-global-attribute)
-       * [4.4.4) `local` attribute] (#444-local-attribute)
-       * [4.4.5) `except` attribute] (#445-except-attribute)
-       * [4.4.6) `pythonize` method] (#446-pythonize-method)
-       * [4.4.7) `run` method] (#447-run-method)
-       * [4.4.8) `import` method] (#448-import-method)
-       * [4.4.9) `stringify` method] (#449-stringify-method)
-       * [4.4.10) `compile` method] (#4410-compile-method)
-          - [4.4.10.1) CPython code-dynamic-object `entity` attribute] (#44101-cpython-code-dynamic-object-entity-attribute)
-          - [4.4.10.2) CPython code-dynamic-object `local` attribute] (#44102-cpython-code-dynamic-object-local-attribute)
-          - [4.4.10.3) `eval` method of CPython code-dynamic objects] (#44103-cpython-code-dynamic-object-eval-method)
+       * [4.4.1) `impl` Attribute] (#441-impl-attribute)
+       * [4.4.2) `info` Attribute] (#442-info-attribute)
+       * [4.4.3) `global` Attribute] (#443-global-attribute)
+       * [4.4.4) `local` Attribute] (#444-local-attribute)
+       * [4.4.5) `except` Attribute] (#445-except-attribute)
+       * [4.4.6) `pythonize` Method] (#446-pythonize-method)
+       * [4.4.7) `run` Method] (#447-run-method)
+       * [4.4.8) `import` Method] (#448-import-method)
+       * [4.4.9) `stringify` Method] (#449-stringify-method)
+       * [4.4.10) `compile` Method] (#4410-compile-method)
+          - [4.4.10.1) CPython Code Dynamic Object `entity` Attribute] (#44101-cpython-code-dynamic-object-entity-attribute)
+          - [4.4.10.2) CPython Code Dynamic Object `local` Attribute] (#44102-cpython-code-dynamic-object-local-attribute)
+          - [4.4.10.3) CPython Code Dynamic Object `eval` Method] (#44103-cpython-code-dynamic-object-eval-method)
 - [Appendix](#Appendix)
     + [Appendix 1) Revision History] (#Appendix 1-Revision History)
        * [RCb) 230430] (#rcb-230430)
@@ -314,48 +314,47 @@ For a detailed list of registered trademarks or trademarks of the copyright owne
        * [RC2) 220501](#rc2-220501)
        * [RC1) 220401](#rc1-220401)
        * [BRC) 220201] (#brc-220201)
-    + [Attachment 2) Contributor List](#Attachment 2-Contributor List)
-    + [Appendix 3) Trademark Statement](#Appendix 3-Trademark Statement)
+    + [Attachment 2) Contributor List](#attachment 2-contributor list)
+    + [Appendix 3) Trademark Statement](#appendix 3-trademark statement)
 
 [//]:# (END OF TOC)
 
 ## 1 Introduction
 
-This document is part of the HVML specification and is used to define in detail the predefined variables that HVML interpreters must support or optionally support.
+This document is part of the HVML specification, which is used to define in detail the predefined variables that HVML interpreters must support or optionally support.
 
-### 1.1) Specifications and Terminology
+### 1.1) Specifications and Terms
 
 The technical specifications or terms followed by this document are listed below:
 
 - HVML (Hybrid Virtual Markup Language), is a data-driven programmable markup language proposed by [Wei Yongming] (https://github.com/VincentWei). The following parts of the [HVML Specification](hvml-spec-v1.0-zh.md) are relevant to this document:
-   1. 2.1) Terminology and basic principles
-   1. 2.2) Description syntax of rules, expressions and methods
-- Interpreter, which refers to computer software that parses and runs HVML programs.
+   1. 2.1) Terms and Basic Principles
+   1. 2.2) Description Syntax of Rules, Expressions and Methods
+- Interpreter refers to computer software that parses and runs HVML programs.
 - Renderer refers to computer software that renders the target document generated by the HVML coroutine and interacts with the user.
 - Runner, each interpreter instance corresponds to a runner, and after connecting to the renderer, it corresponds to a renderer session.
 - Static property refers to the property whose key value is ordinary data on an object, and its key value is not a dynamic value. We usually use lowercase camelCase to name such properties, such as `myObj`.
 - Dynamic property refers to the property whose key value is a dynamic value on an object. On a dynamic property, we can usually provide a getter or a setter to get the current value of the property or change the value of the property The current value.
-- A getter refers to a getter for a dynamic property. Calling the getter returns the method's dynamic property value.
-- Setter (setter), refers to the setter of a dynamic property. Calling the setter of a specific method will complete the setting of the corresponding property.
-- method (method), refers to the function call provided by the dynamic object. We usually use all-lowercase names connected by underscores, such as `starts_with`.
+- Getter refers to a getter for a dynamic property. Calling the getter returns the method's dynamic property value.
+- Setter refers to the setter of a dynamic property. Calling the setter of a specific method will complete the setting of the corresponding property.
+- Method refers to the function call provided by the dynamic object. We usually use all-lowercase names connected by underscores, such as `starts_with`.
 
 According to whether it contains dynamic objects or not, HVML predefined variables can be divided into:
 
 1. Non-dynamic variables, that is, the data corresponding to variables does not provide dynamic methods. All non-dynamic variables defined by this specification are built-in and required.
-1. Dynamic variable, that is, the data corresponding to the variable provides a dynamic method. Dynamic variables are further divided into required (required) dynamic variables and optional (optional) dynamic variables. Usually, dynamic variables can be designed as loadable shared libraries or modules. The interpreter shall implement dynamic variables as built-in or loadable according to the requirements of this document; whether optional dynamic variables are implemented as loadable is at the discretion of the interpreter.
+1. Dynamic variable, that is, the data corresponding to the variable provides a dynamic method. Dynamic variable are further divided into required dynamic variable and optional dynamic variable. Usually, dynamic variable can be designed as loadable shared library or module. The interpreter shall implement dynamic variable as built-in or loadable according to the requirements of this document; whether optional dynamic variable are implemented as loadable is at the discretion of the interpreter.
 
-According to the scope of data corresponding to variables, it can be divided into:
+According to the scope of data corresponding to variable, it can be divided into:
 
-1. Walker-level variables. It means that the data corresponding to this variable is visible to all HVML coroutines in the current interpreter instance. That is to say, different coroutines in the same walker correspond to the same data copy.
-1. Coroutine-level variables. Indicates that the data corresponding to this variable is only visible to a single HVML coroutine in the current interpreter instance. That is, different HVML coroutines have their own copy of the data.
+1. Walker-level variable. It means that the data corresponding to this variable is visible to all HVML coroutines in the current interpreter instance. That is, different coroutines in the same walker correspond to the same data copy.
+1. Coroutine-level variable. It means that the data corresponding to this variable is only visible to a single HVML coroutine in the current interpreter instance. That is, different HVML coroutines have their own copy of the data.
 
-It should be noted that the implementation of walker-level variables should consider thread safety and reentrancy in the case of multi-threading (when the interpreter runs as a process, each interpreter instance corresponds to an independent thread).
+It should be noted that the implementation of walker-level variable should consider thread safety and reentrancy in the case of multi-threading (when the interpreter runs as a process, each interpreter instance corresponds to an independent thread).
 
 **Agreement**
-The interpreter can implement global variables by itself. As a convention, the names of global variables implemented by the interpreter should start with ASCII U+005F LOW LINE (`_`), use all uppercase letters and add the interpreter prefix. Such as `_PURC_VAR`. For general variables, use all lowercase letters.
+The interpreter can implement global variable by itself. As a convention, the names of global variables implemented by the interpreter should start with ASCII U+005F LOW LINE (`_`), use all uppercase letters and add the interpreter prefix. Such as `_PURC_VAR`. For general variables, use all lowercase letters.
 
-### 1.2) Binary format notation
-
+### 1.2) Binary Format Representation
 In order to cooperate with the streaming read and write methods (`readstruct`, `writestruct`) and the numericalization of byte sequences required by stream entities, we define a binary format representation.
 
 We use a string to represent each component in a binary structure, multiple components are separated by blank characters (spaces, tabs, newlines, etc.), each component uses a type string to represent its type, If it is an integer or floating point number larger than one byte, it can be followed by optional `le` or `be` to indicate little endian or big endian.
@@ -364,7 +363,7 @@ For example, `i32le s128 f64` represents a structure in which the first 4 bytes 
 
 When performing numerical operations on byte sequences, we specify the binary format of the byte sequence through a single keyword, such as `i32le` means a 32-bit signed integer stored in a small endian.
 
-The following table gives the type notation for the various structural components supported by this notation:
+The following table gives the type representation for the various structural components supported by this representation:
 
 | Type | Representation method | Corresponding HVML data type |
 | ---------------- | -------- | ----------------------- ----- |
@@ -419,9 +418,9 @@ For example, `i32le utf8:128 f64` indicates that the components of a structure a
 1. Followed by a 128-byte UTF-8 encoded string;
 1. The last 8 bytes are a 64-bit floating point number.
 
-The structure is 140 bytes in total.
+The structure has 140 bytes in total.
 
-### 1.3) Format modifiers
+### 1.3) Format Modifier
 
 <https://www.php.net/manual/en/function.sprintf.php>
 
@@ -429,19 +428,19 @@ The structure is 140 bytes in total.
 
 A method description should contain the following sections:
 
-- `Description` (Description; required): first follow [HVML Specification - 2.2.4) Description Syntax of Dynamic Object Method](/zh/hvml-spec-v1.0-zh.md#224-Description of Dynamic Object Method Syntax) The syntax defined gives the method's prototype, which includes a short description of the parameters (parameters) and return value. Then give a short description of what the method does.
-- `parameters` (Parameters; optional). A full description of the method parameters is given where necessary.
-- `Return Value` (Return Value; optional). Give a full description of the method's return value if necessary.
-- `Exceptions` (Exceptions; required). Lists the exceptions that may be thrown by this method.
+- `Description` (required): First follow [HVML Specification - 2.2.4) Description Syntax of Dynamic Object Method](/zh/hvml-spec-v1.0-zh.md#224-Description of Dynamic Object Method Syntax) The syntax defined gives the method's prototype, which includes a short description of the parameters and return value. Then give a short description of what the method does.
+- `parameters` (optional). A full description of the method parameters is given if necessary.
+- `Return Value` (optional). Give a full description of the method's return value if necessary.
+- `Exceptions` (required). Lists the exceptions that may be thrown by this method.
 - `Examples` (required).
-- `See Also` (See Also; optional). List relevant external links.
-- `Notes` (Notes; optional).
+- `See Also` (optional). List relevant external links.
+- `Notes` (optional).
 
 Certain methods can return values such as `false`, `undefined` to flag errors. This happens only if the current action element has the `silently` adverb attribute set and only ignorable exceptions are encountered. When a method is called on an element with the `silently` adverb attribute set, we say that the method is being asked to "evaluate silently". For methods that support silent evaluation, the description of their use refers to the following form:
 
-> This method changes the current working directory. Returns `true` on success; throws an exception on failure, or `false` for ignorable exceptions when evaluating silently.
+> This method changes the current working directory. Return `true` on success; throw an exception on failure, or `false` for ignorable exceptions when evaluating silently.
 
-## 2) Non-dynamic variables
+## 2) Non-Dynamic variable
 
 ### 2.1) `TIMERS`
 
@@ -457,9 +456,9 @@ The attributes used to describe a timer object are as follows:
 }
 ```
 
-This variable is used to define the timer, and no dynamic method is provided on it; the program modifies the container data corresponding to the variable through the `update` element to operate the timer.
+This variable is used to define a timer, and no dynamic method is provided on it; the program modifies the container data corresponding to the variable through the `update` element to operate the timer.
 
-#### 2.1.1) Add timers in batches
+#### 2.1.1) Add Timers in Batches
 
 ```html
      <update on "$TIMERS" to "unite">
@@ -471,7 +470,7 @@ This variable is used to define the timer, and no dynamic method is provided on 
 ```
 
 
-#### 2.1.2) Add a timer
+#### 2.1.2) Add a Timer
 
 ```html
      <update on="$TIMERS" to="append">
@@ -479,7 +478,7 @@ This variable is used to define the timer, and no dynamic method is provided on 
      </update>
 ```
 
-#### 2.1.3) Remove a timer
+#### 2.1.3) Remove a Timer
 
 ```html
      <update on="$TIMERS" to="subtract">
@@ -487,7 +486,7 @@ This variable is used to define the timer, and no dynamic method is provided on 
      </update>
 ```
 
-#### 2.1.4) Modify the properties of a specific timer
+#### 2.1.4) Modify the Property of a Specific Timer
 
 ```html
      <!-- activate the timer `foo` -->
@@ -516,19 +515,19 @@ hvml. load ("a. hvml", { "nrUsers" : 10 })
 
 In the program, we can use `$REQ.nrUsers` or `$REQ['nrUsers']` to refer to the value (`10`) passed in by the above script code.
 
-## 3) Necessary dynamic variables
+## 3) Necessary Dynamic Variable
 
 ### 3.1) `SYS`
 
-This variable is a walker-level built-in variable, mainly used to get or set system information. The implementation of this built-in variable needs to consider the following requirements:
+This variable is a walker-level built-in variable, which is mainly used to get or set system information. The implementation of this built-in variable needs to consider the following requirements:
 
 - Calling the setter method of `$SYS` in a coroutine may generate a `change` event, which the interpreter should broadcast to all walkers and further forward to all coroutines in the walker.
 
-#### 3.1.1) `const` methods
+#### 3.1.1) `const` Method
 
 Get system constants.
 
-**describe**
+**Description**
 
 ```js
 $SYS.const(
@@ -536,23 +535,23 @@ $SYS.const(
 ) any : `the constant value`
 ```
 
-This method gets the value of the specified constant. Returns the corresponding data on success; throws `NoSuchKey` exception on failure, or returns `undefined` on silent evaluation.
+This method gets the value of the specified constant. Return the corresponding data on success; throw `NoSuchKey` exception on failure, or return `undefined` on silent evaluation.
 
 Note that the following constants should be defined by all HVML interpreters:
 
-- `HVML_SPEC_RELEASE`: HVML specification version number, such as `Shuoshu`.
-- `HVML_SPEC_VERSION`: HVML specification version number, eg `1.0`.
-- `HVML_PREDEF_VARS_SPEC_RELEASE`: HVML predefined variable specification version number, such as `Shushu`.
+- `HVML_SPEC_RELEASE`: HVML specification version number, such as `硕鼠`.
+- `HVML_SPEC_VERSION`: HVML specification version number, such as `1.0`.
+- `HVML_PREDEF_VARS_SPEC_RELEASE`: HVML predefined variable specification version number, such as `硕鼠`.
 - `HVML_PREDEF_VARS_SPEC_VERSION`: HVML predefined variable specification version number, such as `1.0`.
 - `HVML_INTRPR_NAME`: The name of the HVML interpreter, such as `PurC`.
-- `HVML_INTRPR_RELEASE`: The release name of the HVML interpreter, such as `Lichun`.
+- `HVML_INTRPR_RELEASE`: The release name of the HVML interpreter, such as `立春`.
 - `HVML_INTRPR_VERSION`: The version name of the HVML interpreter, such as `0.5.0`.
 
-**abnormal**
+**Exception**
 
 - `NoSuchKey`: The exception can be ignored.
 
-**example**
+**Example**
 
 ```js
 // Get the value of the constant `HVML_SPEC_VER`
@@ -560,11 +559,11 @@ $SYS.const('HVML_SPEC_VERSION')
      // string: '1.0'
 ```
 
-#### 3.1.2) `uname` method
+#### 3.1.2) `uname` Method
 
 Get system information.
 
-**describe**
+**Description**
 
 ```js
 $SYS.uname object:
@@ -581,11 +580,11 @@ $SYS.uname object:
 
 This method obtains system information and returns an object containing key-value pairs such as the kernel name and version number. Note that for some unsupported system features, an empty string will be returned.
 
-**abnormal**
+**Exception**
 
 (none)
 
-**example**
+**Example**
 
 ```js
 $SYS.uname
@@ -603,11 +602,11 @@ $SYS.uname
     */
 ```
 
-#### 3.1.3) `uname_prt` method
+#### 3.1.3) `uname_prt` Method
 
 Get printable system information.
 
-**describe**
+**Description**
 
 ```js
 $SYS.uname_prt string: `the kernel name.`
@@ -634,11 +633,11 @@ $SYS.uname_prt(
 
 This method returns the feature values of multiple specified features, separated by spaces, concatenated as a string and returned. Note that for some unsupported system features, the corresponding feature value is an empty string.
 
-**abnormal**
+**Exception**
 
 (none)
 
-**example**
+**Example**
 
 ```js
 // Get the kernel name
@@ -650,11 +649,11 @@ $SYS.uname_prt('kernel-name kernel-release kernel-version')
      // string: "Linux 5.4.0-80-generic #90-Ubuntu SMP Fri Jul 9 22:49:44 UTC 2021"
 ```
 
-#### 3.1.4) `locale` method
+#### 3.1.4) `locale` Method
 
 Get or set the locale.
 
-**describe**
+**Description**
 
 ```js
 $SYS.locale string : `the locale for the messages category.`
@@ -681,7 +680,7 @@ $SYS.locale(
 ) string | undefined : `the locale like 'zh_CN'.`
 ```
 
-This method gets the region of the specified category and returns a string. Certain platforms may not support certain locale categories, such as the name (`name`) category. For unsupported locale classifications, the function will either throw an `Unsupported` exception, or return `undefined` when evaluated silently.
+This method gets the region of the specified category and returns a string. Certain platforms may not support certain locale categories, such as the `name` category. For unsupported locale classifications, the function will either throw an `Unsupported` exception, or return `undefined` when evaluated silently.
 
 ```js
 $SYS.locale(!
@@ -706,7 +705,7 @@ $SYS.locale(!
 
 This method sets the region for the specified category (single or multiple). Returns `true` on success, `false` on failure. Certain platforms may not support certain locale categories, such as the name (`name`) category. For unsupported locale classifications, the function will either throw an `Unsupported` exception, or return `false` when evaluated silently.
 
-**abnormal**
+**Exception**
 
 - `Unsupported`: Unsupported area classification. Exceptions can be ignored.
 
@@ -716,7 +715,7 @@ This method sets the region for the specified category (single or multiple). Ret
 1. In the HVML application framework, it is required to always use UTF-8 encoding.
 1. A locale-specific modification will generate a `change:locale/<category>` event on the `$SYS` variable.
 
-**example**
+**Example**
 
 ```js
 $SYS.locale
@@ -729,11 +728,11 @@ $SYS.locale
      // string: "zh_CN"
 ```
 
-#### 3.1.5) `time` method
+#### 3.1.5) `time` Method
 
 Get or set the calendar time (calendar time).
 
-**describe**
+**Description**
 
 ```js
 $SYS.time longint: `the calendar time (seconds since Epoch)`
@@ -747,9 +746,9 @@ $SYS.time(!
 ) true | false
 ```
 
-This method sets the system time, the integer part represents the number of seconds since Epoch, and the fractional part represents the number of microseconds. Returns `true` on success, throws `AccessDenied` exception on failure, returns `false` on silent evaluation.
+This method sets the system time, the integer part represents the number of seconds since Epoch, and the fractional part represents the number of microseconds. Return `true` on success, throw `AccessDenied` exception on failure, return `false` on silent evaluation.
 
-**abnormal**
+**Exception**
 
 - `InvalidValue`: An invalid parameter is passed in, such as a negative value or a microsecond value greater than 100,000 or less than 0.
 - `AccessDenied`: This exception will be thrown when the owner of the current walker does not have permission to set the system time.
@@ -758,7 +757,7 @@ This method sets the system time, the integer part represents the number of seco
 
 1. A modification to the calendar time will generate a `change:time` event on the `$SYS` variable.
 
-**example**
+**Example**
 
 ```js
 $SYS.time
@@ -776,7 +775,7 @@ $SYS.time
 
 Get or set the system time with microsecond precision.
 
-**describe**
+**Description**
 
 ```js
 $SYS.time_us longdouble :
@@ -813,7 +812,7 @@ $SYS.time_us(!
 
 This method sets the system time using an object representing the system time. Returns `true` on success, throws an exception on failure, returns `false` on silent evaluation.
 
-**abnormal**
+**Exception**
 
 - `InvalidValue`: When the getter is called, this exception will be thrown when an incorrect parameter is passed in (such as the wrong return type); when silently evaluated, the current event of type `longdouble` will be returned. This exception is thrown when the setter is called with an invalid argument (such as a negative value or a microsecond value greater than 100,000 or less than 0).
 - `AccessDenied`: This exception is thrown when the setter is called when the owner running the interpreter does not have permission to set the system time.
@@ -822,25 +821,25 @@ This method sets the system time using an object representing the system time. R
 
 1. A modification to the system time will generate a `change:time` event on the `$SYS` variable.
 
-**example**
+**Example**
 
 ```js
 $SYS.time_us
      // longdouble: 123456789.456789
 ```
 
-**see**
+**Reference**
 
 - C standard functions: `gettimeofday()`, `settimeofday()`
 - PHP: <https://www.php.net/manual/en/ref.datetime.php>
 - PHP: <https://www.php.net/manual/en/datetime.formats.php>
 - PHP DateTime class: <https://www.php.net/manual/en/class.datetime.php>
 
-#### 3.1.7) `sleep` method
+#### 3.1.7) `sleep` Method
 
-Pauses the execution of the current walker. If called in an HVML program, sleeps the current coroutine.
+Pause the execution of the current walker. If called in an HVML program, it will sleep the current coroutine.
 
-**describe**
+**Description**
 
 ```js
 $SYS. sleep(
@@ -850,14 +849,14 @@ $SYS. sleep(
 
 This method suspends the execution of the current walker for the specified number of seconds. If a float is used to specify the number of seconds, the fractional part can specify the number of microseconds or nanoseconds to sleep. Under normal circumstances, this method returns 0; when the sleep is interrupted because the current coroutine has an event that needs to be processed, it returns the remaining seconds (the return value type is consistent with the parameter type).
 
-**abnormal**
+**Exception**
 
 - `ArgumentMissed`: A required argument was not specified. Exceptions can be ignored; returns `false` when evaluated silently.
 - `WrongDataType`: non-real number type parameter type. Exceptions can be ignored; returns `false` when evaluated silently.
 - `InvalidValue`: An invalid parameter is passed in, such as a negative value. Exceptions can be ignored; returns `false` when evaluated silently.
 - `SystemFault`: Operating system failure. Exceptions cannot be ignored.
 
-**example**
+**Example**
 
 ```js
 $SYS. sleep(1UL)
@@ -867,7 +866,7 @@ $SYS. sleep(0.3)
      // longdouble: 0.0FL
 ```
 
-**see**
+**Reference**
 
 - POSIX functions: `sleep()`, `usleep()`, and `nanosleep()`.
 
@@ -875,7 +874,7 @@ $SYS. sleep(0.3)
 
 Get or set the time zone.
 
-**describe**
+**Description**
 
 ```js
 $SYS.timezone : string | false
@@ -904,7 +903,7 @@ HVML recommends using strings like `Asia/Shanghai` to represent time zones. In e
 - `GMT`: Abbreviation for Greenwich Mean Time, same as `Etc/GMT`.
 - `posixrules`: POSIX default time zone rules, same as `America/New_York`.
 
-**abnormal**
+**Exception**
 
 - `InvalidValue`: Invalid time zone string. Invalid option keywords are treated as `local` when evaluated silently.
 - `AccessDenied`: The owner of the current walker does not have permission to permanently change the system timezone.
@@ -914,7 +913,7 @@ HVML recommends using strings like `Asia/Shanghai` to represent time zones. In e
 1. A change to the system timezone will generate a `change:timezone` event on the `$SYS` variable.
 1. Global, persistent modification of the system time zone, which may require an operating system restart.
 
-**example**
+**Example**
 
 ```js
 $SYS.timezone
@@ -936,7 +935,7 @@ $SYS.timezone
 
 Get or set the current working path.
 
-**describe**
+**Description**
 
 ```js
 $SYS.cwd string | false: `returns the current working directory on success, or @false on failure.`
@@ -952,7 +951,7 @@ $SYS.cwd(!
 
 This method changes the current working directory. Returns `true` on success, throws an exception on failure; upon silent evaluation, returns `false` for ignorable exceptions.
 
-**abnormal**
+**Exception**
 
 The exceptions that may be generated by this method are all ignorable exceptions:
 
@@ -968,7 +967,7 @@ The exceptions that may be generated by this method are all ignorable exceptions
 
 1. Changes to the current working directory will generate a `change:cwd` event on the `$SYS` variable.
 
-**see**
+**Reference**
 
 - C standard functions: `chdir()`, `getcwd()`
 
@@ -976,7 +975,7 @@ The exceptions that may be generated by this method are all ignorable exceptions
 
 Get or set system environment variables.
 
-**describe**
+**Description**
 
 ```js
 $SYS.env(
@@ -995,7 +994,7 @@ $SYS.env(!
 
 This method sets the specified environment variable and returns Boolean data indicating whether the existing environment variable is overwritten.
 
-**abnormal**
+**Exception**
 
 The exceptions that may be generated by this method are all ignorable exceptions:
 
@@ -1008,7 +1007,7 @@ The exceptions that may be generated by this method are all ignorable exceptions
 1. The modification of a specific environment variable will generate a `change:env` event on the `$SYS` variable, and the event parameter is an object containing a key-value pair with the modified environment variable name as the key and the corresponding value as the key value .
 1. To delete a specific environment variable, a `change:env/shrunk` event will be generated on the `$SYS` variable, and the event parameter is the name of the environment variable to be removed.
 
-**example**
+**Example**
 
 ```js
 // Set the value of the environment variable `LOGNAME`
@@ -1016,11 +1015,11 @@ $SYS.env(! 'LOGNAME', 'tom' )
      // boolean: true
 ```
 
-#### 3.1.11) `random_sequence` method
+#### 3.1.11) `random_sequence` Method
 
 Get the specified random data from the kernel, which can be used for seeding the random number generator or for encryption purposes.
 
-**describe**
+**Description**
 
 ```js
 $SYS.random_sequence(
@@ -1030,12 +1029,12 @@ $SYS.random_sequence(
 
 This method gets random data of a specified length from the kernel, which can be used for seeding the random number generator or for encryption purposes. This method returns a sequence of bytes of the specified length or throws an exception; when evaluated silently, `false` is returned.
 
-**abnormal**
+**Exception**
 
 - `InvalidValue`: `$length` is an invalid length; the length must be greater than 0 and less than or equal to 256.
 - `NotSupported`: Not supported.
 
-**example**
+**Example**
 
 ```js
 // Obtain random data from the kernel for the current walker's random number generator seed.
@@ -1043,7 +1042,7 @@ $SYS. random(! $DATA. fetchreal($SYS. random_sequence(4), 'u32') )
      // boolean: true
 ```
 
-**see**
+**Reference**
 
 - Linux-specific interface: `getrandom()`
 
@@ -1051,7 +1050,7 @@ $SYS. random(! $DATA. fetchreal($SYS. random_sequence(4), 'u32') )
 
 Get a random value.
 
-**describe**
+**Description**
 
 ```js
 $SYS.random longint: `a random between 0 and RAND_MAX.`
@@ -1077,11 +1076,11 @@ $SYS. random(!
 
 This method sets the seed (`$seed`) and/or complexity (`$complexity`) of the random number generator. This method returns `true` on success; throws an exception on failure, or `false` for ignorable exceptions when evaluating silently.
 
-**abnormal**
+**Exception**
 
 `InvalidValue`: An invalid parameter was passed in, such as a too small `$complexity` value.
 
-**example**
+**Example**
 
 ```js
 // Set the random number seed using the current system calendar time.
@@ -1105,7 +1104,7 @@ $SYS.random(-10FL)
      // longdouble: -8.96987678FL
 ```
 
-**see**
+**Reference**
 
 - C standard function: `random_r()`
 - C standard function: `srandom_r()`
@@ -1115,11 +1114,11 @@ $SYS.random(-10FL)
 
 This variable is a walker-level built-in variable, and the interpreter will automatically create and bind it when creating a new walker. This variable is mainly used for walker-related information, and provides a mechanism for users to share data between different coroutines of the current walker.
 
-#### 3.2.1) `app_name` attribute
+#### 3.2.1) `app_name` Attribute
 
 Get the application name of the current walker.
 
-**describe**
+**Description**
 
 ```js
 $RUNNER.app_name
@@ -1128,11 +1127,11 @@ $RUNNER.app_name
 
 This method gets the application name of the current walker.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $RUNNER.app_name
@@ -1143,7 +1142,7 @@ $RUNNER.app_name
 
 Get the walker name of the current walker.
 
-**describe**
+**Description**
 
 ```js
 $RUNNER.run_name
@@ -1152,22 +1151,22 @@ $RUNNER.run_name
 
 This method gets the walker name of the current walker.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $RUNNER.run_name
      // string: 'hello'
 ```
 
-#### 3.2.3) `rid` property
+#### 3.2.3) `rid` Property
 
 Get the runner identifier (`rid` for short) of the current runner.
 
-**describe**
+**Description**
 
 ```js
 $RUNNER.rid
@@ -1176,22 +1175,22 @@ $RUNNER.rid
 
 This method gets the walker identifier of the current walker.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $RUNNER.sid
      // ulongint: 3UL
 ```
 
-#### 3.2.4) `uri` property
+#### 3.2.4) `uri` Property
 
 Get the URI of the current walker.
 
-**describe**
+**Description**
 
 ```js
 $RUNNER.uri
@@ -1200,11 +1199,11 @@ $RUNNER.uri
 
 This method gets the URI of the current walker, which looks like `edpt://localhost/cn.fmsoft.hvml.caculator/main`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $RUNNER.uri
@@ -1240,11 +1239,11 @@ Since `$RUNNER` is a walker-level variable, changes in this data can be observed
      </observe>
 ```
 
-#### 3.2.6) `user` attribute
+#### 3.2.6) `user` Attribute
 
 Get or set the user key-value pair through this property.
 
-**describe**
+**Description**
 
 ```js
 $RUNNER. user(
@@ -1265,13 +1264,13 @@ This method sets the value of the specified key name and returns a Boolean value
 
 _Note_, the getters and setters for `user` essentially access the `myObj` static property of `$RUNNER`.
 
-**abnormal**
+**Exception**
 
 Exceptions that this method may generate:
 
 - `NoSuchKey`
 
-**example**
+**Example**
 
 ```js
 // remove `userId` key-value pair
@@ -1295,11 +1294,11 @@ $RUNNER. user(! 'userId', undefined )
      //true
 ```
 
-#### 3.2.7) `chan` method
+#### 3.2.7) `chan` Method
 
 Get or create a channel.
 
-**describe**
+**Description**
 
 ```js
 $RUNNER.chan(
@@ -1323,7 +1322,7 @@ $RUNNER.chan(!
 
 This method creates or closes a channel (when the capacity is 0); it can also be used to change the capacity of an existing channel (only when the number of existing data is less than or equal to the capacity to be set).
 
-**abnormal**
+**Exception**
 
 Possible exceptions from the above methods:
 
@@ -1334,7 +1333,7 @@ Possible exceptions from the above methods:
 - `EntityNotFound`: The specified channel was not found. Exceptions can be ignored; return `false` or `undefined` when evaluated silently.
 - `EntityExists`: The specified channel already exists. Exceptions can be ignored; return `false` or `undefined` when evaluated silently.
 
-**example**
+**Example**
 
 ```js
 // create `channel0` channel
@@ -1358,11 +1357,11 @@ $RUNNER.chan('channel0')
      // undefined
 ```
 
-##### 3.2.7.1) The `send` method of the channel entity
+##### 3.2.7.1) `send` Method of Channel Entity
 
 Send data to the channel.
 
-**describe**
+**Description**
 
 ```js
 $channel. send(
@@ -1372,20 +1371,20 @@ $channel. send(
 
 This method sends data to the specified channel; when the channel is full, this call will block the current coroutine until the data is read or it times out.
 
-**abnormal**
+**Exception**
 
 Exceptions that this method may generate:
 
 - `EntityGone`: The channel disappeared (closed). Exceptions can be ignored; returns `false` when evaluated silently.
 - `Timeout`: Timeout. Exceptions can be ignored; returns `false` when evaluated silently.
 
-**example**
+**Example**
 
-##### 3.2.7.2) `recv` method of channel entity
+##### 3.2.7.2) `recv` Method of Channel Entity
 
 Receive data from channel entity.
 
-**describe**
+**Description**
 
 ```js
 $channel.recv() any | undefined
@@ -1393,18 +1392,18 @@ $channel.recv() any | undefined
 
 This method reads data from the channel; when the channel is empty, the call will block the current coroutine until there is data or timeout.
 
-**abnormal**
+**Exception**
 
 Exceptions that this method may generate:
 
 - `EntityGone`: The channel disappeared (closed). Exceptions can be ignored; return `undefined` when evaluated silently.
 - `Timeout`: Timeout. Exceptions can be ignored; return `undefined` when evaluated silently.
 
-##### 3.2.7.3) The `cap` property of the channel entity
+##### 3.2.7.3) `cap` Property of Channel Entity
 
 Get the capacity of the channel entity.
 
-**describe**
+**Description**
 
 ```js
 $channel.cap ulongint | false
@@ -1412,13 +1411,13 @@ $channel.cap ulongint | false
 
 This property returns the capacity size of the channel entity.
 
-**abnormal**
+**Exception**
 
 Exceptions that this method may generate:
 
 - `EntityGone`: The channel disappeared (closed). Exceptions can be ignored; returns `false` when evaluated silently.
 
-##### 3.2.7.4) The `len` attribute of the channel entity
+##### 3.2.7.4) `len` Attribute of Channel Entity
 
 Get the number of data items in the channel entity.
 
@@ -1436,7 +1435,7 @@ Exceptions that this method may generate:
 
 - `EntityGone`: The channel disappeared (closed). Exceptions can be ignored; returns `false` when evaluated silently.
 
-##### 3.2.7.5) Events on channel entities
+##### 3.2.7.5) Events on Channel Entity
 
 On channel entities, the following events can be observed:
 
@@ -1455,11 +1454,11 @@ In addition, on the `$CRTN` variable, the following rendering state-related even
 1. `rdrState:lost`: The runner of the coroutine lost the connection to the renderer, such as the renderer terminated unexpectedly or exited abnormally.
 1. `rdrState:regular`: The current coroutine and renderer return to the regular data exchange state.
 
-#### 3.3.1) `target` attribute
+#### 3.3.1) `target` Attribute
 
 The target document type of the HVML coroutine can be obtained through this property.
 
-**describe**
+**Description**
 
 ```js
 $CRTN.target string: `the target document type such as 'html'`
@@ -1467,18 +1466,18 @@ $CRTN.target string: `the target document type such as 'html'`
 
 Get the target document type of the current HVML coroutine, that is, the value of the `target` attribute of the `hvml` tag.
 
-**abnormal**
+**Exception**
 
 Getters for this property do not raise exceptions.
 
-**example**
+**Example**
 
 ```js
 $CRTN.target
      // string: 'html'
 ```
 
-#### 3.3.2) `base` attribute
+#### 3.3.2) `base` Attribute
 
 This property can be used to get or set the base URL of the HVML coroutine.
 
@@ -1496,7 +1495,7 @@ $CRTN. base(!
 
 This property setter sets the base URL of the HVML coroutine to the expected value, returning the normalized base URL. Throws an exception if passed `$new_url` is not a valid or unsupported URL, or returns `false` for ignorable exceptions when evaluating silently.
 
-**abnormal**
+**Exception**
 
 An exception that is not raised by getters for this property.
 
@@ -1506,20 +1505,20 @@ The setter of this property can generate the following exceptions, all of which 
 - `WrongDataType`: The parameter type specified in the setter is incorrect.
 - `InvalidValue`: Invalid URL string.
 
-**example**
+**Example**
 
 ```js
 $CRTN.base(! "https://foo.example.com//app/hvml/" )
      // string: 'https://foo.example.com/app/hvml'
 ```
 
-#### 3.3.3) `max_iteration_count` attribute
+#### 3.3.3) `max_iteration_count` Attribute
 
 This property can be used to get or set the maximum number of iterations of the HVML coroutine when executing the `iterate` action element, which is used to detect possible infinite loops.
 
 The default is the maximum value of a 64-bit unsigned integer: `2^64 - 1`.
 
-**describe**
+**Description**
 
 ```js
 $CRTN.max_iteration_count ulongint: `the current maximal iteration count.`
@@ -1535,7 +1534,7 @@ $CRTN.max_iteration_count(!
 
 This property setter sets the maximum iterations value and returns the set value. Throws an exception when passed an invalid value (such as zero); or returns `false` for ignorable exceptions when evaluating silently.
 
-**abnormal**
+**Exception**
 
 An exception that is not raised by getters for this property.
 
@@ -1545,19 +1544,19 @@ The setter of this property can generate the following exceptions, all of which 
 - `WrongDataType`: The parameter type specified in the setter is incorrect.
 - `InvalidValue`: Invalid value, exception can be ignored.
 
-**example**
+**Example**
 
 ```js
 $CRTN.max_iteration_count(! 10000UL )
 ```
 
-#### 3.3.4) `max_recursion_depth` attribute
+#### 3.3.4) `max_recursion_depth` Attribute
 
 This property can be used to get or set the maximum recursion depth of the HVML coroutine when recursively executing a function to prevent stack overflow.
 
 The default is the maximum value for a 16-bit unsigned integer: `2^16 - 1` (65535).
 
-**describe**
+**Description**
 
 ```js
 $CRTN.max_recursion_depth ulongint: `the current maximal recursion depth value.`
@@ -1573,7 +1572,7 @@ $CRTN.max_recursion_depth(!
 
 This property setter sets the maximum recursion depth value and returns the set value. Throws an exception when an invalid value is passed in; or returns `false` for ignorable exceptions when evaluating silently.
 
-**abnormal**
+**Exception**
 
 An exception that is not raised by getters for this property.
 
@@ -1583,19 +1582,19 @@ The setter of this property can generate the following exceptions, all of which 
 - `WrongDataType`: The parameter type specified in the setter is incorrect.
 - `InvalidValue`: Invalid value, exception can be ignored.
 
-**example**
+**Example**
 
 ```js
 $CRTN.max_recursion_depth(! 10000UL)
 ```
 
-#### 3.3.5) `max_embedded_levels` attribute
+#### 3.3.5) `max_embedded_levels` Attribute
 
 This property gets or sets the maximum nesting level allowed when parsing eJSON data or processing container data.
 
 The default value is 64.
 
-**describe**
+**Description**
 
 ```js
 $CRTN.max_embedded_levels ulongint: `the current maximal embedded levels.`
@@ -1611,7 +1610,7 @@ $CRTN.max_embedded_levels(!
 
 This property setter sets the maximum allowed container data nesting level, and returns the set value. Throws an exception when an invalid value is passed in; or returns `false` for ignorable exceptions when evaluating silently.
 
-**abnormal**
+**Exception**
 
 Getters for this property do not raise exceptions.
 
@@ -1621,19 +1620,19 @@ The setter of this property can generate the following exceptions, all of which 
 - `WrongDataType`: The parameter type specified in the setter is incorrect.
 - `InvalidValue`: 0 or more than the maximum value of a 16-bit unsigned integer.
 
-**example**
+**Example**
 
 ```js
 $CRTN.max_embedded_levels(!64UL)
 ```
 
-#### 3.3.6) `timeout` attribute
+#### 3.3.6) `timeout` Attribute
 
 This property can be used to get or set the timeout value (unit: second) when the HVML coroutine gets data or sends a request through the data getter.
 
 The default value is 10.0.
 
-**describe**
+**Description**
 
 ```js
 $CRTN.timeout number : `the current timeout value (in seconds)`
@@ -1649,7 +1648,7 @@ $CRTN. timeout(!
 
 This property setter sets the timeout value and returns the set value. Throws an exception when an invalid value is passed in; or returns `false` for ignorable exceptions when evaluating silently.
 
-**abnormal**
+**Exception**
 
 Getters for this property do not raise exceptions.
 
@@ -1659,7 +1658,7 @@ This attribute is a setter that can generate the following exceptions, all of wh
 - `WrongDataType`: A non-real-like parameter type was specified in the setter.
 - `InvalidValue`: Invalid timeout value.
 
-**example**
+**Example**
 
 ```js
 // Set the timeout value to 3.5 seconds.
@@ -1667,32 +1666,32 @@ $CRTN. timeout(! 3.5 )
      // number: 3.5
 ```
 
-#### 3.3.7) `cid` attribute
+#### 3.3.7) `cid` Attribute
 
 This property can be used to get the identifier of the current HVML coroutine (coroutine identifier, referred to as `cid`).
 
-**describe**
+**Description**
 
 ```js
 $CRTN.cid ulongint : `the corontine identifier`
 ```
 
-**abnormal**
+**Exception**
 
 Getters for this property do not raise exceptions.
 
-**example**
+**Example**
 
 ```js
 $CRTN.cid
      // ulongint: 10UL
 ```
 
-#### 3.3.8) `token` attribute
+#### 3.3.8) `token` Attribute
 
 This property can be used to get or set the token (token) of the current HVML coroutine.
 
-**describe**
+**Description**
 
 ```js
 $CRTN.token string : `the corontine token`
@@ -1708,7 +1707,7 @@ $CRTN. token(!
 
 This method sets the token of the current HVML coroutine and returns `true` or `false`. Throws an exception when an invalid value is passed in (starts with an underscore, does not conform to the coroutine token specification), or returns `false` for ignorable exceptions when evaluating silently.
 
-**abnormal**
+**Exception**
 
 An exception that is not raised by getters for this property.
 
@@ -1718,7 +1717,7 @@ The setter of this property can generate the following exceptions, all of which 
 - `WrongDataType`: Wrong parameter type.
 - `InvalidValue`: A value that does not conform to the coroutine token specification or a token name that starts with an underscore.
 
-**example**
+**Example**
 
 ```js
 $CRTN.token
@@ -1731,11 +1730,11 @@ $CRTN.token
      // string: `myTask`
 ```
 
-#### 3.3.9) `uri` attribute
+#### 3.3.9) `uri` Attribute
 
 The URI of the current HVML coroutine can be obtained through this property.
 
-**describe**
+**Description**
 
 ```js
 $CRTN.uri string : `the corontine URI`
@@ -1743,22 +1742,22 @@ $CRTN.uri string : `the corontine URI`
 
 This method gets the URI of the current HVML coroutine, in the form of `//localhost/cn.fmsoft.hvml.calculator/main/CRTN/7`.
 
-**abnormal**
+**Exception**
 
 Getters for this property do not raise exceptions.
 
-**example**
+**Example**
 
 ```js
 $CRTN.uri
      // string: `//localhost/cn.fmsoft.hvml.calculator/main/CRTN/7`
 ```
 
-#### 3.3.10) `curator` attribute
+#### 3.3.10) `curator` Attribute
 
 Get the guardian coroutine identifier of the current HVML coroutine through this property.
 
-**describe**
+**Description**
 
 ```js
 $CRTN.curator ulongint : `the corontine identifier of the curator of the current coroutine`
@@ -1766,22 +1765,22 @@ $CRTN.curator ulongint : `the corontine identifier of the curator of the current
 
 This property getter gets the guardian coroutine identifier of the current HVML coroutine, and returns 0UL if the coroutine has no guardian coroutine.
 
-**abnormal**
+**Exception**
 
 This property getter does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $CRTN. curator
      // ulongint: 5UL
 ```
 
-#### 3.3.11) `native_crtn` method
+#### 3.3.11) `native_crtn` Method
 
 This method returns an observable native entity representing a specific sub-coroutine.
 
-**describe**
+**Description**
 
 ```js
 $CRTN.native_crtn(
@@ -1791,7 +1790,7 @@ $CRTN.native_crtn(
 
 This method returns an observable native entity representing a specific sub-coroutine based on the given coroutine identifier. Can be used to observe the exit status of sub-coroutines.
 
-**abnormal**
+**Exception**
 
 Exceptions that this method may generate:
 
@@ -1799,18 +1798,18 @@ Exceptions that this method may generate:
 - `WrongDataType`: Wrong parameter type; exception can be ignored, and `undefined` is returned when silently evaluated.
 - `InvalidValue`: Invalid parameter, such as the specified `cid` does not exist; the exception can be ignored, and `undefined` is returned during silent evaluation.
 
-**example**
+**Example**
 
 ```js
 $CRTN.native_crtn
      // native/crtn
 ```
 
-#### 3.3.12) `static` attribute
+#### 3.3.12) `static` Attribute
 
 This attribute reflects the static variable corresponding to the current coroutine in the current execution stack, and should be implemented as a native entity. Access the static variables of the current coroutine in the specified namespace through the getters and setters of the properties of the native entity.
 
-**describe**
+**Description**
 
 ```js
 $CRTN.static.<variable>(
@@ -1833,7 +1832,7 @@ $CRTN. static. <variable>(!
 
 This property setter sets the value of the specified variable. `variable` is the variable name; `value` specifies the new value (use `undefined` to remove the variable); `namespace` is used to specify the namespace of the variable.
 
-**abnormal**
+**Exception**
 
 Exceptions that may be generated by property getters for this native entity:
 
@@ -1847,7 +1846,7 @@ Exceptions that may be raised by property setters for this native entity:
 - `WrongDataType`: Wrong argument type; exception can be ignored and `false` will be returned for silent evaluation.
 - `InvalidValue`: Invalid parameter, such as an invalid variable name; the exception can be ignored, and `false` is returned for silent evaluation.
 
-**example**
+**Example**
 
 ```js
 $CRTN.static.x('_root')
@@ -1863,11 +1862,11 @@ $CRTN.static.x
      // array: [0, 1, 2]
 ```
 
-#### 3.3.13) `temp` attribute
+#### 3.3.13) `temp` Attribute
 
 This attribute reflects the temporary variable corresponding to the current coroutine in the execution stack and should be implemented as a native entity. Access the temporary variables of the current coroutine in the specified namespace through the property getters and setters of the native entity.
 
-**describe**
+**Description**
 
 ```js
 $CRTN.temp.<variable>(
@@ -1888,9 +1887,9 @@ $CRTN.temp.<variable>(!
 ) boolean
 ```
 
-Sets the value of the specified temporary variable via the above property setter. `variable` is the variable name; `value` specifies the new value (use `undefined` to remove the variable); `namespace` is used to specify the namespace of the variable.
+Set the value of the specified temporary variable via the above property setter. `variable` is the variable name; `value` specifies the new value (use `undefined` to remove the variable); `namespace` is used to specify the namespace of the variable.
 
-**abnormal**
+**Exception**
 
 Exceptions that may be generated by property getters for this native entity:
 
@@ -1904,7 +1903,7 @@ Exceptions that may be raised by property setters for this native entity:
 - `WrongDataType`: Wrong argument type; exception can be ignored and `false` will be returned for silent evaluation.
 - `InvalidValue`: Invalid parameter, such as an invalid variable name; the exception can be ignored, and `false` is returned for silent evaluation.
 
-**example**
+**Example**
 
 ```js
 $CRTN.temp.x('_topmost')
@@ -1926,7 +1925,7 @@ $CRTN.temp.x
 
 When using `init` to load data with a MIME type of `text/html`, etc. from an external data source, the resulting data is a dynamic object representing the corresponding structured document (such as HTML, XML), etc. Therefore, you can also use and `$DOC` variable to access the document and its elements.
 
-#### 3.4.1) `doctype` method
+#### 3.4.1) `doctype` Method
 
 This method returns the document type, string.
 
@@ -1936,14 +1935,14 @@ $DOC.doctype string : `the target DOCTYPE, such as 'html'`
 
 This method returns the doctype of the target document; a string, such as `html`.
 
-**example**
+**Example**
 
 ```js
 $DOC.doctype
      // html
 ```
 
-#### 3.4.2) `select` method
+#### 3.4.2) `select` Method
 
 Select elements according to their identifiers (id), class names, tag names, and name attribute values and generate corresponding collections of elements.
 
@@ -1966,7 +1965,7 @@ The return value of this method may have the following two situations:
 1. `undefined`: Wrong identifier or parameter type.
 1. An element aggregate entity, containing zero or a single element.
 
-#### 3.4.3) `query` method
+#### 3.4.3) `query` Method
 
 Use CSS selectors to query the collection of elements on the target document.
 
@@ -1981,7 +1980,7 @@ The return value of this method may have the following two situations:
 1. `undefined`: Wrong CSS selector or parameter.
 1. An element aggregate entity, containing zero or more elements.
 
-#### 3.4.4) Element Collection Entities
+#### 3.4.4) Element Collection Entity
 
 On the element collection entity, we can get the corresponding getters for the following key names:
 
@@ -2032,13 +2031,13 @@ $DOC.query("#foo").attr('bar')
 $DOC.query("#foo").attr(! "bar", "qux")
 ```
 
-See: <https://api.jquery.com/category/attributes/>
+Reference: <https://api.jquery.com/category/attributes/>
 
 ### 3.5) `RDR`
 
 `RDR` is a built-in walker-level dynamic variable that is used to access the renderer the current walker is connected to.
 
-#### 3.5.1) `state` property
+#### 3.5.1) `state` Property
 
 The getter for this property returns the current renderer state object. This property does not provide a setter.
 
@@ -2051,18 +2050,18 @@ $RDR.state object : `an object describing the current state of the renderer:`
          - 'uri': <string: `machine hardware name`>
 ```
 
-**abnormal**
+**Exception**
 
 (none)
 
-**example**
+**Example**
 
 ```js
 $RDR.state
      // { 'comm': 'socket', 'prot': 'PURCMC', 'prot-version': '110', 'prot-ver-code': 110UL, 'uri': 'unix:///var /tmp/purcmc.sock'}
 ```
 
-#### 3.5.2) `connect` method
+#### 3.5.2) `connect` Method
 
 This method disconnects the current renderer and connects to the specified renderer.
 
@@ -2073,22 +2072,22 @@ $RDR.connect( string : `a string presenting the communication method of the rend
 ) true | false
 ```
 
-**abnormal**
+**Exception**
 
 This method may produce the following ignorable exceptions:
 
-- `WrongDataType`: wrong data type.
+- `WrongDataType`: Wrong data type.
 - `InvalidValue`: Invalid data, such as incorrect communication method and renderer URI, etc.
 - Other exceptions generated by the underlying operating system.
 
-**example**
+**Example**
 
 ```js
 $RDR.connect('socket', 'unix:///var/tmp/purcmc.sock')
      //true
 ```
 
-#### 3.5.3) `disconn` method
+#### 3.5.3) `disconn` Method
 
 This method disconnects the current renderer.
 
@@ -2097,14 +2096,14 @@ $RDR.disconn(
 ) true | false
 ```
 
-**abnormal**
+**Exception**
 
 This method may produce the following ignorable exceptions:
 
 - `EntityNotFound`: The specified entity was not found; not currently connected to any renderer.
 - Other exceptions generated by the underlying operating system.
 
-**example**
+**Example**
 
 ```js
 $RDR.disconn()
@@ -2113,11 +2112,11 @@ $RDR.disconn()
 
 ### 3.6) `DATETIME`
 
-#### 3.6.1) `time_prt` method
+#### 3.6.1) `time_prt` Method
 
 Get a time string with the given formatting specification/standard.
 
-**describe**
+**Description**
 
 ```js
 $DATETIME.time_prt(
@@ -2145,14 +2144,14 @@ $DATETIME.time_prt(
 
 This method gets the time string of the specified calendar time in the given time zone and in the form of the given formatting standard/specification name (such as ISO8601, RFC850).
 
-**abnormal**
+**Exception**
 
 This method may produce the following ignorable exceptions:
 
 - `WrongDataType`: wrong data type.
 - `InvalidValue`: invalid data, such as incorrect format specification name, time or time zone name, etc.
 
-**example**
+**Example**
 
 ```js
 $DATETIME.time_prt
@@ -2180,7 +2179,7 @@ $DATETIME.time_prt('rfc822', null, 'Asia/Shanghai')
 - PHP: <https://www.php.net/manual/en/datetime.formats.php>
 - PHP DateTime class: <https://www.php.net/manual/en/class.datetime.php>
 
-#### 3.6.2) `utctime` method
+#### 3.6.2) `utctime` Method
 
 Get the UTC split time of the current system time.
 
@@ -2218,7 +2217,7 @@ The decomposition time object returned by the above method contains the followin
 }
 ```
 
-**example**
+**Example**
 
 ```js
 // Get the decomposition time of the current time in the current time zone
@@ -2230,15 +2229,15 @@ $DATETIME.utctime($MATH.sub($SYS.time, 3600))
      // object
 ```
 
-**see**
+**Reference**
 
 - C standard function: `gmtime_r()`
 
-#### 3.6.3) `localtime` method
+#### 3.6.3) `localtime` Method
 
 Get the broken down time for the specified time zone.
 
-**describe**
+**Description**
 
 ```js
 $DATETIME.localtime object : `An object representing the current broken-down time in the current timezone.`
@@ -2291,11 +2290,10 @@ $DATETIME.localtime($MATH.sub($SYS.time, 3600), 'Asia/Shanghai')
 
 - C standard function: `localtime_r()`
 
-#### 3.6.4) `mktime` method
-
+#### 3.6.4) `mktime` Method
 Convert decomposed time to calendar time (seconds since Epoch).
 
-**describe**
+**Description**
 
 ```js
 $DATETIME.mktime(
@@ -2305,17 +2303,17 @@ $DATETIME.mktime(
 
 Convert the decomposition time to calendar time (seconds since Epoch), and the return value type is longdouble.
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - C standard function: `mktime_r()`
 
-#### 3.6.5) `fmttime` method
+#### 3.6.5) `fmttime` Method
 
 Format a calendar time.
 
-**describe**
+**Description**
 
 ```js
 $DATETIME.fmttime(
@@ -2337,7 +2335,7 @@ This method uses the same formatting modifiers as the C standard function `strft
 1. When the format string starts with `{UTC}`, it means that the calendar time is not converted to local time according to the current time zone, but is always formatted in Coordinated Universal Time (UTC).
 1. When the literal `{` and `}` symbols need to be represented in the format string, the escape character `\` is preceded.
 
-**example**
+**Example**
 
 ```js
 // get a time string like `11:27`
@@ -2349,15 +2347,15 @@ $DATETIME.fmttime("Now is China Standard Time %H:%M", null, 'Asia/Shanghai')
      // string: 'Now is 11:27 China Standard Time'
 ```
 
-**see**
+**Reference**
 
 - C standard function: `strftime()`
 
-#### 3.6.6) `fmtbdtime` method
+#### 3.6.6) `fmtbdtime` Method
 
 Format the breakup time.
 
-**describe**
+**Description**
 
 ```js
 $DATETIME.fmtbdtime(
@@ -2368,7 +2366,7 @@ $DATETIME.fmtbdtime(
 
 This method formats a decomposed time in the specified format and returns a string.
 
-**example**
+**Example**
 
 ```js
 // get a time string like `08:55`
@@ -2376,19 +2374,19 @@ $DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MAT
      // string: 'It is 08:55 now in Asia/Shanghai'
 ```
 
-**see**
+**Reference**
 
 - C standard function: `strftime()`
 
-### 3.7) `DATA`
+### 3.7) `DATA` 
 
 This dynamic variable is a walker-level built-in variable, which is used to return information such as the type of data and the number of members.
 
-#### 3.7.1) `type` method
+#### 3.7.1) `type` Method
 
-Returns the type name of the data.
+Return the type name of the data.
 
-**describe**
+**Description**
 
 ```js
 $DATA.type(
@@ -2398,11 +2396,11 @@ $DATA.type(
 
 This method returns the type name of the given data, a string. If no data is specified, it will be treated as `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $DATA.type
@@ -2412,11 +2410,11 @@ $DATA.type(3.5)
      // string: `number`
 ```
 
-#### 3.7.2) `size` method
+#### 3.7.2) `size` Method
 
-Returns the memory size occupied by the data.
+Return the memory size occupied by the data.
 
-**describe**
+**Description**
 
 ```js
 $DATA. size(
@@ -2428,11 +2426,11 @@ This method returns the size of the memory space occupied by the data, and the r
 
 Note: The return value of this function is related to the implementation of the interpreter. Developers should not expect different interpreters to return the same results for the same data.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $DATA.size
@@ -2442,11 +2440,11 @@ $DATA. size( "HVML" )
      // ulongint: 32UL
 ```
 
-#### 3.7.3) `count` method
+#### 3.7.3) `count` Method
 
-Returns the number of child data items in the data.
+Return the number of child data items in the data.
 
-**describe**
+**Description**
 
 ```js
 $DATA.count(
@@ -2456,11 +2454,11 @@ $DATA.count(
 
 This method returns the number of sub-data items of the data, and the return value is of `ulongint` type. When no data is specified, it is treated as `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $DATA.count
@@ -2473,11 +2471,11 @@ $DATA.count( [ 1.0, 2.0 ] )
      // ulongint: 2UL
 ```
 
-#### 3.7.4) `numerify` method
+#### 3.7.4) `numerify` Method
 
 Numerical processing of the given data.
 
-**describe**
+**Description**
 
 ```js
 $DATA.numerify(
@@ -2487,11 +2485,11 @@ $DATA.numerify(
 
 This method performs numerical processing on arbitrary data and returns a value. When no data is specified, it is treated as `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $DATA.numerify( "1.0" )
@@ -2501,11 +2499,11 @@ $DATA.numerify
      // number: 0
 ```
 
-#### 3.7.5) `booleanize` method
+#### 3.7.5) `booleanize` Method
 
 Booleanizes the given data.
 
-**describe**
+**Description**
 
 ```js
 $DATA. booleanize(
@@ -2515,22 +2513,22 @@ $DATA. booleanize(
 
 This method booleanizes the given data and returns a Boolean value. When no data is specified, it is treated as `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $DATA. booleanize
      // boolean: false
 ```
 
-#### 3.7.6) `stringify` method
+#### 3.7.6) `stringify` Method
 
 Stringify the given data.
 
-**describe**
+**Description**
 
 ```js
 $DATA. stringify(
@@ -2540,7 +2538,7 @@ $DATA. stringify(
 
 This method stringifies arbitrary data and returns a string. When no data is specified, it is treated as `undefined`.
 
-**abnormal**
+**Exception**
 
 This method may generate the following exceptions:
 
@@ -2557,11 +2555,11 @@ $DATA. stringify(123)
      // string: '123'
 ```
 
-#### 3.7.7) `serialize` method
+#### 3.7.7) `serialize` Method
 
 Stringify the given data.
 
-**describe**
+**Description**
 
 ```js
 $DATA.serialize(
@@ -2589,13 +2587,13 @@ $DATA.serialize(
 
 This method serializes the given data and returns a string. When no data is specified, it is treated as `undefined` and the default formatting requirements.
 
-**abnormal**
+**Exception**
 
 This method may generate the following exceptions:
 
 - `MemoryFailure`: Memory allocation failed. Exceptions cannot be ignored.
 
-**example**
+**Example**
 
 ```js
 $DATA.serialize
@@ -2611,7 +2609,7 @@ $DATA. serialize([1, 2])
      // string: '[1,2]'
 ```
 
-#### 3.7.8) `sort` method
+#### 3.7.8) `sort` Method
 
 Performs a sort on an array or collection.
 
@@ -2647,7 +2645,7 @@ $DATA.sort([3, 4, 1, 0], 'asc')
      // array: [0, 1, 3, 4]
 ```
 
-#### 3.7.9) `shuffle` method
+#### 3.7.9) `shuffle` Method
 
 Randomly shuffle the order of the members of the given array or collection.
 
@@ -2668,18 +2666,18 @@ This method may generate the following exceptions:
 - `ArgumentMissed`: missing required argument; exception can be ignored, `false` is returned when silently evaluated.
 - `WrongDataType`: Wrong data type; exceptions can be ignored, and `false` will be returned for silent evaluation.
 
-**example**
+**Example**
 
 ```js
 $DATA.shuffle([1, 2, 3, 4, 5])
      // array: [4, 3, 2, 5, 1]
 ```
 
-#### 3.7.10) `compare` method
+#### 3.7.10) `compare` Method
 
 Compare two data.
 
-**describe**
+**Description**
 
 ```js
 $DATA. compare(
@@ -2700,7 +2698,7 @@ This method compares the given two data and returns the value:
 - less than 0 means that the first data is smaller than the second data;
 - Greater than 0 indicates that the first data is greater than the second data.
 
-**abnormal**
+**Exception**
 
 This method may generate the following exceptions:
 
@@ -2715,11 +2713,11 @@ $DATA. compare(1, "1")
      // number: 0
 ```
 
-#### 3.7.11) `parse` method
+#### 3.7.11) `parse` Method
 
 Parse JSON/eJSON string and return data.
 
-**describe**
+**Description**
 
 ```js
 $DATA. parse(
@@ -2729,14 +2727,14 @@ $DATA. parse(
 
 This method parses the JSON/EJSON string and returns the data.
 
-**abnormal**
+**Exception**
 
 This method may generate the following exceptions:
 
 - `MemoryFailure`: Memory allocation failed; exception cannot be ignored.
 - `ArgumentMissed`: missing required argument; exception can be ignored, and `undefined` is returned when silently evaluated.
 
-**example**
+**Example**
 
 ```js
 #DATA. parse("false")
@@ -2746,11 +2744,11 @@ This method may generate the following exceptions:
      // array: []
 ```
 
-#### 3.7.12) `isequal` method
+#### 3.7.12) `isequal` Method
 
 Determine whether two data are exactly equal.
 
-**describe**
+**Description**
 
 ```js
 $DATA. isequal(
@@ -2761,13 +2759,13 @@ $DATA. isequal(
 
 This method judges whether the given two data are completely equal (consistent types and equal values), and returns a Boolean type.
 
-**abnormal**
+**Exception**
 
 This method may generate the following exceptions:
 
 - `ArgumentMissed`: A required argument is missing. Exceptions can be ignored, returning `undefined`.
 
-**example**
+**Example**
 
 ```js
 #DATA. isequal(false, 0)
@@ -2777,7 +2775,7 @@ This method may generate the following exceptions:
      // boolean: true
 ```
 
-#### 3.7.13) `fetchstr` method
+#### 3.7.13) `fetchstr` Method
 
 Extracts a string of the specified encoding from a sequence of binary bytes.
 
@@ -2826,7 +2824,7 @@ $DATA.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8:6' )
      // string: "Beijing"
 ```
 
-#### 3.7.14) `fetchreal` method
+#### 3.7.14) `fetchreal` Method
 
 This method extracts real numbers according to the specified real number type (and the order of size and head) at the specified position of the given binary sequence, and returns the corresponding real number type.
 
@@ -2858,7 +2856,7 @@ $DATA.fetchreal( bx0a00, 'i8:2', 0 )
      // array: [ 10L, 00L ]
 ```
 
-#### 3.7.15) `crc32` method
+#### 3.7.15) `crc32` Method
 
 Computes the CRC32 polynomial value of arbitrary data.
 
@@ -2898,7 +2896,7 @@ $DATA.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
 - [CRC Online Calculation]<https://crccalc.com/>
 - [Catalogue of parametrised CRC algorithms](https://reveng.sourceforge.io/crc-catalogue/17plus.htm)
 
-#### 3.7.16) `md5` method
+#### 3.7.16) `md5` Method
 
 Computes the MD5 hash of arbitrary data.
 
@@ -2923,7 +2921,7 @@ This method computes the MD5 hash of arbitrary data. For data that is not a stri
 
 - PHP `md5()` function: <https://www.php.net/manual/en/function.md5.php>
 
-#### 3.7.17) `sha1` method
+#### 3.7.17) `sha1` Method
 
 Computes the SHA1 hash value of arbitrary data.
 
@@ -2942,17 +2940,17 @@ $DATA.sha1(
 
 This method computes the SHA1 hash value of arbitrary data. For data that is not a string or byte sequence, this method performs calculations based on the stringified data.
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `sha1()` function: <https://www.php.net/manual/en/function.sha1.php>
 
-#### 3.7.18) `pack` method
+#### 3.7.18) `pack` Method
 
 Pack multiple data into a binary sequence.
 
-**describe**
+**Description**
 
 ```js
 $DATA.pack(
@@ -2977,7 +2975,7 @@ $DATA.pack(
 
 When two parameters are passed in, and the second parameter is an array, this function converts the members of the passed array into byte sequences according to the binary format specified by `$format`.
 
-**abnormal**
+**Abnormal**
 
 This method may throw the following exceptions:
 
@@ -2990,7 +2988,7 @@ This method may throw the following exceptions:
 
 To prevent confusion, when using the first prototype, make sure that the first parameter is not an array, or pass in three or more parameters.
 
-**example**
+**Example**
 
 ```js
 $DATA.pack( "i16le i32le", 10, 10)
@@ -3041,7 +3039,7 @@ $DATA.unpack( "i16le", bx0a000a000000)
      // longint: 10L
 ```
 
-**see**
+**Reference**
 
 - [1.2) Binary format notation] (#12-Binary format notation)
 
@@ -3071,22 +3069,22 @@ This method may throw the following exceptions:
 - `ArgumentMissed`: missing required argument; exception can be ignored, empty string is returned when silently evaluated.
 - `WrongDataType`: Wrong data type; exceptions can be ignored, and empty strings are returned for silent evaluation.
 
-**example**
+**Example**
 
 ```js
 $DATA.bin2hex( bb0000.1111.1111.0000, 'uppercase')
      // string: '0FF0'
 ```
 
-**see**
+**Reference**
 
 - PHP `bin2hex()` function: <https://www.php.net/manual/en/function.bin2hex.php>
 
-#### 3.7.21) `hex2bin` method
+#### 3.7.21) `hex2bin` Method
 
 Convert a hexadecimal string to a sequence of bytes.
 
-**describe**
+**Description**
 
 ```js
 $DATA.hex2bin(
@@ -3096,7 +3094,7 @@ $DATA.hex2bin(
 
 This function converts the hexadecimal string `data` into a sequence of binary bytes.
 
-**abnormal**
+**Exception**
 
 This method may throw the following exceptions:
 
@@ -3104,14 +3102,14 @@ This method may throw the following exceptions:
 - `WrongDataType`: Wrong data type; exceptions can be ignored, and an empty byte sequence is returned on silent evaluation.
 - `BadEncoding`: Unrecognized hexadecimal string; exception can be ignored, silent evaluation returns empty byte sequence.
 
-**example**
+**Example**
 
 ```js
 $DATA.hex2bin( '0FF0' )
      // bsequence: bb0000.1111.1111.0000
 ```
 
-**see**
+**Reference**
 
 - PHP `bin2hex()` function: <https://www.php.net/manual/en/function.hex2bin.php>
 
@@ -3119,7 +3117,7 @@ $DATA.hex2bin( '0FF0' )
 
 Encode a string or sequence of bytes using MIME Base64.
 
-**describe**
+**Description**
 
 ```js
 $DATA.base64_encode(
@@ -3129,14 +3127,14 @@ $DATA.base64_encode(
 
 This function encodes the given string or binary sequence `data` according to Base64.
 
-**abnormal**
+**Exception**
 
 This method may throw the following exceptions:
 
 - `ArgumentMissed`: missing required argument; exception can be ignored, empty string is returned when silently evaluated.
 - `WrongDataType`: Wrong data type; exceptions can be ignored, and empty strings are returned for silent evaluation.
 
-**example**
+**Example**
 
 ```js
 $DATA.base64_encode( bx48564D4C )
@@ -3146,16 +3144,16 @@ $DATA.base64_encode('HVML is the world's first programmable markup language')
      // string: 'SFZNTCDmmK/lhajnkIPpppbmrL7lj6/nvJbnqIvmoIforrDor63oqIA='
 ```
 
-**see**
+**Reference**
 
 - PHP `base64_encode()` function: <https://www.php.net/manual/en/function.base64-encode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.7.23) `base64_decode` method
+#### 3.7.23) `base64_decode` Method
 
-Decodes a string encoded using MIME Base64.
+Decode a string encoded using MIME Base64.
 
-**describe**
+**Description**
 
 ```js
 $DATA.base64_decode(
@@ -3165,7 +3163,7 @@ $DATA.base64_decode(
 
 This function decodes the input string `data` according to Base64 and returns the decoded byte sequence.
 
-**abnormal**
+**Exception**
 
 This method may throw the following exceptions:
 
@@ -3180,16 +3178,16 @@ $DATA.base64_decode('SFZNTA==')
      // bsequence: bx48564D4C
 ```
 
-**see**
+**Reference**
 
 - PHP `base64_decode()` function: <https://www.php.net/manual/en/function.base64-decode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.7.24) `arith` method
+#### 3.7.24) `arith` Method
 
-Performs simple integer arithmetic operations on two numeric values.
+Perform simple integer arithmetic operations on two numeric values.
 
-**describe**
+**Description**
 
 ```js
 $DATA.arith(
@@ -3201,7 +3199,7 @@ $DATA.arith(
 
 This function will perform integer-based arithmetic calculations such as addition, subtraction, multiplication, division, modulus, power, etc. on the two input values, and always returns a result of type `longint`. The two values will first be coerced to values of type `longint`, and then the corresponding operations will be performed.
 
-**abnormal**
+**Exception**
 
 This method may throw the following exceptions:
 
@@ -3209,18 +3207,18 @@ This method may throw the following exceptions:
 - `WrongDataType`: Wrong data type, that is, data that cannot be converted to a value of type `longint`; the exception can be ignored, and `undefined` will be returned during silent evaluation.
 - `InvalidValue`: Incorrect value, such as a division by zero, or an incorrect bitwise operator; exceptions can be ignored, and `undefined` will be returned for silent evaluation.
 
-**example**
+**Example**
 
 ```js
 $DATA.arith('+', 3, 2)
      // longint: 5L
 ```
 
-#### 3.7.25) `bitwise` method
+#### 3.7.25) `bitwise` Method
 
 Bit calculation based on two values.
 
-**describe**
+**Description**
 
 ```js
 $DATA. bitwise(
@@ -3232,7 +3230,7 @@ $DATA. bitwise(
 
 This function performs bitwise operations on two input values (or one value) based on unsigned integers and, or, inverse, or, left shift, right shift, etc., and always returns the result of `ulongint` type. The value involved in the calculation will first be cast to `ulongint` type, and then the corresponding operation will be performed.
 
-**abnormal**
+**Exception**
 
 This method may throw the following exceptions:
 
@@ -3240,18 +3238,18 @@ This method may throw the following exceptions:
 - `WrongDataType`: Wrong data type, that is, data that cannot be converted to a value of type `ulongint`; the exception can be ignored, and `undefined` will be returned during silent evaluation.
 - `InvalidValue`: Invalid value, such as an incorrect bitwise operator; exceptions can be ignored, and `undefined` is returned when silently evaluated.
 
-**example**
+**Example**
 
 ```js
 $DATA. bitwise( '|', 0, 15 )
      // ulongint: 15UL
 ```
 
-#### 3.7.26) `contains` method
+#### 3.7.26) `contains` Method
 
 Determine whether a given value is contained in a linear container (such as an array, tuple, or collection).
 
-**describe**
+**Description**
 
 ```js
 $DATA. contains(
@@ -3270,12 +3268,12 @@ $DATA. contains(
 
 Determine whether the specified value `needle` is contained in the linear container `haystack`, and return the index of the first matching value in the linear container.
 
-**abnormal**
+**Exception**
 
 - `ArgumentMissed`: Exceptions can be ignored; return `-1L` for silent evaluation.
 - `WrongDataType`: Exceptions can be ignored; return `-1L` when evaluated silently.
 
-**parameter**
+**Reference**
 
 - `haystack`
 The linear container to be searched.
@@ -3284,11 +3282,11 @@ The variant to search for.
 - `method`
 Specifies the matching method. Four methods are available: exact (exact), numeric (numeric), case-sensitive (case), and case-insensitive (caseless).
 
-**return value**
+**Return Value**
 
 If `needle` is in `haystack`, return index >= 0, otherwise return `-1L`.
 
-**example**
+**Example**
 
 ```js
 $DATA. contains([1, 2, 3], 3)
@@ -3298,11 +3296,11 @@ $DATA. contains(['a', 'b'], 'c')
      // longint: -1L
 ```
 
-#### 3.7.27) `has` method
+#### 3.7.27) `has` Method
 
 Determine whether an object contains the property defined by the specified key name.
 
-**describe**
+**Description**
 
 ```js
 $DATA.has(
@@ -3321,26 +3319,26 @@ $DATA.has(
 
 Determine whether the object `haystack` contains the attribute defined by the specified key name `needle`, if so, return the corresponding attribute value, otherwise, an exception will be generated or `undefined` will be returned.
 
-**abnormal**
+**Exception**
 
 - `ArgumentMissed`: Exceptions can be ignored; return `undefined` when evaluated silently.
 - `WrongDataType`: Exceptions can be ignored; return `undefined` when evaluated silently.
 - `NoSuchKey`: exceptions can be ignored; return `undefined` when evaluated silently.
 
-**parameter**
+**Reference**
 
 - `haystack`
 The object being searched for.
 - `needle`
 The key name to search for.
 - `method`
-Specifies the matching method. Four methods are available: exact (exact), numeric (numeric), case-sensitive (case), and case-insensitive (caseless).
+Specify the matching method. Four methods are available: exact, numeric, case, and caseless.
 
-**return value**
+**Return Value**
 
 If the key specified by `needle` has any matching properties in `haystack`, return the first matching property value.
 
-**example**
+**Example**
 
 ```js
 $DATA.has({ "a": 1, "b": 2, "c": 3}, "a")
@@ -3356,11 +3354,11 @@ This variable is a walker-level built-in variable, mainly used for logic operati
 
 See [HVML 1.0 Specification - 2.1.4) Coercion rules for arbitrary data types](hvml-spec-v1.0-zh.md#214-%E4% BB%BB%E6%84%8F%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%BC%BA%E5%88% B6%E8%BD%AC%E6%8D%A2%E8%A7%84%E5%88%99).
 
-#### 3.8.1) `not` method
+#### 3.8.1) `not` Method
 
 Logical negation operation.
 
-**describe**
+**Description**
 
 ```js
 $L.not(<any>)
@@ -3368,11 +3366,11 @@ $L.not(<any>)
 
 This method booleanizes the given data, then performs a logical negation, returning `true` or `false`. If no argument is passed, it is treated as `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $L.not
@@ -3382,11 +3380,11 @@ $L.not( false )
      // boolean: true
 ```
 
-#### 3.8.2) `and` method
+#### 3.8.2) `and` Method
 
-Logical AND operation.
+Logical and operation.
 
-**describe**
+**Description**
 
 ```js
 $L.and(<any>, <any>[, <any>[, ...]])
@@ -3394,11 +3392,11 @@ $L.and(<any>, <any>[, <any>[, ...]])
 
 This method performs Boolean processing on the given two or more data, and then performs a logical AND operation, returning `true` or `false`. If one or both of the first two parameters are missing, it is considered `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $L.and
@@ -3426,11 +3424,11 @@ $L.or(<any>, <any>[, <any>[, ...]])
 
 This method performs Boolean processing on the given two or more data, and then performs a logical OR operation, returning `true` or `false`. If one or both of the first two parameters are missing, it is considered `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $L.or
@@ -3443,11 +3441,11 @@ $L.or( false, true )
      // boolean: true
 ```
 
-#### 3.8.4) `xor` method
+#### 3.8.4) `xor` Method
 
-Logical or OR operation.
+Logical or operation.
 
-**describe**
+**Description**
 
 ```js
 $L.xor(<any>, <any>)
@@ -3455,11 +3453,11 @@ $L.xor(<any>, <any>)
 
 This method performs Boolean processing on the given two data, and then performs logical OR operation, returning `true` or `false`. If one or both of the first two parameters are missing, it is considered `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $L.xor
@@ -3472,11 +3470,11 @@ $L.xor( false, true )
      // boolean: true
 ```
 
-#### 3.8.5) `eq` method
+#### 3.8.5) `eq` Method
 
-Compares whether two numbers are numerically equal.
+Compare whether two numbers are numerically equal.
 
-**describe**
+**Description**
 
 ```js
 $L.eq(<any>, <any>)
@@ -3484,11 +3482,11 @@ $L.eq(<any>, <any>)
 
 This method compares whether two values are numerically equal and returns `true` or `false`. If one or both of the first two parameters are missing, it is considered `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $L.eq
@@ -3501,11 +3499,11 @@ $L.eq("1", 1)
      // boolean: true
 ```
 
-#### 3.8.6) `ne` method
+#### 3.8.6) `ne` Method
 
-Compares whether two numbers are numerically unequal.
+Compare whether two numbers are numerically unequal.
 
-**describe**
+**Description**
 
 ```js
 $L.ne(<any>, <any>)
@@ -3513,11 +3511,11 @@ $L.ne(<any>, <any>)
 
 This method compares whether two values are numerically unequal and returns `true` or `false`. If one or both of the first two parameters are missing, it is considered `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $L.ne
@@ -3530,11 +3528,11 @@ $L.ne("1", 2)
      // boolean: true
 ```
 
-#### 3.8.7) `gt` method
+#### 3.8.7) `gt` Method
 
 Compare whether the first data is numerically greater than the second data.
 
-**describe**
+**Description**
 
 ```js
 $L.gt(<any>, <any>)
@@ -3542,11 +3540,11 @@ $L.gt(<any>, <any>)
 
 This method compares whether the first data is numerically greater than the second data, and returns `true` or `false`. If one or both of the first two parameters are missing, it is considered `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $L.gt
@@ -3559,11 +3557,11 @@ $L.gt("2", 1)
      // boolean: true
 ```
 
-#### 3.8.8) `ge` method
+#### 3.8.8) `ge` Method
 
 Compare whether the first data is numerically greater than or equal to the second data.
 
-**describe**
+**Description**
 
 ```js
 $L.ge(<any>, <any>)
@@ -3571,11 +3569,11 @@ $L.ge(<any>, <any>)
 
 This method compares whether the first data is numerically greater than or equal to the second data, and returns `true` or `false`. If one or both of the first two parameters are missing, it is considered `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $L.ge
@@ -3591,11 +3589,11 @@ $L.ge("2", 2)
      // boolean: true
 ```
 
-#### 3.8.9) `lt` method
+#### 3.8.9) `lt` Method
 
 Compare whether the first data is numerically smaller than the second data.
 
-**describe**
+**Description**
 
 ```js
 $L.lt(<any>, <any>)
@@ -3603,11 +3601,11 @@ $L.lt(<any>, <any>)
 
 This method compares whether the first data is numerically smaller than the second data, and returns `true` or `false`. If one or both of the first two parameters are missing, it is considered `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $L.lt
@@ -3620,7 +3618,7 @@ $L.lt("2", 1)
      // boolean: false
 ```
 
-#### 3.8.10) `le` method
+#### 3.8.10) `le` Method
 
 Compare whether the first data is numerically less than or equal to the second data.
 
@@ -3632,11 +3630,11 @@ $L.le(<any>, <any>)
 
 This method compares whether the first data is numerically less than or equal to the second data, and returns `true` or `false`. If one or both of the first two parameters are missing, it is considered `undefined`.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $L.le
@@ -3652,11 +3650,11 @@ $L.le("1", 2)
      // boolean: true
 ```
 
-#### 3.8.11) `streq` method
+#### 3.8.11) `streq` Method
 
-Compares the string representations of two data for equality or match.
+Compare the string representations of two data for equality or match.
 
-**describe**
+**Description**
 
 ```js
 $L.streq("case | caseless | wildcard | regexp",
@@ -3665,13 +3663,13 @@ $L.streq("case | caseless | wildcard | regexp",
 ) boolean | undefined
 ```
 
-Returns `true` or `false` for comparing the string representations of two values for equality or match.
+Return `true` or `false` for comparing the string representations of two values for equality or match.
 
 The first parameter is used to indicate the matching method of the string (case-sensitive, case-insensitive, wildcard pattern matching, regular expression matching), and the following two parameters are used to pass two strings. When using wildcards and regular expressions, the first parameter is used to specify the wildcard pattern string or regular expression.
 
 For data of non-string type, compare after stringifying.
 
-**abnormal**
+**Exception**
 
 This method may generate the following exceptions:
 
@@ -3679,7 +3677,7 @@ This method may generate the following exceptions:
 - `WrongDataType`: Wrong parameter type. Can be ignored; when evaluated silently, `undefined` is returned.
 - `InvalidValue`: Incorrect parameter. Can be ignored; when evaluated silently, `undefined` is returned.
 
-**example**
+**Example**
 
 ```js
 $L. streq("case", "zh_cn", "zh_CN")
@@ -3692,11 +3690,11 @@ $L. streq("regexp", "^zh", "zh_CN")
      // boolean: true
 ```
 
-#### 3.8.12) `strne` method
+#### 3.8.12) `strne` Method
 
 Compares the string forms of two data for unequal or mismatch.
 
-**describe**
+**Description**
 
 ```js
 $L.strne("case | caseless | wildcard | regexp",
@@ -3705,13 +3703,13 @@ $L.strne("case | caseless | wildcard | regexp",
 ) boolean | undefined
 ```
 
-Returns `true` or `false` if the string representations of two values are not equal or do not match.
+Return `true` or `false` if the string representations of two values are not equal or do not match.
 
 The first parameter is used to indicate the matching method of the string (case-sensitive, case-insensitive, wildcard pattern matching, regular expression matching), and the following two parameters are used to pass two strings. When using wildcards and regular expressions, the first parameter is used to specify the wildcard pattern string or regular expression.
 
 For data of non-string type, compare after stringifying.
 
-**abnormal**
+**Exception**
 
 This method may generate the following exceptions:
 
@@ -3719,7 +3717,7 @@ This method may generate the following exceptions:
 - `WrongDataType`: Wrong parameter type. Can be ignored; when evaluated silently, `undefined` is returned.
 - `InvalidValue`: Incorrect parameter. Can be ignored; when evaluated silently, `undefined` is returned.
 
-**example**
+**Example**
 
 ```js
 $L.strne("case", "zh_cn", "zh_CN")
@@ -3732,11 +3730,11 @@ $L.strne("regexp", "^zh", "zh_CN")
      // boolean: false
 ```
 
-#### 3.8.13) `strgt` method
+#### 3.8.13) `strgt` Method
 
 Compare whether the string form of the first data is greater than the string form of the second data.
 
-**describe**
+**Description**
 
 ```js
 $L.strgt("case | caseless",
@@ -3751,7 +3749,7 @@ The first parameter is used to indicate the matching method of the string (case-
 
 For data of non-string type, compare after stringifying.
 
-**abnormal**
+**Exception**
 
 This method may generate the following exceptions:
 
@@ -3759,18 +3757,18 @@ This method may generate the following exceptions:
 - `WrongDataType`: Wrong parameter type. Can be ignored; when evaluated silently, `undefined` is returned.
 - `InvalidValue`: Incorrect parameter. Can be ignored; when evaluated silently, `undefined` is returned.
 
-**example**
+**Example**
 
 ```
 $L.strgt("case", 'A', 'Z')
      // boolean: false
 ```
 
-#### 3.8.14) `strge` method
+#### 3.8.14) `strge` Method
 
 Compare whether the string form of the first data is greater than or equal to the string form of the second data.
 
-**describe**
+**Description**
 
 ```js
 $L.strge("case | caseless",
@@ -3785,7 +3783,7 @@ The first parameter is used to indicate the matching method of the string (case-
 
 For data of non-string type, compare after stringifying.
 
-**abnormal**
+**Exception**
 
 This method may generate the following exceptions:
 
@@ -3793,7 +3791,7 @@ This method may generate the following exceptions:
 - `WrongDataType`: Wrong parameter type. Can be ignored; when evaluated silently, `undefined` is returned.
 - `InvalidValue`: Incorrect parameter. Can be ignored; when evaluated silently, `undefined` is returned.
 
-**example**
+**Example**
 
 ```js
 $L.strge("case", 'A', 'A')
@@ -3801,11 +3799,11 @@ $L.strge("case", 'A', 'A')
 ```
 
 
-#### 3.8.15) `strlt` method
+#### 3.8.15) `strlt` Method
 
 Compare whether the string form of the first data is smaller than the string form of the second data.
 
-**describe**
+**Description**
 
 ```js
 $L.strlt("case | caseless",
@@ -3820,7 +3818,7 @@ The first parameter is used to indicate the matching method of the string (case-
 
 For data of non-string type, compare after stringifying.
 
-**abnormal**
+**Exception**
 
 This method may generate the following exceptions:
 
@@ -3828,18 +3826,18 @@ This method may generate the following exceptions:
 - `WrongDataType`: Wrong parameter type. Can be ignored; when evaluated silently, `undefined` is returned.
 - `InvalidValue`: Incorrect parameter. Can be ignored; when evaluated silently, `undefined` is returned.
 
-**example**
+**Example**
 
 ```js
 $L.strlt("case", 'A', 'Z')
      // boolean: true
 ```
 
-#### 3.8.16) `strle` method
+#### 3.8.16) `strle` Method
 
 Compare whether the string form of the first data is less than or equal to the string form of the second data.
 
-**describe**
+**Description**
 
 ```js
 $L.strle("case | caseless",
@@ -3854,7 +3852,7 @@ The first parameter is used to indicate the matching method of the string (case-
 
 For data of non-string type, compare after stringifying.
 
-**abnormal**
+**Exception**
 
 This method may generate the following exceptions:
 
@@ -3862,18 +3860,18 @@ This method may generate the following exceptions:
 - `WrongDataType`: Wrong parameter type. Can be ignored; when evaluated silently, `undefined` is returned.
 - `InvalidValue`: Incorrect parameter. Can be ignored; when evaluated silently, `undefined` is returned.
 
-**example**
+**Example**
 
 ```js
 $L.strle("case", 'A', 'Z')
      // boolean: true
 ```
 
-#### 3.8.17) `eval` method
+#### 3.8.17) `eval` Method
 
-Evaluates a parameterized logical operation expression.
+Evaluate a parameterized logical operation expression.
 
-**describe**
+**Description**
 
 ```js
 $L.eval(
@@ -3884,7 +3882,7 @@ $L.eval(
 
 This method evaluates a parameterized logical operation expression and returns `true` or `false`.
 
-**example**
+**Example**
 
 ```js
 $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) })
@@ -3895,9 +3893,9 @@ $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) }
 
 This variable is a coroutine-level built-in variable, mainly used for localization substitution of text.
 
-- `get`: a dynamic method that returns the replacement string.
+- `get`: A dynamic method that returns the replacement string.
 
-#### 3.9.1) `map` static property
+#### 3.9.1) `map` Static Property
 
 `map` is a static attribute of `T`, which is used to define the string mapping table, and is initially an empty object. Programs can set their content using the `update` element:
 
@@ -3924,7 +3922,7 @@ This variable is a coroutine-level built-in variable, mainly used for localizati
 
 #### 3.9.2) `get` method
 
-**describe**
+**Description**
 
 ```js
 $T.get(
@@ -3934,12 +3932,12 @@ $T.get(
 
 This method returns the translated text based on the original text. If there is no matching text in `$T.map`, the original text itself is returned.
 
-**abnormal**
+**Exception**
 
 - `ArgumentMissed`: A required argument is missing; the exception can be ignored, and an empty string is returned for silent evaluation.
 - `WrongDataType`: Wrong argument type; exception can be ignored, empty string is returned for silent evaluation.
 
-**example**
+**Example**
 
 ```js
 $T.get('Hello, world!')
@@ -3956,11 +3954,11 @@ In the process of calling `STR` dynamic object method, the following exceptions 
 - `WrongDataType`: Wrong parameter type.
 - `BadEncoding`: Bad encoding.
 
-#### 3.10.1) `contains` method
+#### 3.10.1) `contains` Method
 
-Determines whether a given substring is contained in a string.
+Determine whether a given substring is contained in a string.
 
-**describe**
+**Description**
 
 ```js
 $STR. contains(
@@ -3975,25 +3973,25 @@ $STR. contains(
 
 To determine whether the string `haystack` contains the string `needle`, execute
 
-**abnormal**
+**Exception**
 
 - `ArgumentMissed`: Exceptions can be ignored; return `false` for silent evaluation.
 - `WrongDataType`: Exceptions can be ignored; return `false` when evaluated silently.
 
-**parameter**
+**Parameter**
 
 - `haystack`
 The string to be searched for.
 - `needle`
 The substring to search for.
 - `case_insensitivity`
-Specifies whether to ignore case (optional); default is to ignore case.
+Specify whether to ignore case (optional); default is to ignore case.
 
-**return value**
+**Return Value**
 
-Returns `true` if `needle` is in `haystack`, otherwise returns `false`.
+Return `true` if `needle` is in `haystack`, otherwise return `false`.
 
-**example**
+**Example**
 
 ```js
 $STR. contains('Hello, world!', 'world')
@@ -4003,15 +4001,15 @@ $STR. contains('Hello, world!', '')
      // boolean: true
 ```
 
-**see**
+**Reference**
 
 - PHP `str_contains()` function: <https://www.php.net/manual/en/function.str-contains.php>
 
-#### 3.10.2) `starts_with` method
+#### 3.10.2) `starts_with` Method
 
 Used to determine whether a string starts with a given string.
 
-**describe**
+**Description**
 
 ```js
 $STR.starts_with(
@@ -4026,7 +4024,7 @@ $STR.starts_with(
 
 Check if the string `haystack` starts with the substring `needle`.
 
-**parameter**
+**Parameter**
 
 - `haystack`
 The string to be searched for.
@@ -4035,16 +4033,16 @@ The substring to search for.
 - `case_insensitivity`
 Specifies whether to ignore case (optional); default is to ignore case.
 
-**return value**
+**Return Value**
 
-Returns `true` if `haystack` starts with `needle`, otherwise returns `false`.
+Return `true` if `haystack` starts with `needle`, otherwise return `false`.
 
-**abnormal**
+**Exception**
 
 - `ArgumentMissed`: Exceptions can be ignored; return `false` for silent evaluation.
 - `WrongDataType`: Exceptions can be ignored; return `false` when evaluated silently.
 
-**example**
+**Example**
 
 ```js
 $STR.starts_with('Hello, world', 'hello', true)
@@ -4054,11 +4052,11 @@ $STR.starts_with('Hello, world', '')
      // boolean: true
 ```
 
-**see**
+**Reference**
 
 - PHP `str_starts_with()` function: <https://www.php.net/manual/en/function.str-starts-with.php>
 
-#### 3.10.3) `ends_with` method
+#### 3.10.3) `ends_with` Method
 
 Used to determine whether a string ends with a given string.
 
@@ -4075,23 +4073,23 @@ $STR.ends_with(
 
 Check if the string `haystack` ends with the substring `needle`.
 
-**parameter**
+**Parameter**
 
 - `haystack`
 The string to be searched for.
 - `needle`
 The substring to search for.
 - `case_insensitivity`
-Specifies whether to ignore case (optional); default is to ignore case.
+Specify whether to ignore case (optional); default is to ignore case.
 
-**return value**
+**Return Value**
 
-Returns `true` if `haystack` ends with `needle`, otherwise returns `false`.
+Return `true` if `haystack` ends with `needle`, otherwise return `false`.
 
 - `ArgumentMissed`: Exceptions can be ignored; return `false` for silent evaluation.
 - `WrongDataType`: Exceptions can be ignored; return `false` when evaluated silently.
 
-**example**
+**Example**
 
 ```js
 $STR.ends_with('Hello, world', 'World', true)
@@ -4101,15 +4099,15 @@ $STR.ends_with('Hello, world', '')
      // boolean: true
 ```
 
-**see**
+**Reference**
 
 - PHP `str_ends_with()` function: <https://www.php.net/manual/en/function.str-ends-with.php>
 
-#### 3.10.4) `explode` method
+#### 3.10.4) `explode` Method
 
-Splits a string using the specified substring.
+Split a string using the specified substring.
 
-**describe**
+**Description**
 
 ```js
 $STR.explode(
@@ -4122,7 +4120,7 @@ $STR.explode(
 
 This function returns an array of strings, each element is a substring of `string`, and they are separated by the string `separator` as boundary points.
 
-**parameter**
+**Parameter**
 
 - `string`
 Enter a string.
@@ -4133,18 +4131,18 @@ Delimited strings. When `separator` is empty, the input string is separated by c
     If the `limit` argument is negative, all but the last `-limit` elements are returned.
     If `limit` is 0, it means unlimited.
 
-**return value**
+**Return Value**
 
 This function returns an array of strings, each member of which is a substring of `string` separated by the string `separator` as boundary points.
 
 If `separator` is an empty string, the input string will be character-separated. If `separator` contains a value not found in `string`, and a negative `limit` is used, then an empty array is returned, otherwise an array containing only a single member of `string` is returned. If `separator` appears at the beginning or end of `string`, an empty string (`""`) will be added as a boundary value at the beginning or end of the returned array.
 
-**abnormal**
+**Exception**
 
 - `ArgumentMissed`: Exceptions can be ignored; return an empty array when silently evaluated.
 - `WrongDataType`: Exceptions can be ignored; return an empty array when evaluated silently.
 
-**example**
+**Example**
 
 ```js
 $STR.explode('beijing:shanghai:guangzhou', ':')
@@ -4160,15 +4158,15 @@ $STR.explode('People's Republic of China', '', 2)
      // array: ['中', 'Hua']
 ```
 
-**see**
+**Reference**
 
 - PHP `explode()` function: <https://www.php.net/manual/en/function.explode.php>
 
-#### 3.10.5) `implode` method
+#### 3.10.5) `implode` Method
 
-Concatenates the members of an array into a new string. Concatenates the strings in the string array using the specified string.
+Concatenate the members of an array into a new string. Concatenate the strings in the string array using the specified string.
 
-**describe**
+**Description**
 
 ```js
 $STR.implode(
@@ -4179,23 +4177,23 @@ $STR.implode(
 
 Use `separator` to stringify the members of the array `pieces` and concatenate them into a new string.
 
-**parameter**
+**Parameter**
 
 - `pieces`
 Array; if a member of the array is not a string, stringify it first.
 - `seperator`
 Delimiter string; if not passed, it is treated as an empty string
 
-**return value**
+**Return Value**
 
-Returns the new string after concatenation. Returns an empty string if the array is empty. If `separator` is an empty string, this method directly concatenates each string in the array without a separator between each string.
+Return the new string after concatenation. Return an empty string if the array is empty. If `separator` is an empty string, this method directly concatenates each string in the array without a separator between each string.
 
-**abnormal**
+**Exception**
 
 - `ArgumentMissed`: The exception can be ignored; returns an empty string when evaluated silently.
 - `WrongDataType`: Exceptions can be ignored; return an empty string when evaluated silently.
 
-**example**
+**Example**
 
 ```js
 $STR.implode(['beijing', 'shanghai', 'guangzhou'], ', ')
@@ -4211,7 +4209,7 @@ $STR.implode(['Chinese', 'word'])
      // string: 'Chinese characters'
 ```
 
-**see**
+**Reference**
 
 - PHP `implode()` function: <https://www.php.net/manual/en/function.implode.php>
 
@@ -4219,7 +4217,7 @@ $STR.implode(['Chinese', 'word'])
 
 Shuffle a string randomly.
 
-**describe**
+**Description**
 
 ```js
 $STR.shuffle(
@@ -4229,35 +4227,35 @@ $STR.shuffle(
 
 This function returns a new random permutation string based on the input string `string`.
 
-**parameter**
+**Parameter**
 
 - `string`
 input string
 
-**return value**
+**Return Value**
 
 This function returns a new string after random permutation.
 
-**abnormal**
+**Exception**
 
 - `ArgumentMissed`: The exception can be ignored; returns an empty string when evaluated silently.
 - `WrongDataType`: Exceptions can be ignored; return an empty string when evaluated silently.
 
-**example**
+**Example**
 
 ```js
 $STR.shuffle('beijing') // string: 'jbienig'
 ```
 
-**see**
+**Reference**
 
 - PHP `str_shuffle()` function: <https://www.php.net/manual/en/function.str-shuffle.php>
 
-#### 3.10.7) `replace` method
+#### 3.10.7) `replace` Method
 
 Substring replacement.
 
-**describe**
+**Description**
 
 ```js
 $STR.replace(
@@ -4273,7 +4271,7 @@ $STR.replace(
 
 This function returns a string or an array that is the result of replacing all occurrences of `search` in `subject` with `replace`.
 
-**parameter**
+**Parameter**
 
 If `search` and `replace` are arrays, then the function will perform a mapping replacement of the two on `subject`. If the number of values in `replace` is less than the number of `search`, redundant replacements will be made with empty strings. If `search` is an array and `replace` is a string, then the replacement of each element in `search` will always use this string. This substitution does not change case.
 
@@ -4286,18 +4284,18 @@ Replacement value for `search`. An array can be used to specify multiple replace
 - `subject`
 An array or string to perform substitutions, also known as `haystack`. If `subject` is an array, the replacement operation will iterate over the entire `subject`, and the return value will also be an array.
 - `case_insensitivity`
-Specifies whether to ignore case (optional); default is to ignore case.
+Specify whether to ignore case (optional); default is to ignore case.
 
-**return value**
+**Return Value**
 
 This function returns the replaced array or string.
 
-**abnormal**
+**Exception**
 
 - `ArgumentMissed`: Exceptions can be ignored; return empty string or empty array when silently evaluated.
 - `WrongDataType`: Exceptions can be ignored; return empty string or empty array when silently evaluated.
 
-**example**
+**Example**
 
 ```js
 $STR.replace("%BODY%", "black", "<body text=%BODY%>");
@@ -4307,16 +4305,16 @@ $STR.replace("%body%", "black", "<body text=%BODY%>", true);
      // string: '<body text=black>'
 ```
 
-**see**
+**Reference**
 
 - PHP `str_replace()` function: <https://www.php.net/manual/en/function.str-replace.php>
 - PHP `str_ireplace()` function: <https://www.php.net/manual/en/function.str-ireplace.php>
 
-#### 3.10.8) `format_c` method
+#### 3.10.8) `format_c` Method
 
 Format numeric and string data, format strings use C language-like modifiers (specifiers).
 
-**describe**
+**Description**
 
 ```js
 $STR.format_c(
@@ -4338,7 +4336,7 @@ $STR.format_c(
 
 This method formats the data in the passed array using the specified C format string.
 
-**example**
+**Example**
 
 ```js
 $STR.format_c('Tom is %d years old, while Jerry is %d years old.', 9, 7)
@@ -4348,13 +4346,13 @@ $STR.format_c('Tom is %d years old, while Jerry is %d years old.', [9, 7])
      // string: 'Tom is 9 years old, while Jerry is 7 years old.'
 ```
 
-**see**
+**Reference**
 
 - PHP `sprintf()` function: <https://www.php.net/manual/en/function.sprintf.php>
 
 #### 3.10.9) `scan_c` method
 
-Parses the specified string according to the given format, which uses C-like specifiers.
+Parse the specified string according to the given format, which uses C-like specifier.
 
 ```js
 $STR. scanf(
@@ -4363,7 +4361,7 @@ $STR. scanf(
 ) array
 ```
 
-**example**
+**Example**
 
 ```js
 $STR.scan_c('Tom is 9 years old, while Jerry is 7 years old.',
@@ -4371,11 +4369,11 @@ $STR.scan_c('Tom is 9 years old, while Jerry is 7 years old.',
      // array: [9L, 7L]
 ```
 
-**see**
+**Reference**
 
 - PHP `sscanf()` function: <https://www.php.net/manual/en/function.sscanf.php>
 
-#### 3.10.10) `format_p` method
+#### 3.10.10) `format_p` Method
 
 Format arbitrary data using placeholders, or serialized strings for non-string data.
 
@@ -4394,7 +4392,7 @@ When multiple parameters are used to express the data to be formatted, the place
 
 A preceding `\` symbol indicates escape.
 
-**example**
+**Example**
 
 ```js
 $STR.format_p('There are two boys: [0] and [1]', ['Tom', 'Jerry'])
@@ -4407,9 +4405,9 @@ $STR.format_p('There are two boys: #0 and #1', 'Tom', 'Jerry')
      // string: There are two boys: "Tom" and "Jerry"'
 ```
 
-#### 3.10.11) `scan_p` method
+#### 3.10.11) `scan_p` Method
 
-Parses the specified string according to the given format, using placeholders for the format string.
+Parse the specified string according to the given format, using placeholders for the format string.
 
 ```js
 $STR.scan_p(
@@ -4420,13 +4418,13 @@ $STR.scan_p(
 
 To return an array, the placeholders are represented by `[0]`, `[1]`, etc.
 
-To return an object, placeholders are represented with `{name}`, `{id}`, etc.
+To return an object, the placeholders are represented by `{name}`, `{id}`, etc.
 
-To return a single piece of data, placeholders are represented with `#?`.
+To return a single piece of data, the placeholders are represented by  `#?`.
 
 A preceding `\` symbol indicates escape.
 
-**example**
+**Example**
 
 ```js
 $STR.scan_p('There are two boys: "Tom" and "Jerry"',
@@ -4441,11 +4439,11 @@ $STR.scan_p('My name is "Tom"', 'My name is #?')
      // string: 'Tom'
 ```
 
-#### 3.10.12) `join` method
+#### 3.10.12) `join` Method
 
 Used to concatenate two or more strings.
 
-**describe**
+**Description**
 
 ```js
 $STR.join(
@@ -4459,7 +4457,7 @@ $STR.join(
 
 All parameters (at least two) are stringified and concatenated into a new string.
 
-**parameter**
+**Parameter**
 
 - `data1`
 The first data.
@@ -4468,11 +4466,11 @@ The second item of data.
 - `data3`
 third data.
 
-**return value**
+**Return Value**
 
 Strings concatenated in sequence.
 
-**example**
+**Example**
 
 ```js
 $STR. join('hello', ' ', 'world')
@@ -4482,11 +4480,11 @@ $STR. join(1, ', ', 2, ', ', 3)
      // string: '1, 2, 3'
 ```
 
-#### 3.10.13) `nr_bytes` method
+#### 3.10.13) `nr_bytes` Method
 
-Returns the length in bytes of a string or sequence of bytes.
+Return the length in bytes of a string or sequence of bytes.
 
-**describe**
+**Description**
 
 ```js
 $STR.nr_bytes(
@@ -4496,11 +4494,11 @@ $STR.nr_bytes(
 
 This method returns the length of a string or byte sequence measured in bytes, and the return value is of type `ulongint`. Note that for strings, the return value of this function always includes the null character used to terminate the string.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $STR.nr_bytes( "" )
@@ -4513,11 +4511,11 @@ $STR.nr_bytes( bb )
      // ulongint: 0
 ```
 
-#### 3.10.14) `nr_chars` method
+#### 3.10.14) `nr_chars` Method
 
-Gets the number of characters in a string.
+Get the number of characters in a string.
 
-**describe**
+**Description**
 
 ```js
 $STR.nr_chars(
@@ -4527,21 +4525,21 @@ $STR.nr_chars(
 
 Get the number of characters in the string `string`.
 
-**parameter**
+**Parameter**
 
 - `string`
 Enter a string.
 
-**return value**
+**Return Value**
 
 The return value is of `ulongint` type, representing the number of characters.
 
-**abnormal**
+**Exception**
 
 - `ArgumentMissed`: Exceptions can be ignored; return `false` for silent evaluation.
 - `WrongDataType`: Exceptions can be ignored; return `false` when evaluated silently.
 
-**example**
+**Example**
 
 ```js
 // Get the length of the string `China`
@@ -4549,13 +4547,13 @@ $STR.nr_chars('China')
      // ulongint: 2
 ```
 
-**see**
+**Reference**
 
-#### 3.10.15) `tolower` method
+#### 3.10.15) `tolower` Method
 
 Convert a string to lowercase.
 
-**describe**
+**Description**
 
 ```js
 $STR.tolower(
@@ -4563,33 +4561,33 @@ $STR.tolower(
 ) string
 ```
 
-Converts all characters in the string `string` to lowercase and returns the converted string.
+Convert all characters in the string `string` to lowercase and returns the converted string.
 
-**parameter**
+**Parameter**
 
 - `string`
 Enter a string.
 
-**return value**
+**Return Value**
 
 Convert to lowercase string.
 
-**example**
+**Example**
 
 ```js
 $STR.tolower('Hello, world')
      // string: 'hello, world'
 ```
 
-**see**
+**Reference**
 
 - PHP `strtolower()` function: <https://www.php.net/manual/en/function.strtolower.php>
 
-#### 3.10.16) `toupper` method
+#### 3.10.16) `toupper` Method
 
 Convert a string to uppercase.
 
-**describe**
+**Description**
 
 ```js
 $STR.toupper(
@@ -4597,33 +4595,33 @@ $STR.toupper(
 ) string
 ```
 
-Converts all characters in the string `string` to uppercase and returns the converted string.
+Convert all characters in the string `string` to uppercase and returns the converted string.
 
-**parameter**
+**Parameter**
 
 - `string`
 Enter a string.
 
-**return value**
+**Return Value**
 
 Convert to uppercase string.
 
-**example**
+**Example**
 
 ```js
 $STR.toupper('Hello, world')
      // string: 'HELLO, WORLD'
 ```
 
-**see**
+**Reference**
 
 - PHP `strtoupper()` function: <https://www.php.net/manual/en/function.strtoupper.php>
 
-#### 3.10.17) `substr` method
+#### 3.10.17) `substr` Method
 
-Returns a substring of a string.
+Return a substring of a string.
 
-**describe**
+**Description**
 
 ```js
 $STR.substr(
@@ -4633,27 +4631,27 @@ $STR.substr(
 ) string
 ```
 
-Returns the substring of the string `string` specified by the `offset` and `length` parameters.
+Return the substring of the string `string` specified by the `offset` and `length` parameters.
 
-**parameter**
+**Parameter**
 
 - `string`
 Enter a string.
 - `offset`
-    - non-negative value: the returned string will start at `offset` of the string `s`, counting from `0`;
-    - Negative value: the returned string will start at `offset` characters from the end of the string `s`;
+    - non-negative value: The returned string will start at `offset` of the string `s`, counting from `0`;
+    - Negative value: The returned string will start at `offset` characters from the end of the string `s`;
     - the length of the string `s` is less than `offset`, an empty string will be returned;
 - `length`
-    - 0: returns an empty string;
-    - Positive value: the returned string will start at `offset` and contain at most `length` characters (depending on the length of `s`);
-    - Negative value: `length` characters at the end of the string `s` will be omitted;
+    - 0: Return an empty string;
+    - Positive value: The returned string will start at `offset` and contain at most `length` characters (depending on the length of `s`);
+    - Negative value: `length` character at the end of the string `s` will be omitted;
     - If this parameter is not provided, the returned string starts from `offset` to the end of the string `s`.
 
-**return value**
+**Return Value**
 
-Returns the part extracted from `string` or an empty string.
+Return the part extracted from `string` or an empty string.
 
-**example**
+**Example**
 
 ```js
 // Returns a substring of the string `abcdef` starting at character `0` and containing at most `10` characters
@@ -4673,15 +4671,15 @@ $STR.substr('abcdef', -3, -1)
      // string: 'de'
 ```
 
-**see**
+**Reference**
 
 - PHP `substr()` function: <https://www.php.net/manual/en/function.substr.php>
 
-#### 3.10.18) `substr_compare` method
+#### 3.10.18) `substr_compare` Method
 
-Compare substrings (comparing specified lengths starting at specified offsets).
+Compare substrings (comparing specified lengths starting at specified offset).
 
-**describe**
+**Description**
 
 ```js
 $STR.substr_compare(
@@ -4698,13 +4696,13 @@ $STR.substr_compare(
 ) number
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `substr_compare()` function: <https://www.php.net/manual/en/function.substr-compare.php>
 
@@ -4712,7 +4710,7 @@ $STR.substr_compare(
 
 Count the number of occurrences of a substring.
 
-**describe**
+**Description**
 
 ```js
 $STR.substr_count(
@@ -4725,21 +4723,21 @@ $STR.substr_count(
 ) ulongint
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `substr_count()` function: <https://www.php.net/manual/en/function.substr-count.php>
 
-#### 3.10.20) `substr_replace` method
+#### 3.10.20) `substr_replace` Method
 
 Do substitutions in substrings.
 
-**describe**
+**Description**
 
 ```js
 $STR.substr_replace(
@@ -4752,21 +4750,21 @@ $STR.substr_replace(
 ) string|array
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `substr_replace()` function: <https://www.php.net/manual/en/function.substr-replace.php>
 
-#### 3.10.21) `strstr` method
+#### 3.10.21) `strstr` Method
 
-Returns the substring in the target string that starts or ends with the specified string.
+Return the substring in the target string that starts or ends with the specified string.
 
-**describe**
+**Description**
 
 ```js
 $STR.strstr(
@@ -4781,22 +4779,22 @@ $STR.strstr(
 ) string | false
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `strstr()` function: <https://www.php.net/manual/en/function.strstr.php>
 - PHP `stristr()` function: <https://www.php.net/manual/en/function.stristr.php>
 
-#### 3.10.22) `strpos` method
+#### 3.10.22) `strpos` Method
 
-Returns the position of the first or last occurrence of the specified string within the target string.
+Return the position of the first or last occurrence of the specified string within the target string.
 
-**describe**
+**Description**
 
 ```js
 $STR.strpos(
@@ -4811,22 +4809,22 @@ $STR.strpos(
 ) ulongint | false
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `strpos()` function: <https://www.php.net/manual/en/function.strpos.php>
 - PHP `stripos()` function: <https://www.php.net/manual/en/function.stripos.php>
 
-#### 3.10.23) `strpbrk` method
+#### 3.10.23) `strpbrk` Method
 
-Finds a substring in the target string that begins or ends with any character in a set of characters.
+Find a substring in the target string that begins or ends with any character in a set of characters.
 
-**describe**
+**Description**
 
 ```js
 $STR.strpbrk(
@@ -4839,21 +4837,21 @@ $STR.strpbrk(
 ) string | false
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `strpbrk()` function: <https://www.php.net/manual/en/function.strpbrk.php>
 
-#### 3.10.24) `split` method
+#### 3.10.24) `split` Method
 
 Split a string into an array of substrings of a given length.
 
-**describe**
+**Description**
 
 ```js
 $STR. split(
@@ -4862,13 +4860,13 @@ $STR. split(
 ) array
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `str_split()` function: <https://www.php.net/manual/en/function.str-split.php>
 
@@ -4876,7 +4874,7 @@ $STR. split(
 
 Split the string by the given small block length and delimiter to generate a new string.
 
-**describe**
+**Description**
 
 ```js
 $STR.chunk_split(
@@ -4890,21 +4888,21 @@ $STR.chunk_split(
 ) string
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `chunk_split()` function: <https://www.php.net/manual/en/function.chunk-split.php>
 
-#### 3.10.26) `trim` method
+#### 3.10.26) `trim` Method
 
 Remove whitespace (or other characters) at the beginning, end, or both of a string.
 
-**describe**
+**Description**
 
 ```js
 $STR.trim(
@@ -4915,23 +4913,23 @@ $STR.trim(
 ) string
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `trim()` function: <https://www.php.net/manual/en/function.trim.php>
 - PHP `ltrim()` function: <https://www.php.net/manual/en/function.ltrim.php>
 - PHP `rtrim()` function: <https://www.php.net/manual/en/function.rtrim.php>
 
-#### 3.10.27) `pad` method
+#### 3.10.27) `pad` Method
 
-Pads a string to the specified length with another string.
+Pad a string to the specified length with another string.
 
-**describe**
+**Description**
 
 ```js
 $STR.pad(
@@ -4943,21 +4941,21 @@ $STR.pad(
 ) string
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `str_pad()` function: <https://www.php.net/manual/en/function.str-pad.php>
 
-#### 3.10.28) `repeat` method
+#### 3.10.28) `repeat` Method
 
 Repeat a string.
 
-**describe**
+**Description**
 
 ```js
 $STR.repeat(
@@ -4966,13 +4964,13 @@ $STR.repeat(
 ) string
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `str_repeat()` function: <https://www.php.net/manual/en/function.str-repeat.php>
 
@@ -4980,7 +4978,7 @@ $STR.repeat(
 
 Reverse a string.
 
-**describe**
+**Description*
 
 ```js
 $STR.reverse(
@@ -4988,21 +4986,20 @@ $STR.reverse(
 ) string
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
+**Example**
 
-**example**
-
-**see**
+**Reference**
 
 - PHP `strrev()` function: <https://www.php.net/manual/en/function.strrev.php>
 
-#### 3.10.30) `tokenize` method
+#### 3.10.30) `tokenize` Method
 
-Splits the string using the given token delimiter, returning an array of delimited tokens.
+Split the string using the given token delimiter, returning an array of delimited tokens.
 
-**describe**
+**Description**
 
 ```
 $STR.tokenize(
@@ -5011,21 +5008,21 @@ $STR.tokenize(
 ) array
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `strtok()` function: <https://www.php.net/manual/en/function.strtok.php>
 
-#### 3.10.31) `translate` method
+#### 3.10.31) `translate` Method
 
 Convert the specified substring.
 
-**describe**
+**Description**
 
 ```js
 $STR.translate(
@@ -5040,21 +5037,21 @@ $STR.translate(
 ) string
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `strtr()` function: <https://www.php.net/manual/en/function.strtr.php>
 
-#### 3.10.32) `htmlentities_encode` method
+#### 3.10.32) `htmlentities_encode` Method
 
 Convert characters to HTML entities.
 
-**describe**
+**Description**
 
 ```js
 $STR.htmlentities_encode(
@@ -5082,13 +5079,13 @@ $STR.htmlentities_encode(
 ) string
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `htmlentities()` function: <https://www.php.net/manual/en/function.htmlentities.php>
 - PHP `htmlspecialchars()` function: <https://www.php.net/manual/en/function.htmlspecialchars.php>
@@ -5097,7 +5094,7 @@ $STR.htmlentities_encode(
 
 Convert HTML entities to their corresponding characters.
 
-**describe**
+**Description**
 
 ```js
 $STR.htmlentities_decode(
@@ -5118,22 +5115,22 @@ $STR.htmlentities_decode(
 ) string | bsequence
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `htmlentities()` function: <https://www.php.net/manual/en/function.html-entity-decode.php>
 - PHP `htmlspecialchars_decode()` function: <https://www.php.net/manual/en/function.htmlspecialchars-decode.php>
 
-#### 3.10.34) `nl2br` method
+#### 3.10.34) `nl2br` Method
 
-Inserts HTML newline tags before all newline characters in the string.
+Insert HTML newline tags before all newline characters in the string.
 
-**describe**
+**Description**
 
 ```js
 $STR.nl2br(
@@ -5151,21 +5148,21 @@ $STR.nl2br(
 
 
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `nl2br()` function: <https://www.php.net/manual/en/function.nl2br.php>
 
-#### 3.10.35) `rot13` method
+#### 3.10.35) `rot13` Method
 
-Performs a ROT13 conversion on a string.
+Perform a ROT13 conversion on a string.
 
-**describe**
+**Description**
 
 ```js
 $STR.rot13(
@@ -5175,21 +5172,21 @@ $STR.rot13(
 
 
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `rot13()` function: <https://www.php.net/manual/en/function.rot13.php>
 
 #### 3.10.36) `count_chars` method
 
-Counts the number of occurrences of a character in a string.
+Count the number of occurrences of a character in a string.
 
-**describe**
+**Description**
 
 ```js
 $STR.count_chars(
@@ -5203,21 +5200,21 @@ $STR.count_chars(
 
 
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `count_chars()` function: <https://www.php.net/manual/en/function.count-chars.php>
 
-#### 3.10.37) `count_bytes` method
+#### 3.10.37) `count_bytes` Method
 
-Counts the number of occurrences of each byte (0...255) in a string or binary endianness.
+Count the number of occurrences of each byte (0...255) in a string or binary endianness.
 
-**describe**
+**Description**
 
 ```js
 $STR.count_bytes(
@@ -5235,23 +5232,23 @@ $STR.count_bytes(
 
 
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `count_chars()` function: <https://www.php.net/manual/en/function.count-chars.php>
 
 ### 3.11) `URL`
 
-#### 3.11.1) `encode` method
+#### 3.11.1) `encode` Method
 
-Encodes a URL string.
+Encode a URL string.
 
-**describe**
+**Description**
 
 ```js
 $URL.encode(
@@ -5269,7 +5266,7 @@ URL encoding processes characters in a string or byte sequence in bytes and igno
 
 This method returns a string.
 
-**abnormal**
+**Exception**
 
 This method may generate the following exceptions:
 
@@ -5277,8 +5274,7 @@ This method may generate the following exceptions:
 - `ArgumentMissed`: No required argument specified; exception can be ignored, empty string is returned when silently evaluated.
 - `WrongDataType`: Data that is not a string type or a byte sequence type is passed in; the exception can be ignored, and an empty string is returned during silent evaluation.
 
-**example**
-
+**Example**
 ```js
 $URL.encode('HVML: The world's first programmable markup language!')
      // string: 'HVML%3A+%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B %E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21'
@@ -5287,7 +5283,7 @@ $URL.rawencode('HVML: The world's first programmable markup language!', 'rfc3986
      // string: 'HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8 %8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21'
 ```
 
-**see**
+**Reference**
 
 - [`$DATA.decode` method](#3102-decode-method)
 - [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
@@ -5297,9 +5293,9 @@ $URL.rawencode('HVML: The world's first programmable markup language!', 'rfc3986
 
 #### 3.11.2) `decode` method
 
-Decodes a URL-encoded string.
+Decode a URL-encoded string.
 
-**describe**
+**Description**
 
 ```js
 $URL.decode(
@@ -5319,7 +5315,7 @@ This method decodes a URL-encoded string into a string or sequence of bytes.
 
 URL encoding processes characters in a string or byte sequence in bytes and ignores the original encoding form of the string or byte sequence (such as UTF-8 or GB18030), except for `-_.`, all Non-alphanumeric characters are replaced with a percent sign (%) followed by two hexadecimal digits. For historical reasons, this encoding has two forms. When encoded using RFC 1738 and the 'application/x-www-form-urlencoded' media type, spaces are encoded as plus signs (+), in the same way that forms in web pages are encoded using the `POST` method. With RFC 3986, spaces are encoded as `%20`.
 
-**abnormal**
+**Exception**
 
 This method may generate the following exceptions:
 
@@ -5328,7 +5324,7 @@ This method may generate the following exceptions:
 - `WrongDataType`: Data that is not a string type is passed in; the exception can be ignored, and an empty string or empty byte sequence is returned during silent evaluation.
 - `BadEncoding`: Generated when `$type` is `string`, indicating that the decoded data is not a legal UTF-8 encoded character; the exception can be ignored, and the decoded string will be returned during silent evaluation.
 
-**example**
+**Example**
 
 ```js
 $URL.decode('HVML%3A+%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8% 8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21')
@@ -5338,7 +5334,7 @@ $URL.decode('HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7
      // string: 'HVML: The world's first programmable markup language!'
 ```
 
-**see**
+**Reference**
 
 - [`$DATA.encode` method](#3101-encode-method)
 - [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
@@ -5346,11 +5342,11 @@ $URL.decode('HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7
 - PHP `urldecode()` function: <https://www.php.net/manual/en/function.urldecode.php>
 - PHP `rawurldecode()` function: <https://www.php.net/manual/en/function.rawurldecode.php>
 
-#### 3.11.3) `build_query` method
+#### 3.11.3) `build_query` Method
 
-Generates a URL-encoded query string.
+Generate a URL-encoded query string.
 
-**describe**
+**Description**
 
 ```js
 $URL.build_query(
@@ -5380,21 +5376,21 @@ When the parameter is container data, a processing method similar to the PHP `ht
 
 In addition, we can specify how to process real number data through `$opts`, and we can also specify the encoding method through this parameter.
 
-**abnormal**
+**Exception**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
 - [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
 - PHP `http_build_query()` function: <https://www.php.net/manual/en/function.http-build-query.php>
 
-#### 3.11.4) `parse_query` method
+#### 3.11.4) `parse_query` Method
 
 Parse a URL-encoded query string.
 
-**describe**
+**Description**
 
 ```js
 $URL.parse_query(
@@ -5415,22 +5411,22 @@ $URL.parse_query(
 
 This method parses a URL query part string and constructs an array or object using the parameters in the string.
 
-**abnormal**
+**Exception**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
 - [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
 - PHP `http_build_query()` function: <https://www.php.net/manual/en/function.http-build-query.php>
 
-#### 3.11.5) `parse` method
+#### 3.11.5) `parse` Method
 
-Parses a URL, returning its components.
+Parse a URL, returning its components.
 
 
-**describe**
+**Description**
 
 ```js
 $URL. parse(
@@ -5442,22 +5438,22 @@ $URL. parse(
 ```
 
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `parse_url()` function: <https://www.php.net/manual/en/function.parse-url.php>
 
-#### 3.11.6) `assemble` method
+#### 3.11.6) `assemble` Method
 
 Assemble a complete URL from the decomposed URL object.
 
 
-**describe**
+**Description**
 
 ```js
 $URL.assemble(
@@ -5465,13 +5461,13 @@ $URL.assemble(
 ) string
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `parse_url()` function: <https://www.php.net/manual/en/function.parse-url.php>
 
@@ -5501,10 +5497,10 @@ The following HVML code opens a local file and then calls the `readstruct` metho
 
 The native entity returned by the `$STREAM.open` method is called a "stream entity". Stream entities shall provide the following basic interfaces:
 
-- `readbytes` and `writebytes` methods: read and write sequences of bytes.
-- `readstruct` and `writestruct` methods: read and write binary data structures.
-- `readlines` and `writelines` methods: read and write lines of text.
-- `seek`: within a seekable stream repositions the read and write position of the stream.
+- `readbytes` and `writebytes` methods: Read and write sequences of bytes.
+- `readstruct` and `writestruct` methods: Read and write binary data structures.
+- `readlines` and `writelines` methods: Read and write lines of text.
+- `seek`: Within a seekable stream repositions the read and write position of the stream.
 
 For convenience, we provide the following static properties on the `$STREAM` variable:
 
@@ -5530,11 +5526,11 @@ In addition, the `STREAM` variable should use an extensible implementation to pr
      </choose>
 ```
 
-#### 3.12.1) `open` method
+#### 3.12.1) `open` Method
 
-Opens a stream, returning a native entity value representing the stream. This native entity can be observed.
+Open a stream, returning a native entity value representing the stream. This native entity can be observed.
 
-**describe**
+**Description**
 
 ```js
 $STREAM.open(
@@ -5578,7 +5574,7 @@ This method uses a URI to specify the stream location to open and the transport 
 We can specify one or more data filters in the `open` method, and these data filters can play different roles, such as:
 
 - `ssl`: Encrypt and decrypt data using the SSL Secure Sockets Layer protocol, only for `tcp` type names.
-- `tls`: use TLS transport layer security protocol to encrypt and decrypt data, only for `tcp` type names.
+- `tls`: Use TLS transport layer security protocol to encrypt and decrypt data, only for `tcp` type names.
 - `http`: Use the HTTP application layer protocol to process data. This filter will extend the methods provided on the stream entity so that requests can be sent or response headers can be processed through the HTTP protocol.
 - `websocket`: Use the WebSocket application layer protocol to process data, this filter will extend the methods provided on the stream entity, so that message packets can be sent and received through the WebSocket protocol.
 - `hibus`: Use the hiBus data bus protocol to process data. This filter will extend the methods provided on the stream entity, so that you can subscribe to events or initiate remote procedure calls and get results through the hiBus data bus.
@@ -5586,7 +5582,7 @@ We can specify one or more data filters in the `open` method, and these data fil
 
 The interpreter should at least implement support for `file://`, other types and filters can be selected according to the situation. The interpreter can also customize filters, for example, it can provide support for various MIME types, so that bitmap files such as PNG and JPEG can be decoded into objects expressing bitmaps, including the resolution of bitmaps and the number of scan lines The byte order of pixel color values.
 
-**abnormal**
+**Exception**
 
 - `MemoryFailure`: Memory allocation failed; exception cannot be ignored.
 - `ArgumentMissed`: missing required argument; exception can be ignored, and `undefined` is returned when silently evaluated.
@@ -5614,7 +5610,7 @@ The interpreter should at least implement support for `file://`, other types and
 $STREAM.open("file://abc.md", "read write")
 ```
 
-##### 3.12.1.1) The `readstruct` method of stream entities
+##### 3.12.1.1) The `readstruct` Method of Stream Entity
 
 Read a binary structure from the stream and convert to appropriate data.
 
@@ -5627,18 +5623,18 @@ $stream. readstruct(
 This method reads data from the stream entity (`$stream`) according to the specified format. When the format string specified by `$format` contains multiple basic data types, the function returns an array;
 Otherwise return a single data.
 
-**abnormal**
+**Exception**
 
 - `MemoryFailure`: Memory allocation failed; exception cannot be ignored.
 - `ArgumentMissed`: missing required arguments; exceptions can be ignored, silently evaluating returns read data.
 - `WrongDataType`: Incorrect parameter type; exception can be ignored, and the read data will be returned during silent evaluation.
-- `InvalidValue`: invalid data was passed in; exceptions can be ignored, empty arrays are silently evaluated.
-- `NotDesiredEntity`: Indicates that an unexpected entity was passed (the target may be a directory), and silently evaluates to an empty array.
+- `InvalidValue`: Invalid data was passed in; exceptions can be ignored, empty arrays are silently evaluated.
+- `NotDesiredEntity`: Indicate that an unexpected entity was passed (the target may be a directory), and silently evaluate to an empty array.
 - `BrokenPipe`: The other end of the pipe or socket is closed; the exception can be ignored, and an empty array is returned when evaluated silently.
 - `AccessDenied`: The owner of the current walker does not have permission to write data; the exception can be ignored, and an empty array is returned when silently evaluated.
-- `IOFailure`: Input and output errors; exceptions can be ignored, and an empty array is returned when silently evaluated.
+- `IOFailure`: input and output errors; exceptions can be ignored, and an empty array is returned when silently evaluated.
 
-**example**
+**Example**
 
 Assume that the file content is as follows (byte sequence description using eJSON):
 
@@ -5653,7 +5649,7 @@ $stream. readstruct('i16le i32le')
      // array: [10, 10]
 ```
 
-##### 3.12.1.2) The `writestruct` method of stream entities
+##### 3.12.1.2) The `writestruct` Method of Stream Entitity
 
 Write multiple data to the stream according to the specified structure format.
 
@@ -5690,11 +5686,11 @@ This method writes data to the stream in the specified format and returns the nu
 - `InvalidValue`: Invalid data was passed in; exceptions can be ignored, and silent evaluation returns the number of bytes written.
 - `BrokenPipe`: The other end of the pipe or socket has been closed; the exception can be ignored, and the number of bytes actually written is returned when evaluated silently.
 - `AccessDenied`: The owner of the current walker does not have permission to write data; the exception can be ignored, and the number of bytes actually written is returned when silently evaluated.
-- `NoStorageSpace`: Indicates insufficient storage space; the exception can be ignored, and the actual number of bytes written will be returned during silent evaluation.
+- `NoStorageSpace`: Indicate insufficient storage space; the exception can be ignored, and the actual number of bytes written will be returned during silent evaluation.
 - `TooLarge`: The write size exceeds the (file) limit; the exception can be ignored, and the number of bytes actually written is returned when silently evaluated.
 - `IOFailure`: Input and output errors; exceptions can be ignored, and the number of bytes actually written is returned when silently evaluated.
 
-**example**
+**Example**
 
 ```js
 $stream.writestruct("i16le i32le", 10, 10)
@@ -5707,11 +5703,11 @@ $stream.writestruct("i16le:2 i32le", [10, 15], 255)
 // Write to file (hexadecimal): 0x0a 0x00 0x0f 0x00 0xff 0x00 0x00 0x00
 ```
 
-##### 3.12.1.3) The `readlines` method of stream entities
+##### 3.12.1.3) The `readlines` Method of Stream Entity
 
-Reads the given number of lines from the stream, returning a string array.
+Read the given number of lines from the stream, returning a string array.
 
-**describe**
+**Description**
 
 ```js
 $stream. readlines(
@@ -5721,18 +5717,18 @@ $stream. readlines(
 
 This method reads the data by the specified number of rows, and converts it into an array to return, and each member of the array is a row of data.
 
-**abnormal**
+**Exception**
 
 - `MemoryFailure`: Memory allocation failed; exception cannot be ignored.
 - `ArgumentMissed`: missing required argument; exception can be ignored, empty array when evaluated silently.
 - `WrongDataType`: Incorrect parameter type; exception can be ignored, empty array when evaluated silently.
-- `InvalidValue`: invalid data was passed in; exceptions can be ignored, empty arrays are silently evaluated.
-- `NotDesiredEntity`: Indicates that an unexpected entity was passed (the target may be a directory), and silently evaluates to an empty array.
+- `InvalidValue`: Invalid data was passed in; exceptions can be ignored, empty arrays are silently evaluated.
+- `NotDesiredEntity`: Indicate that an unexpected entity was passed (the target may be a directory), and silently evaluates to an empty array.
 - `BrokenPipe`: The other end of the pipe or socket is closed; the exception can be ignored, and an empty array is returned when evaluated silently.
 - `AccessDenied`: The owner of the current walker does not have permission to write data; the exception can be ignored, and an empty array is returned when silently evaluated.
 - `IOFailure`: Input and output errors; exceptions can be ignored, and an empty array is returned when silently evaluated.
 
-**example**
+**Example**
 
 Suppose the file content is as follows:
 
@@ -5748,11 +5744,11 @@ $stream. readlines(10)
      // array: ["This is the string to write", "Second line"]
 ```
 
-##### 3.12.1.4) The `writelines` method of stream entities
+##### 3.12.1.4) The `writelines` Method of Stream Entity
 
 Write a string to the stream.
 
-**describe**
+**Description**
 
 ```js
 $stream.writelines(
@@ -5763,19 +5759,19 @@ $stream.writelines(
 
 This method writes the string specified by the parameter to the stream. When the parameter is an array, each member of the array is required to be a string type. When writing, each array member is a separate line, and returns the number of bytes written.
 
-**abnormal**
+**Exception**
 
 - `MemoryFailure`: Memory allocation failed; exception cannot be ignored.
-- `ArgumentMissed`: Missing required argument; exception can be ignored, silently evaluating returns the number of bytes actually written.
+- `ArgumentMissed`: missing required argument; exception can be ignored, silently evaluating returns the number of bytes actually written.
 - `WrongDataType`: Incorrect argument type; exception can be ignored, silently evaluating returns the number of bytes actually written.
-- `InvalidValue`: invalid data is passed in; the exception can be ignored, and the number of bytes actually written is returned when silently evaluated.
+- `InvalidValue`: Invalid data is passed in; the exception can be ignored, and the number of bytes actually written is returned when silently evaluated.
 - `BrokenPipe`: The other end of the pipe or socket has been closed; the exception can be ignored, and the number of bytes actually written is returned when evaluated silently.
 - `AccessDenied`: The owner of the current walker does not have permission to write data; the exception can be ignored, and the number of bytes actually written is returned when silently evaluated.
-- `NoStorageSpace`: Indicates insufficient storage space; the exception can be ignored, and the actual number of bytes written will be returned during silent evaluation.
+- `NoStorageSpace`: Indicate insufficient storage space; the exception can be ignored, and the actual number of bytes written will be returned during silent evaluation.
 - `TooLarge`: The write size exceeds the (file) limit; the exception can be ignored, and the number of bytes actually written is returned when silently evaluated.
 - `IOFailure`: Input and output errors; exceptions can be ignored, and the number of bytes actually written is returned when silently evaluated.
 
-**example**
+**Example**
 
 ```js
 $STREAM.stdout.writelines("This is the string to write")
@@ -5788,11 +5784,11 @@ $STREAM.stdout.writelines(["This is the string to write", "Second line"])
      // Second line
 ```
 
-##### 3.12.1.5) The `readbytes` method of stream entities
+##### 3.12.1.5) The `readbytes` Method of Stream Entity
 
 Read a sequence of bytes from the stream, returning a sequence of bytes.
 
-**describe**
+**Description**
 
 ```js
 $stream. readbytes(
@@ -5802,19 +5798,19 @@ $stream. readbytes(
 
 This method reads bytes of the specified length from `$stream` and converts them to a sequence of bytes to return.
 
-**abnormal**
+**Exception**
 
 - `MemoryFailure`: Memory allocation failed; exception cannot be ignored.
 - `ArgumentMissed`: missing required argument; exception can be ignored, silent evaluation returns empty byte sequence.
 - `WrongDataType`: Incorrect parameter type; exception can be ignored, empty byte sequence is returned on silent evaluation.
 - `InvalidValue`: invalid data was passed in; exceptions can be ignored, and an empty byte sequence is returned when evaluated silently.
-- `NotDesiredEntity`: Indicates that an unexpected entity was passed (the target may be a directory), and silently evaluates to an empty byte sequence.
+- `NotDesiredEntity`: Indicate that an unexpected entity was passed (the target may be a directory), and silently evaluates to an empty byte sequence.
 - `BrokenPipe`: The other end of the pipe or socket is closed; exceptions can be ignored, and silent evaluation returns an empty byte sequence.
-- `AccessDenied`: the owner of the current walker does not have permission to write data; the exception can be ignored, and an empty byte sequence is returned when evaluated silently.
+- `AccessDenied`: The owner of the current walker does not have permission to write data; the exception can be ignored, and an empty byte sequence is returned when evaluated silently.
 - `IOFailure`: Input-output error; exceptions can be ignored, and silent evaluation returns an empty sequence of bytes.
 
 
-**example**
+**Example**
 
 Assumed file content (12 bytes total):
 
@@ -5829,11 +5825,11 @@ $STREAM.stdin.readbytes(10)
      // bsequence: bx77726974652073747269
 ```
 
-##### 3.12.1.6) The `writebytes` method of stream entities
+##### 3.12.1.6) The `writebytes` Method of Stream Entity
 
 Write a sequence of bytes to the stream.
 
-**describe**
+**Description**
 
 ```js
 $stream.writebytes(
@@ -5843,19 +5839,19 @@ $stream.writebytes(
 
 This method writes a sequence of bytes to `$stream` and returns the number of bytes written.
 
-**abnormal**
+**Exception**
 
 - `MemoryFailure`: Memory allocation failed; exception cannot be ignored.
 - `ArgumentMissed`: missing required argument; exception can be ignored, return 0 when silently evaluated.
 - `WrongDataType`: Incorrect argument type; exception can be ignored, return 0 when silently evaluated.
-- `InvalidValue`: invalid data is passed in; exceptions can be ignored, and 0 is returned when silently evaluated.
+- `InvalidValue`: Invalid data is passed in; exceptions can be ignored, and 0 is returned when silently evaluated.
 - `BrokenPipe`: The other end of the pipe or socket is closed; exceptions are ignored, and 0 is returned when evaluated silently.
-- `AccessDenied`: the owner of the current walker does not have permission to write data; exceptions can be ignored, and 0 is returned when silently evaluated.
-- `NoStorageSpace`: Indicates insufficient storage space; exceptions can be ignored, and 0 is returned during silent evaluation.
+- `AccessDenied`: The owner of the current walker does not have permission to write data; exceptions can be ignored, and 0 is returned when silently evaluated.
+- `NoStorageSpace`: Indicate insufficient storage space; exceptions can be ignored, and 0 is returned during silent evaluation.
 - `TooLarge`: The write size exceeds the (file) limit; the exception is ignored, and 0 is returned when silently evaluated.
 - `IOFailure`: Input and output errors; exceptions can be ignored, and 0 is returned for silent evaluation.
 
-**example**
+**Example**
 
 ```js
 // write sequence of bytes
@@ -5873,7 +5869,7 @@ Note: When a string is written as a sequence of bytes, a trailing null character
 
 Perform a positional operation on the stream.
 
-**describe**
+**Description**
 
 ```js
 $stream. seek(
@@ -5890,12 +5886,12 @@ $stream. seek(
 
 This method performs a positioning operation and returns the current location.
 
-**abnormal**
+**Exception**
 
 - `MemoryFailure`: Memory allocation failed; exception cannot be ignored.
 - `ArgumentMissed`: missing required argument; exception can be ignored, `false` is returned when silently evaluated.
 - `WrongDataType`: Incorrect parameter type; exception can be ignored and `false` will be returned for silent evaluation.
-- `InvalidValue`: invalid data is passed in; exceptions can be ignored, and `false` will be returned when silently evaluated.
+- `InvalidValue`: Invalid data is passed in; exceptions can be ignored, and `false` will be returned when silently evaluated.
 - `Unsupported`: The operation is not supported (pipes, sockets); exceptions can be ignored, and `false` will be returned for silent evaluation.
 - `TooLarge`: The returned offset is too large; the exception can be ignored, and `false` is returned for silent evaluation.
 
@@ -5903,7 +5899,7 @@ This method performs a positioning operation and returns the current location.
 
 1. Only `file://` type streams are supported.
 
-**example**
+**Example**
 
 ```js
 // Example: Locate to the 10th byte position
@@ -5911,11 +5907,11 @@ $stream. seek(10, 'set')
      // ulongint: 10L
 ```
 
-#### 3.12.2) `close` method
+#### 3.12.2) `close` Method
 
 Close the stream.
 
-**describe**
+**Description**
 
 ```js
 $STREAM. close(
