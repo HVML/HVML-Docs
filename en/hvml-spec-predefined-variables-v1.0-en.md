@@ -1,4 +1,4 @@
-# HVML Spec Predefined Variables
+# HVML Predefined Variables
 
 Subject: HVML Predefined Variables  
 Version: 1.0-RCb  
