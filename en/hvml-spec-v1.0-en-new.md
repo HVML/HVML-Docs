@@ -14,7 +14,7 @@ Language: Chinese
 
 Copyright &copy; 2021, 2022, 2023 Vincent Wei 
 Copyright &copy; 2021, 2022, 2023 Beijing Feynman Software Technology Co., Ltd.
-all rights reserved
+All rights reserved
 
 This document is not governed by the HVML-related software open source license.
 
@@ -27,211 +27,211 @@ For a detailed list of registered trademarks or trademarks of the copyright owne
 [//]:# (START OF TOC)
 
 - [1) Introduction](#1-introduction)
-   + [1.1) Background technology](#11-background-technology)
+   + [1.1) Background Technology](#11-background-technology)
    + [1.2) Questions](#12-questions)
    + [1.3) Purpose](#13-purpose)
-   + [1.4) Application framework](#14-application-framework)
+   + [1.4) Application Framework](#14-application-framework)
 - [2) Detailed Explanation of HVML](#2-detailed-explanation-of-hvml)
-   + [2.1) Rationale](#21-rationale)
+   + [2.1) Fundamental](#21-fundemantal)
        * [2.1.1) Program Structure](#211-program-structure)
-       * [2.1.2) Basic data types](#212-basic-data-types)
-       * [2.1.3) Extended data types](#213-extended-data-types)
-       * [2.1.4) Casting rules for arbitrary data types](#214-casting-rules-for-arbitrary-data-types)
+       * [2.1.2) Basic Data Types](#212-basic-data-types)
+       * [2.1.3) Extended Data Types](#213-extended-data-types)
+       * [2.1.4) Casting Rules for Arbitrary Data Types](#214-casting-rules-for-arbitrary-data-types)
           - [2.1.4.1) Numericization](#2141-numerization)
-          - [2.1.4.2) Boolean](#2142-boolean)
-          - [2.1.4.3) stringify](#2143-stringify)
-          - [2.1.4.4) Serialization](#2144-serialization)
-          - [2.1.4.5) key-value object](#2145-key-value-object)
-       * [2.1.5) Mutable and immutable data](#215-mutable-and-immutable-data)
+          - [2.1.4.2) Booleanize](#2142-booleanize)
+          - [2.1.4.3) Stringify](#2143-stringify)
+          - [2.1.4.4) Serialize](#2144-serialize)
+          - [2.1.4.5) Key-Value Object](#2145-key-value-object)
+       * [2.1.5) Mutable and Immutable Data](#215-mutable-and-immutable-data)
        * [2.1.6) Variables](#216-variables)
-          - [2.1.6.1) Types of variables](#2161-types-of-variables)
-          - [2.1.6.2) Context variables](#2162-context-variables)
-          - [2.1.6.3) Predefined variables](#2163-predefined-variables)
-          - [2.1.6.4) Collection variables](#2164-collection-variables)
-          - [2.1.6.5) Variable name convention](#2165-variable-name-convention)
-       * [2.1.7) Evaluated expressions and parameterized data](#217-evaluated-expressions-and-parameterized-data)
-          - [2.1.7.1) Compound evaluated expressions](#2171-compound-evaluated-expressions)
-          - [2.1.7.2) Expression variables and alias expressions](#2172-expression-variables-and-alias-expressions)
-       * [2.1.8) stack-vm](#218-stack-vm)
-       * [2.1.9) Frame elements](#219-frame-elements)
-       * [2.1.10) template-element](#2110-template-element)
-       * [2.1.11) action-element](#2111-action-element)
-          - [2.1.11.1) Action elements used to manipulate data](#21111-action-elements-used-to-manipulate-data)
-          - [2.1.11.2) Action elements for manipulating the execution stack](#21112-action-elements-for-manipulating-the-execution-stack)
+          - [2.1.6.1) Types of Variables](#2161-types-of-variables)
+          - [2.1.6.2) Context Variables](#2162-context-variables)
+          - [2.1.6.3) Predefined Variables](#2163-predefined-variables)
+          - [2.1.6.4) Collection Variables](#2164-collection-variables)
+          - [2.1.6.5) Variable Name Convention](#2165-variable-name-convention)
+       * [2.1.7) Evaluated Expressions and Parameterized Data](#217-evaluated-expressions-and-parameterized-data)
+          - [2.1.7.1) Compound Evaluated Expressions](#2171-compound-evaluated-expressions)
+          - [2.1.7.2) Expression Variables and Stand-In Expressions](#2172-expression-variables-and-stand-in-expressions)
+       * [2.1.8) Stack-VM](#218-stack-vm)
+       * [2.1.9) Frame Elements](#219-frame-elements)
+       * [2.1.10) Template-Element](#2110-template-element)
+       * [2.1.11) Action-element](#2111-action-element)
+          - [2.1.11.1) Action Elements Used to Manipulate Data](#21111-action-elements-used-to-manipulate-data)
+          - [2.1.11.2) Action Elements for Manipulating the Execution Stack](#21112-action-elements-for-manipulating-the-execution-stack)
           - [2.1.11.3) Other Action Elements](#21113-other-action-elements)
-       * [2.1.12) Error and exception handling](#2112-error-and-exception-handling)
-       * [2.1.13) preposition attribute](#2113-preposition-attribute)
-       * [2.1.14) Adverb attributes](#2114-adverb-attributes)
-       * [2.1.15) Quoting elements or data](#2115-quoting-elements-or-data)
-       * [2.1.16) Coroutines and virtual machine state](#2116-coroutines-and-virtual-machine-state)
-       * [2.1.17) Structured data representation of document fragments](#2117-structured-data-representation-of-document-fragments)
-       * [2.1.18) MIME-types](#2118-mime-types)
-       * [2.1.19) HVML URI schema](#2119-hvml-uri-schema)
-          - [2.1.19.1) `hvml` schema](#21191-hvml-schema)
-          - [2.1.19.2) `hvml+run` schema](#21192-hvmlrun-schema)
-   + [2.2) Description syntax of rules, expressions and methods](#22-description-syntax-of-regular-expressions-and-methods)
-       * [2.2.1) Rule description syntax](#221-rule-description-syntax)
-       * [2.2.2) Syntax of evaluated expressions](#222-syntax-of-evaluated-expressions)
-       * [2.2.3) Common denoted noun units](#223-common-denoted-noun-units)
-       * [2.2.4) Description syntax for dynamic object methods](#224-dynamic-object-method-description-syntax)
-       * [2.2.5) eJSON syntax](#225-ejson-syntax)
-   + [2.3) Detailed explanation of frame tags](#23-detailed-explanation-of-frame-tags)
-       * [2.3.1) `hvml` tag](#231-hvml-tag)
-       * [2.3.2) `head` tag](#232-head-tag)
-       * [2.3.3) `body` tag](#233-body-tag)
-       * [2.3.4) Content of `hvml` tag](#234-hvml-tag-content)
+       * [2.1.12) Error and Exception Handling](#2112-error-and-exception-handling)
+       * [2.1.13) Preposition Attribute](#2113-preposition-attribute)
+       * [2.1.14) Adverb Attributes](#2114-adverb-attributes)
+       * [2.1.15) Quoting Elements or Data](#2115-quoting-elements-or-data)
+       * [2.1.16) Coroutines and VM State](#2116-coroutines-and-vm-state)
+       * [2.1.17) Structured Data Representation of Document Fragments](#2117-structured-data-representation-of-document-fragments)
+       * [2.1.18) MIME Type](#2118-mime-types)
+       * [2.1.19) HVML URI Schema](#2119-hvml-uri-schema)
+          - [2.1.19.1) `hvml` Schema](#21191-hvml-schema)
+          - [2.1.19.2) `hvml+run` Schema](#21192-hvmlrun-schema)
+   + [2.2) Description Syntax of Rules, Expressions and Methods](#22-description-syntax-of-regular-expressions-and-methods)
+       * [2.2.1) Rule Description Syntax](#221-rule-description-syntax)
+       * [2.2.2) Evaluated Expressions Syntax](#222-evaluated-expressions-syntax)
+       * [2.2.3) Common Denoted Noun Units](#223-common-denoted-noun-units)
+       * [2.2.4) Description Syntax of Dynamic Object Methods](#224-description-syntax-of-dynamic-object-methods)
+       * [2.2.5) eJSON Syntax](#225-ejson-syntax)
+   + [2.3) Detailed Explanation of Frame Tags](#23-detailed-explanation-of-frame-tags)
+       * [2.3.1) `hvml` Tag](#231-hvml-tag)
+       * [2.3.2) `head` Tag](#232-head-tag)
+       * [2.3.3) `body` Tag](#233-body-tag)
+       * [2.3.4) Content of `hvml` Tag](#234-hvml-tag-content)
    + [2.4) Detailed Explanation of Template Tags](#24-detailed-explanation-of-template-tags)
-       * [2.4.1) `archetype` tag](#241-archetype-tag)
-       * [2.4.2) `archedata` tag](#242-archedata-tag)
-       * [2.4.3) `error` label](#243-error-label)
-       * [2.4.4) `except` label](#244-except-label)
+       * [2.4.1) `archetype` Tag](#241-archetype-tag)
+       * [2.4.2) `archedata` Tag](#242-archedata-tag)
+       * [2.4.3) `error` Label](#243-error-label)
+       * [2.4.4) `except` Label](#244-except-label)
    + [2.5) Detailed Explanation of Action Tags](#25-detailed-explanation-of-action-tags)
-       * [2.5.1) The `init` label](#251-init-label)
-       * [2.5.2) `update` tag](#252-update-tag)
-          - [2.5.2.1) specify target position](#2521-specify target-position)
-          - [2.5.2.2) update collection](#2522-update-collection)
-       * [2.5.3) `erase` tag](#253-erase-tag)
-       * [2.5.4) `clear` label](#254-clear-label)
-       * [2.5.5) `test`, `match` and `differ` labels](#255-test-match-and-differ-labels)
-          - [2.5.5.1) Multi-branch handling](#2551-multi-branch-handling)
-          - [2.5.5.2) Choose one of two processing](#2552-choose-one-of-two-processing)
-       * [2.5.6) `choose` tag](#256-choose-tag)
-       * [2.5.7) `iterate` tag](#257-iterate-tag)
-          - [2.5.7.1) Use iterative executor](#2571-use-iterative-executor)
-          - [2.5.7.2) don't use iterative executor](#2572-dont-use-iterative-executor)
-       * [2.5.8) `reduce` label](#258-reduce-label)
-       * [2.5.9) `sort` tag](#259-sort-tag)
-       * [2.5.10) `define` and `include` tags](#2510-define-and-include-tags)
-       * [2.5.11) `observe`, `forget` and `fire` labels](#2511-observe-forget-and-fire-labels)
-       * [2.5.12) `call` and `return` labels](#2512-call-and-return-labels)
-       * [2.5.13) `bind` tag](#2513-bind-tag)
-       * [2.5.14) `catch` tag](#2514-catch-tag)
-       * [2.5.15) `back` label](#2515-back-label)
-       * [2.5.16) `request` tag](#2516-request-tag)
-       * [2.5.17) `load` and `exit` labels](#2517-load-and-exit-labels)
-       * [2.5.18) `inherit` tag](#2518-inherit-tag)
-       * [2.5.19) `sleep` tag](#2519-sleep-tag)
+       * [2.5.1) `init` Label](#251-init-label)
+       * [2.5.2) `update` Tag](#252-update-tag)
+          - [2.5.2.1) Specify Target Position](#2521-specify target-position)
+          - [2.5.2.2) Update Collection](#2522-update-collection)
+       * [2.5.3) `erase` Tag](#253-erase-tag)
+       * [2.5.4) `clear` Label](#254-clear-label)
+       * [2.5.5) `test`, `match` and `differ` Labels](#255-test-match-and-differ-labels)
+          - [2.5.5.1) Multi-Branch Handling](#2551-multi-branch-handling)
+          - [2.5.5.2) Choose One of Two Processing](#2552-choose-one-of-two-processing)
+       * [2.5.6) `choose` Tag](#256-choose-tag)
+       * [2.5.7) `iterate` Tag](#257-iterate-tag)
+          - [2.5.7.1) Use Iterative Executor](#2571-use-iterative-executor)
+          - [2.5.7.2) Nonuse Iterative Executor](#2572-nonuse-iterative-executor)
+       * [2.5.8) `reduce` Label](#258-reduce-label)
+       * [2.5.9) `sort` Tag](#259-sort-tag)
+       * [2.5.10) `define` and `include` Tags](#2510-define-and-include-tags)
+       * [2.5.11) `observe`, `forget` and `fire` Labels](#2511-observe-forget-and-fire-labels)
+       * [2.5.12) `call` and `return` Labels](#2512-call-and-return-labels)
+       * [2.5.13) `bind` Tag](#2513-bind-tag)
+       * [2.5.14) `catch` Tag](#2514-catch-tag)
+       * [2.5.15) `back` Label](#2515-back-label)
+       * [2.5.16) `request` Tag](#2516-request-tag)
+       * [2.5.17) `load` and `exit` Labels](#2517-load-and-exit-labels)
+       * [2.5.18) `inherit` Tag](#2518-inherit-tag)
+       * [2.5.19) `sleep` Tag](#2519-sleep-tag)
    + [2.6) Actuator](#26-Actuator)
-       * [2.6.1) Built-in executor](#261-built-in-executor)
-          - [2.6.1.1) `KEY` executor](#2611-key-executor)
-          - [2.6.1.2) `RANGE` actuator](#2612-range-executor)
-          - [2.6.1.3) `FILTER` executor](#2613-filter-executor)
-          - [2.6.1.4) Builtin executor for strings](#2614-builtin-executor-for-strings)
-          - [2.6.1.5) Builtin executor for numeric values](#2615-builtin-executor-for-numeric-values)
-          - [2.6.1.6) `SQL` executor](#2616-sql-executor)
-          - [2.6.1.7) `TRAVEL` actuator](#2617-travel-executor)
-          - [2.6.1.8) Use of builtin executors](#2618-use-of-builtin-executors)
+       * [2.6.1) Built-In Executor](#261-built-in-executor)
+          - [2.6.1.1) `KEY` Executor](#2611-key-executor)
+          - [2.6.1.2) `RANGE` Actuator](#2612-range-executor)
+          - [2.6.1.3) `FILTER` Executor](#2613-filter-executor)
+          - [2.6.1.4) Built-In Executor for Strings](#2614-built-in-executor-for-strings)
+          - [2.6.1.5) Built-In Executor for Numeric Values](#2615-built-in-executor-for-numeric-values)
+          - [2.6.1.6) `SQL` Executor](#2616-sql-executor)
+          - [2.6.1.7) `TRAVEL` Actuator](#2617-travel-executor)
+          - [2.6.1.8) Use of Built-In Executors](#2618-use-of-builtin-executors)
        * [2.6.2) External Actuator](#262-external-actuator)
-          - [2.6.2.1) External function executor](#2621-external-function-executor)
-          - [2.6.2.2) External class executor](#2622-external-class-executor)
-       * [2.6.3) Handling of executor regular expressions](#263-handling-of-executor-regular-expressions)
-   + [2.7) Responsive update](#27-responsive-update)
+          - [2.6.2.1) External Function Executor](#2621-external-function-executor)
+          - [2.6.2.2) External Class Executor](#2622-external-class-executor)
+       * [2.6.3) Handling of Executor Regular Expressions](#263-handling-of-executor-regular-expressions)
+   + [2.7) Responsive Update](#27-responsive-update)
 - [3) HVML Grammar](#3-hvml-grammar)
-   + [3.1) Write HVML documentation](#31-write-hvml-documentation)
+   + [3.1) Write HVML Documentation](#31-write-hvml-documentation)
        * [3.1.1) DOCTYPE](#311-doctype)
-       * [3.1.2) elements](#312-elements)
-          - [3.1.2.1) Start-label](#3121-start-label)
-          - [3.1.2.2) Termination-label](#3122-termination-label)
+       * [3.1.2) Elements](#312-elements)
+          - [3.1.2.1) Start Label](#3121-start-label)
+          - [3.1.2.2) Termination Label](#3122-termination-label)
           - [3.1.2.3) Properties](#3123-properties)
-          - [3.1.2.4) Action element attributes](#3124-action-element-attributes)
-          - [3.1.2.5) OPTIONAL-TAGS](#3125-optional-tags)
-          - [3.1.2.6) Content restrictions for baretext elements and escapeable baretext elements](#3126-content-restrictions-for-baretext-elements-and-escapeable-baretext-elements)
-          - [3.1.2.7) Data content and data attributes](#3127-data-content-and-data-attributes)
-       * [3.1.3) text](#313-text)
-          - [3.1.3.1) newline](#3131-newline)
-       * [3.1.4) Character references](#314-character-references)
-       * [3.1.5) CDATA-paragraph](#315-cdata-paragraph)
+          - [3.1.2.4) Action Element Attributes](#3124-action-element-attributes)
+          - [3.1.2.5) Optional Tags](#3125-optional-tags)
+          - [3.1.2.6) Content Restrictions for Baretext Elements and Escapeable Baretext Elements](#3126-content-restrictions-for-baretext-elements-and-escapeable-baretext-elements)
+          - [3.1.2.7) Data Content and Data Attributes](#3127-data-content-and-data-attributes)
+       * [3.1.3) Text](#313-text)
+          - [3.1.3.1) New Line](#3131-newline)
+       * [3.1.4) Character Reference](#314-character-references)
+       * [3.1.5) CDATA Paragraph](#315-cdata-paragraph)
        * [3.1.6) Comments](#316-comments)
-    + [3.2) Parse HVML document](#32-parse-hvml-documentation)
+    + [3.2) Parse HVML Document](#32-parse-hvml-documentation)
 - [4) Application Example](#4-application-example)
-   + [4.1) Use HVML to develop traditional GUI applications](#41-use-hvml-develop-traditional-gui-applications)
+   + [4.1) Use HVML to Develop Traditional GUI Applications](#41-use-hvml-develop-traditional-gui-applications)
    + [4.2) Cloud Apps](#42cloud-apps)
 - [5) Summary](#5-summary)
 - [Appendix](#appendix)
    + [Appendix 1) Revision History](#appendix-1-revision-history)
        * [RCb) 230430](#rcb-230430)
-          - [RCb.1) Adjust page and workspace name conventions](#rcb1-adjust-page-and-workspace-name-conventions)
+          - [RCb.1) Adjust Page and Workspace Name Conventions](#rcb1-adjust-page-and-workspace-name-conventions)
        * [RCa) 230331](#rca-230331)
-          - [RCa.1) adjust `SYSTEM` identifier rules for `DOCTYPE`](#rca1-adjust-doctype-system-identifier-rules)
-          - [RCa.2) adjust result of `catch` action element](#rca2-adjust-result-of-catch-action-element)
-          - [RCa.3) Tweak the `update` action element](#rca3-tweak-update-action-element)
+          - [RCa.1) Adjust `SYSTEM` Identifier Rules for `DOCTYPE`](#rca1-adjust-doctype-system-identifier-rules)
+          - [RCa.2) Adjust Result of `catch` Action Element](#rca2-adjust-result-of-catch-action-element)
+          - [RCa.3) Tweak `update` Action Element](#rca3-tweak-update-action-element)
        * [RC9) 221231](#rc9-221231)
-          - [RC9.1) Reactive processing syntax for defining skeleton element attributes](#rc91-reactive-processing-syntax-for-defining-skeleton-element-attributes)
+          - [RC9.1) Reactive Processing Syntax for Defining Skeleton Element Attributes](#rc91-reactive-processing-syntax-for-defining-skeleton-element-attributes)
           - [RC9.2) Structured Data Representation for Document Fragments](#rc92-structured-data-representation-for-document-fragments)
-          - [RC9.3) adjust `update` element-related details](#rc93-adjust-update-element-related-details)
-          - [RC9.4) adjust `request` element-related details](#rc94-adjust-request-element-related-details)
+          - [RC9.3) Adjust `update` Element Related Details](#rc93-adjust-update-element-related-details)
+          - [RC9.4) Adjust `request` Element Related Details](#rc94-adjust-request-element-related-details)
        * [RC8) 221130](#rc8-221130)
-          - [RC8.1) backtick attribute value syntax](#rc81-backtick-attribute-value-syntax)
-          - [RC8.2) new datatype aliases](#rc82-new-datatype-aliases)
-          - [RC8.3) adverb attributes in frame elements](#rc83-adverb-attributes-in-frame-elements)
+          - [RC8.1) Backtick Attribute Value Syntax](#rc81-backtick-attribute-value-syntax)
+          - [RC8.2) New Datatype Aliases](#rc82-new-datatype-aliases)
+          - [RC8.3) Adverb Attributes in Frame Elements](#rc83-adverb-attributes-in-frame-elements)
           - [RC8.4) Misc](#rc84-misc)
        * [RC7) 221031](#rc7-221031)
-          - [RC7.1) Stand-in expression](#rc71-stand-in-expression)
-          - [RC7.2) Adjustment variables section](#rc72-adjustment-variables-section)
-          - [RC7.3) adjust eJSON syntax for defining tuples](#rc73-adjust-ejson-syntax-for-defining-tuples)
-          - [RC7.4) Adjust the name of the adverb property](#rc74-adjust-the-name-of-the-adverb-property)
-          - [RC7.5) Preposition property enhancement](#rc75-preposition-property-enhancement)
+          - [RC7.1) Stand-In Expression](#rc71-stand-in-expression)
+          - [RC7.2) Adjust Variables Section](#rc72-adjust-variables-section)
+          - [RC7.3) Adjust eJSON Syntax for Defining Tuples](#rc73-adjust-ejson-syntax-for-defining-tuples)
+          - [RC7.4) Adjust the Name of Adverb Property](#rc74-adjust-the-name-of-adverb-property)
+          - [RC7.5) Preposition Property Enhancement](#rc75-preposition-property-enhancement)
        * [RC6) 220901](#rc6-220901)
-          - [RC6.1) Enhanced variable names](#rc61-enhanced-variable-names)
-          - [RC6.2) Enhanced `request` tag](#rc62-enhanced-request-tag)
-          - [RC6.3) Adjust HVML URI schema](#rc63-adjust-hvml-uri-schema)
-          - [RC6.4) Added tuple container type](#rc64-added-tuple-container-type)
-          - [RC6.5) reevaluation](#rc65-reevaluation)
+          - [RC6.1) Enhance Variable Names](#rc61-enhance-variable-names)
+          - [RC6.2) Enhance `request` Tag](#rc62-enhance-request-tag)
+          - [RC6.3) Adjust HVML URI Schema](#rc63-adjust-hvml-uri-schema)
+          - [RC6.4) Add Tuple Container Type](#rc64-add-tuple-container-type)
+          - [RC6.5) Reevaluation](#rc65-reevaluation)
        * [RC5) 220701](#rc5-220701)
-          - [RC5.1) adjust description of `include` tag](#rc51-adjust-description-of-include-tag)
-          - [RC5.2) Tweak `request` tag](#rc52-tweak-request-tag)
-          - [RC5.3) adjust `load` and `call` labels](#rc53-adjust-load-and-call-labels)
-          - [RC5.4) HVML URI schema and coroutine descriptor](#rc54-hvml-uri-schema-and-coroutine-descriptor)
-          - [RC5.5) Enhanced `sort` tag](#rc55-enhanced-sort-tag)
-          - [RC5.6) Tweak `observe` tag](#rc56-tweak-observe-tag)
-          - [RC5.7) frame tag content](#rc57-frame-tag-content)
-          - [RC5.8) Miscellaneous revisions](#rc58-miscellaneous-revisions)
+          - [RC5.1) Adjust Description of `include` Tag](#rc51-adjust-description-of-include-tag)
+          - [RC5.2) Tweak `request` Tag](#rc52-tweak-request-tag)
+          - [RC5.3) Adjust `load` and `call` Labels](#rc53-adjust-load-and-call-labels)
+          - [RC5.4) HVML URI Schema and Coroutine Descriptor](#rc54-hvml-uri-schema-and-coroutine-descriptor)
+          - [RC5.5) Enhance `sort` Tag](#rc55-enhance-sort-tag)
+          - [RC5.6) Tweak `observe` Tag](#rc56-tweak-observe-tag)
+          - [RC5.7) Frame Tag Content](#rc57-frame-tag-content)
+          - [RC5.8) Miscellaneous Revisions](#rc58-miscellaneous-revisions)
        * [RC4) 220601](#rc4-220601)
-          - [RC4.1) Refactored `Rationale` section](#rc41-refactored-rationale-section)
-          - [RC4.2) MIME types and data](#rc42-mime-typesrand-data)
-          - [RC4.3) `inherit` tag](#rc43-inherit-tag)
-          - [RC4.4) `sleep` tag](#rc44-sleep-tag)
-          - [RC4.5) Adjust context variables](#rc45-adjust-context-variables)
-          - [RC4.6) Adjustment of elements and attributes](#rc46-adjustment-of-elements-and-attributes)
-          - [RC4.7) `differ` tag](#rc47-differ-tag)
+          - [RC4.1) Refactor `Fundamental` Section](#rc41-refactor-fundamental-section)
+          - [RC4.2) MIME Type and Data](#rc42-mime-type-and-data)
+          - [RC4.3) `inherit` Tag](#rc43-inherit-tag)
+          - [RC4.4) `sleep` Tag](#rc44-sleep-tag)
+          - [RC4.5) Adjust Context Variables](#rc45-adjust-context-variables)
+          - [RC4.6) Adjustment of Elements and Attributes](#rc46-adjustment-of-elements-and-attributes)
+          - [RC4.7) `differ` Tag](#rc47-differ-tag)
        * [RC3) 220501](#rc3-220501)
-          - [RC3.1) Adjust action tags](#rc31-adjust-action-tags)
-          - [RC3.2) HVML program running status](#rc32-hvml-program-running-status)
-          - [RC3.3) Use the element's anchor name to locate the front stack frame](#rc33-use-the-elements-anchor-name-to-locate -the-front-stack-frame)
-          - [RC3.5) eJSON syntax enhancements](#rc35-ejson-syntax-enhancements)
-          - [RC3.6) `$STREAM` predefined variable](#rc36-stream-predefined-variable)
-          - [RC3.7) Adjust the description syntax of dynamic object methods](#rc37-adjust-the-description-syntax-of-dynamic-object-methods)
-          - [RC3.8) Naming rules for event names](#rc38-naming-rules-for-event-names)
-          - [RC3.9) Simplify external executors](#rc39-simplify-external-executors)
-          - [RC3.10) Coroutines and their states](#rc310-coroutines-and-their-states)
+          - [RC3.1) Adjust Action Tags](#rc31-adjust-action-tags)
+          - [RC3.2) HVML Program Running Status](#rc32-hvml-program-running-status)
+          - [RC3.3) Use the Element's Anchor Name to Locate the Front Stack Frame](#rc33-use-the-elements-anchor-name-to-locate -the-front-stack-frame)
+          - [RC3.5) eJSON Syntax Enhancement](#rc35-ejson-syntax-enhancement)
+          - [RC3.6) `$STREAM` Predefined Variable](#rc36-stream-predefined-variable)
+          - [RC3.7) Adjust the Description Syntax of Dynamic Object methods](#rc37-adjust-the-description-syntax-of-dynamic-object-methods)
+          - [RC3.8) Naming Rules for Event Names](#rc38-naming-rules-for-event-names)
+          - [RC3.9) Simplify External Executors](#rc39-simplify-external-executors)
+          - [RC3.10) Coroutines and Their State](#rc310-coroutines-and-their-states)
        * [RC2) 220401](#rc2-220401)
-          - [RC2.1) Initialization and reset method of user-defined temporary variable](#rc21-initialization-and-reset-method-of-user-defined-temporary-variable)
-          - [RC2.2) Adjust the description syntax of dynamic object methods](#rc22-adjust-the-description-syntax-of-dynamic-object-methods)
-          - [RC2.3) Context variable enhancements and tweaks](#rc23-context-variable-enhancements-and-tweaks)
-          - [RC2.4) Enhancements to the `iterate` element](#rc24-iterate-element-enhancements)
-          - [RC2.5) Adjust the content of the first chapter](#rc25-adjust-the-content-of-the-first-chapter)
-          - [RC2.6) Anomaly-related enhancements](#rc26-anomaly-related-enhancements)
-          - [RC2.7) Can name an `observe`](#rc27-can-name-an-observe)
-          - [RC2.8) Enhanced `request`](#rc28-enhanced-request)
-          - [RC2.9) adjust preposition properties](#rc29-adjust-preposition-properties)
-          - [RC2.10) Adjust the syntax of reactive processing](#rc210-adjust-the-syntax-of-reactive-processing)
-          - [RC2.11) Enhanced `bind` tag](#rc211-enhanced-bind-tag)
-          - [RC2.12) Composite evaluation expressions](#rc212-compound-evaluation-expressions)
-          - [RC2.13) adjust booleanization rules](#rc213-adjust-booleanization-rules)
+          - [RC2.1) Initialization and Reset Method of User-Defined Temporary Variable](#rc21-initialization-and-reset-method-of-user-defined-temporary-variable)
+          - [RC2.2) Adjust the Description Syntax of Dynamic Object Methods](#rc22-adjust-the-description-syntax-of-dynamic-object-methods)
+          - [RC2.3) Context Variable Enhancement and Tweak](#rc23-context-variable-enhancement-and-tweak)
+          - [RC2.4) Enhancement to `iterate` Element](#rc24-iterate-element-enhancements)
+          - [RC2.5) Adjust the Content of the First Chapter](#rc25-adjust-the-content-of-the-first-chapter)
+          - [RC2.6) Anomaly-Related Enhancement](#rc26-anomaly-related-enhancement)
+          - [RC2.7) Could Name an `observe`](#rc27-can-name-an-observe)
+          - [RC2.8) Enhance `request`](#rc28-enhance-request)
+          - [RC2.9) Adjust Preposition Properties](#rc29-adjust-preposition-properties)
+          - [RC2.10) Adjust the Syntax of Reactive Processing](#rc210-adjust-the-syntax-of-reactive-processing)
+          - [RC2.11) Enhance `bind` Tag](#rc211-enhance-bind-tag)
+          - [RC2.12) Composite Evaluation Expressions](#rc212-compound-evaluation-expressions)
+          - [RC2.13) Adjust Booleanization Rules](#rc213-adjust-booleanization-rules)
        * [RC1) 220209](#rc1-220209)
-          - [RC1.1) Adjustment of context variable](#rc11-adjustment-of-context-variable)
-          - [RC1.2) `init` tag enhancements](#rc12-init-tag-enhancements)
-          - [RC1.3) Additional clarifications for numeric executors](#rc13-additional-clarifications-for-numeric-executors)
-          - [RC1.4) `observe` tag enhancements](#rc14-observe-tag-enhancements)
-          - [RC1.5) Skeleton element enhancement](#rc15-skeleton-element-enhancement)
-          - [RC1.6) Enhancements to attribute value operators](#rc16-enhancements-to-attribute-value-operators)
-       * [BRC)Other](#brc-Other)
-+ [Appendix 2) Content to be determined](#appendix-2-content-to-be-determined)
-       * [TBD 1) extended data type](#tbd-1-extended-data-type)
-          - [TBD 1.1) Extended data types](#tbd-11-extended-data-types)
-       * [TBD2) action element](#tbd2-action-element)
-          - [TBD2.1) `pipe` label](#tbd21-pipe-label)
-          - [TBD2.2) `connect`, `send` and `disconnect` labels](#tbd22-connect-send-and-disconnect-labels)
+          - [RC1.1) Adjustment of Context Variables](#rc11-adjustment-of-context-variables)
+          - [RC1.2) `init` Tag Enhancement](#rc12-init-tag-enhancement)
+          - [RC1.3) Additional Clarifications for Numeric Executors](#rc13-additional-clarifications-for-numeric-executors)
+          - [RC1.4) `observe` Tag Enhancement](#rc14-observe-tag-enhancement)
+          - [RC1.5) Skeleton Element Enhancement](#rc15-skeleton-element-enhancement)
+          - [RC1.6) Enhancement to Attribute Value Operators](#rc16-enhancements-to-attribute-value-operators)
+       * [BRC)Other](#brc-other)
++ [Appendix 2) Undetermined Content](#appendix-2t-undetermined-content)
+       * [TBD 1) Extend Data Types](#tbd-1-extend-data-types)
+          - [TBD 1.1) Extend Data Types](#tbd-11-extend-data-types)
+       * [TBD2) Action Element](#tbd2-action-element)
+          - [TBD2.1) `pipe` Label](#tbd21-pipe-label)
+          - [TBD2.2) `connect`, `send` and `disconnect` Labels](#tbd22-connect-send-and-disconnect-labels)
           - [TBD2.3) External Function Updater](#tbd23-wxternal-function-updater)
           - [TBD2.4) Misc](#tbd24-misc)
    + [Attachment 3) Contributor List](#attachment-3-contributor-list)
@@ -241,25 +241,25 @@ For a detailed list of registered trademarks or trademarks of the copyright owne
 
 ## 1 Introduction
 
-### 1.1) Background technology
+### 1.1) Background Technology
 
 The background technologies involved in this article and their latest specifications are as follows:
 
 - HTML and its specifications. Specifications and standards such as HTML and CSS are developed by the W3C <https://www.w3.org> organization to standardize the writing and rendering behavior of web page content. The key specifications are as follows:
-    * HTML: Hypertext Markup Language (HyperText Markup Language), a standard for expressing the content structure of web pages. HTML latest specification: <https://html.spec.whatwg.org/>.
-    * CSS: Cascading Style Sheets (Cascading Style Sheets), used to define the specifications of HTML page element layout, rendering effects, etc. After CSS 2.2 <https://www.w3.org/TR/CSS22/>, the CSS specification began to be divided into modules, and each module evolved separately. Currently, it generally supports Level 3. The progress of the specification of CSS modules can be seen at the following webpage: <https://drafts.csswg.org>.
-    * JavaScript/ECMAScript: A scripting programming language that conforms to the ECMAScript specification, originally designed by Netscape for browsers to manipulate the content and rendering behavior of HTML pages, and is now under the responsibility of the European Computer Manufacturers Association and the International Organization for Standardization Develop relevant standards, the latest standard is ECMA-262: <http://www.ecma-international.org/publications/standards/Ecma-262.htm>.
-    * DOM: Document Object Model (Document Object Model), used for the internal expression of XML/HTML document structure. An XML/HTML document will be parsed by an XML/HTML parser and generate a DOM tree. Each element in the XML/HTML document constitutes an element node on the DOM tree, and each element's sub-elements, attributes, and text content And so on, constitute the child nodes of this element node. The latest specification for DOM can be found at: <https://dom.spec.whatwg.org/>.
-    * JSON: JavaScript Object Notation (JavaScript Object Notation) is a lightweight information interchange format. Originally used for string representation of JavaScript objects, it is easy to use by JavaScript script code, and is now widely used for data exchange between different programming languages or software modules. For a description of JSON, see: <https://json.org/>.
-- User Agent (User Agent) is a term in the HTML specification, which is used to refer to a computer program that can parse W3C specifications such as HTML and CSS, and render the content of HTML documents, and then present them to users and realize user interaction. The browser we are familiar with is the user agent. But the user agent is not limited to the browser, it can be a software component or an application framework. For example, the software components embedded in email client programs to parse and render HTML-formatted emails are essentially HTML user agents.
-- XML: The Extensible Markup Language (The Extensible Markup Language) is a simple text format developed by the W3C organization to express structured information. Compared to HTML, XML uses a similar structure, but is stricter and more general. XML is one of the most widely used formats today for sharing structured information, whether between programs, between people, between computers and people, locally or across networks. An introduction and specification of XML can be found at: <https://www.w3.org/standards/xml/>.
-- Scripting programming language. Refers to a computer programming language similar to JavaScript, usually interpreted and executed, with dynamic features. In addition to JavaScript, common scripting languages include Python, Lua, PHP, etc.
-- Advanced programming languages. Programming languages like C, C++, Java, and C# are usually compiled and executed, and run directly on computer hardware or virtual machines.
-- SQL: Structured Query Language (Structured Query Language), a data manipulation language for relational databases, currently almost all relational databases support SQL. Unlike general programming languages, SQL has non-procedural features, and the basic SQL code does not include flow control statements such as if-else.
+    * HTML: Hypertext Markup Language, a standard for expressing the content structure of web pages. HTML latest specification: <https://html.spec.whatwg.org/>.
+    * CSS: Cascading Style Sheets, used to define the specifications of HTML page element layout, rendering effects, etc. After CSS 2.2 <https://www.w3.org/TR/CSS22/>, the CSS specification began to be divided into modules, and each module evolved separately. Currently, it generally supports Level 3. The progress of the specification of CSS modules can be seen at the following webpage: <https://drafts.csswg.org>.
+    * JavaScript/ECMAScript: A scripting programming language that conforms to the ECMAScript specification, originally designed by Netscape for browsers to manipulate the content and rendering behavior of HTML pages. And it is now under the responsibility of the European Computer Manufacturers Association and the International Organization for Standardization Develop relevant standards. The latest standard is ECMA-262: <http://www.ecma-international.org/publications/standards/Ecma-262.htm>.
+    * DOM: Document Object Model, used for the internal expression of XML/HTML document structure. An XML/HTML document will be parsed by an XML/HTML parser and generate a DOM tree. Each element in the XML/HTML document constitutes an element node on the DOM tree. And each element's sub-elements, attributes, text content and so on, constitute the child nodes of this element node. The latest specification for DOM can be found at: <https://dom.spec.whatwg.org/>.
+    * JSON: JavaScript Object Notation is a lightweight information interchange format. Originally it is used for string representation of JavaScript objects, which is easy to use by JavaScript script code. And it is now widely used for data exchange between different programming languages or software modules. For a description of JSON, please refer to: <https://json.org/>.
+- User Agent is a term in the HTML specification, which is used to refer to a computer program that can parse W3C specifications such as HTML and CSS, and render the content of HTML documents, then presenting them to users and realize user interaction. The browser we are familiar with is the user agent. But the user agent is not limited to the browser. It can be a software component or an application framework. For example, the software components embedded in email client programs to parse and render HTML-formatted emails are essentially HTML user agents.
+- XML: The Extensible Markup Language is a simple text format developed by the W3C organization to express structured information. Compared to HTML, XML uses a similar structure, but is stricter and more general. XML is one of the most widely used formats today for sharing structured information, whether between programs, between people, between computers and people, locally or across networks. An introduction and specification of XML can be found at: <https://www.w3.org/standards/xml/>.
+- Scripting Programming Language: It refers to a computer programming language similar to JavaScript, usually interpreted and executed, with dynamic features. In addition to JavaScript, common scripting languages include Python, Lua, PHP, etc.
+- Advanced Programming Languages: Programming languages, like C, C++, Java and C#, are usually compiled and executed, running directly on computer hardware or virtual machines.
+- SQL: Structured Query Language, a data manipulation language for relational databases, currently almost all relational databases support SQL. Unlike general programming languages, SQL has non-procedural features, and the basic SQL code does not include flow control statements such as if-else.
 
 ### 1.2) Questions
 
-With the development of Internet technology and applications, the Web front-end development technology developed around HTML/CSS/JavaScript is developing rapidly, and it can even be described as "a thousand miles a day". Five years ago, front-end frameworks based on jQuery and Bootstrap were popular, and since 2019, frameworks based on virtual DOM technology have been favored by front-end developers, such as the famous [React.js], [Vue.js], etc. It is worth noting that WeChat applets, quick apps, etc. also use this virtual DOM technology to build application frameworks.
+With the development of Internet technology and applications, the Web front-end development technology developed around HTML/CSS/JavaScript is developing rapidly, and it can even be described as "a thousand miles a day". Five years ago, front-end frameworks based on jQuery and Bootstrap were popular. And since 2019, frameworks based on virtual DOM technology have been favored by front-end developers, such as the famous [React.js], [Vue.js], etc. It is worth noting that WeChat applets, quick apps, etc. also use this virtual DOM technology to build application frameworks.
 
 The so-called "virtual DOM" means that the front-end application creates and maintains a virtual document object tree through JavaScript, and the program script does not directly operate the real DOM tree. In the virtual DOM tree, some process control based on data is realized through some special attributes, such as conditions, loops, etc.
 
@@ -271,13 +271,13 @@ So, can we take web front-end technology beyond the browser? For example, can C,
 
 In order to introduce Web front-end technology into the development of general GUI applications, the open source community has also done some exploratory work, such as the Electron open source project, which packs Chromium + Node.js together to let the Web backend run on the local machine. This facilitates the development of local GUI applications. But Electron's software stack is too complex, which limits its application areas.
 
-In addition, the front-end framework represented by React.js and Vue.js has achieved great success, but there are the following defects and deficiencies:
+In addition, the front-end framework represented by React.js and Vue.js has achieved great success. But there are the following defects and deficiencies:
 
-1. These technologies are based on existing mature Web standards, and require browsers that fully support relevant front-end specifications to run (or, only run in browsers), and it is difficult to integrate with existing C/C++-based Integration of functional modules for programming language development.
+1. These technologies are based on existing mature Web standards, and require browsers that fully support relevant front-end specifications to run (or, only run in browsers). And it is difficult to integrate with existing C/C++-based Integration of functional modules for programming language development.
 1. Due to inherent limitations, the use of JavaScript language in web pages has always had the following problems criticized by developers:
-    - Poor security. On the one hand, code related to business logic is executed on the end user's browser, and anyone can see the source code of the JavaScript program, which may leak sensitive information; on the other hand, malicious code may be executed on the end user's browser, This leads to the leakage of user sensitive data.
-    - Negative impact on performance. Running a large amount of JavaScript code related to business logic in the browser will cause the problem of page rendering and business logic competing for processor resources, which is one of the reasons why there is a significant difference between the page rendering capability of browsers and the interface developed by traditional GUI.
-    - Lower code maintainability. Developers often randomly embed scattered JavaScript codes in different places on the webpage, which reduces the maintainability of the entire application system code.
+    - Poor security: On the one hand, code related to business logic is executed on the end user's browser, and anyone can see the source code of the JavaScript program, which may leak sensitive information; on the other hand, malicious code may be executed on the end user's browser, This leads to the leakage of user sensitive data.
+    - Negative impact on performance: Running a large amount of JavaScript code related to business logic in the browser will cause the problem of page rendering and business logic competing for processor resources, which is one of the reasons why there is a significant difference between the page rendering capability of browsers and the interface developed by traditional GUI.
+    - Lower code maintainability: Developers often randomly embed scattered JavaScript codes in different places on the webpage, which reduces the maintainability of the entire application system code.
 1. These technologies implement data-based conditional and loop flow control by introducing virtual attributes such as `v-if`, `v-else`, `v-for`, which split the logic of the code and destroy the readability of the code . As an example below:
 
 ```html
@@ -291,28 +291,28 @@ In addition, the front-end framework represented by React.js and Vue.js has achi
 
 ### 1.3) Purpose
 
-During the development of [HybridOS] (combined operating system), [Vincent Wei] (https://github.com/VincentWei) proposed a complete, general-purpose, and easy-to-learn new programming language called HVML. HVML is the abbreviation of Hybrid Virtual Markup Language (Hybrid Virtual Markup Language), and the Chinese name is "Hulumao". HVML is pronounced /'huːmeil/, which sounds like "虎妹儿" in Mandarin.
+During the development of [HybridOS] (combined operating system), [Vincent Wei] (https://github.com/VincentWei) proposed a complete, general-purpose, and easy-to-learn new programming language called HVML. HVML is the abbreviation of Hybrid Virtual Markup Language, and the Chinese name is "Hulumao". HVML is pronounced /'huːmeil/, which sounds like "虎妹儿" in Mandarin.
 
-We define HVML as a Programmable Markup Language (Programmable Markup Language). Like HTML, HVML uses a markup language to define program structure and data, but unlike HTML, HVML is programmable and dynamic. HVML realizes the dynamic generation and updating of XML/HTML documents through a limited number of action tags and expressions that can be used to define attributes and contents; The combined method provides strong technical support for these programming languages to use Web front-end technology outside the browser. From this perspective, HVML can also be regarded as a glue language.
+We define HVML as a Programmable Markup Language. Like HTML, HVML uses a markup language to define program structure and data. But unlike HTML, HVML is programmable and dynamic. HVML realizes the dynamic generation and updating of XML/HTML documents through a limited number of action tags and expressions that can be used to define attributes and contents. The combined method provides strong technical support for these programming languages to use Web front-end technology outside the browser. From this perspective, HVML can also be regarded as a glue language.
 
-In essence, HVML provides a new idea to solve the previous problem: First, introduce Web front-end technologies (mainly DOM, CSS, etc.) into other programming languages, instead of replacing other programming languages with JavaScript. Second, use an HTML-like markup language to manipulate elements, attributes, and styles in your document, rather than JavaScript. In addition, in the process of designing HVML, we intentionally use the concept of data-driven, so that HVML can be very conveniently combined with other programming languages and various network connection protocols, such as data bus, message protocol, etc. In this way, whichever programming language the developer is familiar with, he uses this programming language to develop the non-presentation and interactive parts of the application, and all functions related to presentation and interaction are handed over to HVML for processing. The flow of data is driven, and HVML provides the ability to abstract the data flow process.
+In essence, HVML provides a new idea to solve the previous problem: First, introduce Web front-end technologies (mainly DOM, CSS, etc.) into other programming languages instead of replacing other programming languages with JavaScript. Second, use an HTML-like markup language to manipulate elements, attributes, and styles in your document, rather than JavaScript. In addition, in the process of designing HVML, we intentionally use the concept of data-driven, so that HVML can be very conveniently combined with other programming languages and various network connection protocols, such as data bus, message protocol, etc. In this way, whichever programming language the developer is familiar with, he uses this programming language to develop the non-presentation and interactive parts of the application, and all functions related to presentation and interaction are handed over to HVML for processing. The flow of data is driven, and HVML provides the ability to abstract the data flow process.
 
 Although the original goal of designing HVML is to improve the efficiency of graphical user interface (GUI) application development, it can actually be used in more general scenarios-as long as the output of the program can be abstracted as one or more tree structures. HVML can be used; we can even use HVML like an ordinary scripting language, and use HTML and CSS to describe the interactive interface of a character terminal-oriented command-line application.
 
 The main features of HVML are:
 
-1. Descriptive syntax. Through verb labels, preposition attributes, and adverb attributes that conform to the natural language expression habits, HVML makes each line of code have clear semantics, which can help developers write program code with better readability.
-1. Minimalist design. HVML defines complete instructions for manipulating documents, data, and an abstract stack virtual machine using just over twenty unique tags.
-1. A higher level of abstraction. Developers can use HVML to accomplish more with less code, without having to worry too much about technical details.
-1. Data-driven. On the one hand, HVML provides methods for manipulating data to implement functions. For example, we can use the update action to manipulate a field in the timer array to turn on or off a timer without calling the corresponding interface. On the other hand, the HVML language is committed to connecting different modules in the system through a unified data expression, rather than through complex interface calls to achieve interoperability between modules. These two methods can effectively avoid the interface explosion problem existing in traditional programming languages. In order to achieve the above goals, HVML provides extended data types and flexible expression processing capabilities based on JSON, a widely used abstract data expression method.
-1. Event-driven. Unlike other programming languages, the HVML language provides language-level mechanisms for observing specific events or even observing changes in the result of an expression. On this basis, developers can easily implement asynchronous or concurrent programming that is difficult to manage in other programming languages without caring about the underlying implementation details. At the same time, HVML supports modern programming techniques such as coroutines and closures.
-1. Flexible application framework. Through HVML, developers can hand over performance-critical data processing to external program modules or servers, interact with users by independent renderers, and HVML programs are responsible for gluing these different system components. On the one hand, HVML solves the problem that it is difficult to efficiently interoperate between system components developed in different programming languages, so that the advantages of each component can be fully utilized and the value of existing software assets can be protected; on the other hand, the application framework provided by HVML is adopted Developing applications can maximize the decoupling between different components.
+1. Descriptive syntax: Through verb labels, preposition attributes, and adverb attributes that conform to the natural language expression habits, HVML makes each line of code have clear semantics, which can help developers write program code with better readability.
+1. Minimalist design: HVML defines complete instructions for manipulating documents, data, and an abstract stack virtual machine using just over twenty unique tags.
+1. A higher level of abstraction: Developers can use HVML to accomplish more with less code, without having to worry too much about technical details.
+1. Data-driven: On the one hand, HVML provides methods for manipulating data to implement functions. For example, we can use the update action to manipulate a field in the timer array to turn on or off a timer without calling the corresponding interface. On the other hand, the HVML language is committed to connecting different modules in the system through a unified data expression, rather than through complex interface calls to achieve interoperability between modules. These two methods can effectively avoid the interface explosion problem existing in traditional programming languages. In order to achieve the above goals, HVML provides extended data types and flexible expression processing capabilities based on JSON, a widely used abstract data expression method.
+1. Event-driven: Unlike other programming languages, the HVML language provides language-level mechanisms for observing specific events or even observing changes in the result of an expression. On this basis, developers can easily implement asynchronous or concurrent programming that is difficult to manage in other programming languages without caring about the underlying implementation details. At the same time, HVML supports modern programming techniques such as coroutines and closures.
+1. Flexible application framework: Through HVML, developers can hand over performance-critical data processing to external program modules or servers, interact with users by independent renderers, and HVML programs are responsible for gluing these different system components. On the one hand, HVML solves the problem that it is difficult to efficiently interoperate between system components developed in different programming languages, so that the advantages of each component can be fully utilized and the value of existing software assets can be protected; on the other hand, the application framework provided by HVML is adopted Developing applications can maximize the decoupling between different components.
 
 In short, HVML provides a programming model different from traditional programming languages. Based on the idea of data-driven, HVML provides a more systematic and complete low-code (low code, refers to using less code to write programs) programming method.
 
 HVML is the application programming language of choice for HybridOS.
 
-### 1.4) Application framework
+### 1.4) Application Framework
 
 The application framework formed around HVML is significantly different from traditional GUI application frameworks and Web front-end technologies. For traditional GUI applications, the code design pattern is nothing more than directly calling the interface provided by C/C++ or other programming languages, and completing the work of creating interface elements and responding to user interaction in an event loop. The biggest difference between Web front-end technology and traditional GUI applications lies in the descriptive HTML and CSS languages, but the program framework is essentially the same-event loop, and JavaScript language must be used.
 
@@ -326,13 +326,13 @@ Second, one or more programs written in the HVML language (HVML programs) are us
 
 In this way, the HVML application framework frees the code for manipulating interface elements from the original design mode of calling interfaces such as C, C++, Java, and C#, and uses HVML code to process them instead. HVML uses a tag language similar to HTML to manipulate interface elements. By hiding a large number of details, it reduces the program complexity caused by directly using high-level programming languages to manipulate interface elements.
 
-Usually, we design the interface renderer as a dumb device like a character console, so that we can free the HVML program and other modules of the application from the details of controlling the display behavior of interface elements. for example. In the development of the character terminal program, we can use some escape control instructions to set the color of the character, whether to blink, etc., and the character terminal program does not need to contain any codes to deal with the character color and blinking - because these details The character console (maybe It is hardware, or it may be a pseudo-terminal program) to help us handle it silently. HVML's interface renderer also follows the same design idea. After the HVML program creates a button, as for what the button looks like and how the user interacts with it, all these don't need to be worried about by the HVML program-everything is given by the renderer. It operates under the control of a certain descriptive language (such as HTML, CSS). This brings another benefit, since the interface renderer does not contain any application running logic code and sensitive data, to some extent, this brings about an increase in security.
+Usually, we design the interface renderer as a dumb device like a character console, so that we can free the HVML program and other modules of the application from the details of controlling the display behavior of interface elements. For example, in the development of the character terminal program, we can use some escape control instructions to set the color of the character, whether to blink, etc., and the character terminal program does not need to contain any codes to deal with the character color and blinking - because these details The character console (maybe It is hardware, or it may be a pseudo-terminal program) to help us handle it silently. HVML's interface renderer also follows the same design idea. After the HVML program creates a button, as for what the button looks like and how the user interacts with it, all these don't need to be worried about by the HVML program-everything is given by the renderer. It operates under the control of a certain descriptive language (such as HTML, CSS). This brings another benefit, since the interface renderer does not contain any application running logic code and sensitive data, to some extent, this brings about an increase in security.
 
 In the HVML application framework, an application can start multiple parallel tasks at the same time. We call these parallel tasks "runners" (Note: Different runners may be developed using different programming languages). A walker developed in the HVML language runs in a separate instance of the HVML interpreter. An interpreter instance can be a system process running independently, or it can be a separate thread in the interpreter process; this depends on the specific implementation of the interpreter. But no matter how the interpreter is implemented, HVML requires that a single walker can load multiple HVML programs to run at the same time, and the interpreter should always execute these HVML program instances loaded by the same walker in the form of independent coroutines. Therefore, we use the term "coroutine" in this document to refer to a running instance of an HVML program.
 
 This design brings the following benefits:
 
-1. Compared with the concurrency mechanism provided by threads or processes, coroutines provide a low-cost mechanism for achieving concurrency. Multiple coroutines created by the same walker belong to the same operating system task and run in independent interpreter instances; these coroutines are executed alternately in a single operating system task (thread or process) under the coordination of the interpreter, so coroutines The data exchange between does not need to consider the race-condition problem, almost all lock-free (lock-free) operations, which reduces the cost of processing concurrency, thus improving the overall performance.
+1. Compared with the concurrency mechanism provided by threads or processes, coroutines provide a low-cost mechanism for achieving concurrency. Multiple coroutines created by the same walker belong to the same operating system task and run in independent interpreter instances; these coroutines are executed alternately in a single operating system task (thread or process) under the coordination of the interpreter, so coroutines The data exchange between does not need to consider the race-condition problem, almost all lock-free operations, which reduces the cost of processing concurrency, thus improving the overall performance.
 1. By separating the code responsible for different business logic into different coroutines, we can improve the modularity of the entire project, thereby improving the testability and maintainability of the project, and then improving the software quality of the entire project.
 
 With such an application framework design, HVML allows almost all programming languages, whether traditional programming languages such as C/C++ or scripting languages such as Python, to use a unified model to develop GUI applications.
@@ -341,22 +341,22 @@ With such an application framework design, HVML allows almost all programming la
 
 For convenience of description, this document uses the following terms:
 
-1. `data`. Refers to data that can be described using a notation such as JSON. It can be used to describe basic data such as text and values, and can also be used to describe abstract data such as arrays, key-value pairs, and trees.
-1. `data item (data item or datum)` or `data member (data member)`. For arrays, each array cell is a data item; for object data, a key-value pair is a data item. To prevent confusion, we avoid using the word `element` to refer to data items or data members.
-1. `Tag`. In HTML/XML/HVML documents, the element type name used to define an element node.
-1. `Destination document`. Refers to XML/HTML documents generated by HVML programs.
-1. `Element`. Refers to the element node defined by a tag in the document object model; a document element can contain one or more attributes (attribute) and attribute values, and can also contain content (content); an element can contain text content, Data content or single or multiple child elements defined using tags.
-1. `Document fragment (document fragment)`. Refers to a fragment in an XML/HTML document that can be cloned as a template to a specified location in the target document.
-1. `text content`. Refers to the content of an element defined using text.
-1. `data content`. Refers to the content of an element defined using an abstract data representation.
-1. `Element collection`. Refers to zero or more elements selected using a selector. The term "set" is avoided here to avoid confusion with the `set` data type.
-1. `program`. A section or set of executable code collections. Unless otherwise stated, this document refers specifically to HVML programs.
-1. `Interpreter`. Unless otherwise specified, this document specifically refers to the program used to parse and execute HVML programs.
-1. `coroutine`. Unless otherwise specified, this document specifically refers to a running HVML program instance.
-1. `Code point (code point)`. Refers to a Unicode code point represented as `U+` and four to six ASCII uppercase hexadecimal digits in the range U+0000 to U+10FFFF, inclusive. Sometimes, we include the name of the code point and the rendered form of the code point enclosed in parentheses after the code point, and the rendered form of the code point is highlighted or bolded. For code points that cannot be rendered, this document will give their code point names. More terminology related to Unicode characters is explained below:
+1. `data`: Refers to data that can be described using a notation such as JSON. It can be used to describe basic data such as text and values, and can also be used to describe abstract data such as arrays, key-value pairs, and trees.
+1. `data item or datum` or `data member`: For arrays, each array cell is a data item; for object data, a key-value pair is a data item. To prevent confusion, we avoid using the word `element` to refer to data items or data members.
+1. `Tag`: In HTML/XML/HVML documents, the element type name used to define an element node.
+1. `Destination document`: It refers to XML/HTML documents generated by HVML programs.
+1. `Element`. It refers to the element node defined by a tag in the document object model; a document element can contain one or more attributes and attribute values, and can also contain content; an element can contain text content, Data content or single or multiple child elements defined using tags.
+1. `Document fragment`.: It refers to a fragment in an XML/HTML document that can be cloned as a template to a specified location in the target document.
+1. `text content`: It refers to the content of an element defined using text.
+1. `data content`: It refers to the content of an element defined using an abstract data representation.
+1. `Element collection`: It refers to zero or more elements selected using a selector. The term "set" is avoided here to avoid confusion with the `set` data type.
+1. `program`: A section or set of executable code collections. Unless otherwise stated, this document refers specifically to HVML programs.
+1. `Interpreter`: Unless otherwise specified, this document specifically refers to the program used to parse and execute HVML programs.
+1. `coroutine`: Unless otherwise specified, this document specifically refers to a running HVML program instance.
+1. `Code point`: It refers to a Unicode code point represented as `U+` and four to six ASCII uppercase hexadecimal digits in the range U+0000 to U+10FFFF, inclusive. Sometimes, we include the name of the code point and the rendered form of the code point enclosed in parentheses after the code point, and the rendered form of the code point is highlighted or bolded. For code points that cannot be rendered, this document will give their code point names. More terminology related to Unicode characters is explained below:
     - The name of the code point is defined by the Unicode standard and expressed in ASCII uppercase, such as `CR` for Carriage Return (carriage return).
-    - A `surrogate` is a code point in the range U+D800 to U+DFFF, inclusive.
-    - A code point that is not a substitute is called a `scalar value`.
+    - `surrogate` is a code point in the range U+D800 to U+DFFF, inclusive.
+    - A code point that is not a substitute is called `scalar value`.
     - Code points in the range U+FDD0 to U+FDEF (inclusive), and the following code points are called `noncharacters`:
        + U+FFFE, U+FFFF
        + U+1FFFE, U+1FFFF
@@ -380,7 +380,7 @@ For convenience of description, this document uses the following terms:
     - `ASCII white space character` means U+0009 TAB, U+000A LF, U+000C FF, U+000D CR, or U+0020 SPACE. Also often referred to simply as `blank character`.
     - `C0 control characters` are code points in the range U+0000 NULL to U+001F INFORMATION SEPARATOR ONE, inclusive.
     - `C0 control character or space` refers to the C0 control character or U+0020 SPACE.
-    - A `control character` means a `C0 control character` or a code point in the range U+007F DELETE to U+009F APPLICATION PROGRAM COMMAND (inclusive).
+    - `control character` means a `C0 control character` or a code point in the range U+007F DELETE to U+009F APPLICATION PROGRAM COMMAND (inclusive).
     - `ASCII digits` are characters in the range U+0030 (`0`) to U+0039 (`9`), inclusive.
     - `ASCII uppercase hexadecimal digit` is either an ASCII digit or a code point in the range U+0041 (`A`) to U+0046 (`F`), inclusive.
     - `ASCII lowercase hexadecimal digit` is either an ASCII digit or a code point in the range U+0061 (`a`) to U+0066 (`f`), inclusive.
@@ -407,7 +407,7 @@ For example, the code point of the emoji 🤔 is U+1F914, which can be expressed
 
 Before understanding the design details of HVML in detail, we describe the key technical features of HVML through some code snippets, so that readers can have a quick overview of it.
 
-First, descriptive grammar.
+The First is descriptive syntax.
 
 HVML uses an XML-like syntax to define program structure and write code. HVML defines a small number of more than ten action tags, which can be used to define variables, manipulate data or control the execution path of the program. In conjunction with these action tags, HVML uses prepositional attributes and adverb attributes to define the source data, target data, and execution conditions that the action depends on, so as to obtain a program expression and writing effect that is closer to natural language. On the one hand, this reduces the learning threshold for developers, and on the other hand, it improves the readability of the code.
 
@@ -457,7 +457,7 @@ This syntax also allows us to mix external tags to define the structure of HVML 
 </ul>
 ```
 
-Second, flexible expressions.
+The second is flexible expressions.
 
 Based on the widely used JSON representation method, HVML enables dynamic processing capabilities and the ability to parameterize data representation. HVML extends the JSON representation method to support more data types, and defines the method of obtaining data from the underlying system or implementing a certain function by using dynamic values and native entities. Flexible expression evaluation capabilities. This can help us take advantage of existing system capabilities, and can also help developers quickly expand the functions and capabilities of HVML programs.
 
@@ -486,7 +486,7 @@ For another example, the following code implements the function similar to the C
 <init as "small" with {{ $L.lt($x, $y) && $x || $y }} temp />
 ```
 
-Third, data-driven programming.
+The third is data-driven programming.
 
 In HVML, we advocate the structure of organizing programs around the data to be processed, such as selecting data, iterating over data, performing sorting or reducing operations, observing changes in data, etc., and even we manipulate the implementation of a function by changing the data . For example, to add a timer, we don't need to call a certain programming interface, but add a new data item in a collection. We call this programming method data-driven programming.
 
@@ -506,7 +506,7 @@ For example, the following HVML snippet uses the `update` action tag, adds an ac
      </choose>
 ```
 
-Fourth, template application and unified document or data expression.
+The Fourth are template application and unified document or data expression.
 
 By using the template described by the parameterized eJSON syntax, the content of the target document used to express the tree structure can be generated and updated by the HVML program, which avoids calling specific interfaces in the program code to modify the target document, and the HVML program only needs to focus on the data itself generation and processing. In this way, the decoupling of interface and data is realized. In addition, HVML provides consistent operation actions for document and data operations. Therefore, the action elements used by HVML for operating data can be used not only for operating data, but also for operating target documents.
 
@@ -537,9 +537,9 @@ For example, the following HVML program fragment uses the `archetype` element to
 </ul>
 ```
 
-Fifth, a unique stack virtual machine.
+The fifth is unique stack VM.
 
-HVML programs are executed on an abstract stack virtual machine. After an HVML program is parsed, a vDOM (virtual DOM) tree representing the program structure is generated, and the interpreter executes each element on the vDOM in depth-first order starting from the root element. Every time a descendant element is executed, a new stack frame (stack frame) will be pushed (push) on the execution stack of the virtual machine until the leaf element of vDOM. At this time, after the interpreter executes the leaf element, it will pop up (pop ) the last stack frame, the previous stack frame becomes the last stack frame, and then try to execute the next sibling element of the corresponding element of the stack frame. On the stack virtual machine of HVML, we can implement an efficient data management model. Some data exists as intermediate data when performing operations and will be automatically released. The other part of data is maintained in the stack frame, so that these data can be automatically allocated and released. Data, only a small part of it exists in static form. With such a management mechanism, we don't need to use an expensive garbage collector in the interpreter. In addition, based on dynamically replaceable operation groups, HVML provides the function of executing or invoking operation groups in place, and implements closure-like features.
+HVML programs are executed on an abstract stack virtual machine. After an HVML program is parsed, a vDOM (virtual DOM) tree representing the program structure is generated, and the interpreter executes each element on the vDOM in depth-first order starting from the root element. Every time a descendant element is executed, a new stack frame will be pushed on the execution stack of the virtual machine until the leaf element of vDOM. At this time, after the interpreter executes the leaf element, it will pop the last stack frame, the previous stack frame becomes the last stack frame, and then try to execute the next sibling element of the corresponding element of the stack frame. On the stack virtual machine of HVML, we can implement an efficient data management model. Some data exists as intermediate data when performing operations and will be automatically released. The other part of data is maintained in the stack frame, so that these data can be automatically allocated and released. Data, only a small part of it exists in static form. With such a management mechanism, we don't need to use an expensive garbage collector in the interpreter. In addition, based on dynamically replaceable operation groups, HVML provides the function of executing or invoking operation groups in place, and implements closure-like features.
 
 For example, the following HVML code snippet demonstrates the ability to perform different groups of operations in-place depending on the current target document type:
 
@@ -561,7 +561,7 @@ For example, the following HVML code snippet demonstrates the ability to perform
 <include with ${output_$CRTN.target} on $T.get('Hello, world!') />
 ```
 
-Sixth, built-in event-driven.
+The sixth is built-in event-driven.
 
 HVML provides visibility into data, variables, and expressions at the language level. With just one `observe` element, we can observe a specific event on a piece of data, a change in the state of a variable, or even a change in the value of an expression.
 
@@ -585,7 +585,7 @@ For another example, the following code snippet binds an expression to a variabl
 
 Since `$SYS.time` returns a Unix timestamp value in seconds, the group of operations defined by the `observe` element will be executed every second.
 
-Seventh, it is easy to implement asynchronous and concurrent programming.
+The seventh is easy to implement asynchronous and concurrent programming.
 
 As mentioned earlier, loading data from external data sources, starting sub-coroutines, and initiating requests can all be performed asynchronously. To initiate an asynchronous operation, you only need to use the `async` adverb attribute in elements such as `init` and use the `observe` element to observe events on variables. As shown in the code below:
 
@@ -626,9 +626,9 @@ For example, the following code snippet calls the `collectAllDirEntriesRecursive
      </observe>
 ```
 
-HVML also allows two coroutines to send requests to each other, and the two coroutines can be in different virtual machine instances, which provides a unified and efficient communication mechanism across coroutines and virtual machines.
+HVML also allows two coroutines to send requests to each other. And the two coroutines can be in different virtual machine instances, which provides a unified and efficient communication mechanism across coroutines and virtual machines.
 
-In addition, HVML requires the interpreter to provide the ability to re-evaluate expressions (evaluating again), so that when evaluating expressions, the execution of the current coroutine can be blocked as needed, and when the corresponding condition arrives Wake up the coroutine, and then evaluate the expression again to obtain the desired result. This helps to achieve a finer-grained coroutine scheduling capability, and provides support for mechanisms such as channels (similar to the Go language), thereby enabling a simple and efficient inter-coroutine communication mechanism.
+In addition, HVML requires the interpreter to provide the ability to evaluate again, so that when evaluating expressions, the execution of the current coroutine can be blocked as needed. And when the corresponding condition arrives Wake up the coroutine, and then it will evaluate the expression again to obtain the desired result. This helps to achieve a finer-grained coroutine scheduling capability, and provides support for mechanisms such as channels (similar to the Go language), thereby enabling a simple and efficient inter-coroutine communication mechanism.
 
 For example, in the following HVML program, when two compound expressions are evaluated, the `$SYS.sleep` method will block the current coroutine, so that the virtual machine can be released and other coroutines can continue to execute:
 
@@ -660,7 +660,7 @@ For example, in the following HVML program, when two compound expressions are ev
 </hvml>
 ```
 
-The program first loads another ontology asynchronously and executes it in a sub-coroutine. The sub-coroutine outputs a line of information every second, and the main coroutine will be executed by `$SYS.sleep immediately after outputting `I will sleep 5 seconds`. (5)` Blocking. When the five seconds expire, the main coroutine will be woken up by the scheduler and continue execution. At this point, the above expression will be re-evaluated, but continue from where `$SYS.sleep(5)` is. Thus, the output of the above program is roughly:
+The program first loads another ontology asynchronously and executes it in a sub-coroutine. The sub-coroutine outputs a line of information every second. And the main coroutine will be executed by `$SYS.sleep immediately after outputting `I will sleep 5 seconds`. (5)` Blocking. When the five seconds expire, the main coroutine will be woken up by the scheduler and continue execution. At this point, the above expression will be re-evaluated, but continue from where `$SYS.sleep(5)` is. Thus, the output of the above program is roughly:
 
 ```
 COROUTINE-3: 2022-09-01T14:50:40+0800: I will sleep 5 seconds
@@ -672,11 +672,11 @@ COROUTINE-4: 2022-09-01T14:50:44+0800
 COROUTINE-3: 2022-09-01T14:50:45+0800: I am awake.
 ```
 
-Eighth, dynamics.
+The eighth is dynamics.
 
-In HVML programs, variable names, expressions, operation groups, procedures, etc. can be dynamically generated, and we can even remove a variable.
+In HVML programs, variable names, expressions, operation groups, procedures, etc. can be dynamically generated. And we can even remove a variable.
 
-The following code loads a dynamically generated HVML program using the `load` element:
+The following code loads a dynamically generated HVML program using `load` element:
 
 ```hvml
 <init as 'request'>
@@ -707,14 +707,14 @@ HVML also provides a feature called stand-in expressions, which allow us to defi
 </inherit>
 ```
 
-The `bind` element above binds the expression given by the `on` attribute to the `puts` method of the `console` variable. Afterwards, we can use `$console.puts` to refer to the original expression.
+`bind` element above binds the expression given by `on` attribute to `puts` method of `console` variable. Afterwards, we can use `$console.puts` to refer to the original expression.
 
-#### 2.1.1) Program structure
+#### 2.1.1) Program Structure
 
-The following uses a simple example to illustrate the program structure of HVML. This HVML program generates an HTML page and updates the HTML page based on user interaction; this HTML page, will display three sets of information on the screen:
+The following uses a simple example to illustrate the program structure of HVML. This HVML program generates an HTML page and updates the HTML page based on user interaction. This HTML page will display three sets of information on the screen:
 
-1. The system status bar displayed at the top of the page is used to display the current time, WiFi signal strength, battery power information, etc. This information will be updated dynamically.
-1. Display the user list in the middle of the page, and each user item includes user name, avatar and other information. The information comes from an array of dictionaries expressed in JSON.
+1. Display the system status bar at the top of the page to display the current time, WiFi signal strength, battery power information, etc. This information will be updated dynamically.
+1. Display the user list in the middle of the page. And each user item includes user name, avatar and other information. The information comes from an array of dictionaries expressed in JSON.
 1. Display a search engine link at the bottom of the page. The specific search engine is determined according to the language region (locale) information where the system is located.
 
 ```hvml
@@ -845,44 +845,44 @@ The following uses a simple example to illustrate the program structure of HVML.
 </hvml>
 ```
 
-First, HVML uses HTML-like tags to define the overall structure of the document:
+First, HVML uses  tags like HTML to define the overall structure of the document:
 
 - At the beginning of the document, we use `<!DOCTYPE hvml>` to mark the document type as `hvml`. We also use the `SYSTEM` identifier of the `DOCTYPE` to define the external label prefixes used by this HVML program and the external modules that need to be preloaded.
-- The `hvml` tag is used to define an entire HVML program. Can contain the following attributes:
+- `hvml` tag is used to define an entire HVML program. It can contain the following attributes:
     1. `target`: defines the target markup language of the HVML program, taking values such as `html`, `xml`, `void`, etc.
     1. Other attributes (such as the `lang` attribute, used to define the language, such as `en`, `zh`, etc.), will be cloned to the root element of the target document after being evaluated by the interpreter.
-- The `head` tag is used to define the header information, which can contain:
-    1. Tags that can be retained as-is to the target document, such as `<meta>`, `<link>` tags of HTML documents.
-    1. Initialization or reset of global data; defined using the `init` tag.
-    1. A global dynamic object; defined using the `init` tag.
-    1. Global templates; defined using `archedata` or `archetype` tags.
-- The `body` tag is used to define the body content of the document. In an HVML program, zero or more `body` local contents can be defined, and the `id` attribute can be used to distinguish different ontology contents. During execution, different ontology contents can be loaded via the `load` element.
+- `head` tag is used to define the header information, which can contain:
+    1. Tags that can be retained to the target document, such as `<meta>`, `<link>` tags of HTML documents.
+    1. Initialization or reset of global data: defines using `init` tag.
+    1. A global dynamic object: defines using `init` tag.
+    1. Global template: defines using `archedata` or `archetype` tags.
+- `body` tag is used to define the body content of the document. In an HVML program, zero or more `body` local contents can be defined, and `id` attribute can be used to distinguish different ontology contents. During execution, different ontology contents can be loaded via `load` element.
 
-Secondly, it can be seen from the above HVML program that HVML uses HTML-like tags (tags), and HTML tags can also be mixed. The difference between the two is:
+Secondly, it can be seen from the above HVML program that HVML uses HTML-like tags, and HTML tags can also be mixed. The difference between them is:
 
-1. HVML is dynamic and expresses programs, while HTML is static and expresses documents.
-1. Most tags in HVML are used to define action elements. Each action element performs one or a set of operations, so these tags use verbs in English; while HTML standards usually use nouns or their abbreviations as tag names, such as the common HTML tag `p` is a shorthand for paragraph (paragraph).
+1. HVML is dynamic, which expresses programs； while HTML is static， which expresses documents.
+1. Most tags in HVML are used to define action elements. Each action element performs one or a set of operations, so these tags use verbs in English; while HTML standards usually use nouns or their abbreviations as tag names, such as the common HTML tag `p` is a shorthand for paragraph.
 1. Other tags of HVML are used to define a program framework or a template, so nouns are used as tag names, such as `head` and `archetype`, which are used to define a frame element and a template element respectively.
 1. HVML can mix HTML, XML and other target markup language tags, and use non-HVML tags to define an external element. HVML assigns a uniform operation to all external elements: clone the element's attributes and content to the current target document location and implicitly adjust the context data of the HVML program.
-1. HVML tag names, attribute names, variable names, and rule keywords are case-sensitive, which is mainly for consistency with XML-related specifications.
+1. HVML tag names, attribute names, variable names, and rule keywords are case-sensitive. They are mainly for consistency with XML-related specifications.
 1. HVML elements support the following types of attributes:
-    - General properties. Currently there is only one generic attribute `id`; this attribute is used to specify the identifier of the element. In HVML, element identifiers are mainly used to locate elements or stack frames. When the attribute is used in an external element, the attribute and its value will be cloned into the target document.
-    - Noun attribute. Such as `name`, etc., usually used in template elements.
-    - Prepositional properties. Such as `on`, `with`, etc., used in verb elements.
-    - Adverb attribute. Such as `uniquely`, etc., used in verb elements.
+    - General properties: Currently there is only one generic attribute `id`. This attribute is used to specify the identifier of the element. In HVML, element identifiers are mainly used to locate elements or stack frames. When the attribute is used in an external element, the attribute and its value will be cloned into the target document.
+    - Noun attribute: Such as `name`and so on, are usually used in template elements.
+    - Prepositional properties. Such as `on`, `with`and so on, are used in verb elements.
+    - Adverb attribute. Such as `uniquely`, etc., are used in verb elements.
 
-Now compare some features of HVML with the above example. Snippets of this example are also referenced in other sections of this document.
+Now introduce some features of HVML with the above example. Snippets of this example are also referenced in other sections of this document.
 
-The first is data-driven programming. Through operations such as data-based iteration, insertion, update, and clearing, developers can dynamically generate the final XML/HTML document without writing a program or only need to write a small amount of program. For example, the `iterate` tag in the sample code above iterates over the data represented by the `$users` variable (defined using the `init` tag in `head`), and then inserts the `ul` element in the target document A number of `li` elements. Instead, the properties of `li` elements (including child elements) are defined by an `archetype` tag using `$? ` to refer to a data member in `$users` being iterated over.
+The first is data-driven programming. Through operations such as data-based iteration, insertion, update, and clearing, developers can dynamically generate the final XML/HTML document without writing a program or only need to write a small amount of program. For example, `iterate` tag in the sample code above iterates over the data represented by `$users` variable (defined using the `init` tag in `head`), and then inserts `ul` element in the target document A number of `li` elements. Instead, the properties of `li` elements (including child elements) are defined by an `archetype` tag using `$? ` to refer to a data member in `$users` being iterated over.
 
-In the sample code above, we use the system built-in variable `$TIMERS` to define timers, and each timer has a global identifier, interval time, and a flag whether it is active or not. To activate a timer, we only need to use the `update` tag of HVML to modify the corresponding key value without calling a specific programming interface. This is another use of data-driven programming - we don't need to provide additional application programming interfaces (APIs) for timers or other similar module operations.
+In the sample code above, we use the system built-in variable `$TIMERS` to define timers. And each timer has a global identifier, interval time, and a flag whether it is active or not. To activate a timer, we only need to use `update` tag of HVML to modify the corresponding key value without calling a specific programming interface. This is another use of data-driven programming - we don't need to provide additional application programming interfaces (APIs) for timers or other similar module operations.
 
 In addition, in the sample code above, we use the `observe` tag to observe new data or changes in the document itself and user interaction events, which can realize dynamic updates of XML/HTML documents or data. For example, in the last `observe` tag, a new `user.hvml` program is loaded by listening to the click event on the user's avatar, and the detailed information of the corresponding user is displayed on the new renderer page.
 
 The second is to completely decouple the interface, interaction, and data. Through the programming model and method introduced by HVML, the XML/HTML document content used to express the interface can be completely generated and dynamically adjusted by HVML, which avoids directly manipulating the data structure of the document (that is, the document object tree, or DOM for short) in the program code. tree), and the program only needs to focus on the generation and processing of the data itself. In this way, the decoupling of interface and data is realized. for example:
 
-- HVML can define the mapping relationship between data and DOM elements in the document fragment template or data template (such as the `archetype` or `archedata` element in the sample code), without writing additional code to complete the data to DOM element attributes, Assignment operations such as content.
-- HVML separates the display of errors and exceptions from the program code. As long as the program defines an appropriate error or exception template (such as the `error` and `except` elements in the sample code), the error or exception situation can be defined content to display without further programmatic processing.
+- HVML can define the mapping relationship between data and DOM elements in the document fragment template or data template (such as `archetype` or `archedata` element in the sample code), without writing additional code to complete the data to DOM element attributes, assignment operations such as content.
+- HVML separates the display of errors and exceptions from the program code. As long as the program defines an appropriate error or exception template (such as `error` and `except` elements in the sample code), the error or exception situation can be defined content to display without further programmatic processing.
 
 Thirdly, HVML provides a consistent interface for document and data operations, which reduces the complexity of the interface and effectively avoids interface explosion. In HVML, we also provide support for dynamic objects. We can use external programs to implement our own dynamic objects, and we can perform functions similar to function calls on these dynamic objects.
 
@@ -890,41 +890,41 @@ Finally, HVML uses action tags (usually some English verbs, such as `init`, `upd
 
 For the convenience of distinction, we call the DOM tree generated after parsing the HVML program vDOM (virtual DOM), and the DOM tree corresponding to the target document is called eDOM (effective DOM).
 
-#### 2.1.2) Basic data types
+#### 2.1.2) Basic Data Types
 
 HVML defines the following basic datum types:
 
-- an empty value (null).
-- Boolean value (boolean). It is used to represent true and false logical values, which can take `true` or `false` two values.
-- value (number). It is used to express integers or floating-point numbers. In general, it is equivalent to the `double` type (double-precision floating-point number) in C language.
-- string (string). For expressing text, always use UTF-8 encoding.
+- Null.
+- Boolean: It is used to represent true and false logical values, which can take `true` or `false` two values.
+- Number: It is used to express integers or floating-point numbers. In general, it is equivalent to the `double` type (double-precision floating-point number) in C language.
+- String: For expressing text, it is always use UTF-8 encoding.
 
 HVML defines the following basic container types:
 
-- array (array). Multiple data items that can be referenced using an index, with variable capacity.
-- object. Represented by single or multiple key-value pairs, also known as dictionaries, associative arrays, etc.; key-value pairs are also often called properties.
+- Array: Multiple data items that can be referenced using an index, with variable capacity.
+- Object: Represented by single or multiple key-value pairs, also known as dictionaries, associative arrays, etc.; key-value pairs are also often called properties.
 
 Primitive data item types and primitive container types are collectively referred to as primitive data types, and their representations are compatible with [JSON].
 
-#### 2.1.3) Extended data types
+#### 2.1.3) Extended Data Types
 
-This specification requires HVML interpreters to implement the following extended data types and two special data types:
+This specification requires HVML interpreter to implement the following extended data types and two special data types:
 
-- undefined. This data is used internally only to indicate that the data is not ready, or to remove a member when updating the container's data.
-- exception. This data is used internally only to indicate exceptions.
-- A signed long integer (longint), which shall be implemented as a 64-bit signed integer.
-- An unsigned long integer (ulongint), which shall be implemented as a 64-bit unsigned integer.
-- Long floating point number (longdouble), corresponding to the C language long double type.
-- Byte sequence (bsequence).
-- Tuple (tuple), multiple data items that can be referenced by index, once created, its capacity is immutable, and its members cannot be removed, only empty.
-- A set, a special array in which members are unique based on their values or unique keys on an array of objects.
+- Undefined: This data is used internally only to indicate that the data is not ready, or to remove a member when updating the container's data.
+- Exception: It is used internally only to indicate exceptions.
+- Longint: It shall be implemented as a 64-bit signed integer.
+- Ulongint: It shall be implemented as a 64-bit unsigned integer.
+- Longdouble: It is corresponding to the C language long double type.
+- Bsequence.
+- Tuple: Multiple data items that can be referenced by index, once created, its capacity is immutable, and its members cannot be removed, only empty.
+- Set: A special array in which members are unique based on their values or unique keys on an array of objects.
 
 The representations of the above extended data types use the [2.2.5) eJSON syntax] (#225-ejson-syntax) defined in this document. In this article, "eJSON" is an acronym for `extended JSON`.
 
 HVML also defines the following two special data types:
 
-- dynamic value. Dynamic values are essentially composed of `getter (getter)` and `setter (setter)` methods. When reading, the getter returns the corresponding value, and when setting, the setter completes the corresponding work.
-- native entity. The native entity implemented by the bottom layer is usually used to represent some abstract data that can perform complex operations, such as read and write streams, long connections, etc. These complex operations include implementing getter or setter methods on virtual properties, implementing observations on native objects, and so on.
+- Dynamic value: It is essentially composed of `getter` and `setter` methods. When reading, the getter returns the corresponding value, and when setting, the setter completes the corresponding work.
+- Native entity: It is implemented by the bottom layer is usually used to represent some abstract data that can perform complex operations, such as read and write streams, long connections, etc. These complex operations include implementing getter or setter methods on virtual properties, implementing observations on native objects, and so on.
 
 The special data types mentioned above are intrinsic data types, valid only at runtime, and accessible through variables and expressions in HVML code.
 
@@ -936,7 +936,7 @@ From the point of view of an HVML program, accessing a dynamic property is no di
 
 As another feature of dynamic properties, we can treat a specific property as an object and provide virtual properties on it. For example, when we access `$SYS.uname_prt.default`, we will get the current operating system kernel name (like `Linux`).
 
-Furthermore, we can also use a specific property as a function, pass parameters to obtain different return values, or set a specific value for the property. For example, on the `$SYS` object, if we want to get the kernel name and release version number of the current operating system, we can use `$SYS.uname_prt('kernel-name kernel-release')`, at this time, we will get A string like `Linux 5.4.0-107-generic`.
+Furthermore, we can also use a specific property as a function, pass parameters to obtain different return values, or set a specific value for the property. For example, on `$SYS` object, if we want to get the kernel name and release version number of the current operating system, we can use `$SYS.uname_prt('kernel-name kernel-release')`, at this time, we will get A string like `Linux 5.4.0-107-generic`.
 
 In addition to using `( )`, which is similar to a function call, we can also use `(! )`, which is used to set a property. For example, use `$SYS.cwd` to get the current working directory, and use `$SYS.cwd(! '/tmp' )` to set the current working directory.
 
@@ -954,14 +954,14 @@ When we refer to a dynamic property that does not exist on a dynamic object, or 
 
 Through such a design, we can easily and effectively expand the functions of HVML, and exchange data with external modules through dynamic objects, or call the functions of external modules.
 
-#### 2.1.4) Mandatory conversion rules for any data type
+#### 2.1.4) Casting Rules for Arbitrary Data Types
 
 ##### 2.1.4.1) Numericalization
 
 In the case where arbitrary data needs to be coerced into a numeric value, convert it to a numeric value according to the following rules:
 
 1. `null`, `undefined`, `false` values are converted to 0.
-1. The `true` value is converted to 1.
+1. `true` value is converted to 1.
 1. Empty strings are treated as 0; non-empty strings are converted according to the rules of eJSON values, such as `123.34` will be converted to real numbers, and `abcd` will be converted to 0.
 1. An empty byte sequence is treated as 0; a non-empty byte sequence takes the highest 64 bits (up to 8 bytes) and converts it into a signed long integer in little-endian byte order, and then converts it into a value.
 1. For dynamic values, if there is no getter method, it will be treated as 0; if there is a getter method, no parameter will be passed to call the getter method, if the return value is invalid, it will be 0, if the return value is numeric, Then take its value, if the return value is non-numeric, it will be processed recursively according to this rule.
@@ -972,34 +972,34 @@ In the case where arbitrary data needs to be coerced into a numeric value, conve
 
 The above operation is called "numerify".
 
-##### 2.1.4.2) Booleanization
+##### 2.1.4.2) Booleanize
 
 When it is necessary to obtain the Boolean logic true or false value of any data, it is converted into a Boolean value according to the following rules:
 
 1. Always treat `false` for:
     - `null`, `undefined`, `false`.
     - Value: 0.
-    - an empty string.
-    - an empty array.
-    - an empty tuple.
-    - an empty object.
-    - an empty collection.
-    - A byte sequence of length zero.
+    - Empty string.
+    - Empty array.
+    - Empty tuple.
+    - Empty object.
+    - Empty collection.
+    - Byte sequence of length zero.
 1. Dynamic value: If there is no getter method, it will be treated as `false`; if it exists, the getter method will be called without passing any parameters, and the return value will be judged according to this rule.
-1. Native entity: try to get the getter method of the `__boolean` key name, if the method exists, call the getter without passing any parameters, and judge the return value recursively according to this rule; if the method does not exist, take `false `.
+1. Native entity: Try to get the getter method of the `__boolean` key name, if the method exists, call the getter without passing any parameters, and judge the return value recursively according to this rule; if the method does not exist, take `false `.
 1. Other cases are always considered `true`, including:
     - `true`.
-    - A non-zero value.
-    - A non-empty string.
-    - a non-empty array.
-    - non-empty tuple.
-    - a non-null object.
-    - a non-empty collection.
-    - A sequence of bytes with non-zero length.
+    - Non-zero value.
+    - Non-empty string.
+    - Non-empty array.
+    - Non-empty tuple.
+    - Non-null object.
+    - Non-empty collection.
+    - Sequence of bytes with non-zero length.
 
 The above operations are called "booleanize".
 
-##### 2.1.4.3) Stringification
+##### 2.1.4.3) Stringify
 
 In the case where any data needs to be forcibly converted to a string, convert according to the following rules:
 
@@ -1009,11 +1009,11 @@ In the case where any data needs to be forcibly converted to a string, convert a
 1. Byte sequence, using the hexadecimal representation of the byte sequence, all uppercase.
 1. For dynamic values, the unified output is `<dynamic: %getter, %setter>`, where `%getter` and `%setter` respectively represent the formatted output of the two methods of dynamic values, and the specific form is determined by the interpreter .
 1. For native entities, the unified output is `<native: %entity>`, where `%entity` represents the formatted output of native entities, and the specific form is determined by the interpreter.
-1. Array: concatenate the character strings of all members, and append a semicolon (+U003B SEMICOLON) character after each member.
-1. Tuple: concatenate the character strings of all members, and append a semicolon (+U003B SEMICOLON) character after each member.
-1. Dictionary: connect the character string corresponding to the key name of all attributes and the string corresponding to the key value, separated by a colon (+U003A COLON), and append a comma (+U002C COMMA) character after each attribute.
+1. Array: Concatenate the character strings of all members, and append a semicolon (+U003B SEMICOLON) character after each member.
+1. Tuple: Concatenate the character strings of all members, and append a semicolon (+U003B SEMICOLON) character after each member.
+1. Dictionary: Connect the character string corresponding to the key name of all attributes and the string corresponding to the key value, separated by a colon (+U003A COLON), and append a comma (+U002C COMMA) character after each attribute.
 
-The above operation is called "stringify (stringify)".
+The above operation is called "stringify".
 
 For example, the following JSON data,
 
@@ -1033,9 +1033,9 @@ id:1,name:Tom,age:2,male:true,;id:2,name:Jerry,age:3,male:true,
 
 The purpose of stringifying data is to perform operations such as comparing and sorting multiple data according to strings, and it is also used to process the evaluation results of parameterized strings and to concatenate with other parts of strings.
 
-Note that "stringification" is different from "serialization", which refers to formatting data according to JSON or eJSON.
+Note that "stringify" is different from "serialize", which refers to formatting data according to JSON or eJSON.
 
-##### 2.1.4.4) Serialization
+##### 2.1.4.4) Serialize
 
 "Serialize" means to format arbitrary data according to JSON or eJSON. eJSON format, see this document [2.2.5) eJSON syntax] (#225-ejson-syntax).
 
@@ -1045,7 +1045,7 @@ When serializing, if the output is in JSON format, the data of the eJSON extensi
 1. Dynamic value.
 1. Primary entity.
 
-##### 2.1.4.5) Key-value objects
+##### 2.1.4.5) Key-Value Objects
 
 In HVML, we can represent a key-value pair in an object as a new object, such as:
 
@@ -1080,28 +1080,28 @@ An array of key-value objects essentially forms a collection with `k` as the uni
 
 It should be noted that the HVML interpreter will implicitly convert a property of the object to a key-value object on request, and we usually do not need to perform this conversion explicitly.
 
-#### 2.1.5) Mutable and immutable data
+#### 2.1.5) Mutable and Immutable Data
 
 In HVML, we refer to the following data types as immutable data:
 
-- undefined.
-- an empty value (null).
-- true value (true).
-- False value (false).
-- value (number).
-- string (string).
-- byte sequence.
-- dynamic value.
-- native entity.
+- Undefined.
+- Null.
+- True.
+- False.
+- Number.
+- String.
+- Byte sequence.
+- Dynamic value.
+- Native entity.
 
 The meaning of immutable data is that we cannot change the value of this data at runtime, but can only construct a new data to represent the new value.
 
 We refer to the following data types as mutable data:
 
-- array (array).
-- tuple.
-- object.
-- collection (set).
+- Array.
+- Tuple.
+- Object.
+- Set.
 
 In contrast to immutable data, the meaning of mutable data is that we can change the value of this data at runtime. Essentially, mutable data is container class data, that is, arrays, tuples, objects, and collections. When we change the value of these data, what we essentially change is the content contained in these data, such as deleting or modifying one of the data items.
 
@@ -1115,54 +1115,54 @@ HVML does not provide any operations that can be used to change immutable data, 
 
 In addition to the above tags used to define the overall structure of the document, HVML provides the following tags used to define data:
 
-- `init`: This tag initializes a variable; we refer to named data as variables. Using the `init` tag at the head of an HVML program (defined by the `head` tag) will initialize a global variable by default. Using the `init` tag within the body of an HVML program (defined by the `body` tag) will define a local variable that is only valid within the subtree defined by its parent element. We can directly embed JSON data into the `init` tag, or get it by loading external content through protocols such as HTTP. When requesting via HTTP, use the `from` attribute to define the URL of the request, the `with` attribute to define the parameters of the request, and the `via` attribute to define the method of the request (such as `GET` or `POST`).
+- `init`: This tag initializes a variable; we refer to named data as variables. Using `init` tag at the head of an HVML program (defined by `head` tag) will initialize a global variable by default. Using the `init` tag within the body of an HVML program (defined by `body` tag) will define a local variable that is only valid within the subtree defined by its parent element. We can directly embed JSON data into `init` tag, or get it by loading external content through protocols such as HTTP. When requesting via HTTP, use `from` attribute to define the URL of the request, `with` attribute to define the parameters of the request, and `via` attribute to define the method of the request (such as `GET` or `POST`).
 - `bind`: This tag is used to define an expression variable.
 
-##### 2.1.6.1) The type of the variable
+##### 2.1.6.1) Types of Variables
 
 In HVML, when we refer to variables, we use `$` prefix like `$global`, `$users`, `$?` etc. When we want to refer to the normal `$` character, we use `\` as escape character.
 
-Variables such as `$global` and `$users` are called named variables, which are divided into static named variables and temporary named variables; `$?` variables that use special characters are called It is a context variable (context variables), and its value is determined according to the running context (execution stack) of the HVML interpreter. It should be noted that in HVML-related documents, the execution stack of a program extends from top to bottom, and the first stack frame (stack frame) that is pushed is called the topmost (topmost) stack frame.
+Variables such as `$global` and `$users` are called named variables, which are divided into static named variables and temporary named variables; `$?` variables that use special characters are called It is a context variable, and its value is determined according to the execution stack of the HVML interpreter. It should be noted that in HVML-related documents, the execution stack of a program extends from top to bottom, and the first stack frame that is pushed is called the topmost stack frame.
 
 In HVML, context variables and static variables are managed differently:
 
 1. The context variable exists on the execution stack of the HVML program, and is automatically destroyed when the corresponding stack frame is popped up. It is essentially a temporary variable.
-1. Static named variables are static, global, and associated with an element node in the vDOM tree. A statically named variable persists unless it is reset with an `undefined` value in the `init` action.
-1. A temporary named variable is essentially a special context variable.
+1. Static named variables are static, global, and associated with an element node in the vDOM tree. A statically named variable persists unless it is reset with `undefined` value in `init` action.
+1. Temporary named variable is essentially a special context variable.
 1. If you use the name of a named variable to refer to a variable instead of using the special symbols of the context variable in the program, the interpreter will first look for a temporary variable matching the name in the current execution stack, and then in the parent element of the current vDOM position and ancestor elements to find a static variable matching that name.
 
-##### 2.1.6.2) Context variables
+##### 2.1.6.2) Context Variables
 
 The context variables defined by HVML are listed as follows:
 
-- `@`: Refers to the current document operation position, expressed by the eDOM element collection (target element collection), usually defined by the preposition attribute `in` in the preceding operation.
-- `?`: Refers to the result data (result data) of the previous operation.
-- `!`: Refers to user-defined data (user data), which can be used to refer to temporary variables.
-- `^`: Refers to the content data (content data) of the pre-operation, only for action elements and frame elements, and undetermined in other cases.
+- `@`: Refer to the current document operation position, expressed by the eDOM element collection (target element collection), usually defined by the preposition attribute `in` in the preceding operation.
+- `?`: Refer to the result data of the previous operation.
+- `!`: Refer to user data, which can be used to refer to temporary variables.
+- `^`: Refer to the content data of the pre-operation, only for action elements and frame elements, and undetermined in other cases.
 - `:`: If the result data of the pre-operation is a key-value object, the variable represents the key name, otherwise it is undetermined.
 - `=`: If the result data of the pre-operation is a key-value object, the variable represents the key value, otherwise it is undetermined.
 
 The following context variables are specific to iteration (undefined otherwise):
 
-- `%`: the current iteration index value (iteration index), for example, the first iteration, the value of this variable is 0, the second iteration, the value of this variable is 1, and so on.
+- `%`: The current iteration index value. For example, the first iteration, the value of this variable is 0, the second iteration, the value of this variable is 1, and so on.
 - `~` or `<`: The iteration data for the current iteration, initially defined by the preposition attribute `on` and possibly updated after each iteration.
 
 We can also prepend a positive integer to the sign of a context variable to refer to context data going back `<N>` levels from the current one:
 
-- `$<N><SYMB>`, such as `$1<`, `$1?`, etc.: refers to the context data of `<N>` level back from the current context; here `<N>` must be zero or positive integer. This context variable is mainly used to access context data in previous stack frames on the execution stack. When `<N>` is zero, it refers to accessing context variables in the current stack frame.
+- `$<N><SYMB>`, such as `$1<`, `$1?`, etc.: Refers to the context data of `<N>` level back from the current context; here `<N>` must be zero or positive integer. This context variable is mainly used to access context data in previous stack frames on the execution stack. When `<N>` is zero, it refers to accessing context variables in the current stack frame.
 
 The context variables in the current stack frame are described as follows:
 
 1. All context variables are initially defined as undetermined. Accessing undefined context variables will raise a `NoData` exception.
-1. The setting of context variables is related to certain properties, such as `$0<` initially from the `on` attribute value, `$0@` from the `in` attribute value or inherited from the previous stack frame. Therefore, when referring to these context variables, attention should be paid to the evaluation order of attribute values stipulated by the action element.
+1. The setting of context variables is related to certain properties, such as `$0<` initially from `on` attribute value, `$0@` from `in` attribute value or inherited from the previous stack frame. Therefore, when referring to these context variables, attention should be paid to the evaluation order of attribute values stipulated by the action element.
 
-To improve the readability of the code, we can also use the anchor defined by the `id` attribute of the element to define the context variable to be referenced:
+To improve the readability of the code, we can also use the anchor defined by `id` attribute of the element to define the context variable to be referenced:
 
-- `$#<ANCHOR><SYMB>`, such as `$#theAnchor~`, `$#theAnchor?`, etc.: refers to backtracking from the current stack frame along the execution stack and using `<ANCHOR>` to match the corresponding vDOM element `id` attribute value to locate the context data of a stack frame on the execution stack.
+- `$#<ANCHOR><SYMB>`, such as `$#theAnchor~`, `$#theAnchor?`, etc.: Refers to backtracking from the current stack frame along the execution stack and using `<ANCHOR>` to match the corresponding vDOM element `id` attribute value to locate the context data of a stack frame on the execution stack.
 
-##### 2.1.6.3) Predefined variables
+##### 2.1.6.3) Predefined Variables
 
-In HVML, we usually use the `as` attribute to name data, but HVML reserves several variable names for predefined occasions. We call them predefined global variables, and it is customary to use all uppercase.
+In HVML, we usually use `as` attribute to name data, but HVML reserves several variable names for predefined occasions. We call them predefined global variables, and it is customary to use all uppercase.
 
 According to whether it contains dynamic objects or not, HVML's predefined variables can be divided into:
 
@@ -1171,13 +1171,13 @@ According to whether it contains dynamic objects or not, HVML's predefined varia
 
 According to the scope of the variable corresponding to the data, the predefined variables of HVML can be divided into:
 
-1. Walker-level variables. It means that the data corresponding to this variable is visible to all HVML coroutines in the current interpreter instance. That is to say, different coroutines in the same walker correspond to the same data copy.
-1. Coroutine-level variables. Indicates that the data corresponding to this variable is only visible to a single HVML coroutine in the current interpreter instance. That is, different HVML coroutines have their own copy of the data.
+1. Walker-level variables: It means that the data corresponding to this variable is visible to all HVML coroutines in the current interpreter instance: That is, different coroutines in the same walker correspond to the same data copy.
+1. Coroutine-level variables: Indicate that the data corresponding to this variable is only visible to a single HVML coroutine in the current interpreter instance. That is, different HVML coroutines have their own copy of the data.
 
 According to whether the variable must be provided, the predefined variables of HVML can be divided into:
 
-1. Required variables. The interpreter must implement this variable.
-1. Optional variables. Implementation of this variable is optional.
+1. Required variables: The interpreter must implement this variable.
+1. Optional variables: Implementation of this variable is optional.
 
 As part of the HVML specification collection, the document [HVML Predefined Variables](hvml-spec-predefined-variables-v1.0-zh.md) specifies all the predefined variables and their interfaces in detail, and the interpreter should do corresponding implementation.
 
@@ -1193,13 +1193,13 @@ hvml. load ("a. hvml", { "nrUsers" : 10 })
 
 In the HVML program, we can use `$REQ.nrUsers` to refer to the value (`10`) passed in by the above script code.
 
-The `$REQ` variable is essentially a necessary coroutine-level non-dynamic object.
+`$REQ` variable is essentially a necessary coroutine-level non-dynamic object.
 
 2) `$SYS`
 
 `$SYS`: A dynamic object used to access the basic functions of the system, which can be used to provide system time, current locale (region), time zone, random sequence, machine name, etc. For example, if we want to get the current Unix timestamp, we can use `$SYS.time` directly, if we want to get a random sequence, we can use `$SYS.random_sequence`, if we want to get the current machine name, we can use `$ SYS.uname`, if you want to get the current language and region information, you can use `$SYS.locale`.
 
-The `$SYS` variable is essentially a necessary walker-level dynamic object.
+`$SYS` variable is essentially a necessary walker-level dynamic object.
 
 3) `$RUNNER`
 
@@ -1208,14 +1208,14 @@ The `$SYS` variable is essentially a necessary walker-level dynamic object.
 1. `$RUNNER.app_name`: Get the application name of the current runner.
 1. `$RUNNER.run_name`: Get the runner name of the current runner.
 1. `$RUNNER.rid`: Get the runner identifier of the current runner.
-1. `$RUNNER.uri`: Get the Uniform Resource Identifier (URI) of the current runner.
-1. `$RUNNER.myObj`: static property, user-defined object.
+1. `$RUNNER.uri`: Get the URI of the current runner.
+1. `$RUNNER.myObj`: Static property, user-defined object.
 1. `$RUNNER.user`: Get or set the properties of `$RUNNER.myObj` object.
 1. `$RUNNER.chan`: Create a channel.
 
-Channel (channel) is an important inter-coroutine communication mechanism.
+Channel is an important inter-coroutine communication mechanism.
 
-The operation mechanism of the channel is very simple: when a coroutine wants to receive data from a channel without data, the coroutine will be blocked, and when other coroutines write data to the channel, the coroutine will be automatically blocked. wake. The following program creates two sub-coroutines to act as the sender and receiver respectively, and realizes the communication between the coroutines through the channel:
+The operation mechanism of the channel is very simple: When a coroutine wants to receive data from a channel without data, the coroutine will be blocked, and when other coroutines write data to the channel, the coroutine will be automatically blocked. wake. The following program creates two sub-coroutines to act as the sender and receiver respectively, and realizes the communication between the coroutines through the channel:
 
 ```hvml
 <hvml target="void">
@@ -1294,31 +1294,31 @@ The above code, the final output will be roughly as follows:
 1. `$CRTN.uri`: Get the URI of the current coroutine.
 1. `$CRTN.token`: Get or set the token of the current coroutine.
 
-Among them, the coroutine token is a unique identifier in the walker automatically assigned by the interpreter, which can be used to identify a coroutine. The interpreter can take the serial number of the new coroutine maintained by the walker or the decimal string corresponding to the coroutine identifier as the default token. A coroutine can override this auto-assigned token by calling the setter of the `$CRTN.token` property. Note that we reserve token names starting with an underscore for special purposes. For example `_main` means the first coroutine created by the walker.
+Among them, the coroutine token is a unique identifier in the walker automatically assigned by the interpreter, which can be used to identify a coroutine. The interpreter can take the serial number of the new coroutine maintained by the walker or the decimal string corresponding to the coroutine identifier as the default token. A coroutine can override this auto-assigned token by calling the setter of `$CRTN.token` property. Note that we reserve token names starting with an underscore for special purposes. For example, `_main` means the first coroutine created by the walker.
 
-In addition, we can also observe some global events and changes in the rendering state of the current coroutine through the `$CRTN` object, so as to gracefully handle the situation where the renderer page is closed by the user or the renderer is lost. These events are:
+In addition, we can also observe some global events and changes in the rendering state of the current coroutine through `$CRTN` object, so as to gracefully handle the situation where the renderer page is closed by the user or the renderer is lost. These events are:
 
-- `idle`: The current HVML coroutine is listening to the `idle` event on `$CRTN`, and the `idle` event is fired because no event has been received.
+- `idle`: The current HVML coroutine is listening to `idle` event on `$CRTN`, and `idle` event is fired because no event has been received.
 - `rdrState:pageClosed`: The renderer page corresponding to the coroutine is closed by the user.
 - `rdrState:pageSuppressed`: The interaction between the coroutine and the renderer (including updating the page and accepting interaction events from the renderer) is suppressed.
 - `rdrState:pageReload`: The document content of the current coroutine is reloaded to the renderer, and the renderer state is adjusted to `regular`.
 - `rdrState:connLost`: The walker where the coroutine is located has lost the connection to the renderer.
 
-The `$CRTN` variable is essentially a necessary coroutine-level dynamic object.
+`$CRTN` variable is essentially a necessary coroutine-level dynamic object.
 
 5) `$DOC`
 
-`$DOC` is a dynamic object representing the target documentation generated by HVML. We can use specific key names on this object and the `query` method to get a collection of elements on the target document through CSS selectors, such as:
+`$DOC` is a dynamic object representing the target documentation generated by HVML. We can use specific key names on this object and `query` method to get a collection of elements on the target document through CSS selectors, such as:
 
 1. `$DOC.doctype`: Get the content of the `doctype` node of the target document.
 1. `$DOC.query("#foo")`: Get the collection of elements whose `id` attribute value is `foo` in the target document.
 1. `$DOC.query(".bar")`: Obtain the collection of elements formed by all elements whose `class` attribute value is `bar` in the target document.
 
-The `$DOC` variable is essentially a necessary coroutine-level dynamic object.
+`$DOC` variable is essentially a necessary coroutine-level dynamic object.
 
 6) `$TIMERS`
 
-`$TIMERS` Timers for the current HVML program, with a fixed format, initially an empty set. Its value can be modified using elements such as `update`, such as:
+`$TIMERS` is for the current HVML program, with a fixed format, initially an empty set. Its value can be modified using elements such as `update`, such as:
 
 ```hvml
 <head>
@@ -1331,9 +1331,9 @@ The `$DOC` variable is essentially a necessary coroutine-level dynamic object.
 </head>
 ```
 
-The above `update` element contained in the `head` element defines two timers (with identifiers `foo` and `bar`) with intervals of 1 second and 2 seconds respectively (timers are defined in milliseconds) . Neither timer is active (`active` is `no`).
+The above `update` element contained in `head` element defines two timers (with identifiers `foo` and `bar`) with intervals of 1 second and 2 seconds respectively (timers are defined in milliseconds) . Neither timer is active (`active` is `no`).
 
-Just modify the `active` parameter of a timer in HVML to activate the timer, and then use the `observe` tag to monitor the timer expiration time:
+Just modify `active` parameter of a timer in HVML to activate the timer, and then use `observe` tag to monitor the timer expiration time:
 
 ```hvml
      <choose on="$TIMERS" by="FILTER: AS 'foo'">
@@ -1347,34 +1347,34 @@ Just modify the `active` parameter of a timer in HVML to activate the timer, and
      </observe>
 ```
 
-The `$TIMERS` variable is essentially a necessary coroutine-level non-dynamic object.
+`$TIMERS` variable is essentially a necessary coroutine-level non-dynamic object.
 
 7) `$L`
 
 `$L` is a dynamic object that performs logical operations such as numerical comparison, string comparison, and, or, XOR, negation, etc., such as:
 
-1. `$L.not(<any>)`: used for logical inversion operation.
-1. `$L.and(<any>, <any>, ...)`: used for logical AND operation.
-1. `$L.or(<any>, <any>, ...)`: used for logical or operation.
-1. `$L.xor(<any>, <any>)`: used for logical XOR operation.
-1. `$L.eq(<any>, <any>)`: used to compare whether two parameters are numerically equal.
-1. `$L.ne(<any>, <any>)`: used to compare whether two parameters are not equal in value.
+1. `$L.not(<any>)`: Used for logical inversion operation.
+1. `$L.and(<any>, <any>, ...)`: It is used for logical AND operation.
+1. `$L.or(<any>, <any>, ...)`: It is used for logical or operation.
+1. `$L.xor(<any>, <any>)`: It is used for logical XOR operation.
+1. `$L.eq(<any>, <any>)`: It is used to compare whether two parameters are numerically equal.
+1. `$L.ne(<any>, <any>)`: It is used to compare whether two parameters are not equal in value.
 1. `$L.gt(<any>, <any>)`: It is used to compare whether the first parameter is numerically greater than the second parameter.
-1. `$L.ge(<any>, <any>)`: Used to compare whether the first parameter is numerically greater than or equal to the second parameter.
+1. `$L.ge(<any>, <any>)`: It is used to compare whether the first parameter is numerically greater than or equal to the second parameter.
 1. `$L.lt(<any>, <any>)`: It is used to compare whether the first parameter is numerically smaller than the second parameter.
-1. `$L.le(<any>, <any>)`: Used to compare whether the first parameter is numerically less than or equal to the second parameter.
-1. `$L.streq(<'caseless | case | wildcard | reg'>, <any>, <any>)`: used to compare whether two strings are equal; the first parameter is used to represent the string Matching method (case-sensitive, wildcard, regular expression), and the following two parameters are used to pass two strings.
+1. `$L.le(<any>, <any>)`: It is used to compare whether the first parameter is numerically less than or equal to the second parameter.
+1. `$L.streq(<'caseless | case | wildcard | reg'>, <any>, <any>)`: It is used to compare whether two strings are equal; the first parameter is used to represent the string Matching method (case-sensitive, wildcard, regular expression), and the following two parameters are used to pass two strings.
 
-For example, the result of `$L.not($L.gt(5, 3))` is a false value (`false`).
+For example, the result of `$L.not($L.gt(5, 3))` is `false`.
 
-The `$L` variable is essentially a necessary walker-level dynamic object.
+`$L` variable is essentially a necessary walker-level dynamic object.
 
 8) `$T`
 
 This variable is mainly used for localization of text and contains two attributes:
 
-1. `map`: an object used to save the mapping relationship of localized strings, initially an empty object.
-1. `get`: Used for string localization, if no mapping relationship is defined in `map`, the original string will be returned.
+1. `map`: An object used to save the mapping relationship of localized strings, initially an empty object.
+1. `get`: It is used for string localization, if no mapping relationship is defined in `map`, the original string will be returned.
 
 Common usage is as follows:
 
@@ -1417,7 +1417,7 @@ The above code will eventually be interpreted as the following HTML document:
 </html>
 ```
 
-The `$T` variable is essentially a necessary coroutine-level dynamic object.
+`$T` variable is essentially a necessary coroutine-level dynamic object.
 
 9) `$DATA`
 
@@ -1425,49 +1425,49 @@ This variable is mainly used to obtain information related to the specified data
 
 1. `$DATA.type(<any>)`: Get the type of data, such as `null`, `boolean`, `longdouble`, etc., and return a string representing the data type.
 1. `$DATA.count(<any>)`: Get the number of data items of the given data.
-1. `$DATA.numerify(<any>, ["number | longint | ulongint | longdouble": the number subtype to return])`: perform numericalization on the given data, and the type of the result data is the specified real number type , which defaults to `number`.
+1. `$DATA.numerify(<any>, ["number | longint | ulongint | longdouble": the number subtype to return])`: Perform numericalization on the given data, and the type of the result data is the specified real number type , which defaults to `number`.
 1. `$DATA.stringify(<any>)`: Stringify the given data, and the type of the resulting data is a string.
 1. `$DATA.serilize(<any>, <string: options>)`: Perform eJSON serialization on the given data, and the type of the resulting data is a string.
-1. `$DATA.arith(<arithmetic operation>, <any: operand>, <any: operand>)`: convert the given two items of data to `longint`, and then perform the specified four arithmetic operations (addition, minus, etc.) and return the result.
-1. `$DATA.bitwise(<bitwise operation>, <any: operand>[, <any: operand>])`: convert the given item or items of data to `ulongint`, and then execute the specified Bitwise operations (and, or, etc.) and return the result.
+1. `$DATA.arith(<arithmetic operation>, <any: operand>, <any: operand>)`: Convert the given two items of data to `longint`, and then perform the specified four arithmetic operations (addition, minus, etc.) and return the result.
+1. `$DATA.bitwise(<bitwise operation>, <any: operand>[, <any: operand>])`: Convert the given item or items of data to `ulongint`, and then execute the specified Bitwise operations (and, or, etc.) and return the result.
 1. `$DATA.select(<container>, <string: selector>[, <boolean: recursively])`: Return qualified data items or a collection of data in the given container data according to the given selector.
 
 The rules for the number of data items of each data type are as follows:
 
 - Array, tuple, or set: The number of data items refers to the number of members in the array, tuple, or set.
 - Object: The number of data items refers to the number of key-value pairs.
-- Other data types, such as strings, numbers, `true`, `false` or `null`, etc.: the number of data items is 1.
+- Other data types, such as strings, numbers, `true`, `false` or `null`, etc.: The number of data items is 1.
 - `undefined`: The number of data items is 0.
 
-In the `select` method, we use a CSS selector-like approach to the second parameter (`selector`) to return a certain data item or a collection of some data items, such as:
+In `select` method, we use a CSS selector-like approach to the second parameter (`selector`) to return a certain data item or a collection of some data items, such as:
 
-- in a tree, array or tuple for dictionary-based data:
-    - `[<key_name>]`: Indicates a data item defined with a `<key_name>` key name.
-    - `[<key_name> = <value>]`: Indicates all data items whose key value of `<key_name>` is equal to `<value>`.
-    - `[<key_name> ~= <value>]`: Indicates that all the key values of `<key_name>` contain data items of complete tokens separated by `<value>` as whitespace characters.
-    - `[<key_name> *= <value>]`: Indicates that all the key values of `<key_name>` contain data items whose substring is `<value>`.
-    - `[<key_name> ^= <value>]`: Indicates all data items whose key value of `<key_name>` starts with `<value>`.
-    - `[<key_name> $= <value>]`: Indicates all data items whose key value of `<key_name>` ends with `<value>`.
+- In a tree, array or tuple for dictionary-based data:
+    - `[<key_name>]`: Indicate a data item defined with a `<key_name>` key name.
+    - `[<key_name> = <value>]`: Indicate all data items whose key value of `<key_name>` is equal to `<value>`.
+    - `[<key_name> ~= <value>]`: Indicate that all the key values of `<key_name>` contain data items of complete tokens separated by `<value>` as whitespace characters.
+    - `[<key_name> *= <value>]`: Indicate that all the key values of `<key_name>` contain data items whose substring is `<value>`.
+    - `[<key_name> ^= <value>]`: Indicate all data items whose key value of `<key_name>` starts with `<value>`.
+    - `[<key_name> $= <value>]`: Indicate all data items whose key value of `<key_name>` ends with `<value>`.
 - for arrays or tuples:
-    - `:nth-child(<n>)`: Indicates the `<n>`th data item in the current array or tuple; `<n>` can be a number, a keyword or a formula.
-    - `<type>:nth-of-type(<n>)`: Indicates all `<n>`th data items whose type is `<type>` in the current array or tuple; `<n>` can Is a number, keyword or formula.
+    - `:nth-child(<n>)`: Indicate `<n>`th data item in the current array or tuple; `<n>` can be a number, a keyword or a formula.
+    - `<type>:nth-of-type(<n>)`: Indicate all `<n>`th data items whose type is `<type>` in the current array or tuple; `<n>` can Is a number, keyword or formula.
 
 After using the above selector, it is equivalent to doing some filtering on the original single data item. For example, `<choose on="$users" ... />` selects the entire `$users` array or tuple content for subsequent processing, but if you use `<choose on="$DATA.select($users, " :nth-child(even)")` selects only the array or tuple members whose subscripts are even numbers.
 
-The `$DATA` variable is essentially a necessary walker-level dynamic object.
+`$DATA` variable is essentially a necessary walker-level dynamic object.
 
 10) `$STREAM`
 
-`$STREAM` is used to implement read and write stream based operations. Similar to the `query` method of the `$DOC` variable, the `open` method provided on this variable returns a native entity on which we provide an interface for reading from or writing to the stream .
+`$STREAM` is used to implement read and write stream based operations. Similar to the `query` method of the `$DOC` variable, `open` method provided on this variable returns a native entity on which we provide an interface for reading from or writing to the stream .
 
-The native entity returned by the `$STREAM.open` method is called a "stream entity". Stream entities provide the following basic interfaces:
+The native entity returned by `$STREAM.open` method is called a "stream entity". Stream entities provide the following basic interfaces:
 
-- `readbytes` and `writebytes` methods: read and write sequences of bytes.
-- `readstruct` and `writestruct` methods: read and write binary data structures.
-- `readlines` and `writelines` methods: read and write lines of text.
+- `readbytes` and `writebytes` methods: Read and write sequences of bytes.
+- `readstruct` and `writestruct` methods: Read and write binary data structures.
+- `readlines` and `writelines` methods: Read and write lines of text.
 - `seek`: within a seekable stream repositions the read and write position of the stream.
 
-For convenience, we provide the following static properties on the `$STREAM` variable:
+For convenience, we provide the following static properties on `$STREAM` variable:
 
 - `stdin`, `stdout`, and `stderr` static attributes: Stream entity wrappers for C language standard input, standard output, and standard error.
 
@@ -1481,7 +1481,7 @@ The stream entity should be observable, so that it can listen to whether there i
      </observe>
 ```
 
-In addition, the `STREAM` variable should use an extensible implementation. On the one hand, we can extend the types of stream entities, such as from files, anonymous pipes, and named pipes to Unix sockets and TCP connections. On the other hand, we can support Different protocols extend the operation methods provided by stream entities to provide additional read and write methods on stream entities. For example, when the `$STREAM` method implemented by an interpreter supports sending HTTP protocol, the method of sending HTTP request and processing HTTP protocol can be realized:
+In addition, `STREAM` variable should use an extensible implementation. On the one hand, we can extend the types of stream entities, such as from files, anonymous pipes, and named pipes to Unix sockets and TCP connections. On the other hand, we can support Different protocols extend the operation methods provided by stream entities to provide additional read and write methods on stream entities. For example, when `$STREAM` method implemented by an interpreter supports sending HTTP protocol, the method of sending HTTP request and processing HTTP protocol can be realized:
 
 ```hvml
      <init as="myFetcher" on="$STREAM.open('tcp://foo.com:80','default','http')">
@@ -1509,7 +1509,7 @@ As a valuable design, we can abstract the behavior of connecting two processes t
      </observe>
 ```
 
-The `$STREAM` variable is essentially a necessary walker-level dynamic object.
+`$STREAM` variable is essentially a necessary walker-level dynamic object.
 
 11) `$SOCK`
 
@@ -1523,10 +1523,10 @@ The `$STREAM` variable is essentially a necessary walker-level dynamic object.
 `$RDR` is a native entity object representing the renderer corresponding to the current walker, which can be used to obtain the current renderer information, such as protocol, URI, etc. This variable is a necessary walker-level dynamic object.
 
 1. `$RDR.state`: Through this property, the current renderer state object can be obtained, including communication method, renderer URI, protocol name, protocol version, etc.
-1. `$RDR.connect(<comm>, <uri>)`: connect to the specified renderer; if currently connected to a renderer, the connection will be disconnected.
+1. `$RDR.connect(<comm>, <uri>)`: Connect to the specified renderer; if currently connected to a renderer, the connection will be disconnected.
 1. `$RDR.disconn()`: Disconnect the current renderer connection.
 
-##### 2.1.6.4) Collection variables
+##### 2.1.6.4) Collection Variables
 
 In HVML, we can use JSON arrays to initialize data contained in a collection, but JSON itself does not have the concept of a collection. Therefore, HVML provides the ability to initialize a collection variable using an array. In other words, a collection is an internal expression of an array with certain characteristics, and we need to access the collection data through variables.
 
@@ -1535,7 +1535,7 @@ Collections have the following characteristics:
 - According to the specified data item uniqueness judgment condition, there can only be one item of elements with unique values in the collection.
 - We can perform collection-specific operations such as merging, intersecting, and subtracting on collections.
 
-When we need to define a collection, use the `uniquely` adverb attribute of the `init` tag, and if necessary, specify the uniqueness judgment condition through the `against` attribute value.
+When we need to define a collection, use `uniquely` adverb attribute of `init` tag, and if necessary, specify the uniqueness judgment condition through `against` attribute value.
 
 We judge whether two data items are equal according to the following rules:
 
@@ -1550,7 +1550,7 @@ We judge whether two data items are equal according to the following rules:
 - The members of the two tuples are compared one by one, and all members are equal when they are one-to-one.
 - Two dictionaries are equal if their stringified strings are the same.
 
-There are two cases above that use string comparison. To this end, when using the `init` tag to initialize the collection, we can use the `casesensitively` or `caseinsensitively` two adverb attributes to specify whether the string comparison is case-sensitive; the default is case-sensitive.
+There are two cases above that use string comparison. To this end, when using `init` tag to initialize the collection, we can use `casesensitively` or `caseinsensitively` two adverb attributes to specify whether the string comparison is case-sensitive; the default is case-sensitive.
 
 For example, we define a collection of strings using the following `init` tag:
 
@@ -1568,7 +1568,7 @@ The array used to initialize the string collection above contains repeated `en_U
 
 For dictionaries, we can define and use a specific key value as a unique judgment condition. For example, we usually use `id` to represent the unique identifier of a data item. This definition is similar to the primary key in a relational database.
 
-We use the `against` attribute value of the `init` tag to define the unique key name of the dictionary. When using multiple keys as uniqueness conditions, separate them with spaces. for example:
+We use `against` attribute value of `init` tag to define the unique key name of the dictionary. When using multiple keys as uniqueness conditions, separate them with spaces. For example:
 
 ```hvml
      <init as="users" uniquely against="id">
@@ -1579,7 +1579,7 @@ We use the `against` attribute value of the `init` tag to define the unique key 
      </init>
 ```
 
-The sample code above defines a collection that uses the `id` key as a unique criterion. If there is one more data item with `id` as `2` in the dictionary array used to initialize this collection, the previous data item with `id` as `2` will be overwritten by the data item with `id` as `2` later . for example,
+The sample code above defines a collection that uses `id` key as a unique criterion. If there is one more data item with `id` as `2` in the dictionary array used to initialize this collection, the previous data item with `id` as `2` will be overwritten by the data item with `id` as `2` later . For example,
 
 ```hvml
      <init as="users" uniquely against="id">
@@ -1600,23 +1600,23 @@ When adding new data members to a collection, there are the following convention
 1. When the unique key name is not used, the data in the collection can be of any type, and the uniqueness is determined according to the above rules for judging whether two data are equal.
 1. When using a unique key name, the data in the collection must be a dictionary, and the uniqueness of the member is determined by comparing the key value corresponding to the unique key name. When the dictionary pre-added to the collection lacks the specified unique key name, it is treated as if its key value is `undefined`.
 
-HVML provides several abstract data manipulation methods for collection data, such as union, intersection, difference, XOR, etc. See the description of the `update` tag for details.
+HVML provides several abstract data manipulation methods for collection data, such as union, intersection, difference, XOR, etc. See the description of `update` tag for details.
 
-##### 2.1.6.5) Variable name convention
+##### 2.1.6.5) Variable Name Convention
 
-The interpreter can implement some predefined walker-level variables or coroutine-level variables by itself. As a convention, the names of global variables implemented by the interpreter should start with ASCII U+005F LOW LINE (`_`) and use all uppercase letters And add the interpreter prefix. Such as `_PURC_VAR`. For general variables, use all lowercase letters.
+The interpreter can implement some predefined walker-level variables or coroutine-level variables by itself. As a convention, the names of global variables implemented by the interpreter should start with ASCII U+005F LOW LINE (`_`) and use all uppercase letters And add the interpreter prefix, such as `_PURC_VAR`. For general variables, use all lowercase letters.
 
 In addition, the following variable names are reserved for special occasions:
 
-- `_ARGS`: Used to refer to all arguments passed into the alias expression (usually implemented using an array or tuple).
+- `_ARGS`: It is used to refer to all arguments passed into the alias expression (usually implemented using an array or tuple).
 
 Developers should avoid using reserved variable names in HVML programs.
 
-#### 2.1.7) Evaluation expressions and parameterized data
+#### 2.1.7) Evaluation Expressions and Parameterized Data
 
-In the above example, we use the `$` prefix to specify an evaluation expression in the document fragment template or data template. The evaluation expression needs to conform to the following rules:
+In the above example, we use `$` prefix to specify an evaluation expression in the document fragment template or data template. The evaluation expression needs to conform to the following rules:
 
-- Evaluated expressions can be nested using bound dynamic objects, as in the above example using the `$string` variable.
+- Evaluated expressions can be nested using bound dynamic objects, as in the above example using `$string` variable.
 - Except for context variables, variable names must conform to the variable name rules defined by general programming languages; if you use regular expressions to express the rules, it can be expressed as: `/^[A-Za-z_][A-Za- z0-9_]*$/`.
 - We can also use ``{{`` and ``}}`` to surround multiple evaluation expressions to form a compound hybrid evaluation expression. In a compound expression, we can use the result of a single evaluation expression to control the subsequent evaluation behavior, so that it has a simple logic control function.
 
@@ -1625,14 +1625,14 @@ In this document, evaluation expressions are referred to simply as `HEE`, short 
 - Evaluation expressions can be embedded in structured data described using eJSON syntax to form parameterized data, such as `[$SYS.time, $SYS.locale, null, true, 2022]`.
 - The evaluation expression can be embedded in a string surrounded by double quotes (or triple double quotes) to form a parameterized string, such as `"The system time is: $SYS.time"`. Essentially, parameterized strings are a special case of parameterized data.
 - In a parameterized string, a pair of `{}` can be used to surround a single evaluation expression to prevent confusion, such as: `"user-$?.id"` and `"user-{$?.id} "` is the same, but `"$user_item"` and `"{$user}_item"` are not the same.
-- In parameterized strings, the `\` (backslash) character can be used for `$`, `{`, `}`, `[`, `]`, `(`, `)`, etc. of the escape.
+- In parameterized strings, `\` (backslash) character can be used for `$`, `{`, `}`, `[`, `]`, `(`, `)`, etc. of the escape.
 - In the parameters of the evaluation expression, you can use parameterized data or parameterized strings, such as: `$DATA.count([1, 2, true, $SYS.time, "$user.id"])`
 
 Parameterized data is typically used to specify attribute values for prepositional attributes (`on` and `with`) that accept data and the data content of action elements, while parameterized string is typically used to specify attribute values and document fragment templates. See [3.1.2.4) Action Element Attributes] (#3124-Action Element Attributes) section of this document for the syntax for specifying attribute values.
 
 For eJSON syntax, see this document [2.2.5) eJSON syntax] (#225-ejson-syntax).
 
-##### 2.1.7.1) Composite evaluation expressions
+##### 2.1.7.1) Composite Evaluation Expressions
 
 Compound hybrid evaluation expressions (CHEE for short) are an important feature. CHEE essentially consists of one or more HEEs, but with certain logic control capabilities. Its effect is similar to the effect of using semicolon or `&&`, `||` when executing multiple commands at a time in the Unix Shell command line. Here are some examples:
 
@@ -1669,21 +1669,21 @@ Compound hybrid evaluation expressions (CHEE for short) are an important feature
 }}
 ```
 
-##### 2.1.7.2) Expression variables and stand-in expressions
+##### 2.1.7.2) Expression Variables and Stand-In Expressions
 
-HVML allows binding an evaluated expression (or parameterized data) to a variable using the `bind` tag:
+HVML allows binding an evaluated expression (or parameterized data) to a variable using `bind` tag:
 
 ```hvml
      <bind on $users[$MATH. random(10)] as "me" />
 ```
 
-This variable does not correspond to the value of `$users[$MATH.random(10)]` when the element defined by the above tag is executed, but the evaluation expression `$users[$MATH.random(10)]` ; We call such variables "expression variables"
+This variable does not correspond to the value of `$users[$MATH.random(10)]` when the element defined by the above tag is executed, but the evaluation expression `$users[$MATH.random(10)]` ; we call such variables "expression variables"
 
-When we need to evaluate a bound expression, we use `$me.eval`; we call `$me.eval` such expressions as substitute expressions. Since the example expression above uses the `random` method of `$MATH`, it will get different results each time it is evaluated.
+When we need to evaluate a bound expression, we use `$me.eval`; we call `$me.eval` such expressions as substitute expressions. Since the example expression above uses `random` method of `$MATH`, it will get different results each time it is evaluated.
 
-We can use the `observe` tag to observe a variable bound to an expression, so as to make some corresponding processing according to the change of the variable value.
+We can use `observe` tag to observe a variable bound to an expression, so as to make some corresponding processing according to the change of the variable value.
 
-For example, we can bind the attribute or content of a target document element to a variable, and then use the `observe` element to handle the `change` event on it:
+For example, we can bind the attribute or content of a target document element to a variable, and then use `observe` element to handle `change` event on it:
 
 ```hvml
 <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
@@ -1696,7 +1696,7 @@ For example, we can bind the attribute or content of a target document element t
 
 #### 2.1.8) Stack VM
 
-In theory, every HVML program runs on a hypothetical stack-based virtual machine. The HVML interpreter first parses the HVML program, generates the corresponding vDOM tree, and then processes each element in depth-first order starting from the root element of the vDOM. Traditionally, the execution stack of an HVML program grows from top to bottom. Every time a descendant element is executed, a new stack frame (stack frame) is pushed on the execution stack until the leaf element of vDOM. At this time, the interpreter Will pop (pop) the last stack frame, and then try to execute the next sibling element of the element corresponding to the new last stack frame.
+In theory, every HVML program runs on a hypothetical stack-based virtual machine. The HVML interpreter first parses the HVML program, generates the corresponding vDOM tree, and then processes each element in depth-first order starting from the root element of the vDOM. Traditionally, the execution stack of an HVML program grows from top to bottom. Every time a descendant element is executed, a new stack frame is pushed on the execution stack until the leaf element of vDOM. At this time, the interpreter Will pop the last stack frame, and then try to execute the next sibling element of the element corresponding to the new last stack frame.
 
 The aforementioned context variables are maintained in the execution stack, and each stack frame retains a value corresponding to the context variables; while static variables are associated with a specific vDOM element, and its namespace is the subtree defined by the element.
 
@@ -1757,17 +1757,17 @@ For example, the following HVML program will print the Fibonacci numbers less th
 Its execution path is described as follows:
 
 1. The interpreter initializes an execution stack and pushes a special stack frame representing the top of the stack.
-1. The interpreter executes the action specified by the `hvml` element and pushes a new stack frame on the execution stack. Normally, the `hvml` element will create an empty target document based on the value of the `target` attribute. In this example, we set `target` to `void`, so a void target document will be created.
-1. The interpreter executes the actions specified by the `head` element, the first child element of the `hvml` element, and pushes a new stack frame into the execution stack. For this example, the target document type is nothing, so it does nothing other than process the `head` element's attributes, content, and its children. The `head` element does not contain child elements, but defines content. Its content is an evaluated expression that, when evaluated, will print `Fibonacci Numbers` on standard output.
-1. Since the `head` element does not contain child elements, the interpreter will pop up the bottom stack frame after executing the actions of the `head` element, and then start to execute the next sibling element of the `head` element.
-1. The interpreter executes the action specified by the second sub-element `body` element of the `hvml` element, and pushes a new stack frame on the execution stack. For this example, the target document type is nothing, so it does nothing other than process the `body` element's attributes, content, and its children. The `body` element defines attributes, does not define content, and contains multiple child elements, so its child elements will continue to be processed.
-1. The interpreter executes the `inherit` of the first child element of the `body` element. The element will inherit the context variables from the previous stack frame, and then process its content and child elements. In this example, the element only defines content. Its content is an evaluated expression that, when evaluated, will print two additional lines of text on standard output.
-1. By analogy, the interpreter will execute several other child elements of the `body` element in turn, including three `init` elements and an `inherit` element.
-1. The interpreter executes the `iterate` element, which performs an iterative operation so that all its descendants are repeated multiple times. In this example, the `iterate` element will be executed 5 times, and the three `init` sub-elements and one `inherit` sub-element will also be executed 5 times.
+1. The interpreter executes the action specified by `hvml` element and pushes a new stack frame on the execution stack. Normally, `hvml` element will create an empty target document based on the value of `target` attribute. In this example, we set `target` to `void`, so a void target document will be created.
+1. The interpreter executes the actions specified by `head` element, the first child element of `hvml` element, and pushes a new stack frame into the execution stack. For this example, the target document type is nothing, so it does nothing other than process `head` element's attributes, content, and its children. `head` element does not contain child elements, but defines content. Its content is an evaluated expression that, when evaluated, will print `Fibonacci Numbers` on standard output.
+1. Since `head` element does not contain child elements, the interpreter will pop up the bottom stack frame after executing the actions of `head` element, and then start to execute the next sibling element of `head` element.
+1. The interpreter executes the action specified by the second sub-element `body` element of `hvml` element, and pushes a new stack frame on the execution stack. For this example, the target document type is nothing, so it does nothing other than process `body` element's attributes, content, and its children. `body` element defines attributes, does not define content, and contains multiple child elements, so its child elements will continue to be processed.
+1. The interpreter executes `inherit` of the first child element of `body` element. The element will inherit the context variables from the previous stack frame, and then process its content and child elements. In this example, the element only defines content. Its content is an evaluated expression that, when evaluated, will print two additional lines of text on standard output.
+1. By analogy, the interpreter will execute several other child elements of `body` element in turn, including three `init` elements and `inherit` element.
+1. The interpreter executes `iterate` element, which performs an iterative operation so that all its descendants are repeated multiple times. In this example, `iterate` element will be executed 5 times, and the three `init` sub-elements and one `inherit` sub-element will also be executed 5 times.
 1. The interpreter executes the last `inherit` child element of `body`. Similar to the aforementioned `inherit` child element, the execution effect of this element is to output two lines of text.
 1. The interpreter pops the stack frame corresponding to the last `inherit` child element of `body`.
-1. The interpreter pops the stack frame corresponding to the `body` element.
-1. The interpreter pops the stack frame corresponding to the `hvml` element and reaches the top of the stack.
+1. The interpreter pops the stack frame corresponding to `body` element.
+1. The interpreter pops the stack frame corresponding to `hvml` element and reaches the top of the stack.
 1. Execution of the HVML program ends.
 
 The final output of the HVML program is:
@@ -1787,22 +1787,22 @@ The final output of the HVML program is:
 
 Typically, one interpreter instance corresponds to one virtual machine instance. Theoretically, the aforementioned virtual machine can run multiple HVML programs at the same time. At this time, each HVML program corresponds to an execution stack, and the concurrent execution of multiple HVML programs can be realized by switching the current execution stack through a certain mechanism. This is similar to how real physical computing implements multitasking. In practice, the interpreter usually executes multiple HVML program instances loaded in the same virtual machine instance in the form of independent coroutines, and switches the coroutines at the following times:
 
-1. After each element action is executed, the interpreter will force the current coroutine to yield (yield) the use of the virtual machine, so that other coroutines in the ready state can get a chance to execute.
+1. After each element action is executed, the interpreter will force the current coroutine to yield the use of the virtual machine, so that other coroutines in the ready state can get a chance to execute.
 1. When calling a method of a dynamic object, if the corresponding method returns an error value indicating retry, it indicates that the method blocks the current coroutine, and the interpreter can schedule other coroutines in the ready state until the execution state of the coroutine is reset to the ready state. At this point, the interpreter will perform re-evaluation of the blocked expression.
 
-#### 2.1.9) Frame elements
+#### 2.1.9) Frame Elements
 
 In HVML, the framework element is used to define the overall framework of an HVML program. We can define text content inside the frame element.
 
 HVML defines the following framework elements:
 
-- `hvml`: This element defines the root element of the HVML program. Except for the `target` attribute, its attributes and content will be cloned to the root element of the target document.
-- `head`: This element defines the public part of the HVML program, usually used to create global static variables. Additionally, if the target document supports the `head` element, its attributes and content will be cloned into the `head` element of the target document.
-- `body`: This element defines a program body; an HVML program can contain zero or more program bodies, but each execution will only execute one specified body. Additionally, if the target document supports the `body` element, its attributes and content will be cloned into the `body` element of the target document.
+- `hvml`: This element defines the root element of the HVML program. Except for `target` attribute, its attributes and content will be cloned to the root element of the target document.
+- `head`: This element defines the public part of the HVML program, usually used to create global static variables. Additionally, if the target document supports `head` element, its attributes and content will be cloned into `head` element of the target document.
+- `body`: This element defines a program body; an HVML program can contain zero or more program bodies, but each execution will only execute one specified body. Additionally, if the target document supports `body` element, its attributes and content will be cloned into `body` element of the target document.
 
 For details, see the subsection [2.3) Frame Tag Details](#23-Frame Tag Details) in this document.
 
-#### 2.1.10) Template elements
+#### 2.1.10) Template Elements
 
 In HVML, template elements are used to define templates for document fragments or parameterized data templates that can be replaced. The template element uses content to define the template and therefore cannot define any child elements.
 
@@ -1815,19 +1815,19 @@ HVML defines the following template elements:
 
 For details, see the section [2.4) Detailed explanation of template tags] (#24-Detailed explanation of template tags) in this document.
 
-#### 2.1.11) Action elements
+#### 2.1.11) Action Elements
 
 In HVML, action elements have the following characteristics:
 
-1. In the action element, we can use parameterized data to define the content. In order to distinguish the text content of the target document element, we call the content of the action element "data content". Usually, the data content of an action element must be defined before any of its child elements, and only one item can be defined. The data defined by the content of the action element will be bound to the `$^` context variable of the corresponding stack frame.
-1. Each action element will generate an execution result data, which is bound to the `$?` context variable of the corresponding stack frame.
-1. Each action element corresponds to the context variable `$@` representing the location of the target document in the stack frame, which can be defined using the `in` attribute. If not defined, it will inherit from its parent element.
+1. In the action element, we can use parameterized data to define the content. In order to distinguish the text content of the target document element, we call the content of the action element "data content". Usually, the data content of an action element must be defined before any of its child elements, and only one item can be defined. The data defined by the content of the action element will be bound to `$^` context variable of the corresponding stack frame.
+1. Each action element will generate an execution result data, which is bound to `$?` context variable of the corresponding stack frame.
+1. Each action element corresponds to the context variable `$@` representing the location of the target document in the stack frame, which can be defined using `in` attribute. If not defined, it will inherit from its parent element.
 
 We consider the content defined by the action element as additional data. In some action elements that use the `with` attribute, such as `init`, when the expression of the data is too complex to be defined by the attribute value of `with`, we can use the content to define the data.
 
-We call the tree structure formed by an action element and its descendants (descendant) elements an action subtree.
+We call the tree structure formed by an action element and its descendant elements an action subtree.
 
-In HVML, the elements defined by the tags of the target markup language (such as `ul`, `li`, etc. in the sample code) usually form the structural skeleton (skeleton) of the target document, so we call such elements `skeleton ` element. In the HVML interpreter, we treat skeleton elements as a special kind of action element:
+In HVML, the elements defined by the tags of the target markup language (such as `ul`, `li`, etc. in the sample code) usually form the structural skeleton of the target document, so we call such elements `skeleton ` element. In the HVML interpreter, we treat skeleton elements as a special kind of action element:
 
 - The default action is to insert (append) a clone of the element at the current target document position.
 - The skeleton element implicitly specifies the target document position (corresponding to the context variable `$@`) that can be inherited to subsequent child elements, that is, the corresponding element of the skeleton element in the eDOM tree.
@@ -1835,116 +1835,116 @@ In HVML, the elements defined by the tags of the target markup language (such as
 
 We define action elements through HVML action tags, which we will describe in detail in this document [2.5) Action Tag Details](#25-Action Tag Details).
 
-##### 2.1.11.1) Action elements used to manipulate data
+##### 2.1.11.1) Action Elements Used to manipulate data
 
 HVML defines the following basic action elements for manipulating data or elements:
 
-- The `init` element is used to initialize or reset a variable.
-- The `update` element is used to perform an update operation on the specified element, collection of elements, or container data.
-- The `clear` element is used to perform a clear operation on the specified element or container data, which usually means deleting all child elements or data items of the current element or data.
-- The `erase` element is used to remove a specified element, element attribute, or data item in a container.
-- The `choose` element is used to choose (or generate) another data from the given data.
-- The `reduce` element is used to define the reduction (reduce) action to be performed on an iterable data or elements.
+-  `init` element is used to initialize or reset a variable.
+- `update` element is used to perform an update operation on the specified element, collection of elements, or container data.
+- `clear` element is used to perform a clear operation on the specified element or container data, which usually means deleting all child elements or data items of the current element or data.
+- `erase` element is used to remove a specified element, element attribute, or data item in a container.
+- `choose` element is used to choose (or generate) another data from the given data.
+- `reduce` element is used to define the reduction action to be performed on an iterable data or elements.
 
-##### 2.1.11.2) Action elements used to manipulate the execution stack
+##### 2.1.11.2) Action Elements for Manipulating the Execution Stack
 
 The following action elements are used to manipulate the virtual machine, including the execution stack, event loop, etc.:
 
-- The `test` element performs a test action on an element node or data item, and is used to implement conditional operations that depend on data values.
-- The `match` element defines a match branch as a direct child of the `test` element.
-- The `differ` element, as a direct child of the `test` element, defines the program branch when the test fails.
-- The `iterate` element is used to define an iterative action on an iterable data or element, thereby implementing a loop.
-- The `define` element is used to define a reusable group of operations.
-- The `return` element is used to define the return value of an operation group.
-- The `back` element is used to pop the stack frame to the specified execution stack position, which is equivalent to breaking the default execution path.
-- The `include` element is used to execute a group of operations in place.
-- The `call` element is used to call an operation group.
-- The `catch` element is used to catch an exception.
+- `test` element performs a test action on an element node or data item, and is used to implement conditional operations that depend on data values.
+- `match` element defines a match branch as a direct child of `test` element.
+- `differ` element, as a direct child of `test` element, defines the program branch when the test fails.
+- `iterate` element is used to define an iterative action on an iterable data or element, thereby implementing a loop.
+- `define` element is used to define a reusable group of operations.
+- `return` element is used to define the return value of an operation group.
+- `back` element is used to pop the stack frame to the specified execution stack position, which is equivalent to breaking the default execution path.
+- `include` element is used to execute a group of operations in place.
+- `call` element is used to call an operation group.
+- `catch` element is used to catch an exception.
 
-##### 2.1.11.3) Other action elements
+##### 2.1.11.3) Other Action Elements
 
 HVML also defines the following action elements for manipulating event loops, renderers, operation groups, etc.:
 
-- The `observe` element is used to define observation actions on specific data or elements.
-- The `fire` element is used to explicitly fire an event.
-- The `forget` element is used to cancel the observation action on a certain data or element.
-- The `request` tag is used to make a request to a renderer, other coroutines, etc. and get the resulting data.
-- The `load` element is used to load and execute a specified HVML program (or code), which is equivalent to creating a new coroutine.
-- The `exit` element is used to actively exit the execution of an HVML program, that is, terminate an HVML coroutine.
-- The `sleep` element is used to actively sleep the current coroutine.
+- `observe` element is used to define observation actions on specific data or elements.
+- `fire` element is used to explicitly fire an event.
+- `forget` element is used to cancel the observation action on a certain data or element.
+- `request` tag is used to make a request to a renderer, other coroutines, etc. and get the resulting data.
+- `load` element is used to load and execute a specified HVML program (or code), which is equivalent to creating a new coroutine.
+- `exit` element is used to actively exit the execution of an HVML program, that is, terminate an HVML coroutine.
+- `sleep` element is used to actively sleep the current coroutine.
 
-#### 2.1.12) Error and exception handling
+#### 2.1.12) Error and Exception Handling
 
 In HVML, errors refer to fatal problems that cannot be recovered, such as segment faults, bus errors, etc.; exceptions refer to problems that can be caught or handled.
 
 To facilitate error and exception handling, use the following error or exception template elements:
 
-- `error`: In case of an error, attempt to insert at the current position of the target document with the content contained within. The `error` element supports the `type` attribute, which is used to specify the corresponding error type. like:
-    - `BusError`: Indicates a bus error (bad memory access).
-    - `SegFault`: Indicates a segment fault (invalid memory reference).
-    - `Terminated`: Indicates that the interpreter instance was artificially terminated.
-    - `CPUTimeLimitExceeded`: Indicates that the CPU time limit has been reached.
-    - `FileSizeLimitExceeded`: Indicates that the file size limit has been reached.
-- `except`: When an uncaught exception occurs, insert the contained content at the current position in the target document. The `except` element supports the `type` attribute, which is used to specify the corresponding exception type.
+- `error`: In case of an error, attempt to insert at the current position of the target document with the content contained within. `error` element supports `type` attribute, which is used to specify the corresponding error type. like:
+    - `BusError`: Indicate a bus error (bad memory access).
+    - `SegFault`: Indicate a segment fault (invalid memory reference).
+    - `Terminated`: Indicate that the interpreter instance was artificially terminated.
+    - `CPUTimeLimitExceeded`: Indicate that the CPU time limit has been reached.
+    - `FileSizeLimitExceeded`: Indicate that the file size limit has been reached.
+- `except`: When an uncaught exception occurs, insert the contained content at the current position in the target document. `except` element supports `type` attribute, which is used to specify the corresponding exception type.
 
 The exceptions defined by HVML are as follows:
 
 - General:
-    - `Conflict`: Indicates that the specified operating conditions conflict with each other.
-    - `Gone`: Indicates that the specified data or entity has disappeared.
-    - `Incompleted`: Indicates an incomplete call, such as a system call interrupted by a signal.
+    - `Conflict`: Indicate that the specified operating conditions conflict with each other.
+    - `Gone`: Indicate that the specified data or entity has disappeared.
+    - `Incompleted`: Indicate an incomplete call, such as a system call interrupted by a signal.
     - `MismatchedVersion`: The version does not match, such as using a lower version of an external executor or a dynamic object.
-    - `NotReady`: Indicates that it is not ready, for example, the data corresponding to the specified named variable is not ready yet.
-    - `NotImplemented`: Indicates that a feature has not yet been implemented.
-    - `NotFound`: Indicates not found, such as the specified variable namespace cannot be found.
-    - `NotAllowed`: Indicates an operation that is not allowed, such as an executor with an incorrect data type.
-    - `NotAcceptable`: Indicates unacceptable conditions, such as wrong prepositional attribute values.
+    - `NotReady`: Indicate that it is not ready, for example, the data corresponding to the specified named variable is not ready yet.
+    - `NotImplemented`: Indicate that a feature has not yet been implemented.
+    - `NotFound`: Indicate not found, such as the specified variable namespace cannot be found.
+    - `NotAllowed`: Indicate an operation that is not allowed, such as an executor with an incorrect data type.
+    - `NotAcceptable`: Indicate unacceptable conditions, such as wrong prepositional attribute values.
     - `Timeout`: Timeout.
-    - `TooEarly`: Indicates too early (eg, the specified data is not yet ready).
-    - `TooLarge`: Indicates too large (eg packet size).
-    - `TooLong`: Indicates too long (like a path name).
-    - `TooMany`: means too many (such as symbolic links).
-    - `TooSmall`: Indicates too small (eg buffer size).
-    - `Unauthorized`: means unauthenticated.
+    - `TooEarly`: Indicate too early (such as the specified data is not yet ready).
+    - `TooLarge`: Indicate too large (such as packet size).
+    - `TooLong`: Indicate too long (such as path name).
+    - `TooMany`: Indicate too many (such as symbolic links).
+    - `TooSmall`: Indicate too small (such as buffer size).
+    - `Unauthorized`: Indicate unauthenticated.
     - `UnavailableLegally`: Unavailable for legal reasons.
     - `UnmetPrecondition`: The precondition was not met.
-    - `Unsupported`: Indicates that a feature or a required information is not supported, such as certain locale classifications.
+    - `Unsupported`: Indicate that a feature or a required information is not supported, such as certain locale classifications.
 - Parsing related:
-    - `BadEncoding`: Indicates bad character encoding.
-    - `BadHVMLTag`: Indicates a bad, unsuitable tag, or mismatched HVML closing tag.
-    - `BadHVMLAttrName`: Indicates a bad HVML element attribute name, such as an unknown attribute name, an attribute name that does not conform to the specification, etc.
-    - `BadHVMLAttrValue`: Indicates an unparseable HVML element attribute value.
-    - `BadHVMLContent`: Indicates unparsable HVML element content.
-    - `BadTargetHTML`: Indicates that there was an error parsing the target tag document (HTML).
-    - `BadTargetXGML`: Indicates that an error occurred while parsing the target markup document (XGML).
-    - `BadTargetXML`: Indicates that an error occurred while parsing the target tag document (XML).
+    - `BadEncoding`: Indicate bad character encoding.
+    - `BadHVMLTag`: Indicate a bad, unsuitable tag, or mismatched HVML closing tag.
+    - `BadHVMLAttrName`: Indicate a bad HVML element attribute name, such as an unknown attribute name, an attribute name that does not conform to the specification, etc.
+    - `BadHVMLAttrValue`: Indicate an unparseable HVML element attribute value.
+    - `BadHVMLContent`: Indicate unparsable HVML element content.
+    - `BadTargetHTML`: Indicate that there was an error parsing the target tag document (HTML).
+    - `BadTargetXGML`: Indicate that an error occurred while parsing the target markup document (XGML).
+    - `BadTargetXML`: Indicate that an error occurred while parsing the target tag document (XML).
 - Interpreter related:
     - `ArgumentMissed`: A required argument is missing.
-    - `BadExpression`: Indicates a bad expression, produced when evaluating the expression.
-    - `BadExecutor`: Indicates a bad executor, generated when parsing the executor.
+    - `BadExpression`: Indicate a bad expression, produced when evaluating the expression.
+    - `BadExecutor`: Indicate a bad executor, generated when parsing the executor.
     - `BadIndex`: Index error, which occurs when referencing an array or tuple element, usually means that the index value exceeds the range of the array or tuple.
-    - `BadName`: Indicates a bad variable name. Usually occurs when the specified variable name does not meet the specification requirements when evaluating the evaluation expression.
+    - `BadName`: Indicate a bad variable name. Usually occurs when the specified variable name does not meet the specification requirements when evaluating the evaluation expression.
     - `ChildTerminated`: The child coroutine was forcibly terminated.
     - `DuplicateName`: Duplicate name, when the variable name to be initialized is already taken.
     - `DuplicateKey`: Duplicate key, usually occurs when merging objects or collections.
-    - `eDOMFailure`: Indicates that a problem was encountered while building the eDOM.
+    - `eDOMFailure`: Indicate that a problem was encountered while building the eDOM.
     - `InternalFailure`: Interpreter internal error.
-    - `InvalidValue`: Indicates an incorrect, unacceptable value. Usually occurs when an unacceptable value is passed in.
+    - `InvalidValue`: Indicate an incorrect, unacceptable value. Usually occurs when an unacceptable value is passed in.
     - `LostRenderer`: Lost connection to the renderer.
-    - `MaxIterationCount`: Indicates that the maximum number of iterations has been reached.
-    - `MaxRecursionDepth`: Indicates that the maximum recursion depth has been reached.
-    - `MemoryFailure`: memory error, such as internal heap is too small, memory allocation failed.
-    - `NoData`: Indicates that the specified data does not exist, or that the specified variable name is not bound to any data.
+    - `MaxIterationCount`: Indicate that the maximum number of iterations has been reached.
+    - `MaxRecursionDepth`: Indicate that the maximum recursion depth has been reached.
+    - `MemoryFailure`: Memory error, such as internal heap is too small, memory allocation failed.
+    - `NoData`: Indicate that the specified data does not exist, or that the specified variable name is not bound to any data.
     - `NoSuchKey`: The key value in the dictionary is wrong, usually referring to a key value that does not exist.
-    - `NotIterable`: Indicates that the specified element or data is not iterable.
-    - `WrongDataType`: Indicates wrong data type.
+    - `NotIterable`: Indicate that the specified element or data is not iterable.
+    - `WrongDataType`: Indicate wrong data type.
 - Floating point related:
-    - `InvalidFloat`: Indicates that an invalid floating-point number was passed in. For example, when calling `$MATH.asin`, a real number that is not in the range of `[-1, 1]` is passed in.
-    - `Overflow`: Indicates an upward overflow error occurred during floating-point arithmetic.
-    - `Underflow`: Indicates an underflow error in floating-point arithmetic.
-    - `ZeroDivision`: Indicates that a division by zero error was encountered.
+    - `InvalidFloat`: Indicate that an invalid floating-point number was passed in. For example, when calling `$MATH.asin`, a real number that is not in the range of `[-1, 1]` is passed in.
+    - `Overflow`: Indicate an upward overflow error occurred during floating-point arithmetic.
+    - `Underflow`: Indicate an underflow error in floating-point arithmetic.
+    - `ZeroDivision`: Indicate that a division by zero error was encountered.
 - Operating system related:
-    - `AccessDenied`: Indicates that access is denied or permissions are insufficient.
+    - `AccessDenied`: Indicate that access is denied or permissions are insufficient.
     - `BrokenPipe`: The other end of the pipe has been closed.
     - `ConnectionAborted`: The connection was aborted.
     - `ConnectionRefused`: Connection refused.
@@ -1952,22 +1952,22 @@ The exceptions defined by HVML are as follows:
     - `EntityNotFound`: The specified entity (such as a file) was not found.
     - `EntityExists`: When creating a new entity (such as a file), the entity already exists.
     - `EntityGone`: The entity has disappeared.
-    - `IOFailure`: Indicates an input/output error.
-    - `NotDesiredEntity`: Indicates that an unexpected entity was passed.
-    - `NoStorageSpace`: Indicates when there is not enough storage space (such as writing a file).
+    - `IOFailure`: Indicate an input/output error.
+    - `NotDesiredEntity`: Indicate that an unexpected entity was passed.
+    - `NoStorageSpace`: Indicate when there is not enough storage space (such as writing a file).
     - `NameResolutionFailed`: Name resolution failed. The exception should define additional information so that the application can know the specific name that failed to parse.
-    - `OSFailure`: Indicates that a general operating system error was encountered that was not explicitly defined as an exception. The exception should define additional information so that the application can get specific error information, such as `errno` on Unix-like systems.
+    - `OSFailure`: Indicate that a general operating system error was encountered that was not explicitly defined as an exception. The exception should define additional information so that the application can get specific error information, such as `errno` on Unix-like systems.
     - `RequestFailed`: The request failed. The exception should define additional information so that the application can get specific request failure information, such as the HTTP protocol status code.
     - `SysFault`: Unrecoverable operating system failure, usually corresponding to the system's `EFAULT`.
 
-In addition, HVML provides the `catch` action tag, which can be used to catch specific exceptions and handle them.
+In addition, HVML provides `catch` action tag, which can be used to catch specific exceptions and handle them.
 
 In `catch`, `except` and `error` tags, we must surround exception or error names with backticks U+0060 GRAVE ACCENT character (\`). `ANY` is used for any error or exception and is a reserved word.
 
 Error and exception handling instructions are as follows:
 
-1. In the `error` and `except` tags, we generally use the tags of the target markup language to define a document fragment, also known as an error and exception template.
-1. When an exception occurs, first check whether the current element contains the corresponding `catch` action element. If there is, execute the operation group defined by the `catch` element; if not, check whether there is a corresponding `except` sub-element, if yes, clone the document fragment defined in it and append it to the current position of the target document, and pop up Execution continues on the current stack frame. If the exception is not handled by the current element, the current stack frame is popped, and this step is repeated in the previous stack frame until the top of the stack.
+1. In `error` and `except` tags, we generally use the tags of the target markup language to define a document fragment, also known as an error and exception template.
+1. When an exception occurs, first check whether the current element contains the corresponding `catch` action element. If there is, execute the operation group defined by `catch` element; if not, check whether there is a corresponding `except` sub-element, if yes, clone the document fragment defined in it and append it to the current position of the target document, and pop up Execution continues on the current stack frame. If the exception is not handled by the current element, the current stack frame is popped, and this step is repeated in the previous stack frame until the top of the stack.
 1. When an error occurs, first check whether the current element contains a corresponding `error` child element. If so, clone the document fragment defined in it and append it to the current position of the target document, and then directly pop all the stack frames in the current execution stack to the top of the stack. If the error is not handled by the current element, the current stack frame is popped, and this step is repeated in the previous stack frame until the top of the stack.
 
 Exceptions and errors usually occur in the following situations:
@@ -1976,9 +1976,9 @@ Exceptions and errors usually occur in the following situations:
 1. The exception encountered when executing the operation corresponding to the action element, such as illegal attribute value, data consistency error, etc.
 1. Other situations, such as allocation of stack frames, failure to create new coroutines, etc.
 
-Typically, when an action element, frame element, or template element is set with the `silently` adverb attribute, or an external element is set with the `hvml:silently` attribute, when evaluating its attribute value or content, or calling the executor , if an ignorable exception is encountered, a reasonable return value should be returned instead of throwing an exception. For example, when calling `$SYS.time(! <number $seconds: seconds since Epoch> )` to set the system time, if the current user does not have permission to modify the system time, an `AccessDenied` exception should usually be generated. However, if the `silently` adverb attribute is set on the element calling this method, no exception will be raised, but `false` will be returned to indicate an execution error.
+Typically, when an action element, frame element, or template element is set with `silently` adverb attribute, or an external element is set with `hvml:silently` attribute, when evaluating its attribute value or content, or calling the executor , if an ignorable exception is encountered, a reasonable return value should be returned instead of throwing an exception. For example, when calling `$SYS.time(! <number $seconds: seconds since Epoch> )` to set the system time, if the current user does not have permission to modify the system time, an `AccessDenied` exception should usually be generated. However, if the `silently` adverb attribute is set on the element calling this method, no exception will be raised, but `false` will be returned to indicate an execution error.
 
-The `silently` attribute mainly applies to the first two cases referred to above; which exceptions can be ignored and which exceptions cannot be ignored are usually determined by the interpreter implementer. The exception generated in the third case will be considered fatal and cannot be ignored, that is, the `silently` attribute is invalid for the third case, such as a `MemoryFailure` exception caused by a failure to allocate a stack frame.
+`silently` attribute mainly applies to the first two cases referred to above; which exceptions can be ignored and which exceptions cannot be ignored are usually determined by the interpreter implementer. The exception generated in the third case will be considered fatal and cannot be ignored, that is, `silently` attribute is invalid for the third case, such as `MemoryFailure` exception caused by a failure to allocate a stack frame.
 
 A sample code for error and exception handling is given below:
 
@@ -2018,34 +2018,34 @@ A sample code for error and exception handling is given below:
     </body>
 ```
 
-#### 2.1.13) Preposition properties
+#### 2.1.13) Preposition Properties
 
 For action tags, HVML defines the following prepositions (such as `on`, `in`, `to`, etc.) attributes, which are used to define the data (or elements) and their collections that the action depends on. like:
 
 - `in`: This attribute applies to all action elements and is used to define the target document location for performing the action. This attribute usually uses CSS selectors to define a collection of elements in the target document, and subsequent operations will be performed on this collection of elements. If the attribute value is not defined, the corresponding value of the preceding stack frame will be inherited. If the element corresponding to the preceding stack frame is a skeleton element, the corresponding position of the skeleton element in the target document will be taken.
 - `on`: In the tags of `choose`, `iterate` and other operational data, it is used to define the data, elements or collection of elements that the execution action depends on.
 - `from`: In elements supporting external resources such as `init`, `update`, `define`, `load`, it is used to define the external resources that the execution action depends on, and its attribute value is usually a URL.
-- `via`: used in conjunction with the `from` attribute to specify the request method (such as `GET`, `POST`, `DELETE`, etc.).
-- `for`: in `observe`, `forget` tags, used to define the event name corresponding to the observe (observe) or unobserve (forget) operation; in the `match` tag, used to define the matching conditions.
-- `as`: define variable names in `init`, `define`, `bind`, `load`, etc. elements.
-- `at`: When used in conjunction with the `as` attribute, it is used for the scope of the variable name; specify the target position on the target data in the `update` element.
-- `with`: in `init`, `update`, `define`, `load` and other elements that support external resources, when used with the `from` attribute, it is used to define request parameters; defined in the `request` element Request parameters; in the `iterate` element define the evaluation expression for the iteration result when no executor is used; in the `include` element define the operation group to be referenced; in the `test` element define the test condition.
-- `to`: Define specific update actions in the `update` tag, such as `append` for appending, `displace` for replacement, etc.; define the stack frame to fall back to in the `back` tag.
-- `by`: Used to define selectors, iterators or reducers when performing test, selection, iteration, and reduction operations, collectively referred to as executors. HVML allows interpreters to support built-in executors. For simple data processing, the built-in executor can be used directly, and in complex data processing situations, classes or functions defined by external programs can be used. In HVML, we use the following prefixes to denote different actuator types:
-    - `CLASS:` means to use the class defined by the external program as the executor.
-    - `FUNC:` means to use the function defined by the external program as the executor.
-    - `KEY:` means to use a certain key name or multiple specified key names to return the corresponding key-value data item, which is a built-in iterator or selector.
-    - `RANGE:` means to use the specified index range to return data items, which is a built-in iterator or selector.
-    - `TRAVEL:` means to use the specified traversal method to traverse the tree structure, which is a built-in iterator or selector.
-    - `SQL:` means to execute SQL queries on structured data, enabling complex selection, iteration, and reduction operations.
+- `via`: It is used in conjunction with `from` attribute to specify the request method (such as `GET`, `POST`, `DELETE`, etc.).
+- `for`: In `observe`, `forget` tags, used to define the event name corresponding to the observe (observe) or unobserve (forget) operation; in `match` tag, used to define the matching conditions.
+- `as`: It is define variable names in `init`, `define`, `bind`, `load`, etc. elements.
+- `at`: When used in conjunction with `as` attribute, it is used for the scope of the variable name; specify the target position on the target data in `update` element.
+- `with`: In `init`, `update`, `define`, `load` and other elements that support external resources, when used with `from` attribute, it is used to define request parameters; defined in `request` element Request parameters; in `iterate` element define the evaluation expression for the iteration result when no executor is used; in the `include` element define the operation group to be referenced; in the `test` element define the test condition.
+- `to`: Define specific update actions in `update` tag, such as `append` for appending, `displace` for replacement, etc.; define the stack frame to fall back to in the `back` tag.
+- `by`: It is used to define selectors, iterators or reducers when performing test, selection, iteration, and reduction operations, collectively referred to as executors. HVML allows interpreters to support built-in executors. For simple data processing, the built-in executor can be used directly, and in complex data processing situations, classes or functions defined by external programs can be used. In HVML, we use the following prefixes to denote different actuator types:
+    - `CLASS:` It means to use the class defined by the external program as the executor.
+    - `FUNC:` It means to use the function defined by the external program as the executor.
+    - `KEY:` It means to use a certain key name or multiple specified key names to return the corresponding key-value data item, which is a built-in iterator or selector.
+    - `RANGE:` It means to use the specified index range to return data items, which is a built-in iterator or selector.
+    - `TRAVEL:` It means to use the specified traversal method to traverse the tree structure, which is a built-in iterator or selector.
+    - `SQL:` It means to execute SQL queries on structured data, enabling complex selection, iteration, and reduction operations.
     - For other built-in executors for strings and numbers, see [2.6.1) Built-in executors](#261-Built-in executors) subsection of this document.
 - `against`: In the `init` element, it is used to specify the unique key value of the collection; in the `sort` element, it is used to specify the sort basis; in the `bind` element, it is used to specify the method name of the binding expression.
-- `within`: Used in `load` and `call` elements to specify the name of the target walker.
+- `within`: It is used in `load` and `call` elements to specify the name of the target walker.
 - `onto`: The window or page name used in the `load` element to specify the renderer.
 - `onlyif` and `while`: In `iterate`, it is used to define the conditional expression for judging whether to continue iterating before and after generating the iteration result.
 - `idd-by`: In verb elements, the identifier used to define the element (same as the `id` attribute in noun elements).
 
-#### 2.1.14) Adverb attributes
+#### 2.1.14) Adverb Attributes
 
 For some action tags, HVML defines the following adverb attributes, which are used to modify the operation behavior. like:
 
@@ -2061,16 +2061,16 @@ For some action tags, HVML defines the following adverb attributes, which are us
 - `descendingly`: In the `sort` element, it is used to specify that the data items are sorted in descending order; it can be abbreviated as `desc`.
 - `silently`: Used to instruct the interpreter to perform silent evaluations and operations to ignore ignorable exceptions encountered while evaluating the current element's attributes, content, or performing operations defined by the element; use `hvml :silently` This way of writing.
 - `temporarily`: In the action elements that define variables such as `init`, it is used to specify that the variable is temporary rather than static; all temporary variables are maintained in the context variable (`$!`); can be abbreviated as `temp `.
-- `nosetotail`: In the `iterate` action element, it is used to use the result of the previous iteration as the input data for the next iteration; equivalent writing: "nose-to-tail"
+- `nosetotail`: In `iterate` action element, it is used to use the result of the previous iteration as the input data for the next iteration; equivalent writing: "nose-to-tail"
 - `responsively`: In the skeleton element, it is used to define that its text content is responsive; it can be abbreviated as `resp`.
-- `noreturn`: In the `request` element, it is used to define the return value of ignoring the request; equivalent writing: "no-return".
-- `concurrently`: In the `call` element, it is used to define a concurrent call; it can be abbreviated as `conc`.
-- `constantly`: In a `bind` element, it is used to indicate that the expression being bound will return a constant value for the same parameter; can be abbreviated as "const"
+- `noreturn`: In `request` element, it is used to define the return value of ignoring the request; equivalent writing: "no-return".
+- `concurrently`: In `call` element, it is used to define a concurrent call; it can be abbreviated as `conc`.
+- `constantly`: In `bind` element, it is used to indicate that the expression being bound will return a constant value for the same parameter; can be abbreviated as "const"
 - `must-yield`: Indicates that every time an element with this attribute is executed, the current coroutine should be forced to yield (yield) the processor; use `hvml:must-yield` in the external element.
 
 Note: In HVML, we don't need to assign values to adverb attributes.
 
-#### 2.1.15) Referencing elements or data
+#### 2.1.15) Referencing Elements or Data
 
 When we need to refer to an element, we use CSS selectors. like:
 
@@ -2085,17 +2085,17 @@ Then use the `$DOC.query()` method to get the corresponding collection of elemen
      <update on="$DOC.query('#the-user-list > li')" at="attr.class" with="text-info" />
 ```
 
-Since the `on` attribute value of the `update` tag does not allow immutable data such as integers and strings, and the `on` attribute value of the `observe` tag can only be observable native entity or container data, therefore, we also CSS selectors (strings) can be used directly in the `on` attribute value of the `update` and `observe` tags. for example:
+Since `on` attribute value of `update` tag does not allow immutable data such as integers and strings, and `on` attribute value of `observe` tag can only be observable native entity or container data, therefore, we also CSS selectors (strings) can be used directly in the `on` attribute value of `update` and `observe` tags. For example:
 
 ```hvml
      <update on="#the-user-list > li" at="attr. class" with="text-info" />
 ```
 
-Essentially, when we use the CSS selector to select the element collection of the target document in the `on` attribute value of the above two tags, the interpreter essentially calls the `$DOC.query(<selector>)` method.
+Essentially, when we use the CSS selector to select the element collection of the target document in `on` attribute value of the above two tags, the interpreter essentially calls `$DOC.query(<selector>)` method.
 
 Since collections of elements specified via CSS selectors typically refer to single or multiple locations in the target document, we use the term "target document location" to refer to elements or collections of elements collectively.
 
-If you want to use parameterized data in the `on` attribute of the `update` tag, you must use `$`, `[` or `{` as leading characters:
+If you want to use parameterized data in the `on` attribute of `update` tag, you must use `$`, `[` or `{` as leading characters:
 
 - `$` is used to define an evaluation expression, such as `$TIMERS[0]`.
 - `[` is used to define a parameterized array, such as `[ $foo, $bar, true, false ]`.
@@ -2110,9 +2110,9 @@ In other action tags that may cause confusion, attribute value expression syntax
      </choose>
 ```
 
-Similarly, the `with` attribute of action tags uses these rules for referencing data. See [3.1.2.4) Action Element Attributes] (#3124-Action Element Attributes) section of this document for details.
+Similarly, `with` attribute of action tags uses these rules for referencing data. See [3.1.2.4) Action Element Attributes] (#3124-Action Element Attributes) section of this document for details.
 
-In HVML, when the `on` or `in` preposition attribute refers to an element in the target document, if the leading character `>` is used, it will be limited to the scope specified by the `in` preposition of the parent element. As in the example below,
+In HVML, when `on` or `in` preposition attribute refers to an element in the target document, if the leading character `>` is used, it will be limited to the scope specified by `in` preposition of the parent element. As in the example below,
 
 ```hvml
      <reduce on="$?" in="#the-user-statistics" by="FUNC: StatsUserRegion">
@@ -2126,7 +2126,7 @@ In HVML, when the `on` or `in` preposition attribute refers to an element in the
      </reduce>
 ```
 
-The `> h2 > span` specified by the `in` attribute of the `choose` tag is equivalent to `#the-user-statistics > h2 > span`; the `in` attribute of the `iterate` tag is `> dl` and `# the-user-statistics > dl` Equivalent.
+`> h2 > span` specified by `in` attribute of `choose` tag is equivalent to `#the-user-statistics > h2 > span`; `in` attribute of `iterate` tag is `> dl` and `# the-user-statistics > dl` Equivalent.
 
 Variable reference rules are as follows:
 
@@ -2134,14 +2134,14 @@ Variable reference rules are as follows:
 - In HVML action tags, we can refer to context variables as well as named variables for attribute values, text content. At this point, the context variable is defined by the action tag that references this template.
 - In an element defined using the target markup language, its attribute values and text or data content can be defined using named variables.
 
-#### 2.1.16) Coroutines and virtual machine state
+#### 2.1.16) Coroutines and Virtual Machine State
 
 A properly parsed and loaded HVML program runs as a coroutine. HVML defines coroutines with the following four execution stages:
 
-- scheduled: The stage is scheduled. When the scheduler selects the coroutine in this stage to enter the ready state, it enters the first round of execution stage.
-- first-run: the first-run execution phase. When the first round of execution phase is completed, if the coroutine does not observe any events, it will enter the cleanup phase; if there are observers registered, it will enter the event loop execution phase.
+- Scheduled: The stage is scheduled. When the scheduler selects the coroutine in this stage to enter the ready state, it enters the first round of execution stage.
+- First-run: The first-run execution phase. When the first round of execution phase is completed, if the coroutine does not observe any events, it will enter the cleanup phase; if there are observers registered, it will enter the event loop execution phase.
 - Observing: The event loop execution phase.
-- cleanup: cleanup phase. During the cleanup phase, the scheduler sends the coroutine's exit or termination status to the parent coroutine (if any).
+- Cleanup: Cleanup phase. During the cleanup phase, the scheduler sends the coroutine's exit or termination status to the parent coroutine (if any).
 
 In addition to the normal execution of coroutines entering the cleanup phase, an HVML coroutine may terminate due to an exception. Therefore, we use the following terms to distinguish the exit or termination status of a coroutine:
 
@@ -2158,7 +2158,7 @@ When we load another HVML program asynchronously, we can observe the running sta
 
 Usually in the following situations, the coroutine will be set to be suspended by the interpreter:
 
-- In the case of using an external resource loader running independently, when elements such as `init`, `load`, `define`, `archetype`, `archedata`, `error`, `except` load external resources, the interpreter The coroutine can be set to enter the stop state. When the interpreter obtains the result from the external resource loader, it wakes up the coroutine and continues to process subsequent operations. Note that some of the above elements support `asynchronously` adverb attribute, if this adverb attribute is used, the interpreter does not need to do the above processing.
+- In the case of using an external resource loader running independently, when elements such as `init`, `load`, `define`, `archetype`, `archedata`, `error`, `except` load external resources, the interpreter can be set to enter the stop state. When the interpreter obtains the result from the external resource loader, it wakes up the coroutine and continues to process subsequent operations. Note that some of the above elements support `asynchronously` adverb attribute, if this adverb attribute is used, the interpreter does not need to do the above processing.
 - When `load`, `call` and other elements are synchronously waiting for other coroutines to return results, the interpreter should set the coroutine to enter the stop state. When the interpreter gets results from other coroutines, it wakes up the coroutine to continue processing subsequent operations.
 - When a `sleep` element is executed, the interpreter shall set the coroutine to stop. When the interpreter observes that the sleep has expired, or there is an event that needs to be processed by the coroutine, it wakes up the coroutine to continue subsequent processing.
 
@@ -2166,19 +2166,19 @@ In addition to the above running states, HVML stipulates that a coroutine has th
 
 - Regular: The coroutine and the renderer perform normal data exchange.
 - Closed: The renderer page corresponding to the coroutine is forcibly closed by the user.
-- Lost (lost): The walker where the coroutine is located loses the connection to the renderer.
+- Lost: The walker where the coroutine is located loses the connection to the renderer.
 - Suppressed: The interaction between the coroutine and the renderer (including updating the page and accepting interaction events from the renderer) is suppressed.
 
 The HVML coroutine can judge the change of its own rendering state by observing the renderer event on the built-in `$CRTN` variable. Render state-related events correspond to names with `rdrState:` prefix, such as `rdrState:pageSuppressed`.
 
 Each HVML coroutine runs on a specific HVML virtual machine instance, and each HVML virtual machine instance corresponds to a walker in the HVML application framework. The virtual machine instance corresponding to the HVML walker has the following status:
 
-- Boot (boot): booting.
-- idle (idle): idle; indicates that there is no coroutine on it.
-- busy (busy): working.
+- Boot: Booting.
+- Idle: Indicate that there is no coroutine on it.
+- Busy: Working.
 - Shutdown: Shutdown is in progress.
 
-#### 2.1.17) Structured data representation of document fragments
+#### 2.1.17) Structured Data Representation of Document Fragments
 
 The HVML interpreter follows a fixed strategy for accessing the target document subtree (document fragment) as a structured data. For example, consider the following HTML fragment:
 
@@ -2189,7 +2189,7 @@ The HVML interpreter follows a fixed strategy for accessing the target document 
      </li>
 ```
 
-is equivalent to the following JSON data:
+It is equivalent to the following JSON data:
 
 ```json
      {
