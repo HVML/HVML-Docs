@@ -22,23 +22,23 @@ The copyright owner discloses the purpose of this document, which is used to exp
 
 For a detailed list of registered trademarks or trademarks of the copyright owners mentioned in this article, please refer to the end of the document.
 
-**Table of Contents**
+**Content**
 
 [//]:# (START OF TOC)
 
 - [1) Introduction] (#1-introduction)
     + [1.1) Specifications and Terms](#11-specifications and terms)
     + [1.2) Binary Format Representation](#12-binary format representation)
-    + [1.3) Format Modifier](#13-format modifier)
+    + [1.3) Format Modifiers](#13-format modifiers)
     + [1.4) Writing Requirements](#14-writing requirements)
-- [2) Non-Dynamic Variable] (#2-non-dynamic variable)
+- [2) Non-Dynamic Variables] (#2-non-dynamic variables)
     + [2.1) `TIMERS`](#21-timers)
        * [2.1.1) Add Timers in Batches](#211-add timers in batches)
        * [2.1.2) Add a Timer](#212-add a timer)
        * [2.1.3) Remove a Timer] (#213-remove a timer)
        * [2.1.4) Modify Specific Timer Property] (#214-modify specific timer property)
     + [2.2) `REQ`](#22-req)
-- [3) Required Dynamic Variable] (#3-required dynamic variables)
+- [3) Required Dynamic Variables] (#3-required dynamic variables)
     + [3.1) `SYS`](#31-sys)
        * [3.1.1) `const` Method] (#311-const-method)
        * [3.1.2) `uname` Method] (#312-uname-method)
@@ -420,7 +420,7 @@ For example, `i32le utf8:128 f64` indicates that the components of a structure a
 
 The structure has 140 bytes in total.
 
-### 1.3) Format Modifier
+### 1.3) Format Modifiers
 
 <https://www.php.net/manual/en/function.sprintf.php>
 
@@ -440,7 +440,7 @@ Certain methods can return values such as `false`, `undefined` to flag errors. T
 
 > This method changes the current working directory. Return `true` on success; throw an exception on failure, or `false` for ignorable exceptions when evaluating silently.
 
-## 2) Non-Dynamic variable
+## 2) Non-Dynamic variables
 
 ### 2.1) `TIMERS`
 
@@ -515,7 +515,7 @@ hvml. load ("a. hvml", { "nrUsers" : 10 })
 
 In the program, we can use `$REQ.nrUsers` or `$REQ['nrUsers']` to refer to the value (`10`) passed in by the above script code.
 
-## 3) Necessary Dynamic Variable
+## 3) Necessary Dynamic Variables
 
 ### 3.1) `SYS`
 
@@ -5923,41 +5923,41 @@ This method closes the stream entity opened by `$STREAM.open` in order to releas
 
 Note that if this method is not called, the closing of the stream will be done automatically when the corresponding native entity value is finally released.
 
-**abnormal**
+**Exception**
 
 - `ArgumentMissed`: missing required argument; exception can be ignored, `false` is returned when silently evaluated.
 - `WrongDataType`: Incorrect parameter type; exception can be ignored and `false` will be returned for silent evaluation.
-- `InvalidValue`: invalid data is passed in; exceptions can be ignored, and `false` will be returned when silently evaluated.
+- `InvalidValue`: Invalid data is passed in; exceptions can be ignored, and `false` will be returned when silently evaluated.
 
-**example**
+**Example**
 
 ```js
 // create and clear
 $STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
 ```
 
-#### 3.12.3) `stdin` static property
+#### 3.12.3) `stdin` Static Property
 
 This is a static attribute, corresponding to a stream entity, whose value can be used for stream reading and writing. It is the encapsulation of the C language standard input stream.
 
-#### 3.12.4) `stdout` static property
+#### 3.12.4) `stdout` Static Property
 
 This is a static attribute, corresponding to a stream entity, whose value can be used for the write interface of streaming read and write, and is the encapsulation of the standard output stream of C language.
 
-**example**
+**Example**
 
 ```
 // Print the kernel name (like `Linux`) to stdout.
 $STREAM.stdout.writelines($SYS.uname_prt('kernel-name'))
 ```
 
-#### 3.12.5) `stderr` static property
+#### 3.12.5) `stderr` Static Property
 
 This is a static attribute, which corresponds to a stream entity, and its value can be used for the write interface of stream read and write, which is the encapsulation of C language standard error stream.
 
-#### 3.12.6) `pipe` stream entity
+#### 3.12.6) `pipe` Stream Entity
 
-**Query parameters**
+**Query Parameter**
 
 In the `pipe` URI, we pass in the options (options) and parameters (arguments) for the command line through the query component (query component) according to the following specifications:
 
@@ -5979,7 +5979,7 @@ Then the corresponding URI is (note that it must be URI-encoded):
 
 Note that the value of each parameter should be URI-encoded in accordance with the RFC3986 specification.
 
-**Additional method**
+**Additional Method**
 
 The `pipe` stream entity should additionally provide the `writeeof` method, which is used by the parent process to write the EOF (end of file) character to the pipe. This operation is equivalent to closing the standard input (stdin) of the child process. Most interactive command line programs will choose to exit when the standard input is closed.
 
@@ -6006,11 +6006,11 @@ The native entity returned by the `$SOCK.listen` method is called a "streamSocke
 - `connRequest` event, used to notify a new connection request.
 - `accept`: Accept the connection request and create a stream entity.
 
-#### 3.13.1) `stream` method
+#### 3.13.1) `stream` Method
 
 Create and listen to a stream socket (streamSocket), and return a native entity value representing the stream socket. This native entity can be observed.
 
-**describe**
+**Description**
 
 ```js
 $SOCK. stream(
@@ -6034,7 +6034,7 @@ This method specifies the location of the stream socket to open using a URI, suc
 - `unix:///var/run/myapp.sock`: UNIX socket.
 - `tcp://foo.com:1100`: TCP socket.
 
-**abnormal**
+**Exception**
 
 - `MemoryFailure`: Memory allocation failed; exception cannot be ignored.
 - `ArgumentMissed`: missing required argument; exception can be ignored, and `undefined` is returned when silently evaluated.
@@ -6045,17 +6045,17 @@ This method specifies the location of the stream socket to open using a URI, suc
 
 1. The closing of the stream socket will be done automatically when the corresponding native entity value is finally released, and the `$streamSocket.close` method can be called in advance to release the system resources occupied by the stream socket entity.
 
-**example**
+**Example**
 
 ```js
 $SOCK.stream("unix://var/run/myapp.sock")
 ```
 
-#### 3.13.2) `dgram` method
+#### 3.13.2) `dgram` Method
 
-Creates a datagram socket (dgramSocket) and returns a native entity value representing the datagram socket. This native entity can be observed.
+Create a datagram socket (dgramSocket) and return a native entity value representing the datagram socket. This native entity can be observed.
 
-**describe**
+**Description**
 
 ```js
 $SOCK.dgram(
@@ -6076,7 +6076,7 @@ This method specifies the location of the stream socket to open using a URI, suc
 - `unix:///var/run/myapp.sock`: UNIX datagram socket.
 - `udp://foo.com:1100`: UDP datagram socket.
 
-**abnormal**
+**Exception**
 
 - `MemoryFailure`: Memory allocation failed; exception cannot be ignored.
 - `ArgumentMissed`: missing required argument; exception can be ignored, and `undefined` is returned when silently evaluated.
@@ -6087,13 +6087,13 @@ This method specifies the location of the stream socket to open using a URI, suc
 
 1. The closing of the stream socket will be done automatically when the corresponding native entity value is finally released, and the `$streamSocket.close` method can be called in advance to release the system resources occupied by the stream socket entity.
 
-**example**
+**Example**
 
 ```js
 $SOCK.stream("unix://var/run/myapp.sock")
 ```
 
-##### 3.13.2.1) The `accept` method of the stream socket entity
+##### 3.13.2.1) `accept` Method of Stream Socket Entity
 
 Accept connection requests from clients and create corresponding stream entities.
 
@@ -6115,7 +6115,7 @@ $streamSocket. accept(
 
 This method accepts a connection request on a stream socket and returns a stream entity.
 
-**abnormal**
+**Exception**
 
 - `MemoryFailure`: Memory allocation failed; exception cannot be ignored.
 - `ArgumentMissed`: missing required arguments; exceptions can be ignored, silently evaluating returns read data.
@@ -6128,35 +6128,35 @@ This method accepts a connection request on a stream socket and returns a stream
 
 **example**
 
-##### 3.13.2.2) The `send` method of the stream socket entity
+##### 3.13.2.2) `send` Method of Stream Socket Entity
 
 Send a message through this method.
 
-##### 3.13.2.3) The `recv` method of the stream socket entity
+##### 3.13.2.3) `recv` Method of Stream Socket Entity
 
 Receive messages through this method.
 
-##### 3.13.2.4) The `close` method of the stream socket entity
+##### 3.13.2.4) `close` Method of Stream Socket Entity
 
 Close the stream socket entity.
 
-##### 3.13.2.5) The `peer` property of the stream socket entity
+##### 3.13.2.5) `peer` Property of Stream Socket Entity
 
 Through this attribute, the address information of the peer (peer) corresponding to the stream socket that accepts the connection request can be obtained.
 
-##### 3.13.2.6) The `send` method of the datagram socket entity
+##### 3.13.2.6) `send` Method of Datagram Socket Entity
 
 Send a message through this method.
 
-##### 3.13.2.7) The `recv` method of the datagram socket entity
+##### 3.13.2.7) `recv` Method of Datagram Socket Entity
 
 Receive messages through this method.
 
-##### 3.13.2.8) The `close` method of the datagram socket entity
+##### 3.13.2.8) `close` Method of Datagram Socket Entity
 
 Close the stream socket entity.
 
-## 4) Optional dynamic variables
+## 4) Optional Dynamic Variable
 
 ### 4.1) `MATH`
 
@@ -6171,7 +6171,7 @@ In the process of calling `MATH` dynamic object method, the following exceptions
 - `Underflow`: An underflow error occurred while computing.
 - `InvalidFloat`: Invalid floating point number.
 
-#### 4.1.1) `pi` method
+#### 4.1.1) `pi` Method
 
 This method is used to obtain a PI value with a given precision:
 
@@ -6185,7 +6185,7 @@ $MATH.pi
 $MATH.pi_l
 ```
 
-#### 4.1.2) `e` method
+#### 4.1.2) `e` Method
 
 This method is used to obtain the value of e (natural constant, Euler's number) to a given precision:
 
@@ -6199,7 +6199,7 @@ $MATH.e
 $MATH.e_l
 ```
 
-#### 4.1.3) `const` methods
+#### 4.1.3) `const` Method
 
 Getters for these two methods are used to get predefined and custom math constants:
 
@@ -6246,7 +6246,7 @@ Implementation requirements:
 1. If the long double-precision floating-point value corresponding to the constant is not passed, it will be treated as a normal precision value.
 1. When the constant values of `pi` and `e` are changed by the setter, the return values of `$MATH.pi` and `$MATH.e` should be changed accordingly.
 
-#### 4.1.4) `add` method
+#### 4.1.4) `add` Method
 
 Find the sum of two real numbers.
 
@@ -6261,9 +6261,9 @@ $MATH. add(1.4, 0.7)
 $MATH. add(1.4, 0.7, 'longint')
 ```
 
-#### 4.1.5) `sub` method
+#### 4.1.5) `sub` Method
 
-Finds the difference between two real numbers.
+Find the difference between two real numbers.
 
 ```js
 // Prototype: find the difference between two real numbers, and return a value of the specified type; the default is `number`
@@ -6276,7 +6276,7 @@ $MATH.sub(1.4, 0.7)
 $MATH.sub(1.4, 0.7, 'longint')
 ```
 
-#### 4.1.6) `mul` method
+#### 4.1.6) `mul` Method
 
 Find the product of two real numbers.
 
@@ -6291,7 +6291,7 @@ $MATH.mul(1.4, 0.7)
 $MATH.mul(1.4, 0.7, 'longint')
 ```
 
-#### 4.1.7) `div` method
+#### 4.1.7) `div` Method
 
 Find the quotient of two real numbers.
 
@@ -6306,7 +6306,7 @@ $MATH.div(1.4, 0.7)
 $MATH.div(1.4, 0.7, 'longint')
 ```
 
-#### 4.1.8) `eval` and `eval_l` methods
+#### 4.1.8) `eval` and `eval_l` Methods
 
 These two methods are used to solve the parameterized operation expression. The `eval` method returns the result data of the `number` type, and the `eval_l` method returns the result data of the `longdouble` type.
 
@@ -6318,7 +6318,7 @@ In the above expression, `PI` is a predefined constant, and `r` is a parameter o
 
 `$MATH.eval('PI * r * r', { r: 2.0 })`
 
-will calculate the area of a circle with a radius of 2.0.
+It will calculate the area of a circle with a radius of 2.0.
 
 We can also use the following expression to complete the same calculation:
 
@@ -6345,45 +6345,45 @@ In parameterized operation expressions, the following constants can be used:
 
 In parameterized operation expressions, the following trigonometric functions can be used:
 
-- `acos(x)`: Returns the arc cosine of a number.
-- `acosh(x)`: Returns the inverse hyperbolic cosine of a number.
-- `asin(x)`: Returns the arc sine of a number.
-- `asinh(x)`: Returns the inverse hyperbolic sine of a number.
-- `atan(x)`: Returns the arc tangent of a number.
-- `atanh(x)`: Returns the inverse hyperbolic tangent of a number.
-- `atan2(y, x)`: Returns the arc tangent of y/x.
-- `cos(x)`: Returns the cosine of a number.
-- `cosh(x)`: Returns the hyperbolic cosine of a number.
-- `sin(x)`: Returns the sine of a number.
-- `sinh(x)`: Returns the hyperbolic sine of a number.
-- `tan(x)`: Returns the tangent of a number.
-- `tanh(x)`: Returns the hyperbolic tangent of a number.
+- `acos(x)`: Return the arc cosine of a number.
+- `acosh(x)`: Return the inverse hyperbolic cosine of a number.
+- `asin(x)`: Return the arc sine of a number.
+- `asinh(x)`: Return the inverse hyperbolic sine of a number.
+- `atan(x)`: Return the arc tangent of a number.
+- `atanh(x)`: Return the inverse hyperbolic tangent of a number.
+- `atan2(y, x)`: Return the arc tangent of y/x.
+- `cos(x)`: Return the cosine of a number.
+- `cosh(x)`: Return the hyperbolic cosine of a number.
+- `sin(x)`: Return the sine of a number.
+- `sinh(x)`: Return the hyperbolic sine of a number.
+- `tan(x)`: Return the tangent of a number.
+- `tanh(x)`: Return the hyperbolic tangent of a number.
 
 In parameterized operation expressions, the following power and logarithmic functions can be used:
 
-- `cbrt(x)`: Returns the cube root of a number.
-- `exp(x)`: returns Euler's constant raised to the parametric power, E^x, where x is the parameter and E is Euler's constant (2.718..., the base of natural logarithms).
-- `hypot(x, y)`: Returns the square root of the sum of squares of two numbers.
-- `log(x)`: Returns the natural logarithm of a number (㏒e, ie ㏑).
-- `log10(x)`: Returns the base 10 logarithm of a number.
-- `log2(x)`: Returns the base 2 logarithm of a number.
-- `pow(x, y)`: Returns a number raised to the power of y.
-- `sqrt(x)`: Returns the square root of a number.
+- `cbrt(x)`: Return the cube root of a number.
+- `exp(x)`: Return Euler's constant raised to the parametric power, E^x, where x is the parameter and E is Euler's constant (2.718..., the base of natural logarithms).
+- `hypot(x, y)`: Return the square root of the sum of squares of two numbers.
+- `log(x)`: Return the natural logarithm of a number (㏒e, ie ㏑).
+- `log10(x)`: Return the base 10 logarithm of a number.
+- `log2(x)`: Return the base 2 logarithm of a number.
+- `pow(x, y)`: Return a number raised to the power of y.
+- `sqrt(x)`: Return the square root of a number.
 
 In parameterized operation expressions, the following rounding functions can be used:
 
-- `ceil(x)`: Returns the smallest integer greater than a number, that is, the value after a number is rounded up.
-- `floor(x)`: Returns the largest integer less than a number, that is, the value after a number is rounded down.
-- `round(x)`: Returns a rounded number, equivalent to rounding the given argument to the nearest integer, away from 0.
+- `ceil(x)`: Return the smallest integer greater than a number, that is, the value after a number is rounded up.
+- `floor(x)`: Return the largest integer less than a number, that is, the value after a number is rounded down.
+- `round(x)`: Return a rounded number, equivalent to rounding the given argument to the nearest integer, away from 0.
 - `trunc(x)`: Return the integer part of a number (directly remove the decimal point and the part after it), which is equivalent to rounding a number towards 0 to be an integer.
 
 In parameterized operation expressions, the following miscellaneous functions can be used:
 
-- `abs(x)`: Returns the absolute value of a number.
-- `max(x, y)`: Returns the maximum of two values.
-- `min(x, y)`: Returns the minimum of two values.
-- `random()`: Returns a pseudo-random number between 0 and 1.
-- `sign(x)`: Returns the sign of a number, knowing whether a number is positive, negative or 0.
+- `abs(x)`: Return the absolute value of a number.
+- `max(x, y)`: Return the maximum of two values.
+- `min(x, y)`: Return the minimum of two values.
+- `random()`: Return a pseudo-random number between 0 and 1.
+- `sign(x)`: Return the sign of a number, knowing whether a number is positive, negative or 0.
 
 ```js
 // prototype
@@ -6408,7 +6408,7 @@ $MATH.eval("PI * pow(r, 2)", { r: 5 })
 $MATH.eval_l(<string: a parameterized arithmetic expressions>[, <object: parameter map>]) longdouble
 ```
 
-#### 4.1.9) `sin` and `sin_l` methods
+#### 4.1.9) `sin` and `sin_l` Methods
 
 Used to calculate the sine of the angle. The prototype is as follows:
 
@@ -6426,9 +6426,9 @@ $MATH. sin($MATH. const('pi/4'))
 $MATH. sin_l($MATH. const('pi/4'))
 ```
 
-#### 4.1.10) `cos` and `cos_l` methods
+#### 4.1.10) `cos` and `cos_l` Methods
 
-The cosine value used to calculate the angle. The prototype is as follows:
+The cosine value is used to calculate the angle. The prototype is as follows:
 
 ```js
 // Prototype: Find the cosine of an angle, the angle is in radians; the return value is `number` type
@@ -6444,7 +6444,7 @@ $MATH.cos($MATH.const('pi/4'))
 $MATH.cos_l($MATH.const('pi/4'))
 ```
 
-#### 4.1.11) `tan` and `tan_l` methods
+#### 4.1.11) `tan` and `tan_l` Methods
 
 Used to calculate the tangent of an angle. The prototype is as follows:
 
@@ -6462,9 +6462,9 @@ $MATH.tan($MATH.const('pi/4'))
 $MATH.tan_l($MATH.const('pi/4'))
 ```
 
-#### 4.1.12) `sinh` and `sinh_l` methods
+#### 4.1.12) `sinh` and `sinh_l` Methods
 
-The hyperbolic sine used to calculate the numeric value. The prototype is as follows:
+They are used to calculate the hyperbolic sine of a value. The prototype is as follows:
 
 ```js
 // Prototype: Calculate the hyperbolic sine of a value; the return value is `number` type
@@ -6480,7 +6480,7 @@ $MATH. sinh(1.0)
 $MATH. sinh_l(1.0)
 ```
 
-#### 4.1.13) `cosh` and `cosh_l` methods
+#### 4.1.13) `cosh` and `cosh_l` Methods
 
 Used to calculate the hyperbolic cosine of a numeric value. The prototype is as follows:
 
@@ -6498,7 +6498,7 @@ $MATH.cosh(1.0)
 $MATH.cosh_l(1.0)
 ```
 
-#### 4.1.14) `tanh` and `tanh_l` methods
+#### 4.1.14) `tanh` and `tanh_l` Methods
 
 Used to calculate the hyperbolic tangent of a numeric value. The prototype is as follows:
 
@@ -6516,7 +6516,7 @@ $MATH.tan(1.0)
 $MATH.tan_l(1.0)
 ```
 
-#### 4.1.15) `asin` and `asin_l` methods
+#### 4.1.15) `asin` and `asin_l` Methods
 
 Used to calculate the arcsine of a number. The prototype is as follows:
 
@@ -6534,7 +6534,7 @@ $MATH.asin(0.707107)
 $MATH.asin_l(0.707107)
 ```
 
-#### 4.1.16) `acos` and `acos_l` methods
+#### 4.1.16) `acos` and `acos_l` Methods
 
 Used to calculate the arccosine of a number. The prototype is as follows:
 
@@ -6552,7 +6552,7 @@ $MATH.acos(0.707107)
 $MATH.acos_l(0.707107)
 ```
 
-#### 4.1.17) `atan` and `atan_l` methods
+#### 4.1.17) `atan` and `atan_l` Methods
 
 Used to calculate the arctangent of a numeric value. The prototype is as follows:
 
@@ -6570,9 +6570,9 @@ $MATH.atan(1.0)
 $MATH.atan_l(1.0)
 ```
 
-#### 4.1.18) `asinh` and `asinh_l` methods
+#### 4.1.18) `asinh` and `asinh_l` Methods
 
-Calculates the inverse hyperbolic sine of the value. The prototype is as follows:
+Calculate the inverse hyperbolic sine of the value. The prototype is as follows:
 
 ```js
 // Prototype: Calculate the inverse hyperbolic sine of a value; the return value is `number` type
@@ -6624,9 +6624,9 @@ $MATH.atanh(0.5)
 $MATH.atanh_l(0.5)
 ```
 
-#### 4.1.21) `fmod` and `fmod_l` methods
+#### 4.1.21) `fmod` and `fmod_l` Methods
 
-Used to calculate the remainder when dividing two values. The prototype is as follows:
+They are used to calculate the remainder when dividing two values. The prototype is as follows:
 
 ```js
 // Prototype: Find the remainder of the division of two values; the return value is `number` type
@@ -6642,9 +6642,9 @@ $MATH.fmod(4.5, 2.0)
 $MATH.fmod_l(4.5, 2.0)
 ```
 
-#### 4.1.22) `fabs` method
+#### 4.1.22) `fabs` Method
 
-Used to calculate the absolute value of a numeric value. The prototype is as follows:
+They are used to calculate the absolute value of a numeric value. The prototype is as follows:
 
 ```js
 // Prototype: Calculate the absolute value of the value; the return value type is the type of the incoming parameter value
@@ -6655,9 +6655,9 @@ $MATH.fabs(-2.5L)
 
 ```
 
-#### 4.1.23) `log` and `log_l` methods
+#### 4.1.23) `log` and `log_l` Methods
 
-Used to calculate the natural logarithm of a value. The prototype is as follows:
+They are used to calculate the natural logarithm of a value. The prototype is as follows:
 
 ```js
 // Prototype: Calculate the natural logarithm of a value; return value is `number` type
@@ -6673,9 +6673,9 @@ $MATH. log($MATH. const('e'))
 $MATH. log_l($MATH. const('e'))
 ```
 
-#### 4.1.24) `log10` and `log10_l` methods
+#### 4.1.24) `log10` and `log10_l` Methods
 
-Used to calculate the base `10` logarithm of a value. The prototype is as follows:
+They are used to calculate the base `10` logarithm of a value. The prototype is as follows:
 
 ```js
 // Prototype: Calculate the logarithm of a value based on `10`; the return value is of type `number`
@@ -6691,7 +6691,7 @@ $MATH.log10(10.0)
 $MATH.log10i_l(10.0)
 ```
 
-#### 4.1.25) `pow` and `pow_l` methods
+#### 4.1.25) `pow` and `pow_l` Methods
 
 Used to calculate `x` to the power of `y`. The prototype is as follows:
 
@@ -6709,7 +6709,7 @@ $MATH.pow(3.0, 2.0)
 $MATH.pow_l(3.0, 2.0)
 ```
 
-#### 4.1.26) `exp` and `exp_l` methods
+#### 4.1.26) `exp` and `exp_l` Methods
 
 Used to calculate `e` raised to the power of `x`. The prototype is as follows:
 
@@ -6727,7 +6727,7 @@ $MATH.exp(1.0)
 $MATH.exp_l(1.0)
 ```
 
-#### 4.1.27) `floor` and `floor_l` methods
+#### 4.1.27) `floor` and `floor_l` Methods
 
 The rounded value used to calculate the numeric value. The prototype is as follows:
 
@@ -6745,7 +6745,7 @@ $MATH. floor(-2.3)
 $MATH. floor_l(-2.3)
 ```
 
-#### 4.1.28) `ceil` and `ceil_l` methods
+#### 4.1.28) `ceil` and `ceil_l` Methods
 
 The rounded up value used to calculate the numeric value. The prototype is as follows:
 
@@ -6791,19 +6791,19 @@ In the process of calling `FS` dynamic object method, the following exceptions m
 - `WrongDataType`: Wrong parameter type.
 - `AccessDenied`: Access is denied.
 - `IOFailure`: Input output error.
-- `TooMany`: means too many (such as symbolic links).
-- `TooLong`: Indicates too long (like a path name).
-- `NotDesiredEntity`: Indicates that an unexpected entity was passed.
+- `TooMany`: It means too many (such as symbolic links).
+- `TooLong`: Indicate too long (like a path name).
+- `NotDesiredEntity`: Indicate that an unexpected entity was passed.
 - `EntityNotFound`: The specified entity (such as a file) was not found.
 - `EntityExists`: When creating a new entity (such as a file), the entity already exists.
-- `OSFailure`: Indicates that an undefined general operating system error was encountered.
+- `OSFailure`: Indicate that an undefined general operating system error was encountered.
 - `BadEncoding`: Bad encoding.
 
 **Remark**
 
 When the specified path is given as a relative path (that is, without a leading `/` symbol), all methods of this object will use the current working path information (same as `$SYS.cwd`).
 
-#### 4.2.1) `list` method
+#### 4.2.1) `list` Method
 
 This method is used to list the directory entries under the specified path and returns an array of objects. The prototype and main usage are as follows:
 
@@ -6844,7 +6844,7 @@ Information about each directory entry is represented by the following objects:
 }
 ```
 
-**example**
+**Example**
 
 ```js
 // List all directory entries in the current working directory
@@ -6860,7 +6860,7 @@ $FS.list('/etc', "*.txt; *.md")
      // array
 ```
 
-#### 4.2.2) `list_prt` method
+#### 4.2.2) `list_prt` Method
 
 This method is used to list the directory item information under the specified path, and returns a formatted string array. The prototype and main usage are as follows:
 
@@ -6880,11 +6880,11 @@ $FS.list_prt($path, "*.txt; *.md", "mode nlink uid gid size blksize atime ctime 
 
 Note: The formatting method of `list_prt` for each directory entry information is the same as the Linux `ls` command.
 
-#### 4.2.3) `basename` method
+#### 4.2.3) `basename` Method
 
-Returns the tail names in the path.
+Return the tail names in the path.
 
-**describe**
+**Description**
 
 ```js
 $FS.basename(
@@ -6895,21 +6895,21 @@ $FS.basename(
 ) string
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `basename()` function: <https://www.php.net/manual/en/function.basename.php>
 
-#### 4.2.4) `chgrp` method
+#### 4.2.4) `chgrp` Method
 
 Change the owner group of a file.
 
-**describe**
+**Description**
 
 ```js
 $FS.chgrp(
@@ -6918,13 +6918,13 @@ $FS.chgrp(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `chgrp()` function: <https://www.php.net/manual/en/function.chgrp.php>
 
@@ -6932,7 +6932,7 @@ $FS.chgrp(
 
 Change the access permissions of a file.
 
-**describe**
+**Description**
 
 ```js
 $FS.chmod(
@@ -6941,13 +6941,13 @@ $FS.chmod(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `chmod()` function: <https://www.php.net/manual/en/function.chmod.php>
 
@@ -6955,7 +6955,7 @@ $FS.chmod(
 
 Change the owner user of a file.
 
-**describe**
+**Description**
 
 ```js
 $FS.chown(
@@ -6964,21 +6964,21 @@ $FS.chown(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `chown()` function: <https://www.php.net/manual/en/function.chown.php>
 
-#### 4.2.7) `copy` method
+#### 4.2.7) `copy` Method
 
 Copy files.
 
-**describe**
+**Description**
 
 ```js
 $FS.copy(
@@ -6987,21 +6987,21 @@ $FS.copy(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `copy()` function: <https://www.php.net/manual/en/function.copy.php>
 
-#### 4.2.8) `dirname` method
+#### 4.2.8) `dirname` Method
 
-Returns the path of the parent directory.
+Return the path of the parent directory.
 
-**describe**
+**Description**
 
 ```js
 $FS.dirname(
@@ -7012,21 +7012,21 @@ $FS.dirname(
 ) string
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `dirname()` function: <https://www.php.net/manual/en/function.dirname.php>
 
-#### 4.2.9) `disk_usage` method
+#### 4.2.9) `disk_usage` Method
 
-Returns the disk usage of the file system.
+Return the disk usage of the file system.
 
-**describe**
+**Description**
 
 ```js
 $FS.disk_usage(
@@ -7034,11 +7034,11 @@ $FS.disk_usage(
 ) object
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-The return value is an object as follows:
+The return values are as follows:
 
 ```js
 {
@@ -7056,16 +7056,16 @@ The return value is an object as follows:
 
 **example**
 
-**see**
+**Reference**
 
 - PHP `disk_free_space()` function: <https://www.php.net/manual/en/function.disk-free-space.php>
 - PHP `disk_total_space()` function: <https://www.php.net/manual/en/function.disk-total-space.php>
 
-#### 4.2.10) `file_exists` method
+#### 4.2.10) `file_exists` Method
 
 Determine whether a file or directory exists.
 
-**describe**
+**Description**
 
 ```js
 $FS.file_exists(
@@ -7073,21 +7073,21 @@ $FS.file_exists(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `file_exists()` function: <https://www.php.net/manual/en/function.file-exists.php>
 
-#### 4.2.11) `file_is` method
+#### 4.2.11) `file_is` Method
 
 Determine whether a file is of the specified type.
 
-**describe**
+**Description**
 
 ```js
 $FS.file_is(
@@ -7107,13 +7107,13 @@ $FS.file_is(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `is_dir()` function: <https://www.php.net/manual/en/function.is_dir.php>
 - PHP `is_file()` function: <https://www.php.net/manual/en/function.is_file.php>
@@ -7122,11 +7122,11 @@ $FS.file_is(
 - PHP `is_readable()` function: <https://www.php.net/manual/en/function.is_readable.php>
 - PHP `is_writable()` function: <https://www.php.net/manual/en/function.is_writable.php>
 
-#### 4.2.12) `lchgrp` method
+#### 4.2.12) `lchgrp` Method
 
 Change the owner group of a symbolic link.
 
-**describe**
+**Description**
 
 ```js
 $FS.lchgrp(
@@ -7135,21 +7135,21 @@ $FS.lchgrp(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `lchgrp()` function: <https://www.php.net/manual/en/function.lchgrp.php>
 
-#### 4.2.13) `lchown` method
+#### 4.2.13) `lchown` Method
 
 Change the owner user of a symbolic link.
 
-**describe**
+**Description**
 
 ```js
 $FS.lchown(
@@ -7158,21 +7158,21 @@ $FS.lchown(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `lchown()` function: <https://www.php.net/manual/en/function.lchown.php>
 
-#### 4.2.14) `linkinfo` method
+#### 4.2.14) `linkinfo` Method
 
 Get link information.
 
-**describe**
+**Description**
 
 ```js
 $FS.linkinfo(
@@ -7180,21 +7180,21 @@ $FS.linkinfo(
 ) number | false
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `linkinfo()` function: <https://www.php.net/manual/en/function.linkinfo.php>
 
-#### 4.2.15) `lstat` method
+#### 4.2.15) `lstat` Method
 
 Get statistics for a file or symbolic link.
 
-**describe**
+**Description**
 
 ```js
 $FS.lstat(
@@ -7222,11 +7222,11 @@ $FS.lstat(
 ) object
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-The result is represented by the following objects or parts thereof:
+The Result is represented by the following objects or parts thereof:
 
 ```js
 {
@@ -7253,17 +7253,17 @@ The result is represented by the following objects or parts thereof:
 }
 ```
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `lstat()` function: <https://www.php.net/manual/en/function.lstat.php>
 
-#### 4.2.16) `link` method
+#### 4.2.16) `link` Method
 
 Create hard links.
 
-**describe**
+**Description**
 
 ```js
 $FS.link(
@@ -7272,21 +7272,21 @@ $FS.link(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `link()` function: <https://www.php.net/manual/en/function.link.php>
 
-#### 4.2.17) `mkdir` method
+#### 4.2.17) `mkdir` Method
 
 Create a directory.
 
-**describe**
+**Description**
 
 ```js
 $FS.mkdir(
@@ -7298,21 +7298,21 @@ $FS.mkdir(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `mkdir()` function: <https://www.php.net/manual/en/function.mkdir.php>
 
-#### 4.2.18) `pathinfo` method
+#### 4.2.18) `pathinfo` Method
 
 Get file path information.
 
-**describe**
+**Description**
 
 ```js
 $FS.pathinfo(
@@ -7324,21 +7324,21 @@ $FS.pathinfo(
 ) object | string
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `pathinfo()` function: <https://www.php.net/manual/en/function.pathinfo.php>
 
-#### 4.2.19) `readlink` method
+#### 4.2.19) `readlink` Method
 
-Read the contents of a symbolic link.
+Read the content of a symbolic link.
 
-**describe**
+**Description**
 
 ```js
 $FS.readlink(
@@ -7346,21 +7346,21 @@ $FS.readlink(
 ) string | false
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `readlink()` function: <https://www.php.net/manual/en/function.readlink.php>
 
-#### 4.2.20) `realpath` method
+#### 4.2.20) `realpath` Method
 
-Returns the normalized absolute pathname.
+Return the normalized absolute pathname.
 
-**describe**
+**Description**
 
 ```js
 $FS.realpath(
@@ -7368,21 +7368,21 @@ $FS.realpath(
 ) string | false
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `realpath()` function: <https://www.php.net/manual/en/function.realpath.php>
 
-#### 4.2.21) `rename` method
+#### 4.2.21) `rename` Method
 
 Rename a file or directory.
 
-**describe**
+**Description**
 
 ```js
 $FS.rename(
@@ -7391,21 +7391,21 @@ $FS.rename(
 ) true | false
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `rename()` function: <https://www.php.net/manual/en/function.rename.php>
 
-#### 4.2.22) `rmdir` method
+#### 4.2.22) `rmdir` Method
 
 Remove directory.
 
-**describe**
+**Description**
 
 ```js
 $FS.rmdir(
@@ -7413,13 +7413,13 @@ $FS.rmdir(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `rmdir()` function: <https://www.php.net/manual/en/function.rmdir.php>
 
@@ -7427,7 +7427,7 @@ $FS.rmdir(
 
 Get statistics for a file.
 
-**describe**
+**Description**
 
 ```js
 $FS.stat(
@@ -7455,9 +7455,9 @@ $FS.stat(
 ) object
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
 The result is represented by the following objects or parts thereof:
 
@@ -7486,17 +7486,17 @@ The result is represented by the following objects or parts thereof:
 }
 ```
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `stat()` function: <https://www.php.net/manual/en/function.stat.php>
 
-#### 4.2.24) `symlink` method
+#### 4.2.24) `symlink` Method
 
 Create a symbolic link.
 
-**describe**
+**Description**
 
 ```js
 $FS.link(
@@ -7505,21 +7505,21 @@ $FS.link(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `symlink()` function: <https://www.php.net/manual/en/function.symlink.php>
 
-#### 4.2.25) `tempname` method
+#### 4.2.25) `tempname` Method
 
-Generate unique temporary file names.
+Generate unique temporary file name.
 
-**describe**
+**Description**
 
 ```js
 $FS.tempname(
@@ -7528,22 +7528,22 @@ $FS.tempname(
 ) string | false
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `tempname()` function: <https://www.php.net/manual/en/function.tempname.php>
 
 
-#### 4.2.26) `touch` method
+#### 4.2.26) `touch` Method
 
-Set access and update times for files.
+Set access and update time for files.
 
-**describe**
+**Description**
 
 ```js
 $FS.touch(
@@ -7554,21 +7554,21 @@ $FS.touch(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `touch()` function: <https://www.php.net/manual/en/function.touch.php>
 
-#### 4.2.27) `umask` method
+#### 4.2.27) `umask` Method
 
 Change the current umask value.
 
-**describe**
+**Description**
 
 ```js
 $FS.umask(
@@ -7576,21 +7576,21 @@ $FS.umask(
 ) string
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `umask()` function: <https://www.php.net/manual/en/function.umask.php>
 
-#### 4.2.28) `unlink` method
+#### 4.2.28) `unlink` Method
 
 Remove hard links.
 
-**describe**
+**Description**
 
 ```js
 $FS.unlink(
@@ -7598,21 +7598,21 @@ $FS.unlink(
 ) boolean
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `unlink()` function: <https://www.php.net/manual/en/function.unlink.php>
 
-#### 4.2.29) `file_contents` method
+#### 4.2.29) `file_contents` Method
 
 Read from or write to a file.
 
-**describe**
+**Description**
 
 ```js
 $FS.file_contents(
@@ -7640,22 +7640,22 @@ $FS.file_contents(!
 ) ulongint | false
 ```
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `file_get_contents()` function: <https://www.php.net/manual/en/function.file-get-contents.php>
 - PHP `file_put_contents()` function: <https://www.php.net/manual/en/function.file-put-contents.php>
 
-#### 4.2.30) `opendir` method
+#### 4.2.30) `opendir` Method
 
 Open a directory.
 
-**describe**
+**Description**
 
 ```js
 $FS.opendir(
@@ -7668,55 +7668,55 @@ This method opens the specified path to read the directory entries, and the retu
 - `$dirStream.read()`: Read the next directory entry.
 - `$dirStream.rewind()`: Rewind the directory stream.
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
 A native entity on which a `read` or `rewind` method is provided to read a directory entry or reset the directory stream, respectively.
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `opendir()` function: <https://www.php.net/manual/en/function.opendir.php>
 
-##### 4.2.30.1) `read` method of directory stream entity
+##### 4.2.30.1) `read` Method of Directory Stream Entity
 
 Read the next directory entry.
 
-**describe**
+**Description**
 
 ```js
 $dirStream. read object | false
 ```
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `readdir()` function: <https://www.php.net/manual/en/function.readdir.php>
 
-##### 4.2.30.2) `rewind` method of directory stream entity
+##### 4.2.30.2) `rewind` Method of Directory Stream Entity
 
 Reset directory flow.
 
-**describe**
+**Description**
 
 ```js
 $dirStream. rewind boolean
 ```
 
-**example**
+**Example**
 
-**see**
+**Reference**
 
 - PHP `rewinddir()` function: <https://www.php.net/manual/en/function.rewinddir.php>
 
-#### 4.2.31) `closedir` method
+#### 4.2.31) `closedir` Method
 
 Close directory stream.
 
-**describe**
+**Description**
 
 ```js
 $FS.closedir(
@@ -7726,15 +7726,15 @@ $FS.closedir(
 
 This method prematurely closes the directory stream opened by `$FS.opendir()` in order to release the system resources it occupies. If this method is not called, when the variant data corresponding to the directory stream is destroyed, the directory stream will also be automatically closed.
 
-**parameter**
+**Parameter**
 
-**return value**
+**Return Value**
 
-**example**
+**Example**
 
 **Remark**
 
-**see**
+**Reference**
 
 - PHP `opendir()` function: <https://www.php.net/manual/en/function.opendir.php>
 
@@ -7751,9 +7751,9 @@ The variable is designed as a two-level object:
 
 When the specified file is given as a relative path (i.e. without a leading `/` symbol), all methods of the object will use the current working path information maintained by the current runner (same as `$SYS.cwd`).
 
-#### 4.3.1) Text files
+#### 4.3.1) Text File
 
-##### 4.3.1.1) `txt.head` method
+##### 4.3.1.1) `txt.head` Method
 
 This method reads the first few lines of a text file and returns an array of strings.
 
@@ -7771,7 +7771,7 @@ $FILE.txt.head($file, 5)
 $FILE.txt.head($file, -5)
 ```
 
-##### 4.3.1.2) `txt.tail` method
+##### 4.3.1.2) `txt.tail` Method
 
 This method reads the last few lines of the text file and returns an array of strings.
 
@@ -7789,9 +7789,9 @@ $FILE.txt.tail($file, 5)
 $FILE.txt.tail($file, -5)
 ```
 
-#### 4.3.2) Binary files
+#### 4.3.2) Binary File
 
-##### 4.3.2.1) `bin.head` method
+##### 4.3.2.1) `bin.head` Method
 
 This method reads the first few bytes of the binary file and returns a sequence of bytes.
 
@@ -7809,7 +7809,7 @@ $FILE. bin. head($file, 5)
 $FILE. bin. head($file, -5)
 ```
 
-##### 4.3.2.2) `bin.tail` method
+##### 4.3.2.2) `bin.tail` Method
 
 This method reads the last few bytes of the binary file and returns a sequence of bytes.
 
@@ -7829,7 +7829,7 @@ $FILE. bin. tail($file, -5)
 
 ### 4.4) `py`
 
-`PY` is a loadable dynamic object, bound as a walker-level variable by default. This object uses CPython to perform the following functions:
+`PY` is a loadable dynamic object,which is bound as a walker-level variable by default. This object uses CPython to perform the following functions:
 
 1. `$PY.global` and `$PY.local`: Use HVML data access (including setting) global variables or local variables used by the Python environment.
 1. `$PY.import`: Load the specified Python module and call (or access) the submodules, functions and attributes provided by the loaded module on it.
@@ -7838,11 +7838,11 @@ $FILE. bin. tail($file, -5)
 1. `$PY.stringify`: Get the string representation of a Python object entity.
 1. `$PY.compile`: Compile a piece of Python code, and then call `local` on the result to set local variables or call the `eval` method to execute the compiled code and get the result.
 
-#### 4.4.1) `impl` attribute
+#### 4.4.1) `impl` Attribute
 
 Use this property to get information about the implementer of the `$PY` variable, including developer, author, license, etc.
 
-**describe**
+**Description**
 
 ```js
 $PY.impl object:
@@ -7856,11 +7856,11 @@ $PY.impl object:
 
 This property returns an object describing information about the current CPython interpreter.
 
-**abnormal**
+**Exception**
 
 - Accessing this property produces no exception.
 
-**example**
+**Example**
 
 ```js
 $PY.impl
@@ -7875,11 +7875,11 @@ $PY.impl
      */
 ```
 
-#### 4.4.2) `info` attribute
+#### 4.4.2) `info` Attribute
 
 Use this attribute to get the version number, compiler, platform, build information, copyright and other information of the CPython library used by `$PY`.
 
-**describe**
+**Description**
 
 ```js
 $PY.info object:
@@ -7894,11 +7894,11 @@ $PY.info object:
 
 This property returns an object describing information about the current CPython interpreter.
 
-**abnormal**
+**Exception**
 
 - Accessing this property produces no exception.
 
-**example**
+**Example**
 
 ```js
 $PY.info
@@ -7913,11 +7913,11 @@ $PY.info
      */
 ```
 
-#### 4.4.3) `global` attribute
+#### 4.4.3) `global` Attribute
 
 This attribute reflects the current Python interpreter's `__main__` module's global variable dictionary.
 
-**describe**
+**Description**
 
 ```js
 $PY.global()
@@ -7951,7 +7951,7 @@ This attribute setter sets the value of the specified global variable of the `__
 
 This property should be implemented as a native entity, so that `$PY.global.x` can be used to get the value of the global variable `x`, or use `$PY.global.x(! ... )` to set the global variable value.
 
-**abnormal**
+**Exception**
 
 The getter for this property produces the following exception:
 
@@ -7967,7 +7967,7 @@ The setter for this property produces the following exception:
 - `InvalidValue`: invalid value, such as an unsupported data type; exceptions can be ignored, and `false` will be returned for silent evaluation.
 - `InternalFailure`: CPython exception; the exception can be ignored, and `false` is returned for silent evaluation.
 
-**example**
+**Example**
 
 ```js
 $PY.global()
@@ -7989,11 +7989,11 @@ $PY.global.x
      // exception: NoSuchKey
 ```
 
-#### 4.4.4) `local` property
+#### 4.4.4) `local` Property
 
 This property reflects the local variable dictionary when executing the `$PY.run` method.
 
-**describe**
+**Description**
 
 ```js
 $PY.local()
@@ -8029,7 +8029,7 @@ This property setter sets the value of the specified local variable; when `$valu
 
 This property should be implemented as a native entity, so that `$PY.local.x` can be used to get the value of the local variable `x`, or use `$PY.local.x(! ... )` to set the local variable value.
 
-**abnormal**
+**Exception**
 
 The getter for this property produces the following exception:
 
@@ -8045,7 +8045,7 @@ The setter for this property produces the following exception:
 - `InvalidValue`: invalid value, such as an unsupported data type; exceptions can be ignored, and `false` will be returned for silent evaluation.
 - `InternalFailure`: CPython exception; the exception can be ignored, and `false` is returned for silent evaluation.
 
-**example**
+**Example**
 
 ```js
 $PY.local()
@@ -8058,11 +8058,11 @@ $PY.local('x')
      // string: 'zh_CN'
 ```
 
-#### 4.4.5) `except` attribute
+#### 4.4.5) `except` Attribute
 
 This attribute gets the last Python exception name on the `$PY` dynamic variable.
 
-**describe**
+**Description**
 
 ```js
 $PY.except
@@ -8071,11 +8071,11 @@ $PY.except
 
 This method returns the exception name corresponding to the last Python internal error on the `$PY` dynamic variable, initially `null`, which can be used to further distinguish Python exceptions.
 
-**abnormal**
+**Exception**
 
 This method does not raise an exception.
 
-**example**
+**Example**
 
 ```js
 $PY.except
@@ -8084,11 +8084,11 @@ $PY.except
      // string: 'ZeroDivisionError'
 ```
 
-#### 4.4.6) `pythonize` method
+#### 4.4.6) `pythonize` Method
 
 This method will construct a CPython native entity object from an HVML string, object, array, and collection, and then execute the corresponding method on it.
 
-**describe**
+**Description**
 
 ```js
 $PY.pythonize(
@@ -8121,18 +8121,18 @@ $PY.pythonize([1, 2, 3]).reverse()()
      // array: [3, 2, 1]
 ```
 
-**return value**
+**Return Value**
 
 This method returns a native entity named `pyObject::any`.
 
-**abnormal**
+**Exception**
 
 Exceptions that this method may generate:
 
 - `ArgumentMissed`: No argument specified; exceptions can be ignored, and `undefined` is returned when evaluated silently.
 - `WrongDataType`: Wrong parameter type; exception can be ignored, and `undefined` is returned when silently evaluated.
 
-**example**
+**Example**
 
 ```js
 $PY. pythonize([])
@@ -8148,11 +8148,11 @@ $PY.pythonize('Hello, World!').upper()()
      // string: 'HELLO, WORLD!'
 ```
 
-#### 4.4.7) `run` method
+#### 4.4.7) `run` Method
 
 This method executes a Python program, a module as a script, or a Python script file.
 
-**describe**
+**Description**
 
 ```js
 $PY.run(
@@ -8172,11 +8172,11 @@ $PY.run(
 
 This method executes a specified Python program (command), or executes a specified Python module in the form of a script, or executes a Python script file. `$cmd_mod_file` specifies program content, module name or script file name; `$options` specifies execution options.
 
-**return value**
+**Return Value**
 
 This method returns the execution result.
 
-**abnormal**
+**Exception**
 
 Exceptions that this method may generate:
 
@@ -8186,7 +8186,7 @@ Exceptions that this method may generate:
 - `InvalidValue`: Invalid parameter, such as the specified symbol does not exist; the exception can be ignored, and `undefined` is returned during silent evaluation.
 - `InternalFailure`: CPython exception; the exception can be ignored, and `undefined` is returned when silently evaluated.
 
-**example**
+**Example**
 
 ```js
 $PY. run('print("Hello from Python")')
@@ -8196,11 +8196,11 @@ $PY.run('pow(2,3)')
      //8L
 ```
 
-#### 4.4.8) `import` method
+#### 4.4.8) `import` Method
 
 A module or specified symbols within it can be loaded by this method.
 
-**describe**
+**Description**
 
 ```js
 $PY.import(
@@ -8219,7 +8219,7 @@ This method imports the specified Python module, or imports the specified Python
 1. When using the `$fromlist` parameter to specify an object or submodule, you can use `<object/submodule>:<aliase>` to specify the alias of the object or submodule.
 1. When the imported object is a Python function object, you can use the setter on the corresponding symbol to pass the function parameters in the form of key-value pairs.
 
-**abnormal**
+**Exception**
 
 Exceptions that this method may generate:
 
@@ -8229,7 +8229,7 @@ Exceptions that this method may generate:
 - `EntityNotFound`: The specified module, object, or subobject was not found; the exception is ignored, and `false` is returned for silent evaluation.
 - `InvalidValue`: Invalid parameter, such as the specified symbol does not exist; the exception can be ignored, and `false` is returned when silently evaluated.
 
-**example**
+**Example**
 
 ```js
 $PY. import("math")
@@ -8246,11 +8246,11 @@ $PY.power(2, 2)
      // number: 4
 ```
 
-#### 4.4.9) `stringify` method
+#### 4.4.9) `stringify` Method
 
 This method stringifies a Python entity.
 
-**describe**
+**Description**
 
 ```js
 $PY.stringify(
@@ -8260,7 +8260,7 @@ $PY.stringify(
 
 This method stringifies a specified native Python entity.
 
-**abnormal**
+**Exception**
 
 Exceptions that this method may generate:
 
@@ -8274,11 +8274,11 @@ $PY. stringify({{ $PY. import('math'); $PY. math. pi }})
      // string: '3.1415926535897931'
 ```
 
-#### 4.4.10) `compile` method
+#### 4.4.10) `compile` Method
 
 This method can be used to compile a specified piece of Python code.
 
-**describe**
+**Description**
 
 ```js
 $PY.compile(
@@ -8288,7 +8288,7 @@ $PY.compile(
 
 This method compiles a piece of Python code, returns a dynamic object representing the CPython code, and can then execute the `eval` method on the dynamic object or access the `local` attribute.
 
-**abnormal**
+**Exception**
 
 Exceptions that this method may generate:
 
@@ -8296,18 +8296,18 @@ Exceptions that this method may generate:
 - `WrongDataType`: Wrong argument type; exception can be ignored and `false` will be returned for silent evaluation.
 -...
 
-**example**
+**Example**
 
 ```js
 $PY. compile('c = 4 + 2')
      //pyCodeObject
 ```
 
-##### 4.4.10.1) CPython code dynamic object `entity` attribute
+##### 4.4.10.1) CPython Code Dynamic Object `entity` Attribute
 
 The getter for this property returns the CPython object native entity corresponding to the CPthon code dynamic object.
 
-**describe**
+**Description**
 
 ```js
 $pyCodeObject.entity
@@ -8316,22 +8316,22 @@ $pyCodeObject.entity
 
 This property getter returns the CPython code object native entity corresponding to `$pyCodeObject`.
 
-**abnormal**
+**Exception**
 
-Getters for this property do not raise exceptions.
+Getter for this property do not raise exceptions.
 
-**example**
+**Example**
 
 ```js
 $pyCodeObject.entity
      // native/pyObject:code
 ```
 
-##### 4.4.10.2) CPython code dynamic object `local` attribute
+##### 4.4.10.2) CPython Code Dynamic Object `local` Attribute
 
 This attribute reflects the local variables dictionary of the CPython code dynamic object.
 
-**describe**
+**Description**
 
 ```js
 $pyCodeObject.local
@@ -8383,7 +8383,7 @@ The setter for this property produces the following exception:
 - `InvalidValue`: Invalid value, such as an unsupported data type; the exception can be ignored, and `undefined` is returned during silent evaluation.
 - `InternalFailure`: CPython exception; the exception can be ignored, and `undefined` is returned when silently evaluated.
 
-**example**
+**Example**
 
 ```js
 $pyCodeObject.local
@@ -8396,11 +8396,11 @@ $pyCodeObject. local('x')
      // string: 'zh_CN'
 ```
 
-##### 4.4.10.3) `eval` method of CPython code dynamic object
+##### 4.4.10.3) CPython Code Dynamic Object`eval` Method  
 
-Execute CPython code dynamic objects.
+Execute CPython code dynamic object.
 
-**describe**
+**Description**
 
 ```js
 $pyCodeObject.eval(
@@ -8415,13 +8415,13 @@ $pyCodeObject.eval(
 
 This method executes the CPython code object in the specified local environment; if `$globals` is not specified, the global variables defined by `$PY` are used; if `$locals` is not specified, the `$pyCodeObject.local` attribute is used The specified local variable.
 
-**abnormal**
+**Exception**
 
-Exceptions that this method may generate:
+Exception that this method may generate:
 
 - `InternalFailure`: Python interpreter exception; the specific Python exception name can be obtained through `$PY.except`.
 
-**example**
+**Example**
 
 ```js
 $PY.compile('4 + 2').eval()
@@ -8438,7 +8438,7 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 
 ### Appendix 1) Revision History
 
-Release history:
+Release History:
 
 - March 31, 2023: Release V1.0 RCa, tagged 'v1.0-rca-230331'.
 - January 31, 2023: Release V1.0 RC9, tagged 'v1.0-pv-rc9-230131'.
@@ -8499,8 +8499,8 @@ Release history:
 
 #### RC4) 220701
 
-1. Describes how to pass command-line arguments through the query component of the `pipe` URI.
-1. Described additional methods of the `pipe` stream entity: `writeeof` and `status`.
+1. Describe how to pass command-line arguments through the query component of the `pipe` URI.
+1. Describe additional methods of the `pipe` stream entity: `writeeof` and `status`.
 1. The `user_obj` static property name of `$RUNNER` is adjusted to `myObj`.
 
 #### RC3) 220601
@@ -8540,14 +8540,14 @@ Release history:
 
 #### RC1) 220401
 
-1. Removed single element entity, all use element collection entity.
-1. The `$STR.strlen` method has been removed.
-1. Changed the interface of `$STR.implode`, `$STR.explode` methods.
-1. The `$STR.strcat` method is renamed to `$STR.join`, and the interface is enhanced.
-1. The `$STR.upper` method is renamed to `$STR.toupper`.
-1. The `$STR.lower` method is renamed to `$STR.tolower`.
+1. Remove single element entity, all use element collection entity.
+1. `$STR.strlen` method has been removed.
+1. Change the interface of `$STR.implode`, `$STR.explode` methods.
+1. `$STR.strcat` method is renamed to `$STR.join`, and the interface is enhanced.
+1. `$STR.upper` method is renamed to `$STR.toupper`.
+1. `$STR.lower` method is renamed to `$STR.tolower`.
 1. Add a lot of methods to `$STR`.
-1. Adjusted the return object format of `$FS.list` method.
+1. Adjust the return object format of `$FS.list` method.
 1. Add `$URL` dynamic object and its methods.
 1. Separate `$STREAM`.
 1. Add a lot of methods to `$FS`.
@@ -8563,7 +8563,7 @@ Release history:
 #### BRC) 220201
 
 
-### Appendix 2) List of contributors
+### Appendix 2) Contributor List 
 
 The order of this list is arranged from early to late according to the contribution time:
 
