@@ -35,7 +35,7 @@ For a detailed list of registered trademarks or trademarks of the copyright owne
    + [2.1) Fundamental](#21-fundemantal)
        * [2.1.1) Program Structure](#211-program-structure)
        * [2.1.2) Basic Data Types](#212-basic-data-types)
-       * [2.1.3) Extended Data Types](#213-extended-data-types)
+       * [2.1.3) Extend Data Types](#213-extend-data-types)
        * [2.1.4) Casting Rules for Arbitrary Data Types](#214-casting-rules-for-arbitrary-data-types)
           - [2.1.4.1) Numericization](#2141-numerization)
           - [2.1.4.2) Booleanize](#2142-booleanize)
@@ -71,7 +71,7 @@ For a detailed list of registered trademarks or trademarks of the copyright owne
           - [2.1.19.2) `hvml+run` Schema](#21192-hvmlrun-schema)
    + [2.2) Description Syntax of Rules, Expressions and Methods](#22-description-syntax-of-regular-expressions-and-methods)
        * [2.2.1) Rule Description Syntax](#221-rule-description-syntax)
-       * [2.2.2) Evaluated Expressions Syntax](#222-evaluated-expressions-syntax)
+       * [2.2.2) Evaluation Expressions Syntax](#222-evaluated-expressions-syntax)
        * [2.2.3) Common Denoted Noun Units](#223-common-denoted-noun-units)
        * [2.2.4) Description Syntax of Dynamic Object Methods](#224-description-syntax-of-dynamic-object-methods)
        * [2.2.5) eJSON Syntax](#225-ejson-syntax)
@@ -83,15 +83,15 @@ For a detailed list of registered trademarks or trademarks of the copyright owne
    + [2.4) Detailed Explanation of Template Tags](#24-detailed-explanation-of-template-tags)
        * [2.4.1) `archetype` Tag](#241-archetype-tag)
        * [2.4.2) `archedata` Tag](#242-archedata-tag)
-       * [2.4.3) `error` Label](#243-error-label)
-       * [2.4.4) `except` Label](#244-except-label)
+       * [2.4.3) `error` tag](#243-error-tag)
+       * [2.4.4) `except` tag](#244-except-tag)
    + [2.5) Detailed Explanation of Action Tags](#25-detailed-explanation-of-action-tags)
-       * [2.5.1) `init` Label](#251-init-label)
+       * [2.5.1) `init` tag](#251-init-tag)
        * [2.5.2) `update` Tag](#252-update-tag)
           - [2.5.2.1) Specify Target Position](#2521-specify target-position)
           - [2.5.2.2) Update Collection](#2522-update-collection)
        * [2.5.3) `erase` Tag](#253-erase-tag)
-       * [2.5.4) `clear` Label](#254-clear-label)
+       * [2.5.4) `clear` tag](#254-clear-tag)
        * [2.5.5) `test`, `match` and `differ` Labels](#255-test-match-and-differ-labels)
           - [2.5.5.1) Multi-Branch Handling](#2551-multi-branch-handling)
           - [2.5.5.2) Choose One of Two Processing](#2552-choose-one-of-two-processing)
@@ -99,14 +99,14 @@ For a detailed list of registered trademarks or trademarks of the copyright owne
        * [2.5.7) `iterate` Tag](#257-iterate-tag)
           - [2.5.7.1) Use Iterative Executor](#2571-use-iterative-executor)
           - [2.5.7.2) Nonuse Iterative Executor](#2572-nonuse-iterative-executor)
-       * [2.5.8) `reduce` Label](#258-reduce-label)
+       * [2.5.8) `reduce` tag](#258-reduce-tag)
        * [2.5.9) `sort` Tag](#259-sort-tag)
        * [2.5.10) `define` and `include` Tags](#2510-define-and-include-tags)
        * [2.5.11) `observe`, `forget` and `fire` Labels](#2511-observe-forget-and-fire-labels)
        * [2.5.12) `call` and `return` Labels](#2512-call-and-return-labels)
        * [2.5.13) `bind` Tag](#2513-bind-tag)
        * [2.5.14) `catch` Tag](#2514-catch-tag)
-       * [2.5.15) `back` Label](#2515-back-label)
+       * [2.5.15) `back` tag](#2515-back-tag)
        * [2.5.16) `request` Tag](#2516-request-tag)
        * [2.5.17) `load` and `exit` Labels](#2517-load-and-exit-labels)
        * [2.5.18) `inherit` Tag](#2518-inherit-tag)
@@ -120,31 +120,31 @@ For a detailed list of registered trademarks or trademarks of the copyright owne
           - [2.6.1.5) Built-In Executor for Numeric Values](#2615-built-in-executor-for-numeric-values)
           - [2.6.1.6) `SQL` Executor](#2616-sql-executor)
           - [2.6.1.7) `TRAVEL` Actuator](#2617-travel-executor)
-          - [2.6.1.8) Use of Built-In Executors](#2618-use-of-builtin-executors)
+          - [2.6.1.8) Use of Built-In Executor](#2618-use-of-builtin-executor)
        * [2.6.2) External Actuator](#262-external-actuator)
           - [2.6.2.1) External Function Executor](#2621-external-function-executor)
           - [2.6.2.2) External Class Executor](#2622-external-class-executor)
        * [2.6.3) Handling of Executor Regular Expressions](#263-handling-of-executor-regular-expressions)
    + [2.7) Responsive Update](#27-responsive-update)
-- [3) HVML Grammar](#3-hvml-grammar)
+- [3) HVML Syntax](#3-hvml-syntax)
    + [3.1) Write HVML Documentation](#31-write-hvml-documentation)
        * [3.1.1) DOCTYPE](#311-doctype)
        * [3.1.2) Elements](#312-elements)
-          - [3.1.2.1) Start Label](#3121-start-label)
-          - [3.1.2.2) Termination Label](#3122-termination-label)
-          - [3.1.2.3) Properties](#3123-properties)
-          - [3.1.2.4) Action Element Attributes](#3124-action-element-attributes)
-          - [3.1.2.5) Optional Tags](#3125-optional-tags)
+          - [3.1.2.1) Start tag](#3121-start-tag)
+          - [3.1.2.2) Termination tag](#3122-termination-tag)
+          - [3.1.2.3) Attribute](#3123-Attribute)
+          - [3.1.2.4) Action Element Attribute](#3124-action-element-attributes)
+          - [3.1.2.5) Optional Tag](#3125-optional-tags)
           - [3.1.2.6) Content Restrictions for Baretext Elements and Escapeable Baretext Elements](#3126-content-restrictions-for-baretext-elements-and-escapeable-baretext-elements)
-          - [3.1.2.7) Data Content and Data Attributes](#3127-data-content-and-data-attributes)
+          - [3.1.2.7) Data Content and Data Attribute](#3127-data-content-and-data-attributes)
        * [3.1.3) Text](#313-text)
           - [3.1.3.1) New Line](#3131-newline)
        * [3.1.4) Character Reference](#314-character-references)
        * [3.1.5) CDATA Paragraph](#315-cdata-paragraph)
        * [3.1.6) Comments](#316-comments)
-    + [3.2) Parse HVML Document](#32-parse-hvml-documentation)
+    + [3.2) Parse HVML Documentation](#32-parse-hvml-documentation)
 - [4) Application Example](#4-application-example)
-   + [4.1) Use HVML to Develop Traditional GUI Applications](#41-use-hvml-develop-traditional-gui-applications)
+   + [4.1) Use HVML to Develop Traditional GUI Apps](#41-use-hvml-to-develop-traditional-gui-apps)
    + [4.2) Cloud Apps](#42cloud-apps)
 - [5) Summary](#5-summary)
 - [Appendix](#appendix)
@@ -162,15 +162,15 @@ For a detailed list of registered trademarks or trademarks of the copyright owne
           - [RC9.4) Adjust `request` Element Related Details](#rc94-adjust-request-element-related-details)
        * [RC8) 221130](#rc8-221130)
           - [RC8.1) Backtick Attribute Value Syntax](#rc81-backtick-attribute-value-syntax)
-          - [RC8.2) New Datatype Aliases](#rc82-new-datatype-aliases)
+          - [RC8.2) New Data Type Aliases](#rc82-new-datatype-aliases)
           - [RC8.3) Adverb Attributes in Frame Elements](#rc83-adverb-attributes-in-frame-elements)
           - [RC8.4) Misc](#rc84-misc)
        * [RC7) 221031](#rc7-221031)
           - [RC7.1) Stand-In Expression](#rc71-stand-in-expression)
           - [RC7.2) Adjust Variables Section](#rc72-adjust-variables-section)
           - [RC7.3) Adjust eJSON Syntax for Defining Tuples](#rc73-adjust-ejson-syntax-for-defining-tuples)
-          - [RC7.4) Adjust the Name of Adverb Property](#rc74-adjust-the-name-of-adverb-property)
-          - [RC7.5) Preposition Property Enhancement](#rc75-preposition-property-enhancement)
+          - [RC7.4) Adjust the Name of Adverb Attributes](#rc74-adjust-the-name-of-adverb- attributes)
+          - [RC7.5) Preposition Attributes Enhancement](#rc75-preposition- attributes-enhancement)
        * [RC6) 220901](#rc6-220901)
           - [RC6.1) Enhance Variable Names](#rc61-enhance-variable-names)
           - [RC6.2) Enhance `request` Tag](#rc62-enhance-request-tag)
@@ -180,12 +180,12 @@ For a detailed list of registered trademarks or trademarks of the copyright owne
        * [RC5) 220701](#rc5-220701)
           - [RC5.1) Adjust Description of `include` Tag](#rc51-adjust-description-of-include-tag)
           - [RC5.2) Tweak `request` Tag](#rc52-tweak-request-tag)
-          - [RC5.3) Adjust `load` and `call` Labels](#rc53-adjust-load-and-call-labels)
+          - [RC5.3) Adjust `load` and `call` Tags](#rc53-adjust-load-and-call-labels)
           - [RC5.4) HVML URI Schema and Coroutine Descriptor](#rc54-hvml-uri-schema-and-coroutine-descriptor)
           - [RC5.5) Enhance `sort` Tag](#rc55-enhance-sort-tag)
           - [RC5.6) Tweak `observe` Tag](#rc56-tweak-observe-tag)
           - [RC5.7) Frame Tag Content](#rc57-frame-tag-content)
-          - [RC5.8) Miscellaneous Revisions](#rc58-miscellaneous-revisions)
+          - [RC5.8) Other Revision](#rc58-other-revision)
        * [RC4) 220601](#rc4-220601)
           - [RC4.1) Refactor `Fundamental` Section](#rc41-refactor-fundamental-section)
           - [RC4.2) MIME Type and Data](#rc42-mime-type-and-data)
@@ -230,7 +230,7 @@ For a detailed list of registered trademarks or trademarks of the copyright owne
        * [TBD 1) Extend Data Types](#tbd-1-extend-data-types)
           - [TBD 1.1) Extend Data Types](#tbd-11-extend-data-types)
        * [TBD2) Action Element](#tbd2-action-element)
-          - [TBD2.1) `pipe` Label](#tbd21-pipe-label)
+          - [TBD2.1) `pipe` tag](#tbd21-pipe-tag)
           - [TBD2.2) `connect`, `send` and `disconnect` Labels](#tbd22-connect-send-and-disconnect-labels)
           - [TBD2.3) External Function Updater](#tbd23-wxternal-function-updater)
           - [TBD2.4) Misc](#tbd24-misc)
@@ -847,7 +847,7 @@ The following uses a simple example to illustrate the program structure of HVML.
 
 First, HVML uses  tags like HTML to define the overall structure of the document:
 
-- At the beginning of the document, we use `<!DOCTYPE hvml>` to mark the document type as `hvml`. We also use the `SYSTEM` identifier of the `DOCTYPE` to define the external label prefixes used by this HVML program and the external modules that need to be preloaded.
+- At the beginning of the document, we use `<!DOCTYPE hvml>` to mark the document type as `hvml`. We also use the `SYSTEM` identifier of the `DOCTYPE` to define the external tag prefixes used by this HVML program and the external modules that need to be preloaded.
 - `hvml` tag is used to define an entire HVML program. It can contain the following attributes:
     1. `target`: defines the target markup language of the HVML program, taking values such as `html`, `xml`, `void`, etc.
     1. Other attributes (such as the `lang` attribute, used to define the language, such as `en`, `zh`, etc.), will be cloned to the root element of the target document after being evaluated by the interpreter.
@@ -906,7 +906,7 @@ HVML defines the following basic container types:
 
 Primitive data item types and primitive container types are collectively referred to as primitive data types, and their representations are compatible with [JSON].
 
-#### 2.1.3) Extended Data Types
+#### 2.1.3) Extend Data Types
 
 This specification requires HVML interpreter to implement the following extended data types and two special data types:
 
@@ -930,15 +930,15 @@ The special data types mentioned above are intrinsic data types, valid only at r
 
 Both dynamic values and native entities can exist as attribute values of objects, thus forming what we often call dynamic objects.
 
-In HVML, we extend the properties of objects to be dynamic. A dynamic property, usually defined or implemented by an HVML interpreter or an external program, is either a dynamic value or a native entity.
+In HVML, we extend the properties of objects to be dynamic. A dynamic attributes, usually defined or implemented by an HVML interpreter or an external program, is either a dynamic value or a native entity.
 
-From the point of view of an HVML program, accessing a dynamic property is no different than accessing a regular property. For example, we can get the current UNIX timestamp by accessing `$SYS.time`. However, accessing `$SYS.time` at different times will result in different values. This is because `time` here is a dynamic property.
+From the point of view of an HVML program, accessing a dynamic attribute is no different than accessing a regular attribute. For example, we can get the current UNIX timestamp by accessing `$SYS.time`. However, accessing `$SYS.time` at different times will result in different values. This is because `time` here is a dynamic attribute.
 
-As another feature of dynamic properties, we can treat a specific property as an object and provide virtual properties on it. For example, when we access `$SYS.uname_prt.default`, we will get the current operating system kernel name (like `Linux`).
+As another feature of dynamic properties, we can treat a specific attribute as an object and provide virtual properties on it. For example, when we access `$SYS.uname_prt.default`, we will get the current operating system kernel name (like `Linux`).
 
-Furthermore, we can also use a specific property as a function, pass parameters to obtain different return values, or set a specific value for the property. For example, on `$SYS` object, if we want to get the kernel name and release version number of the current operating system, we can use `$SYS.uname_prt('kernel-name kernel-release')`, at this time, we will get A string like `Linux 5.4.0-107-generic`.
+Furthermore, we can also use a specific attribute as a function, pass parameters to obtain different return values, or set a specific value for the attribute. For example, on `$SYS` object, if we want to get the kernel name and release version number of the current operating system, we can use `$SYS.uname_prt('kernel-name kernel-release')`, at this time, we will get A string like `Linux 5.4.0-107-generic`.
 
-In addition to using `( )`, which is similar to a function call, we can also use `(! )`, which is used to set a property. For example, use `$SYS.cwd` to get the current working directory, and use `$SYS.cwd(! '/tmp' )` to set the current working directory.
+In addition to using `( )`, which is similar to a function call, we can also use `(! )`, which is used to set a attribute. For example, use `$SYS.cwd` to get the current working directory, and use `$SYS.cwd(! '/tmp' )` to set the current working directory.
 
 Here, we introduce two operators: `( )` and `(! )`. Essentially, the former corresponds to getter methods for dynamic properties, and the latter corresponds to setter methods for dynamic properties.
 
@@ -950,7 +950,7 @@ In addition to the built-in `$SYS` dynamic object or the dynamic object preloade
 
 After that, when we access `$math.pi`, it will return the value of PI, and if we access `$math.sin($math.pi)`, it will return `0.0`.
 
-When we refer to a dynamic property that does not exist on a dynamic object, or a virtual subproperty that does not exist, or cannot perform a function operation on the property, the HVML interpreter will throw an exception.
+When we refer to a dynamic attribute that does not exist on a dynamic object, or a virtual subproperty that does not exist, or cannot perform a function operation on the attribute, the HVML interpreter will throw an exception.
 
 Through such a design, we can easily and effectively expand the functions of HVML, and exchange data with external modules through dynamic objects, or call the functions of external modules.
 
@@ -1078,7 +1078,7 @@ And the above object can be converted to an array of key-value objects:
 
 An array of key-value objects essentially forms a collection with `k` as the unique key.
 
-It should be noted that the HVML interpreter will implicitly convert a property of the object to a key-value object on request, and we usually do not need to perform this conversion explicitly.
+It should be noted that the HVML interpreter will implicitly convert a attribute of the object to a key-value object on request, and we usually do not need to perform this conversion explicitly.
 
 #### 2.1.5) Mutable and Immutable Data
 
@@ -1209,7 +1209,7 @@ In the HVML program, we can use `$REQ.nrUsers` to refer to the value (`10`) pass
 1. `$RUNNER.run_name`: Get the runner name of the current runner.
 1. `$RUNNER.rid`: Get the runner identifier of the current runner.
 1. `$RUNNER.uri`: Get the URI of the current runner.
-1. `$RUNNER.myObj`: Static property, user-defined object.
+1. `$RUNNER.myObj`: Static attribute, user-defined object.
 1. `$RUNNER.user`: Get or set the properties of `$RUNNER.myObj` object.
 1. `$RUNNER.chan`: Create a channel.
 
@@ -1294,7 +1294,7 @@ The above code, the final output will be roughly as follows:
 1. `$CRTN.uri`: Get the URI of the current coroutine.
 1. `$CRTN.token`: Get or set the token of the current coroutine.
 
-Among them, the coroutine token is a unique identifier in the walker automatically assigned by the interpreter, which can be used to identify a coroutine. The interpreter can take the serial number of the new coroutine maintained by the walker or the decimal string corresponding to the coroutine identifier as the default token. A coroutine can override this auto-assigned token by calling the setter of `$CRTN.token` property. Note that we reserve token names starting with an underscore for special purposes. For example, `_main` means the first coroutine created by the walker.
+Among them, the coroutine token is a unique identifier in the walker automatically assigned by the interpreter, which can be used to identify a coroutine. The interpreter can take the serial number of the new coroutine maintained by the walker or the decimal string corresponding to the coroutine identifier as the default token. A coroutine can override this auto-assigned token by calling the setter of `$CRTN.token` attribute. Note that we reserve token names starting with an underscore for special purposes. For example, `_main` means the first coroutine created by the walker.
 
 In addition, we can also observe some global events and changes in the rendering state of the current coroutine through `$CRTN` object, so as to gracefully handle the situation where the renderer page is closed by the user or the renderer is lost. These events are:
 
@@ -1522,7 +1522,7 @@ As a valuable design, we can abstract the behavior of connecting two processes t
 
 `$RDR` is a native entity object representing the renderer corresponding to the current walker, which can be used to obtain the current renderer information, such as protocol, URI, etc. This variable is a necessary walker-level dynamic object.
 
-1. `$RDR.state`: Through this property, the current renderer state object can be obtained, including communication method, renderer URI, protocol name, protocol version, etc.
+1. `$RDR.state`: Through this attribute, the current renderer state object can be obtained, including communication method, renderer URI, protocol name, protocol version, etc.
 1. `$RDR.connect(<comm>, <uri>)`: Connect to the specified renderer; if currently connected to a renderer, the connection will be disconnected.
 1. `$RDR.disconn()`: Disconnect the current renderer connection.
 
@@ -2242,58 +2242,58 @@ It should be noted that when expressing the DOM document structure with structur
 
 When referring to attributes or text content of elements, we use the following conventions:
 
-- When we get the key value of the `textContent` key name on an element, it is equivalent to referencing the text content of this element, including the text content of all descendant elements, and the strings connected according to the depth-first traversal path.
-- When we set the `textContent` key value on an element, it is equivalent to removing all descendant nodes (if any) of the element, and setting the text content of the element to the corresponding key value.
-- When we get the key value of the `dataContent` key name on an element, it is equivalent to referring to all the data content of this element, including the array formed by the data content of all descendant elements according to the depth-first traversal path.
-- When we set the `dataContent` key value on an element, it is equivalent to removing all descendant nodes (if any) of the element, and setting the data content of the element to the corresponding key value.
-- When we get the key value of the `content` key name on an element, it is equivalent to getting the text expression of the document fragment of all descendant nodes (including content and descendant elements) of this element; when setting the key value of the key name , it is equivalent to using text expression to create descendant nodes of the element (replacing the original descendant nodes).
-- We can use composite keys like `attr.class` to refer to static attributes of an element. References to an undefined static property are treated as if the property value were `undefined`.
-- Use property names like `prop.selectedIndex` or `prop.style.width`, `prop.style[width]` to refer to dynamic properties of an element. References to an undefined dynamic property are treated as if the property value were `undefined`.
+- When we get the key value of `textContent` key name on an element, it is equivalent to referencing the text content of this element, including the text content of all descendant elements, and the strings connected according to the depth-first traversal path.
+- When we set `textContent` key value on an element, it is equivalent to removing all descendant nodes (if any) of the element, and setting the text content of the element to the corresponding key value.
+- When we get the key value of `dataContent` key name on an element, it is equivalent to referring to all the data content of this element, including the array formed by the data content of all descendant elements according to the depth-first traversal path.
+- When we set `dataContent` key value on an element, it is equivalent to removing all descendant nodes (if any) of the element, and setting the data content of the element to the corresponding key value.
+- When we get the key value of `content` key name on an element, it is equivalent to getting the text expression of the document fragment of all descendant nodes (including content and descendant elements) of this element; when setting the key value of the key name , it is equivalent to using text expression to create descendant nodes of the element (replacing the original descendant nodes).
+- We can use composite keys like `attr.class` to refer to static attributes of an element. References to an undefined static attribute are treated as if the attribute value were `undefined`.
+- Use attribute names like `prop.selectedIndex` or `prop.style.width`, `prop.style[width]` to refer to dynamic properties of an element. References to an undefined dynamic attribute are treated as if the attribute value were `undefined`.
 
-Usually, we use the `update` element to modify the static attribute (attribute) and content (content) of the element; for dynamic properties (property), such as the content entered in the `input` box, we need to use the `request` element to obtain or set up.
+Usually, we use `update` element to modify the static attribute and content of the element; for dynamic attribute , such as the content entered in the `input` box, we need to use `request` element to obtain or set up.
 
 Note: Currently only planned SGML supports using data as element content, i.e. `dataContent`.
 
-#### 2.1.18) MIME types
+#### 2.1.18) MIME Type
 
-`init` and other elements that load data from external resources will determine the loaded data type according to the MIME of the resource:
+`init` and other elements that load data from external resources will determine the loaded data type according to MIME of the resource:
 
-- `text/html`: the native entity used to represent a DOM document
-- `text/css`: String
-- `text/javascript`: String
-- `text/plain`: String
+- `text/html`:  It is used to represent a native entity of DOM document.
+- `text/css`: string
+- `text/javascript`: string
+- `text/plain`: string
 - `text/*`: string
-- `application/xml`: the native entity used to represent a DOM document
+- `application/xml`: It is used to represent a native entity of DOM document.
 - `application/json`: data
 - `application/octet-stream`: byte sequence
-- `application/*`: sequence of bytes
-- `image/*`: sequence of bytes
-- `audio/*`: sequence of bytes
-- `video/*`: sequence of bytes
-- `font/*`: sequence of bytes
+- `application/*`: byte sequence
+- `image/*`: byte sequence
+- `audio/*`: byte sequence
+- `video/*`: byte sequence
+- `font/*`: byte sequence
 
-#### 2.1.19) HVML URI schema
+#### 2.1.19) HVML URI Schema
 
-We introduce `hvml` and `hvml+run` two URI schemas (Schema) for the HVML application framework.
+We introduce `hvml` and `hvml+run` two URI schemas for the HVML application framework.
 
-##### 2.1.19.1) `hvml` schema
+##### 2.1.19.1) `hvml` Schema
 
 This schema is primarily used by HVML renderers and serves two purposes:
 
 1) Define the page in the HVML renderer
 
-Similar to the `http` schema, a complete `hvml` schema includes hostname, application name, traveler name, page group name and page name, and query components, such as:
+Similar to `http` schema, a complete `hvml` schema includes hostname, application name, traveler name, page group name, page name, and query components, such as:
 
 `hvml://<host_name>/<app_name>/<runner_name/<page_group_name>/<page_name>/?irId=<the_initial_request_identifier>`
 
 As the names of its parts suggest, it contains the following information for an HVML renderer page:
 
 - CPU name.
-- Application Name. We use the reserved name `_renderer` to refer to the renderer itself.
-- Walker name. We use the reserved name `_builtin` to refer to built-in resources (assets).
-- Page group name. We use the special name `-` when the page does not belong to any pagegroup.
-- Page name. The name of a normal window or page.
-- `irId` query parameter. Used to pass initial request parameters from the HVML interpreter.
+- Application Name: We use the reserved name `_renderer` to refer to the renderer itself.
+- Walker name: We use the reserved name `_builtin` to refer to built-in assets.
+- Page group name: We use the special name `-` when the page does not belong to any pagegroup.
+- Page name: The name of a normal window or page.
+- `irId` query parameter: It is used to pass initial request parameters from the HVML interpreter.
 
 2) Define public resources that the renderer can directly access
 
@@ -2301,11 +2301,11 @@ At this time, `hvml` is used to describe the public resources provided by an app
 
 `hvml://<host_name>/<app_name>/_builtiin/-/<path_to_asset>[?query][#fragment]`
 
-for example:
+For example:
 
 `hvml://localhost/cn.fmsoft.hvml.test/_builtin/-/assets/logo.png`
 
-Normally, when the host name is `localhost`, the renderer will try to load the specified application common resources locally. The renderer can translate `hvml` to the equivalent `http` or `https` schema for the case from a remote host. for example:
+Normally, when the host name is `localhost`, the renderer will try to load the specified application common resources locally. The renderer can translate `hvml` to the equivalent `http` or `https` schema for the case from a remote host. For example:
 
 `http://other.host.com/cn.fmsoft.hvml.test/_builtin/-/assets/logo.png`
 
@@ -2313,13 +2313,13 @@ Similarly, we can use the `_renderer` reserved name to refer to the renderer its
 
 `hvml://localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css`
 
-##### 2.1.19.2) `hvml+run` schema
+##### 2.1.19.2) `hvml+run` Schema
 
-This schema is mainly used to define a coroutine or channel belonging to a specific walker. It is similar to the `ftp` schema. The complete `hvml+run` schema includes the host name, application name, traveler name, resource type (representing the coroutine’s `CRTN` or `CHAN` for channels) and resource identifiers, such as coroutine tokens or channel names, such as:
+This schema is mainly used to define a coroutine or channel belonging to a specific walker. It is similar to `ftp` schema. The complete `hvml+run` schema includes the host name, application name, traveler name, resource type (representing the coroutine’s `CRTN` or `CHAN` for channels) and resource identifiers, such as coroutine tokens or channel names, such as:
 
 `hvml+run://localhost/appName/myRunner/CRTN/7`
 
-In HVML programs, we can interact with other walkers of the current application through action elements such as `request`. For convenience, we don't need to specify the schema name and host name, and we can use `-` to refer to the current application, so that we can use the following abbreviations to refer to the current host, the coroutine or channel belonging to the specified walker in the current application, such as:
+In HVML programs, we can interact with other walkers of the current application through action elements such as `request`. For convenience, we don't need to specify the schema name and host name. We can use `-` to refer to the current application. In this way, we can use the following abbreviations to refer to the current host. The coroutine or channel belong to the specified walker in the current application, such as:
 
 - Reference the specified coroutine: `/-/otherRunner/CRTN/7`
 - Reference the specified channel: `/-/otherRunner/CHAN/channel0`
@@ -2332,13 +2332,13 @@ When we need to refer to a coroutine on another host, we can use the following w
 
 `//otherhost/otherAppName/otherRunner/CRTN/dispatcher`
 
-In the `hvml+run` schema, we reserve special coroutine tokens (equivalent to aliases) as follows:
+In `hvml+run` schema, we reserve special coroutine tokens (equivalent to aliases) as follows:
 
-- `_main`: Indicates the main coroutine, which is the first coroutine created by the specified walker.
-- `_first`: Indicates the first coroutine among existing coroutines. Note that `_main` will be unavailable after the first coroutine created by the walker exits, but `_first` is always available.
-- `_last`: Indicates the last coroutine among existing coroutines. Note that `_first` and `_last` point to the same coroutine when there is only one coroutine in the coroutine.
+- `_main`: Indicate the main coroutine, which is the first coroutine created by the specified walker.
+- `_first`: Indicate the first coroutine among existing coroutines. Note that `_main` will be unavailable after the first coroutine created by the walker exits, but `_first` is always available.
+- `_last`: Indicate the last coroutine among existing coroutines. Note that `_first` and `_last` point to the same coroutine when there is only one coroutine in the coroutine.
 
-### 2.2) Description syntax of rules, expressions and methods
+### 2.2) Description Syntax of Rules, Expressions and Methods
 
 In HVML, we often use expressions or rule strings in attributes to represent an evaluation behavior, such as:
 
@@ -2348,7 +2348,7 @@ In HVML, we often use expressions or rule strings in attributes to represent an 
            "en_US" : "English (United States)",
            "en_UK" : "English (United Kingdom)",
            "zh_CN" : "Chinese (Mainland China)",
-           "zh_TW" : "Chinese (Taiwan)",
+           "zh_TW" : "Chinese (Taiwan, China)",
            "zh_HK" : "Chinese (Hong Kong, China)",
            "zh_MO" : "Chinese (Macao, China)",
        }
@@ -2358,7 +2358,7 @@ In HVML, we often use expressions or rule strings in attributes to represent an 
          <match for="AS 'Chinese (Mainland China)'" exclusively>
              <update on="$@" to="displace" with="$footer_cn" />
          </match>
-         <match for="AS 'Chinese (Taiwan)'" exclusively>
+         <match for="AS 'Chinese (Taiwan,China)'" exclusively>
              <update on="$@" to="displace" with="$footer_tw" />
          </match>
          <match for="LIKE /^English/" exclusively>
@@ -2377,19 +2377,19 @@ In HVML, we often use expressions or rule strings in attributes to represent an 
      </test>
 ```
 
-The `by` attribute in the `test` tag defines the rules of the `KEY` executor, and the `for` attribute in the `match` tag defines a logical expression that can be used to determine whether a string matches, such as `LIKE / ^English/` indicates whether the pre-operation result data starts with `English`. Note that the regular expression is used here to represent the `^` symbol at the beginning; if the `$` symbol at the end of the regular expression is used, it must be escaped to avoid the `$` being used as an evaluation expression by the HVML parser The leading character processing.
+`by` attribute in `test` tag defines the rules of `KEY` executor. And `for` attribute in `match` tag defines a logical expression that can be used to determine whether a string matches.For example, `LIKE / ^English/` indicates whether the pre-operation result data starts with `English`. Note that the regular expression is used here to represent `^` symbol at the beginning. If `$` symbol at the end of the regular expression is used, it must be escaped to avoid `$` being used as an the leading character processing of an evaluation expression by the HVML parser .
 
-#### 2.2.1) Rule description syntax
+#### 2.2.1) Rule Description Syntax
 
 For such rules, we use a unified description syntax, which is also used to describe evaluation expressions:
 
 1. A rule consists of one or more lexical units.
 1. Lexical units are divided into the following categories:
-    1. Literal special characters that should be used as they are, such as colons (`:`) and commas (`,`); usually used to separate lexical units (groups) with different meanings, use single quotes (`'` ) surrounded by.
+    1. Literal special characters that should be used as they are. For example, colons (`:`) and commas (`,`) are usually used to separate lexical units (groups) with different meanings, surrounded by single quotes (`'` ) .
     1. Literal flag characters that should be used as they are, generally use ASCII uppercase or lowercase letters, surrounded by single quotation marks (`'`).
-    1. Literal key words that should appear as they are should be surrounded by double quotation marks (`"`).
-    1. A regular expression, generally surrounded by two forward and backward slashes (`/`).
-    1. English words not surrounded by single quotes, double quotes or slashes or English phrases connected by underscores, such as `ws`, `literal_integer` are used to represent a named lexical unit.
+    1. Literal key words that should appear as they are should be ,which is surrounded by double quotation marks (`"`).
+    1. A regular expression, is generally surrounded by two forward and backward slashes (`/`).
+    1. English words not surrounded by single quotes, double quotes or slashes or English phrases connected by underscores. For example, `ws` and `literal_integer` are used to represent a named lexical unit.
     1. `...` means to repeat the previous token.
 1. If a rule contains the named tokens, a new line will define the syntax of the tokens until all named tokens are fully defined or specified.
 1. When defining the grammar of the named lexical unit, use a colon (`:`) after the lexical unit name. After the colon, a new line can be used, but the second line is usually indented.
@@ -2484,7 +2484,7 @@ And the following regular expression is wrong:
 /tail\$/ima sf
 ```
 
-For more information, see:
+For more information, please see:
 
 - `man regex` on Linux
 - Python 3 re module: <https://docs.python.org/3/library/re.html>
@@ -2492,11 +2492,11 @@ For more information, see:
 
 In the other two modes of string matching (general matching and wildcard matching), flag characters similar to regular expressions can also be used, and the maximum matching length can be specified additionally.
 
-- `matching_flags`: Indicates flag characters in general matching and wildcard matching modes, which can be one or more of the following key characters:
-    - `i`: ignore case.
+- `matching_flags`: Indicate flag characters in general matching and wildcard matching modes, which can be one or more of the following key characters:
+    - `i`: Ignore case.
     - `s`: Treat all whitespace characters (U+0009 TAB, U+000A LF, U+000C FF, U+000D CR, or U+0020 SPACE characters) as spaces (U+0020 SPACE characters).
     - `c`: Compress consecutive identical whitespace characters into a single whitespace character.
-- `max_matching_length`: Indicates the maximum matching length (in characters).
+- `max_matching_length`: Indicate the maximum matching length (in characters).
 
 For example, `LIKE 'zh_??'i5` means to match only five characters, not case-sensitive. For this match condition, the following strings will match correctly:
 
@@ -2509,7 +2509,7 @@ And the following strings cannot be matched correctly:
 - `zh-C`
 - `xx_CH`
 
-#### 2.2.2) Syntax for evaluating expressions
+#### 2.2.2) Evaluation Expressions Syntax
 
 A legal evaluation expression (`hybrid_evaluation_expression`) needs to conform to the following syntax rules and can be used recursively:
 
@@ -2577,12 +2577,12 @@ The processing steps are as follows:
 
 1) Set the first CHEE among CHEEs as the current HEE.
 2) Evaluate the current HEE to form the current evaluation result, then,
-    - If it is followed by `;`, if there is a next HEE, adjust the next HEE to the current HEE and jump to the second step; if there is no next HEE, then jump to the third step.
-    - If it is followed by `&&`, first do boolean processing on the current evaluation result, if it is `true`, then adjust the next HEE (if any) to the current HEE and jump to the second step; otherwise, skip After evaluating the next HEE (if any), adjust the next HEE (if any) to the current HEE and jump to step 2. In the above process, if there is no HEE that can be evaluated, then jump to the third step.
-    - If it is followed by `||`, first do boolean processing on the current evaluation result, if it is `false`, adjust the next HEE (if any) to the current HEE and jump to the second step, otherwise Skip the evaluation of the next HEE (if any), adjust the next HEE (if any) to the current HEE and jump to step 2. In the above process, if there is no HEE that can be evaluated, then jump to the third step.
+    - If it is followed by `;`and there is a next HEE, adjust the next HEE to the current HEE and jump to the second step; if there is no next HEE, then jump to the third step.
+    - If it is followed by `&&`, first do boolean processing on the current evaluation result. If it is `true`, then adjust the next HEE (if any) to the current HEE and jump to the second step. Otherwise, skip After evaluating the next HEE (if any), adjust the next HEE (if any) to the current HEE and jump to step 2. In the above process, if there is no HEE that can be evaluated, then jump to the third step.
+    - If it is followed by `||`, first do boolean processing on the current evaluation result. If it is `false`, adjust the next HEE (if any) to the current HEE and jump to the second step. Otherwise Skip the evaluation of the next HEE (if any) and adjust the next HEE (if any) to the current HEE and jump to step 2. In the above process, if there is no HEE that can be evaluated, then jump to the third step.
 3) Set the evaluation result of the entire CHEE as the evaluation result of the last evaluated HEE, discarding other intermediate results.
 
-#### 2.2.3) Common referenced nouns
+#### 2.2.3) Common Denoted Noun Units
 
 The following named lexical units will not be described repeatedly in the following text:
 
@@ -2625,18 +2625,18 @@ The following named lexical units will not be described repeatedly in the follow
     hws: /[ \t]/        # horizontal white space
 ```
 
-besides,
+Besides,
 
 1. `literal_number` follows the [JSON] syntax.
-1. `literal_integer` is essentially the same as `literal_number`, but it should be converted to the nearest integer for use in the internal implementation of the executor.
+1. `literal_integer` is essentially the same as `literal_number`. But it should be converted to the nearest integer for use in the internal implementation of the executor.
 1. `ip_literal`, `ipv4_address` and `reg_host_name`, see `Section 3.2.2` of [RFC 3986].
 
-In addition, since the rule string of the executor is usually used as an attribute value, considering that the attribute value can be surrounded by single quotes and double quotes, the string literal value (string literal) in the rule can use single quotes (`'`) or surrounded by double quotes (`"`):
+In addition, since the rule string of the executor is usually used as an attribute value, considering that the attribute value can be surrounded by single quotes and double quotes, the string literal in the rule can use single quotes (`'`) or surrounded by double quotes (`"`):
 
 - Strings in rules should be surrounded by single quotes (`'`) when the attribute value itself is surrounded by double quotes (`"`).
-- When the attribute value itself is surrounded by single quotes (`'`), the string in the rule should be surrounded by double quotes (`"`). Note that in this case, `$` in the attribute value will be treated as a literal Treated at face value, not used to define an evaluated expression.
+- When the attribute value itself is surrounded by single quotes (`'`), the string in the rule should be surrounded by double quotes (`"`). Note that in this case, `$` in the attribute value will be treated as a literal, not used to define an evaluated expression.
 
-String literals in all rules, so when these strings contain literal single quotes (`'`) or double quotes (`"`), escape is required, other special characters, such as +U0009 TAB, etc. , refer to [JSON] syntax:
+So string literals in all rules, when these strings contain literal single quotes (`'`) or double quotes (`"`), are required to escape. Other special characters, such as +U0009 TAB, etc. , are refer to [JSON] syntax:
 
 1. The special characters that need to be escaped include: `\\`, `\/` (not mandatory), `\b`, `\f`, `\n`, `\r`, `\t`.
 1. When the string in the rule is surrounded by single quotes (`'`), the literal single quotes (`'`) contained in the string should be escaped: `\'`.
@@ -2648,16 +2648,16 @@ The above instructions apply to `literal_char` and `literal_char_sequence`.
 
 Note that since HVML requires UTF-8 encoding, `literal_char` is essentially a multibyte sequence corresponding to the string type. When the actual `literal_char` contains multiple Unicode characters, only the first character takes effect.
 
-#### 2.2.4) Description syntax of dynamic object method
+#### 2.2.4) Description Syntax of Dynamic Object Methods
 
 When describing the parameters and return values of the getter and setter methods of dynamic objects, we use the following syntax:
 
-1. When describing a parameter, the type of the parameter must be specified, plus an optional formal parameter name; if the parameter is optional, you can use `=` to give the default value of the formal parameter. like:
+1. When describing a parameter, the type of the parameter must be specified, plus an optional formal parameter name; if the parameter is optional, you can use `=` to give the default value of the formal parameter. For example:
     - `number $seconds`.
     - `boolean $case_insensitivity = false`.
     - `string`.
     - `string = 'auto'`.
-1. Optionally, add a colon U+003A (`:`) after the parameter type (and formal parameter name) and describe its purpose surrounded by backticks U+0060 (\`) (or use C language comment symbols) . like:
+1. Optionally, add a colon U+003A (`:`) after the parameter type (and formal parameter name) and describe its purpose surrounded by backticks U+0060 (\`) (or use C language comment symbols) . For example:
     - number $seconds: /\* seconds since epoch \*/
     - boolean $case\_insensitivity = false: \`performs a case-sensitive (@false) or a case-insensitive (@true) check.\`
     - string: locale category
@@ -2721,7 +2721,7 @@ The above syntax can also be used to describe the properties of objects, such as
      }
 ```
 
-#### 2.2.5) eJSON syntax
+#### 2.2.5) eJSON Syntax
 
 When the content of the HVML element is data content, we can mix extended JSON syntax to describe a certain structured data, and nested evaluation expressions. This section describes the extended JSON syntax.
 
@@ -2735,7 +2735,7 @@ When the content of the HVML element is data content, we can mix extended JSON s
 </foo>
 ```
 
-A `foo` element with an `id` of `text` has the content of the string `123456&`; another `foo` element has the content of the numeric value `123456`.
+ `foo` element with  `id` of `text` has the content of the string `123456&`. Another `foo` element has the content of the numeric value `123456`.
 
 2) When the key name of an object starts with an ASCII letter and only contains ASCII letters, numbers, minus signs, and underscores, the double quotes around the key name can be omitted. In other cases, double quotes must be used. like:
 
@@ -2769,16 +2769,16 @@ or,
 ]
 ```
 
-4) Use the following suffix to clearly indicate the type of the value (number):
-    - signed long (64-bit): 1234567890L
+4) Use the following suffix to clearly indicate the type of number:
+    - Signed long (64-bit): 1234567890L
     - Unsigned long (64-bit): 1234567890UL
-    - The `0x` prefix can be used to represent the signed long integer in hexadecimal representation, and the `L` suffix can be ignored in this case: 0x1122AABBCCDDEEFF
-    - You can use the `0x` prefix to represent the signed long integer in hexadecimal representation, and the `L` suffix can be ignored in this case: 0x8899AABBCCDDDEEFFU
+    - `0x` prefix can be used to represent the signed long integer in hexadecimal representation, and `L` suffix can be ignored in this case: 0x1122AABBCCDDEEFF
+    - You can use `0x` prefix to represent the signed long integer in hexadecimal representation, and `L` suffix can be ignored in this case: 0x8899AABBCCDDDEEFFU
     - Long double precision floating point number: 1234567890FL
 
-Values that do not explicitly specify a type are all treated as double-precision floating-point numbers.
+Value that do not explicitly specify a type are all treated as double-precision floating-point numbers.
 
-5) The object key name or string can be surrounded by single quotes (`'`) or double quotes (`"`). The difference between single quotes and double quotes is that when using double quotes, the single quotes do not need to be converted Definition processing, and evaluate the expression contained in it, stringize the evaluation result and concatenate it with other parts as the final result; when using single quotes, the double quotes do not need to be escaped , and ignore expressions that may exist in it. For example:
+5) The object key name or string can be surrounded by single quotes (`'`) or double quotes (`"`). The difference between single quotes and double quotes is that when using double quotes, the single quotes do not need to be converted Definition processing. They evaluate the expression contained in it, and stringize the evaluation result and concatenate it with other parts as the final result. When using single quotes, the double quotes do not need to be escaped , which ignore expressions that may exist in it. For example:
 
 ```js
 {
@@ -2791,7 +2791,7 @@ Note that unescaped C0 control characters are not allowed in strings defined by 
 
 6) You can use `"""` (triple-double-quote) to define a multi-line text string, and keep the ASCII tab or newline character (U+0009 TAB, U+000A LF) , U+000D CR), single quotes (`'`), and double quotes (`"`) that do not appear three times in a row do not need to use escape symbols. Similarly, `'''` (triple-single-quote) can be used to define a multi-line text string, and ASCII tabs or newlines, double quotes (`"`) and Single quotation marks (`'`) that do not appear three times in a row do not need to use escape symbols.
 
-like:
+For example:
 
 ```js
 {
@@ -2808,11 +2808,11 @@ one
 }
 ```
 
-The difference between triple single quotes and triple double quotes is that when using triple double quotes, the expression contained in it will be evaluated, and the result will be stringified and concatenated with other parts as the final result. When using triple When single quotes are used, evaluated expressions within them are ignored.
+The difference between triple single quotes and triple double quotes is that when using triple double quotes, the expression contained in it will be evaluated.And the result will be stringified and concatenated with other parts as the final result. When using triple When single quotes are used, evaluated expressions within them are ignored.
 
-Note that in strings defined by triple double quotes and triple single quotes, unescaped characters other than ASCII tabs or newline characters (U+0007 TAB, U+000A LF, U+000D CR) are not allowed. outside the C0 control character.
+Note that in strings defined by triple double quotes and triple single quotes, unescaped characters, except ASCII tabs or newline characters (U+0007 TAB, U+000A LF, U+000D CR)  outside the C0 control character.
 
-7) For byte sequence types, prefixes such as `bx`, `bb`, `b64` are used to represent hexadecimal representation, binary representation and Base64 encoding respectively. like:
+7) For byte sequence types, prefixes such as `bx`, `bb`, `b64` are used to represent hexadecimal representation, binary representation and Base64 encoding respectively. For example:
 
 ```js
 {
@@ -2822,11 +2822,11 @@ Note that in strings defined by triple double quotes and triple single quotes, u
 }
 ```
 
-If no characters follow the `bx`, `bb`, `b64` prefix, it means an empty sequence of bytes.
+If no characters follow `bx`, `bb`, `b64` prefix, it means an empty sequence of bytes.
 
 When using binary expression, the period in the middle is optional, it is only used for convenience of reading, and it is ignored during parsing.
 
-8) Surround definition tuples with `[!` and `]`. like:
+8) Surround definition tuples with `[!` and `]`. For example:
 
 ```js
 [! 'Title', "David's Book", "Description", 'Daivd says: "This is my book"' ]
@@ -2834,48 +2834,48 @@ When using binary expression, the period in the middle is optional, it is only u
 
 ### 2.3) Frame Tag Details
 
-Frame tags are used to define the frame structure of an HVML program, there are three tags `hvml`, `head` and `body`.
+Frame tags are used to define the frame structure of an HVML program, there are three tags: `hvml`, `head` and `body`.
 
 Note that in frame tags, we can use HVML-defined adverb attributes, such as `silently`, to indicate that silent evaluation is performed when evaluating its attribute value and content.
 
-In addition to the adverb attribute and the specified attribute, other attributes defined in the frame tag (such as the `lang` attribute defined in the `hvml` tag) will be cloned (clone) into the corresponding element of the target document after being evaluated .
+In addition to the adverb attribute and the specified attribute, other attributes defined in the frame tag (such as `lang` attribute defined in `hvml` tag) will be cloned into the corresponding element of the target document after being evaluated .
 
-#### 2.3.1) `hvml` tag
+#### 2.3.1) `hvml` Tag
 
-The `hvml` tag defines an HVML program (or HVML document). The `hvml` tag supports the following attributes:
+`hvml` tag defines an HVML program (or HVML document). `hvml` tag supports the following attributes:
 
-- `target`: Define the target markup language of the HVML program, take the value of `void`, `html`, `xml`, etc., usually the name of a target markup language (or target document type). The HVML interpreter should at least support the special object markup language `void`; as the name implies, the `void` type does not produce any actual object document content, so it can run normally without a renderer. At this time, HVML programs and general scripts The procedures are not fundamentally different. When the target markup language is defined as `void`, the interpreter will maintain a special eDOM tree, any updates to this eDOM tree will be completely ignored, and executing `$DOC.query` on it will always return empty Elements collection.
+- `target`: Define the target markup language of the HVML program, take the value of `void`, `html`, `xml` and so on, usually the name of a target markup language (or target document type). The HVML interpreter should at least support the special object markup language `void`. As the name implies, `void` type does not produce any actual object document content, so it can run normally without a renderer. At this time, HVML programs and general scripts The procedures are not fundamentally different. When the target markup language is defined as `void`. The interpreter will maintain a special eDOM tree. Any updates to this eDOM tree will be completely ignored. And executing `$DOC.query` on it will always return empty Elements collection.
 
-Note that the `target` attribute, and all HVML adverb attributes, should not be cloned into the root element of the target document.
+Note that `target` attribute and all HVML adverb attributes should not be cloned into the root element of the target document.
 
-In addition to comments, the `hvml` element can contain sub-elements defined by the following two tags:
+In addition to comments, `hvml` element can contain sub-elements defined by the following two tags:
 
-- zero or one head element defined by the `head` tag, if any, must be defined as the first child element of the `hvml` element.
+- Zero or one head element defined by the `head` tag, if any, must be defined as the first child element of `hvml` element.
 - Zero or more body elements defined by the `body` tag.
 
-#### 2.3.2) `head` tag
+#### 2.3.2) `head` Tag
 
-The `head` tag is used to define the header information of the HVML code, which can contain sub-elements defined by the following tags:
+`head` tag is used to define the header information of the HVML code, which can contain sub-elements defined by the following tags:
 
 - Tags that can be left unchanged in the target document, such as `<meta>`, `<link>`, etc. tags of HTML documents.
-- Initialization of global data; defined using the `init` tag.
-- Global dynamic object; defined using the `init` tag.
-- Global persistent connection data source; initialized with `init` label and `$STREAM` predefined variable.
-- Global templates; defined using `archedata`, `archetype`, `error`, `except`, etc. tags.
+- Initialization of global data, which is defined using `init` tag.
+- Global dynamic object, which is defined using `init` tag.
+- Global persistent connection data source, which is initialized with `init` tag and `$STREAM` predefined variable.
+- Global templates, which is defined using `archedata`, `archetype`, `error`, `except`, etc. tags.
 
-In HVML programs, the `head` tag is optional and has no predefined attributes.
+In HVML programs, `head` tag is optional and has no predefined attributes.
 
-When the target markup language supports the `head` tag, its attributes and content, as well as all elements defined using non-HVML tags, will be cloned into the `head` element of the target document. When the target markup language does not support the `head` tag, its attributes will be discarded, and its content and all child elements defined using non-HVML tags will be placed under the root element of the target document.
+When the target markup language supports `head` tag, its attributes and content as well as all elements defined using non-HVML tags, will be cloned into the `head` element of the target document. When the target markup language does not support the `head` tag, its attributes will be discarded, and its content and all child elements defined using non-HVML tags will be placed under the root element of the target document.
 
-#### 2.3.3) `body` tag
+#### 2.3.3) `body` Tag
 
-The `body` tag is used to define the body content of the HVML program. In an HVML program, multiple `body` local contents can be defined, and the `id` attribute can be used to distinguish different ontology contents. During execution, different ontology contents can be loaded via the `load` element.
+`body` tag is used to define the body content of the HVML program. In an HVML program, multiple `body` local contents can be defined, and `id` attribute can be used to distinguish different ontology contents. During execution, different ontology contents can be loaded via `load` element.
 
-When the target markup language supports the `body` tag, its attributes will be cloned into the `body` element of the target document. If the target markup language does not support `body`, its attributes will be discarded.
+When the target markup language supports `body` tag, its attributes will be cloned into `body` element of the target document. If the target markup language does not support `body`, its attributes will be discarded.
 
-#### 2.3.4) Contents of the `hvml` tag
+#### 2.3.4) Content of `hvml` Tag
 
-Inside the `hvml` tag, we can use evaluation expressions, these expressions will be evaluated during execution, and the result will be set as the execution result of the `hvml` element, and the stack frame corresponding to the `hvml` element It is always the topmost stack frame, therefore, the result data of the `hvml` element will also be the execution result of the entire HVML coroutine. Inside the `hvml` tag, we can define multiple expressions, the evaluation result of the latter expression will overwrite the result data of the `hvml` element. like:
+Inside `hvml` tag, we can use evaluation expressions, which will be evaluated during execution. And the result will be set as the execution result of `hvml` element. And the stack frame corresponding to `hvml` element is always the topmost stack frame.Therefore, the result data of `hvml` element will also be the execution result of the entire HVML coroutine. Inside `hvml` tag, we can define multiple expressions, and the evaluation result of the latter expression will overwrite the result data of `hvml` element. For example:
 
 ```hvml
 <hvml target="void" lang="$STR.substr($SYS.locale, 0, 2)">
@@ -2899,13 +2899,13 @@ Inside the `hvml` tag, we can use evaluation expressions, these expressions will
 </hvml>
 ```
 
-As for the above HVML program, the result data of the `hvml` element will be the execution result of the entire HVML coroutine. Thus, normal execution of the above program evaluates to the result of the last evaluated expression: 6 (the number of bytes written to standard input with the string "11:00" plus an extra newline).
+As for the above HVML program, the result data of `hvml` element will be the execution result of the entire HVML coroutine. Thus, normal execution of the above program evaluates to the result of the last evaluated expression: 6 (the number of bytes written to standard input with the string "11:00" plus an extra newline).
 
-### 2.4) Template tag details
+### 2.4) Template tag Details
 
-The template tag essentially defines a document fragment template or data template, which can be regarded as a parameterized string or parameterized data. Therefore, we can actually use the `init` tag to obtain the same function as the template tag.
+The template tag essentially defines a document fragment template or data template, which can be regarded as a parameterized string or parameterized data. Therefore, we can actually use `init` tag to obtain the same function as the template tag.
 
-All template tags can use their content to define a template, or use the URL defined by the `src` attribute to get template data from an external data source. When using both the `src` attribute and content to define template data, an attempt will be made to load the specified external resource as template data, and if that fails, the content will be used instead. like:
+All template tags can use their content to define a template, or use the URL defined by `src` attribute to get template data from an external data source. When using both `src` attribute and content to define template data, an attempt will be made to load the specified external resource as template data, and if that fails, the content will be used instead. For example:
 
 ```hvml
      <archetype name="user_item" src="foo:///nonexistent_dir/templates/user_item">
@@ -2916,22 +2916,22 @@ All template tags can use their content to define a template, or use the URL def
      </archetype>
 ```
 
-The above code specifies the wrong protocol name for the `src` attribute value, the request will fail, and therefore, the content-defined template data will end up being used.
+The above code specifies the wrong protocol name for `src` attribute value. The request will fail, therefore, the content-defined template data will end up being used.
 
 When we get template data from an external URL, we can use the following attributes:
 
-- `src`: used to specify the external data source URL.
+- `src`: It is used to specify the external data source URL.
 - `param`: Request parameters in the form of `a=10&b=20`, which need to be encoded according to [RFC3986](https://datatracker.ietf.org/doc/html/rfc3986).
-- `method`: method, such as `GET`, `POST`, etc.
+- `method`: Such as `GET`, `POST`, etc.
 
 All template tags support the following attributes:
 
-- `silently` property. When this property is defined, evaluation of the property's value will perform silent evaluation.
-- `raw` attribute. When this attribute is defined, `$` in the template data will be treated as a literal character, and expression evaluation processing will not be performed.
+- `silently` attribute: When this attribute is defined, evaluation of the attribute's value will perform silent evaluation.
+- `raw` attribute: When this attribute is defined, `$` in the template data will be treated as a literal character, and expression evaluation processing will not be performed.
 
-#### 2.4.1) `archetype` tag
+#### 2.4.1) `archetype` Tag
 
-The `archetype` tag is used to define a document fragment template.
+`archetype` tag is used to define a document fragment template.
 
 ```hvml
      <archetype name="user_item">
@@ -2953,18 +2953,18 @@ In the above example, the first `archetype` tag defines a document fragment temp
 
 In the example above, the second `archetype` tag defines a bare-text template containing a fragment of an XML/HTML document that is cloned to the target location without any evaluation of the expression, even if it contains a valid Evaluation expression.
 
-In addition, in the `archetype` tag, we can also use the `type` attribute to define the text type of the template fragment, which can take the following values:
+In addition, in the `archetype` tag, we can also use `type` attribute to define the text type of the template fragment, which can take the following values:
 
-- `plain`: treat as plain text.
+- `plain`: Treat as plain text.
 - `html`: Treat as an HTML fragment.
-- `svg`: treat as an SVG fragment.
+- `svg`: Treat as an SVG fragment.
 - `mathml`: Treat as a MathML fragment.
-- `xgml`: Treated as an XGML fragment.
+- `xgml`: Treat as an XGML fragment.
 - `xml`: Treat as a generic XML fragment.
 
-If no `type` attribute value is specified, the default text type of the target document is taken. For example, when the target document type is `html`, the document fragments defined by the `archetype` tag will be processed as HTML fragments by default.
+If no `type` attribute value is specified, the default text type of the target document is taken. For example, when the target document type is `html`, the document fragments defined by `archetype` tag will be processed as HTML fragments by default.
 
-Essentially, the template content defined by `archetype` is a string variable whose variable name is defined by the `name` attribute.
+Essentially, the template content defined by `archetype` is a string variable whose variable name is defined by `name` attribute.
 
 Note that the variable name used to refer to a specific `archetype` template, unlike HTML/XML, HVML does not require the identifier to be globally unique, but only required to be unique among sibling elements of the same level in HVML, which brings certain convenience. for example:
 
@@ -2986,9 +2986,9 @@ Note that the variable name used to refer to a specific `archetype` template, un
 
 In the above HVML code, when we refer to `$user_item` in the `ul` element, the corresponding document template is `<li>$?</li>`, and `$user_item` is referenced outside the `ul` element `, the resulting document template is `<p>$?</p>`.
 
-#### 2.4.2) `archedata` tag
+#### 2.4.2) `archedata` Tag
 
-The `archedata` tag is used to define a data template.
+`archedata` tag is used to define a data template.
 
 ```hvml
      <archedata name="item_user">
@@ -2999,17 +2999,17 @@ The `archedata` tag is used to define a data template.
      </archedata>
 ```
 
-In the example above, the `archedata` tag defines a data template that is handled like an `archetype`, but is generally used to map one piece of data to another that is structured differently.
+In the example above, `archedata` tag defines a data template that is handled like an `archetype`, but is generally used to map one piece of data to another that is structured differently.
 
 Essentially, `archedata` defines a parameterized data that can be referenced by a variable name defined by the `name` attribute.
 
-#### 2.4.3) `error` tag
+#### 2.4.3) `error` Tag
 
-The `error` tag is used to define an error-specific document fragment template. The `type` attribute can be used to specify the corresponding error name, but the `name` attribute does not need to be specified. When defining error names, you must use the backtick attribute value syntax.
+`error` tag is used to define an error-specific document fragment template. `type` attribute can be used to specify the corresponding error name. But `name` attribute does not need to be specified. When defining error names, you must use the backtick attribute value syntax.
 
-When the `type` attribute is not specified, or when the `ANY` value is used, it means the default error template, which can match any error.
+When `type` attribute is not specified, or when the `ANY` value is used, it means the default error template, which can match any error.
 
-Essentially, the content defined by the `error` tag sets the key value of the `ERROR` variable corresponding to the `type` key name, so the functions of the following two tags are the same:
+Essentially, the content defined by `error` tag sets the key value of `ERROR` variable corresponding to `type` key name, so the functions of the following two tags are the same:
 
 ```hvml
      <error type=`SegFault`>
@@ -3021,13 +3021,13 @@ Essentially, the content defined by the `error` tag sets the key value of the `E
      </update>
 ```
 
-#### 2.4.4) `except` tag
+#### 2.4.4) `except` Tag
 
-The `except` tag is used to define a document fragment template for exceptions. The `type` attribute can be used to specify the corresponding exception name, but the `name` attribute does not need to be specified. When defining exception names, you must use the backtick attribute value syntax.
+`except` tag is used to define a document fragment template for exceptions. `type` attribute can be used to specify the corresponding exception name, but `name` attribute does not need to be specified. When defining exception names, you must use the backtick attribute value syntax.
 
-When the `type` attribute is not specified, or when the `ANY` value is used, it means the default exception template, which can match any exception.
+When `type` attribute is not specified, or when `ANY` value is used, it means the default exception template, which can match any exception.
 
-Essentially, the content defined by the `except` tag sets the key value of the `EXCEPT` variable corresponding to the `type` key name, so the functions of the following two tags are the same:
+Essentially, the content defined by `except` tag sets the key value of `EXCEPT` variable corresponding to `type` key name. So the functions of the following two tags are the same:
 
 ```hvml
      <except>
@@ -3039,42 +3039,42 @@ Essentially, the content defined by the `except` tag sets the key value of the `
      </update>
 ```
 
-Note that when defining the exception template above, we did not specify the `type` attribute, indicating the default exception template. In the `update` tag, what we change is the key value of the key name `ANY` on the `$EXCEPT` data, which means that we use the `ANY` key name to save the default exception template.
+Note that when defining the exception template above, we did not specify `type` attribute, indicating the default exception template. In `update` tag, what we change is the key value of the key name `ANY` on `$EXCEPT` data, which means that we use `ANY` key name to save the default exception template.
 
-### 2.5) Action tag details
+### 2.5) Action Tag Details
 
-#### 2.5.1) `init` label
+#### 2.5.1) `init` tag
 
-The `init` tag defines an element that performs initialization or reset of variables. Using the `init` tag at the head of an HVML program (defined by the `head` tag), will initialize a global variable. Using the `init` tag within the body of an HVML program (defined by the `body` tag) will by default define a local variable that is only valid within the subtree defined by its parent element.
+`init` tag defines an element that performs initialization or reset of variables. Using `init` tag at the head of an HVML program (defined by `head` tag), will initialize a global variable. Using `init` tag within the body of an HVML program (defined by `body` tag) will by default define a local variable that is only valid within the subtree defined by its parent element.
 
-By default, we use the `init` tag to initialize or override a static variable, but if we use the `temporarily` adverb attribute in the `init` tag, a temporary variable will be created.
+By default, we use `init` tag to initialize or override a static variable, but if we use `temporarily` adverb attribute in `init` tag, a temporary variable will be created.
 
-Usually, we use the `as` attribute to specify the name of the variable to be initialized, we can use the `at` attribute to specify the name space of the variable (name space) or in the case of creating a temporary variable, specify the stack frame where the variable is located:
+Usually, we use `as` attribute to specify the name of the variable to be initialized, we can use `at` attribute to specify the name space of the variable (name space) or in the case of creating a temporary variable, specify the stack frame where the variable is located:
 
 - If you initialize a static variable, when we use the predefined names `_parent`, `_grandparent`, `_root` starting with an underscore (\_), the variable will be defined on the parent element, grandparent element or root element respectively.
 - If you initialize a static variable, when we use the predefined name `_runner` starting with an underscore (\_), a runner-level variable will be created, which will be visible to all coroutines of this runner.
 - If initializing a temporary variable, when we use the predefined names `_last`, `_nexttolast`, and `_topmost` starting with an underscore (\_), they will be in the previous stack frame, the previous stack frame and the topmost stack frame respectively Define temporary variables above.
-- Element identifiers starting with a pound sign (#), such as `#myAnchor`, will search for the specified element identifier (specified by the `id` attribute of the element) in its ancestor elements (or previous stack frames), and will Initializes the variable on the first matching ancestor element (or preceding stack frame).
+- Element identifiers starting with a pound sign (#), such as `#myAnchor`, will search for the specified element identifier (specified by `id` attribute of the element) in its ancestor elements (or previous stack frames), and will Initializes the variable on the first matching ancestor element (or preceding stack frame).
 - When using a positive integer N (such as `2`, `3`), if a static variable is initialized, N ancestor elements will be traced back along the vDOM tree to the ancestor element, and the variable will be initialized on the ancestor element; if a temporary variable is initialized, it will be Backtrack N stack frames along the execution stack, and initialize variables on the stack frame.
-- In the case of silent evaluation, if no matching ancestor element or previous stack frame is found, it will be treated as if the `at` attribute is not defined.
+- In the case of silent evaluation, if no matching ancestor element or previous stack frame is found, it will be treated as if `at` attribute is not defined.
 
-We usually use the `with` attribute to define an evaluation expression (or parameterized data) to specify the value of the variable. We can also directly embed the evaluation expression inside the `init` tag, thus using its data content to define the value of this variable. We can also load external resources through protocols such as HTTP, such as HTTP requests. At this time, use the `from` attribute to define the URL of the request, use the `with` parameter to define the request parameters, and use the `via` attribute to define the request method ( such as `GET`, `POST`, `DELETE`, etc.).
+We usually use `with` attribute to define an evaluation expression (or parameterized data) to specify the value of the variable. We can also directly embed the evaluation expression inside `init` tag, thus using its data content to define the value of this variable. We can also load external resources through protocols such as HTTP, such as HTTP requests. At this time, use `from` attribute to define the URL of the request, use `with` parameter to define the request parameters, and use `via` attribute to define the request method ( such as `GET`, `POST`, `DELETE`, etc.).
 
-We can also use the `init` tag to initialize a custom dynamic object from the shared library. At this time, the attribute value of the given `via` is `LOAD`, which means loading an external program module. When using the `init` element to load a dynamic object, we specify the name of the external program module to be loaded through the `from` attribute. Determining the specific file name and the storage location of the module file according to the module name depends on the specific interpreter implementation. If there are multiple dynamic objects defined in the external program module (such as C/C++ language shared library), use the `for` attribute to specify the name of the dynamic object to be loaded.
+We can also use `init` tag to initialize a custom dynamic object from the shared library. At this time, the attribute value of the given `via` is `LOAD`, which means loading an external program module. When using the `init` element to load a dynamic object, we specify the name of the external program module to be loaded through the `from` attribute. Determining the specific file name and the storage location of the module file according to the module name depends on the specific interpreter implementation. If there are multiple dynamic objects defined in the external program module (such as C/C++ language shared library), use the `for` attribute to specify the name of the dynamic object to be loaded.
 
-When we use the `from` attribute in the `init` tag, the `via` attribute is not `LOAD`, and the `asynchronously` adverb attribute is used, the data will be asynchronously fetched from the external resource as the value of the variable. The program can do further processing by observing `change:attached` on the variable. See [2.5.11) `observe`, `forget` and `fire` labels](#2511-observe-forget-and-fire-labels) for details.
+When we use the `from` attribute in `init` tag, `via` attribute is not `LOAD`, and `asynchronously` adverb attribute is used. The data will be asynchronously fetched from the external resource as the value of the variable. The program can do further processing by observing `change:attached` on the variable. See [2.5.11) `observe`, `forget` and `fire` labels](#2511-observe-forget-and-fire-labels) for details.
 
-It should be noted that when using the asynchronous loading method to initialize a variable, when the data of the external resource is returned, the program has already left the context (execution stack) where the `init` element is located, so it cannot handle the situation where the data contains context variables. The interpreter can restrict the data in this case to be only the original data (raw data).
+It should be noted that when using the asynchronous loading method to initialize a variable, when the data of the external resource is returned, the program has already left the context (execution stack) where `init` element is located, so it cannot handle the situation where the data contains context variables. The interpreter can restrict the data in this case to be only the original data (raw data).
 
-Using the `init` label on an already initialized variable will reset the variable with new data, while using `undefine` to reset the variable has the same effect as deleting the variable.
+Using `init` tag on an already initialized variable will reset the variable with new data, while using `undefine` to reset the variable has the same effect as deleting the variable.
 
 The interpreter determines which data to use to initialize or reset a variable according to the following rules:
 
-1. When the `from` attribute is specified and the `asynchronously` adverb attribute is not specified, the data will be fetched from the specified external resource synchronously. In this case, the `with` attribute value is used to specify the request parameters; when the synchronous request fails (note: an exception may be thrown at this time), if there is content defined, the content data will be used as the source data.
-1. When the `from` attribute is specified and the `asynchronously` adverb attribute is not specified, the data will be fetched from the specified external resource asynchronously. In this case, if there is content defined, the content data will be used as the source data first, and when the asynchronous loading is successful, the value of this variable will be reset to the loaded data.
-1. When the `from` attribute is not specified, if the `with` attribute is defined, the value of the `with` attribute is used to initialize or reset the variable. In this case, the content is ignored; if the `with` attribute is not defined but the definition has content , then use the content as the initialized or reset variable; if neither is defined, a `NoData` exception is thrown.
+1. When `from` attribute is specified and `asynchronously` adverb attribute is not specified, the data will be fetched from the specified external resource synchronously. In this case, `with` attribute value is used to specify the request parameters; when the synchronous request fails (note: an exception may be thrown at this time), if there is content defined, the content data will be used as the source data.
+1. When `from` attribute is specified and `asynchronously` adverb attribute is not specified, the data will be fetched from the specified external resource asynchronously. In this case, if there is content defined, the content data will be used as the source data first, and when the asynchronous loading is successful, the value of this variable will be reset to the loaded data.
+1. When `from` attribute is not specified, if `with` attribute is defined, the value of the `with` attribute is used to initialize or reset the variable. In this case, the content is ignored. If `with` attribute is not defined but the definition has content , then use the content as the initialized or reset variable. If neither is defined, a `NoData` exception is thrown.
 
-When using the `init` tag to initialize a collection, we can use `casesensitively` or `caseinsensitively` two adverb attributes to specify whether the string comparison is case-sensitive; the default is case-sensitive.
+When using `init` tag to initialize a collection, we can use `casesensitively` or `caseinsensitively` adverb attributes to specify whether the string comparison is case-sensitive. The default is case-sensitive.
 
 Common uses of this tag are as follows:
 
@@ -3114,7 +3114,7 @@ Common uses of this tag are as follows:
      <init as="users" with="[]" />
 ```
 
-We can also use the `at` attribute in the `init` tag to specify the element position where the variable name is located. like:
+We can also use `at` attribute in `init` tag to specify the element position where the variable name is located. For example:
 
 ```hvml
 <body>
@@ -3154,9 +3154,9 @@ We can also use the `at` attribute in the `init` tag to specify the element posi
 </body>
 ```
 
-The execution result (`$?`) of the `init` element, the data corresponding to the variable.
+The execution result (`$?`) of the `init` element is the data corresponding to the variable.
 
-We can also not specify the `as` attribute of `init`, so that we only use the `init` tag to initialize a piece of data, and then use the result data ($?) of the `init` element to complete the corresponding work. In this case, we usually do not use the asynchronous initialization mode.
+We can also not specify `as` attribute of `init`, so that we only use the `init` tag to initialize a piece of data, and then use the result data ($?) of `init` element to complete the corresponding work. In this case, we usually do not use the asynchronous initialization mode.
 
 ```hvml
      <init from="http://foo.bar.com/locales" with="{ from: 'foo' }" via="POST">
@@ -3165,16 +3165,16 @@ We can also not specify the `as` attribute of `init`, so that we only use the `i
      </init>
 ```
 
-The exceptions that may be thrown by the `init` element are:
+The exceptions that may be thrown by `init` element are:
 
-- When the variable name specified by the `as` attribute does not meet the requirements, a `BadName` exception will be thrown.
-- When the ancestor element or the preceding stack frame name specified by the `at` attribute does not meet the requirements or does not exist, a `BadName` exception or an `EntityNotFound` exception will be thrown respectively.
+- When the variable name specified by `as` attribute does not meet the requirements, `BadName` exception will be thrown.
+- When the ancestor element or the preceding stack frame name specified by the `at` attribute does not meet the requirements or does not exist, `BadName` exception or `EntityNotFound` exception will be thrown respectively.
 
-When we use the `temporarily` adverb attribute in the `init` tag, it will manipulate or prepend the user-defined context variable `$!` in the stack frame, thereby creating a temporary variable:
+When we use `temporarily` adverb attribute in `init` tag, it will manipulate or prepend the user-defined context variable `$!` in the stack frame, thereby creating a temporary variable:
 
 - Initially, `$!` shall be defined as an empty object. Adding a user-defined temporary variable means adding a new key-value pair to this object, the key name is the name of the temporary variable, and the key value is the value of the temporary variable.
-- When using the `as` attribute, the key-value pair specified in the user-defined context variable `$!` will be initialized or overwritten by default, but we can use the `at` attribute to specify the target stack frame through element identifiers, etc.
-- When accessing a temporary variable in the current or previous stack frame, the `$[N]!.<name of the temp. variable>` expression can be used.
+- When using the `as` attribute, the key-value pair specified in the user-defined context variable `$!` will be initialized or overwritten by default, but we can use `at` attribute to specify the target stack frame through element identifiers, etc.
+- When accessing a temporary variable in the current or previous stack frame, `$[N]!.<name of the temp. variable>` expression can be used.
 - For convenience, you can also use `$<name of the temp. variable>` expressions to access temporary variables.
 - As a restriction, temporary variables cannot be initialized asynchronously, that is, the `temporarily` adverb attribute cannot be used at the same time as the `asynchronously` adverb attribute. If both adverb attributes are specified, `asynchronously` should be ignored.
 
@@ -3183,41 +3183,41 @@ When we only look up named variables based on the name, it is processed accordin
 1. When naming a variable based on a name query, the execution stack will traverse the previous stack frame upwards to find the first matching temporary variable;
 1. If not found, start from the parent element of the vDOM element position corresponding to the current stack frame, and search for the corresponding static named variable in the ancestor element node.
 
-#### 2.5.2) `update` tag
+#### 2.5.2) `update` Tag
 
-The `update` tag defines an action element that performs a data update operation that modifies a destination data using a source data. The target data should be mutable data or a native entity data on which an update action can be performed, such as an array, a tuple, an object, or a specific data item of an array, tuple or object, a collection or a The target document location (i.e. a collection of elements).
+ `update` tag defines an action element that performs a data update operation that modifies a destination data using a source data. The target data should be mutable data or a native entity data on which an update action can be performed, such as an array, a tuple, an object, or a specific data item of an array, tuple or object, a collection or a target document location (i.e. a collection of elements).
 
 This tag supports the following attributes:
 
-1. The `on` attribute is used to specify the array, tuple, object, collection or target document location to be modified, that is, the target data.
-1. The `at` attribute specifies the specific location to modify on the target data, such as key name, index value, etc., which is called the destination position. The data of the target data at the target position is called ultimate data. When the data to be modified is the target data itself, this attribute is not specified, and the final data is the target data itself.
-1. The `to` attribute specifies a specific modification action (action), which can take one of the following values:
+1. `on` attribute is used to specify the array, tuple, object, collection or target document location to be modified, that is, the target data.
+1. `at` attribute specifies the specific location to modify on the target data, such as key name, index value, etc., which is called the destination position. The data of the target data at the target position is called ultimate data. When the data to be modified is the target data itself, this attribute is not specified, and the final data is the target data itself.
+1. `to` attribute specifies a specific modification action, which can take one of the following values:
     - `displace`: Indicates that the data at the entire replacement target position is the default action.
     - `append`: means to perform an append operation in the target data or target location; the final data must be an array or target document location.
     - `prepend`: Indicates that the prepend operation is performed in the target data or the target location; the final data must be an array or the target document location.
-    - `insertBefore`: Indicates inserting a data before the target data or target position; the final data must be an array or target document position.
+    - `insertBefore`: Indicate inserting a data before the target data or target position; the final data must be an array or target document position.
     - `insertAfter`: means to insert a data after the target data or the target position; the final data must be an array or the target document position.
-    - `add`: When the final data is an array or the target document location, it is equivalent to the `append` operation. When the final data is a collection, adds the source data to the given collection.
+    - `add`: When the final data is an array or the target document location, it is equivalent to `append` operation. When the final data is a collection, adds the source data to the given collection.
     - `remove`: When the final data is an array or the target document position, it means to remove the data at the target position. When the final data is a collection, it means to remove a data item that matches the source data from the collection.
-    - `overwrite`: Indicates that an object or collection overwrite operation is performed on the target data or target location. When the final data is an object, the source data must be an object; this action will replace the key-value pair with the same key name in the final data object with the key-value pair in the source data. When the final data is a collection, the final data must be a collection of objects based on unique key values. The source data can be a single object or a linear container (array, tuple or collection). This action will overwrite the matching source data in the final data Item object.
-    - `merge` or `unite`: Indicates to perform the merge operation of objects or collections on the target data or target location. When the final data is an object, the source data must be an object; the merged final data (object) contains the original key-value pairs and the key-value pairs in the source data, and for duplicate key names, replace them with the values in the source data. When the final data is a collection, the source data must be a linear container (array, tuple or collection), this action will merge the data items in the source data (array, tuple or collection) into the final data (collection), when When a uniqueness condition conflicts, the source data is used instead.
-    - `intersect`: Indicates to perform the intersection operation of the object or collection on the target data or target position. When the final data is an object, the source data must be an object; only key-value pairs corresponding to keys that exist in both the final data and the source data are kept in the final data (object) after operation, and other key-value pairs are removed. When the final data is a set, the source data must be a linear container (array, tuple, or set); the action will only keep in the final data items that exist in both the final set and the source data (determined using the uniqueness condition of the set ).
-    - `subtract`: Indicates to perform the subtraction operation of the object or set on the target data or target position. When the final data is an object, the source data must be an object; the key-value pair corresponding to the key existing in the source data is removed from the final data (object) after the operation. When the final data is a collection, the source data can be a linear container (array, tuple or collection); this action will remove the data items determined by the source data according to the uniqueness condition of the collection in the final data.
-    - `xor`: Indicates the OR operation of an object or collection on the target data or target location. When the final data is an object, the source data must be an object; the final data (object) after the operation retains key-value pairs corresponding to keys that only exist in the final data or the source data. When the final data is a set, the source data must be a linear container (array, tuple, or set); this action is equivalent to finding the difference between the union and the intersection.
-1. The `from` attribute specifies the external data source for modifying the operation source data, such as URL; at this time, use the `with` attribute to specify the request parameters, and use the `via` attribute to specify the request method.
-1. When the `from` attribute is not defined, the `with` attribute specifies the source data used by the modification operation; when the `from` attribute is defined, the `with` attribute specifies the request parameters.
-1. The `via` attribute specifies the method of obtaining the external data source, such as `GET`, `POST`, etc., and is only valid when `from` is specified.
+    - `overwrite`: Indicate that an object or collection overwrite operation is performed on the target data or target location. When the final data is an object, the source data must be an object. This action will replace the key-value pair with the same key name in the final data object with the key-value pair in the source data. When the final data is a collection, the final data must be a collection of objects based on unique key values. The source data can be a single object or a linear container (array, tuple or collection). This action will overwrite the matching source data in the final data Item object.
+    - `merge` or `unite`: Indicate to perform the merge operation of objects or collections on the target data or target location. When the final data is an object, the source data must be an object; the merged final data (object) contains the original key-value pairs and the key-value pairs in the source data, and for duplicate key names, replace them with the values in the source data. When the final data is a collection, the source data must be a linear container (array, tuple or collection), this action will merge the data items in the source data (array, tuple or collection) into the final data (collection), when When a uniqueness condition conflicts, the source data is used instead.
+    - `intersect`: Indicate to perform the intersection operation of the object or collection on the target data or target position. When the final data is an object, the source data must be an object; only key-value pairs corresponding to keys that exist in both the final data and the source data are kept in the final data (object) after operation, and other key-value pairs are removed. When the final data is a set, the source data must be a linear container (array, tuple, or set); the action will only keep in the final data items that exist in both the final set and the source data (determined using the uniqueness condition of the set ).
+    - `subtract`: Indicate to perform the subtraction operation of the object or set on the target data or target position. When the final data is an object, the source data must be an object; the key-value pair corresponding to the key existing in the source data is removed from the final data (object) after the operation. When the final data is a collection, the source data can be a linear container (array, tuple or collection); this action will remove the data items determined by the source data according to the uniqueness condition of the collection in the final data.
+    - `xor`: Indicate the OR operation of an object or collection on the target data or target location. When the final data is an object, the source data must be an object; the final data (object) after the operation retains key-value pairs corresponding to keys that only exist in the final data or the source data. When the final data is a set, the source data must be a linear container (array, tuple, or set); this action is equivalent to finding the difference between the union and the intersection.
+1. `from` attribute specifies the external data source for modifying the operation source data, such as URL; at this time, use `with` attribute to specify the request parameters, and use `via` attribute to specify the request method.
+1. When `from` attribute is not defined, `with` attribute specifies the source data used by the modification operation; when `from` attribute is defined, `with` attribute specifies the request parameters.
+1. `via` attribute specifies the method of obtaining the external data source, such as `GET`, `POST`, etc., and is only valid when `from` is specified.
 
 When specifying the source data, when the source data must be a linear container (array, tuple or set), a single data can also be treated as an array containing only one member to facilitate programming.
 
-When specifying the source data, in addition to the `with` attribute and the `from` attribute, we can also use the content data of the `update` element. The priorities of the three source data specification methods are:
+When specifying the source data, in addition to `with` attribute and `from` attribute, we can also use the content data of `update` element. The priorities of the three source data specification methods are:
 
-1. When the `from` attribute is specified, it will try to get data from the specified external resource synchronously. In this case, the `with` attribute value is used to specify the request parameters; when the synchronous request fails (note: an exception may be thrown at this time), if there is content defined, the content data will be used as the source data.
-1. When the `from` attribute is not specified, if the `with` attribute is defined, the value of the `with` attribute will be used as the source data first, and the content will be ignored in this case; if the `with` attribute is not defined but the content is defined, then Use content as source data; throw `NoData` exception if neither is defined.
+1. When `from` attribute is specified, it will try to get data from the specified external resource synchronously. In this case, `with` attribute value is used to specify the request parameters; when the synchronous request fails (note: an exception may be thrown at this time), if there is content defined, the content data will be used as the source data.
+1. When `from` attribute is not specified, if `with` attribute is defined, the value of `with` attribute will be used as the source data first. And the content will be ignored in this case. If `with` attribute is not defined but the content is defined, then use content as source data and throw `NoData` exception if neither is defined.
 
-When executed successfully, the result data of the `update` element is the modified target data.
+When executed successfully, the result data of `update` element is the modified target data.
 
-##### 2.5.2.1) Specify target location
+##### 2.5.2.1) Specify Target Location
 
 For the following document snippet:
 
@@ -3227,7 +3227,7 @@ For the following document snippet:
      </div>
 ```
 
-We set the number of users and modify their `class` attribute through the `update` tag below:
+We set the number of users and modify their `class` attribute through `update` tag below:
 
 ```hvml
      <update on="#the-user-stats > h2 > span" at="textContent" with="10" />
@@ -3260,14 +3260,14 @@ Similarly, we perform `update` actions on arrays, tuples, objects, etc. For exam
 When the target data is the target document location (element or element collection), array, tuple or object, we use the attribute value of `at` to specify the location or name of the data member to be changed, such as `textContent`, `attr. class` and `.name` etc. Its rules are as follows:
 
 - If the target data is an element, we use the virtual data member name `textContent` to represent the text content of the element.
-- If the target data is an element, we use the `dataContent` virtual data member name to represent the element's data content.
+- If the target data is an element, we use `dataContent` virtual data member name to represent the element's data content.
 - If the target data is an element, we use `content` to indicate that the fragment of the target document is used as its content (this may change the structure of the DOM subtree).
 - If the target data is an element, we use `attr.<attr_name>`, `attr[attr_name]` to represent the static attribute name of the element, such as `attr.value` or `attr[value]` to represent the `value` of the element attribute value.
 - If the target data is an object, we use `.<key_name>` or `[<key_name>]` to represent the key name of the data item.
 - If the target data is an array, we use `[<index_num>]` to represent the `<index_num>`th data item in the array.
 - If the target data is a tuple, we use `[<index_num>]` to represent the `<index_num>`th data item in the tuple.
 
-We can use the preposition property value specification syntax without the equal sign, such as:
+We can use the preposition attribute value specification syntax without the equal sign, such as:
 
 ```hvml
      <update on $users[0] at '.age' with 3 >
@@ -3275,7 +3275,7 @@ We can use the preposition property value specification syntax without the equal
      </update>
 ```
 
-In the above example, for the `age` attribute of the target data `$users[0]` and `$users[1]`, we use the attribute value specification syntax without the equal sign. The first `update` element uses the constant `3`; the second `update` element uses the evaluated expression and the context variable `$?` (that is, the result of the previous `update`, which is `$users[ 0]`), so it evaluates to `4`.
+In the above example, for `age` attribute of the target data `$users[0]` and `$users[1]`, we use the attribute value specification syntax without the equal sign. The first `update` element uses the constant `3`; the second `update` element uses the evaluated expression and the context variable `$?` (that is, the result of the previous `update`, which is `$users[ 0]`), so it evaluates to `4`.
 
 When we use `undefined` to assign a value to a data item of an array or object, the value item will be deleted (same as the effect of the `erase` tag), such as:
 
@@ -3306,17 +3306,17 @@ When we need to modify multiple data items in an `update` tag at the same time, 
      <update on="p > a" at="attr.title" with="$?.se_title" />
 ```
 
-Can be combined into an `update` tag:
+They can be combined into an `update` tag:
 
 ```
      <update on="p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
 ```
 
-When `at` specifies multiple target positions, and the number of them does not match the number of array data items of the `with` attribute value, the position where no value is specified takes the last value of the `with` attribute.
+When `at` specifies multiple target positions, and the number of them does not match the number of array data items of `with` attribute value, the position where no value is specified takes the last value of `with` attribute.
 
-When `at` specifies multiple target locations and the `with` attribute value is not an array, the `with` attribute value acts on all target locations.
+When `at` specifies multiple target locations and `with` attribute value is not an array, `with` attribute value acts on all target locations.
 
-When we perform an update action directly on the target data, we don't specify the `at` attribute:
+When we perform an update action directly on the target data, we don't specify `at` attribute:
 
 ```hvml
      <init as="newUser">
@@ -3332,15 +3332,15 @@ In addition, when the evaluation result of the attribute value is a string, we c
 
 In addition, when the attribute value is numeric data, we can also use attribute modification operators other than `=` to modify the final data. For details, see this document [3.1.2.4) Action element attributes] (#3124-Action element attribute).
 
-When the target data is a collection of elements, the update action set by the `update` tag will act on the data of all elements in the collection at the specified position. for example,
+When the target data is a collection of elements, the update action set by `update` tag will act on the data of all elements in the collection at the specified position. For example,
 
 ```hvml
     <update on="span" at="attr.class" with="text-danger" />
 ```
 
-Will modify all elements of type `span` in the target document named `text-danger`.
+It will modify all elements of type `span` in the target document named `text-danger`.
 
-When the target data is an object, tuple, array, or set, and has the `individually` adverb attribute, the update action set by the `update` tag will act on the data at the specified position of all data items in the array. like,
+When the target data is an object, tuple, array, or set, and has `individually` adverb attribute, the update action set by `update` tag will act on the data at the specified position of all data items in the array. like,
 
 ```hvml
      <init as="users" uniquely against="id">
@@ -3356,7 +3356,7 @@ When the target data is an object, tuple, array, or set, and has the `individual
          {
              "locales": [ "zh_CN", "zh_TW", "en_US" ],
              "nameEN": [ "Chinese (mainland of China)", "Chinese (Taiwan, China)", "English (USA)"],
-             "nameZH": [ "Chinese (Mainland China)", "Chinese (Taiwan)", "English (US)"],
+             "nameZH": [ "Chinese (Mainland China)", "Chinese (Taiwan, China)", "English (US)"],
          }
      </init>
 
@@ -3386,7 +3386,7 @@ An exception will be thrown if the update operation breaks the uniqueness condit
 
 ##### 2.5.2.2) Update collection
 
-When the target data is a collection, the `at` attribute value will be ignored, and only actions such as `unite` for collections can be performed. An exception will be thrown if the update operation breaks the uniqueness condition of the collection.
+When the target data is a collection, `at` attribute value will be ignored, and only actions such as `unite` for collections can be performed. An exception will be thrown if the update operation breaks the uniqueness condition of the collection.
 
 The following code defines a `$users` variable as a collection (using `id` as the unique key), and defines an array of `$new_users` objects:
 
@@ -3449,9 +3449,9 @@ When we want to delete timer `foo`, we can use `subtract` action:
      </update>
 ```
 
-#### 2.5.3) `erase` tag
+#### 2.5.3) `erase` Tag
 
-The `erase` tag defines an action element that performs a removal operation, used to remove a specified data item from the target data, and supports `on` and `at` preposition attributes. The `on` attribute is used to specify the target data, which can be an array, a tuple, an object, a collection of elements, or a native entity that supports removal operations; `at` is used for the data sub-item to be removed, and if not specified, it means all data items . The result data of the `erase` element is the number of items removed.
+`erase` tag defines an action element that performs a removal operation, used to remove a specified data item from the target data, and supports `on` and `at` preposition attributes. `on` attribute is used to specify the target data, which can be an array, a tuple, an object, a collection of elements, or a native entity that supports removal operations. `at` is used for the data sub-item to be removed, and if not specified, it means all data items . The result data of the `erase` element is the number of items removed.
 
 For example, for the following HTML code snippet:
 
@@ -3488,9 +3488,9 @@ After performing the above `erase` action, the above HTML snippet will become:
      </div>
 ```
 
-Note that when the `on` attribute value specifies a collection of elements, the `erase` tag will remove all elements in the collection, or the specified attributes or content of all elements.
+Note that when `on` attribute value specifies a collection of elements, `erase` tag will remove all elements in the collection, or the specified attributes or content of all elements.
 
-Similarly, we can also perform the `erase` action on arrays. For example to clear the second member of `$users`:
+Similarly, we can also perform `erase` action on arrays. For example to clear the second member of `$users`:
 
 ```hvml
      <erase on="$users" at="[1]" />
@@ -3504,13 +3504,13 @@ We can also perform the `erase` action on objects. For example, clear the `name`
      <erase on="$users[0]" at=".name" />
 ```
 
-The `at` attribute value can be the index value of the array or the attribute name of the object (multiple can be specified, separated by spaces):
+`at` attribute value can be the index value of the array or the attribute name of the object (multiple can be specified, separated by spaces):
 
 ```hvml
      <erase on="$users[0]" at=".name .age" />
 ```
 
-As an example, the following code uses the `erase` tag in the `iterate` tag to delete the members of the array at intervals:
+As an example, the following code uses `erase` tag in `iterate` tag to delete the members of the array at intervals:
 
 ```hvml
      <iterate on="$DATA.count($users)" by="SUB: GE 0 BY 2">
@@ -3518,9 +3518,9 @@ As an example, the following code uses the `erase` tag in the `iterate` tag to d
      </iterate>
 ```
 
-#### 2.5.4) `clear` tag
+#### 2.5.4) `clear` Tag
 
-The `clear` tag defines an element that performs a clear operation, which clears an array, object, collection of elements, or a native entity object that supports clear operations. This element only supports the `on` preposition attribute, which is used to specify the target data and produce `true` or `false` two result data, indicating success or failure respectively.
+`clear` tag defines an element that performs a clear operation, which clears an array, object, collection of elements, or a native entity object that supports clear operations. This element only supports `on` preposition attribute, which is used to specify the target data and produce `true` or `false` two result data, indicating success or failure respectively.
 
 For example, for the following HTML code snippet:
 
@@ -3536,7 +3536,7 @@ For example, for the following HTML code snippet:
      </div>
 ```
 
-We clear all child nodes of the `dl` node with the following `clear` tag:
+We clear all child nodes of `dl` node with the following `clear` tag:
 
 ```hvml
      <clear on="#the-user-stats > dl" />
@@ -3560,19 +3560,19 @@ Similarly, we can perform `clear` actions on data items as well. For example, cl
 
 After executing the above clear command, the second user data item of `$users` still exists, but the data item will become empty.
 
-Note that when the `on` attribute value specifies a collection of elements, the `clear` tag will perform a clear operation on each element in it.
+Note that when `on` attribute value specifies a collection of elements, `clear` tag will perform a clear operation on each element in it.
 
-#### 2.5.5) `test`, `match` and `differ` tags
+#### 2.5.5) `test`, `match` and `differ` Tags
 
-##### 2.5.5.1) Multi-branch processing
+##### 2.5.5.1) Multi-Branch Processing
 
-The `test` tag is used in conjunction with the `match` tag, and is mainly used to implement branch processing. The `test` element defines which data item to perform the test on through the `on` attribute, and `match` is used as a sub-element of the `test` element, and each `match` sub-element defines a matching branch.
+`test` tag is used in conjunction with `match` tag, and is mainly used to implement branch processing. `test` element defines which data item to perform the test on through `on` attribute, and `match` is used as a sub-element of `test` element, and each `match` sub-element defines a matching branch.
 
-The `test` element can support the `by` attribute, and an execution result can be obtained through the executor specified by this attribute. If no `by` attribute is defined, its result data is the `on` attribute value; whereas a `match` element always yields a true value (`true`) as its result data. Note that branches defined by `match` elements that do not meet the matching conditions will not be executed.
+`test` element can support `by` attribute, and an execution result can be obtained through the executor specified by this attribute. If no `by` attribute is defined, its result data is the `on` attribute value. Whereas a `match` element always yields a true value (`true`) as its result data. Note that branches defined by `match` elements that do not meet the matching conditions will not be executed.
 
-Note that the `test` element treats the executor the same as the `choose` element when the `by` attribute is used.
+Note that `test` element treats the executor the same as `choose` element when `by` attribute is used.
 
-See the sample code below:
+Please see the sample code below:
 
 ```hvml
     <archetype name="footer_cn">
@@ -3613,9 +3613,9 @@ See the sample code below:
     </footer>
 ```
 
-The above example performs the test on the `$global.locale` data item (specified by the `on` attribute), and the operation is restricted to the target document location where `#the-footer` (specified by the `in` attribute) is located. In the element defined by the `test` tag, use the `match` tag to define several sub-elements, which are used to define the matching conditions `AS 'zh_CN'`, `AS 'zh_TW'` and `LIKE '*'` respectively action.
+The above example performs the test on `$global.locale` data item (specified by the `on` attribute). And the operation is restricted to the target document location where `#the-footer` (specified by `in` attribute) is located. In the element defined by the `test` tag, use `match` tag to define several sub-elements, which are used to define the matching conditions `AS 'zh_CN'`, `AS 'zh_TW'` and `LIKE '*'` respectively action.
 
-After the interpreter selects a matching `match` sub-element, if the `match` sub-element defines the `exclusively` adverb attribute, it will no longer check the branches defined by other `match` sub-elements. Also, except for the `catch` sub-element, other non-`match` sub-elements (including outer elements) within the `test` element will be ignored.
+After the interpreter selects a matching `match` sub-element, if the `match` sub-element defines `exclusively` adverb attribute, it will no longer check the branches defined by other `match` sub-elements. Also, except for the `catch` sub-element, other non-`match` sub-elements (including outer elements) within the `test` element will be ignored.
 
 As far as the above sample code is concerned, assuming that the `locale` of the data referred to by `$global` is defined as `zh_CN`, the resulting HTML fragment is as follows:
 
@@ -3625,11 +3625,11 @@ As far as the above sample code is concerned, assuming that the `locale` of the 
 </footer>
 ```
 
-It should be noted that the `test` action always determines an action result, which will become the value of the context variable `$?` of the child element, which is generally a string or a number. When the `by` attribute is used, the built-in executor or external executor specified by this attribute can be used to obtain a matching data from the data specified by `on`. In this case, the working method of the executor is the same as that of `choose` The elements are the same.
+It should be noted that `test` action always determines an action result, which will become the value of the context variable `$?` of the child element, which is generally a string or a number. When the `by` attribute is used, the built-in executor or external executor specified by this attribute can be used to obtain a matching data from the data specified by `on`. In this case, the working method of the executor is the same as that of `choose` The elements are the same.
 
-For matching conditions, we can use the `on` preposition attribute in the `match` element to define an expression, and judge whether it matches by booleanizing the result of evaluating the expression, or use the `for` preposition attribute Defines a matching condition based on the execution result of the `test` element, either, but the `for` attribute has higher priority.
+For matching conditions, we can use `on` preposition attribute in `match` element to define an expression, and judge whether it matches by booleanizing the result of evaluating the expression, or use `for` preposition attribute Defines a matching condition based on the execution result of `test` element, either, but `for` attribute has higher priority.
 
-When using the `on` preposition attribute, we can use an evaluation expression to determine the matching condition; when the evaluation result is Booleanized, if the result is `true`, it is considered a match, otherwise it is regarded as a mismatch. For example, the `match` element that matches `zh_CN` in the above HVML code can be written as follows:
+When using `on` preposition attribute, we can use an evaluation expression to determine the matching condition; when the evaluation result is Booleanized, if the result is `true`, it is considered a match, otherwise it is regarded as a mismatch. For example, `match` element that matches `zh_CN` in the above HVML code can be written as follows:
 
 ```hvml
          <match on="$L. streq('case', 'zh_CN', $?)" exclusively>
@@ -3637,7 +3637,7 @@ When using the `on` preposition attribute, we can use an evaluation expression t
          </match>
 ```
 
-When using the `for` preposition attribute, simple logical expressions can be used to define matching conditions. Its rules are described as follows:
+When using `for` preposition attribute, simple logical expressions can be used to define matching conditions. Its rules are described as follows:
 
 ```
     "ANY" | <number_comparing_logical_expression>  | <string_matching_logical_expression>
@@ -3675,16 +3675,16 @@ For example, we can write a matching rule as follows:
      </match>
 ```
 
-It should be noted that when the matching rule specified by the `for` attribute of the `match` tag is not `ANY`:
+It should be noted that when the matching rule specified by `for` attribute of `match` tag is not `ANY`:
 
-1. If the matching rule specified by the `for` attribute of the `match` element is a numerical comparison expression (such as `GT`, `LT`), perform numerical processing on the result data of the `test` element before matching.
-1. If the matching rule specified by the `for` attribute of the `match` element is a string matching expression (such as `AS`, `LIKE`), then perform string processing on the result data of the `test` element before proceeding match.
-1. ~~If the result data of its parent element (that is, `test`) is a real number type, the matching rule specified by the `for` attribute of the `match` tag is processed as a numerical comparison logical expression. At this time, the logical expression It is invalid to use string matching expressions (such as `AS`, `LIKE`) in . ~~
-1. ~~If the result data of its parent tag (that is, `test`) is of other types, the matching rule specified by the `for` attribute of the `match` tag is processed as a string comparison logical expression. At this time, the logical expression It is invalid to use numerical comparison expressions (such as `GT`, `LT`) in the formula. When the result data is not a string type, it should be stringified. ~~
+1. If the matching rule specified by `for` attribute of `match` element is a numerical comparison expression (such as `GT`, `LT`), perform numerical processing on the result data of `test` element before matching.
+1. If the matching rule specified by `for` attribute of `match` element is a string matching expression (such as `AS`, `LIKE`), then perform string processing on the result data of `test` element before proceeding match.
+1. ~~If the result data of its parent element (that is, `test`) is a real number type, the matching rule specified by the `for` attribute of `match` tag is processed as a numerical comparison logical expression. At this time, the logical expression It is invalid to use string matching expressions (such as `AS`, `LIKE`) in . ~~
+1. ~~If the result data of its parent tag (that is, `test`) is of other types, the matching rule specified by `for` attribute of `match` tag is processed as a string comparison logical expression. At this time, the logical expression It is invalid to use numerical comparison expressions (such as `GT`, `LT`) in the formula. When the result data is not a string type, it should be stringified. ~~
 
-##### 2.5.5.2) Choose one of the two
+##### 2.5.5.2) Choose One of the Two
 
-As a simplification, we can use the value of the `with` attribute of the `test` element to determine how to handle the subtree of operations defined by the `test` element:
+As a simplification, we can use the value of `with` attribute of `test` element to determine how to handle the subtree of operations defined by `test` element:
 
 ```hvml
      <test with="$STR.stars_with($CRTN.app, 'cn.fmsoft.hvml')">
@@ -3697,17 +3697,17 @@ As a simplification, we can use the value of the `with` attribute of the `test` 
      </test>
 ```
 
-The above code, when the value of the `with` attribute is `true`, continue to execute the operation subtree of the element, but ignore the operation subtree defined by the `differ` sub-element; if the result of the evaluation of the attribute value is `false `, only the operation subtree defined by the `differ` sub-element is processed. In this case, the `differ` element is optional. The `differ` element does not use any prepositional and adverbial attributes other than `in`. Similar to `inherit`, this element will inherit the context variable of the previous operation by default. If there is data content defined, the `$^` context variable of the corresponding stack frame will be overwritten with the data content.
+The above code, when the value of `with` attribute is `true`, continue to execute the operation subtree of the element, but ignore the operation subtree defined by `differ` sub-element; if the result of the evaluation of the attribute value is `false `, only the operation subtree defined by `differ` sub-element is processed. In this case, `differ` element is optional. `differ` element does not use any prepositional and adverbial attributes other than `in`. Similar to `inherit`, this element will inherit the context variable of the previous operation by default. If there is data content defined, `$^` context variable of the corresponding stack frame will be overwritten with the data content.
 
-When the `with` and `on` attributes are specified at the same time, the `on` attribute will be prioritized. That is, to use this simplification, the `on` attribute cannot be specified.
+When `with` and `on` attributes are specified at the same time, `on` attribute will be prioritized. That is, to use this simplification, `on` attribute cannot be specified.
 
-#### 2.5.6) `choose` tag
+#### 2.5.6) `choose` Tag
 
-The `choose` tag defines an action element that performs a selection operation that produces a data item on the data specified by the `on` attribute that can be processed by subsequent action elements.
+`choose` tag defines an action element that performs a selection operation that produces a data item on the data specified by `on` attribute that can be processed by subsequent action elements.
 
-The `choose` element can support the `by` attribute, and an execution result data can be obtained through the executor specified by this attribute. If no `by` attribute is defined, the resulting data is the value of the `on` attribute.
+`choose` element can support `by` attribute, and an execution result data can be obtained through the executor specified by this attribute. If no `by` attribute is defined, the resulting data is the value of `on` attribute.
 
-For example, to realize the function of dynamically generating search links according to the current `locale`, we can also use the `update` element nested in the `choose` element to complete related functions, such as:
+For example, to realize the function of dynamically generating search links according to the current `locale`, we can also use the `update` element nested in `choose` element to complete related functions, such as:
 
 ```hvml
    <head>
@@ -3745,13 +3745,13 @@ For example, to realize the function of dynamically generating search links acco
    </body>
 ```
 
-In the above example, we specified a built-in KEY executor in the `by` preposition attribute of the `choose` element, which takes the value of `$global.locale` as the key name and returns the `on` preposition The corresponding key value on the `$locales` dictionary array specified by the attribute, using the key value to implement the element update operation in the target document fragment specified by the `in` preposition attribute through the subsequent `update` sub-element.
+In the above example, we specified a built-in KEY executor in `by` preposition attribute of `choose` element, which takes the value of `$global.locale` as the key name and returns `on` preposition The corresponding key value on `$locales` dictionary array specified by the attribute, using the key value to implement the element update operation in the target document fragment specified by the `in` preposition attribute through the subsequent `update` sub-element.
 
-In complex situations, we can also specify an external executor in the `by` attribute to complete the selection action. See this article [2.6.2) External actuators] (#262-External actuators) for details.
+In complex situations, we can also specify an external executor in `by` attribute to complete the selection action. See this article [2.6.2) External actuators] (#262-External actuators) for details.
 
-#### 2.5.7) `iterate` tag
+#### 2.5.7) `iterate` Tag
 
-##### 2.5.7.1) Using iterative executors
+##### 2.5.7.1) Using Iterative Executors
 
 The `iterate` tag is used to define an action element that performs an iterative operation, which performs an iterative operation on the specified iterable data. For example, we can iteratively process an array, use the `update` sub-element for each data item obtained through iteration, replace the specified document fragment template with the data item obtained through iteration, and insert it into the target document. Such as the following HVML code snippet:
 
@@ -3814,8 +3814,8 @@ When the `on` attribute is defined, we treat the value of the `on` attribute as 
 
 1. Before the first iteration:
     - Initialize `$0%` with 0.
-    - Initialize `$0<` with the value of the `on` property.
-    - Initialize `$0@` with `in` property value or inherit from `$@`.
+    - Initialize `$0<` with the value of the `on` attribute.
+    - Initialize `$0@` with `in` attribute value or inherit from `$@`.
 1. Before each iteration:
     - Evaluates the expression defined by the `onlyif` attribute, and if the booleanized result is `false`, then terminate the iteration, otherwise continue the iteration. If `onlyif` is not defined, it is considered to be `true`.
 1. In each iteration:
@@ -3839,11 +3839,11 @@ When the `on` attribute is not defined, we take the `with` attribute as input an
 
 1. Before the first iteration:
     - Initialize `$0%` with 0.
-    - Initialize `$0@` with `in` property value or inherit from `$@`.
+    - Initialize `$0@` with `in` attribute value or inherit from `$@`.
 1. Before each iteration:
     - Evaluates the expression defined by the `onlyif` attribute, and if the booleanized result is `false`, then terminate the iteration, otherwise continue the iteration. If `onlyif` is not defined, it is considered to be `true`.
 1. In each iteration:
-    - Evaluate the expression defined by the `with` attribute. If the evaluation result is one of `false`, `null` or `undefined` (boolean processing is not done here), then terminate the iteration, otherwise, use ` The evaluation of the with property resets `$0<`. If `with` is not defined, it is treated as `undefined`.
+    - Evaluate the expression defined by the `with` attribute. If the evaluation result is one of `false`, `null` or `undefined` (boolean processing is not done here), then terminate the iteration, otherwise, use ` The evaluation of the with attribute resets `$0<`. If `with` is not defined, it is treated as `undefined`.
     - Set `$0<` to `$0?`; evaluate content expression (result is set to `$0^`); process child elements.
 1. After each iteration:
     - If a `while` attribute is defined, the expression defined by the `while` attribute is evaluated, and if the result is booleaned to `false`, the iteration is terminated. If the `while` attribute is not defined, its value is considered to be `true`.
@@ -3864,11 +3864,11 @@ The following example reads all directory entries under a specific directory:
     </choose>
 ```
 
-#### 2.5.8) `reduce` tag
+#### 2.5.8) `reduce` Tag
 
-The `reduce` tag defines an element that performs a Reduce operation. Similar to the `choose` element, the `reduce` element supports the `on` attribute and the `by` attribute, and its result data is the result of the reduction operation.
+`reduce` tag defines an element that performs a Reduce operation. Similar to `choose` element, `reduce` element supports `on` attribute and `by` attribute, and its result data is the result of the reduction operation.
 
-We can use the `by` attribute in the `reduce` tag to specify a built-in executor, and the implicit reduction operation will be performed based on the data generated by the built-in executor. For example, the following code:
+We can use `by` attribute in `reduce` tag to specify a built-in executor, and the implicit reduction operation will be performed based on the data generated by the built-in executor. For example, the following code:
 
 ```hvml
      <init as="regionStats">
@@ -3909,7 +3909,7 @@ When the implicit protocol operation cannot meet our requirements, we can implem
     }
 ```
 
-Usually the `reduce` element will form another iterable data, and then we can nest `iterate` and other elements to perform subsequent actions. For example, the following HVML code snippet:
+Usually `reduce` element will form another iterable data, and then we can nest `iterate` and other elements to perform subsequent actions. For example, the following HVML code snippet:
 
 ```hvml
      <div id="the-user-statistics">
@@ -3938,12 +3938,12 @@ Usually the `reduce` element will form another iterable data, and then we can ne
      </reduce>
 ```
 
-The above code uses the external function executor `StatsUserRegion` to perform the reduction operation on `$users`, and then forms a statistical result as described in the JSON format above, including the number of the entire user and the number of users in all regions. Then use the `update` tag, `clear` tag, and `iterate` tag to perform three follow-up actions:
+The above code uses the external function executor `StatsUserRegion` to perform the reduction operation on `$users`, and then forms a statistical result as described in the JSON format above, including the number of the entire user and the number of users in all regions. Then use `update` tag, `clear` tag, `iterate` tag to perform three follow-up actions:
 
-- `update` tag: used to update the content of the `#the-user-statistics > h2 > span` element to the total number of users.
-- `clear` tag: Used to clear all child elements of the `#the-user-statistics > dl` element.
-- The `choose` tag: used to convert the `$?.regions` object to an array of key-value objects.
-- `sort` tag: used to sort the results of the `choose` action (array of key-value objects) in descending order by `v` (the number of people in the area).
+- `update` tag: It is used to update the content of the `#the-user-statistics > h2 > span` element to the total number of users.
+- `clear` tag: It is used to clear all child elements of the `#the-user-statistics > dl` element.
+- The `choose` tag: It is used to convert `$?.regions` object to an array of key-value objects.
+- `sort` tag: It is used to sort the results of `choose` action (array of key-value objects) in descending order by `v` (the number of people in the area).
 - `iterate` tag: Used to append user statistics by region to the `#the-user-statistics > dl` element.
 
 Assuming that the result after performing the reduction operation is the same as the data given in the aforementioned JSON format, the document fragment obtained after performing the above operation is:
@@ -3962,14 +3962,14 @@ Assuming that the result after performing the reduction operation is the same as
     </div>
 ```
 
-#### 2.5.9) `sort` tag
+#### 2.5.9) `sort` Tag
 
-The `sort` tag defines an action element that performs a sort operation on the specified array. This element supports the following attributes:
+`sort` tag defines an action element that performs a sort operation on the specified array. This element supports the following attributes:
 
-- The `on` attribute specifies which data to sort.
-- The `by` attribute specifies a built-in executor that converts the `on` data into an array, or an external function executor that sorts the `on` data directly. If not specified, the default sorting is performed; at this time, the data specified by the `on` attribute must be an array or a collection.
-- The `with` attribute specifies additional parameters when using an external executor.
-- The `against` attribute specifies the basis for sorting; when the array to be sorted is composed of objects, this attribute specifies a single or multiple key names participating in the sorting.
+- `on` attribute specifies which data to sort.
+- `by` attribute specifies a built-in executor that converts `on` data into an array, or an external function executor that sorts `on` data directly. If not specified, the default sorting is performed; at this time, the data specified by `on` attribute must be an array or a collection.
+- `with` attribute specifies additional parameters when using an external executor.
+- `against` attribute specifies the basis for sorting; when the array to be sorted is composed of objects, this attribute specifies a single or multiple key names participating in the sorting.
 - Use the `ascendingly` (default) and `descendingly` adverb attributes to specify whether to use ascending or descending order.
 - Use the `casesensitively` (default) and `caseinsensitively` adverb attributes to specify whether to sort strings case-sensitively or not.
 
@@ -3997,11 +3997,11 @@ The result is:
      ]
 ```
 
-The `sort` action element supports sorting by either string or numeric types, depending on the type of the first sorted data obtained from the array. If the first data type involved in sorting is `number`, `longint`, `ulongint` or `longdouble`, use numeric sorting, otherwise use string sorting. When using numeric values, all data is sorted after being numeric, and when using strings, all data is sorted after stringing.
+`sort` action element supports sorting by either string or numeric types, depending on the type of the first sorted data obtained from the array. If the first data type involved in sorting is `number`, `longint`, `ulongint` or `longdouble`, use numeric sorting, otherwise use string sorting. When using numeric values, all data is sorted after being numeric, and when using strings, all data is sorted after stringing.
 
 When `against` is used to specify a key name, but the array member is not an object, or the specified key name does not exist, the corresponding key value is `undefined`.
 
-We can use the `by` attribute to specify an external function executor that performs the sorting. like:
+We can use `by` attribute to specify an external function executor that performs the sorting. like:
 
 ```hvml
      <sort on="$?.regions" by="FUNC: mySort">
@@ -4009,7 +4009,7 @@ We can use the `by` attribute to specify an external function executor that perf
      </sort>
 ```
 
-We can also use the built-in executor to first generate an object on the data specified by the `on` attribute, and then perform the default sort on the resulting data. For example, the following code:
+We can also use the built-in executor to first generate an object on the data specified by `on` attribute, and then perform the default sort on the resulting data. For example, the following code:
 
 ```hvml
     <init as="regions">
@@ -4033,7 +4033,7 @@ First, the built-in executor specified by by is used to complete the conversion 
     ]
 ```
 
-Then sort the above array in descending order for the `v` key value, and the result is:
+Then sort the above array in descending order for `v` key value, and the result is:
 
 ```json
     [
@@ -4055,13 +4055,13 @@ Essentially, the above HVML code is the same as the following using `choose` fol
      </choose>
 ```
 
-When we do not use an external executor, the `on` attribute or the built-in executor specified by the `by` attribute must provide an array for sorting; when using an external executor, the `on` attribute specified The data type is determined by the external executor. For example, we can perform a sort operation on a string, and the result of the execution may be to arrange all the words in the string in lexicographical order.
+When we do not use an external executor, `on` attribute or the built-in executor specified by `by` attribute must provide an array for sorting. When using an external executor, `on` attribute specified The data type is determined by the external executor. For example, we can perform a sort operation on a string, and the result of the execution may be to arrange all the words in the string in lexicographical order.
 
-#### 2.5.10) `define` and `include` tags
+#### 2.5.10) `define` and `include` Tags
 
-The `define` tag is used to define a set of reusable groups of operations. We can define a set of operations through `define`, and then include this set of operations through the `include` tag elsewhere in the code, or call this set of operations through the `call` tag and expect to return a result. In HVML, we refer to a group of operations defined by the `define` tag as an operation group for short.
+`define` tag is used to define a set of reusable groups of operations. We can define a set of operations through `define`, and then include this set of operations through `include` tag elsewhere in the code, or call this set of operations through `call` tag and expect to return a result. In HVML, we refer to a group of operations defined by `define` tag as an operation group for short.
 
-The `define` element defines the name of the action group through the `as` attribute, which contains a set of child elements defined by the action tag. The `include` element will switch the execution context to the operation group specified by the `with` attribute, the parameters passed in by the `on` attribute will be used as the result data (ie the value of the `$?` variable) for the operation group, and `include` The data defined by the element through its content will become the value of the `$^` variable. like:
+`define` element defines the name of the action group through `as` attribute, which contains a set of child elements defined by the action tag. `include` element will switch the execution context to the operation group specified by the `with` attribute. The parameters passed in by `on` attribute will be used as the result data (ie the value of `$?` variable) for the operation group, and `include` The data defined by the element through its content will become the value of the `$^` variable. For example:
 
 ```hvml
         <archetype name="dir_entry">
@@ -4099,9 +4099,9 @@ The `define` element defines the name of the action group through the `as` attri
         </observe>
 ```
 
-The above HVML code uses the action group defined by `$fillDirEntries` when the `listbox` is initialized, and when the user clicks the `#goRoot` or `#goHome` button. Note that in the three places where the `include` tag is used, different parameters are passed in through the `on` attribute, and the target document location is specified using the `in` attribute.
+The above HVML code uses the action group defined by `$fillDirEntries` when `listbox` is initialized, and when the user clicks `#goRoot` or `#goHome` button. Note that in the three places where `include` tag is used, different parameters are passed in through `on` attribute, and the target document location is specified using `in` attribute.
 
-Essentially, the work done by the `include` element is equivalent to copying the specified operation group to the current location for execution, which we call execute in place. For example, if the above code does not use `define` and `include`, it is equivalent to:
+Essentially, the work done by `include` element is equivalent to copying the specified operation group to the current location for execution, which we call execute in place. For example, if the above code does not use `define` and `include`, it is equivalent to:
 
 ```hvml
         <archetype name="dir_entry">
@@ -4149,7 +4149,7 @@ Essentially, the work done by the `include` element is equivalent to copying the
         </observe>
 ```
 
-`include` performs groups of operations in-place similarly to closures in other programming languages. For example, the `dir_entry` template is used in the above `fillDirEntries` operation group, and this template is only defined once. But with a little modification, you can override the default `dir_entry` template by defining a new one called `dir_entry` before including the action group. Note the note in it:
+`include` performs groups of operations in-place similarly to closures in other programming languages. For example, `dir_entry` template is used in the above `fillDirEntries` operation group, and this template is only defined once. But with a little modification, you can override the default `dir_entry` template by defining a new one called `dir_entry` before including the action group. Note the note in it:
 
 ```hvml
          <archetype name="dir_entry">
@@ -4193,7 +4193,7 @@ Essentially, the work done by the `include` element is equivalent to copying the
          </observe>
 ```
 
-The `define` element can load an HVML snippet from a specified URL using the `from` attribute. With this feature, we can use groups of operations with different functions as common modules for different HTML programs to use. In addition, when using the content of the `define` element and the HVML fragment specified by the `from` attribute to define an operation group, the operation group will first use the content definition, and when the HVML fragment defined by the `from` attribute is correctly loaded, use The loaded HVML fragment is bound to the operation group name.
+`define` element can load an HVML snippet from a specified URL using `from` attribute. With this feature, we can use groups of operations with different functions as common modules for different HTML programs to use. In addition, when using the content of `define` element and the HVML fragment specified by `from` attribute to define an operation group, the operation group will first use the content definition, and when the HVML fragment defined by `from` attribute is correctly loaded, use The loaded HVML fragment is bound to the operation group name.
 
 For example, we define an action group in `/module/html/listitems.hvml` to display array items:
 
@@ -4217,19 +4217,19 @@ And the default operator group writes the array members to the standard output s
      <include with="$listitems" on=['Line #1', 'Line #2'] />
 ```
 
-In the above code, when the loading or parsing of the HVML fragment specified by the `from` attribute of the `define` element fails, the program can still run normally, but the actual operation effect is different. This capability gives us a very flexible feature:
+In the above code, when the loading or parsing of the HVML fragment specified by `from` attribute of `define` element fails, the program can still run normally, but the actual operation effect is different. This capability gives us a very flexible feature:
 
 1. The normal operation of an HVML program may not depend on a specific target document type.
 1. We can make the same HVML program generate different target document fragments according to different target document types.
 
-When using the `from` attribute, `define` behaves as follows:
+When using `from` attribute, `define` behaves as follows:
 
-1. Attempts to load the HVML fragment specified by `from` synchronously, if unsuccessful, stops loading, throws an exception, and retains the operation group defined by the content. If successful, then,
-1. Attempts to parse the loaded HVML fragment, if unsuccessful, stops loading, throws an exception, and preserves the operation group defined by the content. If successful, then,
+1. Attempt to load the HVML fragment specified by `from` synchronously, if unsuccessful, stops loading, throws an exception, and retains the operation group defined by the content. If successful, then,
+1. Attempt to parse the loaded HVML fragment, if unsuccessful, stops loading, throws an exception, and preserves the operation group defined by the content. If successful, then,
 1. If the parsed vDOM fragment tree does not contain any valid child elements, stop loading, throw an exception, and keep the operation group defined by the content. If successful, then,
-1. The corresponding variable (specified by the `as` attribute value) points to the parsed vDOM fragment tree.
+1. The corresponding variable (specified by `as` attribute value) points to the parsed vDOM fragment tree.
 
-Similar to the `init` tag, when using the `define` tag to load HVML fragments from external resources, you can use attributes such as `with` and `via` to specify query parameters and request methods.
+Similar to `init` tag, when using `define` tag to load HVML fragments from external resources, you can use attributes such as `with` and `via` to specify query parameters and request methods.
 
 In essence, we can treat operation groups as a special kind of data, and there is no essential difference between using `define` to define a named operation group and using `init` to initialize a variable. Therefore, we can also use the `at` attribute to specify the scope of the action group name, and the `async` adverb attribute to asynchronously load and parse the action group, and use the `observe` element to observe the state of variables.
 
@@ -4256,14 +4256,14 @@ The following code loads multiple HVML fragments via the `iterate` action elemen
 </hvml>
 ```
 
-For the above code, if there are two HVML fragment files in the `/module/html/` directory: `A.hvml` and `B.hvml`, two operation groups will be created: `opsA` and `opsB`, respectively Points to two separate vDOM fragment trees. When we use `include`, `call` or `observe` to refer to `opsA` and `opsB` in an HVML program, the corresponding vDOM fragment tree will be executed instead of the original default value operation group.
+For the above code, if there are two HVML fragment files in  `/module/html/` directory: `A.hvml` and `B.hvml`, two operation groups will be created: `opsA` and `opsB`, respectively Points to two separate vDOM fragment trees. When we use `include`, `call` or `observe` to refer to `opsA` and `opsB` in an HVML program, the corresponding vDOM fragment tree will be executed instead of the original default value operation group.
 
-Similar to `init`, the `define` defined in the `head` element will create a globally visible operation group, that is, the operation groups of `opsA` and `opsB` defined in the above code are globally visible. Using `define` in `body` will bind the action group name on its parent element by default, thus making the action group visible in the vDOM subtree rooted at the parent element. But we can use the `at` attribute to specify the name space of the operation group:
+Similar to `init`, the `define` defined in `head` element will create a globally visible operation group, that is, the operation groups of `opsA` and `opsB` defined in the above code are globally visible. Using `define` in `body` will bind the action group name on its parent element by default, thus making the action group visible in the vDOM subtree rooted at the parent element. But we can use the `at` attribute to specify the name space of the operation group:
 
 - The predefined names `_parent`, `_grandparent`, `_root` starting with an underscore (\_) will define the name of the operation group on the parent element, grandparent element, and root element respectively.
-- Element identifiers starting with a pound sign (#), such as `#myAnchor`, will search for the specified element identifier (specified by the `id` attribute) in its ancestor elements, and will be on the first matching ancestor element Defines the name of the action group.
+- Element identifiers starting with a pound sign (#), such as `#myAnchor`, will search for the specified element identifier (specified by `id` attribute) in its ancestor elements, and will be on the first matching ancestor element Defines the name of the action group.
 - When using a positive integer N (such as `2`, `3`), it will backtrack N ancestor elements along the vDOM tree in the direction of the ancestor element on which the action group name is defined.
-- In the case of silent evaluation, if no matching ancestor element is found, it will be treated as if the `at` attribute is not defined; otherwise, `EntityNotFound` exception should be thrown.
+- In the case of silent evaluation, if no matching ancestor element is found, it will be treated as if `at` attribute is not defined; otherwise, `EntityNotFound` exception should be thrown.
 
 According to the above rules, the above method of defining multiple operation groups can also be coded as follows:
 
@@ -4288,9 +4288,9 @@ According to the above rules, the above method of defining multiple operation gr
 </hvml>
 ```
 
-If the operation group defined by `define` is empty, a `NoData` exception should be thrown when using the `include` or `call` element to refer to the operation group.
+If the operation group defined by `define` is empty, `NoData` exception should be thrown when using the `include` or `call` element to refer to the operation group.
 
-The value defined by the `on` attribute of the `include` element will become the result data of the stack frame corresponding to `define`; similarly, the value defined by the `with` attribute of the `call` element will become the result data of the stack frame corresponding to `define` fruit data. For the convenience of writing, when the data passed to the operation group is `object`, the interpreter should conform to the attributes of the HVML `literal_variable_token` lexical unit for all key names in the object, and set it to `define` to correspond to the temporary named variable in the stack frame , so as to obtain the effect similar to the function parameter. For example, the following code calculates the greatest common divisor of two positive integers:
+The value defined by `on` attribute of `include` element will become the result data of the stack frame corresponding to `define`; similarly, the value defined by `with` attribute of `call` element will become the result data of the stack frame corresponding to `define` fruit data. For the convenience of writing, when the data passed to the operation group is `object`, the interpreter should conform to the attributes of the HVML `literal_variable_token` lexical unit for all key names in the object, and set it to `define` to correspond to the temporary named variable in the stack frame , so as to obtain the effect similar to the function parameter. For example, the following code calculates the greatest common divisor of two positive integers:
 
 ```hvml
     <define as "calcGreatestCommonDivisor">
@@ -4327,15 +4327,15 @@ The value defined by the `on` attribute of the `include` element will become the
     </include>
 ```
 
-In addition, we can use the `in` attribute in the `include` element or the `call` element to define the location of the target document, so the attribute value will affect the behavior of the operation group.
+In addition, we can use `in` attribute in `include` element or `call` element to define the location of the target document, so the attribute value will affect the behavior of the operation group.
 
-We can define sub-elements in the `include` element, and these sub-elements will be executed after the operation group defined by `define` has been executed.
+We can define sub-elements in `include` element, and these sub-elements will be executed after the operation group defined by `define` has been executed.
 
-#### 2.5.11) `observe`, `forget` and `fire` tags
+#### 2.5.11) `observe`, `forget` and `fire` Tags
 
-The `observe` tag is used to define an action element that performs an observation operation. This element will observe a state change on a specific variable or data, and when the specified event arrives, if its `with` attribute specifies a valid operation group, then Execute the operation group, otherwise execute the operation group defined by the tag.
+`observe` tag is used to define an action element that performs an observation operation. This element will observe a state change on a specific variable or data, and when the specified event arrives, if its `with` attribute specifies a valid operation group, then Execute the operation group, otherwise execute the operation group defined by the tag.
 
-We use the `against` attribute of `observe` to specify the name of a statically named variable to observe, and the `on` attribute to specify a piece of data to observe. The `against` attribute takes precedence over the `on` attribute. Note that we cannot observe a temporary named variable or context variable.
+We use `against` attribute of `observe` to specify the name of a statically named variable to observe, and the `on` attribute to specify a piece of data to observe. `against` attribute takes precedence over `on` attribute. Note that we cannot observe a temporary named variable or context variable.
 
 When we observe a static named variable, we can observe whether the data corresponding to the named variable is ready, or whether an error occurs in the process of obtaining the data, or whether the data on the named variable has been destroyed, etc.
 
@@ -4363,23 +4363,23 @@ The following code gets the current user information from a remote server, but u
      </observe>
 ```
 
-When we observe the `change:attached` event on the `users` variable, it indicates that the data is ready. At this point, we can execute the operation group defined by `observe`: clear the contents of `#user-list`, and then iterate Members of the `$users` array, use the template `$user_item` to generate document fragments that are appended to `#user-list`.
+When we observe `change:attached` event on `users` variable, it indicates that the data is ready. At this point, we can execute the operation group defined by `observe`: clear the contents of `#user-list`, and then iterate Members of the `$users` array, use the template `$user_item` to generate document fragments that are appended to `#user-list`.
 
 We can track and handle the following events on statically named variables:
 
-- `change:progress`: Indicates that progress is updated when fetching data asynchronously as a static named variable.
-- `change:attached`: Indicates that the data on the static named variable has changed from the initial `undefined` to valid data.
-- `change:displaced`: Indicates that the data previously associated with the variable has been replaced with new data, such as using `init` to reset the variable, or the previously initiated asynchronous request operation successfully obtained valid data.
-- `change:detached`: Indicates that the valid data previously associated with the variable has been disassociated, and its value is reset to `undefined`, such as the case where the previously initiated asynchronous request operation failed and failed to obtain valid data.
-- `except:<exceptionName>`: Indicates that an exception occurred when obtaining the data corresponding to the variable, which may be a request error or a parsing error. Specific information, given by the subtype of the event.
+- `change:progress`: Indicate that progress is updated when fetching data asynchronously as a static named variable.
+- `change:attached`: Indicate that the data on the static named variable has changed from the initial `undefined` to valid data.
+- `change:displaced`: Indicate that the data previously associated with the variable has been replaced with new data, such as using `init` to reset the variable, or the previously initiated asynchronous request operation successfully obtained valid data.
+- `change:detached`: Indicate that the valid data previously associated with the variable has been disassociated, and its value is reset to `undefined`, such as the case where the previously initiated asynchronous request operation failed and failed to obtain valid data.
+- `except:<exceptionName>`: Indicate that an exception occurred when obtaining the data corresponding to the variable, which may be a request error or a parsing error. Specific information, is given by the subtype of the event.
 
 When the event observed by `observe` arrives, the interpreter should switch to the operation group defined by `observe` itself or the operation group defined by `define` referenced by its `with` attribute to execute the HVML program. At this point, in the front stack frame corresponding to the operation group, the following context variables should be defined:
 
-- `$?`: The payload data of the event; if the observed variable is a variable, it is the data corresponding to the observed variable.
+- `$?`: The payload data of the event. If the observed variable is a variable, it is the data corresponding to the observed variable.
 - `$!`: In user data, two temporary variables are predefined to represent the complete event name and event source, named `_eventName` and `_eventSource` respectively.
 - `$@`: The target document location defined by the `in` attribute of `observe`, or the target document location from which `observe` inherits.
 
-When we use the `with` attribute in the `observe` element to define the operation group to be referenced, the execution effect of the HVML program is equivalent to the effect of the `include` action element, that is, it should be executed in place instead of called by ` The group of operations specified by the with` attribute.
+When we use `with` attribute in `observe` element to define the operation group to be referenced, the execution effect of the HVML program is equivalent to the effect of `include` action element, that is, it should be executed in place instead of called by ` The group of operations specified by the with` attribute.
 
 When we observe a piece of data, we can obtain the events produced by the data or changes in the data itself. For example, we can monitor events from long connections, the return value of asynchronous requests, or obtain the results returned after calling remote procedures on long connections, and can also be used to monitor events generated by some internal data, such as those generated by `$TIMERS` data Timer expiration events, etc.
 
@@ -4436,7 +4436,7 @@ In the above example, we use the `onBatteryChanged` operation group defined by `
 
 Another example usage of `observe` tag is described below.
 
-In the `head` element, we connect to `unix:///var/run/hibus.sock` via the `init` tag, using the `$STREAM` predefined variable. The `open` method of `$STREAM` returns a stream entity named `databus` (`as` attribute). Then in the `body` element, we use the `choose` tag to subscribe to (`subscribe`) the specified event through the `$databus.subscribe` method, and then use the `observe` element to define the observation of a specific event on `$databus` . Whenever the state of the battery changes, a corresponding data packet is obtained from this data source. For the sake of illustration, we assume that the packets are described in JSON format:
+In `head` element, we connect to `unix:///var/run/hibus.sock` via  `init` tag, using `$STREAM` predefined variable. `open` method of `$STREAM` returns a stream entity named `databus` (`as` attribute). Then in the `body` element, we use `choose` tag to subscribe to (`subscribe`) the specified event through `$databus.subscribe` method, and then use `observe` element to define the observation of a specific event on `$databus` . Whenever the state of the battery changes, a corresponding data packet is obtained from this data source. For the sake of illustration, we assume that the packets are described in JSON format:
 
 ```json
      {
@@ -4452,21 +4452,21 @@ In the `head` element, we connect to `unix:///var/run/hibus.sock` via the `init`
      }
 ```
 
-Among them, the `messageType` field indicates the data packet type; the `eventName` field indicates the event name; `source` indicates the source data that generated the event; `time` indicates the system time when the event was generated; `signature` is the content of the event Signature, which can be used to verify the legitimacy of the data source; `payload` contains event-related data. In the above example, the event contains two messages, one message is used to indicate the current battery percentage, and the other message indicates whether it is in the charging state.
+Among them, `messageType` field indicates the data packet type. `eventName` field indicates the event name. `source` indicates the source data that generated the event. `time` indicates the system time when the event was generated. `signature` is the content of the event signature, which can be used to verify the legitimacy of the data source. `payload` contains event-related data. In the above example, the event contains two messages. One message is used to indicate the current battery percentage, and the other message indicates whether it is in the charging state.
 
-The event name must conform to the `event_name` lexical unit requirements defined in this specification, see [2.2.3) Common referred to lexical units] (#223-Common referred to lexical units) for details. Here are some examples of legal event names:
+The event name must conform to `event_name` lexical unit requirements defined in this specification. See [2.2.3) Common referred to lexical units] (#223-Common referred to lexical units) for details. Here are some examples of legal event names:
 
 - `click`
 - `change:attached`
 - `event:3cc8f9e2ff74f872f09518ffd3db6f29`
 - `corState:except/BadName`
 
-When the HVML agent observes the battery change event packets from `$databus`, it will perform corresponding operations according to the observation actions defined by the `observe` tag. In the above example, the operations and conditions defined by the `observe` tag are interpreted as follows:
+When the HVML agent observes the battery change event packets from `$databus`, it will perform corresponding operations according to the observation actions defined by the `observe` tag. In the above example, the operations and conditions defined by `observe` tag are interpreted as follows:
 
-- When the packet type from `$databus` (specified by the `on` attribute value) is `event:$?` (specified by the `for` attribute value), where `$?` is the `choose` element The execution result represents the unique identification string of the subscribed event (equivalent to the event identifier), and executes the operation group defined by `observe`.
-- The `with` attribute of the `observe` element specifies the group of operations (`$onBatteryChanged`) that perform the update operation, where the update operation is limited to the `#the-header` target element defined by the `in` preposition attribute.
+- When the packet type from `$databus` (specified by the `on` attribute value) is `event:$?` (specified by the `for` attribute value). Here, `$?` is the execution result of `choose` element, which represents the unique identification string of the subscribed event (equivalent to the event identifier), and executes the operation group defined by `observe`.
+- `with` attribute of the `observe` element specifies the group of operations (`$onBatteryChanged`) that perform the update operation, where the update operation is limited to the `#the-header` target element defined by the `in` preposition attribute.
 
-Note that when `observe` observes a packet from a specific data source, the resulting data is the `payload` data in the event packet.
+Note that when `observe` observes a packet from a specific data source, the resulting data is `payload` data in the event packet.
 
 Similarly, when we want to display the current WiFi name or mobile network operator name on the status bar:
 
@@ -4482,9 +4482,9 @@ Similarly, when we want to display the current WiFi name or mobile network opera
      </choose>
 ```
 
-We can also use the `observe` tag to observe changes on a node in the document or user interaction events. The following examples show various uses of `observe`:
+We can also use `observe` tag to observe changes on a node in the document or user interaction events. The following examples show various uses of `observe`:
 
-- By listening to the `MQTT` packet to obtain the time of adding or deleting background users, so as to dynamically change the user list.
+- By listening to `MQTT` packet to obtain the time of adding or deleting background users, so as to dynamically change the user list.
 - Dynamically update user statistics by listening to change events on the parent element (container element) of the user list.
 
 ```hvml
@@ -4562,9 +4562,9 @@ We can also use the `observe` tag to observe changes on a node in the document o
 </hvml>
 ```
 
-In the above example, we use the `define` tag to define an operation group, and then use the `with` attribute in the `observe` tag to specify this operation group. When the `change:content` event arrives, the `$ onChangeContent` action group. We also use the `in` attribute of the `observe` tag to specify the target document location when executing the `$onChangeContent` action group.
+In the above example, we use `define` tag to define an operation group, and then use `with` attribute in `observe` tag to specify this operation group. When `change:content` event arrives, `$ onChangeContent` action group will be executed. We also use `in` attribute of `observe` tag to specify the target document location when executing `$onChangeContent` action group.
 
-The `forget` tag is used when we want to unobserve an event on a particular piece of data or element. That is, `forget` is the inverse of `observe`.
+`forget` tag is used when we want to unobserve an event on a particular piece of data or element. That is, `forget` is the inverse of `observe`.
 
 ```hvml
      <forget on="#the-user-list" for="change:content" />
@@ -4588,9 +4588,9 @@ In HVML code, in addition to passively waiting for an event to occur, the code c
      </observe>
 ```
 
-The `fire` element will process the data specified by the `with` attribute as the `payload` of the event packet, and determine the source of the event according to the element or data specified by the `on` attribute, and the value of the `for` attribute will be used as the event name to package the event packet and add the event to the event queue.
+`fire` element will process the data specified by `with` attribute as `payload` of the event packet, and determine the source of the event according to the element or data specified by `on` attribute. And the value of `for` attribute will be used as the event name to package the event packet and add the event to the event queue.
 
-For the same event, we can observe and perform different actions in multiple places in the HVML program. When we need to undo a specific observation, we can use the `as` attribute in the `observe` tag to name the observation, and then use `init` to reset the variable to `undefine` to remove the observation:
+For the same event, we can observe and perform different actions in multiple places in the HVML program. When we need to undo a specific observation, we can use `as` attribute in `observe` tag to name the observation, and then use `init` to reset the variable to `undefine` to remove the observation:
 
 ```hvml
      <choose on="$TIMERS" by="FILTER: AS 'foo'">
@@ -4621,26 +4621,26 @@ For the same event, we can observe and perform different actions in multiple pla
      </observe>
 ```
 
-Similar to `init`, when using the `as` attribute in the `observe` element to name an observation, we can also use the `at` attribute to specify where the name is bound (that is, the namespace).
+Similar to `init`, when using `as` attribute in `observe` element to name an observation, we can also use `at` attribute to specify where the name is bound (i.e.namespace).
 
-We can use the `for` attribute of `observe` and `forget` to specify an exact event name to observe, or use wildcards or regular expressions to represent a set of eligible events:
+We can use `for` attribute of `observe` and `forget` to specify an exact event name to observe, or use wildcards or regular expressions to represent a set of eligible events:
 
-- When the `for` attribute value contains `?` or `*`, it means a wildcard match.
-- When the `for` attribute value starts with `/`, it means a regular expression match.
+- When `for` attribute value contains `?` or `*`, it means a wildcard match.
+- When `for` attribute value starts with `/`, it means a regular expression match.
 
-for example:
+For example:
 
 ```hvml
      <forget on="$TIMERS" for="expired:*" />
 ```
 
-Expiry event observations for all timers will be removed.
+It will remove expiry event observations for all timers.
 
-Finally, `observe` supports the `once` adverb attribute, and the observation with this adverb attribute will be automatically dismissed by the interpreter after being executed once.
+Finally, `observe` supports `once` adverb attribute. And the observation with this adverb attribute will be automatically dismissed by the interpreter after being executed once.
 
-#### 2.5.12) `call` and `return` labels
+#### 2.5.12) `call` and `return` Labels
 
-The work done by the `include` element is equivalent to copying the specified operation group to the current location for execution (execute in place), so it is different from the function call in traditional programming languages. To achieve the same effect as a function call, use the `call` and `return` labels:
+The work done by `include` element is equivalent to copying the specified operation group to the current location for execution (execute in place). So it is different from the function call in traditional programming languages. To achieve the same effect as a function call, use `call` and `return` labels:
 
 ```hvml
         <define as="fillDirEntries">
@@ -4675,16 +4675,16 @@ The work done by the `include` element is equivalent to copying the specified op
         </observe>
 ```
 
-In the above HVML code, `fillDirEntries` uses the `with` attribute of the `return` element to return the number of directory entries, turning it from an operation group into a function with a return value. When using this function, use the `call` tag to define an action element that performs the call operation in order to obtain the result data.
+In the above HVML code, `fillDirEntries` uses the `with` attribute of the `return` element to return the number of directory entries, turning it from an operation group into a function with a return value. When using this function, use `call` tag to define an action element that performs the call operation in order to obtain the result data.
 
-The `call` element differs from the `include` element as follows:
+`call` element differs from `include` element as follows:
 
-- The result data in the stack frame corresponding to the `call` element can be overwritten by the `return` element in the operation group or the `back` element in the operation group. If there is no `return` or `back` element in the operation group to modify the result data, the result data in the stack frame corresponding to the `call` element will remain `undefined` unchanged.
-- In the stack frame corresponding to the `include` element, the initial result data is determined by its own `on` attribute value or content, which can be overwritten by the `back` element in the operation group, and the `return` element in the operation group only It is used to fall back to the stack frame where the last `include` is located, without modifying the result data in the stack frame corresponding to the `include`.
+- The result data in the stack frame corresponding to `call` element can be overwritten by `return` element in the operation group or `back` element in the operation group. If there is no `return` or `back` element in the operation group to modify the result data, the result data in the stack frame corresponding to the `call` element will remain `undefined` unchanged.
+- In the stack frame corresponding to `include` element, the initial result data is determined by its own `on` attribute value or content, which can be overwritten by `back` element in the operation group. And `return` element in the operation group   is only used to fall back to the stack frame where the last `include` is located,without modifying the result data in the stack frame corresponding to `include`.
 
-That is, the main difference between `call` and `include` is how to handle the return value defined by the `return` element in the operation group: the former cares about the return value, and the latter does not. In practice, `include` is generally used to manipulate the target document, and `call` is generally used to obtain a result data.
+That is, the main difference between `call` and `include` is how to handle the return value defined by `return` element in the operation group: The former cares about the return value, and the latter does not. In practice, `include` is generally used to manipulate the target document, and `call` is generally used to obtain a result data.
 
-We can use the `within` attribute on the `call` element to specify a different name than the current walker. At this point, we can perform the specified group of operations in another walker. Since each HVML walker has its own virtual machine instance, and different virtual machine instances usually run in different threads or different processes of the operating system, we can achieve thread- or process-based concurrent processing in this way. When we use the `concurrently` attribute on the current worker, a new coroutine will be created in the current virtual machine instance to execute the specified operation group. We call the above two calling behaviors `call concurrently`. At this point, if the `asynchronously` adverb attribute is used, the `call` element will return immediately after creating the new coroutine (and possibly a new virtual machine instance), then use `observe` to observe its result, otherwise it will wait for the concurrent call The result is returned. like:
+We can use `within` attribute on `call` element to specify a different name than the current walker. At this point, we can perform the specified group of operations in another walker. Since each HVML walker has its own virtual machine instance, and different virtual machine instances usually run in different threads or different processes of the operating system. In this way, we can achieve concurrent processing based on thread or process. When we use `concurrently` attribute on the current worker, a new coroutine will be created in the current virtual machine instance to execute the specified operation group. We call the above two calling behaviors `call concurrently`. At this point, if `asynchronously` adverb attribute is used, `call` element will return immediately after creating the new coroutine (and possibly a new virtual machine instance), then use `observe` to observe its result. Otherwise it will wait for the concurrent call The result is returned. For example:
 
 ```hvml
     <define as="collectAllDirEntriesRecursively">
@@ -4728,12 +4728,12 @@ We can use the `within` attribute on the `call` element to specify a different n
     </listbox>
 ```
 
-In the above HVML code, we concurrently call the `collectAllDirEntriesRecursively` operation group, which recursively gets all the file system directory entries under the current path (this is a typical time-consuming operation). The HVML interpreter shall create a new coroutine within the walker specified by the `within` attribute to execute the group of operations; if the specified walker does not exist, a new walker is created, and a new walker means a new virtual machine instance. When using the `asynchronously` adverb attribute, the `as` attribute is used to specify the name of the variable that tracks the task (`my_task`), after which the code uses the `observe` element to observe the `callState:success` event of the `my_task` variable, and Do follow-up processing.
+In the above HVML code, we concurrently call `collectAllDirEntriesRecursively` operation group, which recursively gets all the file system directory entries under the current path (this is a typical time-consuming operation). The HVML interpreter shall create a new coroutine within the walker specified by `within` attribute to execute the group of operations. If the specified walker does not exist, a new walker is created. And the new walker means a new virtual machine instance. When using `asynchronously` adverb attribute, `as` attribute is used to specify the name of the variable that tracks the task (`my_task`). After this, the code uses `observe` element to observe `callState:success` event of `my_task` variable, and do follow-up processing.
 
-Note the use of the adverb attribute above:
+Note the use of the adverb attributes above:
 
-- When we specify a walker name different from the current walker in the `within` attribute, concurrent calls must be performed; and if the `within` attribute is not specified or `_self` is specified in the `within` attribute, if no With the `concurrently` adverb attribute, the `call` element behaves like a normal function call, and the `asynchronously` or `synchronously` adverb attribute is ignored.
-- When using `concurrently`, the `call` element will create a new coroutine in the specified walker to execute the specified operation group. By default, it will wait for the execution result synchronously, which is equivalent to specifying the `synchronously` adverb attribute; if `asynchronously' is specified ` adverb attribute, it will return immediately. At this time, you need to use a variable to observe events related to concurrent calls.
+- When we specify a walker name different from the current walker in `within` attribute, concurrent calls must be performed. And if `within` attribute is not specified or `_self` is specified in the `within` attribute, if we don't use `concurrently` adverb attribute, `call` element behaves like a normal function call. And `asynchronously` or `synchronously` adverb attribute is ignored.
+- When using `concurrently`, `call` element will create a new coroutine in the specified walker to execute the specified operation group. By default, it will wait for the execution result synchronously, which is equivalent to specifying `synchronously` adverb attribute. If `asynchronously' is specified ` adverb attribute, it will return immediately. At this time, you need to use a variable to observe events related to concurrent calls.
 
 When an action group is invoked concurrently, the interpreter creates a new coroutine in the specified walker to execute the vDOM subtree defined by the action group. The interpreter can refer to the following steps for corresponding implementation:
 
@@ -4763,7 +4763,7 @@ Following the above steps is equivalent to dynamically constructing the followin
 </hvml>
 ```
 
-Since concurrent calls are usually used to perform some time-consuming calculation tasks, we set the target document type of the corresponding coroutine to `void`, so as to prevent newly created walkers and coroutines from being associated with the renderer. But by calling the action group concurrently, we can also use it to create a normal walker associated with the renderer. for example:
+Since concurrent calls are usually used to perform some time-consuming calculation tasks, we set the target document type of the corresponding coroutine to `void`, so as to prevent newly created walkers and coroutines from being associated with the renderer. But by calling the action group concurrently, we can also use it to create a normal walker associated with the renderer. For example:
 
 ```hvml
          <define as="newRunner">
@@ -4797,9 +4797,9 @@ Since concurrent calls are usually used to perform some time-consuming calculati
 
 The above code asynchronously loads an HVML program in a concurrently executing operation group, which will create a new coroutine in the virtual machine instance. When the current coroutine exits, the newly created coroutine is still executing, so the corresponding virtual machine instance will also continue to run.
 
-As mentioned earlier, we limit the target document type of the concurrently executed operation group to `void`, so that there is no need to associate the corresponding coroutine to the renderer, but you can use the `load` tag in the operation group to load other objects that need to be rendered HVML program for the compiler. In this case, the above code uses the `request` element to send requests to the renderer, such as connecting to the renderer, starting a new renderer session and making corresponding settings, etc. At this point, we can use the content data of the `call` element to pass the relevant parameters to the renderer.
+As mentioned earlier, we limit the target document type of the concurrently executed operation group to `void`, so that there is no need to associate the corresponding coroutine to the renderer. But you can use `load` tag in the operation group to load other objects that need to be rendered HVML program for the compiler. In this case, the above code uses `request` element to send requests to the renderer, such as connecting to the renderer, starting a new renderer session and making corresponding settings, etc. At this point, we can use the content data of `call` element to pass the relevant parameters to the renderer.
 
-When the operation group is called concurrently asynchronously, the result data of the `call` element is a native entity representing the new coroutine. The native entity should provide at least one `id` attribute, which is used to return the identifier of the new coroutine.
+When the operation group is called concurrently asynchronously, the result data of `call` element is a native entity representing the new coroutine. The native entity should provide at least one `id` attribute, which is used to return the identifier of the new coroutine.
 
 The format of the coroutine identifier is `[//hostname]/<appName>/<runnerName>/CRTN/<coroutineToken>`, which must meet the `coroutine_identifier` lexical unit requirements defined in this specification. For details, see [2.2.3) Common denoted nouns] (#223 - common denoted nouns). Here are some examples of valid coroutine identifiers:
 
@@ -4807,11 +4807,11 @@ The format of the coroutine identifier is `[//hostname]/<appName>/<runnerName>/C
 - `/cn.fmsoft.hvml.sample/Runner0/CRTN/foo`
 - `/cn.fmsoft.hvml.sample/myRunner/CRTN/3cc8f`
 
-Here, we use a coroutine token to identify a coroutine. We don't use the term coroutine name because with the `load` element we can create multiple coroutine instances of a single HVML program. In addition, we can specify a coroutine with some predefined coroutine tokens (usually starting with an underscore), such as:
+Here, we use a coroutine token to identify a coroutine. We don't use the term coroutine name because with `load` element we can create multiple coroutine instances of a single HVML program. In addition, we can specify a coroutine with some predefined coroutine tokens (usually starting with an underscore), such as:
 
-- `_main`: Indicates the main coroutine, which is the first coroutine created by the specified walker.
-- `_first`: Indicates the first coroutine among existing coroutines. Note that `_main` will be unavailable after the first coroutine created by the walker exits, but `_first` is always available.
-- `_last`: Indicates the last coroutine among existing coroutines. Note that `_first` and `_last` point to the same coroutine when there is only one coroutine in the coroutine.
+- `_main`: Indicate the main coroutine, which is the first coroutine created by the specified walker.
+- `_first`: Indicate the first coroutine among existing coroutines. Note that `_main` will be unavailable after the first coroutine created by the walker exits, but `_first` is always available.
+- `_last`: Indicate the last coroutine among existing coroutines. Note that `_first` and `_last` point to the same coroutine when there is only one coroutine in the coroutine.
 
 For the attribute value of `within`, we reserve `_self` as the name of the predefined walker, specifically referring to the current walker.
 
@@ -4821,7 +4821,7 @@ The events corresponding to the concurrent call operation group are:
 - `callState:error/<errorName>`: The coroutine corresponding to the operation group has an error.
 - `callState:except/<exceptName>`: The coroutine corresponding to the operation group encountered an uncaught exception.
 
-When the operation group is called concurrently, because we limit the corresponding HVML program to a vDOM subtree, we cannot access the variables in the closure of the operation group in the original HVML program. This is quite different from conventional calls. For example, the following code:
+When the operation group is called concurrently, as we limit the corresponding HVML program to a vDOM subtree, we cannot access the variables in the closure of the operation group in the original HVML program. This is quite different from conventional calls. For example, the following code:
 
 ```hvml
     <body>
@@ -4862,7 +4862,7 @@ When the operation group is called concurrently, because we limit the correspond
     </body>
 ```
 
-Defines an action group that uses the static variable `$allEntries` in its closure. So this operation group works fine without using concurrent calls:
+An action group is defined, which uses the static variable `$allEntries` in its closure. So this operation group works fine without using concurrent calls:
 
 ```hvml
          <call on="$collectAllDirEntriesRecursively" with="/" />
@@ -4898,9 +4898,9 @@ Therefore, we need to use a local variable, and return the local variable at the
 
 The above code also shows the function of recursively calling the operation group.
 
-#### 2.5.13) `bind` tag
+#### 2.5.13) `bind` Tag
 
-The `bind` tag defines an action element that performs a binding expression operation. This element creates an expression variable, so the `as` attribute and the `at` attribute can be used to specify the name of the variable and the variable scope. In general, an expression variable corresponds to an evaluable expression that can be specified using the `on` attribute, or defined using the contents of a `bind` element. like:
+`bind` tag defines an action element that performs a binding expression operation. This element creates an expression variable, so `as` attribute and `at` attribute can be used to specify the name of the variable and the variable scope. In general, an expression variable corresponds to an evaluable expression that can be specified using `on` attribute, or defined using the contents of `bind` element. For example:
 
 ```hvml
      <bind on="$users[0]" as="me" />
@@ -4925,7 +4925,7 @@ or,
      </bind>
 ```
 
-When we use this variable, we call the `eval` method on it to get the specific data corresponding to the expression. Therefore, the following `init` and `bind` elements perform differently:
+When we use this variable, we call `eval` method on it to get the specific data corresponding to the expression. Therefore, the following `init` and `bind` elements perform differently:
 
 ```hvml
      <init as="sysClock">
@@ -4943,9 +4943,9 @@ When we use this variable, we call the `eval` method on it to get the specific d
      <p>The current system time: $rtClock.eval</p>
 ```
 
-In addition, if the `observe` action is executed on the variable, the expression corresponding to the variable will be re-evaluated when the HVML program enters the message loop. If there is a change, a `change` message will be generated, so that Do the corresponding processing in the operation group defined by the `observe` action element:
+In addition, if `observe` action is executed on the variable, the expression corresponding to the variable will be re-evaluated when the HVML program enters the message loop. If there is a change, `change` message will be generated, so that Do the corresponding processing in the operation group defined by `observe` action element:
 
-for example,
+For example,
 
 ```hvml
      <bind on $SYS.time as 'rtClock' />
@@ -4955,9 +4955,9 @@ for example,
      </observe>
 ```
 
-The operation group defined by the `observe` element in the above code will be executed every second.
+The operation group defined by `observe` element in the above code will be executed every second.
 
-In addition, we can bind the attribute or content of a target document element to a variable, and then use the `observe` element to handle the `change` event on it:
+In addition, we can bind the attribute or content of a target document element to a variable, and then use `observe` element to handle `change` event on it:
 
 ```hvml
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
@@ -4969,11 +4969,11 @@ In addition, we can bind the attribute or content of a target document element t
     </bind>
 ```
 
-We can also use parameters in the `eval` method of the bound variable, and use the variable name `$_ARGS` in the original expression to refer to the incoming parameters, thus realizing the function of substitute expression. Among them, `$_ARGS` represents the list of all parameters passed into `eval` (expressed in tuples or arrays), and `$_ARGS[<N>]` can refer to the `<N>`th parameter of the parameter list .
+We can also use parameters in `eval` method of the bound variable, and use the variable name `$_ARGS` in the original expression to refer to the incoming parameters, thus realizing the function of substitute expression. Among them, `$_ARGS` represents the list of all parameters passed into `eval` (expressed in tuples or arrays), and `$_ARGS[<N>]` can refer to the `<N>`th parameter of the parameter list .
 
-Furthermore, we can also bind an expression to a method whose expression variable is different from `eval`, at this time we use the `against` attribute to specify the method name; if the `against` attribute is not used, the default ` eval` method name.
+Furthermore, we can also bind an expression to a method whose expression variable is different from `eval`. At this time we use `against` attribute to specify the method name. If `against` attribute is not used, the default ` eval` method name will be used.
 
-For example, in the following code snippet, we bind the output string to the standard output expression as an expression variable `console`, and use the `against` attribute to specify the corresponding method name `puts`:
+For example, in the following code snippet, we bind the output string to the standard output expression as an expression variable `console`, and use `against` attribute to specify the corresponding method name `puts`:
 
 ```hvml
      <bind on "$STREAM.stdout.writelines($_ARGS[0])" as "console" against 'puts' />
@@ -4984,13 +4984,13 @@ For example, in the following code snippet, we bind the output string to the sta
 
 When we use the stand-in expression `$console.puts('Hello, world!')`, the corresponding final expression is `$STREAM.stdout.writelines('Hello, world!')`. In this way, we can create corresponding concise aliases for some commonly used expressions, which is convenient for our use.
 
-Note that when an expression is executed in a different context, the result may appear different due to the change in the scope of the referenced variable. In addition, when we use the `observe` element to observe the change of an expression variable, we will not be able to pass parameters.
+Note that when an expression is executed in a different context, the result may appear different due to the change in the scope of the referenced variable. In addition, when we use `observe` element to observe the change of an expression variable, we will not be able to pass parameters.
 
-When implemented, the interpreter can represent the bound expression as a native entity and provide an `eval` attribute on it or a getter for an alternative attribute name specified by the `against` attribute. When calling the `eval` getter of the native entity, a temporary variable `_ARGS` can be created in the current evaluation stack frame, corresponding to a tuple constructed from all the incoming parameters, and then the expression corresponding to the native entity The formula performs normal evaluation, and these temporary variables are removed after the evaluation is complete.
+When implemented, the interpreter can represent the bound expression as a native entity and provide `eval` attribute on it or a getter for an alternative attribute name specified by `against` attribute. When calling `eval` getter of the native entity, a temporary variable `_ARGS` can be created in the current evaluation stack frame, corresponding to a tuple constructed from all the incoming parameters. And then the expression corresponding to the native entity will perform normal evaluation, and these temporary variables are removed after the evaluation is complete.
 
-When we use the `constantly` adverb attribute when binding an expression, it means that the bound expression will always return a constant value for the same parameter. In this case, the interpreter should additionally implement a method suffixed with `_const`, which evaluates to the same argument only once, and returns the result of the first evaluation when called with the same argument. In practice, this method can be used to define constants generated by a particular expression.
+When we use `constantly` adverb attribute when binding an expression, it means that the bound expression will always return a constant value for the same parameter. In this case, the interpreter should additionally implement a method suffixed with `_const`, which evaluates to the same argument only once, and returns the result of the first evaluation when called with the same argument. In practice, this method can be used to define constants generated by a particular expression.
 
-If no method name is specified, the interpreter should implement the `eval` method, and the corresponding constant method name is `eval_const`.
+If no method name is specified, the interpreter should implement `eval` method, and the corresponding constant method name is `eval_const`.
 
 The following code binds an expression that produces a constant result:
 
@@ -4998,11 +4998,11 @@ The following code binds an expression that produces a constant result:
      <bind on $MATH.div(1.0, $MATH.sqrt($_ARGS[0])) as 'myConst' against 'reciprocal_of_sqrt' constantly />
 ```
 
-We can then use the stand-in expression `$myConst.reciprocal_of_sqrt_const(2.0)` to get the reciprocal of the square root of 2.0. When we use this stand-in expression, only the first call will perform the real evaluation process, and the subsequent evaluation of the expression and parameter 2.0 will directly return the result of the first evaluation without performing repeated The real evaluation process.
+We can then use the stand-in expression `$myConst.reciprocal_of_sqrt_const(2.0)` to get the reciprocal of the square root of 2.0. When we use this stand-in expression, only the first call will perform the real evaluation process. And the subsequent evaluation of the expression and parameter 2.0 will directly return the result of the first evaluation without performing repeated The real evaluation process.
 
-#### 2.5.14) `catch` tag
+#### 2.5.14) `catch` Tag
 
-The `catch` tag defines an action element that performs an exception capture operation. This element can be used as a sub-element of any action element, and defines the operation to be performed when an exception occurs during the execution of the action. Unlike the `except` element, the `catch` element defines a program branch when an exception occurs. like:
+`catch` tag defines an action element that performs an exception capture operation. This element can be used as a sub-element of any action element, and defines the operation to be performed when an exception occurs during the execution of the action. Unlike `except` element, `catch` element defines a program branch when an exception occurs. For example:
 
 ```hvml
      <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
@@ -5019,16 +5019,16 @@ The `catch` tag defines an action element that performs an exception capture ope
      </choose>
 ```
 
-We use the `for` preposition attribute to define the specific name of the exception to catch, and must use the backtick attribute value syntax.
+We use `for` preposition attribute to define the specific name of the exception to catch, and must use the backtick attribute value syntax.
 
-The value of the `for` attribute value has the following rules:
+The value of `for` attribute value has the following rules:
 
-- If the `for` attribute is not defined, or the `for` attribute value is `ANY`, it is equivalent to matching any exception.
+- If `for` attribute is not defined, or `for` attribute value is `ANY`, it is equivalent to matching any exception.
 - Multiple exceptions may be separated by whitespace.
 
-The original execution result of the action defined by the `catch` tag should be an object representing exception information, which must contain the following necessary attributes:
+The original execution result of the action defined by `catch` tag should be an object representing exception information, which must contain the following necessary attributes:
 
-- `name`: Indicates the exception name, a string.
+- `name`: Indicate the exception name, a string.
 - `info`: Additional information about the exception, a string.
 
 Other attributes can be determined by the interpreter. Usage is as follows:
@@ -5039,19 +5039,19 @@ Other attributes can be determined by the interpreter. Usage is as follows:
      </catch>
 ```
 
-#### 2.5.15) `back` tag
+#### 2.5.15) `back` Tag
 
-The `back` tag defines an action element that rolls back the execution stack operation, which is used to control the current execution stack so as to roll back to the specified front stack frame. After the rollback, the program will be executed from the next execution position defined by the target stack frame.
+`back` tag defines an action element that rolls back the execution stack operation, which is used to control the current execution stack so as to roll back to the specified front stack frame. After the rollback, the program will be executed from the next execution position defined by the target stack frame.
 
-The `back` element only supports the following two prepositional attributes:
+`back` element only supports the following two prepositional attributes:
 
-- `to`: used to specify the fallback position, supports three specifying methods:
+- `to`: It is used to specify the fallback position, and supports three specifying methods:
     - Three predefined relative stack frame names starting with an underscore (U+005F `_`): `_last`, `_nexttolast` and `_topmost`, which represent the previous stack frame, the previous stack frame and the topmost stack respectively frame.
     - The identifier of the corresponding element of the target stack frame starting with the hash character (U+0023 `#`), such as `#myAnchor`.
     - The number of back stack frames represented by a positive integer.
-- `with`: Used to specify a value that will replace the result data corresponding to the context variable after the fallback. We can also use the content of this element to define this data.
+- `with`: It is used to specify a value that will replace the result data corresponding to the context variable after the fallback. We can also use the content of this element to define this data.
 
-For example, when we use `iterate` to generate an even number column less than 100, if we use the `back` tag, we can code it as follows:
+For example, when we use `iterate` to generate an even number column less than 100. If we use the `back` tag, we can code it as follows:
 
 ```hvml
     <init as="evenNumbers" with=[0,] >
@@ -5075,15 +5075,15 @@ For example, when we use `iterate` to generate an even number column less than 1
     </init>
 ```
 
-The above code, when the calculated even number is greater than `100`, will fall back to the fourth stack frame, reach the stack frame corresponding to the `init` element, and then start execution from the next sub-action element of the element corresponding to the stack frame, That is, the actions defined by the `ol` outer element.
+The above code, when the calculated even number is greater than `100`, it will fall back to the fourth stack frame and reach the stack frame corresponding to `init` element, and then start execution from the next sub-action element of the element corresponding to the stack frame, That is, the actions defined by `ol` outer element.
 
-When the `back` element uses the `silently` adverb attribute, no exception will be generated, and it will be processed according to the following rules:
+When `back` element uses `silently` adverb attribute, no exception will be generated. And it will be processed according to the following rules:
 
-- Unrecognized `to` attribute values or stack frames that fail to evaluate or are invalid will be treated as falling back to the top stack frame.
-- When the `with` attribute value is not specified, it will be treated as `undefined`, and the context variable after fallback will not be changed.
-- If the `with` attribute fails to evaluate, treat it as `undefined`.
+- Unrecognized `to` attribute value or fail to evaluate or stack frames, will be treated as falling back to the top stack frame.
+- When `with` attribute value is not specified, it will be treated as `undefined`, and the context variable after fallback will not be changed.
+- If `with` attribute fails to evaluate, treat it as `undefined`.
 
-Use the `with` attribute value to define an operation that can replace the result data of the context variable after the fallback, which helps the program control the execution logic. For example, when an exception is caught:
+Use `with` attribute value to define an operation that can replace the result data of the context variable after the fallback, which helps the program control the execution logic. For example, when an exception is caught:
 
 ```hvml
 <body>
@@ -5120,7 +5120,7 @@ Use the `with` attribute value to define an operation that can replace the resul
 </body>
 ```
 
-The above code reads the directory entries under the specified directory and catches possible exceptions. When an exception occurs, use the `back` label to return to the stack frame corresponding to `ul`, and modify the result data (`$?`) of the `ul` stack frame to a string. After the rollback, the program starts to execute the `test` label to determine the type of the result data. Note that `ul` acts as an outer element, and its initial result data is `undefined`. If its type is `string`, it means that an exception occurred, and subsequent operations will insert a `li` element into the target document, which contains the exception information.
+The above code reads the directory entries under the specified directory and catches possible exceptions. When an exception occurs, use the `back` tag to return to the stack frame corresponding to `ul`, and modify the result data (`$?`) of the `ul` stack frame to a string. After the rollback, the program starts to execute the `test` tag to determine the type of the result data. Note that `ul` acts as an outer element, and its initial result data is `undefined`. If its type is `string`, it means that an exception occurred, and subsequent operations will insert a `li` element into the target document, which contains the exception information.
 
 #### 2.5.16) `request` tag
 
@@ -5141,19 +5141,19 @@ We can use the `request` element to initiate a method call request at a target d
 
 At this point, we use the following three attributes:
 
-- The `on` attribute specifies the target document location.
-- The `to` attribute, specifying the method or function to call.
-- The `with` attribute specifies the call parameters. We can also use the content of `request` to define call parameters.
+- `on` attribute specifies the target document location.
+- `to` attribute specifyies the method or function to call.
+- `with` attribute specifies the call parameters. We can also use the content of `request` to define call parameters.
 
-In order to observe the execution result of the request asynchronously, we can use the `as` attribute to define a static named variable for the request, and use the `observe` tag to observe its result. Therefore, we can use the following adverb attributes in this tag:
+In order to observe the execution result of the request asynchronously, we can use `as` attribute to define a static named variable for the request, and use `observe` tag to observe its result. Therefore, we can use the following adverb attributes in this tag:
 
-- The `synchronously` attribute is used to specify the execution result of the synchronous waiting request. It is the default value and generally does not need to be explicitly specified.
-- `asynchronously` attribute, used to specify asynchronously wait for the execution result.
-- The `noreturn` attribute is used to specify that the processing side of the request is not required to send the corresponding response message.
+- `synchronously` attribute is used to specify the execution result of the synchronous waiting request. It is the default value and generally does not need to be explicitly specified.
+- `asynchronously` attribute is used to specify asynchronously wait for the execution result.
+- `noreturn` attribute is used to specify that the processing side of the request is not required to send the corresponding response message.
 
-Similar to `init`, when using the `as` attribute in the `request` tag to name a request, we can also use the `at` attribute to specify the binding location of the name (that is, the namespace).
+Similar to `init`, when using `as` attribute in `request` tag to name a request, we can also use `at` attribute to specify the binding location of the name (i.e. the namespace).
 
-When we specify a simple method with the `to` attribute, the value of the `with` attribute will be passed as an argument to the method. As in the following example:
+When we specify a simple method with `to` attribute, the value of `with` attribute will be passed as an argument to the method. As in the following example:
 
 ```hvml
      <request on="#my-video" to="doSomething" with="['value for foo', 'value for bar']" />
@@ -5165,7 +5165,7 @@ In a renderer that supports JavaScript, the above request will eventually be int
      document.getElementById('#my-video').doSomething(['value for foo', 'value for bar']);
 ```
 
-We use method names prefixed with `get:` or `set:` in the `to` attribute, which can be used to get or set the dynamic property value of a specific document element. For example, the following code sets the `#myInput` element to be disabled, and uses the `noreturn` adverb attribute, ignoring the response.
+We use method names prefixed with `get:` or `set:` in the `to` attribute, which can be used to get or set the dynamic attribute value of a specific document element. For example, the following code sets the `#myInput` element to be disabled, and uses the `noreturn` adverb attribute, ignoring the response.
 
 ```hvml
      <request on="#myInput" to="set:disabled" with=true noreturn />
@@ -5181,15 +5181,15 @@ The following code gets the content of the input box:
 We can also use `request` to execute a function call code supported by the renderer on the specified element, and use the following predefined variables set by the renderer in the function call code:
 
 - `ELEMENT`: Each element in the collection of target document elements specified by the `on` attribute.
-- `ARG`: Arguments defined by the `with` attribute or content.
+- `ARG`: Arguments defined by `with` attribute or content.
 
-At this point, we use the `call:` prefix in the `to` attribute value:
+At this point, we use `call:` prefix in `to` attribute value:
 
 ```hvml
      <request on="#myModal" to="call:bootstrap.Carousel.getInstance(ELEMENT).to(ARG)" with=0 />
 ```
 
-In the above `to` attribute value, we use `ELEMENT` and `ARG` to refer to the current element object and the parameters passed to the method through the `with` attribute or content. These special keywords are handled and replaced by the renderer. For example, the above function call will eventually be interpreted by the renderer as the following JavaScript code:
+In the above `to` attribute value, we use `ELEMENT` and `ARG` to refer to the current element object and the parameters passed to the method through `with` attribute or content. These special keywords are handled and replaced by the renderer. For example, the above function call will eventually be interpreted by the renderer as the following JavaScript code:
 
 ```js
 const method = new Function('ELEMENT', 'ARG', 'return bootstrap. Carousel. getInstance(ELEMENT).to(ARG)');
@@ -5198,22 +5198,22 @@ const result = method(document. getElementByHVMLHandle('4567834'), 0);
 
 When using this method, when the parameter is an array, you can use the methods supported by the renderer scripting language to refer to its members, such as `ARG[0]`, `ARG[1]`.
 
-We can also use the above method to get or set the dynamic attribute value of a specific document element. For example, the following code sets the `#myInput` element to be disabled, and uses the `noreturn` adverb attribute, ignoring the response.
+We can also use the above method to get or set the dynamic attribute value of a specific document element. For example, the following code sets `#myInput` element to be disabled, and uses `noreturn` adverb attribute, ignoring the response.
 
 ```hvml
      <request on "#myInput" to "call:ELEMENT.disabled=true" with 0 noreturn />
 ```
 
-We use the `request` tag to send a request to another coroutine in this walker. At this time, we specify the `on` attribute value as the identifier of the target coroutine or the native entity representing the target coroutine, `to` The attribute value constitutes the operation name of the request, and the `with` attribute or element content is the parameter of the request. Through the function provided by the `request` tag, we can let the target coroutine call the specified operation group in its execution context, and then return the result to the caller. Since the request can be sent across peers, it is equivalent to executing a remote procedure call.
+We use `request` tag to send a request to another coroutine in this walker. At this time, we specify `on` attribute value as the identifier of the target coroutine or the native entity representing the target coroutine, and `to` attribute value constitutes the operation name of the request. And the `with` attribute or element content is the parameter of the request. Through the function provided by `request` tag, we can let the target coroutine call the specified operation group in its execution context, and then return the result to the caller. Since the request can be sent across peers, it is equivalent to executing a remote procedure call.
 
 Note that we cannot use `request` to send a request to the current coroutine, nor is it allowed to send requests across applications. But we can send a request to another walker of the current application.
 
 For example, we can also send data to a channel created by another runner of the current application. In this case, we use the target channel identifier: `[//hostName]/appName/<runnerName>/CHAN/<channelName>`. Corresponds to the designated noun unit `channel_identifier` defined in this specification, see [2.2.3) Common designated noun units] (#223-Common designated noun unit) for details. Here, we can use `-` to refer to the current host or the current application, such as:
 
-- `//-/-/AnotherRunner/CHAN/channel0`: refers to the `channel0` channel of the runner named `AnotherRunner` in the current host and current application.
-- `/-/AnotherRunner/CHAN/channel1`: refers to the `channel1` channel of the runner named `AnotherRunner` in the current host and current application.
+- `//-/-/AnotherRunner/CHAN/channel0`: It refers to the `channel0` channel of the runner named `AnotherRunner` in the current host and current application.
+- `/-/AnotherRunner/CHAN/channel1`: It refers to the `channel1` channel of the runner named `AnotherRunner` in the current host and current application.
 
-When sending a request to another walker's channel, we can only perform the `post` operation, which will immediately return an error response when the target channel is full, such as:
+When sending a request to another walker's channel, we can only perform `post` operation, which will immediately return an error response when the target channel is full, such as:
 
 ```hvml
      <request on "/-/AnotherRunner/CHAN/channel0" to "post" with { data: 'I am here', channel: 'got' } noreturn />
@@ -5223,11 +5223,11 @@ In addition, we can also send a request to a specified coroutine created by anot
 
 The target coroutine identifier format is `[//hostName]/appName/<runnerName>/CRTN/<coroutineToken>`. Coroutine_identifier corresponds to the referred noun defined in this specification, see [2.2.3) Common referred nouns] (#223-Common referred nouns) for details. Here, we can use `-` to refer to the current host or the current application, such as:
 
-- `//-/-/AnotherRunner/CRTN/3dfedf`: refers to the `3dfedf` coroutine of the runner named `AnotherRunner` in the current host and application.
-- `/-/AnotherRunner/CRTN/3dfedf`: refers to the `3dfedf` coroutine of the runner named `AnotherRunner` in the current host and current application.
-- `/-/AnotherRunner/CRTN/_main`: refers to the main coroutine of the runner named `AnotherRunner` in the current host and current application.
+- `//-/-/AnotherRunner/CRTN/3dfedf`: It refers to the `3dfedf` coroutine of the runner named `AnotherRunner` in the current host and application.
+- `/-/AnotherRunner/CRTN/3dfedf`: It refers to the `3dfedf` coroutine of the runner named `AnotherRunner` in the current host and current application.
+- `/-/AnotherRunner/CRTN/_main`: It refers to the main coroutine of the runner named `AnotherRunner` in the current host and current application.
 
-Usually, the running state of the target coroutine used to complete the request enters the event polling phase before it can respond to requests from other coroutines and return the result to the requesting coroutine after executing the corresponding operation group. To do this, the coroutine should observe the `request:<operationName>` event on the `$CRTN` variable.
+Usually, the running state of the target coroutine which is used to complete the request enters the event polling phase before it can respond to requests from other coroutines and return the result to the requesting coroutine after executing the corresponding operation group. To do this, the coroutine should observe `request:<operationName>` event on `$CRTN` variable.
 
 As shown in the following code, a coroutine defines an operation group `echo`, which appends a prefix to the incoming parameters and returns them as they are:
 
@@ -5265,11 +5265,11 @@ Suppose the file name to save the HVML program is `myrepeater.hvml`. In a corout
      </load>
 ```
 
-Apparently, the child coroutine handles the request for `echo1` in the observer for the `request:echo1` event defined with the `observe` tag. When the child coroutine creates multiple observers for the `echo1` request, all observers will be scheduled for execution, and the results will form an array and be sent back to the requester as a response.
+Apparently, the child coroutine handles the request for `echo1` in the observer for `request:echo1` event defined with `observe` tag. When the child coroutine creates multiple observers for `echo1` request, all observers will be scheduled for execution, and the results will form an array and be sent back to the requester as a response.
 
-It should be noted that, in the above example, if the request name specified by the parent coroutine is `echo1`, the result is: `foo: How are you?`; and if the request name is `echo2`, the result should be : `bar: How are you?`.
+It should be noted that, in the above example, if the request name specified by the parent coroutine is `echo1`, the result is: `foo: How are you?`.    And if the request name is `echo2`, the result should be : `bar: How are you?`.
 
-We use the `request` tag, and we can also send a request to the renderer, such as creating a new window group, removing a window group, etc. At this point, specify the `on` attribute value as the predefined variable `$RDR`. As for the specific request operation and parameters to be executed, they are passed through the `to` attribute and `with` attribute, and their meaning and requirements are related to the specific renderer protocol. For example, when using the PURCMC protocol, we can send the following request to the renderer to add a window group to the specified workspace:
+When we use `request` tag, we can also send a request to the renderer, such as creating a new window group, removing a window group, etc. At this point, specify `on` attribute value as the predefined variable `$RDR`. As for the specific request operation and parameters to be executed, they are passed through `to` attribute and `with` attribute, and their meaning and requirements are related to the specific renderer protocol. For example, when using the PURCMC protocol, we can send the following request to the renderer to add a window group to the specified workspace:
 
 ```hvml
      <request on '$RDR' to 'addPageGroups'>
@@ -5286,7 +5286,7 @@ As another example, when we request the renderer to dump the page content create
      <request on $RDR to 'callMethod'>
          {
               element: "main",
-              property: "plainwin:hello@main",
+              attribute: "plainwin:hello@main",
               data: {
                      method: 'dumpContents',
                      arg: 'screenshot.png'
@@ -5295,11 +5295,11 @@ As another example, when we request the renderer to dump the page content create
      </request>
 ```
 
-#### 2.5.17) `load` and `exit` labels
+#### 2.5.17) `load` and `exit` Labels
 
-The `load` tag defines an action element that performs a loader operation, which starts a new coroutine in the specified worker (virtual machine instance) that loads and executes the specified HVML program. The new HVML code or program instance loaded by `load` is called a child coroutine, and the coroutine that executes the action of the `load` element is called a parent coroutine.
+`load` tag defines an action element that performs a loader operation, which starts a new coroutine in the specified worker (virtual machine instance) that loads and executes the specified HVML program. The new HVML code or program instance loaded by `load` is called child coroutine. And the coroutine that executes the action of `load` element is called parent coroutine.
 
-The `load` element is used to load and execute an HVML code (string) specified by the `on` attribute or a new HVML program specified by the `from` attribute, and can use the object data specified by the `with` attribute as a parameter (corresponding to ` $REQ` variable) to the child coroutine. like:
+`load` element is used to load and execute an HVML code (string) specified by `on` attribute or a new HVML program specified by `from` attribute. And it can use the object data specified by `with` attribute as a parameter (corresponding to ` $REQ` variable) to the child coroutine. For example:
 
 ```hvml
      <load from="b.hvml" as="userProfile" onto="user@main" />
@@ -5307,53 +5307,53 @@ The `load` element is used to load and execute an HVML code (string) specified b
      </load>
 ```
 
-The `load` element supports the following prepositional attributes:
+`load` element supports the following prepositional attributes:
 
 - `on`: Specify HVML code (string).
-- `from`: the URL of the specified HVML program (`$CRTN.base` works). If the URL uses `#` to specify an anchor (anchor), it is used to specify the `body` identifier as the program entry. If it is empty, it means to start the new coroutine with the same HVML program as the current HVML coroutine; if it starts with `#`, it means to start the new coroutine with the same HVML program as the current coroutine, but specified by `#` The `body` identifier used as an entry.
-- `with`: If the `from` attribute specifies a valid URL string, specify the request parameters when loading the HVML program from an external resource.
-- `via`: If the `from` attribute specifies a valid URL string, then this attribute specifies the request method when loading the HVML program from an external resource, and the default is `GET`.
+- `from`: the URL of the specified HVML program (`$CRTN.base` works). If the URL uses `#` to specify an anchor. It is used to specify `body` identifier as the program entry. If it is empty, it means to start the new coroutine with the same HVML program as the current HVML coroutine. If it starts with `#`, it means to start the new coroutine with the same HVML program as the current coroutine, but specified `body` identifier used as an entry by `#`.
+- `with`: If `from` attribute specifies a valid URL string, specify the request parameters when loading the HVML program from an external resource.
+- `via`: If `from` attribute specifies a valid URL string, then this attribute specifies the request method when loading the HVML program from an external resource, and the default is `GET`.
 - `as`: When we asynchronously load a new HVML program, we use this attribute to bind the new HVML coroutine to a variable name so that the state of the coroutine can be observed.
-- `at`: Similar to `init`, when using the `as` attribute in the `load` tag to name an HVML program, we can also use the `at` attribute to specify the binding location of the name (that is, the namespace).
-- The `within` attribute specifies the walker name. Do not specify this attribute or use the reserved word `_self` as the walker name to indicate the current walker. Unlike the `call` element, the walker specified by the `load` element must already exist, that is, the `load` element will not actively create a new walker.
-- `onto`: Specifies the renderer page identifier used to render the target document, using the form `[<page_type>:]<page_name>[@[<workspace_name>/]<group_name>]` to specify the page name and the page group it is in. Among them, `<page_type>` specifies the type of the page, and `plainwin` (default) or `widget` can be used, which means to create a normal window or widget as a page; `workspace_name` and `group_name` respectively represent the workspace where the page is located Name and page group name, `page_name` is the unique name of the page in the specified page group.
+- `at`: Similar to `init`, when using the `as` attribute in `load` tag to name an HVML program, we can also use `at` attribute to specify the binding location of the name (that is, the namespace).
+- `within` attribute specifies the walker name. Do not specify this attribute or use the reserved word `_self` as the walker name to indicate the current walker. Unlike `call` element, the walker specified by `load` element must already exist, that is, `load` element will not actively create a new walker.
+- `onto`: Specify the renderer page identifier used to render the target document, using the form `[<page_type>:]<page_name>[@[<workspace_name>/]<group_name>]` to specify the page name and the page group it is in. Among them, `<page_type>` specifies the type of the page, and `plainwin` (default) or `widget` can be used, which means to create a normal window or widget as a page. `workspace_name` and `group_name` respectively represent the workspace where the page is located Name and page group name, `page_name` is the unique name of the page in the specified page group.
 
 When specifying a page name, we can use the following reserved names (reserved names usually start with an underscore) to refer to specific pages (when using reserved names, you do not need to specify the page group and page type):
 
-- `_null`: Indicates an empty page. At this point, the document content and its change information generated by the newly created coroutine will not be synchronized to the renderer. When the `onto` attribute is not specified, it is considered to create an empty page.
+- `_null`: Indicate an empty page. At this point, the document content and its change information generated by the newly created coroutine will not be synchronized to the renderer. When `onto` attribute is not specified, it is considered to create an empty page.
 - `_inherit`: If the newly created child coroutine belongs to the same liner as the current coroutine, it means that the coroutine will inherit the document content of the parent coroutine and use the same renderer page. At this point, the child coroutine and the parent coroutine can update the document at the same time, and their updates will be reflected on the current page at the same time.
-- `_self`: Indicates the current page. Rendering a new HVML program in the current page usually means that the HVML coroutine corresponding to the current page will be suppressed (suppressed), and the document content in the page will be overwritten by the new HVML coroutine. When using this page name, page grouping and page type information are ignored.
-- `_active`: Indicates the current active page in the group corresponding to the current HVML program; the HVML coroutine corresponding to the current active page will be suppressed.
-- `_first`: Indicates the first page in the group corresponding to the current HVML program; the HVML coroutine corresponding to the first page will be suppressed.
-- `_last`: Indicates the last page in the group corresponding to the current HVML program; the HVML coroutine corresponding to the last page will be suppressed.
+- `_self`: Indicate the current page. Rendering a new HVML program in the current page usually means that the HVML coroutine corresponding to the current page will be suppressed. And the document content in the page will be overwritten by the new HVML coroutine. When using this page name, page grouping and page type information are ignored.
+- `_active`: Indicate the current active page in the group corresponding to the current HVML program. The HVML coroutine corresponding to the current active page will be suppressed.
+- `_first`: Indicate the first page in the group corresponding to the current HVML program. The HVML coroutine corresponding to the first page will be suppressed.
+- `_last`: Indicate the last page in the group corresponding to the current HVML program. The HVML coroutine corresponding to the last page will be suppressed.
 
 When specifying a workspace name, we can use the following reserved names (reserved names usually start with an underscore) to refer to a specific workspace:
 
-- `_default`: Indicates the default workspace.
-- `_active`: Indicates the currently active workspace.
-- `_first`: Indicates the first workspace.
-- `_last`: Indicates the last workspace.
+- `_default`: Indicate the default workspace.
+- `_active`: Indicate the currently active workspace.
+- `_first`: Indicate the first workspace.
+- `_last`: Indicate the last workspace.
 
-When the URL specified by the value of the `from` attribute defines a fragment (using the `#` symbol), the `load` element will attempt to execute the specified ontology in the HVML program, that is, the group of operations defined by another `body` subtree.
+When the URL specified by the value of `from` attribute defines a fragment (using the `#` symbol), `load` element will attempt to execute the specified ontology in the HVML program, that is, the group of operations defined by another `body` subtree.
 
-When the `on` attribute and the `from` attribute are specified at the same time, the rules are as follows:
+When `on` attribute and `from` attribute are specified at the same time, the rules are as follows:
 
-1. If the `from` attribute is not specified or the value of the `from` attribute is not a valid URL string, then try to load the string specified by the `on` attribute, which is called the string content.
-1. If the `from` attribute specifies a valid URL string, the HVML program will be loaded from external resources first. At this point, use the `with` attribute value to specify the request parameters, and the `via` attribute value to specify the request method.
-1. When using string content and external resources at the same time, if an exception occurs during the process of loading and parsing external resources, and the `silently` attribute is set, then use the string content as the HVML program; if everything is normal, use External Resources. That is, the string content is used as a fallback program.
+1. If `from` attribute is not specified or the value of `from` attribute is not a valid URL string, then try to load the string specified by `on` attribute, which is called the string content.
+1. If `from` attribute specifies a valid URL string, the HVML program will be loaded from external resources first. At this point, use `with` attribute value to specify the request parameters, and `via` attribute value to specify the request method.
+1. When using string content and external resources at the same time, if an exception occurs during the process of loading and parsing external resources, and `silently` attribute is set, then use the string content as the HVML program. If everything is normal, use External Resources. That is, the string content is used as a fallback program.
 1. If neither the string content nor the external resource is available, an exception `NoData` is thrown.
 
-In addition to reserved names, the page identifier specified by the `onto` attribute must conform to the `page_identifier` lexical unit requirements defined in this specification, see [2.2.3) Common named lexical units](#223-Common named Lexical unit). Here are some examples of legal page identifiers:
+In addition to reserved names, the page identifier specified by `onto` attribute must conform to `page_identifier` lexical unit requirements defined in this specification, see [2.2.3) Common named lexical units](#223-Common named Lexical unit). Here are some examples of legal page identifiers:
 
 - `user`: Create a normal window named `user`.
-- `user@Users`: Creates a normal window named `user` in the `Users` page group of the default workspace.
-- `user@main/Users`: Creates a normal window named `user` in the `Users` page group of the `main` workspace.
-- `plainwin:user@main/Users`: Creates a plain window named `user` in the `Users` page group of the `main` workspace.
-- `widget:user@main/Users`: Creates a widget called `user` in the `Users` page group of the `main` workspace.
+- `user@Users`: Create a normal window named `user` in `Users` page group of the default workspace.
+- `user@main/Users`: Create a normal window named `user` in `Users` page group of `main` workspace.
+- `plainwin:user@main/Users`: Create a plain window named `user` in `Users` page group of `main` workspace.
+- `widget:user@main/Users`: Create a widget called `user` in `Users` page group of `main` workspace.
 
-When the given page name does not exist, it means to create a new page in the specified group and give the page the given name; if the specified page group does not exist, the first group will be used. When we create a new renderer page, we can specify the page parameters passed to the renderer, such as class name, title and style, through the `_renderer` key name of its `with` attribute value.
+When the given page name does not exist, it means to create a new page in the specified group and give the page the given name. If the specified page group does not exist, the first group will be used. When we create a new renderer page, we can specify the page parameters passed to the renderer, such as class name, title and style, through `_renderer` key name of its `with` attribute value.
 
-The content data of the `load` element will be passed as a parameter to the new coroutine, and in the new coroutine, it can be accessed using the `$REQ` variable.
+The content data of `load` element will be passed as a parameter to the new coroutine. And in the new coroutine, it can be accessed using `$REQ` variable.
 
 ```hvml
     <init as="request">
@@ -5374,7 +5374,7 @@ The content data of the `load` element will be passed as a parameter to the new 
     </load>
 ```
 
-The above code uses the `on` attribute to specify an HVML program (`$request.hvml`) to be loaded and executed, and passes the `$request` data as the request data of the program to the new coroutine. Note that the HVML program specified by the `on` attribute uses the `text` of the `$REQ` predefined variable as the content of the `h1` element, and the program code itself as the content of the `p` element. At the same time, the program uses the `_renderer` key name to define the parameters that need to be passed to the renderer, including the class name and style information of the page.
+The above code uses `on` attribute to specify an HVML program (`$request.hvml`) to be loaded and executed, and passes `$request` data as the request data of the program to the new coroutine. Note that the HVML program specified by `on` attribute uses the `text` of `$REQ` predefined variable as the content of `h1` element, and the program code itself as the content of the `p` element. At the same time, the program uses `_renderer` key name to define the parameters that need to be passed to the renderer, including the class name and style information of the page.
 
 The final HTML document generated by the program is as follows:
 
@@ -5387,12 +5387,12 @@ The final HTML document generated by the program is as follows:
 </html>
 ```
 
-The `load` tag supports the following adverb attributes:
+`load` tag supports the following adverb attributes:
 
-- `synchronously`: load synchronously, the default behavior. The `load` element will synchronously wait for the child coroutine to exit.
-- `asynchronously`: load asynchronously. The `load` element does not wait for the child coroutine to exit.
+- `synchronously`: Load synchronously and default behavior. `load` element will synchronously wait for the child coroutine to exit.
+- `asynchronously`: Load asynchronously. `load` element does not wait for the child coroutine to exit.
 
-Suppose we use the `load` tag to load an HVML program for creating new users, if using the synchronous loading method:
+Suppose we use `load` tag to load an HVML program for creating new users, if using the synchronous loading method:
 
 ```hvml
      <load from="new_user.hvml" onto="newUser@mainBody" synchronously>
@@ -5417,9 +5417,9 @@ If you use the asynchronous loading method, you need the `as` attribute and use 
 
 Both of the above implementations will insert a new user entry into `#the-user-list` of the current target document.
 
-When using the asynchronous loading method, the normal result data of the `load` element should be a native entity used to identify the new coroutine. The native entity should provide at least one `id` attribute, which can be used to return the identifier of the new coroutine.
+When using the asynchronous loading method, the normal result data of `load` element should be a native entity used to identify the new coroutine. The native entity should provide at least one `id` attribute, which can be used to return the identifier of the new coroutine.
 
-In conjunction with the `load` element, we usually use the `exit` tag in the loaded program to actively exit the execution of the coroutine and define the return data of the coroutine. like:
+In conjunction with `load` element, we usually use `exit` tag in the loaded program to actively exit the execution of the coroutine and define the return data of the coroutine. For example:
 
 ```hvml
      <init as="user_info">
@@ -5429,9 +5429,9 @@ In conjunction with the `load` element, we usually use the `exit` tag in the loa
      <exit with="$user_info" />
 ```
 
-The above code uses the `with` attribute of the `exit` tag to define a piece of data that the interpreter should process as the result data of the current HVML coroutine.
+The above code uses `with` attribute of `exit` tag to define a piece of data that the interpreter should process as the result data of the current HVML coroutine.
 
-When we create a sub-coroutine in the current walker and render the document content of the sub-coroutine in an existing renderer page (such as setting the `onto` attribute value to `_self`), the corresponding coroutine of the page The render state will be set to suppressed because the renderer page is occupied. Such as the following code:
+When we create a sub-coroutine in the current walker and render the document content of the sub-coroutine in an existing renderer page (such as setting `onto` attribute value to `_self`), the corresponding coroutine of the page The render state will be set to suppressed because the renderer page is occupied. Such as the following code:
 
 ```hvml
 <hvml>
@@ -5449,19 +5449,19 @@ When we create a sub-coroutine in the current walker and render the document con
 </hvml>
 ```
 
-The `load` element in the above code corresponds to the following steps:
+`load` element in the above code corresponds to the following steps:
 
 1. Load the HVML program (or clone the vDOM of the current program) and execute the program in a newly created sub-coroutine, whose entry is the body of `#errorPage`.
-1. The child coroutine will use the renderer page used by its parent coroutine (specified by the `onto` attribute value `_self`), so the parent coroutine will be suppressed by the interpreter (rendering state is `suppressed`). Due to the `asynchronously` adverb attribute, the parent coroutine will continue to run, but will not do any data exchange with the renderer.
+1. The child coroutine will use the renderer page used by its parent coroutine (specified by `onto` attribute value `_self`), so the parent coroutine will be suppressed by the interpreter (rendering state is `suppressed`). Due to `asynchronously` adverb attribute, the parent coroutine will continue to run, but will not do any data exchange with the renderer.
 1. The child coroutine clears the renderer page used by the parent coroutine and loads its own target document content.
 1. Release the renderer page after the child coroutine terminates, and the interpreter sets the rendering state of the parent coroutine to `regular`, and overwrites the renderer page content with its complete target document content.
 1. The parent coroutine resumes normal renderer data exchange.
 
-#### 2.5.18) `inherit` tag
+#### 2.5.18) `inherit` Tag
 
-The `inherit` tag is used to define an action element that performs an inheritance operation. Except for `in`, this element does not use any preposition and adverb attributes, and inherits the context variables of its front stack frame by default. If there is data content defined, use the data content to overwrite the `$^` context variable of the corresponding stack frame.
+`inherit` tag is used to define an action element that performs an inheritance operation. Except for `in`, this element does not use any preposition and adverb attributes, and inherits the context variables of its front stack frame by default. If there is data content defined, use the data content to overwrite `$^` context variable of the corresponding stack frame.
 
-Usually, we use the `inherit` element to separate code with different logical functions, and we often use its content to perform functions provided by dynamic objects. The following code shows various usage scenarios of the `inherit` tag:
+Usually, we use `inherit` element to separate code with different logical functions. And we often use its content to perform functions provided by dynamic objects. The following code shows various usage scenarios of `inherit` tag:
 
 ```hvml
 <!DOCTYPE hvml>
@@ -5521,21 +5521,21 @@ Usually, we use the `inherit` element to separate code with different logical fu
 </hvml>
 ```
 
-#### 2.5.19) `sleep` tag
+#### 2.5.19) `sleep` Tag
 
-The `sleep` tag is used to define an action element that performs a sleep operation, which allows the current coroutine to enter the stop state, thereby sleeping for the specified time.
+`sleep` tag is used to define an action element that performs a sleep operation, which allows the current coroutine to enter the stop state, thereby sleeping for the specified time.
 
 This element uses the following attributes:
 
-- `with`: Specifies the number of seconds to sleep (note: decimals are valid).
-- `for`: use the time unit to specify the time to sleep, for example `1m` means one minute, the following units are supported:
-    - `ns`: nanoseconds.
-    - `us`: microseconds.
-    - `ms`: Milliseconds.
-    - `s`: seconds.
-    - `m`: points.
+- `with`: Specify the number of seconds to sleep (note: decimals are valid).
+- `for`: Use the time unit to specify the time to sleep. For example, `1m` means one minute, the following units are supported:
+    - `ns`: nanosecond.
+    - `us`: microsecond.
+    - `ms`: millisecond.
+    - `s`: second.
+    - `m`: point.
     - `h`: hour.
-    - `d`: days.
+    - `d`: day.
 
 When both `with` and `for` attributes are specified, `with` takes precedence.
 
@@ -5552,21 +5552,21 @@ As in the sample code below:
      <sleep for="1d 12h" />
 ```
 
-When the interpreter executes the `sleep` element, it should set the current coroutine to stop state, and wake up the current coroutine after the sleep time expires. During the sleep of a coroutine due to the `sleep` element, the interpreter detects any event sent to the coroutine, then the interpreter should wake up the coroutine immediately.
+When the interpreter executes `sleep` element, it should set the current coroutine to stop state, and wake up the current coroutine after the sleep time expires. During the sleep of a coroutine due to `sleep` element, the interpreter detects any event sent to the coroutine, then the interpreter should wake up the coroutine immediately.
 
 The result data of `sleep` is the remaining sleep time (number of seconds, numeric type), or 0 if not interrupted.
 
 ### 2.6) Actuator
 
-In action tags such as `choose`, `iterate` and `reduce`, we usually use the `by` preposition attribute to define how to perform selection, iteration or reduction operations, which we call rules, and implement the corresponding rules Code or functional modules are called selectors, iterators or reducers, collectively called executors. The HVML interpreter can implement a built-in (built-in) executor, specifying what rules to follow when selecting, iterating, and reducing data through a simple syntax. In complex cases, HVML allows document authors to call external programs (such as dynamically loadable modules) to implement executors. HVML uses `CLASS` or `FUNC` prefixes to indicate the use of externally defined executors.
+In action tags such as `choose`, `iterate` and `reduce`, we usually use the `by` preposition attribute to define how to perform selection, iteration or reduction operations, which we call rules, and implement the corresponding rules Code or functional modules are called selectors, iterators or reducers, collectively called executors. The HVML interpreter can implement a built-in executor, specifying what rules to follow when selecting, iterating, and reducing data through a simple syntax. In complex cases, HVML allows document authors to call external programs (such as dynamically loadable modules) to implement executors. HVML uses `CLASS` or `FUNC` prefixes to indicate the use of externally defined executors.
 
-It should be noted that executors are also available in the `test` and `sort` tags. The executor used in the `test` tag is the same as the `choose` tag. When the built-in executor is used in the `sort` tag, the sorting operation will be performed on the results returned by the built-in executor, while when using an external executor, the sorting operation will be performed directly on the basis of the data specified by the `on` attribute.
+It should be noted that executors are also available in `test` and `sort` tags. The executor used in `test` tag is the same as `choose` tag. When the built-in executor is used in `sort` tag, the sorting operation will be performed on the results returned by the built-in executor. While when using an external executor, the sorting operation will be performed directly on the basis of the data specified by `on` attribute.
 
-#### 2.6.1) Built-in executors
+#### 2.6.1) Built-In Executor
 
-In HVML code, rules for built-in executors can contain evaluated expressions (essentially parameterized strings). But before calling the executor, the HVML interpreter will complete the evaluation of the evaluation expression and pass the final rule string to the executor. Therefore, when we describe the rules of the built-in executor, we assume that the corresponding evaluation has been completed. value.
+In HVML code, rules for built-in executor can contain evaluated expressions (essentially parameterized strings). But before calling the executor, the HVML interpreter will complete the evaluation of the evaluation expression and pass the final rule string to the executor. Therefore, when we describe the rules of the built-in executor, we assume that the corresponding evaluation value has been completed.
 
-##### 2.6.1.1) `KEY` executor
+##### 2.6.1.1) `KEY` Executor
 
 This executor acts on dictionary data, using the given key name or key name list to return the key name, key value or key value object list, or using the key name list matching a certain rule, returning the key name, key value or key A list of value objects. For example for the following data:
 
@@ -5576,7 +5576,7 @@ This executor acts on dictionary data, using the given key name or key name list
      </init>
 ```
 
-The above dictionary data uses language and region information (locale) as the key name, and an integer as the corresponding key value.
+The above dictionary data uses language and locale as the key name, and an integer as the corresponding key value.
 
 If we want to get all key values, use `KEY: ALL`.
 
@@ -5611,19 +5611,19 @@ The syntax of the `KEY` executor is as follows:
     max_matching_length: <literal_positive_integer>
 ```
 
-The `FOR` clause in the `KEY` executor specifies how the data is returned:
+`FOR` clause in `KEY` executor specifies how the data is returned:
 
 - When taking `VALUE`, return the key value (default behavior).
 - When fetching `KEY`, return the key name.
-- When taking `KV`, the key-value pair will be converted into an object with two attributes, where the attribute `k` represents the key name, and the attribute `v` represents the key value, that is, the key-value object. For the above data, the result data corresponding to the rule `KEY: AS 'zh_CN', 'zh_HK' FOR KV` is:
+- When taking `KV`, the key-value pair will be converted into an object with two attributes, where the attribute `k` represents the key name. And the attribute `v` represents the key value, that is, the key-value object. For the above data, the result data corresponding to the rule `KEY: AS 'zh_CN', 'zh_HK' FOR KV` is:
 
 ```json
      [ { "k": "zh_CN", "v": 100 }, { "k": "zh_TW", "v": 90 } ]
 ```
 
-For dictionary data, when the `by` attribute is not specified, the `KEY: ALL` executor is used by default.
+For dictionary data, when `by` attribute is not specified, `KEY: ALL` executor is used by default.
 
-##### 2.6.1.2) `RANGE` executor
+##### 2.6.1.2) `RANGE` Executor
 
 This executor acts on array and collection data, and uses the subscript range to return the corresponding list of array elements (a collection can be regarded as an array that does not contain repeated data elements). For example for the following data:
 
@@ -5664,11 +5664,11 @@ The syntax of the `RANGE` executor is as follows:
 
 ```
 
-For array data, when the `by` attribute is not specified, the `RANGE: FROM 0` executor is used by default.
+For array data, when `by` attribute is not specified, `RANGE: FROM 0` executor is used by default.
 
 Note that the executor should check for invalid index values.
 
-##### 2.6.1.3) `FILTER` executor
+##### 2.6.1.3) `FILTER` Executor
 
 This executor works on arrays, objects, and collections, filtering the elements in the container using specific conditions. For example for the following data:
 
@@ -5732,20 +5732,20 @@ Notice:
 1. When using the numeric value comparison clause, the data will be converted into numeric values for processing.
 1. When using a string to match a clause, the data will be serialized into a string first, and then matched.
 1. When the elements in the collection use an additional unique key name to determine the uniqueness, the matching condition specified by `FILTER` is only related to the value corresponding to the unique key name.
-1. When this executor is used in a collection, use the key value as the filter condition, and use the `FOR` clause similar to the `KEY` executor to specify the returned data format.
+1. When this executor is used in a collection, use the key value as the filter condition, and use `FOR` clause similar to `KEY` executor to specify the returned data format.
 
-For collection data, when the `by` attribute is not specified, the `FILTER: ALL` executor is used by default.
+For collection data, when `by` attribute is not specified, `FILTER: ALL` executor is used by default.
 
-As an example, the `FILTER` executor is used when activating a specific timer in section [2.1.6.3) Predefined variables](#2163-Predefined variables) of this document.
+As an example, `FILTER` executor is used when activating a specific timer in section [2.1.6.3) Predefined variables](#2163-Predefined variables) of this document.
 
-##### 2.6.1.4) built-in executor for strings
+##### 2.6.1.4) Built-In Executor for Strings
 
 For string data, HVML provides the following built-in executors, which can be used to traverse the character list and token list in the string respectively:
 
 - `CHAR:`: Split the string into a list of characters. The syntax is similar to the `RANGE` executor.
 - `TOKEN:`: Split the string into a list of tokens according to the specified delimiter.
 
-The syntax of the `CHAR` executor is as follows:
+The syntax of `CHAR` executor is as follows:
 
 ```
      "CHAR" [ws] ':' [ws] "FROM" <ws> <integer_expression> [ <ws> "TO" <ws> <integer_expression>] \
@@ -5757,13 +5757,13 @@ The syntax of the `CHAR` executor is as follows:
      four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 ```
 
-For example, when we use the `CHAR: FROM 0 TO 10 ADVANCE 2 UNTIL 'f'` actuator to act on the string `A brown fox jumps over a lazy cat`, the returned data is:
+For example, when we use `CHAR: FROM 0 TO 10 ADVANCE 2 UNTIL 'f'` actuator to act on the string `A brown fox jumps over a lazy cat`, the returned data is:
 
 ```json
      [ "A", "b", "o", "n" ]
 ```
 
-The syntax of the `TOKEN` executor is as follows:
+The syntax of `TOKEN` executor is as follows:
 
 ```
     "TOKEN" [ws] ':' [ws] "FROM" <ws> <integer_expression> [<ws> "TO" <ws> <integer_expression>] \
@@ -5791,26 +5791,26 @@ The syntax of the `TOKEN` executor is as follows:
     max_matching_length: <literal_positive_integer>
 ```
 
-For example, when we use the `TOKEN: FROM 0 TO 2 DELIMETERS ' '` executor to act on the string `A brown fox jumps over a lazy cat`, the returned data is:
+For example, when we use `TOKEN: FROM 0 TO 2 DELIMETERS ' '` executor to act on the string `A brown fox jumps over a lazy cat`, the returned data is:
 
 ```json
      [ "A", "brown", "fox" ]
 ```
 
-For string data, if the `by` attribute is not specified, the `CHAR: FROM 0` executor is used by default.
+For string data, if `by` attribute is not specified, `CHAR: FROM 0` executor is used by default.
 
 Going a step further, the HVML interpreter provides specific natural language-based word and sentence executors: `WORD` and `SENTENCE`.
 
-##### 2.6.1.5) Built-in executors for numeric values
+##### 2.6.1.5) Built-In Executor for Numeric Values
 
 For numeric data, HVML provides the following built-in executors that can be used to generate lists of numbers, or "sequences" for short:
 
 - `ADD`: When the given condition is satisfied, the addition operation is performed on the basis of the given value.
 - `SUB`: When a given condition is met, perform a subtraction operation based on a given value.
-- `MUL`: Performs a multiplication operation based on the given value when the given condition is met.
+- `MUL`: Perform a multiplication operation based on the given value when the given condition is met.
 - `DIV:`: When the given condition is met, the division operation is performed based on the given value.
 - `FORMULA:`: Use the given iterative formula to evaluate when the given condition is met.
-- `OBJFORMULA:`: Evaluates the formula on the object using the given number of iterations when the given condition is met.
+- `OBJFORMULA:`: Evaluate the formula on the object using the given number of iterations when the given condition is met.
 
 The syntax of `ADD`, `SUB`, `MUL`, `DIV` executors is as follows:
 
@@ -5831,13 +5831,13 @@ The syntax of `ADD`, `SUB`, `MUL`, `DIV` executors is as follows:
      four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 ```
 
-For example, when we use the `ADD: GT 90 BY -3` actuator to act on the value `100`, the returned sequence is:
+For example, when we use `ADD: GT 90 BY -3` actuator to act on the value `100`, the returned sequence is:
 
 ```json
      [ 100, 97, 94, 91 ]
 ```
 
-The syntax of the `FORMULA` executor is as follows:
+The syntax of `FORMULA` executor is as follows:
 
 ```
     "FORMULA" [ws] ':' [ws] <number_comparing_logical_expression> <ws> "BY" <ws> <iterative_formula_expression>
@@ -5863,9 +5863,9 @@ For example, when we use the `FORMULA: LT 500 BY (X * 2 - 50)` actuator to act o
      [ 100, 150, 250, 450 ]
 ```
 
-For numeric data, if the `by` attribute is not specified, the `ADD: LE $? BY 1` executor will be used by default; this executor will generate an array containing only one value, which is the current operation data.
+For numeric data, if `by` attribute is not specified, `ADD: LE $? BY 1` executor will be used by default; this executor will generate an array containing only one value, which is the current operation data.
 
-The syntax of the `OBJFORMULA` executor is as follows:
+The syntax of `OBJFORMULA` executor is as follows:
 
 ```
      "OBJFORMULA" [ws] ':' [ws] <value_number_comparing_logical_expression> <ws> "BY" <ws> <iterative_assignment_list>
@@ -5904,13 +5904,13 @@ For example, when we use `OBJFORMULA: x LT 500 AND y LT 600 BY x = (x * 2 - 50),
 
 Note, when using numeric executors for iteration:
 
-1. The initial iteration data (that is, the value of the context variable `$<`) comes from the `on` attribute, and before the next iteration is executed, the value of the context variable `$<` will be replaced by the result data of the previous iteration.
-1. The rule string defined by the `by` attribute of the numeric executor should be re-evaluated on each iteration.
-1. When the number of iterations exceeds the maximum setting value, a `MaxIterationCount` exception will be thrown.
+1. The initial iteration data (that is, the value of the context variable `$<`) comes from `on` attribute, and before the next iteration is executed, the value of the context variable `$<` will be replaced by the result data of the previous iteration.
+1. The rule string defined by `by` attribute of the numeric executor should be re-evaluated on each iteration.
+1. When the number of iterations exceeds the maximum setting value `MaxIterationCount` exception will be thrown.
 
 ##### 2.6.1.6) `SQL` Executor
 
-SQL (structured query language) is a language used by relational database management systems to query structured data. Considering that most of the data in HVML is represented by arrays formed by dictionary data, HVML introduces a built-in SQL executor. Through the SQL executor, we can easily query a specific subset of data from the dataset specified by the `on` attribute, and can easily specify the matching conditions of the query. For example for the following data:
+SQL (structured query language) is a language used by relational database management systems to query structured data. Considering that most of the data in HVML is represented by arrays formed by dictionary data, HVML introduces a built-in SQL executor. Through the SQL executor, we can easily query a specific subset of data from the dataset specified by `on` attribute, and can easily specify the matching conditions of the query. For example for the following data:
 
 ```hvml
     <init as="regionStats">
@@ -5926,20 +5926,20 @@ SQL (structured query language) is a language used by relational database manage
     </init>
 ```
 
-We can directly use the `SQL` executor to obtain a subset of the above data, for example:
+We can directly use `SQL` executor to obtain a subset of the above data, for example:
 
 - If we want to get the data subset of all Chinese regions, use `SQL: SELECT * WHERE locale LIKE 'zh_*'`.
 - If we want to obtain data subsets of several specific regions, use `SQL: SELECT * WHERE locale IN ('zh_CN', 'zh_TW')`.
 - If we want to get records where the `rank` key value is greater than 70, use `SQL: SELECT locale WHERE rank > 70`.
-- If we want to get the Chinese region records where the `rank` key value is greater than 70, then use `SQL: SELECT locale WHERE locale LIKE 'zh_*' AND rank > 70`.
+- If we want to get the Chinese region records where `rank` key value is greater than 70, then use `SQL: SELECT locale WHERE locale LIKE 'zh_*' AND rank > 70`.
 
-Unlike the SQL language used for databases, we do not use the `FROM` clause of standard SQL statements to specify database tables, because in HVML we already use the `on` preposition attribute to specify datasets. Therefore, it can be said that HVML's SQL executor is a simplified SQL implementation, which mainly implements selection, iteration and reduction operations with the help of SQL's `SELECT` statement. Specifically, HVML's SQL statements mainly support the following clauses (different HVML interpreter implementations can support more SQL clauses).
+Unlike the SQL language used for databases, we do not use `FROM` clause of standard SQL statements to specify database tables, because in HVML we already use the `on` preposition attribute to specify datasets. Therefore, it can be said that HVML's SQL executor is a simplified SQL implementation, which mainly implements selection, iteration and reduction operations with the help of SQL's `SELECT` statement. Specifically, HVML's SQL statements mainly support the following clauses (different HVML interpreter implementations can support more SQL clauses).
 
-- `WHERE`: Used to specify filter conditions.
-- `GROUP BY`: Used to specify grouping (reduction) conditions.
-- `ORDER BY`: used to specify the sort operation.
+- `WHERE`: It is used to specify filter conditions.
+- `GROUP BY`: It is used  to specify grouping (reduction) conditions.
+- `ORDER BY`: It is used to specify the sort operation.
 
-In addition, in the `SELECT` statement of HVML’s built-in SQL interpreter, in addition to using `*` to return all possible fields, you can also use `&` to return the entire data that meets the given conditions; when the data is an array, dictionary or When using a native entity object, you can use the `update` statement to modify its content. like:
+Besides, in `SELECT` statement of HVML’s built-in SQL interpreter, in addition to using `*` to return all possible fields, you can also use `&` to return the entire data that meets the given conditions. When the data is an array, dictionary or When using a native entity object, you can use `update` statement to modify its content. For example:
 
 ```hvml
      <choose on="$TIMERS" by="SQL: SELECT & WHERE id = 'foo'">
@@ -5947,9 +5947,9 @@ In addition, in the `SELECT` statement of HVML’s built-in SQL interpreter, in 
      </choose>
 ```
 
-In HVML, SQL executors can also operate on DOM document subtrees or nested structured dictionary data. To this end, we introduce a new SQL SELECT clause `TRAVEL IN`, which can choose `SLIBLINGS`, `DEPTH`, `BREADTH` or `LEAVES`, which respectively represent the use of sibling node traversal and depth-first Traversal, breadth-first (breadth-first) traversal and leaf node traversal, the syntax is:
+In HVML, SQL executors can also operate on DOM document subtrees or nested structured dictionary data. To this end, we introduce a new SQL SELECT clause `TRAVEL IN`, which can choose `SLIBLINGS`, `DEPTH`, `BREADTH` or `LEAVES`. They respectively represent the use of sibling node traversal and depth-first Traversal, breadth-first traversal and leaf node traversal. The syntax is:
 
-- `"TRAVEL" <ws> "IN" <ws> [ "SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES" ]`: used to specify the traversal method on the tree data.
+- `"TRAVEL" <ws> "IN" <ws> [ "SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES" ]`: It is used to specify the traversal method on the tree data.
 
 For example, for the following DOM tree:
 
@@ -6055,7 +6055,7 @@ According to the rules described in this document [2.1.17) Structured data repre
 }
 ```
 
-If we perform a depth-first traversal on the above DOM document fragment (or equivalent structured data), the result of the `SELECT tag, attr.id, textContent TRAVEL IN DEPTH` statement is:
+If we perform a depth-first traversal on the above DOM document fragment (or equivalent structured data), the result of `SELECT tag, attr.id, textContent TRAVEL IN DEPTH` statement is:
 
 ```json
 [
@@ -6095,7 +6095,7 @@ If we perform a breadth-first traversal on the above DOM document fragment (or e
 ]
 ```
 
-If we perform leaf node traversal on the above DOM document fragment (or equivalent structured data), the execution result of the `SELECT tag, attr.id, textContent TRAVEL IN LEAVES` statement is:
+If we perform leaf node traversal on the above DOM document fragment (or equivalent structured data), the execution result of `SELECT tag, attr.id, textContent TRAVEL IN LEAVES` statement is:
 
 ```json
 [
@@ -6111,7 +6111,7 @@ If we perform leaf node traversal on the above DOM document fragment (or equival
 
 Note that when executing SQL statements on an array or tree structure based on dictionary data, the optional fields (such as `tag`, `attr.id`, etc.) are the union of the keys of all dictionary data. For all undefined key-value pairs, the corresponding key value is `null`.
 
-When using the `TRAVEL IN` clause, you can use built-in variables, such as `@__depth` as the current traversal depth, and `@__index` as the index value at the current depth, so you can reuse the `WHERE` conditional clause to Limit the depth or amount of traversal. For example `SELECT tag, attr.id, textContent WHERE @__depth > 0 AND @__depth < 3 TRAVEL IN DEPTH` will give the following result:
+When using `TRAVEL IN` clause, you can use built-in variables, such as `@__depth` as the current traversal depth, and `@__index` as the index value at the current depth. So you can reuse `WHERE` conditional clause to Limit the depth or amount of traversal. For example `SELECT tag, attr.id, textContent WHERE @__depth > 0 AND @__depth < 3 TRAVEL IN DEPTH` will give the following result:
 
 ```json
 [
@@ -6120,17 +6120,17 @@ When using the `TRAVEL IN` clause, you can use built-in variables, such as `@__d
 ]
 ```
 
-##### 2.6.1.7) `TRAVEL` actuator
+##### 2.6.1.7) `TRAVEL` Executor
 
-As a simple alternative to the `SQL` executor, we can use the `TRAVEL` executor on the tree structure.
+As a simple alternative to `SQL` executor, we can use `TRAVEL` executor on the tree structure.
 
-The syntax of the `TRAVEL` actuator is as follows:
+The syntax of `TRAVEL` actuator is as follows:
 
 ```
      "TRAVEL" [ws] ':' [ws] <"SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES">
 ```
 
-described as follows:
+Described as follows:
 
 - When using `TRAVEL: SIBLINGS`, traverse all sibling nodes at the same level as the current node.
 - When using `TRAVEL: DEPTH`, perform a depth traversal from the first level child nodes until the leaf nodes.
@@ -6161,7 +6161,7 @@ We use this built-in executor when we need to map the attributes or content of s
 
 The above HVML code iterates over the users on the user manifest list, maps using `item_user` as the data template, and appends it to the array in `$users`.
 
-##### 2.6.1.8) Use of built-in executors
+##### 2.6.1.8) Use of Built-In Executor
 
 The built-in executors described above are mainly used for selection and iteration.
 
@@ -6177,11 +6177,11 @@ The SQL executor can be used for reductions via the `GROUP BY` clause.
 
 When we use a built-in executor in a reduce operation that does not directly implement the reduce operation, it responds to the reduce operation by returning some implicit reduction information. for example,
 
-1. Count: the number of data items that meet the conditions for executing the statement, and the corresponding key name is `count`.
-1. Sum: the sum of data items that meet the execution statement conditions), and the corresponding key name is `sum`.
-1. Average value: the average value of the data items that meet the execution statement conditions (all data items are forced to be converted to numeric data, and array and dictionary data are set to 0), and the corresponding key name is `avg`.
-1. Maximum value: the maximum value of data items that meet the conditions for executing the statement (all data items are forcibly converted to numerical data, and array and dictionary data are set to 0), and the corresponding key name is `max`.
-1. Minimum value: the minimum value of data items that meet the conditions for executing the statement (all data items are forcibly converted to numeric data, and array and dictionary data take 0), and the corresponding key name is `min`.
+1. Count: The number of data items that meet the conditions for executing the statement, and the corresponding key name is `count`.
+1. Sum: The sum of data items that meet the execution statement conditions), and the corresponding key name is `sum`.
+1. Average value: The average value of the data items that meet the execution statement conditions (all data items are forced to be converted to numeric data, and array and dictionary data are set to 0), and the corresponding key name is `avg`.
+1. Maximum value: The maximum value of data items that meet the conditions for executing the statement (all data items are forcibly converted to numerical data, and array and dictionary data are set to 0), and the corresponding key name is `max`.
+1. Minimum value: The minimum value of data items that meet the conditions for executing the statement (all data items are forcibly converted to numeric data, and array and dictionary data take 0), and the corresponding key name is `min`.
 
 In this case, the return data of the reduce operation will look like:
 
@@ -6195,11 +6195,11 @@ In this case, the return data of the reduce operation will look like:
 }
 ```
 
-#### 2.6.2) External Actuator
+#### 2.6.2) External Executor
 
 An external executor is a class or function implemented by an external program that meets the requirements of the action tag. It is usually used to perform complex selection, iteration, reduction, and sorting operations, especially some special selections that cannot be implemented through the built-in executor. When filtering, reducing, and sorting operations.
 
-When using an external executor, the HVML interpreter will dynamically call the corresponding function or create the corresponding class object to perform the corresponding operation according to the type prefix of the executor and the current action label. The HVML interpreter should support at least the following two types of external executors:
+When using an external executor, the HVML interpreter will dynamically call the corresponding function or create the corresponding class object to perform the corresponding operation according to the type prefix of the executor and the current action tag. The HVML interpreter should support at least the following two types of external executors:
 
 - `CLASS: <className>@[<moduleName>]`: means to use the `<className>` class in the module `<moduleName>` as the executor, mainly used for `iterate` action elements.
 - `FUNC: <funcName>@[<moduleName>]`: means to use the `<funcName>` function in the module `<moduleName>` as the executor, which can be used for `choose`, `iterate`, `reduce`, ` sort` and `update` action elements.
@@ -6210,9 +6210,9 @@ Alternatively, when using an external executor, an additional parameter can be s
 
 When using an external executor, the application needs to implement the corresponding class or function in the main program or external module. This document uses the Python language as an example to illustrate the implementation methods of each external executor. For scripting languages other than Python, such as C/C++, JavaScript, Lua, etc., you can refer to the implementation of Python for processing.
 
-##### 2.6.2.1) External function executor
+##### 2.6.2.1) External Function Executor
 
-We can implement all external executors using functions. Taking `Python` as an example, when using the `by` preposition attribute to specify an external function executor as a selector, iterator or reducer, the executor must be implemented as a function with the following prototype:
+We can implement all external executors using functions. Taking `Python` as an example, when using `by` preposition attribute to specify an external function executor as a selector, iterator or reducer, the executor must be implemented as a function with the following prototype:
 
 ```python
 def chooser(on_value, with_value):
@@ -6220,18 +6220,18 @@ def chooser(on_value, with_value):
 
 The corresponding functions are as follows:
 
-- As a selector, the source data (`on` attribute value) should be a container, and the function should return an item in the source data.
-- As an iterator, this function should return an array generated based on the source data, and subsequent iterations occur on this array.
-- As a reducer, the source data should be a container, and this function should return the data after specific reduction processing on the source data, usually an object.
+- As a selector, the source data (`on` attribute value) should be a container. And the function should return an item in the source data.
+- As an iterator, this function should return an array generated based on the source data. And subsequent iterations occur on this array.
+- As a reducer, the source data should be a container. And this function should return the data after specific reduction processing on the source data, usually an object.
 
-When using the `by` preposition attribute to specify an external function executor as the sorter, the executor must be implemented as a function with the following prototype:
+When using `by` preposition attribute to specify an external function executor as the sorter. The executor must be implemented as a function with the following prototype:
 
 ```python
 def sorter(on_value, with_value,
          against_value = None, desc = False, caseless = False):
 ```
 
-That is to say, the `against` attribute specified by the `sort` element and the adverb attribute values such as `ascendingly`/`descendingly`, `casesensitively`/`caseinsensitively` are passed through `against_value`, `desc` and `caseless` parameters .
+That is to say, `against` attribute specified by `sort` element and the adverb attribute values such as `ascendingly`/`descendingly`, `casesensitively`/`caseinsensitively` are passed through `against_value`, `desc` and `caseless` parameters .
 
 When used as a sorter, the source data should be an array or collection. This function performs specific sorting processing on the source data and returns the source data itself.
 
@@ -6290,9 +6290,9 @@ def StatsUser(on_value, with_value):
    return stats
 ```
 
-##### 2.6.2.2) External class executor
+##### 2.6.2.2) External Class Executor
 
-In the `iterate` action tag, in addition to using external functions as iterators, we can also use iteration executors defined by external classes. The iterator implemented by the function needs to return all the data to be iterated at one time, while the iterator implemented by the class is called to obtain the data of the current iteration at each iteration, so it has better flexibility, and when there are many data to be iterated , taking up less system resources.
+In `iterate` action tag, in addition to using external functions as iterators, we can also use iteration executors defined by external classes. The iterator implemented by the function needs to return all the data to be iterated at one time. While the iterator implemented by the class is called to obtain the data of the current iteration at each iteration. So it has better flexibility. And when there are many data to be iterated, taking up less system resources.
 
 Taking the Python language as an example, when using a class as an external iterator, it must be implemented as a subclass of `HVMLIterator`. The implementation of this class is as follows:
 
@@ -6312,8 +6312,8 @@ class HVMLIerator:
 
 `HVMLIterator` defines two methods:
 
-- `iterate`: used to iterate data, subclasses must override this method. The first time this method is called, the method returns the first data item, and each subsequent call returns the next data item until `None` is returned.
-- `filter`: Used to filter certain data items; when the `iterate` method generates a data item, this method will be called, if it returns `False`, the current data will be discarded and the next data item will be obtained. Subclasses do not need to implement this method.
+- `iterate`: It is used to iterate data, and subclasses must override this method. The first time this method is called, the method returns the first data item, and each subsequent call returns the next data item until `None` is returned.
+- `filter`: It is used to filter certain data items. When `iterate` method generates a data item, this method will be called. If it returns `False`, the current data will be discarded and the next data item will be obtained. Subclasses do not need to implement this method.
 
 For example, for the following operation of iterating and inserting the clone template into the specified position:
 
@@ -6342,7 +6342,7 @@ For example, for the following operation of iterating and inserting the clone te
      ...
 ```
 
-We can implement the `IUser` class as follows:
+We can implement `IUser` class as follows:
 
 ```python
 class IUser (HVMLI Iterator):
@@ -6367,7 +6367,7 @@ class IUser (HVMLI Iterator):
          return True
 ```
 
-#### 2.6.3) Processing of executor regular expressions
+#### 2.6.3) Processing of Executor Regular Expressions
 
 According to the above description, we can use variables in the regular expression of the executor as follows:
 
@@ -6389,13 +6389,13 @@ The above HVML code will get a Fibonacci sequence:
 
 The explanation is as follows:
 
-1. In the first iteration, `$fibonacci` only has two initial values, and the value of `$fibonacci[-2]` is 0, so the rule of `ADD` actuator is: `LT 20 BY 0`. Since the initial value of the iteration result is 1 (specified by the `on` attribute), the result of this iteration is 1. Afterwards, the result is appended to the `$fibonacci` array.
-1. In the second iteration, there are three values in `$fibonacci`, and the value of `$fibonacci[-2]` is 1, so the rule of `ADD` actuator is: `LT 20 BY 1`, since the last The result of the iteration is 1, so the result of the evaluation is 2. Afterwards, the result is appended to the `$fibonacci` array.
-1. In the third iteration, there are four values in `$fibonacci`, and the value of `$fibonacci[-2]` is 1, so the rule of `ADD` actuator is: `LT 20 BY 1`, due to the above The result of the second is 2, so the result of the evaluation is 3. Afterwards, the result is appended to the `$fibonacci` array.
-1. In the fourth iteration, there are five values in `$fibonacci`, and the value of `$fibonacci[-2]` is 2, so the rule of `ADD` actuator is: `LT 20 BY 2`, due to the above The result of the second is 3, so the result of the evaluation is 5. Afterwards, the result is appended to the `$fibonacci` array.
-1. At the fifth iteration, there are six values in `$fibonacci`, and the value of `$fibonacci[-2]` is 3, so the rule of the `ADD` actuator is: `LT 20 BY 3`, due to the above The result of the second is 5, so the result of the evaluation is 8. Afterwards, the result is appended to the `$fibonacci` array.
-1. At the sixth iteration, there are seven values in `$fibonacci`, and the value of `$fibonacci[-1]` is 5, so the rule of `ADD` actuator is: `LT 20 BY 5`, due to the above The result of the second is 8, so the result of the evaluation is 13. Afterwards, the result is appended to the `$fibonacci` array.
-1. At the seventh iteration, there are eight values in `$fibonacci`, and the value of `$fibonacci[-1]` is 8, so the rule of `ADD` actuator is: `LT 20 BY 8`, due to the above The result of the second is 13, so the result of the evaluation is 21. The iteration terminates because the result does not satisfy the condition of `LT 20`.
+1. In the first iteration, `$fibonacci` only has two initial values. And the value of `$fibonacci[-2]` is 0. So the rule of `ADD` actuator is: `LT 20 BY 0`. Since the initial value of the iteration result is 1 (specified by the `on` attribute), the result of this iteration is 1. Afterwards. The result is appended to `$fibonacci` array.
+1. In the second iteration, there are three values in `$fibonacci`, and the value of `$fibonacci[-2]` is 1. So the rule of `ADD` actuator is: `LT 20 BY 1`. Since the last result of the iteration is 1, so the result of the evaluation is 2. Afterwards, the result is appended to `$fibonacci` array.
+1. In the third iteration, there are four values in `$fibonacci`, and the value of `$fibonacci[-2]` is 1. So the rule of `ADD` actuator is: `LT 20 BY 1`. Due to the above result is 2, so the result of the evaluation is 3. Afterwards, the result is appended to `$fibonacci` array.
+1. In the fourth iteration, there are five values in `$fibonacci`, and the value of `$fibonacci[-2]` is 2. So the rule of `ADD` actuator is: `LT 20 BY 2`. Due to the above result is 3, so the result of the evaluation is 5. Afterwards, the result is appended to the `$fibonacci` array.
+1. At the fifth iteration, there are six values in `$fibonacci`, and the value of `$fibonacci[-2]` is 3, so the rule of the `ADD` actuator is: `LT 20 BY 3`. Due to the above result is 5, so the result of the evaluation is 8. Afterwards, the result is appended to the `$fibonacci` array.
+1. At the sixth iteration, there are seven values in `$fibonacci`, and the value of `$fibonacci[-1]` is 5, so the rule of `ADD` actuator is: `LT 20 BY 5`. Due to the above result is 8, so the result of the evaluation is 13. Afterwards, the result is appended to the `$fibonacci` array.
+1. At the seventh iteration, there are eight values in `$fibonacci`, and the value of `$fibonacci[-1]` is 8, so the rule of `ADD` actuator is: `LT 20 BY 8`. Due to the above result is 13, so the result of the evaluation is 21. The iteration terminates because the result does not satisfy the condition of `LT 20`.
 
 It should be noted that the processing of executor rule strings generally has the following two stages:
 
@@ -6404,7 +6404,7 @@ It should be noted that the processing of executor rule strings generally has th
 
 In addition, some executors cannot handle dynamic changes in rules, such as SQL and TRAVEL executors.
 
-### 2.7) Responsive update
+### 2.7) Responsive Update
 
 The so-called responsive update refers to the following HVML code:
 
@@ -6466,9 +6466,9 @@ The HVML interpreter does this by implicitly adding bindings to expressions that
      </observe>
 ```
 
-After using responsive processing, developers don't need to explicitly write `bind` and `observe` tags to get the same responsive processing effect, just add the `hvml:responsively` adverb attribute to the external tag.
+After using responsive processing, developers don't need to explicitly write `bind` and `observe` tags to get the same responsive processing effect, just add `hvml:responsively` adverb attribute to the external tag.
 
-The following example binds the user name to the name entered in the input box; through responsive processing, when the user changes the content in the input box, the text content of the `p` element will automatically change.
+The following example binds the user name to the name entered in the input box; through responsive processing, when the user changes the content in the input box, the text content of `p` element will automatically change.
 
 ```hvml
      <init as="user_name">
@@ -6491,11 +6491,11 @@ We use the `&=` operator when we need to use reactive updates for properties of 
      </p>
 ```
 
-## 3) HVML syntax
+## 3) HVML Syntax
 
 Note: This section refers to the HTML specification: <https://html.spec.whatwg.org/#syntax>.
 
-### 3.1) Writing HVML documents
+### 3.1) Write HVML Documentation
 
 HVML essentially uses XML syntax to describe individual elements in a program. The writing of HVML documents needs to meet the following points:
 
@@ -6576,7 +6576,7 @@ A `DOCTYPE` must consist of the following parts, in order:
 
 Usually written as `<!DOCTYPE hvml>`, case sensitive.
 
-In an HVML document, when an HVML tag may conflict with a target markup language tag, we can use a predefined prefix to mark the HVML tag. By default, `v:` is used as the prefix, but we can also customize it in DOCTYPE this prefix. The prefix string must start with a letter and end with a colon (`:`).
+In the HVML document, when the HVML tag may conflict with a target markup language tag, we can use a predefined prefix to mark the HVML tag. By default, `v:` is used as the prefix, but we can also customize it in DOCTYPE this prefix. The prefix string must start with a letter and end with a colon (`:`).
 
 The format of the SYSTEM identifier string is as follows:
 
@@ -6634,12 +6634,12 @@ For example, if the DOCTYPE element is written as `<!DOCTYPE hvml SYSTEM "ext: M
 
 Note that we usually only use prefixes when the tags defined by the target markup language conflict with HVML tags.
 
-When we use the `SYSTEM` flag of `DOCTYPE` to define a walker-level dynamic object that needs to be preloaded, use `<pkg_name>`, `<pkg_name>:<var_name>`, `<pkg_name>.<obj_name>` or Notation like `<pkg_name>.<obj_name>:<var_name>`. The meanings of the above four representations are explained as follows:
+When we use `SYSTEM` flag of `DOCTYPE` to define a walker-level dynamic object that needs to be preloaded, use `<pkg_name>`, `<pkg_name>:<var_name>`, `<pkg_name>.<obj_name>` or Notation like `<pkg_name>.<obj_name>:<var_name>`. The meanings of the above four representations are explained as follows:
 
-1. Indicates loading the dynamic object with the same package name `<pkg_name>` from the shared library corresponding to `<pkg_name>`, and binding it as a walker-level variable named `<pkg_name>`.
-1. Indicates loading the dynamic object with the same package name `<pkg_name>` from the shared library corresponding to `<pkg_name>`, and binding it as a walker-level variable named `<var_name>`.
-1. Indicates loading the dynamic object named `<obj_name>` from the shared library corresponding to `<pkg_name>`, and binding it as a walker-level variable named `<obj_name>`.
-1. Indicates that the dynamic object named `<obj_name>` is loaded from the shared library corresponding to `<pkg_name>`, and bound as a traveler-level variable `<var_name>`.
+1. Indicate loading the dynamic object with the same package name `<pkg_name>` from the shared library corresponding to `<pkg_name>`, and binding it as a walker-level variable named `<pkg_name>`.
+1. Indicate loading the dynamic object with the same package name `<pkg_name>` from the shared library corresponding to `<pkg_name>`, and binding it as a walker-level variable named `<var_name>`.
+1. Indicate loading the dynamic object named `<obj_name>` from the shared library corresponding to `<pkg_name>`, and binding it as a walker-level variable named `<obj_name>`.
+1. Indicate that the dynamic object named `<obj_name>` is loaded from the shared library corresponding to `<pkg_name>`, and bound as a traveler-level variable `<var_name>`.
 
 Such as `DATETIME math:MATH FILE.FS FILE.FILE:F` means from:
 
@@ -6669,7 +6669,7 @@ All elements not defined by HVML tags are considered external elements. All exte
 
 According to its grammatical characteristics, HVML elements can be divided into the following two categories:
 
-1. noun elements
+1. Noun elements
 Includes frame elements, template elements, and data template elements.
 2. Operation elements
 Including general action elements, skeleton elements and data action elements.
@@ -6716,11 +6716,11 @@ Tags contain a tag name, giving the name of the element. HVML elements allow the
 
 Note that HVML tag names are case sensitive. For tags of external elements, their case will be preserved.
 
-##### 3.1.2.1) Start tag
+##### 3.1.2.1) Start Tag
 
 The start tag must have the following format:
 
-1. The first character of a start label must be the U+003C LESS-THAN SIGN character (`<`).
+1. The first character of a start tag must be the U+003C LESS-THAN SIGN character (`<`).
 1. The first few characters following the start tag must be the tag name of the element.
 1. If any of the attributes are present in the next steps, there must be one or more ASCII whitespace characters.
 1. Then, some attributes can be included in the start tag, and the syntax of attributes will be described later. Attributes must be separated by one or more ASCII whitespace characters.
@@ -6728,29 +6728,29 @@ The start tag must have the following format:
 1. Then, if the element is a void element, or if the element is an external element, it can contain a U+002F SOLIDUS character (`/`). This character is invalid for blank elements, but for external elements, it indicates that the start tag is self-closing (self-closing).
 1. Finally, the start tag must be closed by a U+003E GREATER-THAN SIGN character (`>`).
 
-##### 3.1.2.2) End tag
+##### 3.1.2.2) End Tag
 
 Termination tags must have the following format:
 
-1. The first character of a terminating label must be the U+003C LESS-THAN SIGN character (`<`).
+1. The first character of a terminating tag must be the U+003C LESS-THAN SIGN character (`<`).
 1. The second character of a terminating tag must be the U+002F SOLIDUS character (`/`).
 1. The first few characters following the start tag must be the tag name of the element.
-1. After the label name, there can be one or more ASCII whitespace characters.
+1. After the tag name, there can be one or more ASCII whitespace characters.
 1. Finally, the terminating tag must be closed by a U+003E GREATER-THAN SIGN character (`>`).
 
-##### 3.1.2.3) Properties
+##### 3.1.2.3) Attribute
 
-The attributes of an element are expressed in the element's start tag.
+The attribute of an element is expressed in the element's start tag.
 
-Properties have a name and a value. Property names must consist of one or more characters that are not control characters, U+0020 SPACE, U+0022 (`"`), U+0027 (`'`), U+003E (`>`), U+002F (`/ `), U+003D (`=`), and noncharacter (noncharacter) characters.
+Attribute has a name and a value. Attribute names must consist of one or more characters that are not control characters, U+0020 SPACE, U+0022 (`"`), U+0027 (`'`), U+003E (`>`), U+002F (`/ `), U+003D (`=`), and noncharacter (noncharacter) characters.
 
 Attribute values are typically a mixture of text and character references, with an additional restriction: text cannot contain ambiguous `&` symbols.
 
-Properties can be specified in five ways:
+Attribute can be specified in five ways:
 
 1) Empty attribute syntax/Empty attribute syntax
 
-Just a property name, the property value is implicitly specified as the empty string.
+Just a attribute name, the attribute value is implicitly specified as the empty string.
 
 In the following example, the `uniquely` attribute is given with the empty attribute syntax:
 
@@ -6774,7 +6774,7 @@ If an attribute using the unquoted attribute syntax is followed by another attri
 
 3) Single-quoted attribute value syntax/Single-quoted attribute value syntax
 
-The property name is followed by zero or more ASCII whitespace characters, followed by a U+003D EQUALS SIGN character (`=`), followed by zero or more ASCII whitespace characters, followed by a single U+0027 APOSTROPHE character (`' `), followed by the attribute value, and the attribute value here, in addition to meeting the attribute value requirements mentioned above, cannot contain any literal U+0027 APOSTROPHE characters (`'`), and finally the second separate End of U+0027 APOSTROPHE character (`'`).
+The attribute name is followed by zero or more ASCII whitespace characters, followed by a U+003D EQUALS SIGN character (`=`), followed by zero or more ASCII whitespace characters, followed by a single U+0027 APOSTROPHE character (`' `), followed by the attribute value, and the attribute value here, in addition to meeting the attribute value requirements mentioned above, cannot contain any literal U+0027 APOSTROPHE characters (`'`), and finally the second separate End of U+0027 APOSTROPHE character (`'`).
 
 In the following example, attributes are given in the form of single-quoted attribute-value syntax:
 
@@ -6800,9 +6800,9 @@ If an attribute using the double-quote attribute syntax is followed by another a
 
 The backtick attribute value syntax is usually used in occasions where system-predefined keywords must be used, such as quoting the name of an error or exception. at this time,
 
-The property name is followed by zero or more ASCII whitespace characters, followed by a U+003D EQUALS SIGN character (`=`), followed by zero or more ASCII whitespace characters, followed by a single U+0060 GRAVE ACCENT character (\ `), followed by the attribute value, and the attribute value here, in addition to meeting the attribute value requirements mentioned above, cannot contain any literal U+0060 GRAVE ACCENT characters (\`), and finally the second separate U+0060 GRAVE ACCENT character (\`) at the end.
+The attribute name is followed by zero or more ASCII whitespace characters, followed by a U+003D EQUALS SIGN character (`=`), followed by zero or more ASCII whitespace characters, followed by a single U+0060 GRAVE ACCENT character (\ `), followed by the attribute value, and the attribute value here, in addition to meeting the attribute value requirements mentioned above, cannot contain any literal U+0060 GRAVE ACCENT characters (\`), and finally the second separate U+0060 GRAVE ACCENT character (\`) at the end.
 
-In verb tags, the U+003D EQUALS SIGN character (`=`) after the property name of the preposition can be omitted.
+In verb tags, the U+003D EQUALS SIGN character (`=`) after the attribute name of the preposition can be omitted.
 
 In the following example, attributes are given in the form of backticked attribute-value syntax:
 
@@ -6816,7 +6816,7 @@ In the following example, attributes are given in the form of backticked attribu
      </except>
 ```
 
-Note that when using backticks to define property values, literal predefined constants must be used without any evaluation.
+Note that when using backticks to define attribute values, literal predefined constants must be used without any evaluation.
 
 If an attribute using the backtick attribute syntax is followed by another attribute, the two attributes must be separated by an ASCII whitespace character.
 
@@ -6826,14 +6826,14 @@ Note that in verb tags, the U+003D EQUALS SIGN character (`=`) after the preposi
 
 Within the same start tag, no two or more attributes can have the same attribute name.
 
-##### 3.1.2.4) Action element attributes
+##### 3.1.2.4) Action Element Attribute
 
 In HVML, the attribute values of action elements have the following special features:
 
 1. The attribute values of action elements can be divided into preposition attribute and adverb attribute, which are inherent attributes.
 1. All preposition attributes need to define corresponding attribute values, and their assignment operators (U+003D EQUALS SIGN `=`) can be omitted.
 1. All adverb attributes are described above (Empty attribute syntax/empty attribute syntax).
-1. In addition to the inherent preposition and adverb attributes, the `with` attribute of the `update` tag can use additional assignment operators.
+1. In addition to the inherent preposition and adverb attributes, the `with` attribute of `update` tag can use additional assignment operators.
 
 The assignment operator (`=`) of all prepositional attributes (only in action elements) can be ignored:
 
@@ -6845,7 +6845,7 @@ The assignment operator (`=`) of all prepositional attributes (only in action el
 
 In addition to the unquoted attribute value syntax described above, we can omit single quotes (U+0027 APOSTROPHE `'`) or double quotes (U+0022 QUOTATION MARK `"`) around prepositional attribute values in the following cases:
 
-1. When using parameterized data definition arrays or objects as preposition property values. like,
+1. When using parameterized data definition arrays or objects as preposition attribute values. like,
 
 ```hvml
      <choose on ["zh_CN", "en_US"] to "append update" in #the-user-list with $user_item>
@@ -6861,7 +6861,7 @@ or,
 
 In addition, when single quotes are used, all evaluation expressions in the entire attribute value string will be ignored and treated as ordinary strings.
 
-In the `update` element, we can use attribute value operators other than `=` for the `with` attribute to change the final data:
+In `update` element, we can use attribute value operators other than `=` for the `with` attribute to change the final data:
 
 1. When the attribute value of the `with` attribute is a string type, and the modification action is `displace`:
     - `+=`: Add a new token (token) to the final data. If the token already exists, it will not be modified. For example, the original attribute value of `attr.class` is `foo`, after using `at="attr.class" with += "text-warning"`, it will be changed to: `foo text-warning`; if the original If there is an attribute value of `foo text-warning`, it will remain unchanged.
@@ -6873,18 +6873,18 @@ In the `update` element, we can use attribute value operators other than `=` for
     - `^=`: Add the specified attribute value at the head of the final data. For example, the original attribute value of `attr[data-value]` is `ab`, after using `at="attr[data-value]" with ^= "C"`, it will be changed to `Cab`.
     - `$=`: Add the specified attribute value at the end of the final data. For example, the original attribute value of `attr[data-value]` is `ab`, after using `at="attr[data-value]" with $= "C"`, it will be changed to `abC`.
 1. When the attribute value of the `with` attribute is numeric data, and the modification action is `displace`:
-    - `+=`: Numericalize the initial final data, then add the specified attribute value and replace the final data with the result.
-    - `-=`: Numericizes the initial final data, then subtracts the specified attribute value and replaces the final data with the result.
-    - `*=`: Numericizes the initial final data, multiplies it by the specified attribute value and replaces the final data with the result.
-    - `/=`: Numericizes the initial final data, divides by the specified attribute value and replaces the final data with the result.
-    - `%=`: convert the specified attribute value to an unsigned integer: if the value is zero, replace the final data with zero; if the value is not zero, numericalize the initial final data, and then use the Signed integer values modulo the final data and replace the final data with the result.
-    - `~=`: digitize the initial final data (x), digitize the specified attribute value (y), round x, keep y to decimal places, and replace the final data with the result. When y is zero or negative, it is equivalent to the `round` operation of floating point numbers.
+    - `+=`: Numericize the initial final data, then add the specified attribute value and replace the final data with the result.
+    - `-=`: Numericize the initial final data, then subtracts the specified attribute value and replaces the final data with the result.
+    - `*=`: Numericize the initial final data, multiplies it by the specified attribute value and replaces the final data with the result.
+    - `/=`: Numericize the initial final data, divides by the specified attribute value and replaces the final data with the result.
+    - `%=`: Convert the specified attribute value to an unsigned integer: if the value is zero, replace the final data with zero; if the value is not zero, numericalize the initial final data, and then use the Signed integer values modulo the final data and replace the final data with the result.
+    - `~=`: Numericize the initial final data (x), digitize the specified attribute value (y), round x, keep y to decimal places, and replace the final data with the result. When y is zero or negative, it is equivalent to the `round` operation of floating point numbers.
     - `^=`: Perform numerical processing on the initial final data (x) and the specified attribute value (y), find x raised to the power of y, and replace the final data with the result.
     - `$=`: Numericize the initial final data (x) and the specified attribute value (y), find the remainder of x / y, and replace the final data with the result.
 
 The word (token) mentioned in the above description usually refers to a sequence of characters whose length is not zero, and the characters in it are ASCII letters, ASCII numbers, or minus signs (`-`), hyphens (`_`). Elements are separated by one or more whitespace characters. However, in a specific implementation, a printable string that does not contain any whitespace characters is considered a complete token.
 
-like,
+For example,
 
 ```hvml
     <choose on "$2.payload" to "append update" in "#the-user-list" with "$user_item">
@@ -6894,8 +6894,8 @@ like,
 
 Note that the preposition attribute of an action element is usually treated as a string or parameterized string by the interpreter and used after evaluation, with the following exceptions:
 
-- the `on` and `with` attributes of all action elements, if the assignment operator (=) is omitted and the unquoted attribute value syntax is used, or if the other syntax is used and the `[`, `{` or When the value expression begins, it will be treated as a parameterized data; otherwise, it will be treated as a string or a parameterized string.
-- The `onlyif` and `while` attributes of an `iterate` element start with `[`, `{`, or When the evaluation expression begins, it will be treated as a parameterized data; otherwise, it will be treated as a string or a parameterized string.
+- `on` and `with` attributes of all action elements, if the assignment operator (=) is omitted and the unquoted attribute value syntax is used, or if the other syntax is used and the `[`, `{` or When the value expression begins, it will be treated as a parameterized data; otherwise, it will be treated as a string or a parameterized string.
+- `onlyif` and `while` attributes of `iterate` element start with `[`, `{`, or When the evaluation expression begins, it will be treated as a parameterized data; otherwise, it will be treated as a string or a parameterized string.
 
 Here's what happens when the assignment operator is omitted:
 
@@ -6967,21 +6967,21 @@ Here are the cases where the assignment operator is not omitted:
 
 Note that all general attributes of action elements (neither prepositional nor adverbial attributes) are treated as strings or parameterized strings by the interpreter; all attributes of noun elements and external elements are treated as characters by the interpreter string or parameterized string.
 
-##### 3.1.2.5) Optional tags
+##### 3.1.2.5) Optional Tag
 
 Strict XML syntax is required, so, in principle, no tags can be omitted, but there are special cases as described below.
 
 1) Omit `DOCTYPE` entirely
 
-We can omit the `DOCTYPE` element entirely. In this case, the parser handles the default `DOCTYPE` as follows:
+We can omit `DOCTYPE` element entirely. In this case, the parser handles the default `DOCTYPE` as follows:
 
 ```
 <!DOCTYPE hvml SYSTEM "f:">
 ```
 
-2) Omit the `head` element entirely
+2) Omit `head` element entirely
 
-We can omit the `head` element entirely. In this case, if the target document supports a `head` element, an empty `head` element will be created in the target document.
+We can omit `head` element entirely. In this case, if the target document supports a `head` element, an empty `head` element will be created in the target document.
 
 ```hvml
 <!DOCTYPE hvml>
@@ -6992,9 +6992,9 @@ We can omit the `head` element entirely. In this case, if the target document su
 </hvml>
 ```
 
-3) Omit the `body` element entirely
+3) Omit `body` element entirely
 
-We can omit the `body` element entirely. In this case, we cannot execute different body codes by specifying the `id` property of `body`. If the target document supports the `body` element, an empty `body` element will be created in the target document, and the content of the target document generated by the HVML program will be inserted into the `body` element. If the target document does not support a `body` element, the generated content will be inserted into the root element of the target document.
+We can omit the `body` element entirely. In this case, we cannot execute different body codes by specifying the `id` attribute of `body`. If the target document supports the `body` element, an empty `body` element will be created in the target document, and the content of the target document generated by the HVML program will be inserted into the `body` element. If the target document does not support a `body` element, the generated content will be inserted into the root element of the target document.
 
 ```hvml
 <!DOCTYPE hvml SYSTEM 'f: MATH'>
@@ -7016,7 +7016,7 @@ An HVML fragment defined by an outer element looks like this:
      </div>
 ```
 
-We omitted the `</strong>` and `</p>` terminating tags, the above fragment would be parsed as:
+We omitted `</strong>` and `</p>` terminating tags, the above fragment would be parsed as:
 
 
 ```hvml
@@ -7057,13 +7057,13 @@ but would be parsed by the HVML parser as:
      </ul>
 ```
 
-##### 3.1.2.6) Content restrictions for baretext elements and escapable baretext elements
+##### 3.1.2.6) Content Restrictions for Baretext Elements and Escapable Baretext Elements
 
 The text in bare text elements and escapable bare text elements cannot contain any tags starting with `</` (U+003C LESS-THAN SIGN, U+002F SOLIDUS) followed by tag names starting with ASCII letters and U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), U+0020 SPACE, U+003E GREATER-THAN SIGN (`>`) , or a string of one of the U+002F SOLIDUS (`/`) characters.
 
-##### 3.1.2.7) Data content and data attributes
+##### 3.1.2.7) Data Content and Data Attribute
 
-The text content contained in the `init` and `archedata` elements of HVML must be a valid parameterized data. like:
+The text content contained in `init` and `archedata` elements of HVML must be a valid parameterized data. like:
 
 ```hvml
 <init as="foo">
@@ -7106,13 +7106,13 @@ When defining a document fragment template, its content will be treated as a par
 
 Text is allowed inside elements, in attribute values, and in comments. Restrictions on the use of the text depend on where the text is used and are described in other subsections.
 
-##### 3.1.3.1) New line
+##### 3.1.3.1) New Line
 
 A new line in HVML must be expressed as a U+000D CARRIAGE RETURN (CR) character, a U+000A LINE FEED (LF) character, or a pair of U+000D CARRIAGE RETURN (CR) and U+000A LINE FEED (LF) character.
 
 A character reference of the U+000A LINE FEED character (but not the U+000D CARRIAGE RETURN character) also expresses a new line, where character references are allowed.
 
-#### 3.1.4) Character references
+#### 3.1.4) Character Reference
 
 Text may be mixed with character applications in certain cases described in other subsections. Character references can be used for escaping when certain characters cannot legally be contained in the text.
 
@@ -7134,7 +7134,7 @@ The two numbered character reference forms described above do not allow referenc
 
 An ambiguous `&` character is a U+0026 AMPERSAND character (`&`) followed by one or more ASCII letters and digits, followed by a U+003B SEMICOLON character (`;`), but these characters do not Cannot match a name given in the "Named Character References" section of the [HTML Specification].
 
-#### 3.1.5) CDATA section
+#### 3.1.5) CDATA Paragraph
 
 A CDATA section must contain the following components in the order given:
 
@@ -7155,7 +7155,7 @@ CDATA sections can only be used for external content. In the following example, 
 </math>
 ```
 
-#### 3.1.6) Notes
+#### 3.1.6) Comments
 
 Comments must have the following format:
 
@@ -7163,29 +7163,29 @@ Comments must have the following format:
 1. Optional text, but the text cannot start with the string `>`, nor can it start with the string `->`, nor can it contain `<!--`, `-->` or `--!> ` string, and cannot end with the string `<!-`.
 1. The string `-->`.
 
-### 3.2) Parsing HVML documents
+### 3.2) Parse HVML Documentation
 
 (documentation pending).
 
-## 4) Application example
+## 4) Application Example
 
 All examples in this document are for web applications. In this application scenario, we can use Python or any other script program instead of JavaScript to develop web front-end applications. In this section we introduce some other application scenarios of HVML.
 
-### 4.1) Using HVML to develop traditional GUI applications
+### 4.1) Using HVML to Develop Traditional GUI Applications
 
 We assume a GUI system that uses XML to describe the components (widgets) on the interface. Now, we want to use this GUI system to develop a simple file open dialog box. The general interface requirements are as follows:
 
 1. There is a list box (Listbox), which lists the directories and files under the current path (collectively referred to as directory items). The user can use the mouse or keyboard to switch the currently selected item in the list box, and generate an event that the selected item changes.
-1. At the top of the list box, there is a text label (Label), which shows the current path.
-1. When the user clicks the "Open" button (Button) below the list box, if the currently selected item in the list box is a directory, enter this directory, modify the content of the text label used to display the current path, and use the new path Directory items populate the list box, if the currently selected item is a file, returns the selected file.
+1. At the top of the list box, there is a text tag (tag), which shows the current path.
+1. When the user clicks the "Open" button (Button) below the list box, if the currently selected item in the list box is a directory, enter this directory, modify the content of the text tag used to display the current path, and use the new path Directory items populate the list box, if the currently selected item is a file, returns the selected file.
 
 For the above interface and interaction requirements, we can usually use the following XML file description:
 
 ```xml
 <ui>
-     <label id="path">
+     <tag id="path">
          /home
-     </label>
+     </tag>
 
      <listbox id="entries">
          <item class="dir">..</item>
@@ -7217,9 +7217,9 @@ In order to meet the above interaction processing requirements, we use HVML to d
             }
         </init>
 
-        <label id="path">
+        <tag id="path">
             $fileInfo.curr_path
-        </label>
+        </tag>
 
         <archetype name="dir_entry">
             <item class="$?.type">$?.name</item>
@@ -7312,7 +7312,7 @@ If we use the extended schema (lcmd) mentioned in HybridOS to directly execute l
 
 In this way, developers can implement a simple file browsing and opening dialog box without writing any programs.
 
-### 4.2) Cloud Application
+### 4.2) Cloud Apps
 
 HVML has more potential than the above examples suggest. In the future, we can even run the HVML code on the cloud, and control the interface display on the device through the cloud, thus forming a new cloud application solution.
 
@@ -7376,8 +7376,8 @@ But if we use HVML, we can control the interface display of the device through t
 The main points are as follows:
 
 1. The HTML document generated by the code or the changes to the HTML document will be sent to the device through a long connection similar to WebSocket, and the device will re-render the user interface based on this information.
-1. The code monitors the data sent by the smart bracelet (device) to the cloud through MQTT, including heartbeat, temperature, steps and other information, and updates the corresponding label content.
-1. The code sets a timer, runs every 1 second, and updates the label content corresponding to the clock.
+1. The code monitors the data sent by the smart bracelet (device) to the cloud through MQTT, including heartbeat, temperature, steps and other information, and updates the corresponding tag content.
+1. The code sets a timer, runs every 1 second, and updates the tag content corresponding to the clock.
 1. The code uses an external selection executor `CDumpEvent` to dump all events from `mqtt` to the cloud database.
 
 This brings about the following notable changes:
@@ -7417,7 +7417,7 @@ Release history:
 
 #### RCb) 230430
 
-##### RCb.1) Adjust the name specification of pages and workspaces
+##### RCb.1) Adjust Page and Workspace Name Conventions 
 
 The main revisions are as follows:
 
@@ -7429,7 +7429,7 @@ Related chapters:
 
 #### RCa) 230331
 
-##### RCa.1) Adjust `DOCTYPE` for `SYSTEM` identifier rules
+##### RCa.1) Adjust `SYSTEM` Identifier Rules for `DOCTYPE`
 
 The main revisions are as follows:
 
@@ -7439,17 +7439,17 @@ Related chapters:
 
 - [3.1.1) DOCTYPE] (#311-doctype)
 
-##### RCa.2) Adjust the result of the `catch` action element
+##### RCa.2) Adjust Result of `catch` Action Element
 
 The main revisions are as follows:
 
-1. The result of the `catch` action element needs to be defined as an object describing the exception information.
+1. The result of `catch` action element needs to be defined as an object describing the exception information.
 
 Related chapters:
 
 - [2.5.14) `catch` tag] (#2514-catch-tag)
 
-##### RCa.3) Fine-tuning the `update` action element
+##### RCa.3) Tweak `update` action Element
 
 The main revisions are as follows:
 
@@ -7461,17 +7461,17 @@ Related chapters:
 
 #### RC9) 221231
 
-##### RC9.1) Responsive processing syntax for defining skeleton element attributes
+##### RC9.1) Reactive Processing Syntax for Defining Skeleton Element Attributes
 
 The main revisions are as follows:
 
-1. Use the `&=` operator to specify that a particular property of a skeleton element is responsive.
+1. Use `&=` operator to specify that a particular attribute of a skeleton element is responsive.
 
 Related chapters:
 
 - [2.7) Reactive update] (#27-Reactive update)
 
-##### RC9.2) Structured data representation of document fragments
+##### RC9.2) Structured Data Representation of Document Fragments
 
 The main revisions are as follows:
 
@@ -7483,24 +7483,25 @@ Related chapters:
 
 - [2.1.17) Structured data representation of document fragments] (#2117 - Structured data representation of document fragments)
 
-##### RC9.3) Adjust the details of the `update` element
+##### RC9.3) Adjust `update` Element Related Details  
+
 
 The main revisions are as follows:
 
-1. The `add` action has been added, which can be used in collections.
-1. Adjust the `remove` action, which can be used for collections.
+1. `add` action has been added, which can be used in collections.
+1. Adjust  `remove` action, which can be used for collections.
 1. Adjust operations such as `merge`, `unite`, `overwrite`, `intersect`, `subtract`, `xor`, which can be used for objects.
 
 Related chapters:
 
 - [2.5.2) `update` tag] (#252-update-tag)
 
-##### RC9.4) Adjust the details of the `request` element
+##### RC9.4) Adjust `request` Element Related Details  
 
 The main revisions are as follows:
 
-1. Adjusted the description of coroutine tokens.
-1. Adjusted the description of `$RDR` predefined variable.
+1. Adjust the description of coroutine tokens.
+1. Adjust the description of `$RDR` predefined variable.
 
 Related chapters:
 
@@ -7509,7 +7510,7 @@ Related chapters:
 
 #### RC8) 221130
 
-##### RC8.1) Backtick attribute value syntax
+##### RC8.1) Backtick Attribute Value Syntax
 
 The main revisions are as follows:
 
@@ -7518,43 +7519,43 @@ The main revisions are as follows:
 Related chapters:
 
 - [2.1.12) Error and exception handling] (#2112-Error and exception handling)
-- [2.4.3) `error` label] (#243-error-label)
-- [2.4.4) `except` label] (#244-except-label)
+- [2.4.3) `error` tag] (#243-error-tag)
+- [2.4.4) `except` tag] (#244-except-tag)
 - [2.5.14) `catch` tag] (#2514-catch-tag)
 - [3.1.2.3) Properties] (#3123-properties)
 
-##### RC8.2) New data type aliases
+##### RC8.2) New Data Type Aliases
 
 The main revisions are as follows:
 
-1. Added `linctnr` as an alias for the linear container type.
+1. Add `linctnr` as an alias for the linear container type.
 
 Related chapters:
 
 - [2.2.4) Description syntax for dynamic object methods] (#224-Dynamic object method description syntax)
 
-##### RC8.3) Adverb attributes in frame elements
+##### RC8.3) Adverb Attributes in Frame Elements
 
 The main revisions are as follows:
 
 1. All HVML adverb attributes used in framework elements (`hvml`, `head`, `body`), should not be cloned into the target document.
-1. The `target` attribute in the `hvml` tag should also not be cloned into the target document.
+1. `target` attribute in `hvml` tag should also not be cloned into the target document.
 
 Related chapters:
 
 - [2.3) Detailed explanation of frame tags](#23-Detailed explanation of frame tags)
 
-##### RC8.4) Miscellaneous
+##### RC8.4) Misc
 
 The main revisions are as follows:
 
-1. Extended JSON syntax to support triple single quotes (`'''`).
+1. Extend JSON syntax to support triple single quotes (`'''`).
 1. Fine-tune the stringification rules to avoid newline characters and use commas and semicolons instead.
 1. Normative terms:
-    - Evaluation expression: Hybrid evaluation expression (HEE).
-    - Compound evaluation expression: Compound hybrid evaluation expression (CHEE).
-    - Parameterized data: Parameterized Data.
-    - Parameterized String: Parameterized String.
+    - Hybrid evaluation expression (HEE).
+    - Compound hybrid evaluation expression (CHEE).
+    - Parameterized Data.
+    - Parameterized String.
 1. `$EJSON` is renamed to `$DATA`.
 1. `$DATA.numberify` is renamed to `$DATA.numerify`.
 1. Adjust the chapters about evaluation expression syntax, eJSON syntax.
@@ -7566,7 +7567,7 @@ Related chapters:
 
 #### RC7) 221031
 
-##### RC7.1) Stand-in expressions
+##### RC7.1) Stand-In Expression
 
 The main revisions are as follows:
 
@@ -7582,7 +7583,7 @@ Related chapters:
 - [2.5.13) `bind` tag] (#2513-bind-tag)
 - [2.1.14) Adverb attributes] (#2114-adverb attributes)
 
-##### RC7.2) Tuning variables section
+##### RC7.2) Tuning Variables Section
 
 The main revisions are as follows:
 
@@ -7594,7 +7595,7 @@ Related chapters:
 
 - [2.1.6) Variables] (#216-Variables)
 
-##### RC7.3) Adjust the eJSON syntax for defining tuples
+##### RC7.3) Adjust the eJSON Syntax for Defining Tuples
 
 The main revisions are as follows:
 
@@ -7605,22 +7606,22 @@ Related chapters:
 - [2.1.15) Quoting elements or data] (#2115 - Quoting elements or data)
 - [2.2.5) eJSON syntax] (#225-ejson-syntax)
 
-##### RC7.4) Adjust the name of the adverb attribute
+##### RC7.4) Adjust the Name of the Adverb Attribute
 
 The main revisions are as follows:
 
-1. Added shorthand forms of adverb attributes such as `constantly`, `concurrently`, `responsively`.
-1. Added the equivalent writing forms of `noreturn` and `nosetotail`.
+1. Add shorthand forms of adverb attributes such as `constantly`, `concurrently`, `responsively`.
+1. Add the equivalent writing forms of `noreturn` and `nosetotail`.
 
 Related chapters:
 
 - [2.1.14) Adverb attributes] (#2114-adverb attributes)
 
-##### RC7.5) Enhancement of preposition attributes
+##### RC7.5) Preposition Attributes Enhancement 
 
 The main revisions are as follows:
 
-1. The `idd-by` preposition attribute is added to set the identifier of the verb element to avoid using the noun attribute `id` in the verb element.
+1. `idd-by` preposition attribute is added to set the identifier of the verb element to avoid using the noun attribute `id` in the verb element.
 
 Related chapters:
 
@@ -7628,7 +7629,7 @@ Related chapters:
 
 #### RC6) 220901
 
-##### RC6.1) Enhanced variable names
+##### RC6.1) Enhance Variable Names
 
 The main revisions are as follows:
 
@@ -7638,7 +7639,7 @@ Related chapters:
 
 - [2.2.2) Syntax of evaluated expressions] (#222 - Syntax of evaluated expressions)
 
-##### RC6.2) Enhance `request` tag
+##### RC6.2) Enhance `request` Tag
 
 The main revisions are as follows:
 
@@ -7649,7 +7650,7 @@ Related chapters:
 
 - [2.5.16) `request` tag] (#2516-request-tag)
 
-##### RC6.3) Adjust HVML URI schema
+##### RC6.3) Adjust HVML URI Schema
 
 The main revisions are as follows:
 
@@ -7661,7 +7662,7 @@ Related chapters:
 - [2.1.19.2) `hvml+run` schema] (#21192-hvmlrun-schema)
 - [2.2.3) Common denoted nouns] (#223-Common denoted nouns)
 
-##### RC6.4) Added tuple container type
+##### RC6.4) Add Tuple Container Type
 
 The main revisions are as follows:
 
@@ -7672,7 +7673,7 @@ Related chapters:
 - [2.1.3) Extended data types] (#213-Extended data types)
 - [2.2.5) eJSON syntax] (#225-ejson-syntax)
 
-##### RC6.5) Reevaluate
+##### RC6.5) Reevaluation
 
 The main revisions are as follows:
 
@@ -7687,7 +7688,7 @@ Related chapters:
 
 #### RC5) 220701
 
-##### RC5.1) Adjust the description of the `include` tag
+##### RC5.1) Adjust the Description of `include` Tag
 
 The main revisions are as follows:
 
@@ -7697,7 +7698,7 @@ Related chapters:
 
 - [2.5.10) `define` and `include` tags] (#2510-define-and-include-tags)
 
-##### RC5.2) Adjust the `request` tag
+##### RC5.2) Adjust `request` Tag
 
 The main revisions are as follows:
 
@@ -7710,14 +7711,14 @@ Related chapters:
 - [2.5.16) `request` tag] (#2516-request-tag)
 - [2.1.6.3) Predefined variables] (#2163-predefined variables)
 
-##### RC5.3) Adjust `load` and `call` tags
+##### RC5.3) Adjust `load` and `call` Tags
 
 The main revisions are as follows:
 
 1. `load` supports creating a new coroutine in the specified worker to execute the specified HVML program.
-1. The `load` and `call` tags use the `within` attribute to specify the new traveler name.
-1. In the `load` tag, use the new `onto` attribute to specify the renderer page information.
-1. `idle` and renderer events on the `$CRTN` predefined variable.
+1. `load` and `call` tags use `within` attribute to specify the new traveler name.
+1. In `load` tag, use the new `onto` attribute to specify the renderer page information.
+1. `idle` and renderer events on `$CRTN` predefined variable.
 1. When `load` and `call` are executed asynchronously, the return value is a native entity representing the new coroutine. The native entity should provide the `id` attribute to return the identifier of the new coroutine.
 
 Related chapters:
@@ -7727,11 +7728,11 @@ Related chapters:
 - [2.5.17) `load` and `exit` labels] (#2517-load-and-exit-labels)
 - [2.1.6.3) Predefined variables] (#2163-predefined variables)
 
-##### RC5.4) HVML URI schema and coroutine descriptor
+##### RC5.4) HVML URI Schema and Coroutine Descriptor
 
 The main revisions are as follows:
 
-1. The `hvml` schema
+1. `hvml` schema
 1. `hvml+cor` schema
 1. Coroutine descriptor
 
@@ -7740,7 +7741,7 @@ Related chapters:
 - [2.1.19) HVML URI schema] (#2119-hvml-uri-schema)
 - [2.2.3) Common denoted nouns] (#223-Common denoted nouns)
 
-##### RC5.5) Enhanced `sort` tag
+##### RC5.5) Enhance `sort` Tag
 
 The main revisions are as follows:
 
@@ -7748,9 +7749,9 @@ The main revisions are as follows:
 
 Related chapters:
 
-- [2.5.9) `sort` label] (#259-sort-label)
+- [2.5.9) `sort` tag] (#259-sort-tag)
 
-##### RC5.6) Adjust the `observe` tag
+##### RC5.6) Adjust the `observe` Tag
 
 The main revisions are as follows:
 
@@ -7760,7 +7761,7 @@ Related chapters:
 
 - [2.5.11) `observe`, `forget` and `fire` labels] (#2511-observe-forget-and-fire-labels)
 
-##### RC5.7) Frame tag content
+##### RC5.7) Frame Tag Content
 
 The main revisions are as follows:
 
@@ -7770,11 +7771,11 @@ Related chapters:
 
 - [2.3.4) `hvml` tag content](#234-hvml-tag content)
 
-##### RC5.8) Other revisions
+##### RC5.8) Other Revision
 
 The main revisions are as follows:
 
-1. The `load` tag supports the predefined page type `_inherit`, which means inheriting the document and renderer pages of the parent coroutine (only those in the same line).
+1. `load` tag supports the predefined page type `_inherit`, which means inheriting the document and renderer pages of the parent coroutine (only those in the same line).
 1. Adjust the common window prefix to `plainwin:`.
 1. Allow hashtag comments.
 1. Allow `head` and `body` to be optional tags.
@@ -7783,8 +7784,8 @@ The main revisions are as follows:
 1. Use "walker" instead of "session".
 1. `$SESSION` is renamed to `$RUNNER`; `$HVML` is renamed to `$CRTN`; `$SYSTEM` is renamed to `$SYS`; `$REQUEST` is renamed to `$REQ`.
 1. Adjust the processing rules when `iterate` does not use the iterative executor.
-1. The `archetype` tag adds the `type` attribute to define the text type.
-1. When the `include` or `call` element is applied to an operation group, if the actual parameter passed is an object, it can be processed into multiple formal parameters by using a temporary variable, which is convenient for code writing.
+1. `archetype` tag adds the `type` attribute to define the text type.
+1. When `include` or `call` element is applied to an operation group, if the actual parameter passed is an object, it can be processed into multiple formal parameters by using a temporary variable, which is convenient for code writing.
 1. Add the description of the expression `${...}`: used to construct a valid variable name.
 1. Correct the use of the prefix defined by the SYSTEM identifier in DOCTYPE: it is used on external tags that may conflict with HVML tags, instead of HVML tags.
 
@@ -7794,7 +7795,7 @@ Related chapters:
 - [2.5.17) `load` and `exit` labels] (#2517-load-and-exit-labels)
 - [3.1) Writing HVML documentation] (#31-writing-hvml-documentation)
 - [3.1.2.5) OPTIONAL-TAGS] (#3125-OPTIONAL-TAGS)
-- [2.5.1) `init` label] (#251-init-label)
+- [2.5.1) `init` tag] (#251-init-tag)
 - [2.5.7.2) don't use iterative executor] (#2572 - don't use iterative executor)
 - [2.4.1) `archetype` tag] (#241-archetype-tag)
 - [2.5.10) `define` and `include` tags] (#2510-define-and-include-tags)
@@ -7803,13 +7804,13 @@ Related chapters:
 
 #### RC4) 220601
 
-##### RC4.1) Refactored `Fundamentals` section
+##### RC4.1) Refactor `Fundamental` Section
 
 The main revisions are as follows:
 
-1. Added several terms.
+1. Add several terms.
 1. Add the description of HVML stack virtual machine.
-1. Added an overview of various elements, supplemented the relationship between various elements and virtual machine stack frames and context variables.
+1. Add an overview of various elements, supplemented the relationship between various elements and virtual machine stack frames and context variables.
 1. Add a description of the state of the coroutine.
 
 Related chapters:
@@ -7817,7 +7818,7 @@ Related chapters:
 - [2.1) Rationale] (#21-Rationale)
 - [2.1.16) HVML coroutine state] (#2116-hvml-coroutine state)
 
-##### RC4.2) MIME types and data
+##### RC4.2) MIME Types and Data
 
 The main revisions are as follows:
 
@@ -7827,7 +7828,7 @@ Related chapters:
 
 - [2.1.18) MIME-types] (#2118-mime-types)
 
-##### RC4.3) `inherit` tag
+##### RC4.3) `inherit` Tag
 
 The main revisions are as follows:
 
@@ -7835,9 +7836,9 @@ The main revisions are as follows:
 
 Related chapters:
 
-- [2.5.18) `inherit` label] (#2518-inherit-label)
+- [2.5.18) `inherit` tag] (#2518-inherit-tag)
 
-##### RC4.4) `sleep` tag
+##### RC4.4) `sleep` Tag
 
 The main revisions are as follows:
 
@@ -7847,7 +7848,7 @@ Related chapters:
 
 - [2.5.19) `sleep` tag] (#2519-sleep-tag)
 
-##### RC4.5) Adjust context variables
+##### RC4.5) Adjust Context Variables
 
 The main revisions are as follows:
 
@@ -7863,7 +7864,7 @@ Related chapters:
 - [2.6.1.5) Builtin executor for numeric values] (#2615 - Builtin executor for numeric values)
 - [2.5.11) `observe`, `forget` and `fire` labels] (#2511-observe-forget-and-fire-labels)
 
-##### RC4.6) Adjustment of elements and attributes
+##### RC4.6) Adjustment of Elements and Attributes
 
 The main revisions are as follows:
 
@@ -7880,7 +7881,7 @@ Related chapters:
 - [2.5.17) `load` and `exit` labels] (#2517-load-and-exit-labels)
 - [2.5.16) `request` tag] (#2516-request-tag)
 
-##### RC4.7) `differ` tag
+##### RC4.7) `differ` Tag
 
 The main revisions are as follows:
 
@@ -7893,49 +7894,49 @@ Related chapters:
 
 #### RC3) 220501
 
-##### RC3.1) Adjust action label
+##### RC3.1) Adjust Action Tags
 
 Remove `connect`, `send` and `disconnect` labels, and adjust related functions to use `$STREAM`.
 
-Use the `exit` label to exit the execution of the program and define the return data of the program.
+Use the `exit` tag to exit the execution of the program and define the return data of the program.
 
-Adjust the functionality of the `back` label, used to unwind stack frames.
+Adjust the functionality of the `back` tag, used to unwind stack frames.
 
-Added handling details of the `from` attribute of the `define` element.
+Add handling details of the `from` attribute of the `define` element.
 
-The `with` attribute can be used to specify the operation group in the `observe` tag.
+`with` attribute can be used to specify the operation group in the `observe` tag.
 
-The `request` tag is only used to make a request to the renderer.
+`request` tag is only used to make a request to the renderer.
 
-Named variables maintained in context variables, called "temporary variables", are no longer confused with "local variables". Use the `temporarily` adverb attribute (which can be abbreviated as `temp`) to define temporary variables instead of the `locally` attribute.
+Name variables maintained in context variables, called "temporary variables", are no longer confused with "local variables". Use the `temporarily` adverb attribute (which can be abbreviated as `temp`) to define temporary variables instead of the `locally` attribute.
 
-Adjusted the role of `at` attribute in `init` and `define` tags: `at` attribute is now used to define the namespace of variable or operation group names.
+Adjuste the role of `at` attribute in `init` and `define` tags: `at` attribute is now used to define the namespace of variable or operation group names.
 
 In the `request`, `bind` and `load` tags, in the case of asynchronous execution, if you use the `as` attribute to name, you can use the `at` attribute to define the namespace of the name.
 
 Wildcards or regular expressions can be used in the `for` attribute value of the `observe` and `forget` tags.
 
-Defines the contents of the context variable for the `observe` action group.
+Define the contents of the context variable for the `observe` action group.
 
-Adjusted the description order of action tags.
+Adjuste the description order of action tags.
 
 Related chapters:
 
 - [2.5.10) `define` and `include` tags] (#2510-define-and-include-tags)
 - [2.5.11) `observe`, `forget` and `fire` labels] (#2511-observe-forget-and-fire-labels)
-- [2.5.15) `back` label] (#2515-back-label)
+- [2.5.15) `back` tag] (#2515-back-tag)
 - [2.5.16) `request` tag] (#2516-request-tag)
 - [2.5.17) `load` and `exit` labels] (#2517-load-and-exit-labels)
 
-##### RC3.2) HVML program running status
+##### RC3.2) HVML Program Running Status
 
-Defines the running state of an HVML program:
+Define the running state of an HVML program:
 
 Related chapters:
 
 - [2.1.16) HVML program running status] (#2116-hvml-program running status)
 
-##### RC3.3) The anchor name of the element can be used to locate the preceding stack frame
+##### RC3.3) Use the Element's Anchor Name to Locate the Front Stack Frame
 
 The preceding stack frame can be located using the element's anchor name, allowing context variables in the preceding stack frame to be specified in the evaluation expression.
 
@@ -7944,9 +7945,9 @@ Related chapters:
 - [2.1.6) Variables] (#216-Variables)
 - [2.2.2) Syntax of evaluated expressions] (#222 - Syntax of evaluated expressions)
 
-##### RC3.5) eJSON syntax enhancement
+##### RC3.5) eJSON Syntax Enhancement
 
-Signed longs and unsigned longs can be expressed in hexadecimal using the `0x` prefix.
+Sign longs and unsigned longs can be expressed in hexadecimal using the `0x` prefix.
 
 An empty sequence of bytes can be defined.
 
@@ -7954,7 +7955,7 @@ Related chapters:
 
 - [2.2.5) eJSON syntax] (#225-ejson-syntax)
 
-##### RC3.6) `$STREAM` predefined variable
+##### RC3.6) `$STREAM` Predefined Variable
 
 A basic description of the built-in dynamic variable `$STREAM`.
 
@@ -7962,7 +7963,7 @@ Related chapters:
 
 - [2.1.6.3) Predefined variables] (#2163-predefined variables)
 
-##### RC3.7) Adjust the description syntax of dynamic object methods
+##### RC3.7) Adjust the Description Syntax of Dynamic Object Methods
 
 Native entity types are described using the form `native/<entityName>`, where `<entityName>` is the name of this native entity type. No longer use `specific` aliases.
 
@@ -7970,7 +7971,7 @@ Related chapters:
 
 - [2.2.4) Description syntax for dynamic object methods] (#224-Dynamic object method description syntax)
 
-##### RC3.8) Naming rules for event names
+##### RC3.8) Naming Rules for Event Names
 
 The token that defines the name of the event.
 
@@ -7983,16 +7984,16 @@ Related chapters:
 
 Labels such as `init`, `update` no longer support external executors.
 
-Only the `iterate` tag supports class-based external executors.
+Only `iterate` tag supports class-based external executors.
 
-The `sort` tag supports external functions as sorters.
+`sort` tag supports external functions as sorters.
 
 Related chapters:
 
-- [2.5.9) `sort` label] (#259-sort-label)
+- [2.5.9) `sort` tag] (#259-sort-tag)
 - [2.6.2) External Actuator] (#262-External Actuator)
 
-##### RC3.10) Coroutines and their states
+##### RC3.10) Coroutines and Their States
 
 Supplements the relationship between interpreter instance, renderer session, application and walker, and defines the running state and rendering state related to coroutines.
 
@@ -8004,25 +8005,25 @@ Related chapters:
 
 #### RC2) 220401
 
-##### RC2.1) Initialization and reset methods of user-defined temporary variables
+##### RC2.1) Initialization and Reset Methods of User-Defined Temporary Variables
 
 Use `temporarily` to create or reset a temporary variable.
 
 The name of the temporary variable can be specified in `as` or `at` of the `init` tag.
 
-Locally named variables can be referenced directly using their names, and have a higher name lookup priority than static variables.
+Locally name variables can be referenced directly using their names, and have a higher name lookup priority than static variables.
 
 Clearly distinguish static named variables from locally named variables.
 
 Related chapters:
 
 - [2.1.6) Variables] (#216-Variables)
-- [2.5.1) `init` label] (#251-init-label)
+- [2.5.1) `init` tag] (#251-init-tag)
 - [2.1.14) Adverb attributes] (#2114-adverb attributes)
 
-##### RC2.2) Adjust the description syntax of dynamic object methods
+##### RC2.2) Adjust the Description Syntax of Dynamic Object Methods
 
-Adjusted the description syntax of dynamic object methods to be more rigorous.
+Adjust the description syntax of dynamic object methods to be more rigorous.
 
 Related chapters:
 
@@ -8030,7 +8031,7 @@ Related chapters:
 
 ##### RC2.3) Context variable enhancements and tweaks
 
-Remove `$&`: Refers to the auxiliary data (auxiliary data) of the pre-operation, which is initially the data after evaluating the attribute value of the preposition attribute with; the iterative executor may modify this data.
+Remove `$&`: It refers to the auxiliary data (auxiliary data) of the pre-operation, which is initially the data after evaluating the attribute value of the preposition attribute with; the iterative executor may modify this data.
 
 Context variable `$^` changed to `$<` for better recognition:
 
@@ -8041,11 +8042,11 @@ Related chapters:
 - [2.1.6) Variables] (#216-Variables)
 - [2.2.2) Syntax of evaluated expressions] (#222 - Syntax of evaluated expressions)
 
-##### RC2.4) Enhancements to the `iterate` element
+##### RC2.4) Enhancement to `iterate` Element
 
-Supports directly using the `with` attribute to define expressions that produce iteration results.
+Support directly using the `with` attribute to define expressions that produce iteration results.
 
-Supports using the `onlyif` and `while` attributes to determine whether to terminate the iteration before and after generating the iteration result respectively. The attribute value processing of these two attributes is similar to the `on` and `with` attributes, that is, expressions are prioritized.
+Support using the `onlyif` and `while` attributes to determine whether to terminate the iteration before and after generating the iteration result respectively. The attribute value processing of these two attributes is similar to the `on` and `with` attributes, that is, expressions are prioritized.
 
 Support the use of the `nosetotail` adverb attribute to use the result of the previous iteration as the input for the next iteration.
 
@@ -8056,7 +8057,7 @@ Related chapters:
 - [2.5.7.2) don't use iterative executor] (#2572 - don't use iterative executor)
 - [3.1.2.4) Action element attributes] (#3124 - Action element attributes)
 
-##### RC2.5) Adjust the content of the first chapter
+##### RC2.5) Adjust the Content of the First Chapter
 
 Adjusted the first chapter title from "Background" to "Introduction" and reorganized the content.
 
@@ -8064,17 +8065,17 @@ Related chapters:
 
 - [1) Introduction] (#1-Introduction)
 
-##### RC2.6) Exception related enhancements
+##### RC2.6) Exception related Enhancement
 
-Added `Unsupported` exception.
+Add `Unsupported` exception.
 
-Clarified ignorable and non-ignorable exceptions, and how to handle the `silently` adverb attribute.
+Clarify ignorable and non-ignorable exceptions, and how to handle the `silently` adverb attribute.
 
 Related chapters:
 
 - [2.1.12) Error and exception handling] (#2112-Error and exception handling)
 
-##### RC2.7) can name an `observe`
+##### RC2.7) Name an `observe`
 
 An observation can be named using `observe` so that a specific observation can be removed.
 
@@ -8082,7 +8083,7 @@ Related chapters:
 
 - [2.5.10) `observe`, `forget` and `fire` labels] (#2510-observe-forget-and-fire-labels)
 
-##### RC2.8) Enhanced `request`
+##### RC2.8) Enhance `request`
 
 A target document location (a collection of elements) can be asked to execute a method using `request`.
 
@@ -8090,20 +8091,20 @@ Related chapters:
 
 - [2.5.11) `request` tag] (#2511-request-tag)
 
-##### RC2.9) Adjust preposition attributes
+##### RC2.9) Adjust Preposition Attributes
 
 Use `against` to define unique keys for collections in `init` and sort by in `sort`. The `via` attribute is only used to define the method of the request.
 
-Use the `with` attribute to define filtering data for external executors, no longer use the `via` attribute.
+Use `with` attribute to define filtering data for external executors, no longer use the `via` attribute.
 
 Related chapters:
 
 - [2.1.13) Prepositional properties] (#2113-prepositional properties)
-- [2.5.1) `init` label] (#251-init-label)
-- [2.5.9) `sort` label] (#259-sort-label)
+- [2.5.1) `init` tag] (#251-init-tag)
+- [2.5.9) `sort` tag] (#259-sort-tag)
 - [2.6.2) External Actuator] (#262-External Actuator)
 
-##### RC2.10) Adjust the syntax of responsive processing
+##### RC2.10) Adjust the Syntax of Reactive processing
 
 Use the `responsively` adverb attribute to define the text content of skeleton elements as responsive, no longer use `{{$...}}` syntax.
 
@@ -8114,15 +8115,15 @@ Related chapters:
 - [2.7) Reactive processing] (#27-Reactive processing)
 - [2.1.14) Adverb attributes] (#2114-adverb attributes)
 
-##### RC2.11) Enhanced `bind` tag
+##### RC2.11) Enhance `bind` Tag
 
-Enhance the `bind` tag to support using content to define the expression to bind.
+Enhance `bind` tag to support using content to define the expression to bind.
 
 Related chapters:
 
 - [2.5.13) `bind` tag] (#2513-bind-tag)
 
-##### RC2.12) Composite evaluation expressions
+##### RC2.12) Compound Evaluation Expressions
 
 Support compound evaluation expression (CHEE, compound evaluation expression).
 
@@ -8130,7 +8131,7 @@ Related chapters:
 
 - [2.2.2) Syntax of evaluated expressions] (#222 - Syntax of evaluated expressions)
 
-##### RC2.13) Adjust booleanization rules
+##### RC2.13) Adjust Booleanization Rules
 
 When booleanizing, the numerical processing is no longer performed.
 
@@ -8140,21 +8141,21 @@ Related chapters:
 
 #### RC1) 220209
 
-##### RC1.1) Adjustment of context variables
+##### RC1.1) Adjustment of Context Variables
 
 Remove the following context variables:
 
-- `$*`: Refers to the type of the pre-operation result data, represented by a string, the same as the return value of `$DATA.type($?)`.
-- `$#`: Refers to the number of data items contained in the pre-operation result data, same as the return value of `$DATA.count($?)`.
+- `$*`: It refers to the type of the pre-operation result data, represented by a string, the same as the return value of `$DATA.type($?)`.
+- `$#`: It refers to the number of data items contained in the pre-operation result data, same as the return value of `$DATA.count($?)`.
 - `$&`: As the iterator of the current iteration, it is essentially the native entity corresponding to the iterator.
 
 Context variable `$~` changed to `$^` for better recognition:
 
-- `$^`: Refers to the input data of the pre-operation, which is initially the data after evaluating the attribute value of the preposition attribute `on`; the iterative executor may modify this value.
+- `$^`: It refers to the input data of the pre-operation, which is initially the data after evaluating the attribute value of the preposition attribute `on`; the iterative executor may modify this value.
 
 Add the following context variables:
 
-- `$&`: Refers to the auxiliary data of the preceding operation, which is initially the data after evaluating the attribute value of the preposition attribute `with`; the iterative executor may modify this value.
+- `$&`: It refers to the auxiliary data of the preceding operation, which is initially the data after evaluating the attribute value of the preposition attribute `with`; the iterative executor may modify this value.
 - `$!`: User-defined data saved in the pre-operation execution stack, used to define temporary data.
 
 Added description: The difference between named variables and context variables.
@@ -8164,17 +8165,17 @@ Related chapters:
 - [2.1.6) Variables] (#216-Variables)
 - [2.2.2) Syntax of evaluated expressions] (#222 - Syntax of evaluated expressions)
 
-##### RC1.2) `init` tag enhancements
+##### RC1.2) `init` Tag Enhancement
 
-Use the `at` attribute in the `init` tag to overwrite named variables already in the current namespace.
+Use `at` attribute in `init` tag to overwrite named variables already in the current namespace.
 
-When the `as` or `at` attribute is not specified in the `init` tag, the user-defined data in the definition or override.
+When `as` or `at` attribute is not specified in `init` tag, the user-defined data in the definition or override.
 
 Related chapters:
 
-- [2.5.1) `init` label] (#251-init-label)
+- [2.5.1) `init` tag] (#251-init-tag)
 
-##### RC1.3) Additional instructions for numeric actuators
+##### RC1.3) Additional Clarifications for Numeric Executors
 
 Added a description for the initial data of the numerical actuator.
 
@@ -8182,9 +8183,9 @@ Related chapters:
 
 - [2.6.1.5) Builtin executor for numeric values] (#2615 - Builtin executor for numeric values)
 
-##### RC1.4) Enhancement of `observe` tag
+##### RC1.4)`observe` Tag Enhancement 
 
-Use the `at` attribute in the `observe` tag to observe the data changes corresponding to the named variables.
+Use `at` attribute in `observe` tag to observe the data changes corresponding to the named variables.
 
 In order to observe the abnormal state when the named variable is initialized asynchronously, the exception data type is added.
 
@@ -8193,7 +8194,7 @@ Related chapters:
 - [2.5.10) `observe`, `forget` and `fire` labels] (#2510-observe-forget-and-fire-labels)
 - [2.1.3) Extended data types] (#213-Extended data types)
 
-##### RC1.5) Skeleton element enhancements
+##### RC1.5) Skeleton Element Enhancement
 
 Skeleton elements are defined as generic action elements with default actions, and thus can be nested with HVML action elements.
 
@@ -8202,11 +8203,11 @@ Related chapters:
 - [2.1.11.1) Action elements used to manipulate data] (#21111 - Action elements used to manipulate data)
 - [3.1.2) Elements] (#312-Elements)
 
-##### RC1.6) Enhancements to property value operators
+##### RC1.6) Enhancement to Attribute Value Operators
 
-In the `update` action element, when the data specified by the `with` attribute is a string type and the modification action is `displace`, the `*=` attribute value operator is added.
+In `update` action element, when the data specified by `with` attribute is a string type and the modification action is `displace`, the `*=` attribute value operator is added.
 
-In the `update` action element, when the data specified by the `with` attribute is numeric data and the modification action is `displace`, you can use `+=`, `-=`, `*=`, `/= `, `%=` and other attribute value operators.
+In `update` action element, when the data specified by `with` attribute is numeric data and the modification action is `displace`, you can use `+=`, `-=`, `*=`, `/= `, `%=` and other attribute value operators.
 
 Related chapters:
 
@@ -8216,7 +8217,7 @@ Related chapters:
 
 Old matching rules:
 
-- If the `for` attribute value is `*` or an empty string, it is equivalent to matching any value.
+- If `for` attribute value is `*` or an empty string, it is equivalent to matching any value.
 - If the attribute value does not use the prefix described below, or is prefixed with the `\` character, an exact match is performed. If the current value is a string, the `for` attribute value is treated as a string to perform string matching; if the current value is a number, the `for` attribute value is treated as a number to perform matching.
 
 If the current value is a string, the following prefixes can be used to indicate matching conditions other than exact matching:
@@ -8232,19 +8233,19 @@ If the current value is a number, the following prefixes can be used to indicate
 - `<`: Indicates that the current value is less than the value given after the prefix, such as `< 30`.
 - `!`: Indicates that the current value is not equal to the value given after the prefix, such as `! 30`.
 
-### Attachment 2) Contents to be determined
+### Attachment 2) Undetermined Content
 
-#### TBD 1) Extended data type
+#### TBD 1) Extended Data Types
 
-##### TBD 1.1) Extended data types
+##### TBD 1.1) Extended Data Types
 
 1) Complex numbers and their operations
 
 2) Matrix and its operations
 
-#### TBD2) Action elements
+#### TBD2) Action Element
 
-##### TBD2.1) `pipe` tag
+##### TBD2.1) `pipe` Tag
 
 The `pipe` tag is used to pipe a byte sequence, string, or output stream to another thing that accepts an input stream.
 
@@ -8264,11 +8265,11 @@ We can also pipe the output stream to a subprocess that executes a specific prog
      </pipe>
 ```
 
-The `pipe` tag will always read data from the stream entity specified by the `on` attribute, and write the result to the stream entity specified by the `with` attribute. By default, when the stream entity specified by the `on` attribute is closed, `pipe` ends execution, and its result data is the stream entity specified by the `with` attribute.
+`pipe` tag will always read data from the stream entity specified by `on` attribute, and write the result to the stream entity specified by the `with` attribute. By default, when the stream entity specified by the `on` attribute is closed, `pipe` ends execution, and its result data is the stream entity specified by the `with` attribute.
 
-When the data specified by the `on` attribute is a byte sequence or a string, it will correspond to a virtual stream entity, the content of which is the specified byte sequence or string, and the file will be received after reading these contents Tail flag indicating that the stream entity has been closed.
+When the data specified by `on` attribute is a byte sequence or a string, it will correspond to a virtual stream entity, the content of which is the specified byte sequence or string, and the file will be received after reading these contents Tail flag indicating that the stream entity has been closed.
 
-We can use the `asynchronously` adverb attribute to execute `pipe` operations asynchronously:
+We can use `asynchronously` adverb attribute to execute `pipe` operations asynchronously:
 
 ```hvml
      <pipe on="$STREAM.in" with="$STREAM.open('exe:///usr/bin/wc')"
@@ -8279,11 +8280,11 @@ We can use the `asynchronously` adverb attribute to execute `pipe` operations as
      </pipe>
 ```
 
-##### TBD2.2) `connect`, `send` and `disconnect` tags
+##### TBD2.2) `connect`, `send` and `disconnect` Tags
 
-As mentioned earlier, the `connect` tag defines a persistent connection to an external data source, such as packets from MQTT or a local data bus (such as the data bus dBus commonly used in Linux desktop systems); while the `disconnect` tag closes a previously established connection. A long connection data source.
+As mentioned earlier, `connect` tag defines a persistent connection to an external data source, such as packets from MQTT or a local data bus (such as the data bus dBus commonly used in Linux desktop systems); while the `disconnect` tag closes a previously established connection. A long connection data source.
 
-The `send` tag is used to send a synchronous or asynchronous message on a connected persistent connection data source. For example, when sending a request to an external module or a remote computer through MQTT or a local data bus, we use the `send` element to send an asynchronous message, and then do corresponding processing in another HVML element defined by the `observe` tag. For example, we want to issue a remote procedure call to the system daemon to get the list of currently available WiFi hotspots through the hiDataBus protocol:
+`send` tag is used to send a synchronous or asynchronous message on a connected persistent connection data source. For example, when sending a request to an external module or a remote computer through MQTT or a local data bus. We use `send` element to send an asynchronous message, and then do corresponding processing in another HVML element defined by `observe` tag. For example, we want to issue a remote procedure call to the system daemon to get the list of currently available WiFi hotspots through the hiDataBus protocol:
 
 ```hvml
 </hvml>
@@ -8310,7 +8311,7 @@ The `send` tag is used to send a synchronous or asynchronous message on a connec
 </hvml>
 ```
 
-Normally, when a synchronous request is used, the execution result data of the `send` element is the return result of the request; if an asynchronous request is used, the operation result data of the `send` element is the string `ok`. When making an asynchronous request, generally follow-up processing should be done in the corresponding `observe` element.
+Normally, when a synchronous request is used, the execution result data of `send` element is the return result of the request. If an asynchronous request is used, the operation result data of `send` element is the string `ok`. When making an asynchronous request, generally follow-up processing should be done in the corresponding `observe` element.
 
 ```hvml
     <body>
@@ -8347,11 +8348,11 @@ Normally, when a synchronous request is used, the execution result data of the `
     </body>
 ```
 
-##### TBD2.3) External function updater
+##### TBD2.3) External Function Updater
 
-In the `update` tag, `by` specifies an external function executor; when the modification action given by the `to` attribute cannot complete the expected modification operation, the external function executor can be used. When the `by` attribute is specified, the `to` attribute value is ignored.
+In `update` tag, `by` specifies an external function executor; when the modification action given by the `to` attribute cannot complete the expected modification operation, the external function executor can be used. When the `by` attribute is specified, the `to` attribute value is ignored.
 
-External functions are mainly used in the `update` tag to complete complex update operations. The prototypes of all event handlers are:
+External functions are mainly used in `update` tag to complete complex update operations. The prototypes of all event handlers are:
 
 ```python
 def event_handler (on_value, with_value, root_in_scope):
@@ -8359,9 +8360,9 @@ def event_handler (on_value, with_value, root_in_scope):
 
 in,
 
-- `on_value` is the value of the `on` attribute of the `update` element.
-- `with_value` is the value of the `with` attribute of the `update` element.
-- `root_in_scope` is the current operating scope determined by the `in` attribute of the `update` element.
+- `on_value` is the value of `on` attribute of `update` element.
+- `with_value` is the value of `with` attribute of `update` element.
+- `root_in_scope` is the current operating scope determined by `in` attribute of `update` element.
 
 For example, for the change event of battery power, its `payload` contains two key-value pairs `level` and `charging` as shown in 2.8), which respectively indicate the current power percentage and whether it is charging. Therefore, its corresponding executor can be implemented as:
 
@@ -8385,7 +8386,7 @@ def on_battery_changed(on_value, with_value, root_in_scope):
 
 The above script sets different battery icons for different power ranges, so as to show the user the remaining power information of the current battery.
 
-##### TBD2.4) Miscellaneous
+##### TBD2.4) Misc
 
 Virtual DOM technology provides some benefits as follows:
 
@@ -8397,17 +8398,17 @@ Alternatively, we can use the `by` attribute of the `init` element to specify an
 - `connect`: This tag defines a connection to an external data source, such as packets from MQTT or a local data bus (such as the data bus dBus commonly used in Linux desktop systems).
 - `disconnect`: This tag closes a previously established connection to an external data source.
 
-- The `connect` tag is used to connect to a specified external data source and bind a variable name.
-- The `send` tag is used to send a message on the specified persistent connection.
-- The `disconnect` tag is used to explicitly close a previously established connection to an external data source.
+- `connect` tag is used to connect to a specified external data source and bind a variable name.
+- `send` tag is used to send a message on the specified persistent connection.
+- `disconnect` tag is used to explicitly close a previously established connection to an external data source.
 
-- `at`: In the `connect` action element, it is used to define the external data source that the action depends on, and its attribute value is usually a URL, such as `tcp://foo.com:2345`, `unix:/ //var/run/hibus.sock`.
-- `for`: In the `connect` tag, it is used to define the protocol or purpose.
-- `with`: Define the parameters when sending the request or message in the `send` element.
+- `at`: In `connect` action element, it is used to define the external data source that the action depends on, and its attribute value is usually a URL, such as `tcp://foo.com:2345`, `unix:/ //var/run/hibus.sock`.
+- `for`: In `connect` tag, it is used to define the protocol or purpose.
+- `with`: Define the parameters when sending the request or message in `send` element.
 
-The `request` tag makes a synchronous or asynchronous request on an external data source.
+`request` tag makes a synchronous or asynchronous request on an external data source.
 
-When getting data from an external data source, we use the `at` attribute to specify the URL, the `with` attribute to specify the request parameters, and the `via` attribute to specify the request method (such as `GET`, `POST`, `DELETE`, etc.) :
+When getting data from an external data source, we use `at` attribute to specify the URL, `with` attribute to specify the request parameters, and `via` attribute to specify the request method (such as `GET`, `POST`, `DELETE`, etc.) :
 
 ```hvml
      <request at="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
@@ -8429,24 +8430,24 @@ The above usage is similar to `init`, but `request` can specify the processing m
 
 In this case, we can use the following result processing methods:
 
-- `save:` save to a local file. The execution result of this operation is the full file path after saving.
-- `filter:` creates a subprocess and a pipe and uses the pipe as the standard input of the subprocess, then executes the specified program in the subprocess, and writes the request result to the pipe. The result of this operation is the standard output (sequence of bytes) of the child process.
+- `save:` Save to a local file. The execution result of this operation is the full file path after saving.
+- `filter:` Create a subprocess and a pipe and uses the pipe as the standard input of the subprocess, then executes the specified program in the subprocess, and writes the request result to the pipe. The result of this operation is the standard output (sequence of bytes) of the child process.
 
-When the current HVML program is rendered in a modal window, the `terminated:success` event of the program can be observed and then processed. If the current HVML program is not rendered in the modal dialog box, the data will be provided as request data (corresponding to `$REQ` built-in global variable) to the target to return the corresponding HVML program. At this time, the HVML program will perform a reload Operation (similar to the browser's function of refreshing the page).
+When the current HVML program is rendered in a modal window, `terminated:success` event of the program can be observed and then processed. If the current HVML program is not rendered in the modal dialog box, the data will be provided as request data (corresponding to `$REQ` built-in global variable) to the target to return the corresponding HVML program. At this time, the HVML program will perform a reload Operation (similar to the browser's function of refreshing the page).
 
-The `exit` element does not produce any result data and therefore cannot contain child action elements.
+`exit` element does not produce any result data and therefore cannot contain child action elements.
 
-Under normal circumstances, when the `load` element loads an HVML program and renders it in a modal window, the execution result data is the value of the `with` attribute of the `exit` element in the new HVML program; if it is rendered in a new normal window , the operation result data of the `load` element is the string `ok` under normal circumstances; if it is rendered in another existing window, the HVML program running in this window will be terminated and a new HVML will be rendered in the current window program content.
+Under normal circumstances, when `load` element loads an HVML program and renders it in a modal window, the execution result data is the value of `with` attribute of  `exit` element in the new HVML program; if it is rendered in a new normal window , the operation result data of `load` element is the string `ok` under normal circumstances; if it is rendered in another existing window, the HVML program running in this window will be terminated and a new HVML will be rendered in the current window program content.
 
-The `exit` label is used to terminate the current HVML program and return the return value to the specified target HVML program.
+`exit` tag is used to terminate the current HVML program and return the return value to the specified target HVML program.
 
-The `load` tag supports the following adverb attributes:
+`load` tag supports the following adverb attributes:
 
-- `synchronously`: load synchronously, the default behavior. The `load` element will wait for the new HVML program to exit, equivalent to creating a modal window.
-- `asynchronously`: load asynchronously. The `load` element does not wait for the new HVML program to exit.
-- `concurrently`: Execute HVML programs in parallel. If the interpreter supports runners, the value of the `as` attribute is used to identify a runner.
+- `synchronously`: Load synchronously and default behavior. The `load` element will wait for the new HVML program to exit, equivalent to creating a modal window.
+- `asynchronously`: Load asynchronously. `load` element does not wait for the new HVML program to exit.
+- `concurrently`: Execute HVML programs in parallel. If the interpreter supports runners, the value of `as` attribute is used to identify a runner.
 
-### Appendix 3) List of contributors
+### Appendix 3) Contributor List
 
 The order of this list is arranged from early to late according to the contribution time:
 
