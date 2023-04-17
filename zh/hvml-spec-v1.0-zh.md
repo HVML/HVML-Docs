@@ -1301,7 +1301,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 - `idle`：当前 HVML 协程正在监听 `$CRTN` 上的 `idle` 事件，且由于未收到任何事件而触发 `idle` 事件。
 - `rdrState:pageClosed`：协程对应的渲染器页面被用户关闭。
 - `rdrState:pageSuppressed`：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
-- `rdrState:pageReload`：当前协程的文档内容重新装载到渲染器，渲染器状态调整为 `regular`。
+- `rdrState:pageReloaded`：当前协程的文档内容重新装载到渲染器，渲染器状态调整为 `regular`。
 - `rdrState:connLost`：协程所在行者丢失渲染器的连接。
 
 `$CRTN` 变量本质上是一个必要的协程级动态对象。
@@ -5285,8 +5285,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 ```hvml
     <request on $RDR to 'callMethod' >
         {
-             element: "main",
-             property: "plainwin:hello@main",
+             name: "plainwin:hello@main",
              data: {
                     method: 'dumpContents',
                     arg: 'screenshot.png'
