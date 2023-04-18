@@ -151,6 +151,7 @@ Language: Chinese
    + [附.1) 修订记录](#附1-修订记录)
       * [RCb) 230430](#rcb-230430)
          - [RCb.1) 调整页面及工作区的名称规范](#rcb1-调整页面及工作区的名称规范)
+         - [RCb.2) 调整渲染器相关事件](#rcb2-调整渲染器相关事件)
       * [RCa) 230331](#rca-230331)
          - [RCa.1) 调整 `DOCTYPE` 的 `SYSTEM` 标识符规则](#rca1-调整-doctype-的-system-标识符规则)
          - [RCa.2) 调整 `catch` 动作元素的结果](#rca2-调整-catch-动作元素的结果)
@@ -1299,9 +1300,10 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 另外，我们还可以通过 `$CRTN` 对象观察一些全局事件以及当前协程渲染状态的变化，从而优雅地处理渲染器页面被用户关闭或者渲染器丢失等的情形。这些事件有：
 
 - `idle`：当前 HVML 协程正在监听 `$CRTN` 上的 `idle` 事件，且由于未收到任何事件而触发 `idle` 事件。
-- `rdrState:pageClosed`：协程对应的渲染器页面被用户关闭。
+- `rdrState:pageLoaded`：当前协程的文档内容初次装载到渲染器。
 - `rdrState:pageSuppressed`：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
-- `rdrState:pageReloaded`：当前协程的文档内容重新装载到渲染器，渲染器状态调整为 `regular`。
+- `rdrState:pageReloaded`：当前协程的文档内容重新装载到渲染器。
+- `rdrState:pageClosed`：协程对应的渲染器页面被用户关闭。
 - `rdrState:connLost`：协程所在行者丢失渲染器的连接。
 
 `$CRTN` 变量本质上是一个必要的协程级动态对象。
@@ -7435,6 +7437,16 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 相关章节：
 
 - [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
+
+##### RCb.2) 调整渲染器相关事件
+
+主要修订内容如下：
+
+1. 新增 `rdrState:pageLoaded` 事件。
+
+相关章节：
+
+- [2.1.6.3) 预定义变量](#2163-预定义变量)
 
 #### RCa) 230331
 
