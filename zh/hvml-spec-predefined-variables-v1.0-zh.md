@@ -83,7 +83,8 @@ Language: Chinese
       * [3.4.1) `doctype` 方法](#341-doctype-方法)
       * [3.4.2) `select` 方法](#342-select-方法)
       * [3.4.3) `query` 方法](#343-query-方法)
-      * [3.4.4) 元素汇集实体](#344-元素汇集实体)
+      * [3.4.4) `serialize` 方法](#344-serialize-方法)
+      * [3.4.5) 元素汇集实体](#345-元素汇集实体)
    + [3.5) `RDR`](#35-rdr)
       * [3.5.1) `state` 属性](#351-state-属性)
       * [3.5.2) `connect` 方法](#352-connect-方法)
@@ -1981,7 +1982,30 @@ $DOC.query(
 1. `undefined`：错误的 CSS 选择器或者参数。
 1. 一个元素汇集实体，包含零个或多个元素。
 
-#### 3.4.4) 元素汇集实体
+#### 3.4.4) `serialize` 方法
+
+该方法串行化文档对象，字符串。
+
+```js
+$DOC.serialize(
+    [, < 'compact | loose' $method = `compact`:
+        - 'compact':    `Serialize the document compactly.`
+        - 'loose':      `Serialize the document loosely with line-breaks and indents.`
+       >
+    ]
+) string | false: `the serialized document, such as '<html><body></body></html>'`
+```
+
+该方法串行化目标文档；结果为字符串，如 `<html><body></body></html>`。
+
+**示例**
+
+```js
+$DOC.serialize
+    // '<html><body></body></html>'
+```
+
+#### 3.4.5) 元素汇集实体
 
 在元素汇集实体上，我们可以就如下键名获得对应的获取器：
 
@@ -7893,7 +7917,6 @@ $PY.info object:
         - 'copyright':      < string: `the official copyright string for the current Python version.` >
         - 'compiler':       < string: `an indication of the compiler used to build the current Python version, in square brackets (e.g., [GCC 2.7.2.2])` >
         - 'build-info':     < string: `information about the sequence number and build date and time of the current Python interpreter instance, e.g., "#67, Aug  1 1997, 22:34:28"` >
-        - 'path':           < dynamic: `to get or set the default module search path`.>
 ```
 
 该属性返回描述当前 CPython 解释器相关信息的对象。
@@ -8458,6 +8481,8 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 #### RCb) 230430
 
 1. 调整 `$CRTN.static` 和 `$CRTN.temp` 两个属性的用法。
+1. 新增 `$DOC.serialize` 方法。
+1. 移除 `$PY.info.path` 属性。
 
 #### RCa) 230331
 
