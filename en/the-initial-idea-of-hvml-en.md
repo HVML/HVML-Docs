@@ -1,22 +1,22 @@
-# Talk about HVML, its origin and future
+# Talk about HVML, Its Origin and Future
 
-Wei Yongming
+Vincent Wei
 
-HVML is a new type of high-level programming language proposed by the author in the process of developing the combined operating system. The novel "Kao Ding Ji" introduces this language as follows:
+HVML is a new type of high-level programming language proposed by the author in the process of developing the combined operating system. The novel "Biography of Coding" introduces this language as follows:
 
-> The programming language invented by Lao Wei is officially called HVML, which is only one letter different from the web page markup language HTML we know. Some friends nicknamed it "Snoring Cat". HVML is completely different from many programming languages we know, such as Basic, Python, C/C++, etc. HVML proposes a data-driven concept, and there are no flow control statements such as if-then and do-while in the code , all operations are based on data. For example, the input data of the program is an array, then we perform iterations on this array, and pick and process the elements in the array. and so on.
+> The programming language invented by Lao Wei is officially called HVML, which is only one letter different from the web page markup language HTML we know. Some friends nicknamed it "Snoring Cat". HVML is completely different from many programming languages we know, such as Basic, Python, C/C++, etc. HVML proposes a data-driven concept. And there are no flow control statements such as if-then and do-while in the code, and all operations are based on data. For example, the input data of the program is an array, then we perform iterations on this array, and pick and process the elements in the array. and so on.
 >
-> —— "Kao Ding Ji" Chapter 10
+> —— "Biography of Coding" Chapter 10
 
 This article will tell you about the origin of HVML and the author's vision for its future.
 
-### The origin of HVML
+### The Origin of HVML
 
-With the development of Internet technology and applications, the Web front-end development technology formed around HTML/CSS/JavaScript has developed rapidly, and it can even be described as "a thousand miles a day". Five years ago, front-end frameworks based on jQuery and Bootstrap became popular, and since 2019, frameworks based on virtual DOM technology have been favored by front-end developers, such as the famous React.js (<https://reactjs.org/> ), Vue.js (<https://cn.vuejs.org>), etc. It is worth noting that WeChat applets, quick apps, etc. also use this virtual DOM technology to build application frameworks.
+With the development of Internet technology and applications, the Web front-end development technology formed around HTML/CSS/JavaScript has developed rapidly, and it can even be described as "a thousand miles a day". Five years ago, front-end frameworks based on jQuery and Bootstrap became popular. And since 2019, frameworks based on virtual DOM technology have been favored by front-end developers, such as the famous React.js (<https://reactjs.org/> ), Vue.js (<https://cn.vuejs.org>), etc. It is worth noting that WeChat applets, quick apps, etc. also use this virtual DOM technology to build application frameworks.
 
 The so-called "virtual DOM" means that the front-end application creates and maintains a virtual document object tree through JavaScript, and the application script does not directly operate the real DOM tree. In the virtual DOM tree, some process control based on variables is realized through some special attributes, such as conditions, loops, etc. Virtual DOM technology provides some benefits as follows:
 
-1. Since scripts do not use script programs to directly operate the real DOM tree, on the one hand, the complexity of front-end development is simplified through the existing framework; Frequent operations on the DOM tree for content, thereby improving page rendering efficiency and user experience.
+1. Since scripts do not use script programs to directly operate the real DOM tree, on the one hand, the complexity of front-end development is simplified through the existing framework. On the other hand, frequent operations on the DOM tree for content, thereby improving page rendering efficiency and user experience.
 1. Through the virtual DOM technology, the modification of a certain data by the program can be directly reflected on the content of the data-bound page, and the developer does not need to actively or directly call the relevant interface to operate the DOM tree. This technique provides so-called "reactive" programming, which greatly reduces the developer's workload.
 
 Front-end frameworks represented by React.js and Vue.js have achieved great success. It seems that Internet companies still have a lot of money, so they can keep building all kinds of wheels recklessly.
@@ -40,7 +40,7 @@ So there is HVML. If summed up, the birth of HVML has its historical mission:
 
 This is where HVML comes in. In the future, HVML will become the preferred programming language for HybridOS App development.
 
-## HVML overview
+## HVML Overview
 
 The following uses a simple example to describe the basic appearance of HVML. For the detailed specification of HVML, interested readers can click the original link at the end of the article.
 
@@ -340,7 +340,7 @@ Obviously, if HVML is used, the development efficiency of traditional GUI applic
 
 HVML has more potential than the above examples suggest. In the future, we can even run the HVML code on the cloud, and control the interface display on the device through the cloud, thus forming a new cloud application solution.
 
-We assume that a smart bracelet displays information such as the current time, local temperature, wearer's heartbeat information and step information, and this smart bracelet exchanges information with the cloud server through MQTT (a lightweight message communication protocol), such as Send the wearer's heartbeat and step information, geographic location information to the cloud server, and obtain information such as time and weather conditions at the current location. In the traditional implementation method, we generally need to develop a GUI system running on the smart bracelet, and then communicate with the cloud to obtain data, and the modification of the interface is completely in charge of the device-side code. If you want to change the style of the interface, in most cases, you need to upgrade the firmware of the entire smart bracelet.
+We assume that a smart bracelet displays information such as the current time, local temperature, wearer's heartbeat information and step information. And this smart bracelet exchanges information with the cloud server through MQTT (a lightweight message communication protocol), such as Send the wearer's heartbeat and step information, geographic location information to the cloud server, and obtain information such as time and weather conditions at the current location. In the traditional implementation method, we generally need to develop a GUI system running on the smart bracelet, and then communicate with the cloud to obtain data. And the modification of the interface is completely in charge of the device-side code. If you want to change the style of the interface, in most cases, you need to upgrade the firmware of the entire smart bracelet.
 
 But if we use HVML, we can control the interface display of the device through the cloud. The HVML code running on the cloud looks like this:
 
@@ -393,30 +393,30 @@ But if we use HVML, we can control the interface display of the device through t
 
 The main points are as follows:
 
-1. The HTML document generated by the code or the changes to the HTML document will be sent to the device through a long connection similar to WebSocket, and the device will re-render the user interface based on this information.
+1. The HTML document generated by the code or the changes to the HTML document will be sent to the device through a long connection similar to WebSocket. And the device will re-render the user interface based on this information.
 1. The code monitors the data sent by the smart bracelet (device) to the cloud through MQTT, including heartbeat, temperature, steps and other information, and updates the corresponding label content.
 1. The code sets a timer, runs every 1 second, and updates the label content corresponding to the clock.
 1. The code uses an external selection executor `CDumpEvent` to dump all events from `mqtt` to the cloud database.
 
 This brings about the following notable changes:
 
-1. The complex logic code will all run on the cloud, and the device only needs to have an HTML/XML user agent with sufficient functions, and usually only needs to include a renderer to render the final user interface according to the DOM tree and CSS.
+1. The complex logic code will all run on the cloud. And the device only needs to have an HTML/XML user agent with sufficient functions, and usually only needs to include a renderer to render the final user interface according to the DOM tree and CSS.
 1. When we need to adjust the display effect or function of the device, we only need to modify the HVML code without updating the firmware of the device.
 1. We can also use external scripts to organically integrate other functions running on the cloud, such as database storage, data analysis, and artificial intelligence.
 
-Writing here, the author is really moved by the point of view I have always emphasized: **Programming language is the thing that determines the soul and genes of the operating system, and it is the jewel in the crown of the basic software ecology! **
+Writing here, the author is really moved by the point of view he has always emphasized: **Programming language is the thing that determines the soul and genes of the operating system, and it is the jewel in the crown of the basic software ecology! **
 
 ## HVML Reference Implementation Development Team
 
-What HVML looks like, probably now. HVML can be realized, which is a large software project no less than a browser engine. In addition, HVML can be used in various scenarios, and can be bound to different external scripting languages to form different systems. If we want to apply HVML to a cloud environment, we also need to develop an application server.
+Now, the appearance of HVML is roughly formed. HVML can be realized, which is a large software project no less than a browser engine. In addition, HVML can be used in various scenarios, and can be bound to different external scripting languages to form different systems. If we want to apply HVML to a cloud environment, we also need to develop an application server.
 
-As the author said in the novel "Kao Ding Ji": **The so-called Gang Ju Mu Zhang, this programming language is that Gang**. The changes brought about by a new programming language involve the reconstruction of basic software, changes in development models, changes in development tools, and the generation of new protocols and software. At the same time, it also involves changes in the upstream and downstream cooperation relationships in the industry. Just imagine, if the cloud applications described in this article become a reality, will the many efforts we are making in the IoT operating system be worthless?
+As the author said in the novel "Biographic of Coding": **Like the old saying, once the key link is grasped, everything falls into place. The programming language is that key link.**. The changes brought about by a new programming language involve the reconstruction of basic software, changes in development models, changes in development tools, and the generation of new protocols and software. At the same time, it also involves changes in the upstream and downstream cooperation relationships in the industry. Just imagine, if the cloud applications described in this article become a reality, will the many efforts we are making in the IoT operating system be worthless?
 
 In order to let everyone see how HVML actually turns as soon as possible, the author organized a small open source collaborative team to develop a reference implementation of HVML, with the goal of providing a solution for the Python ecosystem that can directly use Web front-end technology. The development team is now working, and we will report back as soon as we have results.
 
-We expect more people or companies to join in the development of the HVML reference implementation. However, it takes a long period for a new programming language to mature from birth to maturity. Before seeing how HVML works, most people will hold a wait-and-see attitude. This is human nature. But opportunities must be reserved for those with a heart.
+We expect more people or companies to join in the development of the HVML reference implementation. However, it takes a long period for a new programming language to mature from birth to maturity. Before seeing how HVML works, most people will hold a wait-and-see attitude. This is human nature. But opportunities must be reserved for conscientious people.
 
-- If you are an ambitious basic software company, a potential user of HVML, or an upstream operating system company, such as a chip company, you can join the HybridOS partner program (see <https://hybridos.fmsoft.cn/members> for details) ), send several engineers to participate in the development of the HVML reference implementation. The author believes that your team and company will benefit greatly from this.
-- If you represent an individual, you can give a reward to the HVML reference implementation project (reward at the end of the article or go to the web page <https://store.fmsoft.cn/campaign/denoteoss-lt>). Your encouragement, big or small, will become the driving force for us to move forward!
+- If you own a promising basic software company, a potential user of HVML, or an upstream operating system company, such as a chip company, you can join the HybridOS partner program (see <https://hybridos.fmsoft.cn/members> for details) ), send several engineers to participate in the development of the HVML reference implementation. The author believes that your team and company will benefit greatly from this.
+- If you represent an individual, you can give a reward to the HVML reference implementation project (reward at the end of the article or go to the web page <https://store.fmsoft.cn/campaign/denoteoss-lt>). Your encouragement, no matter big or small, will become the driving force for us to move forward!
 
 Stay tuned, a revolution is slowly kicking off!
