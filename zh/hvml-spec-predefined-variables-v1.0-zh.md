@@ -2086,6 +2086,34 @@ $RDR.state
     // { 'comm': 'socket', 'prot': 'PURCMC', 'prot-version': '110', 'prot-ver-code': 110UL, 'uri': 'unix:///var/tmp/purcmc.sock'}
 ```
 
+#### 3.5.1) `stats` 属性
+
+该属性的获取器返回解释器和渲染器之间的通讯统计信息。该属性不提供设置器。
+
+```js
+$RDR.stats object | null: `an object describing the statistics of the communication between the interpreter and the renderer:`
+        - 'nrRequestsSent':         < ulongint: `the number of requests sent to the renderer.` >
+        - 'nrRequestsRecv':         < ulongint: `the number of requests received from the renderer.` >
+        - 'nrResponsesSent':        < ulongint: `the number of responses sent to the renderer.` >
+        - 'nrResponsesRecv':        < ulongint: `the number of responses received from the renderer.` >
+        - 'nrEventsSent':           < ulongint: `the number of events sent to the renderer.` >
+        - 'nrEventsRecv':           < ulongint: `the number of events received from the renderer.` >
+        - 'bytesSent':              < ulongint: `the total bytes sent to the renderer.` >
+        - 'bytesRecv':              < ulongint: `the total bytes received from the renderer.` >
+        - 'durationSeconds':        < ulongint: `the duration seconds of the connection.` >
+```
+
+**异常**
+
+（无）
+
+**示例**
+
+```js
+$RDR.stats
+    // { 'nrRequestsSent': 5UL, 'nrResponsesRecv': 5UL, 'nrRequestsRecv': 0, 'nrResponsesSent': 0, 'nrEventsSent': 0, 'nrEventsRecv': 10UL, 'bytesSent': 2368UL, 'bytesRecv': 468UL, 'durationSeconds': 10UL }
+```
+
 #### 3.5.2) `connect` 方法
 
 该方法断开当前的渲染器并连接到指定的渲染器。
@@ -7710,12 +7738,65 @@ $FS.opendir(
 
 ##### 4.2.30.1) 目录流实体的 `read` 方法
 
-读取下一个目录项。
+读取下一个目录项，返回目录项名称（字符串）或者目录项统计信息（对象）。
 
 **描述**
 
 ```js
-$dirStream.read object | false
+$dirStream.read(
+        [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
+            'dev' - `returns ID of device containing the file.`
+            'inode' - `returns inode number.`
+            'type' - `returns file type like 'd', 'b', or 's'.`
+            'mode_digits' - `returns file mode like '0644';`
+            'mode_alphas' - `returns file mode like 'rwxrwxr-x';`
+            'nlink' - `returns number of hard links.`
+            'uid' - `returns the user ID of owner.`
+            'gid' - `returns the group ID of owner.`
+            'rdev' - `returns the device ID if it is a special file.`
+            'size' - `returns total size in bytes.`
+            'blksize' - `returns block size for filesystem I/O.`
+            'blocks' - `returns number of 512B blocks allocated.`
+            'atime' - `returns time of last acces.`
+            'mtime' - `returns time of last modification.`
+            'ctime' - `returns time of last status change.`
+            'all' - `returns all above information.`
+            'default' - 'name type mode_digits uid gid size rdev ctime'
+            >
+        ]
+) string | object | false
+```
+
+**返回值**
+
+若第一个参数指定了合法的统计信息，则该方法返回下一个目录项的指定统计信息（对象）；若不传递任何参数，则返回下一个目录项的名称（字符串）。
+
+目录项的统计信息由如下对象或其部分表达（始终包含 `name` 属性）：
+
+```js
+{
+    name: <string: the name of the directory entry>,
+    dev_major: <ulongint: the major ID of device containing the directory entry>,
+    dev_minor: <ulongint: the minor ID of device containing the directory entry>,
+    inode: <ulongint: inode number>
+    type: <string: file type like 'd', 'b', 's', ...>,
+    mode_digits: <string: file mode like `0644`>,
+    mode_alphas: <string: file mode like `rwxrwxr-x`>,
+    nlink: <ulongint: number of hard links>,
+    uid: <ulongint: the user ID of owner>,
+    gid: <ulongint: the group ID of owner>,
+    rdev_major: <ulongint: the major device ID if it is a special file>,
+    rdev_minor: <ulongint: the minor device ID if it is a special file>,
+    size: <ulongint: total size in bytes>,
+    blksize: <ulongint: block size for filesystem I/O>,
+    blocks: <ulongint: Number of 512B blocks allocated>,
+    atime_sec: <ulongint: time of last acces (seconds since Epoch)>,
+    atime_nsec: <ulongint: time of last acces (nanoseconds since `atime_sec`)>,
+    mtime_sec: <ulongint: time of last modification (seconds since Epoch)>,
+    mtime_nsec: <ulongint: time of last modification (nanoseconds since `mtime_sec`)>,
+    ctime_sec: <ulongint: time of last status change (seconds since Epoch)>
+    ctime_nsec: <ulongint: time of last status change (nanoseconds since `ctime_sec`)>
+}
 ```
 
 **示例**
@@ -8483,6 +8564,7 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 1. 调整 `$CRTN.static` 和 `$CRTN.temp` 两个属性的用法。
 1. 新增 `$DOC.serialize` 方法。
 1. 移除 `$PY.info.path` 属性。
+1. 增强 `native/dirStream.read` 方法。
 
 #### RCa) 230331
 
