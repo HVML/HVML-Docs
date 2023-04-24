@@ -495,15 +495,15 @@ HVML 还支持具有简单逻辑处理能力的复合表达式（使用 `{{ ... 
 
 ```hvml
     <!-- 新增标识符为 `foo` 的定时器，间隔 3000 ms，激活状态 -->
-    <update on "$TIMERS" to "append">
+    <update on $TIMERS to 'append'>
         { "id" : "foo", "interval" : 3000, "active" : "yes" }
     </update>
 
     ...
 
     <!-- 使标识符为 `foo` 的定时器失效 -->
-    <choose on "$TIMERS" by "FILTER: AS 'foo'">
-        <update on $? at ".active" with "no" />
+    <choose on $TIMERS by "FILTER: AS 'foo'">
+        <update on $? at '.active' with 'no' />
     </choose>
 ```
 
@@ -569,7 +569,7 @@ HVML 在语言层面提供了对数据、变量和表达式的观察能力。只
 比如，下面的代码片段观察标识符为 `foo` 的定时器的到期事件：
 
 ```hvml
-<observe on "$TIMERS" for "expired:foo" >
+<observe on $TIMERS for 'expired:foo' >
     ...
 </observe>
 ```
@@ -701,7 +701,7 @@ COROUTINE-3: 2022-09-01T14:50:45+0800: I am awake.
 HVML 还提供一个称为替身表达式的功能，可以让我们将一个表达式（包括复合表达式）定义为一个变量或者其上的一个方法：
 
 ```hvml
-<bind on $STREAM.stdout.writelines($_ARGS[0]) as "console" against 'puts' />
+<bind on $STREAM.stdout.writelines($_ARGS[0]) as 'console' against 'puts' />
 
 <inherit>
     $console.puts('Hello, world!')
@@ -3681,8 +3681,6 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 1. 若 `match` 元素的 `for` 属性指定的匹配规则是数值比较表达式（如 `GT`、`LT`），则对 `test` 元素的结果数据做数值化处理后再行匹配。
 1. 若 `match` 元素的 `for` 属性指定的匹配规则是字符串匹配表达式（如 `AS`、`LIKE`），则对 `test` 元素的结果数据做字符串化处理后再行匹配。
-1. ~~若其父元素（即 `test`）元素的结果数据是实数类型时，`match` 标签的 `for` 属性指定的匹配规则按数值比较逻辑表达式处理，此时在逻辑表达式中使用字符串匹配表达式（如 `AS`、`LIKE`）是无效的。~~
-1. ~~若其父标签（即 `test`）标签的结果数据是其他类型时，`match` 标签的 `for` 属性指定的匹配规则按字符串比较逻辑表达式处理，此时在逻辑表达式中使用数值比较表达式（如 `GT`、`LT`）是无效的。当结果数据不是字符串类型时，应做字符串化处理。~~
 
 ##### 2.5.5.2) 二选一处理
 
@@ -5060,7 +5058,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         <iterate on=$?[0] with=$MATH.add($0<,2) nosetotail>
             <test on=$?>
                 <match on=$L.gt($?,100) exclusively>
-                    <back to="3" >
+                    <back to="3" />
                 </match>
                 <match>
                     <update on="$evenNumbers" to="append" with="$?">
@@ -5077,13 +5075,13 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </init>
 ```
 
-以上的代码，当计算出来的偶数大于 `100` 时，将回退到第四个栈帧，到达 `init` 元素对应的栈帧，然后从该栈帧对应元素的下个子动作元素开始执行，亦即，`ol` 外部元素定义的动作。
+以上的代码，当计算出来的偶数大于 `100` 时，将回退到第四个栈帧（总共回退 3 个栈帧），到达 `init` 元素对应的栈帧，然后从该栈帧对应元素的下个子动作元素开始执行，亦即 `ol` 外部元素定义的动作。
 
 `back` 元素使用 `silently` 副词属性时，将不产生任何异常，按如下规则处理：
 
 - 不可识别的 `to` 属性值或者求值失败或者无效的栈帧，一律按回退到最顶栈帧处理。
 - 未指定 `with` 属性值时，按 `undefined` 处理，不改变回退后的上下文变量。
-- 若 `with` 属性求值失败，按 `undefined` 处理。
+- 若 `with` 属性求值失败，按 `undefined` 处理，不改变回退后的上下文变量。
 
 使用 `with` 属性值定义可替代回退后上下文变量之结果数据的操作，给程序控制执行逻辑带来了帮助。比如，捕捉到异常时：
 
@@ -5122,7 +5120,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 </body>
 ```
 
-上述代码读取指定目录下的目录项，并捕获可能的异常。当发生异常时，使用 `back` 标签回退到`ul` 对应的栈帧，并修改 `ul` 栈帧的结果数据（`$?`）为一个字符串。回退后，程序开始执行 `test` 标签，判断结果数据的类型。注意 `ul` 作为外部元素，其最初的结果数据为 `undefined`。如果其类型为 `string` 则说明发生了异常，其后的操作将一个 `li` 元素插入目标文档，其中包含异常信息。
+上述代码读取指定目录下的目录项，并捕获可能的异常。当发生异常时，使用 `back` 标签回退到`ul` 对应的栈帧，并修改 `ul` 栈帧的结果数据（`$?`）为一个字符串。回退后，程序开始执行 `test` 标签，判断结果数据的类型。注意 `ul` 作为外部元素，其最初的结果数据为 `null`。如果其类型为 `string` 则说明发生了异常，其后的操作将一个 `li` 元素插入目标文档，其中包含异常信息。
 
 #### 2.5.16) `request` 标签
 

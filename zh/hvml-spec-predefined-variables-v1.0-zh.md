@@ -7736,15 +7736,15 @@ $FS.opendir(
 
 - PHP `opendir()` 函数：<https://www.php.net/manual/en/function.opendir.php>
 
-##### 4.2.30.1) 目录流实体的 `read` 方法
+##### 4.2.30.1) 目录流实体的 `stat` 方法
 
-读取下一个目录项，返回目录项名称（字符串）或者目录项统计信息（对象）。
+返回打开的目录对应的文件统计信息（对象）。
 
 **描述**
 
 ```js
-$dirStream.read(
-        [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
+$dirStream.stat(
+        < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
             'dev' - `returns ID of device containing the file.`
             'inode' - `returns inode number.`
             'type' - `returns file type like 'd', 'b', or 's'.`
@@ -7762,20 +7762,16 @@ $dirStream.read(
             'ctime' - `returns time of last status change.`
             'all' - `returns all above information.`
             'default' - 'name type mode_digits uid gid size rdev ctime'
-            >
-        ]
-) string | object | false
+        >
+) object | false
 ```
 
 **返回值**
 
-若第一个参数指定了合法的统计信息，则该方法返回下一个目录项的指定统计信息（对象）；若不传递任何参数，则返回下一个目录项的名称（字符串）。
-
-目录项的统计信息由如下对象或其部分表达（始终包含 `name` 属性）：
+返回打开的目录对应的文件统计信息（对象）。
 
 ```js
 {
-    name: <string: the name of the directory entry>,
     dev_major: <ulongint: the major ID of device containing the directory entry>,
     dev_minor: <ulongint: the minor ID of device containing the directory entry>,
     inode: <ulongint: inode number>
@@ -7798,6 +7794,26 @@ $dirStream.read(
     ctime_nsec: <ulongint: time of last status change (nanoseconds since `ctime_sec`)>
 }
 ```
+
+**示例**
+
+**参见**
+
+- POSIX `dirfd()` 函数。
+
+##### 4.2.30.1) 目录流实体的 `read` 方法
+
+读取下一个目录项，返回目录项名称（字符串）。
+
+**描述**
+
+```js
+$dirStream.read string | false
+```
+
+**返回值**
+
+返回目录流中下一个目录项的名称（字符串）；返回 `false` 表示已到达目录流的尾部。
 
 **示例**
 
