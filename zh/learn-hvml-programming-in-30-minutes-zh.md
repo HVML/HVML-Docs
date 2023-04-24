@@ -141,7 +141,7 @@ $ purc -v hello-world.hvml
 上面的命令行将输出如下文本到您的终端屏幕或者窗口中：
 
 ```
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -207,7 +207,7 @@ $ ./hello-world.hvml
 
 ```
 $ purc -v hello-world-void.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -260,7 +260,7 @@ Hello, world!
 
 ```
 $ purc -v hello-world.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -560,7 +560,7 @@ $MATH.eval('PI * r * r', { r: 3 })
 
 ```
 $ purc -v hello-world-5.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -969,7 +969,7 @@ Version 10 提供了使用模板的完整 HVML 程序：
 
 ```
 $ purc -v hvml/hello-world-a.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -1065,7 +1065,7 @@ Version 11 提供了一个使用 `archedata` 元素的示例。它将对象数�
 
 ```
 $ purc -v hvml/hello-world-b.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -1489,7 +1489,7 @@ $ purc -l hello-world-c.hvml hello-world-c.hvml
 
 ```
 $ purc -v hvml/load-string-hvml.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -1590,7 +1590,7 @@ The main coroutine exited.
 
 ```
 $ purc -v hvml/call-concurrently.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -1757,7 +1757,7 @@ PurC 提供了三种方式（协议）来连接一个 HVML 解释器实例和 HV
 假设您已经从另一个终端启动了 xGUI Pro，那么请使用以下选项运行 `purc`：
 
 ```
-$ purc --rdr-prot=purcmc fibonacci-numbers.hvml
+$ purc --rdr-comm=socket fibonacci-numbers.hvml
 ```
 
 您将在一个由 Fibonacci Numbers 创建的 xGUI Pro 窗口中看到内容：

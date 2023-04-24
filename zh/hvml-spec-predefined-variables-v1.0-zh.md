@@ -8580,7 +8580,8 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 1. 调整 `$CRTN.static` 和 `$CRTN.temp` 两个属性的用法。
 1. 新增 `$DOC.serialize` 方法。
 1. 移除 `$PY.info.path` 属性。
-1. 增强 `native/dirStream.read` 方法。
+1. 新增 `native/dirStream.stat` 方法。
+1. 新增 `$RDR.stat` 方法。
 
 #### RCa) 230331
 
