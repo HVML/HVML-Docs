@@ -179,7 +179,7 @@ $ purc -v hello-world.hvml
 The command line above will give you the following text:
 
 ```
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -248,7 +248,7 @@ If you save the revised version to `hello-world-void.hvml` and run it by using `
 
 ```
 $ purc -v hello-world-void.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -304,7 +304,7 @@ Furthermore, if you execute the HVML program with the flag `-b`:
 
 ```
 $ purc -v hello-world.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -683,7 +683,7 @@ Run Version 5 with `purc`, the HVML program gives you the expected result:
 
 ```
 $ purc -v hello-world-5.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -1110,7 +1110,7 @@ If you run Version 10 with `purc`, you will get the following result:
 
 ```
 $ purc -v hvml/hello-world-a.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -1217,7 +1217,7 @@ Here is the output of Version 11 when you run it by using `purc`:
 
 ```
 $ purc -v hvml/hello-world-b.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -1717,7 +1717,7 @@ If you run Load String HVML by using `purc`, you will get the following result:
 
 ```
 $ purc -v hvml/load-string-hvml.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -1832,7 +1832,7 @@ When you run this program by using `purc`, you will get the following output:
 
 ```
 $ purc -v hvml/call-concurrently.hvml
-purc 0.8.0
+purc 0.9.8
 Copyright (C) 2022 FMSoft Technologies.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
@@ -2027,7 +2027,7 @@ Assume that you have installed xGUI Pro on your system,
 Assume that you have started xGUI Pro from another terminal, then please run `purc` with the following options:
 
 ```bash
-$ purc --rdr-prot=purcmc fibonacci-numbers.hvml
+$ purc --rdr-comm=socket fibonacci-numbers.hvml
 ```
 
 You will see the contents in a window of xGUI Pro created by Fibonacci Numbers:

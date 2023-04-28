@@ -15,15 +15,17 @@
 - [结语](#结语)
 
 [//]:# (END OF TOC)
+
+
 2023 年 3 月，HVML 社区发布了 HVML 开源解释器 PurC 的 0.9.8 版本，其中增加了对 Python 的支持。
 
-使用这一增强，我们可以非常方便地在 HVML 程序中调用 Python 模块，利用 Python 生态中的丰富软件包或模块开发自己的 HVML 应用。与此同时，由 HVML 提供的跨平台、统一 GUI/CLI 应用开发框架以及跨端运行的能力，将弥补 Python 生态和 Web 生态之间几十年来难以跨越的鸿沟，从而极大提升 Python 应用的表现力以及和用户交互的能力。
+使用这一新的功能，我们可以非常方便地在 HVML 程序中调用 Python 模块，利用 Python 生态中的丰富软件包或模块开发自己的 HVML 应用。与此同时，由 HVML 提供的跨平台、统一 GUI/CLI 应用开发框架以及跨端运行的能力，将弥补 Python 生态和 Web 生态之间几十年来难以跨越的鸿沟，从而极大提升 Python 应用的表现力以及和用户交互的能力。
 
-本文通过一个内嵌 Python 实现三维动画随机游走功能的 HVML 程序，介绍了这一增强的典型应用场景：科学计算可视化。
+本文首先通过一个简单的寻找素数的程序，说明了在 HVML 中内嵌 Python 的基本方法，之后使用 NumPy 和 Matplotlib 实现了一个随机游走的三维动画 HVML 程序，介绍了这一增强的典型应用场景：科学计算可视化。
 
 ## 准备工作
 
-截止目前，HVML 解释器 PurC 和图形渲染器 xGUI Pro 均支持在 Linux 或 macOS 桌面上运行。为执行本文提到的 Python 代码，需要提前安装好 Python 3.9+（Linux）或 Python 3.11+（macOS）运行时环境、开发时环境以及相关模块。
+截止目前，HVML 解释器 PurC 和图形渲染器 xGUI Pro 均支持在 Linux 或 macOS 桌面上运行。为完整执行本文提到的内嵌 Python 代码的 HVML 程序，需要提前安装好 Python 3.9+（Linux）或 Python 3.11+（macOS）运行时环境、开发时环境以及相关模块。
 
 比如，在 Ubuntu Linux 20.04 或以上系统中，首先安装常用的开发工具（如 git、make 等），然后使用如下命令：
 
@@ -49,7 +51,7 @@ $ sudo pip3 install numpy matplotlib
 - PurC：<https://github.com/HVML/PurC>
 - xGUI Pro：<https://github.com/HVML/xGUI-Pro>
 
-为构建上述软件，您可能还需要安装如下开发工具或函数库：
+注意，为构建 PurC 和 xGUI Pro，你可能还需要安装如下开发工具或函数库：
 
 1. 跨平台构建系统生成器：CMake 3.15 或更高版本
 1. 兼容 C11 和 CXX17 的编译器：GCC 8+ 或 Clang 6+
@@ -64,14 +66,17 @@ $ sudo pip3 install numpy matplotlib
 下面是针对 macOS 系统的一些补充说明：
 
 - HVML 解释器需要 Python 3.9 以上版本来支持和 Python 代码的互操作，而在 macOS 上通过 macPorts 安装 Python 3.11 的原因，主要是为了避免和 xCode Command Line Tools 中包含的 Python 3.9 相冲突。
-- 在使用 macPorts 构建 PurC 和 xGUI Pro 时，一定要通过 CMake 的 `-DCMAKE_INSTALL_PREFIX=/opt/local` 选项指定 PurC 和 xGUI Pro 的安装前缀为 `/opt/local`；若使用默认的 `/usr/local` 安装前缀，会出现找不到头文件的情形。
 - 在 macOS 上，如果不使用图形渲染器 xGUI Pro，而只使用 PurC 中内建的字符渲染器 Foil，也可以使用 Homebrew 系统来构建 PurC，而无需构建 xGUI Pro。但若要构建 xGUI Pro，则必须使用 macPorts。这主要是因为 Homebrew 未提供 WebKit2Gtk3 软件包。
-- 在 macOS 上使用 macPorts 安装了 `xorg-server` 后，需要重新登录才能生效。
-- 在 macOS 上编译 xGUI Pro 后，您需要手工在构建目录的 `lib/webext` 子目录下，创建一个后缀名为 `.so` 的符号链接指向构建好的 WebKit 扩展库：
+- 在使用 macPorts 构建 PurC 和 xGUI Pro 时，一定要通过 CMake 的 `-DCMAKE_INSTALL_PREFIX=/opt/local` 选项指定 PurC 和 xGUI Pro 的安装前缀为 `/opt/local`；若使用默认的 `/usr/local` 安装前缀，会出现找不到头文件的情形。
+- 在 macOS 上使用 xGUI Pro 时，需要使用 macPorts 安装 `xorg-server` 包，安装后需要重新登录才能生效。
+- 在 macOS 上编译 xGUI Pro 后，需要手工在安装 WebKit 扩展库的目录下（如 `/opt/local/xguipro/lib/webext`），创建一个后缀名为 `.so` 的符号链接指向构建好的 WebKit 扩展库：
 
 ```console
-$ ln -s libWebExtensionHVML.so libWebExtensionHVML.dylib
+$ cd /opt/local/xguipro/lib/webext
+$ sudo ln -s libWebExtensionHVML.so libWebExtensionHVML.dylib
 ```
+
+之所以要在 macOS 系统上手工创建一个符号链接，主要是因为 WebKit 在搜索其扩展共享库时，只会搜索并装载后缀名为 `.so` 的共享库文件，而在 macOS 系统上，共享库的后缀名通常为 `.dylib`。
 
 ## 快速了解 HVML
 
@@ -79,7 +84,7 @@ $ ln -s libWebExtensionHVML.so libWebExtensionHVML.dylib
 
 HVML 和其他编程语言之间的主要差异，在于 HVML 使用了类似 HTML 的标记语言来定义一个程序，故而被称为“可编程标记语言”。
 
-我们用 HVML 解释器 PurC 来运行这段 HVML 程序：
+作为一个简单的示例，我们用 HVML 解释器 PurC 来运行这段 HVML 程序：
 
 ```hvml
 <hvml target="html">
@@ -116,13 +121,13 @@ Hello, world!
 
 在笔者的 Linux 系统上，效果如下图所示：
 
-![Hello, world!](screenshots/hello-world-with-style-foil.png)
+![Hello, world!](/screenshots/hello-world-with-style-foil.png)
 
-显然，相比第一次执行，我们看到了更多的内容。在支持颜色的终端程序中，你可以看到 `Hello, World!` 是红色的，而且居中显示。很明显，这些内容本质上是由 HVML 程序中夹杂的 `h1`、`p` 等元素定义的内容。我们还使用了 CSS 样式来定义了 `h1` 元素的颜色（`color:red`）和文本居中对齐（`text-align:center`）。
+显然，相比第一次执行，我们看到了更多的内容。在支持颜色的终端程序中，你可以看到 `Hello, World!` 是红色的，而且居中显示。很明显，这些内容本质上是由 HVML 程序中夹杂的 `h1`、`p` 等元素定义的。我们还使用了 CSS 样式定义了 `h1` 元素的颜色（`color:red`）和文本居中对齐（`text-align:center`）样式。
 
-和其他编程语言不同，HVML 将 `h1` 和 `p` 等元素视作动作执行，会将其内容插入到一个结构化的文档当中。而使用其他编程语言，我们可能需要通过特定的接口完成这些工作，比如在 Python 中使用类似 Jinja2 的模板引擎。
+和其他编程语言不同，HVML 将 `h1` 和 `p` 等元素视作动作执行，会将其内容插入到一个结构化的文档当中。而使用其他编程语言，我们可能需要通过特定的接口完成这些工作，比如在 Python 中使用类似 Jinja2 的模板引擎；而如果要展示模板引擎生成的内容，还要启动一个 Web 服务器，将数据喂给浏览器。
 
-这说明了 HVML 的第一个重要特征：内建的结构化文档生成和操作能力。尽管在不使用 `-c thread` 选项时，我们看不到文档，但仍然可以通过 `-v` 选项让 `purc` 输出对应的文档结构：
+但 HVML 内置了这一功能，这也是本节要介绍的 HVML 的第一个重要特征：内建的结构化文档生成和操作能力。在不使用 `-c thread` 选项运行 `purc` 时，我们看不到任何文档相关的内容，但仍然可以通过 `-v` 选项让 `purc` 输出对应的文档结构：
 
 ```console
 $ purc -v hello-world.hvml
@@ -155,9 +160,9 @@ The main coroutine exited.
 
 以上的例子同时说明了 HVML 的第二个重要特征：解释器和渲染器分离。
 
-当我们在执行 `purc` 命令时不使用 `-c thread` 选项，就会默认使用一个称为 `headless` 的渲染器。顾名思义，这个渲染器会丢弃任何程序生成的文档内容。因此，我们看不到 `h1`、`p` 等元素定义的内容，而只能看到使用 `$STREAM.stdout.writelines()` 方法输出到终端上的内容。当我们使用 `-c thread` 选项执行 `purc` 命令时，将会使用内建于 `purc` 的一个字符渲染器，名叫 `Foil`（取“二向箔”之意）。和网页浏览器的工作原理类似，Foil 渲染器将解析这个 HVML 程序生成的 HTML 文档，并根据 CSS 样式信息格式化其中的内容。
+当我们在执行 `purc` 命令时不使用 `-c thread` 选项，就会默认使用一个称为 `headless` 的渲染器。顾名思义，这个渲染器不会展示任何由 HVML 程序生成的文档内容。因此，我们看不到 `h1`、`p` 等元素定义的内容，而只能看到使用 `$STREAM.stdout.writelines()` 方法输出到终端上的内容。当我们使用 `-c thread` 选项执行 `purc` 命令时，将会使用内建于 `purc` 的一个字符渲染器，名叫 `Foil`（取著名科幻小说《三体》中“二向箔”之意）。和网页浏览器的工作原理类似，Foil 渲染器将解析这个 HVML 程序生成的 HTML 文档，并根据 CSS 样式信息格式化其中的内容展现到终端上。
 
-你一定能想到，如果我们使用本文一开始提到的 xGUI Pro 图形渲染器，则可以在图形窗口中看到上述文档的内容。事实的确如此。启动 xGUI Pro，并在执行 `purc` 时将 `-c thread` 选项更换成 `-c socekt` 选项，便可以在窗口中看到以上内容。但是，因为这个程序在输出了文档后立即退出，所以窗口会一闪而过。因此，我们还需要做一些额外的工作，在其中添加一些代码。
+你一定能想到，如果我们使用本文一开始提到的 xGUI Pro 图形渲染器，则可以在图形窗口中看到上述文档的内容。事实的确如此。启动 xGUI Pro，并在执行 `purc` 时将 `-c thread` 选项更换成 `-c socekt` 选项，便可以在窗口中看到以上内容。但是，因为目前我们编写的这个 HVML 程序在输出文档后立即退出，所以窗口会一闪而过。因此，我们还需要做一些额外的工作，在其中添加一些代码。
 
 ```hvml
 <hvml target="html">
@@ -168,6 +173,7 @@ The main coroutine exited.
         <h1 style="color:red;text-align:center">Hello, World!</h1>
         <p>This paragraph is generated by HVML, and it is in HTML.</p>
 
+        <!-- 新添加的代码如下。-->
         <test with $L.streq('caseless', $RDR.state.comm, 'socket') >
             <observe on $CRTN for 'rdrState:pageClosed'>
                 <exit with "User Closed" />
@@ -190,9 +196,9 @@ $ purc -c socket hello-world.hvml
 Hello, world!
 ```
 
-该命令将创建一个窗口，其中图形化展示上述的代码生成的内容。见下图。
+该命令将创建一个窗口，其中会展示上述代码生成的文档内容。见下图。
 
-![Hello, world!](screenshots/hello-world-with-style-xgui-pro.png)
+![Hello, world!](/screenshots/hello-world-with-style-xgui-pro.png)
 
 当我们关闭该窗口后，上述 `purc` 命令才会退出。而如果我们使用 `-c thread` 选项执行上述 HVML 程序，则执行效果和之前一样：程序会立即退出。显然，我们新增的如下代码起了作用：
 
@@ -206,30 +212,34 @@ Hello, world!
 
 和 `h1` 和 `p` 等元素不同，新增的代码使用 `test`、`observe` 和 `exit` 这三个英文动词单词定义的元素，我们称之为“动作元素”。顾名思义，动作元素定义程序的动作。比如 `test` 定义一个测试，而其中的属性 `with` 指定了用于测试的条件。类似地，`observe` 定义了一个观察（监听器），该监听器在数据 `$CTRN` 上监听 `rdrState:pageClosed` 事件，并在该事件到达时执行 `exit` 定义的动作，即退出该程序。
 
-读者很容易想到，上面的代码中的 `$L`、`$RDR`、`$CRTN` 等使用前缀 `$` 的词元，表示一个变量。而习惯上使用全大写字母的变量，是系统定义的变量。这三个变量分别表示专门用于逻辑运算的对象、当前连接的渲染器以及当前执行的协程。在上面的代码中，通过访问 `$RDR.state`，我们可以获得当前渲染器的状态信息，而其上的 `comm` 属性，表示当前 HVML 程序和渲染器的通讯方法，对应的便是 `purc` 命令行中 `-c` 选项指定的 `thread` 或者 `socket`。
+读者很容易想到，上面的代码中的 `$L`、`$RDR`、`$CRTN` 等使用前缀 `$` 的词元，表示一个变量。而按照 HVML 规范，使用全大写字母的变量，是系统定义的变量。这三个变量分别表示专门用于逻辑运算的对象、当前连接的渲染器以及当前执行的协程。在上面的代码中，通过访问 `$RDR.state`，我们可以获得当前渲染器的状态信息，而其上的 `comm` 属性，表示当前 HVML 程序和渲染器的通讯方法，对应的便是 `purc` 命令行中 `-c` 选项指定的 `thread` 或者 `socket`。
 
 因此，以上新增代码的作用是：若当前渲染器的通讯方式为 `socket`，则监听当前协程的 `rdrState:pageClosed` 事件，当获得该事件时，终止当前协程的执行。
 
 这给出了 HVML 的第三个重要特征：事件驱动。
 
-除了以上三个重要特征之外，HVML 还对复合求值表达式、模板定义和置换、异常处理、多协程、并发等现代编程技术提供了支持。更多详情，可参阅如下文章：
+另外，我们通过上面的简单 HVML 程序看到，我们可以使用一个类似 `$L.streq('caseless', $RDR.state.comm, 'socket')` 的表达式来设定元素的属性值。在 HVML 中，这类表达式称作混合求值表达式（Hybrid Evaluating Expression，HEE）。我们还可以使用由多条 HEE 组成的，含有一定逻辑控制能力的表达式，我们将这些表达式复合混合求值表达式（Compound Hybrid Evaluating Expression，CHEE），使用一对双花括号包围；比如 `{{ $L.gt($x, $y) && $x || $y }}`，表示对比 `$x` 和 `$y` 的值，取其中的较大者。
+
+本质上，一个 HVML 程序由元素，其中包括 HVML 定义的动作元素或 HTML 等标记语言定义的外部元素，以及用于设定元素属性及其内容的混合求值表达式构成。
+
+除了以上三个重要特征之外，HVML 还对模板定义和置换、异常处理、多协程、并发等现代编程技术提供了支持。更多详情，可参阅如下文章：
 
 - [漫谈 HVML，它的由来和未来](a-brief-introduction-to-hvml-zh.md)
 - [30 分钟学会 HVML 编程](learn-hvml-programming-in-30-minutes-zh.md)
 
 ## 可装载动态对象 PY
 
-在 PurC 0.9.8 版本中，对 Python 的支持被实现为 HVML 的一个外部动态变体对象 `$PY`，利用该对象提供的功能，我们可以在 HVML 程序中完成如下功能：
+在 PurC 0.9.8 版本中，对 Python 的支持被实现为 HVML 的一个外部动态变体对象 `$PY`。利用该对象提供的功能，我们可以在 HVML 程序中完成如下功能：
 
 1. 使用 `$PY.import()` 方法，可装载指定的 Python 模块并可在其上访问或调用已装载模块提供的子模块、属性或函数。
-1. 使用 `$PY.run()` 方法，可执行一段 Python 代码、一个 Python 脚本或者一个指定的模块，并获得结果。
-1. 使用 `$PY.compile()` 方法，可编译一段 Python 代码，之后可在编译得到的 Python 代码对象上，在不同的上下文环境中对其进行求值并获得求值结果。
+1. 使用 `$PY.run()` 方法，可执行一段 Python 代码、一个 Python 脚本或者一个指定的模块，并获得其结果。
+1. 使用 `$PY.compile()` 方法，可编译一段 Python 代码，之后可在编译得到的 Python 代码对象上，在不同的名字空间中对其进行求值并获得求值结果。
 1. 使用 `$PY.pythonize()` 方法，可将 HVML 字符串、数组、元组、集合、对象等数据转换为 Python 的内部对象，然后在其上执行这些 Python 内部对象支持的方法，或使用这些对象调用其他 Python 模块或函数。
 1. 使用 `$PY.stringify()` 方法，可将 Python 内部对象转换为对应的 HVML 数据，或者获取对应的字符串表达，其作用类似 Python 的 `str()` 函数。
-1. 使用 `$PY.global` 属性，可通过其获取器或者设置器访问 Python 内置 `__main__` 模块的全局变量。
-1. 使用 `$PY.local` 属性，可通过其获取器或者设置器访问 Python 内置 `__main__` 模块的局部变量。注意，局部变量名字空间将优先于全局变量。
+1. 使用 `$PY.global` 属性，可通过其获取器或者设置器访问当前 Python 解释器实例的内置 `__main__` 模块的全局变量。
+1. 使用 `$PY.local` 属性，可通过其获取器或者设置器访问当前 Python 解释器实例内置 `__main__` 模块的局部变量。注意，局部变量名字空间将优先于全局变量。
 
-下面我们使用一些 HVML 的复合混合求值表达式（Compound Hybrid Evaluating Expression，CHEE）来说明 `$PY` 的用法。
+下面我们使用一些 HVML 的复合混合求值表达式来说明 `$PY` 的用法。
 
 ```hee
 {{
@@ -253,17 +263,7 @@ Hello, world!
 from datetime import datetime as dt, timedelta as td
 ```
 
-以上 CHEE 的第二条语句根据给定的时间戳构造了一个 `datetime` 对象，然后在对象上使用 `$PY.stringify` 函数将其字符串化，其结果应该是：'2015-04-19 12:20:00'。
-
-```hee
-{{
-    $PY.local.x(! [1, 2, 2, 3] );
-    $PY.local.x.reverse();
-    $PY.local.x()()
-}}
-```
-
-以上 CHEE 的第一条语句使用一个数组设置了一个名为 `x` 的局部变量，之后在其上调用了 Python 的针对 List 的 `reverse()` 方法，然后使用 `$PY.local.x()()` 这一用法调用了 `x` 本身的获取器，这将返回 Python List 对象对应的 HVML 数据。因此，上述 CHEE 的执行结果是 [3, 2, 2, 1]。注意，`$PY.local.x()` 返回的是一个代表 Python 复杂对象的 HVML 原生实体（native entity），在这个原生实体上再次调用其默认获取器，即 `$PY.local.x()()`，会执行数据类型的转换，将 Python 的 Unicode 字符串、字节数组（bytes 或 byte array）、列表（List）、字典（dictionary）、集合（set）构建为对应的 HVML 数据类型，分别是字符串（string）、字节序列（byte sequence）、数组（array）、对象（array）和一般性集合（generic set）。如果不做此类转换，这些 Python 对象在 HVML 中以原生实体动态对象的方式表达。而 Python 中的 None、True、False、整数和浮点数，则不做此类处理，直接等价于 HVML 的 null、true、false、longint 和 number 数据类型。对无法执行转换的情形，比如一个自定义的 Python 类对象，在其上执行默认的获取器，将等价于在其上调用 Python 的 `str()` 函数。
+而上面 CHEE 的第二条语句根据给定的时间戳构造了一个 `datetime` 对象，然后在对象上使用 `$PY.stringify` 函数将其字符串化，其结果应该是：'2015-04-19 12:20:00'。
 
 ```hee
 {{
@@ -274,9 +274,21 @@ from datetime import datetime as dt, timedelta as td
 
 以上 CHEE 的第一条语句执行了一段 Python 代码，该代码将 `pow(2, 3)` 的结果赋给了全局变量 `x`。在 HVML 程序中，我们可以使用 `$PY` 的 `global` 属性访问全局变量。故而上述 CHEE 的求值结果就是 Python 中全局变量 `x` 的值：8。
 
+```hee
+{{
+    $PY.local.x(! [1, 2, 2, 3] );
+    $PY.local.x.reverse();
+    $PY.local.x()()
+}}
+```
+
+以上 CHEE 的第一条语句使用 HVML 数组设置了一个名为 `x` Python 局部变量，之后在其上调用了 Python 针对列表的 `reverse()` 方法，然后使用 `$PY.local.x()()` 这一用法调用了 `x` 本身的获取器，这将返回 Python 列表对象对应的 HVML 数组。因此，上述 CHEE 的执行结果是 [3, 2, 2, 1]。
+
+其中，`$PY.local.x()` 返回的是一个代表 Python 复杂对象的 HVML 原生实体（native entity），在这个原生实体上再次调用其默认获取器，即 `$PY.local.x()()`，会执行数据类型的转换。该转换会将 Python 的 Unicode 字符串、字节数组（bytes 或 byte array）、列表（List）、字典（dictionary）、集合（set）构建为对应的 HVML 数据类型，分别是字符串（string）、字节序列（byte sequence）、数组（array）、对象（object）和一般性集合（generic set）。如果不做此类转换，这些 Python 对象在 HVML 程序中以原生实体动态对象的方式表达。而 Python 中的 None、True、False、整数和浮点数，则不做此类处理，直接等价于 HVML 的 null、true、false、longint 和 number 数据类型。对无法执行转换的情形，比如在一个自定义的 Python 类对象上执行默认的获取器，将等价于在其上调用 Python 的 `str()` 函数。
+
 显然，通过 `$PY` 变量构造我们期望的混合求值表达式，将其用于 HVML 元素的属性值或者动作元素的内容，即可非常方便地将 Python 代码嵌入到 HVML 中，从而充分利用 Python 生态中丰富的模块及其功能。
 
-在查看内嵌 Python 的 HVML 程序之前，我们再来看看 Python 异常的处理。在执行 Python 代码或者调用 CPython 提供的接口时出现异常，HVML 会统一报告 `ExternalFailure` 异常，进一步的 Python 异常名称则由 `$PY.except` 给出。如下例所示：
+在进入本文主题之前，我们再来看看 Python 异常的处理。若在执行 Python 代码或者调用 Python 解释器（当前使用 CPython）提供的接口时出现异常，HVML 会统一报告 `ExternalFailure` 异常，进一步的 Python 异常名称则由 `$PY.except` 给出。如下例所示：
 
 ```hee
 {{
@@ -285,11 +297,11 @@ from datetime import datetime as dt, timedelta as td
 }}
 ```
 
-上面的 CHEE 首先运行 Python 命令 `2 / 0`，这会抛出异常。如果我们捕获了该异常，然后再访问 `$PY.except`，将得到字符串：`ZeroDivisionError`。这是 Python 的标准错误名称。
+上面的 CHEE 首先运行 Python 命令 `2 / 0`，这会抛出异常。如果我们捕获了该异常，然后再访问 `$PY.except`，将得到字符串：`ZeroDivisionError`。这是一个 Python 表示“被零除错误”的异常名称。
 
 ## 示例程序：寻找素数
 
-这一小节给出一个寻找素数的 HVML 程序，该程序使用了 Python 编写的一个函数：
+这一小节给出了一个寻找素数的 HVML 程序，该程序使用了 Python 编写的一个函数：
 
 ```python
 def find_next_prime(start):
@@ -307,12 +319,12 @@ def find_next_prime(start):
 
 该函数名为 `find_next_prim`，如其名称所暗示，该函数返回比给定的参数大的第一个素数。比如，我们传入 2，将返回 3，而传入 5 将返回 7。
 
-现在，我们尝试将该函数内嵌到 HVML 中，并使用 HTML 的 `ul` 和 `li` 元素列出调用上述 Python 函数获得的小于 200 的所有素数。代码如下，请注意其中的注释。
+现在，我们尝试将该函数内嵌到 HVML 中，并使用 HTML 的 `ul` 和 `li` 元素列出调用上述 Python 函数获得的小于 100 的所有素数。代码如下，请注意其中的注释。
 
 ```hvml
 <!--
     由于 $PY 被实现为一个可装载的动态对象，故而需要使用 DOCTYPE 的
-    SYSTEM 标识符装载该动态对象并将其绑定到 PY 变量上。
+    SYSTEM 标识符装载该动态对象并将其绑定到 'PY' 变量上。
 -->
 <!DOCTYPE hvml SYSTEM "f: PY">
 <hvml target="html">
@@ -322,10 +334,10 @@ def find_next_prime(start):
 
     <body>
         <!--
-            init 定义使用其内容，用 HVML ''' 语法定义了一个原样保留的字符串，
-            并绑定到 pyCode 变量上。
-            注意，我们也可以使用 init 元素的 from 属性，从指定的文件中初始化
-            pyCode 变量的内容，从而无需硬编码这段 Python 函数内容到 HVML 程序中。
+            'init' 元素用于定义一个变量。其内容使用了 HVML 的 ''' 语法定义了一个原样
+            保留的字符串，并绑定到 'pyCode' 变量上。
+            注意，我们也可以使用 'init' 元素的 'from' 属性，从指定的文件中初始化
+            'pyCode' 变量的内容，从而无需硬编码这段 Python 函数内容到 HVML 程序中。
         -->
         <init as 'pyCode'>
 '''
@@ -345,8 +357,8 @@ def find_next_prime(start):
 
         <!--
             我们利用 `inherit` 动作元素的内容执行了一条混合求值表达式。
-            该表达式执行 pyCode 变量中包含的 Python 代码。
-            注意，我们可以可以直接执行 Python 文件中的代码：
+            该表达式执行 'pyCode' 变量中包含的 Python 代码。
+            注意，我们也可以直接执行 Python 文件中的代码：
 
                 $PY.run('<the Python script file name>', 'file')
         -->
@@ -357,7 +369,9 @@ def find_next_prime(start):
                 我们利用 `catch` 动作元素捕获在执行上述 Python 代码时可能出现的异常。
             -->
             <catch for `ExternalFailure`>
-                <exit with "A Python exception raised: $PY.except" />
+                $STREAM.stdout.writelines("A Python exception raised: $PY.except!")
+
+                <exit with "$PY.except" />
             </catch>
         </inherit>
 
@@ -365,21 +379,19 @@ def find_next_prime(start):
 
         <ul>
             <!--
-                这里利用 iterate 动作元素执行迭代，类似其他编程语言的 for 循环。
-                该迭代的初始输入数据为 2L。迭代的停止条件由 onlyif 属性的表达式决定：$L.lt($0~, 100L)。
+                这里利用 'iterate' 动作元素执行迭代，类似其他编程语言的 'for' 循环。
+                该迭代的初始输入数据为 2L。迭代的停止条件由 'onlyif' 属性的表达式决定：$L.lt($0~, 100L)。
                 其中 $0~ 表示当前的迭代输入数据；若当前的迭代输入数据 $0~ 大于等于 100L 时，
                 该表达式的求值结果为 false，整个迭代结束。
-                每次迭代时，输入数据将作为结果执行 iterate 中的其他元素。
-                若整个迭代未结束，则会在每次迭代后对 with 属性指定的表达式 `$PY.global.find_next_prime($0<)` 进行求值。
-                由于设定了 nosetotail（表示“首尾相接”）副词属性，with 属性的结果将被当做
-                下一次迭代的输入数据。
+                每次迭代时，输入数据将作为结果执行 'iterate' 定义的所有子孙元素。
+                若整个迭代未结束，则会在每次迭代后对 'with' 属性指定的表达式 `$PY.global.find_next_prime($0<)` 进行求值。
+                由于设定了 'nosetotail'（表示“首尾相接”）副词属性，'with' 属性的结果将被当做下一次迭代的输入数据。
             -->
             <iterate on 2L onlyif $L.lt($0<, 100L)
                     with $PY.global.find_next_prime($0<) nosetotail >
 
                 <!--
-                    在当前文档位置插入一个 li 元素，其内容为 $?，即上个动作元素的执行结果，
-                    也就是每次迭代的结果。
+                    在当前文档位置插入一个 li 元素，其内容为 $?，即上个动作元素的执行结果，也就是每次迭代的结果。
                 -->
                 <li>$?</li>
             </iterate>
@@ -399,9 +411,9 @@ def find_next_prime(start):
 
 如果我们执行上述 HVML 程序，并使用 Foil 字符渲染器，将列出小于 100 的所有素数，如下图所示。
 
-![Find Primes (Using ul and li)](screenshots/embed-python-to-find-primes-using-ul-li.png)
+![Find Primes (Using ul and li)](/screenshots/embed-python-to-find-primes-using-ul-li.png)
 
-如果我们要列出小于 1000L 的所有素数，以上程序当然也可以正常运行，但每行显示一个素数显然太浪费空间。因此，我们对上述代码生成文档部分稍作修改，使用 `p` 元素替代 `ul` 元素，使用 `span` 替代 `li` 元素，并交错使用不同的颜色来展示这些素数：
+如果我们要列出小于 10000 的所有素数，以上程序当然也可以正常运行，但每行显示一个素数显然太浪费空间。因此，我们对上述代码生成文档部分稍作修改，使用 `p` 元素替代 `ul` 元素，使用 `span` 替代 `li` 元素，并交错使用不同的颜色来展示这些素数：
 
 ```hvml
         <!-- 使用 p 和 span 元素列出小于 10000L 的所有素数。 -->
@@ -421,38 +433,30 @@ def find_next_prime(start):
 
 如果我们执行上述 HVML 程序，并使用 Foil 字符渲染器，将以紧凑形式列出小于 1000L 的所有素数，如下图所示（屏幕所限，仅显示后半部分）：
 
-![Find Primes (Using p and span)](screenshots/embed-python-to-find-primes-using-p-span.png)
+![Find Primes (Using p and span)](/screenshots/embed-python-to-find-primes-using-p-span.png)
 
 如果我们使用 xGUI Pro 图形渲染器，其效果如下所示（我们通过 `style="background-color:black"` 将 `p` 元素的背景颜色设置为黑色）：
 
-![Find Primes (Using p and span)](screenshots/embed-python-to-find-primes-using-p-span-xgui-pro.png)
+![Find Primes (Using p and span)](/screenshots/embed-python-to-find-primes-using-p-span-xgui-pro.png)
 
-以上例子给出了在 HVML 中嵌入式 Python 程序的巨大好处：利用 HVML 我们可以使用描述式的 HTML 和 CSS 来轻松定义 Python 程序的执行结果。
-
-同时，HVML 的解释器和渲染器分离设计，为我们的 GUI/CLI 设计带来非常多的便利。如内建的 Foil 字符渲染器和 xGUI Pro 图形渲染器表现的那样，我们可以通过 HVML 统一 CLI（命令行交互）和 GUI（图形用户交互）的开发。换句话说，今后我们在开发命令行程序时，也可以使用 HTML、CSS 等 Web 技术来展现内容并完成和用户的交互，而无需通过复杂而不易调试的方式来控制字符的颜色、对齐等。更进一步，我们可以将渲染器运行在远程设备上，从而获得让一个应用程序跨端（cross-end）执行的能力。有兴趣的读者可以尝试使用 xGUI Pro 提供的 Web Socket 通讯能力。
+以上例子说明了在 HVML 中嵌入 Python 程序的巨大好处：利用 HVML，我们可以使用描述式的 HTML 和 CSS 来轻松改变 Python 程序的输出效果。同时，HVML 的解释器和渲染器分离设计，为我们的 GUI/CLI 设计带来非常多的便利。如内建的 Foil 字符渲染器和 xGUI Pro 图形渲染器表现的那样，我们可以通过 HVML 统一 CLI（命令行交互）和 GUI（图形用户交互）的开发。换句话说，今后我们在开发命令行程序时，也可以使用 HTML、CSS 等 Web 技术来展现内容并完成和用户的交互，而无需通过复杂而不易调试的方式来控制字符的颜色、位置、对齐等。更进一步，我们可以将渲染器运行在远程设备上，从而获得让一个 HVML 应用程序跨端（cross-end）执行的能力。有兴趣的读者可以尝试使用 xGUI Pro 提供的 Web Socket 通讯能力。
 
 ## 示例程序：三维随机游走
 
-### 原始 Python 程序及其功能
+本节描述的三维随机游走程序，其原始版本来自 Matplotlib 官网的动画示例程序 Animated 3D random walk：
 
-<https://matplotlib.org/stable/gallery/animation/random_walk.html#sphx-glr-gallery-animation-random-walk-py>
+<https://matplotlib.org/stable/gallery/animation/random_walk.html>
+
+该程序使用 Python 生态中著名的 NumPy 和 Matplotlib 模块，实现了一个三维的随机游走程序。如果使用 Matplotlib 的交互式后端（backend），如 Tk、Gtk、Qt，可将其结果以动画形式展示在图形用户界面上。
+
+该程序利用了 Matplotlib 的 animation 子模块，通过 `update_lines()` 函数周期性更新其中的线条，从而实现了动画效果。
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-# Fixing random state for reproducibility
-np.random.seed(19680801)
-
-
-def random_walk(num_steps, max_step=0.05):
-    """Return a 3D random walk as (num_steps, 3) array."""
-    start_pos = np.random.random(3)
-    steps = np.random.uniform(-max_step, max_step, size=(num_steps, 3))
-    walk = start_pos + np.cumsum(steps, axis=0)
-    return walk
-
+...
 
 def update_lines(num, walks, lines):
     for line, walk in zip(lines, walks):
@@ -461,22 +465,7 @@ def update_lines(num, walks, lines):
         line.set_3d_properties(walk[:num, 2])
     return lines
 
-
-# Data: 40 random walks as (num_steps, 3) arrays
-num_steps = 30
-walks = [random_walk(num_steps) for index in range(40)]
-
-# Attaching 3D axis to the figure
-fig = plt.figure()
-ax = fig.add_subplot(projection="3d")
-
-# Create lines initially without data
-lines = [ax.plot([], [], [])[0] for _ in walks]
-
-# Setting the axes properties
-ax.set(xlim3d=(0, 1), xlabel='X')
-ax.set(ylim3d=(0, 1), ylabel='Y')
-ax.set(zlim3d=(0, 1), zlabel='Z')
+...
 
 # Creating the Animation object
 ani = animation.FuncAnimation(
@@ -485,11 +474,24 @@ ani = animation.FuncAnimation(
 plt.show()
 ```
 
-### 改造 Python 代码并内嵌到 HVML 程序中
+上面给出了实现该动画的核心代码：`update_lines()` 函数以及创建动画的 `animation.FuncAnimation()` 函数调用。最终，程序调用 `plt.show()` 进入动画。若使用 Matplotlib 的交互式后端，则当用户关闭 `plt.show()` 展示的所有窗口之后，该程序才会继续往下执行。
 
-### 动画和交互
+如果我们希望在 Python 程序中和用户就动画进行交互，比如重新执行这一动画，Matplotlib 目前提供的动画框架很难实现。其中的主要原因在于 Python 本质上属于过程式编程语言，缺乏对事件驱动机制的内建支持。在 Python 中，若要实现这一交互，就需要 Matplotlib 的动画框架提供某种回调机制，并就各种可能的交互情形定义对应的事件，然后交由开发者在回调函数中处理这些事件。这显然不是一件简单的事情，而且，如果考虑到不同的交互式后端——如 Tk、Gtk、Qt——之间的差异，其工程量将非常庞大。
 
-### 完整代码
+而 HVML 的方案则简洁而统一：界面的渲染和交互交给 HVML 处理，Python 只进行科学计算。就科学计算的可视化需求来讲，HVML 只需要 Matplotlib 生成 PNG 或者 SVG 图片就可以了。有了这个思路，我们对原始的 Python 程序稍作改动即可实现我们的目标。其要点如下：
+
+1. 不使用 Matplotlib 的动画框架，改由 HVML 的定时器驱动。
+1. 在 HVML 的定时器事件中，调用 Python 的 `update_lines()` 函数更新绘制的内容，并将结果保存为 PNG 或者 SVG 文件。
+1. 通过修改 HVML 目标文档中的 `img` 元素之 `src` 属性来更新界面内容。
+
+利用上述方案改造后的 HVML 程序，其主要框架和寻找素数的 HVML 程序类似，但有如下一些显著的不同：
+
+1. 为获得更好的渲染效果，该程序将使用 Web 开发中常用的前端框架 Bootstrap 5.1。
+1. 该程序创建了一个间隔为 100ms 的定时器，由定时器的到期事件驱动动画。
+1. 该程序在界面上展示了一个“Run again” 的按钮，用户点击该按钮后，将重新执行该动画。
+1. 为了用户界面更加美观，该程序使用更多的界面元素来美化页面的头部和尾部。
+
+下面是该程序的完整源代码，请阅读其中的注释以理解该程序。
 
 ```hvml
 <!DOCTYPE hvml SYSTEM "f: PY">
@@ -497,10 +499,13 @@ plt.show()
     <head>
         <title>Embedded Python in HVML: Animated 3D Random Walk</title>
 
-        <!-- import the Bootstrap assets built in the renderer -->
+        <!-- 导入内置在渲染器当中的 Bootstrap 5.1 资源 -->
         <link rel="stylesheet" href="//localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="//localhost/_renderer/_builtin/-/assets/bootstrap-icons-1.8.3/bootstrap-icons.css" />
 
+        <!--
+            通过修改 $TIMERS 系统变量创建一个定时器。这体现了 HVML 数据驱动的概念。
+        -->
         <update on $TIMERS to 'unite'>
             [
                 { "id" : "clock", "interval" : 100, "active" : "yes" },
@@ -509,6 +514,7 @@ plt.show()
     </head>
 
     <body>
+        <!-- 内嵌的 Python 代码。 -->
         <init as 'pyCode'>
 '''
 import numpy as np
@@ -552,16 +558,27 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
 '''
         </init>
 
-        <choose on true  >
+        <!--
+            `inherit` 动作元素的内容定义了一个 CHEE。
+            该 CHEE 执行使用 $PY.global 设置了一个 Python 全局变量 myseed，其值为系统的时间戳。
+            然后执行内嵌的 Python 代码，调用 Matplotlib 的接口保存第一张图片到当前工作路径的 frame-orig.svg 文件中。
+
+            注意其中的 catch 子元素可用于捕获对上述 CHEE 求值时可能出现的 Python 异常。
+        -->
+        <inherit>
             {{
                  $PY.global(! 'myseed', $SYS.time );
-                 $PY.run($pyCode, 'source')
+                 $PY.run($pyCode, 'source');
+                 $PY.global.fig.canvas.draw_idle();
+                 $PY.global.fig.savefig("frame-orig.svg");
             }}
+
             <catch for `ExternalFailure`>
                 <exit with "A Python exception raised: $PY.except" />
             </catch>
-        </choose>
+        </inherit>
 
+        <!-- 用户界面的头部。 -->
         <div class="px-4 my-5 border-bottom">
             <div class="text-center">
                 <h1>Embeding Python in HVML: Animated 3D Random Walk<br/>
@@ -569,16 +586,24 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
             </div>
         </div>
 
+        <!-- 用户界面的主体部分，其中包含了关键的程序逻辑。 -->
         <div class="container" id='myNS'>
             <div class="border border-3 pt-3 pb-3">
 
                 <div class="col" >
                     <div class="text-center">
-                        <img id="theFigure" width="638" height="476" />
+                        <!--
+                            用于展示 Matplotlib 绘制结果的 img 元素。
+                            注意 src 属性初始设置为 `frame-orig.svg` 文件，并使用了 hvml:// 打头的 URL 来定位本地文件。
+                            其中的 $SYS.cmd 返回执行该程序时的当前工作路径。
+                        -->
+                        <img id="theFigure" width="638" height="476" src="hvml://localhost/_system/_filesystem/-$SYS.cwd/frame-orig.svg?once=yes"/>
                     </div>
 
                     <init as 'step' at '#myNS' with 0L />
+
                     <observe on $TIMERS for 'expired:clock'>
+                        <!-- 定时器到期时，调用 Python 的 update_lines() 函数更新绘图并保存为新的图片。 -->
                         <inherit>
                             {{
                                     $STREAM.stdout.writelines("Going to handle Frame {$step}...");
@@ -589,7 +614,10 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
                             }}
                         </inherit>
 
+                        <!-- 更新目标文档中 img 元素的 src 属性。 -->
                         <update on '#theFigure' at 'attr.src' with "hvml://localhost/_system/_filesystem/-$SYS.cwd/frame-{$step}.svg?once=yes" />
+
+                        <!-- $step 加 1，若大于 30，则删除定时器。 -->
                         <init as 'step' at '#myNS' with $DATA.arith('+', $step, 1) />
                         <test with $L.gt($step, 30) >
                             <update on $TIMERS to 'subtract' with = [{ id : 'clock' }] />
@@ -601,6 +629,7 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
                     </catch>
                 </div>
 
+                <!-- Run agian 按钮 -->
                 <div class="col">
                     <div class="d-grid gap-2 col-10 mx-auto">
                         <button class="btn btn-outline-primary btn-for-input" id="runAgain" value="Run again" hvml-events="click" type="button">Run Again</button>
@@ -608,17 +637,21 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
                 </div>
 
                 <observe on '#runAgain' for 'click'>
+                    <!-- 当 Run Again 按钮被用户点击时，重置动画。 -->
                     <inherit>
                         {{
                             $PY.global.update_walks($DATA.arith('*', $step, 2))
                         }}
                     </inherit>
+
+                    <!-- 重启定时器。 -->
                     <init as 'step' at '#myNS' with 0L />
                     <update on $TIMERS to 'unite' with [{ "id" : "clock", "interval" : 100, "active" : "yes" }] />
                 </observe>
             </div>
         </div>
 
+        <!-- 用户界面的尾部。 -->
         <div class="container">
             <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
                 <div class="col-md-4 d-flex align-items-center">
@@ -635,6 +668,8 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
                 </ul>
             </footer>
         </div>
+
+        <!-- 监听渲染器发送到当前协程的 rdrState:pageClosed 事件。-->
         <observe on $CRTN for "rdrState:pageClosed">
             <exit with 'Ok' />
         </observe>
@@ -642,5 +677,22 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
 </hvml>
 ```
 
+注意，由于使用了 `img` 元素，该程序只能使用 xGUI Pro 图形渲染器（Foil 字符渲染器无法在字符终端中渲染图片）。下图给出了使用 xGUI Pro 渲染器时，该 HVML 程序的效果：
+
+![Animated 3D Random Walk](/screenshots/embed-python-animated-3d-random-walk.png)
+
+当用户按下“Run Again”按钮后，该程序将再次重新执行动画。
+
 ## 结语
+
+HVML 是一种全新种类的编程语言：可编程标记语言，本文介绍了这一编程语言的与众不同之处，同时通过两个示例程序展示了将 HVML 和 Python 结合在一起产生的奇妙“化学反应”。
+
+利用 HVML 开源解释器 PurC 在 0.9.8 版本中引入的对内嵌 Python 的支持，开发者现在可以非常方便地在 HVML 程序中调用 Python 模块，从而利用 Python 生态中的丰富软件包或模块（比如在 AI 领域大热的 PyTorch 包）开发自己的 HVML 应用。对 Python 生态而言，利用 HVML 可以优雅解决 Python 难以用来开发交互式应用的问题。
+
+另外，通过本文中的若干示例程序，我们还看到了 HVML 应用框架解耦解释器和渲染器带来的一项重大好处：一个跨平台、且有望统一 GUI/CLI 开发的全新应用框架。当然，要彻底实现这一目标还有很多要做的工作，比如 PurC 中的 Foil 渲染器还缺乏对表格、输入、表单等的支持。但这一切正在迅速改变当中。
+
+作为 HVML 发明人以及 PurC 和 xGUI Pro 项目的创始人，笔者希望来自全世界的开源爱好者为 HVML 的快速成熟添砖加瓦！
+
+最后，欢迎访问 HVML 开源解释器 PurC 项目仓库：<https://github.com/HVML/PurC>，提交你的任何评论、建议、缺陷报告甚至代码合并请求！
+
 

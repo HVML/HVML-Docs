@@ -1,11 +1,11 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RCa  
+Version: 1.0-RCb  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Feb. 28, 2023  
+Last Modified Date: Apr. 30, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -77,11 +77,14 @@ Language: Chinese
       * [3.3.9) `uri` 属性](#339-uri-属性)
       * [3.3.10) `curator` 属性](#3310-curator-属性)
       * [3.3.11) `native_crtn` 方法](#3311-native_crtn-方法)
+      * [3.3.12) `static` 属性](#3312-static-属性)
+      * [3.3.13) `temp` 属性](#3313-temp-属性)
    + [3.4) `DOC`](#34-doc)
       * [3.4.1) `doctype` 方法](#341-doctype-方法)
       * [3.4.2) `select` 方法](#342-select-方法)
       * [3.4.3) `query` 方法](#343-query-方法)
-      * [3.4.4) 元素汇集实体](#344-元素汇集实体)
+      * [3.4.4) `serialize` 方法](#344-serialize-方法)
+      * [3.4.5) 元素汇集实体](#345-元素汇集实体)
    + [3.5) `RDR`](#35-rdr)
       * [3.5.1) `state` 属性](#351-state-属性)
       * [3.5.2) `connect` 方法](#352-connect-方法)
@@ -300,7 +303,8 @@ Language: Chinese
          - [4.4.10.3) CPython 代码动态对象的 `eval` 方法](#44103-cpython-代码动态对象的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
-      * [RCa) 230228](#rca-230228)
+      * [RCb) 230430](#rcb-230430)
+      * [RCa) 230331](#rca-230331)
       * [RC9) 230131](#rc9-230131)
       * [RC8) 221231](#rc8-221231)
       * [RC7) 221130](#rc7-221130)
@@ -1803,6 +1807,120 @@ $CRTN.native_crtn
     // native/crtn
 ```
 
+#### 3.3.12) `static` 属性
+
+该属性反映的是当前协程在当前执行栈对应的静态变量，应被实现为原生实体。通过该原生实体的属性之获取器和设置器来访问当前协程在指定命名空间中的静态变量。
+
+**描述**
+
+```js
+$CRTN.static.<variable>(
+    [,
+        < string | ulongint $namspace = 1L: `the name space of the variable`.
+    ]
+) any | undefined
+```
+
+该属性获取器获取指定变量的值。`variable` 是变量名称；`namespace` 用于指定变量的名字空间，默认取 1L。
+
+```js
+$CRTN.static.<variable>(!
+    < any $value: `the new value.` >,
+    [,
+        < string | ulongint $namspace = 1L: `the name space of the variable`.
+    ]
+) boolean
+```
+
+该属性设置器设置指定变量的值。`variable` 是变量名称；`value` 指定新的值（使用 `undefined` 表示移除该变量）；`namespace` 用于指定变量的名字空间。
+
+**异常**
+
+该原生实体的属性获取器可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：无效参数，如非法变量名；可忽略异常，静默求值时返回 `undefined`。
+
+该原生实体的属性设置器可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：无效参数，如非法变量名；可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```js
+$CRTN.static.x('_root')
+    // undefined
+
+$CRTN.static.x(![0, 1, 2], '_root')
+    // true
+
+$CRTN.static.x('_root')
+    // array: [0, 1, 2]
+
+$CRTN.static.x
+    // array: [0, 1, 2]
+```
+
+#### 3.3.13) `temp` 属性
+
+该属性反映的是当前协程在执行栈中对应的临时变量，应被实现为原生实体。通过该原生实体的属性获取器和设置器来访问当前协程在指定命名空间中的临时变量。
+
+**描述**
+
+```js
+$CRTN.temp.<variable>(
+    [,
+        < string | ulongint $namspace = 1L: `the name space of the variable`.
+    ]
+) any | undefined
+```
+
+通过上述属性获取器获取指定临时变量的值。`variable` 是变量名称；`namespace` 用于指定变量的名字空间，默认取 1L。
+
+```js
+$CRTN.temp.<variable>(!
+    < any $value: `the new value.` >,
+    [,
+        < string | ulongint $namspace = 1L: `the name space of the variable`.
+    ]
+) boolean
+```
+
+通过上述属性设置器设置指定临时变量的值。`variable` 是变量名称；`value` 指定新的值（使用 `undefined` 表示移除该变量）；`namespace` 用于指定变量的名字空间。
+
+**异常**
+
+该原生实体的属性获取器可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：无效参数，如非法变量名；可忽略异常，静默求值时返回 `undefined`。
+
+该原生实体的属性设置器可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：无效参数，如非法变量名；可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```js
+$CRTN.temp.x('_topmost')
+    // undefined
+
+$CRTN.temp.x(! [0, 1, 2], '_topmost')
+    // true
+
+$CRTN.temp.x('_topmost')
+    // array: [0, 1, 2]
+
+$CRTN.temp.x
+    // array: [0, 1, 2]
+```
+
 ### 3.4) `DOC`
 
 `DOC` 是一个内置的协程级动态变量，该变量用于访问 HVML 程序生成的 eDOM 树中的元素。
@@ -1864,7 +1982,30 @@ $DOC.query(
 1. `undefined`：错误的 CSS 选择器或者参数。
 1. 一个元素汇集实体，包含零个或多个元素。
 
-#### 3.4.4) 元素汇集实体
+#### 3.4.4) `serialize` 方法
+
+该方法串行化文档对象，字符串。
+
+```js
+$DOC.serialize(
+    [, < 'compact | loose' $method = `compact`:
+        - 'compact':    `Serialize the document compactly.`
+        - 'loose':      `Serialize the document loosely with line-breaks and indents.`
+       >
+    ]
+) string | false: `the serialized document, such as '<html><body></body></html>'`
+```
+
+该方法串行化目标文档；结果为字符串，如 `<html><body></body></html>`。
+
+**示例**
+
+```js
+$DOC.serialize
+    // '<html><body></body></html>'
+```
+
+#### 3.4.5) 元素汇集实体
 
 在元素汇集实体上，我们可以就如下键名获得对应的获取器：
 
@@ -1943,6 +2084,34 @@ $RDR.state object : `an object describing the current state of the renderer:`
 ```js
 $RDR.state
     // { 'comm': 'socket', 'prot': 'PURCMC', 'prot-version': '110', 'prot-ver-code': 110UL, 'uri': 'unix:///var/tmp/purcmc.sock'}
+```
+
+#### 3.5.1) `stats` 属性
+
+该属性的获取器返回解释器和渲染器之间的通讯统计信息。该属性不提供设置器。
+
+```js
+$RDR.stats object | null: `an object describing the statistics of the communication between the interpreter and the renderer:`
+        - 'nrRequestsSent':         < ulongint: `the number of requests sent to the renderer.` >
+        - 'nrRequestsRecv':         < ulongint: `the number of requests received from the renderer.` >
+        - 'nrResponsesSent':        < ulongint: `the number of responses sent to the renderer.` >
+        - 'nrResponsesRecv':        < ulongint: `the number of responses received from the renderer.` >
+        - 'nrEventsSent':           < ulongint: `the number of events sent to the renderer.` >
+        - 'nrEventsRecv':           < ulongint: `the number of events received from the renderer.` >
+        - 'bytesSent':              < ulongint: `the total bytes sent to the renderer.` >
+        - 'bytesRecv':              < ulongint: `the total bytes received from the renderer.` >
+        - 'durationSeconds':        < ulongint: `the duration seconds of the connection.` >
+```
+
+**异常**
+
+（无）
+
+**示例**
+
+```js
+$RDR.stats
+    // { 'nrRequestsSent': 5UL, 'nrResponsesRecv': 5UL, 'nrRequestsRecv': 0, 'nrResponsesSent': 0, 'nrEventsSent': 0, 'nrEventsRecv': 10UL, 'bytesSent': 2368UL, 'bytesRecv': 468UL, 'durationSeconds': 10UL }
 ```
 
 #### 3.5.2) `connect` 方法
@@ -6979,9 +7148,9 @@ $FS.file_exists(
 ```js
 $FS.file_is(
         <string $filename: `the path to a file or directory.`>
-        <'[ dir | file | symlink | socket | pipe | block | char ] || [ executable | exe ] || [readable | read] || [writable write]' $which = 'file readable':
+        <'[ dir | regular | symlink | socket | pipe | block | char ] || [ executable | exe ] || [readable | read] || [writable write]' $which = 'regular readable':
             'dir' - `a directory.`
-            'file' - `a regular file.`
+            'regular' - `a regular file.`
             'symlink' - `a symbolic link.`
             'socket' - `a unix socket file.`
             'pipe' - ``a named pipe file or just a pipe file.``
@@ -7567,15 +7736,84 @@ $FS.opendir(
 
 - PHP `opendir()` 函数：<https://www.php.net/manual/en/function.opendir.php>
 
-##### 4.2.30.1) 目录流实体的 `read` 方法
+##### 4.2.30.1) 目录流实体的 `stat` 方法
 
-读取下一个目录项。
+返回打开的目录对应的文件统计信息（对象）。
 
 **描述**
 
 ```js
-$dirStream.read object | false
+$dirStream.stat(
+        < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
+            'dev' - `returns ID of device containing the file.`
+            'inode' - `returns inode number.`
+            'type' - `returns file type like 'd', 'b', or 's'.`
+            'mode_digits' - `returns file mode like '0644';`
+            'mode_alphas' - `returns file mode like 'rwxrwxr-x';`
+            'nlink' - `returns number of hard links.`
+            'uid' - `returns the user ID of owner.`
+            'gid' - `returns the group ID of owner.`
+            'rdev' - `returns the device ID if it is a special file.`
+            'size' - `returns total size in bytes.`
+            'blksize' - `returns block size for filesystem I/O.`
+            'blocks' - `returns number of 512B blocks allocated.`
+            'atime' - `returns time of last acces.`
+            'mtime' - `returns time of last modification.`
+            'ctime' - `returns time of last status change.`
+            'all' - `returns all above information.`
+            'default' - 'name type mode_digits uid gid size rdev ctime'
+        >
+) object | false
 ```
+
+**返回值**
+
+返回打开的目录对应的文件统计信息（对象）。
+
+```js
+{
+    dev_major: <ulongint: the major ID of device containing the directory entry>,
+    dev_minor: <ulongint: the minor ID of device containing the directory entry>,
+    inode: <ulongint: inode number>
+    type: <string: file type like 'd', 'b', 's', ...>,
+    mode_digits: <string: file mode like `0644`>,
+    mode_alphas: <string: file mode like `rwxrwxr-x`>,
+    nlink: <ulongint: number of hard links>,
+    uid: <ulongint: the user ID of owner>,
+    gid: <ulongint: the group ID of owner>,
+    rdev_major: <ulongint: the major device ID if it is a special file>,
+    rdev_minor: <ulongint: the minor device ID if it is a special file>,
+    size: <ulongint: total size in bytes>,
+    blksize: <ulongint: block size for filesystem I/O>,
+    blocks: <ulongint: Number of 512B blocks allocated>,
+    atime_sec: <ulongint: time of last acces (seconds since Epoch)>,
+    atime_nsec: <ulongint: time of last acces (nanoseconds since `atime_sec`)>,
+    mtime_sec: <ulongint: time of last modification (seconds since Epoch)>,
+    mtime_nsec: <ulongint: time of last modification (nanoseconds since `mtime_sec`)>,
+    ctime_sec: <ulongint: time of last status change (seconds since Epoch)>
+    ctime_nsec: <ulongint: time of last status change (nanoseconds since `ctime_sec`)>
+}
+```
+
+**示例**
+
+**参见**
+
+- POSIX `dirfd()` 函数。
+
+##### 4.2.30.1) 目录流实体的 `read` 方法
+
+读取下一个目录项，返回目录项名称（字符串）。
+
+**描述**
+
+```js
+$dirStream.read string | false
+```
+
+**返回值**
+
+返回目录流中下一个目录项的名称（字符串）；返回 `false` 表示已到达目录流的尾部。
 
 **示例**
 
@@ -7776,7 +8014,6 @@ $PY.info object:
         - 'copyright':      < string: `the official copyright string for the current Python version.` >
         - 'compiler':       < string: `an indication of the compiler used to build the current Python version, in square brackets (e.g., [GCC 2.7.2.2])` >
         - 'build-info':     < string: `information about the sequence number and build date and time of the current Python interpreter instance, e.g., "#67, Aug  1 1997, 22:34:28"` >
-        - 'path':           < dynamic: `to get or set the default module search path`.>
 ```
 
 该属性返回描述当前 CPython 解释器相关信息的对象。
@@ -8327,7 +8564,7 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 
 发布历史：
 
-- 2023 年 02 月 28 日：发布 V1.0 RCa，标记为 'v1.0-rca-230228'。
+- 2023 年 03 月 31 日：发布 V1.0 RCa，标记为 'v1.0-rca-230331'。
 - 2023 年 01 月 31 日：发布 V1.0 RC9，标记为 'v1.0-pv-rc9-230131'。
 - 2022 年 12 月 31 日：发布 V1.0 RC8，标记为 'v1.0-pv-rc8-221231'。
 - 2022 年 11 月 30 日：发布 V1.0 RC7，标记为 'v1.0-pv-rc7-221130'。
@@ -8338,10 +8575,20 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
 
-#### RCa) 230228
+#### RCb) 230430
 
+1. 调整 `$CRTN.static` 和 `$CRTN.temp` 两个属性的用法。
+1. 新增 `$DOC.serialize` 方法。
+1. 移除 `$PY.info.path` 属性。
+1. 新增 `native/dirStream.stat` 方法。
+1. 新增 `$RDR.stat` 方法。
+
+#### RCa) 230331
+
+1. 新增 `$CRTN.static` 和 `$CRTN.temp` 两个动态属性。
 1. 新增必要动态变量 `$SOCK`。
 1. 新增可选动态变量 `$PY`。
+1. 调整 `$FS.file_is` 的关键词。
 
 #### RC9) 230131
 

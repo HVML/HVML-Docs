@@ -1,48 +1,324 @@
-# 漫谈 HVML，它的由来和未来
+# HVML，一种描述式编程语言
 
-魏永明
+**Table of Contents**
 
-HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高级编程语言。小说《考鼎记》如此介绍这个语言：
+[//]:# (START OF TOC)
 
-> 老魏发明的这编程语言，正式的名字叫 HVML，和我们知道的网页标记语言 HTML 只有一个字母之差，有朋友取了个昵称叫“呼噜猫”。HVML 和我们知道的很多编程语言，比如 Basic、Python、C/C++ 之类的完全不同，HVML 提出了一个数据驱动的概念，而代码里边也没有 if-then，do-while 之类的流程控制语句，所有的操作都基于数据。比如程序的输入数据是个数组，那我们就在这个数组上执行迭代，把数组里边的元素挑着处理一遍。如此等等。
->
-> ——《考鼎记》第十回
+- [Article Info](#article-info)
+- [Abstract](#abstract)
+- [1) Introduction](#1-introduction)
+   + [1.1) Problems](#11-problems)
+   + [1.2) Existing Solutions](#12-existing-solutions)
+   + [1.3) Our Solution](#13-our-solution)
+- [2) Design of HVML](#2-design-of-hvml)
+   + [2.1) Some Simple Samples](#21-some-simple-samples)
+   + [2.2) A Comprehensive Sample](#22-a-comprehensive-sample)
+   + [2.3) The HVML Virtual Machine](#23-the-hvml-virtual-machine)
+      * [2.3.1) The execution model of HVML interpreter](#231-the-execution-model-of-hvml-interpreter)
+      * [2.3.2) Flow control](#232-flow-control)
+      * [2.3.3) Event loop](#233-event-loop)
+      * [2.3.4) Handling of errors and exceptions](#234-handling-of-errors-and-exceptions)
+   + [2.4) Hybrid Evaluation Expressions](#24-ejson-evaluation-expressions)
+      * [2.4.1) The extended JSON](#241-the-extended-json)
+      * [2.4.2) eJSON Evaluation Expressions](#242-ejson-evaluation-expressions)
+      * [2.4.3) Complex eJSON Evaluation Expressions](#243-complex-ejson-evaluation-expressions)
+   + [2.5) Variables](#25-variables)
+      * [2.5.1) Anonymous Context variables](#251-anonymous-context-variables)
+      * [2.5.2) Named Static variables](#252-named-static-variables)
+      * [2.5.3) Named Temporary variables](#253-named-temporary-variables)
+      * [2.5.4) Life cycle of a variable](#254-life-cycle-of-a-variable)
+   + [2.6) Closures](#26-closures)
+      * [2.6.1) Replaceable closures](#261-replaceable-closures)
+      * [2.6.2) Executing a closure in-place](#262-executing-a-closure-in-place)
+      * [2.6.3) Calling a closure](#263-calling-a-closure)
+   + [2.7) Coroutines and Concurrency](#27-coroutines-and-concurrency)
+      * [2.7.1) Runners and coroutines](#271-runners-and-coroutines)
+      * [2.7.2) Observing a datum or an expression](#272-observing-a-datum-or-an-expression)
+      * [2.7.3) Executes a closure asynchronously](#273-executes-a-closure-asynchronously)
+   + [2.8) HVML Tags and Attributes](#28-hvml-tags-and-attributes)
+      * [2.8.1) Frame tags](#281-frame-tags)
+      * [2.8.2) Template tags](#282-template-tags)
+      * [2.8.3) Data operation tags](#283-data-operation-tags)
+      * [2.8.4) Stack operation tags](#284-stack-operation-tags)
+      * [2.8.5) Coroutine operation tags](#285-coroutine-operation-tags)
+      * [2.8.6) Event tags](#286-event-tags)
+- [3) Interop with Runtime Environment](#3-interop-with-runtime-environment)
+   + [3.1) Dynamic Objects and Predefined Static Variables](#31-dynamic-objects-and-predefined-static-variables)
+   + [3.2) External Dynamic Objects](#32-external-dynamic-objects)
+   + [3.3) External Executors](#33-external-executors)
+   + [3.4) Remote Data Fetcher](#34-remote-data-fetcher)
+   + [3.5) HVML Targets](#35-hvml-targets)
+      * [3.5.1) Target `void`](#351-target-void)
+      * [3.5.2) Target `html`](#352-target-html)
+      * [3.5.3) Target `xml`](#353-target-xml)
+   + [3.6) HVML Renderers](#36-hvml-renderers)
+      * [3.6.1) Headless Renderer](#361-headless-renderer)
+      * [3.6.2) PURCMC Renderer](#362-purcmc-renderer)
+      * [3.6.3) THREAD Renderer](#363-thread-renderer)
+- [4) Typical Applications](#4-typical-applications)
+   + [4.1) Use HVML to Govern GUIs](#41-use-hvml-to-govern-guis)
+   + [4.2) Remote Apps](#42-remote-apps)
+- [5) Open Source Implementation](#5-open-source-implementation)
+   + [5.1) PurC](#51-purc)
+   + [5.2) PurC Fetcher](#52-purc-fetcher)
+   + [5.3) PurC Midnight Commander](#53-purc-midnight-commander)
+   + [5.4) xGUI Pro](#54-xgui-pro)
+- [6) Improvement of Application Development Efficiency](#6-improvement-of-application-development-efficiency)
+- [7) Performance Testing](#7-performance-testing)
+- [8) Related Work](#8-related-work)
+- [9) The Conclusion](#9-the-conclusion)
+   + [9.1) Achieved Objectives](#91-achieved-objectives)
+      * [9.1.1) Simple design](#911-simple-design)
+      * [9.1.2) Data-driven](#912-data-driven)
+      * [9.1.3) Inherent event-driven Mechanism](#913-inherent-event-driven-mechanism)
+      * [9.1.4) New application framework with better security](#914-new-application-framework-with-better-security)
+   + [9.2) Challenges and Lessons](#92-challenges-and-lessons)
+   + [9.3) Roadmap of Future Work](#93-roadmap-of-future-work)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Authors](#authors)
+- [Tradmarks](#tradmarks)
 
-本文就给大家讲讲 HVML 的由来以及笔者对它的未来的设想。
+[//]:# (END OF TOC)
 
-### HVML 的由来
+## Article Info
 
-随着互联网技术和应用的发展，围绕 HTML/CSS/JavaScript 形成的 Web 前端开发技术发展迅猛，甚至可以用“一日千里”来形容。五年前，基于 jQuery 和 Bootstrap 的前端框架大行其道，而从 2019 年开始，基于虚拟 DOM 技术的框架又受到前端开发者的青睐，比如著名的 React.js（<https://reactjs.org/>）、Vue.js（<https://cn.vuejs.org>）等。值得注意的是，微信小程序、快应用等，也不约而同使用了这种虚拟 DOM 技术来构建应用框架。
+- Vincent Wei
 
-所谓“虚拟 DOM” 是指前端应用程序通过 JavaScript 来创建和维护一个虚拟的文档对象树，应用脚本并不直接操作真实的 DOM 树。在虚拟 DOM 树中，通过一些特别的属性实现了基于变量的一些流程控制，如条件、循环等。虚拟 DOM 技术提供如下一些好处：
+## Abstract
 
-1. 由于脚本并不使用脚本程序直接操作真实的 DOM 树，故而一方面通过现有的框架简化了前端开发的复杂性，另一方面通过优化对真实 DOM 树的操作而减少了由于动态修改页面内容而对 DOM 树的频繁操作，从而提高了页面的渲染效率和用户体验。
-1. 通过虚拟 DOM 技术，程序对某个数据的修改，可以直接反映到该数据绑定的页面内容上，开发者无需主动或直接地调用相关接口来操作 DOM 树。这种技术提供了所谓的“响应式”编程，极大降低了开发者的工作量。
+This article describes the motivation behind HVML, the design goals, and its open source implementation.
 
-以 React.js、Vue.js 为代表的前端框架取得了巨大成功。看起来还是互联网公司钱多人多，所以可以肆无忌惮地不停地造各种各样的轮子。
+HVML is a descriptive programming language that uses an XML-like syntax, so it can also be considered a programmable markup language.
 
-然而，嵌入式或者物联网设备上的应用开发者却无法享受这些技术进步带来的红利。要开发嵌入式或者物联网设备上的应用，绝大多数情况下还是要使用 C/C++ 这种编程语言。虽说现在也有一些物联网操作系统尝试在系统中引入 JavaScript 或者 Python 语言的支持，但仅仅一个编程语言是不够的。比如博大精深的 Web 前端技术中，JavaScript 的确扮演了重要的角色，但 Web 前端技术赖以运转的基础却是 DOM 以及 CSS：DOM 提供了一种描述文档或者界面中的元素及其属性、内容的数据结构，而 CSS 描述了元素的布局、样式以及动画效果等渲染特性。一句话，那精妙的 Web 页面效果，不是通过 JavaScript 描述的，而是由 DOM 和 CSS 决定的。
+The original design goal of HVML is to allow developers who are familiar with C/C++, Rust,
+    or other programming languages to easily develop GUI applications by using Web technologies directly in C/C++ runtime environment,
+    instead of using JavaScript programming language in a web browser or Node.js environment.
+We achieved this design goal and also designed HVML as a general-purpose programming language with some interesting features.
 
-所以，我们若想要在非浏览器环境中利用 Web 前端技术带来的便利来开发 GUI 应用，最该引入的首先应该是 DOM 和 CSS，而不仅仅是对一个脚本语言的支持。
+This article introduces the technical features of HVML, including inherent data/event driven programming, the stacked virtual machine for running HVML programs, easy asynchronous and concurrent programming, flexible dynamics, etc.
 
-除了嵌入式或者物联网应用的开发者之外，使用非 JavaScript 语言的其他开发者，比如使用 Python 做人工智能、大数据分析的开发者，也无法轻松使用 Web 前端技术带来的好处。若要用，非要折腾一番不可，比如要做个计算结果的可视化，要么使用 Python 的各种 GUI 绑定，要么绕一圈喂数据给浏览器，而且还要多学一门脚本语言。期间辛苦，也是罄竹难书。
+This article also introduces the open source implementation of HVML: PurC and xGUI Pro.
 
-笔者开发 MiniGUI 二十多年，知道使用 C/C++ 如何开发界面，多写几行 C/C++ 代码也能做出很多精妙的界面来。但有那么几年，笔者搞了几次 Web 前端开发，被 Web 前端技术开发界面的精妙之处所折服。后来再用 C/C++ 语言开发界面，笔者心里也是百般地不情愿。要不是为了钱，都 2020 年了，谁愿意用 C/C++ 开发 GUI？居然还有人要做“国产”的 C++ GUI 系统替代 Qt。呸！那都是二十年前的技术了。要搞国产替代，你先往前看看行吗？
+By using the open source implementation of HVML,
+   you can not only use HVML to quickly develop GUI applications in the C/C++ runtime environment without having to worry about the details of toolkits, layouts, styles, and so on,
+   but also use HVML to quickly develop scripts that support coroutine and have high concurrency.
 
-另一方面，要想在嵌入式系统或者物联网设备中支持完整的 Web 前端技术，所需要的存储尺寸和运行内存都比较大，要获得好的效果，还要有 GPU 的支持。所以在合璧操作系统（HybridOS）的开发中，我们通过一些技术上的小突破来改造 Web 前端技术，使开发者可以用更少的 JavaScript 代码来完成更多的工作。但在 HybridOS 的开发过程中，我们意识到对 Web 前端技术的修修补补只能是权宜之计——我们需要一种新的开发框架，尤其是编程语言来打破 Web 前端技术现有的框框和限制。
+In this article, we describe the design and the implementation of HVML.
 
-于是就有了 HVML。如果总结一下的话，HVML 的诞生有其历史使命：
+## 1) Introduction
 
-1. 通过完备、自恰、高度抽象的新编程语言来进一步归纳和总结 React.js、Vue.js 等围绕虚拟 DOM 技术所做一些技术尝试。
-1. 打破 Web 前端技术和 JavaScript 的耦合，让其他编程语言，比如 Python、Lua、C/C++ 等，也可以直接使用 Web 前端技术带来的便利。
-1. 为传统的 GUI 开发，包括设计工具、开发框架等带来新的变革。
-1. 为云环境中的物联网应用开发带来新的可能。
+### 1.1) Problems
 
-这就是 HVML 的由来。未来，HVML 将成为 HybridOS 的 App 开发首选编程语言。
+During the development of [HybridOS], [Vincent Wei] proposed a descriptive programming language called `HVML`.
 
-## HVML 概貌
+With the development of Internet and applications, the Web front-end development technologies around HTML/CSS/JavaScript has evolved rapidly.
+Since 2019, frameworks based on virtual DOM (Document Object Model) technology have been favored by front-end developers,
+      such as [React.js] and [Vue.js].
 
-下面用一个简单的例子来描述 HVML 的基本长相。有关 HVML 的详细规范，感兴趣的读者可点击文末的原文链接。
+The so-called "virtual DOM" refers to a front-end application that uses JavaScript to create and maintain a virtual DOM tree,
+    and the application scripts do not directly manipulate the real DOM tree.
+
+The virtual DOM technology provides the following benefits:
+
+1. The script does not directly manipulate the real DOM tree. On the one hand,
+   the existing framework simplifies the complexity of front-end development,
+   on the other hand, it reduces the frequent operations on the DOM tree through
+   dynamic modification of page content by optimizing the operation of the real DOM tree,
+   thus improving page rendering efficiency and user experience.
+1. With the virtual DOM technology, the modification of a certain data
+   by the program can directly be reflected on the content of the data-bound page,
+   and the developer does not need to actively or directly call the relevant
+   interface to operate the DOM tree. This technology provides so-called
+   "responsive" programming, which greatly reduces the workload of developers.
+
+On the other side, front-end frameworks represented by React.js and Vue.js have achieved great success,
+   but have the following deficiencies and shortcomings:
+
+1. These technologies are based on multiple Web standards and require browsers
+   that fully support the standards or specifications to run. Therefore,
+   it is difficult to integrate these technologies with existing modules which
+   are developed based on programming languages such as C/C++.
+1. Due to inherent limitations, the use of JavaScript language in webpages
+   has always been criticized by developers as follows:
+   - Client-side security. The main problem or disadvantage in JavaScript is
+     that the code is always visible to everyone, so anyone can view
+     the source code.
+   - Low source maintainability. It is difficult to develop large applications
+     by using JavaScript. When use JavaScript in a front-end project, the
+     configuration is often a tedious task to the amount of tools that require
+     to figure together to make an environment for such a project.
+   - Negative impact on performance. Running a large amount of JavaScript code
+     related to business logic in the browser will cause page rendering and
+     business logic to compete for processor resources. This is one of
+     the main reasons why the user experiences of web-based UIs are always
+     significantly different from native GUIs.
+1. These technologies implement data-based condition and loop flow controls
+   by introducing some virtual attributes such as `v-if`, `v-else`, and `v-for`.
+   However, this method breaks the logic of the code and reduces the
+   readability of the code. Below is an example:
+
+```html
+<div v-if="Math.random() > 0.5">
+  Now you see "{{ name }}"
+</div>
+<div v-else>
+  Now you don't
+</div>
+```
+
+### 1.2) Existing Solutions
+
+(Say something about electron and other similiar open source projects.)
+
+### 1.3) Our Solution
+
+HVML is a programmable markup language.
+Like HTML, HVML uses markups to define program structure and data,
+     but unlike HTML, HVML is programmable and dynamic.
+
+HVML realizes the dynamic generation and update function of data and XML/HTML documents through a limited number of action tags and
+expressions that can be used to define attributes and content;
+HVML also provides mechanisms to interact with the runtime of an existing programming language,
+     such as C/C++, Python, Lua, etc., so as to provide strong technical support for these programming languages to
+     utilize Web front-end technologies outside the browser.
+From this perspective, HVML can also be regarded as a glue language.
+
+## 2) Design of HVML
+
+### 2.1) Some Simple Samples
+
+The classical `helloworld` program in HVML looks like:
+
+```html
+<!DOCTYPE hvml>
+<hvml target="void">
+
+    $STREAM.stdout.writelines('Hello, world!')
+
+</hvml>
+```
+
+The HVML program above will print the following line on your terminal:
+
+```
+Hello, world!
+```
+
+Obviously, the key statement of the above program is
+
+```js
+$STREAM.stdout.writelines('Hello, world!')
+```
+
+This statement called the `writelines` method of `$STREAM.stdout`,
+     and the method printed the `Hello, world!` to STDOUT, i.e., your terminal.
+
+Now we rewrite the above program a little more complicated to have the following features:
+
+- Output a valid HTML document or a simple text line according to a startup option.
+- Support localization according to the current system locale.
+
+Please read the code below and the comments carefully:
+
+```html
+<!DOCTYPE hvml>
+
+<!-- $REQ contains the startup options -->
+<hvml target="$REQ.target" lang="$REQ.lang">
+  <body>
+
+    <!--
+        $SYS.locale returns the current system locale like `zh_CN'.
+        This statement loads a JSON file which defined the map of
+        localization messages, like:
+        {
+            "Hello, world!": "世界，您好！"
+        }
+    -->
+    <update on $T.map from 'messages/$SYS.locale' to 'merge' />
+
+    <!--
+        This statement defines an operation set, which output
+        an HTML fragment.
+
+        An operation set of HVML is similiar to a function or a closure
+        in other languages.
+    -->
+    <define as 'output_html'>
+        <h1>HVML</h1>
+        <p>$?</p>
+    </define>
+
+    <!--
+        This statement defines an operation set, which output
+        a text line to STDOUT.
+    -->
+    <define as 'output_void'>
+        <inherit>
+            $STREAM.stdout.writelines($?)
+        </inherit>
+    </define>
+
+    <!--
+        This statement includes one of the operation sets defined above
+        according to the value of `target` attribute of `hvml` element,
+        and pass the result returned by `$T.get('Hello, world!')`.
+    -->
+    <include with ${output_$HVML.target} on $T.get('Hello, world!') />
+
+  </body>
+</hvml>
+```
+
+The above HVML program will generate a HTML document if the current system locale is `zh_CN`,
+    and the value of the startup option `target` is `html`:
+
+```html
+<html>
+  <body>
+        <h1>HVML</h1>
+        <p>世界，您好！</p>
+  </body>
+</html>
+```
+
+But if the value of the startup option `target` is `void`,
+    the HVML program above will print the following line on your terminal:
+
+```
+世界，您好！
+```
+
+With the simple samples above, you can see what's interesting about HVML.
+
+In essence, HVML provides a new way of thinking to solve the previous problem:
+
+- First, it introduces Web front-end technologies (HTML, XML, DOM, CSS, etc.)
+  into other programming languages, rather than replacing other programming
+  languages with JavaScript.
+- Second, it uses an HTML-like markup language to manipulate elements,
+  attributes, and styles in Web pages, rather than JavaScript.
+- In addition, in the design of HVML, we intentionally use the concept of
+  data-driven, so that HVML can be easily combined with other programming
+  languages and various network connection protocols, such as data bus,
+  message protocol, etc. In this way, developers use a programming language
+  with which is familiar by them to develop the non-GUI part of the application,
+  and all the functions of manipulating the GUI are handed over to HVML, and
+  the modules are driven by the data flowing between them. While HVML provides
+  the abstract processing capability of the data flow.
+
+Although we designed HVML originally as a programming language to rapidly
+develop GUI applications based on Web front-end technology in the C/C++
+runtime environment, the developer can also use HVML as a general script
+language in other scenarios.
+
+In short, HVML provides a programming model that is different from traditional
+programming languages. On the basis of data-driven, HVML provides a more
+systematic and complete low-code (which means using less code to write programs)
+programming method.
+
+### 2.2) A Comprehensive Sample
 
 下面的示例 HVML 代码生成的 HTML 页面，将在屏幕上展示三组信息：
 
@@ -68,7 +344,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
             ]
         </update>
 
-        <connect at="socket:///var/run/hibus.sock" as="systemStatus" for="hiBus" />
+        <init as="systemStatus" with=$STREAM.open('unix:///var/tmp/hibus.sock','default','hiBus') >
     </head>
 
     <body>
@@ -119,7 +395,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
         </archetype>
 
         <footer id="the-footer">
-            <test on="$_SYSTEM.locale" in='the-footer'>
+            <test on="$SYS.locale" in='the-footer'>
                 <match for="AS 'zh_CN'" exclusively>
                     <update on="$@" to="displace" with="$footer_cn" />
                 </match>
@@ -142,34 +418,36 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
         </footer>
 
         <observe on="$TIMERS" for="expired:foo" in="#the-header" >
-            <update on="> span.local-time" at="textContent" with="$_SYSTEM.time('%H:%m')" />
+            <update on="> span.local-time" at="textContent" with="$SYS.time('%H:%m')" />
         </observe>
 
-        <observe on="$systemStatus" for="battery">
-            <test on="$?.level" in="#the-header">
-                <match for="GE 100" exclusively>
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-full.png" />
-                </match>
-                <match for="GE 90" exclusively>
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-90.png" />
-                </match>
-                <match for="GE 70" exclusively>
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-70.png" />
-                </match>
-                <match for="GE 50" exclusively>
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-50.png" />
-                </match>
-                <match for="GE 30" exclusively>
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-30.png" />
-                </match>
-                <match for="GE 10" exclusively>
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-10.png" />
-                </match>
-                <match for="ANY">
-                    <update on="img.mobile-status" at="attr.src" with="/battery-level-low.png" />
-                </match>
-            </test>
-        </observe>
+        <choose on=$systemStatus.subscribe('@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED')>
+            <observe on="$databus" for="event:$?" in="#the-header" with=$onBatteryChanged />
+                <test on="$?.level" in="#the-header">
+                    <match for="GE 100" exclusively>
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-full.png" />
+                    </match>
+                    <match for="GE 90" exclusively>
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-90.png" />
+                    </match>
+                    <match for="GE 70" exclusively>
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-70.png" />
+                    </match>
+                    <match for="GE 50" exclusively>
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-50.png" />
+                    </match>
+                    <match for="GE 30" exclusively>
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-30.png" />
+                    </match>
+                    <match for="GE 10" exclusively>
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-10.png" />
+                    </match>
+                    <match for="ANY">
+                        <update on="img.mobile-status" at="attr.src" with="/battery-level-low.png" />
+                    </match>
+                </test>
+            </observe>
+        </choose>
 
         <observe on=".avatar" for="clicked">
             <load on="user.hvml" with="{'id': $@.attr['data-value']}" as="modal" />
@@ -177,6 +455,11 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
     </body>
 </hvml>
 ```
+
+Essentially, HVML is a new-style programming language with a higher level of
+abstraction than common script languages such as JavaScript or Python.
+
+下面用一个简单的例子来描述 HVML 的基本长相。有关 HVML 的详细规范，感兴趣的读者可点击文末的原文链接。
 
 熟悉 HTML 读者一定会觉得上面的代码很眼熟。是的，和 HTML 类似，HVML 使用标签（tag）；但和 HTML 不同的是，HVML 是动态的，表述的是程序，而 HTML 是静态的，表述的是文档。
 
@@ -189,6 +472,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
 另外，在上面的示例代码中，我们通过 `observe` 标签观察新的数据或文档本身的变化以及用户交互事件，可实现 XML/HTML 文档或数据的动态更新。比如在最后一个 `observe` 标签中，通过监听用户头像上的点击事件来装载一个新的 `user.hvml` 文件，以模态对话框的形式展示对应用户的详细信息。
 
 其次是彻底解除界面、交互和数据之间的耦合。通过 HVML 引入的编程模型和方法，用于表述界面的 XML/HTML 文档内容可完全由 HVML 生成和动态调整，这避免了在程序代码中直接操作文档的数据结构（即文档对象树，或简称 DOM 树），而程序只需要关注数据本身的产生和处理即可。这样，就实现了界面和数据的解耦。比如：
+
    - HVML 可在文档片段模板或者数据模板中定义数据和 DOM 元素之间的映射关系（如示例代码中的 `archetype` 或 `archedata` 标签），而无需编写额外的代码完成数据到 DOM 元素属性、内容等的赋值操作。
    - HVML 将错误和异常的展现和程序代码分离了开来，程序只要产生适当的错误或者异常（如示例代码中的 `error` 和 `except` 标签），而对错误或者异常的处理则直接在 HVML 中定义，这不仅仅将程序和界面隔离了开来，同时还提高了代码的可维护性。
 
@@ -198,7 +482,93 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
 
 限于篇幅，我们不打算在本文中详细介绍 HVML，读者对 HVML 有个感性认识就可以了。有兴趣了解详细规范的读者，可以参阅文末的原文链接。不过要耐心点哦，定义一个完备、自恰的编程语言不是一件容易的事儿，所以要读，就要找个大段的时间，耐心点儿仔细地阅读。
 
-## HVML 如何改变传统的 GUI 开发
+### 2.3) The HVML Virtual Machine
+
+#### 2.3.1) The execution model of HVML interpreter
+
+#### 2.3.2) Flow control
+
+#### 2.3.3) Event loop
+
+#### 2.3.4) Handling of errors and exceptions
+
+### 2.4) Hybrid Evaluation Expressions
+
+#### 2.4.1) The Extended JSON
+
+#### 2.4.2) Hybrid Evaluation Expressions
+
+#### 2.4.3) Compound Hybrid Evaluation Expressions
+
+### 2.5) Variables
+
+#### 2.5.1) Anonymous Context variables
+
+#### 2.5.2) Named Static variables
+
+#### 2.5.3) Named Temporary variables
+
+#### 2.5.4) Life cycle of a variable
+
+### 2.6) Closures
+
+#### 2.6.1) Replaceable closures
+
+#### 2.6.2) Executing a closure in-place
+
+#### 2.6.3) Calling a closure
+
+### 2.7) Coroutines and Concurrency
+
+#### 2.7.1) Runners and coroutines
+
+#### 2.7.2) Observing a datum or an expression
+
+#### 2.7.3) Executes a closure asynchronously
+
+### 2.8) HVML Tags and Attributes
+
+#### 2.8.1) Frame tags
+
+#### 2.8.2) Template tags
+
+#### 2.8.3) Data operation tags
+
+#### 2.8.4) Stack operation tags
+
+#### 2.8.5) Coroutine operation tags
+
+#### 2.8.6) Event tags
+
+## 3) Interop with Runtime Environment
+
+### 3.1) Dynamic Objects and Predefined Static Variables
+
+### 3.2) External Dynamic Objects
+
+### 3.3) External Executors
+
+### 3.4) Remote Data Fetcher
+
+### 3.5) HVML Targets
+
+#### 3.5.1) Target `void`
+
+#### 3.5.2) Target `html`
+
+#### 3.5.3) Target `xml`
+
+### 3.6) HVML Renderers
+
+#### 3.6.1) Headless Renderer
+
+#### 3.6.2) PURCMC Renderer
+
+#### 3.6.3) THREAD Renderer
+
+## 4) Typical Applications
+
+### 4.1) Use HVML to Govern GUIs
 
 我们假设有一个 GUI 系统，使用 XML 来描述界面上的构件（widget）。现在，我们要使用这个 GUI 系统开发一个简单的文件打开对话框，大致的界面需求如下：
 
@@ -231,11 +601,11 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
 
 ```html
 <!DOCTYPE hvml>
-<hvml target="xml" script="python">
+<hvml target="xml">
     <head>
         <init as="fileInfo">
             {
-                "curr_path": "/home/", 
+                "curr_path": "/home/",
                 "selected_type": "dir",
                 "selected_name": "..",
             }
@@ -252,7 +622,8 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
         </archetype>
 
         <define as="fillDirEntries">
-            <choose on="$?" by="CLASS: CDirEntries">
+            <clear on="$@" />
+            <choose on="$?" by="FUNC: DirEntries">
                 <iterate on="$?" in="#entries" by="RANGE: 0">
                     <update on="$@" to="append" with="$dir_entry" />
                 </iterate>
@@ -267,24 +638,23 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
             Open
         </button>
 
-        <observe on="$entries" for="selected-item-changed">
-            <update on="$fileInfo" at="property.selected_type key.selected_name" with ["$?.type", "$?.name" ] />
+        <observe on="#entries" for="selected-item-changed">
+            <update on="$fileInfo" at=".selected_type .selected_name" with ["$?.type", "$?.name" ] />
         </observe>
 
-        <observe on="$open" for="click">
+        <observe on="#open" for="click">
             <test on="$fileInfo.selected_type">
-                <match for="dir" exclusively>
+                <match for="AS 'dir'" exclusively>
                     <init as="new_path">
                         "$fileInfo.curr_path{$2.name}/"
                     </init>
 
-                    <empty on="#entries" />
-                    <call on="$fillDirEntries" with="$new_path" />
+                    <call on="$fillDirEntries" with="$new_path" in="#entries" />
                     <update on="$fileInfo" at="property.curr_path" with="$new_path" />
                     <update on="#path" at="textContent" with="$new_path" />
                 </match>
-                <match for="file" exclusively>
-                    <back to="_caller" with="$fileInfo">
+                <match for="AS 'file'" exclusively>
+                    <exit with="$fileInfo">
                 </match>
             </test>
         </observe>
@@ -303,7 +673,7 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
     }
 ```
 
-其次，该代码使用了 `choose` 元素以及一个外部执行器（`CLASS: CDirEntries`）来获得当前路径中的所有目录项。返回的结果数据大致为：
+其次，该代码使用了 `choose` 元素以及一个外部执行器（`FUNC: DirEntries`）来获得当前路径中的所有目录项。返回的结果数据大致为：
 
 ```json
     [
@@ -320,23 +690,33 @@ HVML 是笔者在开发合璧操作系统的过程中提出的一种新型的高
 - 如果当前选中的目录项类型是目录，则切换到该目录。此时，会首先清空列表框，然后再使用新路径下的目录项填充列表框。
 - 如果当前选中的目录项类型是文件，则使用 `back` 标签返回上个页面，同时返回 `fileInfo` 数据。
 
-在上述代码中，外部选择器 `CDirEntries` 的实现非常简单，就是列出给定路径下的目录项，并按照要求返回一个字典数组。使用 Python 实现时非常简单，所以这里略去不谈。
+在上述代码中，外部选择器 `DirEntries` 的实现非常简单，就是列出给定路径下的目录项，并按照要求返回一个字典数组。使用 Python 实现时非常简单，所以这里略去不谈。
 
-如果我们使用 HybridOS 中提到的直接执行本地系统命令的扩展 URL 图式（lcmd），我们甚至都不需要编写任何代码，而只需要使用 `request`：
+如果我们使用 HybridOS 中提到的直接执行本地系统命令的扩展 URL 图式（lcmd），我们甚至都不需要编写任何代码，而只需要使用 `init` 创建一个临时变量：
 
 ```html
-        <requset on="lcmd:///bin/ls" with="{ "cmdLine": "ls $fileInfo.curr_path" }">
-            <iterate on="$?" in="#entries" by="RANGE: 0">
-                <update on="$@" to="append" with="$dir_entry" />
-            </iterate>
-        </request>
+    <init as="direntries" from="lcmd:///bin/ls" via="GET" with="{ "cmdLine": "ls $fileInfo.curr_path" }" temp>
+        <iterate on="$?" in="#entries" by="RANGE: 0">
+            <update on="$@" to="append" with="$dir_entry" />
+        </iterate>
+    </init>
+```
+
+或者，我们使用 `$FS` 预定义变量读取给定路径下的目录项：
+
+```html
+    <choose on=$FS.opendir($fileInfo.curr_path) >
+        <iterate on=$? with=$?.read() >
+            <update on="$@" to="append" with="$dir_entry" />
+        </iterate>
+    </choose>
 ```
 
 如此，开发者不需要编写任何程序，即可实现一个简单的文件浏览和打开对话框。
 
 显然，如果使用 HVML，将大大提高传统 GUI 应用的开发效率，缩短开发周期。当然，传统的 GUI 支持系统，需要提供基于 XML 的 UI 描述支持以及类似 CSS 的布局、样式、动画等的渲染效果支持。
 
-## HVML 的未来：云应用
+### 4.2) Remote Apps
 
 HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至可以将 HVML 代码运行在云端，通过云端控制设备上的界面显示，从而形成一个新的云应用解决方案。
 
@@ -362,7 +742,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
     <body>
         <div class="clock" id="clock">
             <observe on="$TIMERS" for="expired:clock">
-                <update on="#clock" at="textContent" with="$_SYSTEM.time('%H:%m')" />
+                <update on="#clock" at="textContent" with="$SYS.time('%H:%m')" />
             </observe>
         </div>
 
@@ -404,21 +784,166 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 1. 当我们需要调整设备端的显示效果或者功能时，我们只需要修改 HVML 代码，而不需要更新设备端的固件。
 1. 我们还可以通过外部脚本，将运行在云端的其他功能，如数据库存储、数据的分析以及人工智能等要素有机整合在一起。
 
-写到这里，笔者真的被自己一贯强调的观点打动了：**编程语言才是决定操作系统灵魂和基因的那个东西，才是基础软件生态皇冠上的那颗明珠！**
+## 5) Open Source Implementation
 
-## HVML 参考实现开发小组
+For open source tools of HVML, please refer to the following repositories:
 
-HVML 长成什么样子，现在大概有了。可实现 HVML，则是一个不亚于浏览器引擎的大软件工程。另外，HVML 可以用在各种场景下，和不同的外部脚本语言绑定，就可以形成不同的系统。如果要将 HVML 应用到云环境中，我们还需要开发应用服务器。
+- HVML Documents: <https://github.com/HVML/hvml-docs>.
+- PurC (the Prime hVml inteRpreter for C language): <https://github.com/HVML/purc>.
+- PurC Fetcher (the remote data fetcher for PurC): <https://github.com/HVML/purc-fetcher>.
+- PurCMC (an HVML renderer in text-mode): <https://github.com/HVML/purc-midnight-commander>.
+- xGUI Pro (an advanced HVML renderer based on WebKit): <https://github.com/HVML/xgui-pro>.
 
-如笔者在《考鼎记》小说中所讲：**所谓纲举目张，这编程语言就是那个纲**。一个新的编程语言带来的改变，涉及到基础软件的重构、开发模型的改变、开发工具的变化，以及新的协议和软件的产生。同时还涉及到产业界上下游合作关系的变化。试想，假如本文描述的云应用成为现实，我们现在在物联网操作系统当中所做的很多努力，是不是将一文不值？
+### 5.1) PurC
 
-为了尽快让大家看到 HVML 实际转起来的样子，笔者组织了一个小型的开源协作小组来开发 HVML 的参考实现，其目标是为 Python 生态提供可直接利用 Web 前端技术的解决方案。这个开发小组现在已经开始工作了，我们一旦有了成果，会立即向大家汇报。
+### 5.2) PurC Fetcher
 
-我们期待更多的人或者企业加入到 HVML 参考实现的开发当中。但是，一个新编程语言从诞生到成熟，需要一个较长的周期。在还没有看到 HVML 运行起来的样子之前，大多数人会抱着围观和观望的态度。这是人之常情。但机会一定是留给有心人的。
+### 5.3) PurC Midnight Commander
 
-- 假如您是有雄心的基础软件企业、HVML 的潜在用户或者操作系统上游企业，如芯片公司，您可以加入到 HybridOS 的合作伙伴计划（详情见 <https://hybridos.fmsoft.cn/members>）中，派几个工程师参与到 HVML 参考实现的开发当中。笔者相信，您的团队和企业，将因此获得莫大的收益。
-- 假如您代表个人，可以打个赏给 HVML 参考实现项目（文末打赏或到网页 <https://store.fmsoft.cn/campaign/denoteoss-lt>）。您或大或小的鼓励，都将化成我们前进的绵绵动力！
+### 5.4) xGUI Pro
 
-敬请期待，一场变革正在徐徐拉开帷幕！
+## 6) Improvement of Application Development Efficiency
 
+## 7) Performance Testing
+
+## 8) Related Work
+
+## 9) The Conclusion
+
+### 9.1) Achieved Objectives
+
+#### 9.1.1) Simple design
+
+HVML defines the complete set of instructions for operating
+an abstract stack-based virtual machine using only a dozen tags.
+Each line of code has clear semantics through verb tags, preposition
+attributes, and adverb attributes that conform to English expression habits.
+This will help developers write program code with excellent readability.
+
+#### 9.1.2) Data-driven
+
+On the one hand, HVML provides methods for implementing
+functions by manipulating data. For example, we can use the update action to
+manipulate a field in the timer array to turn a timer on or off without
+calling the corresponding interface. On the other hand, the HVML language is
+committed to connecting different modules in the system through a unified data
+expression, rather than realizing the interoperation between modules through
+complex interface calls. These two methods can effectively avoid the interface
+explosion problem existing in traditional programming languages. To achieve
+the above goals, HVML provides extended data types and flexible expression
+processing capabilities on top of JSON, a widely used abstract data
+representation.
+
+#### 9.1.3) Inherent event-driven Mechanism
+
+Inherent event-driven mechanism. Unlike other programming languages, the HVML
+language provides language-level mechanisms for observing data, events, and
+even observing changes in the result of an expression. On this basis,
+developers can easily implement concurrency or asynchronous programming that
+is difficult to manage in other programming languages without caring about
+the underlying implementation details.
+
+#### 9.1.4) New application framework with better security
+
+When we used HVML to build the framework for GUI applications,
+we got a totally different framework other than Java, C#, or Swift.
+
+In a complete HVML-based application framework, a standalone UI renderer
+is usually included. Developers write HVML programs to manipulate the page
+content that describes the user interface, and the page content is finally
+processed by the renderer and displayed on the screen. The HVML program runs
+in the HVML interpreter, which can interact easily with the runtime environment
+of other existing programming languages. The HVML program receives data or
+events generated by other foreign programs or the renderer, and converts it
+into the description of the UI or changes of UI according to the instructions
+of the HVML program.
+
+With this design, we separate all applications involving the GUI into two
+loose modules:
+
+- First, a data processing module independent of the user interface, developers
+can use any programming language and development tools they are familiar with
+to develop this module. For example, when it comes to artificial intelligence
+processing, developers choose C++ or Python; in C++ code, apart from loading
+HVML programs, developers do not need to consider anything related to interface
+rendering and interaction, such as creating a button or clicking a menu item.
+Developers only need to prepare the data needed to render the user interface
+in the C++ code, and these data are usually represented by JSON.
+
+- Second, one or more programs written in the HVML language (HVML programs) to
+complete the manipulation of the user interface. The HVML program generates
+the description information of the user interface according to the data provided
+by the data processing module, and updates the user interface according to the
+user's interaction or the calculation results obtained from the data processing
+module, or drives the data processing module to complete certain tasks according
+to the user's interaction.
+
+In this way, the HVML application framework liberates the code for manipulating
+interface elements from the tranditional design pattern of calling interfaces
+such as C/C++, Java, C#  and uses HVML code instead. HVML uses a tag language
+similar to HTML to manipulate interface elements. By hiding a lot of details,
+it reduces the program complexity caused by directly using low-level
+programming languages to manipulate interface elements.
+
+Through HVML's unique application framework, we
+delegate performance-critical data processing to an external program or server,
+and the interaction with the user is handled by an independent renderer, and
+the HVML program is responsible for gluing these different system components.
+On the one hand, HVML solves the problem of difficult and efficient
+interoperability between system components developed in different programming
+languages, so that the advantages of each component can be fully utilized and
+the value of existing software assets can be protected; on the other hand,
+once the application framework provided by HVML is adopted, we can minimize
+the coupling problem between different components.
+
+### 9.2) Challenges and Lessons
+
+### 9.3) Roadmap of Future Work
+
+## Acknowledgements
+
+## References
+
+## Authors
+
+## Tradmarks
+
+1) `HVML` is a registered tradmark of [FMSoft Technologies] in China and other contries or regions.
+
+![HVML](https://www.fmsoft.cn/application/files/8116/1931/8777/HVML256132.jpg)
+
+2) `呼噜猫` is a registered tradmark of [FMSoft Technologies] in China and other contries or regions.
+
+![呼噜猫](https://www.fmsoft.cn/application/files/8416/1931/8781/256132.jpg)
+
+3) `Purring Cat` is a tradmark of [FMSoft Technologies] in China and other contries or regions.
+
+![Purring Cat](https://www.fmsoft.cn/application/files/2816/1931/9258/PurringCat256132.jpg)
+
+4) `PurC` is a tradmark of [FMSoft Technologies] in China and other contries or regions.
+
+![PurC](https://www.fmsoft.cn/application/files/5716/2813/0470/PurC256132.jpg)
+
+[Beijing FMSoft Technologies Co., Ltd.]: https://www.fmsoft.cn
+[FMSoft Technologies]: https://www.fmsoft.cn
+[FMSoft]: https://www.fmsoft.cn
+[HybridOS Official Site]: https://hybridos.fmsoft.cn
+[HybridOS]: https://hybridos.fmsoft.cn
+
+[HVML]: https://github.com/HVML
+[MiniGUI]: http:/www.minigui.com
+[WebKit]: https://webkit.org
+[HTML 5.3]: https://www.w3.org/TR/html53/
+[DOM Specification]: https://dom.spec.whatwg.org/
+[WebIDL Specification]: https://heycam.github.io/webidl/
+[CSS 2.2]: https://www.w3.org/TR/CSS22/
+[CSS Box Model Module Level 3]: https://www.w3.org/TR/css-box-3/
+
+[Vincent Wei]: https://github.com/VincentWei
+
+[React.js]: https://reactjs.org
+[Vue.js]: https://vuejs.org
+
+[HVML Specifiction V1.0]: https://github.com/HVML/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md
+[HVML Predefined Variables V1.0]: https://github.com/HVML/hvml-docs/blob/master/zh/hvml-spec-predefined-variables-v1.0-zh.md
 

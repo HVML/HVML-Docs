@@ -1,11 +1,11 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0-RCa  
+Version: 1.0-RCb  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Feb. 30, 2023  
+Last Modified Date: Apr. 30, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -149,6 +149,13 @@ Language: Chinese
 - [5) 总结](#5-总结)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RCb) 230430](#rcb-230430)
+         - [RCb.1) 调整页面及工作区的名称规范](#rcb1-调整页面及工作区的名称规范)
+         - [RCb.2) 调整渲染器相关事件](#rcb2-调整渲染器相关事件)
+      * [RCa) 230331](#rca-230331)
+         - [RCa.1) 调整 `DOCTYPE` 的 `SYSTEM` 标识符规则](#rca1-调整-doctype-的-system-标识符规则)
+         - [RCa.2) 调整 `catch` 动作元素的结果](#rca2-调整-catch-动作元素的结果)
+         - [RCa.3) 微调 `update` 动作元素](#rca3-微调-update-动作元素)
       * [RC9) 221231](#rc9-221231)
          - [RC9.1) 定义骨架元素属性的响应式处理语法](#rc91-定义骨架元素属性的响应式处理语法)
          - [RC9.2) 文档片段的结构化数据表达](#rc92-文档片段的结构化数据表达)
@@ -488,15 +495,15 @@ HVML 还支持具有简单逻辑处理能力的复合表达式（使用 `{{ ... 
 
 ```hvml
     <!-- 新增标识符为 `foo` 的定时器，间隔 3000 ms，激活状态 -->
-    <update on "$TIMERS" to "append">
+    <update on $TIMERS to 'append'>
         { "id" : "foo", "interval" : 3000, "active" : "yes" }
     </update>
 
     ...
 
     <!-- 使标识符为 `foo` 的定时器失效 -->
-    <choose on "$TIMERS" by "FILTER: AS 'foo'">
-        <update on $? at ".active" with "no" />
+    <choose on $TIMERS by "FILTER: AS 'foo'">
+        <update on $? at '.active' with 'no' />
     </choose>
 ```
 
@@ -562,7 +569,7 @@ HVML 在语言层面提供了对数据、变量和表达式的观察能力。只
 比如，下面的代码片段观察标识符为 `foo` 的定时器的到期事件：
 
 ```hvml
-<observe on "$TIMERS" for "expired:foo" >
+<observe on $TIMERS for 'expired:foo' >
     ...
 </observe>
 ```
@@ -630,7 +637,7 @@ HVML 还允许两个协程之间互相发送请求，且两个协程可以处于
 <hvml target="void">
     <body>
 
-        <load from "#repeater" onto '_null' async />
+        <load from "#repeater" onto 'null:' async />
 
         <inherit>
             {{
@@ -694,7 +701,7 @@ COROUTINE-3: 2022-09-01T14:50:45+0800: I am awake.
 HVML 还提供一个称为替身表达式的功能，可以让我们将一个表达式（包括复合表达式）定义为一个变量或者其上的一个方法：
 
 ```hvml
-<bind on $STREAM.stdout.writelines($_ARGS[0]) as "console" against 'puts' />
+<bind on $STREAM.stdout.writelines($_ARGS[0]) as 'console' against 'puts' />
 
 <inherit>
     $console.puts('Hello, world!')
@@ -1293,9 +1300,10 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 另外，我们还可以通过 `$CRTN` 对象观察一些全局事件以及当前协程渲染状态的变化，从而优雅地处理渲染器页面被用户关闭或者渲染器丢失等的情形。这些事件有：
 
 - `idle`：当前 HVML 协程正在监听 `$CRTN` 上的 `idle` 事件，且由于未收到任何事件而触发 `idle` 事件。
-- `rdrState:pageClosed`：协程对应的渲染器页面被用户关闭。
+- `rdrState:pageLoaded`：当前协程的文档内容初次装载到渲染器。
 - `rdrState:pageSuppressed`：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
-- `rdrState:pageReload`：当前协程的文档内容重新装载到渲染器，渲染器状态调整为 `regular`。
+- `rdrState:pageReloaded`：当前协程的文档内容重新装载到渲染器。
+- `rdrState:pageClosed`：协程对应的渲染器页面被用户关闭。
 - `rdrState:connLost`：协程所在行者丢失渲染器的连接。
 
 `$CRTN` 变量本质上是一个必要的协程级动态对象。
@@ -3221,11 +3229,13 @@ Content-Type: text/plain
    - `overwrite`：表示在目标数据或目标位置上执行对象或集合的覆盖操作。当最终数据为对象时，源数据必须为对象；该动作将使用源数据中的键值对替代最终数据对象中具有相同键名的键值对。当最终数据为集合时，则最终数据必须为基于唯一性键值的对象集合，源数据可以是单个对象或线性容器（数组、元组或集合），该动作将覆盖最终数据中匹配源数据数据项的对象。
    - `merge` 或 `unite`：表示在目标数据或目标位置上执行对象或集合的合并操作。当最终数据为对象时，源数据必须为对象；合并后的最终数据（对象）中包含原始键值对以及源数据中的键值对，对重复的键名，使用源数据中的值替代。当最终数据为集合时，源数据必须为线性容器（数组、元组或集合），该动作将把源数据（数组、元组或集合）中的数据项合并到最终数据（集合）中，当出现唯一性条件冲突时，使用源数据替代。
    - `intersect`：表示在目标数据或目标位置上执行对象或集合的求交操作。当最终数据为对象时，源数据必须为对象；操作后的最终数据（对象）中仅保留最终数据和源数据中均存在的键对应的键值对，移除其他键值对。当最终数据为集合时，源数据必须为线性容器（数组、元组或集合）；该动作将在最终数据中仅保留在最终集合和源数据均存在的数据项（使用集合的唯一性条件确定）。
-   - `subtract`：表示在目标数据或目标位置上执行对象或集合的求差操作。当最终数据为对象时，源数据必须为对象；操作后的最终数据（对象）中移除源数据中存在的键对应的键值对。当最终数据为集合时，源数据必须为线性容器（数组、元组或集合）；该动作将在最终数据中移除源数据根据集合的唯一性条件确定的数据项。
+   - `subtract`：表示在目标数据或目标位置上执行对象或集合的求差操作。当最终数据为对象时，源数据必须为对象；操作后的最终数据（对象）中移除源数据中存在的键对应的键值对。当最终数据为集合时，源数据可以是线性容器（数组、元组或集合）；该动作将在最终数据中移除源数据根据集合的唯一性条件确定的数据项。
    - `xor`：表示在目标数据或目标位置上执行对象或集合的亦或操作。当最终数据为对象时，源数据必须为对象；操作后的最终数据（对象）中保留只在最终数据或者源数据中存在的键对应的键值对。当最终数据为集合时，源数据必须为线性容器（数组、元组或集合）；该动作相当于求并集和交集之差。
 1. `from` 属性指定修改操作源数据的外部数据源，如 URL；此时，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法和请求头部信息。
 1. 当未定义 `from` 属性时，`with` 属性指定修改操作使用的源数据；当定义有 `from` 属性时，`with` 属性指定请求参数。
 1. `via` 属性指定获得外部数据源的方法，如 `GET`、`POST` 等，仅在指定 `from` 时有效。
+
+在指定源数据时，当源数据必须为线性容器（数组、元组或集合）时，亦可将单个数据视作仅包含一个成员的数组对待，以方便编程。
 
 在指定源数据时，除了 `with` 属性和 `from` 属性之外，我们还可以使用 `update` 元素的内容数据。三种源数据指定方式的优先级为：
 
@@ -3696,8 +3706,6 @@ Content-Type: text/plain
 
 1. 若 `match` 元素的 `for` 属性指定的匹配规则是数值比较表达式（如 `GT`、`LT`），则对 `test` 元素的结果数据做数值化处理后再行匹配。
 1. 若 `match` 元素的 `for` 属性指定的匹配规则是字符串匹配表达式（如 `AS`、`LIKE`），则对 `test` 元素的结果数据做字符串化处理后再行匹配。
-1. ~~若其父元素（即 `test`）元素的结果数据是实数类型时，`match` 标签的 `for` 属性指定的匹配规则按数值比较逻辑表达式处理，此时在逻辑表达式中使用字符串匹配表达式（如 `AS`、`LIKE`）是无效的。~~
-1. ~~若其父标签（即 `test`）标签的结果数据是其他类型时，`match` 标签的 `for` 属性指定的匹配规则按字符串比较逻辑表达式处理，此时在逻辑表达式中使用数值比较表达式（如 `GT`、`LT`）是无效的。当结果数据不是字符串类型时，应做字符串化处理。~~
 
 ##### 2.5.5.2) 二选一处理
 
@@ -5043,6 +5051,19 @@ Content-Type: text/plain
 - 若未定义 `for` 属性，或 `for` 的属性值为 `ANY`，则相当于匹配任意异常。
 - 多个异常，可使用空白字符分隔。
 
+`catch` 标签定义的动作原始之执行结果，应是一个表示异常信息的对象，其中需包含如下必要属性：
+
+- `name`：表示异常名称，字符串。
+- `info`：异常的附加信息，字符串。
+
+其他属性，可由解释器决定。用法如下所示：
+
+```hvml
+    <catch for `ANY`>
+        <exit with "Exception raised: $?.name" />
+    </catch>
+```
+
 #### 2.5.15) `back` 标签
 
 `back` 标签定义一个回退执行栈操作的动作元素，该元素用于控制当前的执行栈，以便回退到指定的前置栈帧。回退后，将从目标栈帧定义的下个执行位置开始执行程序。
@@ -5062,7 +5083,7 @@ Content-Type: text/plain
         <iterate on=$?[0] with=$MATH.add($0<,2) nosetotail>
             <test on=$?>
                 <match on=$L.gt($?,100) exclusively>
-                    <back to="3" >
+                    <back to="3" />
                 </match>
                 <match>
                     <update on="$evenNumbers" to="append" with="$?">
@@ -5079,13 +5100,13 @@ Content-Type: text/plain
     </init>
 ```
 
-以上的代码，当计算出来的偶数大于 `100` 时，将回退到第四个栈帧，到达 `init` 元素对应的栈帧，然后从该栈帧对应元素的下个子动作元素开始执行，亦即，`ol` 外部元素定义的动作。
+以上的代码，当计算出来的偶数大于 `100` 时，将回退到第四个栈帧（总共回退 3 个栈帧），到达 `init` 元素对应的栈帧，然后从该栈帧对应元素的下个子动作元素开始执行，亦即 `ol` 外部元素定义的动作。
 
 `back` 元素使用 `silently` 副词属性时，将不产生任何异常，按如下规则处理：
 
 - 不可识别的 `to` 属性值或者求值失败或者无效的栈帧，一律按回退到最顶栈帧处理。
 - 未指定 `with` 属性值时，按 `undefined` 处理，不改变回退后的上下文变量。
-- 若 `with` 属性求值失败，按 `undefined` 处理。
+- 若 `with` 属性求值失败，按 `undefined` 处理，不改变回退后的上下文变量。
 
 使用 `with` 属性值定义可替代回退后上下文变量之结果数据的操作，给程序控制执行逻辑带来了帮助。比如，捕捉到异常时：
 
@@ -5124,7 +5145,7 @@ Content-Type: text/plain
 </body>
 ```
 
-上述代码读取指定目录下的目录项，并捕获可能的异常。当发生异常时，使用 `back` 标签回退到`ul` 对应的栈帧，并修改 `ul` 栈帧的结果数据（`$?`）为一个字符串。回退后，程序开始执行 `test` 标签，判断结果数据的类型。注意 `ul` 作为外部元素，其最初的结果数据为 `undefined`。如果其类型为 `string` 则说明发生了异常，其后的操作将一个 `li` 元素插入目标文档，其中包含异常信息。
+上述代码读取指定目录下的目录项，并捕获可能的异常。当发生异常时，使用 `back` 标签回退到`ul` 对应的栈帧，并修改 `ul` 栈帧的结果数据（`$?`）为一个字符串。回退后，程序开始执行 `test` 标签，判断结果数据的类型。注意 `ul` 作为外部元素，其最初的结果数据为 `null`。如果其类型为 `string` 则说明发生了异常，其后的操作将一个 `li` 元素插入目标文档，其中包含异常信息。
 
 #### 2.5.16) `request` 标签
 
@@ -5276,10 +5297,24 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 我们使用 `request` 标签，还可以向渲染器发送一个请求，比如新建窗口组，移除一个窗口组等。此时，指定 `on` 属性值为预定义变量 `$RDR`。至于具体要执行的请求操作以及参数，通过 `to` 属性和 `with` 属性传递，其含义和要求和具体的渲染器协议有关。比如在使用 PURCMC 协议时，我们可以向渲染器发送如下的请求向指定的工作区添加窗口组：
 
 ```hvml
-    <request on="$RDR" to="addWindowGroups" >
+    <request on '$RDR' to 'addPageGroups' >
         {
-             workspace: 'main',
-             dataHtml: '<section id="newGroup1"></section><section id="newGroup2"><article id="newGroupBody2" class="tabbedwindow"></article></section>'
+             dataType: 'html',
+             data: '<section id="newGroup1"></section><section id="newGroup2"><article id="newGroupBody2" class="tabbedwindow"></article></section>'
+        }
+    </request>
+```
+
+再如，我们请求渲染器转储当前行者所属协程创建的页面内容时：
+
+```hvml
+    <request on $RDR to 'callMethod' >
+        {
+             name: "plainwin:hello@main",
+             data: {
+                    method: 'dumpContents',
+                    arg: 'screenshot.png'
+             },
         }
     </request>
 ```
@@ -5305,13 +5340,30 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 - `as`：当我们异步装载新的 HVML 程序时，我们使用该属性将新的 HVML 协程和一个变量名称绑定，从而可观察该协程的状态。
 - `at`：和 `init` 类似，在 `load` 标签中使用 `as` 属性命名一个 HVML 程序时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
 - `within` 属性指定行者名称。不指定该属性或者使用保留字 `_self` 作为行者名称，表示当前行者。和 `call` 元素不同，`load` 元素指定的行者必须已经存在，也就是说，`load` 元素不会主动创建新的行者。
-- `onto`：指定用于渲染目标文档的渲染器页面标识符，使用 `[<page_type>:]<page_name>[@[<workspace_name>/]<group_name>]` 这样的形式，用于指定页面名称和所在的页面组。其中 `<page_type>` 指定页面的类型，可使用 `plainwin`（默认） 或 `widget`，分别表示创建小构件作为页面或创建一个普通窗口作为页面；`workspace_name` 和 `group_name` 分别表示页面所在的工作区名称以及页面组名称，`page_name` 是页面在指定页面组中的唯一性名称。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
-   - `_null`：表示空页面。此时，新创建的协程所生成的文档内容及其变更信息将不会同步到渲染器。当不指定 `onto` 属性时，视作创建空页面。
-   - `_inherit`：若新创建的子协程和当前协程属于同一行者，则表示该协程将继承父协程的文档内容，且使用相同的渲染器页面。
-   - `_self`：表示当前页面。在当前页面中渲染新的 HVML 程序，通常意味着当前页面对应的 HVML 协程将被压制（suppressed），页面中的文档内容将被新 HVML 协程覆盖。但当子协程继承父协程的目标文档时，子协程和父协程可同时更新该文档，且其更新将同时反映到当前页面上。使用该页面名称时，将忽略页面分组以及页面类型信息。
-   - `_active`：表示当前 HVML 程序对应分组中的当前活动页面；当前活动页面对应的 HVML 协程将被压制。
-   - `_first`：表示当前 HVML 程序对应分组中的第一个页面；第一个页面对应的 HVML 协程将被压制。
-   - `_last`：表示当前 HVML 程序对应分组中的最后一个页面；最后一个页面对应的 HVML 协程将被压制。
+- `onto`：指定用于渲染目标文档的渲染器页面标识符，使用 `<page_type>:[<page_name>[@[<workspace_name>/]<group_name>]]` 这样的形式，用于指定页面类型、页面名称和所在的页面组。其中 `<page_type>` 指定页面的类型；`workspace_name` 和 `group_name` 分别表示页面所在的工作区名称以及页面组名称，`page_name` 是页面在指定页面组中的唯一性名称。
+
+指定页面类型时，使用如下预定页面类型：
+
+- `null`：表示空页面。此时，新创建的协程所生成的文档内容及其变更信息将不会同步到渲染器。当不指定 `onto` 属性时，视作创建空页面。使用该页面类型时，不需要指定页面组和页面名称。为防止混淆，`onto` 属性值应该具有 `null:` 这一形式。
+- `inherit`：若新创建的子协程和当前协程属于同一行者，则表示该协程将继承父协程的文档内容，且使用相同的渲染器页面。此时，子协程和父协程可同时更新该文档，且其更新将同时反映到当前页面上。使用该页面类型时，不需要指定页面组和页面名称。为防止混淆，`onto` 属性值应该具有 `inherit:` 这一形式。
+- `self`：表示当前协程使用的页面。在当前协程使用的页面中渲染新的 HVML 程序，通常意味着当前协程将被压制（suppressed），页面中的文档内容将被新的 HVML 协程覆盖。使用该页面类型时，不需要指定页面组和页面名称。为防止混淆，`onto` 属性值应该具有 `self:` 这一形式。
+- `plainwin`，表示创建一个普通窗口作为页面。
+- `widget`，表示创建一个小构件作为页面。
+
+在指定页面标识符时，若整个忽略页面类型，则视作默认的 `plainwin` 类型。
+
+指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面：
+
+- `_active`：表示当前 HVML 程序对应分组中的当前活动页面；当前活动页面对应的 HVML 协程将被压制。
+- `_first`：表示当前 HVML 程序对应分组中的第一个页面；第一个页面对应的 HVML 协程将被压制。
+- `_last`：表示当前 HVML 程序对应分组中的最后一个页面；最后一个页面对应的 HVML 协程将被压制。
+
+指定工作区名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的工作区：
+
+- `_default`：表示默认工作区。
+- `_active`：表示当前活动工作区。
+- `_first`：表示第一个工作区。
+- `_last`：表示最后一个工作区。
 
 当 `from` 属性值指定的 URL 定义有片段（使用 `#` 符号）时，`load` 元素将尝试执行该 HVML 程序中的指定的本体，即另一个 `body` 子树定义的操作组。
 
@@ -5324,11 +5376,13 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 除保留名称之外，`onto` 属性指定的页面标识符必须符合本规范定义的 `page_identifier` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法的页面标识符样例：
 
-- `user`：创建一个名为 `user` 的普通窗口。
-- `user@Users`：在默认工作区的 `Users` 页面组中创建一个名为 `user` 的普通窗口。
-- `user@main/Users`：在 `main` 工作区的 `Users` 页面组中创建一个名为 `user` 的普通窗口。
-- `plainwin:user@main/Users`：在 `main` 工作区的 `Users` 页面组中创建一个名为 `user` 的普通窗口。
-- `widget:user@main/Users`：在 `main` 工作区的 `Users` 页面组中创建一个名为 `user` 的构件。
+- `user`：指一个名为 `user` 的普通窗口。
+- `user@Users`：指默认工作区的 `Users` 页面组中名为 `user` 的普通窗口。
+- `user@main/Users`：指 `main` 工作区的 `Users` 页面组中一个名为 `user` 的普通窗口。
+- `plainwin:user@main/Users`：指 `main` 工作区的 `Users` 页面组中创建一个名为 `user` 的普通窗口。
+- `plainwin:_active@_default`：指默认工作区的活动普通窗口。
+- `widget:user@main/Users`：指 `main` 工作区的 `Users` 页面组中一个名为 `user` 的构件。
+- `widget:_active@main/Users`：指 `main` 工作区的 `Users` 页面组中的活动构件。
 
 当给定的页面名称不存在时，意味着在指定分组中创建一个新的页面，并赋予该页面给定的名称；若指定的页面分组不存在时，将使用第一个分组。当我们创建一个新的渲染器页面时，可通过其 `with` 属性值的 `_renderer` 键名指定传递给渲染器的页面参数，如类名、标题和样式等。
 
@@ -5342,7 +5396,8 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
             _renderer: {
                 title: 'Hello, world!',
                 class: 'hello',
-                style: 'with:200px;height:100px',
+                layoutStyle: 'with:200px;height:100px',
+                toolkitStyle: { 'darkMode': false, 'fullScreen': false, 'backgroundColor': 0xFF0000 },
             },
         }
     </init>
@@ -5378,6 +5433,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
         <!-- 对子协程非正常退出的情形，通过捕获相应的异常进行处理 -->
         <catch for `ChildTerminated`>
+            ...
         </catch>
     </load>
 ```
@@ -5408,14 +5464,14 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 上面的代码，使用 `exit` 标签的 `with` 属性定义了一项数据，解释器应将该数据作为当前 HVML 协程的结果数据处理。
 
-当我们在当前行者中创建子协程，并在一个已有的渲染器页面（比如将 `onto` 属性值设置为 `_self`）中渲染子协程的文档内容时，该页面对应的协程之渲染状态将因为渲染器页面被占用而被设置为被压制（suppressed）。如下面的代码：
+当我们在当前行者中创建子协程，并在一个已有的渲染器页面（比如将 `onto` 属性值设置为 `self:`）中渲染子协程的文档内容时，该页面对应的协程之渲染状态将因为渲染器页面被占用而被设置为被压制（suppressed）。如下面的代码：
 
 ```hvml
 <hvml>
     <body>
         ...
 
-        <load from="#errorPage" onto="_self" asynchronously />
+        <load from="#errorPage" onto="self:" asynchronously />
 
         ...
     </body>
@@ -5429,7 +5485,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 上述代码中的 `load` 元素对应如下几个步骤：
 
 1. 装载 HVML 程序（或者克隆当前程序的 vDOM）并在新建的新子协程中执行该程序，其入口为 `#errorPage` 本体。
-1. 子协程将使用其父协程使用的渲染器页面（由 `onto` 属性值 `_self` 指定），故父协程将被解释器压制（渲染状态为 `suppressed`）。由于使用了 `asynchronously` 副词属性，故父协程会继续运行，但不会和渲染器做任何数据交换。
+1. 子协程将使用其父协程使用的渲染器页面（由 `onto` 属性值 `self:` 指定），故父协程将被解释器压制（渲染状态为 `suppressed`）。由于使用了 `asynchronously` 副词属性，故父协程会继续运行，但不会和渲染器做任何数据交换。
 1. 子协程清空父协程使用的渲染器页面并装载自己的目标文档内容。
 1. 子协程终止运行后释放渲染器页面，解释器设置父协程的渲染状态为 `regular`，并使用其完整的目标文档内容覆盖渲染器页面内容。
 1. 父协程恢复正常的渲染器数据交换。
@@ -7381,7 +7437,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
-- 2023 年 02 月 28 日：发布 V1.0 RCa，标记为 'v1.0-rca-230228'。
+- 2023 年 03 月 31 日：发布 V1.0 RCa，标记为 'v1.0-rca-230331'。
 - 2022 年 12 月 31 日：发布 V1.0 RC9，标记为 'v1.0-rc9-221231'。
 - 2022 年 11 月 30 日：发布 V1.0 RC8，标记为 'v1.0-rc8-221130'。
 - 2022 年 10 月 31 日：发布 V1.0 RC7，标记为 'v1.0-rc7-221031'。
@@ -7392,7 +7448,30 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
 
-#### RCa) 230228
+#### RCb) 230430
+
+##### RCb.1) 调整页面及工作区的名称规范
+
+主要修订内容如下：
+
+1. 新增 `_default`、`_active` 等工作区保留名称。
+1. 将 `_null`、`_inherit`、`_self` 等页面名称调整为页面类型，并不再使用下划线前缀。
+
+相关章节：
+
+- [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
+
+##### RCb.2) 调整渲染器相关事件
+
+主要修订内容如下：
+
+1. 新增 `rdrState:pageLoaded` 事件。
+
+相关章节：
+
+- [2.1.6.3) 预定义变量](#2163-预定义变量)
+
+#### RCa) 230331
 
 ##### RCa.1) 调整 `DOCTYPE` 的 `SYSTEM` 标识符规则
 
@@ -7403,6 +7482,26 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 相关章节：
 
 - [3.1.1) DOCTYPE](#311-doctype)
+
+##### RCa.2) 调整 `catch` 动作元素的结果
+
+主要修订内容如下：
+
+1. `catch` 动作元素的结果，需定义为一个描述异常信息的对象。
+
+相关章节：
+
+- [2.5.14) `catch` 标签](#2514-catch-标签)
+
+##### RCa.3) 微调 `update` 动作元素
+
+主要修订内容如下：
+
+在指定源数据时，当源数据必须为线性容器（数组、元组或集合）时，亦可将单个数据视作仅包含一个成员的数组对待，以方便编程。
+
+相关章节：
+
+- [2.5.2) `update` 标签](#252-update-标签)
 
 #### RC9) 221231
 
@@ -7719,7 +7818,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 主要修订内容如下：
 
-1. `load` 标签支持预定义页面类型 `_inherit`，表示继承父协程的文档及渲染器页面（仅同一行者）。
+1. `load` 标签支持预定义页面类型 `inherit`，表示继承父协程的文档及渲染器页面（仅同一行者）。
 1. 调整普通窗口前缀为 `plainwin:`。
 1. 允许井号注释。
 1. 允许 `head` 和 `body` 为可选标签。
