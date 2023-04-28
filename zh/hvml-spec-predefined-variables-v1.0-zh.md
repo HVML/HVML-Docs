@@ -87,8 +87,9 @@ Language: Chinese
       * [3.4.5) 元素汇集实体](#345-元素汇集实体)
    + [3.5) `RDR`](#35-rdr)
       * [3.5.1) `state` 属性](#351-state-属性)
-      * [3.5.2) `connect` 方法](#352-connect-方法)
-      * [3.5.3) `disconn` 方法](#353-disconn-方法)
+      * [3.5.2) `stats` 属性](#352-stats-属性)
+      * [3.5.3) `connect` 方法](#353-connect-方法)
+      * [3.5.4) `disconn` 方法](#354-disconn-方法)
    + [3.6) `DATETIME`](#36-datetime)
       * [3.6.1) `time_prt` 方法](#361-time_prt-方法)
       * [3.6.2) `utctime` 方法](#362-utctime-方法)
@@ -2086,7 +2087,7 @@ $RDR.state
     // { 'comm': 'socket', 'prot': 'PURCMC', 'prot-version': '110', 'prot-ver-code': 110UL, 'uri': 'unix:///var/tmp/purcmc.sock'}
 ```
 
-#### 3.5.1) `stats` 属性
+#### 3.5.2) `stats` 属性
 
 该属性的获取器返回解释器和渲染器之间的通讯统计信息。该属性不提供设置器。
 
@@ -2114,7 +2115,7 @@ $RDR.stats
     // { 'nrRequestsSent': 5UL, 'nrResponsesRecv': 5UL, 'nrRequestsRecv': 0, 'nrResponsesSent': 0, 'nrEventsSent': 0, 'nrEventsRecv': 10UL, 'bytesSent': 2368UL, 'bytesRecv': 468UL, 'durationSeconds': 10UL }
 ```
 
-#### 3.5.2) `connect` 方法
+#### 3.5.3) `connect` 方法
 
 该方法断开当前的渲染器并连接到指定的渲染器。
 
@@ -2140,7 +2141,7 @@ $RDR.connect('socket', 'unix:///var/tmp/purcmc.sock')
     // true
 ```
 
-#### 3.5.3) `disconn` 方法
+#### 3.5.4) `disconn` 方法
 
 该方法断开当前的渲染器。
 
