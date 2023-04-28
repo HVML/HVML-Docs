@@ -5,7 +5,7 @@ Version: 1.0-RCa
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Feb. 28, 2023  
+Last Modified Date: Feb. 30, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -2019,7 +2019,7 @@ HVML 定义的异常如下：
 - `in`：该属性适用所有动作元素，用于定义执行操作的目标文档位置。该属性通常使用 CSS 选择器定义目标文档的一个元素汇集，之后的操作会在这个元素汇集上进行。如果没有定义该属性值，则继承前置栈帧的相应值，若前置栈帧对应的元素是骨架元素，则取该骨架元素在目标文档中对应的位置。
 - `on`：在 `choose`、`iterate` 等操作数据的标签中，用于定义执行动作所依赖的数据、元素或元素汇集。
 - `from`：在 `init`、 `update`、 `define`、 `load` 等支持外部资源的元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URL。
-- `via`：和 `from` 属性配合适用，用于指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
+- `via`：和 `from` 属性配合适用，用于指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）以及请求头部信息。
 - `for`：在 `observe`、 `forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的事件名称；在 `match` 标签中，用于定义匹配条件。
 - `as`：在 `init`、 `define`、 `bind`、 `load` 等元素中定义变量名。
 - `at`：和 `as` 属性配合使用时，用于变量名的作用范围（scope）；在 `update` 元素中指定目标数据上的目标位置。
@@ -2306,6 +2306,10 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 类似地，我们可使用 `_renderer` 保留名称指代渲染器本身，从而可通过如下 URI 从渲染器的内建资源中装载资源，如，
 
 `hvml://localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css`
+
+我们也可以使用 `_system` 保留名称指代操作系统、`_filesystem` 保留名称指代文件系统，从而可通过如下的 URI 从文件系统的 `/usr/shared` 目录中装载资源，如：
+
+`hvml://localhost/_system/_filesystem/-/usr/shared/hvml-log.svg`
 
 ##### 2.1.19.2) `hvml+run` 图式
 
@@ -3054,6 +3058,8 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
 我们通常使用 `with` 属性定义一个求值表达式（或参数化数据）来指定变量的值。我们也可以直接将求值表达式嵌入到 `init` 标签内，从而使用其数据内容来定义这个变量的值。我们还可通过 HTTP 等协议加载外部资源而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义该请求的 URL，使用 `with` 参数定义请求参数，使用 `via` 属性定义请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
 
+在使用 `with` 属性指定 `HTTP` 等请求的参数时，默认使用 `application/x-www-form-urlencoded` 类型。若需要使用自定义的 HTTP 请求头部，可在 `via` 属性值中指定 `RAW-HEADER` 关键词（如 `POST RAW-HEADER`），并使用 `with` 指定自定义的 HTTP 请求头部内容。
+
 我们也可以使用 `init` 标签从共享库中初始化一个自定义的动态对象，此时，给定 `via` 的属性值为 `LOAD`，表示装载一个外部程序模块。使用 `init` 元素装载动态对象时，我们通过 `from` 属性指定的是要装载的外部程序模块的名称。根据该模块名称确定具体的文件名以及模块文件的存储位置，取决于具体的解释器实现。若外部程序模块（如 C/C++ 语言共享库）中定义有多个动态对象，使用 `for` 属性指定要装载的动态对象名称。
 
 当我们在 `init` 标签中使用 `from` 属性，`via` 属性不为 `LOAD`，且使用 `asynchronously` 副词属性时，将异步地从外部资源中获取数据作为变量的值。程序可通过观察变量上的 `change:attached` 做进一步的处理。具体可参阅 [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签) 一节。
@@ -3094,6 +3100,25 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 
     <!-- 使用 POST 方法以及 from=foo 查询参数从 http://foo.bar.com/locales 获取数据并初始化 $locales  -->
     <init as="locales" from="http://foo.bar.com/locales" with="{ from: 'foo' }" via="POST" />
+
+    <!-- 使用 POST 方法以及自定义 HTTP 头部获取数据并初始化 $locales -->
+    <init as="locales" from="http://foo.bar.com/locales" via="POST RAW-HEADER" >
+        '''
+Content-Length: 68137
+Content-Type: multipart/form-data; boundary=---------------------------974767299852498929531610575
+
+-----------------------------974767299852498929531610575
+Content-Disposition: form-data; name="description"
+
+some text
+-----------------------------974767299852498929531610575
+Content-Disposition: form-data; name="myFile"; filename="foo.txt"
+Content-Type: text/plain
+
+(content of the uploaded file foo.txt)
+-----------------------------974767299852498929531610575--
+        '''
+    </init>
 
     <!-- 覆盖 $users 变量 -->
     <init as="users">
@@ -3198,7 +3223,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
    - `intersect`：表示在目标数据或目标位置上执行对象或集合的求交操作。当最终数据为对象时，源数据必须为对象；操作后的最终数据（对象）中仅保留最终数据和源数据中均存在的键对应的键值对，移除其他键值对。当最终数据为集合时，源数据必须为线性容器（数组、元组或集合）；该动作将在最终数据中仅保留在最终集合和源数据均存在的数据项（使用集合的唯一性条件确定）。
    - `subtract`：表示在目标数据或目标位置上执行对象或集合的求差操作。当最终数据为对象时，源数据必须为对象；操作后的最终数据（对象）中移除源数据中存在的键对应的键值对。当最终数据为集合时，源数据必须为线性容器（数组、元组或集合）；该动作将在最终数据中移除源数据根据集合的唯一性条件确定的数据项。
    - `xor`：表示在目标数据或目标位置上执行对象或集合的亦或操作。当最终数据为对象时，源数据必须为对象；操作后的最终数据（对象）中保留只在最终数据或者源数据中存在的键对应的键值对。当最终数据为集合时，源数据必须为线性容器（数组、元组或集合）；该动作相当于求并集和交集之差。
-1. `from` 属性指定修改操作源数据的外部数据源，如 URL；此时，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法。
+1. `from` 属性指定修改操作源数据的外部数据源，如 URL；此时，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法和请求头部信息。
 1. 当未定义 `from` 属性时，`with` 属性指定修改操作使用的源数据；当定义有 `from` 属性时，`with` 属性指定请求参数。
 1. `via` 属性指定获得外部数据源的方法，如 `GET`、`POST` 等，仅在指定 `from` 时有效。
 
@@ -5510,7 +5535,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 
 ### 2.6) 执行器
 
-在 `choose`、 `iterate` 以及 `reduce` 等动作标签中，我们通常要使用 `by` 介词属性来定义如何执行选择、迭代或者归约操作，我们称之为规则，而实现相应的规则的代码或者功能模块被称为选择器、迭代器或归约器，统称为执行器（executor）。HVML 解释器可实现内置（built-in）执行器，通过简单的语法来指定在选择、迭代、归约数据时遵循什么样的规则。在复杂情形下，HVML 允许文档作者调用外部程序（比如可动态加载的模块）来实现执行器。HVML 使用 `CLASS` 或 `FUNC` 前缀来表示使用外部定义的执行器。
+在 `choose`、 `iterate` 以及 `reduce` 等动作标签中，我们通常要使用 `by` 介词属性来定义如何执行选择、迭代或者归约操作，我们称之为规则，而实现相应的规则的代码或者功能模块被称为选择器、迭代器或归约器，统称为执行器（executor）。HVML 解释器可实现内置（built-in）执行器，通过简单的语法来指定在选择、迭代、归约数据时遵循什么样的规则。在复杂情形下，HVML 允许开发者调用外部程序（比如可动态加载的模块）来实现执行器。HVML 使用 `CLASS` 或 `FUNC` 前缀来表示使用外部定义的执行器。
 
 需要说明的是，在 `test` 和 `sort` 标签中也可以使用执行器。`test` 标签中使用执行器的情形同 `choose` 标签。`sort` 标签中使用内建执行器时，将对内建执行器返回的结果执行排序操作，而使用外部执行器时，直接在 `on` 属性指定的数据基础上执行排序操作。
 
