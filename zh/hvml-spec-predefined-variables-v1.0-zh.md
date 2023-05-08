@@ -278,8 +278,9 @@ Language: Chinese
       * [4.2.28) `unlink` 方法](#4228-unlink-方法)
       * [4.2.29) `file_contents` 方法](#4229-file_contents-方法)
       * [4.2.30) `opendir` 方法](#4230-opendir-方法)
-         - [4.2.30.1) 目录流实体的 `read` 方法](#42301-目录流实体的-read-方法)
-         - [4.2.30.2) 目录流实体的 `rewind` 方法](#42302-目录流实体的-rewind-方法)
+         - [4.2.30.1) 目录流实体的 `stat` 方法](#42301-目录流实体的-stat-方法)
+         - [4.2.30.2) 目录流实体的 `read` 方法](#42302-目录流实体的-read-方法)
+         - [4.2.30.3) 目录流实体的 `rewind` 方法](#42303-目录流实体的-rewind-方法)
       * [4.2.31) `closedir` 方法](#4231-closedir-方法)
    + [4.3) `FILE`](#43-file)
       * [4.3.1) 文本文件](#431-文本文件)
@@ -7802,7 +7803,7 @@ $dirStream.stat(
 
 - POSIX `dirfd()` 函数。
 
-##### 4.2.30.1) 目录流实体的 `read` 方法
+##### 4.2.30.2) 目录流实体的 `read` 方法
 
 读取下一个目录项，返回目录项名称（字符串）。
 
@@ -7822,7 +7823,7 @@ $dirStream.read string | false
 
 - PHP `readdir()` 函数：<https://www.php.net/manual/en/function.readdir.php>
 
-##### 4.2.30.2) 目录流实体的 `rewind` 方法
+##### 4.2.30.3) 目录流实体的 `rewind` 方法
 
 重置目录流。
 
