@@ -2292,16 +2292,16 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 - 主机名。
 - 应用名称。我们使用 `_renderer` 这一保留名称指代渲染器本身。
-- 行者名称。我们使用 `_builtin` 这一保留名称指代内建资源（assets）。
+- 行者名称。我们使用 `_builtin` 这一保留名称指代内建资源（assets）或 `_http`、`_https` 指代远程访问协议。
 - 页面组名称。当页面不属于任何页面组时，我们使用 `-` 这一特殊名称。
 - 页面名称。普通窗口或者页面的名称。
 - `irId` 查询参数。用于传递来自 HVML 解释器的初始请求参数。
 
 2) 定义渲染器可直接访问的公共资源
 
-此时，`hvml` 用来表述一个应用对外提供的公共资源，比如图片和样式文件。此时，我们使用保留的 `_builtin` 来指代行者名，使用 `-` 指代页面组名，然后使用页面名称部分指代正在定位的资源相对于公共资源存储位置的路径：
+此时，`hvml` 用来表述一个应用对外提供的公共资源，比如图片和样式文件。此时，我们使用保留的 `_builtin` 来指代行者名，使用 `-` 指代页面组名或指定其他应用名称，然后使用页面名称部分指代正在定位的资源相对于公共资源存储位置的路径：
 
-`hvml://<host_name>/<app_name>/_builtiin/-/<path_to_asset>[?query][#fragment]`
+`hvml://<host_name>/<app_name>/_builtin/-/<path_to_asset>[?query][#fragment]`
 
 比如：
 
@@ -2309,7 +2309,11 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 通常，当主机名为 `localhost` 时，渲染器将尝试在本机装载指定的应用公共资源。对于来自远程主机的情形，渲染器可将 `hvml` 翻译为等价的 `http` 或 `https` 图式。比如：
 
-`http://other.host.com/cn.fmsoft.hvml.test/_builtin/-/assets/logo.png`
+`hvml://other.host.com/cn.fmsoft.hvml.test/_https/-/assets/logo.png`
+
+将翻译为：
+
+`https://other.host.com/cn.fmsoft.hvml.test/assets/logo.png`
 
 类似地，我们可使用 `_renderer` 保留名称指代渲染器本身，从而可通过如下 URI 从渲染器的内建资源中装载资源，如，
 
