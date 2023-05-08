@@ -1,11 +1,11 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0-RCb  
+Version: 1.0-RCc  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: May 8, 2023  
+Last Modified Date: May 31, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -2301,7 +2301,7 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 2) 定义渲染器可直接访问的公共资源
 
-此时，`hvml` 用来表述一个应用对外提供的公共资源，比如图片和样式文件。此时，我们使用保留的 `_builtin` 来指代行者名，使用 `-` 指代页面组名或指定其他应用名称，然后使用页面名称部分指代正在定位的资源相对于公共资源存储位置的路径：
+此时，`hvml` 用来表述一个应用对外提供的公共资源，比如图片和样式文件。此时，我们使用保留的 `_builtin` 来指代行者名，使用 `-` 指代页面组名，然后使用页面名称部分指代正在定位的资源相对于公共资源存储位置的路径：
 
 `hvml://<host_name>/<app_name>/_builtin/-/<path_to_asset>[?query][#fragment]`
 
@@ -2309,7 +2309,11 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 `hvml://localhost/cn.fmsoft.hvml.test/_builtin/-/assets/logo.png`
 
-通常，当主机名为 `localhost` 时，渲染器将尝试在本机装载指定的应用公共资源。对于来自远程主机的情形，渲染器可将 `hvml` 翻译为等价的 `http` 或 `https` 图式。比如：
+通常，当主机名为 `localhost` 且行者名称为 `_builtin` 时，渲染器将尝试在本机装载指定的应用公共资源。故而以上 URL 相当于：
+
+`file://app/cn.fmsoft.hvml.test/public/assets/logo.png`
+
+对于资源来自远程主机的情形，可使用 `_http` 或者 `_https` 作为行者名，渲染器可将 `hvml` 图式的 URL 翻译为等价的 `http` 或 `https` 图式 URL。比如：
 
 `hvml://other.host.com/cn.fmsoft.hvml.test/_https/-/assets/logo.png`
 
