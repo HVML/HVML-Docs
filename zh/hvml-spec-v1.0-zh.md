@@ -149,6 +149,8 @@ Language: Chinese
 - [5) 总结](#5-总结)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RCc) 230531](#rcc-230531)
+         - [RCc.1) 新增渲染器事件](#rcc1-新增渲染器事件)
       * [RCb) 230430](#rcb-230430)
          - [RCb.1) 调整页面及工作区的名称规范](#rcb1-调整页面及工作区的名称规范)
          - [RCb.2) 调整渲染器相关事件](#rcb2-调整渲染器相关事件)
@@ -1303,6 +1305,8 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 - `idle`：当前 HVML 协程正在监听 `$CRTN` 上的 `idle` 事件，且由于未收到任何事件而触发 `idle` 事件。
 - `rdrState:pageLoaded`：当前协程的文档内容初次装载到渲染器。
+- `rdrState:pageActivated`：当前协程对应的渲染器页面获得焦点。
+- `rdrState:pageDeactivated`：当前协程对应的渲染器页面失去焦点。
 - `rdrState:pageSuppressed`：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
 - `rdrState:pageReloaded`：当前协程的文档内容重新装载到渲染器。
 - `rdrState:pageClosed`：协程对应的渲染器页面被用户关闭。
@@ -2293,39 +2297,41 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 如其中各部分的名称所暗示，其中包含了一个 HVML 渲染器页面的如下信息：
 
 - 主机名。
-- 应用名称。我们使用 `_renderer` 这一保留名称指代渲染器本身。
-- 行者名称。我们使用 `_builtin` 这一保留名称指代内建资源（assets）或 `_http`、`_https` 指代远程访问协议。
+- 应用名称。
+- 行者名称。
 - 页面组名称。当页面不属于任何页面组时，我们使用 `-` 这一特殊名称。
 - 页面名称。普通窗口或者页面的名称。
 - `irId` 查询参数。用于传递来自 HVML 解释器的初始请求参数。
 
 2) 定义渲染器可直接访问的公共资源
 
-此时，`hvml` 用来表述一个应用对外提供的公共资源，比如图片和样式文件。此时，我们使用保留的 `_builtin` 来指代行者名，使用 `-` 指代页面组名，然后使用页面名称部分指代正在定位的资源相对于公共资源存储位置的路径：
+此时，`hvml` 用来表述一个应用对外提供的公共资源（assets），比如图片和样式文件。此时，我们可使用如下保留名称：
 
-`hvml://<host_name>/<app_name>/_builtin/-/<path_to_asset>[?query][#fragment]`
+- 应用名称：
+   - 使用 `_self` 这一保留名称指代当前应用。
+   - 使用 `_renderer` 这一保留名称指代渲染器。
+   - 使用 `_system` 保留名称指代操作系统。
+- 行者名称：
+   - 使用 `_builtin` 这一保留名称指代（渲染器的）内建资源。
+   - 使用 `_self` 这一保留名称指代当前行者。
+   - 使用 `_shared` 这一保留名称指代共享的公开资源。
+   - 使用 `_filesystem` 这一保留名称指代文件系统。
+- 页面组名称：始终使用 `-`。
+- 页面名称：指代正在定位的资源相对存储路径。
 
-比如：
+比如使用下面的 URL 可从当前应用的内建资源中装载一个 PNG 文件：
 
-`hvml://localhost/cn.fmsoft.hvml.test/_builtin/-/assets/logo.png`
+`hvml://localhost/_self/_shared/-/assets/logo.png`
 
-通常，当主机名为 `localhost` 且行者名称为 `_builtin` 时，渲染器将尝试在本机装载指定的应用公共资源。故而以上 URL 相当于：
+若当前应用名称为 `cn.fmsoft.hvml.test`，按 HybridOS 的应用安装规范，以上 URI 相当于：
 
-`file://app/cn.fmsoft.hvml.test/public/assets/logo.png`
+`file://app/cn.fmsoft.hvml.test/_shared/assets/logo.png`
 
-对于资源来自远程主机的情形，可使用 `_http` 或者 `_https` 作为行者名，渲染器可将 `hvml` 图式的 URL 翻译为等价的 `http` 或 `https` 图式 URL。比如：
-
-`hvml://other.host.com/cn.fmsoft.hvml.test/_https/-/assets/logo.png`
-
-将翻译为：
-
-`https://other.host.com/cn.fmsoft.hvml.test/assets/logo.png`
-
-类似地，我们可使用 `_renderer` 保留名称指代渲染器本身，从而可通过如下 URI 从渲染器的内建资源中装载资源，如，
+类似地，使用 `_renderer` 保留名称可指代渲染器本身，从而可通过下面的 URI 可从渲染器的内建资源中装载指定，如，
 
 `hvml://localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css`
 
-我们也可以使用 `_system` 保留名称指代操作系统、`_filesystem` 保留名称指代文件系统，从而可通过如下的 URI 从文件系统的 `/usr/shared` 目录中装载资源，如：
+再如，使用 `_system` 这一保留的应用名称以及 `_filesystem` 这一保留的行者名称，可从文件系统的指定目录中装载资源，如：
 
 `hvml://localhost/_system/_filesystem/-/usr/shared/hvml-log.svg`
 
@@ -7447,6 +7453,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
+- 2023 年 05 月 31 日：发布 V1.0 RCc，标记为 'v1.0-rcb-230531'。
 - 2023 年 04 月 30 日：发布 V1.0 RCb，标记为 'v1.0-rcb-230430'。
 - 2023 年 03 月 31 日：发布 V1.0 RCa，标记为 'v1.0-rca-230331'。
 - 2022 年 12 月 31 日：发布 V1.0 RC9，标记为 'v1.0-rc9-221231'。
@@ -7458,6 +7465,19 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
+
+#### RCc) 230531
+
+##### RCc.1) 新增渲染器事件
+
+主要修订内容如下：
+
+1. 新增 `rdrState:pageActivated` 事件。
+1. 新增 `rdrState:pageDeactivated` 事件。
+
+相关章节：
+
+- [2.1.6.3) 预定义变量](#2163-预定义变量)
 
 #### RCb) 230430
 
