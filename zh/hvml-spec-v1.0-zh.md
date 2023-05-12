@@ -740,7 +740,7 @@ HVML 还提供一个称为替身表达式的功能，可以让我们将一个表
             ]
         </init>
 
-        <init as="databus" with=$STREAM.open('unix:///var/tmp/hibus.sock','default','hiBus') >
+        <init as="databus" with=$STREAM.open('unix:///var/tmp/hbdbus.sock','default','HBDBus') >
 
         <archetype name="user_item">
             <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
@@ -4424,12 +4424,12 @@ Content-Type: text/plain
 
 当我们观察一项数据时，我们可获得该数据产生的事件或者数据本身上的变化。比如，我们可监听来自长连接的事件，异步请求的返回值，或者获得长连接上调用远程过程后返回的结果，亦可用来监听某些内部数据产生的事件，比如 `$TIMERS` 数据产生的定时器到期事件，等等。
 
-假设文档通过本地总线机制（本例中是 `hiBus`）监听来自系统的状态改变事件，如电池电量、WiFi 信号强度、移动网络信号强度等信息，并在文档使用相应的图标来表示这些状态的改变。为此，我们可以编写如下的 HVML 程序：
+假设文档通过本地总线机制（本例中是 `HBDBus`）监听来自系统的状态改变事件，如电池电量、WiFi 信号强度、移动网络信号强度等信息，并在文档使用相应的图标来表示这些状态的改变。为此，我们可以编写如下的 HVML 程序：
 
 ```hvml
 <hvml>
     <head>
-        <init as="databus" with="$STREAM.open('unix:///var/run/hibus.sock','default','hibus')"/>
+        <init as="databus" with="$STREAM.open('unix:///var/run/hbdbus.sock','default','hbdbus')"/>
     </head>
 
     <body>
@@ -4477,7 +4477,7 @@ Content-Type: text/plain
 
 另外一个 `observe` 标签的使用例子描述如下。
 
-在 `head` 元素中，我们通过 `init` 标签，使用 `$STREAM` 预定义变量连接到了 `unix:///var/run/hibus.sock`。`$STREAM` 的 `open` 方法返回一个流实体，并被命名为 `databus`（`as` 属性）。然后在 `body` 元素中，我们使用 `choose` 标签通过 `$databus.subscribe` 方法订阅（`subscribe`）指定的事件，然后用 `observe` 元素定义了对 `$databus` 上特定事件的观察。每当电池状态发生变化时，就会从这个数据源获得相应的数据包。为方便说明，我们假定数据包以 JSON 格式描述：
+在 `head` 元素中，我们通过 `init` 标签，使用 `$STREAM` 预定义变量连接到了 `unix:///var/run/hbdbus.sock`。`$STREAM` 的 `open` 方法返回一个流实体，并被命名为 `databus`（`as` 属性）。然后在 `body` 元素中，我们使用 `choose` 标签通过 `$databus.subscribe` 方法订阅（`subscribe`）指定的事件，然后用 `observe` 元素定义了对 `$databus` 上特定事件的观察。每当电池状态发生变化时，就会从这个数据源获得相应的数据包。为方便说明，我们假定数据包以 JSON 格式描述：
 
 ```json
     {
@@ -6656,7 +6656,7 @@ SYSTEM 标识符字符串的格式如下：
             ]
         </init>
 
-        <init as="databus" with=$STREAM.open('unix:///var/run/hibus.sock','default','hiBus') />
+        <init as="databus" with=$STREAM.open('unix:///var/run/hbdbus.sock','default','HBDBus') />
 
         <header id="theStatusBar">
             <img class="mobile-status" src="" />
@@ -8383,20 +8383,20 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 ```hvml
 </hvml>
     <head>
-        <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus"/>
+        <connect at="unix:///var/run/hbdbus.sock" as="hbdbus" for="HBDBus"/>
     </head>
 
     <body>
         ...
 
-        <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiGetHotspots" as="wifilist" asynchronously>
-            <observe on="$hibus" for="result:$wifilist">
+        <send on="$hbdbus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiGetHotspots" as="wifilist" asynchronously>
+            <observe on="$hbdbus" for="result:$wifilist">
                 ...
             </observe>
         </send>
 
-        <send on="$hibus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED" as="networkchanged">
-            <observe on="$hibus" for="event:$networkchanged">
+        <send on="$hbdbus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED" as="networkchanged">
+            <observe on="$hbdbus" for="event:$networkchanged">
                 ...
             </observe>
         </send>
@@ -8424,11 +8424,11 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
                 { "action": "get_list" }
             </init>
 
-            <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus" />
+            <connect at="unix:///var/run/hbdbus.sock" as="hbdbus" for="HBDBus" />
 
-            <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiScanHotspots" with="$paramWifiList" as="hotspots_list" asynchronously>
-                <observe on="$hibus" for="result:$hotspots_list">
-                    <disconnect on="$hibus" />
+            <send on="$hbdbus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiScanHotspots" with="$paramWifiList" as="hotspots_list" asynchronously>
+                <observe on="$hbdbus" for="result:$hotspots_list">
+                    <disconnect on="$hbdbus" />
 
                     <!-- fill the Wifi list with the response data -->
                     <iterate on="$?" in="#theWifiList">
@@ -8496,7 +8496,7 @@ def on_battery_changed (on_value, with_value, root_in_scope):
 - `send` 标签用来在指定的长连接上发出一个消息。
 - `disconnect` 标签用于显式关闭一个先前建立的外部数据源连接。
 
-- `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URL，如 `tcp://foo.com:2345`、 `unix:///var/run/hibus.sock`。
+- `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URL，如 `tcp://foo.com:2345`、 `unix:///var/run/hbdbus.sock`。
 - `for`：在 `connect` 标签中，用于定义协议或用途。
 - `with`：在 `send` 元素中定义发送请求或消息时的参数。
 
