@@ -205,8 +205,8 @@ Language: Chinese
       * [3.12.4) `stdout` 静态属性](#3124-stdout-静态属性)
       * [3.12.5) `stderr` 静态属性](#3125-stderr-静态属性)
       * [3.12.6) `pipe` 流实体](#3126-pipe-流实体)
-      * [3.12.7) `ws`、`msg` 流实体](#3127-wsmsg-流实体)
-      * [3.12.8) `ws`、`msg` 流实体上的 `hbdbus` 协议扩展](#3128-wsmsg-流实体上的-hbdbus-协议扩展)
+      * [3.12.7) `message`、`websocket` 和 `secure-websocket` 协议扩展](#3127-messagewebsocket-和-secure-websocket-协议扩展)
+      * [3.12.8) `hbdbus` 协议扩展](#3128-hbdbus-协议扩展)
    + [3.13) `SOCK`](#313-sock)
       * [3.13.1) `stream` 方法](#3131-stream-方法)
       * [3.13.2) `dgram` 方法](#3132-dgram-方法)
@@ -5605,9 +5605,12 @@ $STREAM.open(
                - 'nonblock':    `Open the $uri in nonblocking mode`
                - 'default':     `equivalent to 'read write'`
            >
-           [, < 'none | hbdbus ' $app_protocol = 'none': `the application protocol will be used on the stream.`
-               - 'none':        `no application protocol.`
-               - 'hbdbus':      `HybridOS data bus protocol.`
+           [, < 'raw | message | websocket | secure-websocket | hbdbus' $ext_protocol = 'raw': `the extended protocol will be used on the stream.`
+               - 'raw':                 `No extended protocol.`
+               - 'message':             `WebSocket-like message-based protocol; only for `unix://` and `fifo://` connections.`
+               - 'websocket':           `WebSocket protocol; only for `tcp:// connections.`
+               - 'secure-websocket':    `Secure WebSocket protocol; only for `tcp://` connections.`
+               - 'hbdbus':              `HybridOS data bus protocol; only for `unix://` and `tcp://` connections.`
               >
                 [, <object $extra_options: `the extra options.` >
                 ]
@@ -5627,12 +5630,12 @@ $STREAM.open(
 - `unix:///var/run/myapp.sock`：裸的 UNIX 套接字。
 - `tcp://foo.com:1100`：裸的 TCP 套接字。
 - `udp://foo.com:1100`：裸的 UDP 套接字。
-- `ws://foo.com:1100`：WebSocket。
-- `wss://foo.com:1100`：安全 WebSocket。
-- `msg:///var/run/hbdbus:1100`：在裸的 UNIX 套接字上提供类似 WebSocket 消息处理机制。
 
 我们可以在 `open` 方法中指定流数据的更高层应用协议，通过扩展流实体提供的方法来方便程序的使用，比如：
 
+- `message`：在 UNIX 套接字之上使用类似 WebSocket 的、基于消息的方式处理数据。
+- `websocket`：在 TCP 套接字之上使用 WebSocket 协议处理数据。
+- `secure-websocket`：在 TCP 套接字之上使用安全的 WebSocket 协议处理数据。
 - `hbdbus`：使用 HBDBus 数据总线协议处理数据，方便程序通过 HBDBus 数据总线订阅事件或者发起远程过程调用并获得结果。
 - `mqtt`：使用 MQTT 物联网协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 MQTT 数据总线订阅事件或者发起远程过程调用并获得结果。
 
@@ -6041,32 +6044,37 @@ du -BM hvml-spec-v1.0-zh.md
 
 `pipe` 流实体应该额外提供 `status` 方法，用于检查子进程的状态。该方法返回一个数组，第一个成员是表示状态的字符串，第二个成员给出状态对应的值。
 
-#### 3.12.7) `ws`、`msg` 流实体
+#### 3.12.7) `message`、`websocket` 和 `secure-websocket` 协议扩展
 
-使用 URI 图式 `ws://`、`wss://`、`msg://` 打开的流实体，将提供如下新方法：
+在使用 URI 图式 `fifo://`、`unix://` 的流实体上，可使用 `message`、`websocket` 和 `secure-websocket` 扩展协议，从而使用基于消息的数据处理方式。
+
+对应的扩展方法有：
 
 - `send`：发送消息数据包（文本或者二进制数据）。
 
 同时提供如下可观察事件：
 
-- `message`：收到来自服务器端的消息时。
-- `error`：出现错误时。
+- `message`：收到来自服务器端的消息数据包。
+- `error`：出现错误。
 
-#### 3.12.8) `ws`、`msg` 流实体上的 `hbdbus` 协议扩展
+#### 3.12.8) `hbdbus` 协议扩展
 
-在 URI 图式 `ws://`、`wss://`、`us://` 的流实体上，可使用 `hbdbus` 协议，对应的扩展方法有：
+在使用 URI 图式 `tcp://`、`unix://` 的流实体上，可使用 `hbdbus` 扩展协议。
+
+对应的扩展方法有：
 
 - `subscribe`：订阅一个事件。
 - `unsubscribe`：取消对事件的订阅。
 - `call`：发起一个远程过程调用。
-- `register_procedure`：登记一个远程过程调用。
+- `register_evnt`：登记一个事件。
+- `register_proc`：登记一个远程过程调用。
 
 同时提供如下可观察事件：
 
-- `event:<bubble-name>`：接收到来自 `bubble-name` 的事件时。
-- `result:<method-name>`：接收到来自 `method-name` 的结果时。
-- `call:<method-name>`：接收到针对 `method-name` 的调用请求时。
-- `error`：出现错误时。
+- `event:<bubble-name>`：接收到来自 `bubble-name` 的事件。
+- `result:<method-name>`：接收到来自 `method-name` 的结果。
+- `call:<method-name>`：接收到针对 `method-name` 的调用请求。
+- `error`：出现错误。
 
 ### 3.13) `SOCK`
 
@@ -6087,7 +6095,7 @@ du -BM hvml-spec-v1.0-zh.md
 `$SOCK.listen` 方法返回的原生实体，称为“流套接字（streamSocket）实体”。流套接字实体应提供如下基本接口：
 
 - `connRequest` 事件，用于通知一个新的连接请求。
-- `accept`：接受连接请求并创建一个流（stream）实体。
+- `accept`：接受连接请求并创建一个流（stream）实体。可 `$STREAM.open` 方法类似，可传入扩展协议以及参数。
 
 #### 3.13.1) `stream` 方法
 
@@ -6182,20 +6190,16 @@ $SOCK.stream("unix://var/run/myapp.sock")
 
 ```js
 $streamSocket.accept(
-    [, <'raw | unix | ws | wss' $presentation_protocol = 'raw': `the presentation protocol will be used on the stream.`
-           - 'raw':         `no any presentation protocol.`
-           - 'unix':        `WebSocket-like, but only for UNIX socket connections.`
-           - 'ws':          `WebSocket.`
-           - 'wss':         `Secure WebSocket.`
+    [, <'raw | message | websocket | secure-websocket | hbdbus | http | https' $extended_protocol = 'raw': `the extended protocol will be used on the stream.`
+           - 'raw':         `no any protocol.`
+           - 'message':     `WebSocket-like, but only for UNIX socket connections.`
+           - 'websocket':   `WebSocket.`
+           - 'secure-websocket': `Secure WebSocket.`
+           - 'hbdbus':      `HybridOS data bus protocol.`
+           - 'http':        `Hyper text transfer protocol.`
+           - 'https':       `Secure hyper text transfer protocol.`
         >
-        [, <'none | hbdbus | http | https' $app_protocol = 'none': `the application protocol will be used on the stream.`
-               - 'none':        `no any specific application protocol.`
-               - 'hbdbus':      `HybridOS data bus protocol.`
-               - 'http':        `Hyper text transfer protocol.`
-               - 'https':       `Secure hyper text transfer protocol.`
-            >
-            [, <object $options: `the options for protocols.` >
-            ]
+        [, <object $options: `the options for protocols.` >
         ]
     ]
 ) native/stream | undefined
