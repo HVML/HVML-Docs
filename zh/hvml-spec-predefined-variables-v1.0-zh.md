@@ -205,6 +205,8 @@ Language: Chinese
       * [3.12.4) `stdout` 静态属性](#3124-stdout-静态属性)
       * [3.12.5) `stderr` 静态属性](#3125-stderr-静态属性)
       * [3.12.6) `pipe` 流实体](#3126-pipe-流实体)
+      * [3.12.7) `ws`、`msg` 流实体](#3127-wsmsg-流实体)
+      * [3.12.8) `ws`、`msg` 流实体上的 `hbdbus` 协议扩展](#3128-wsmsg-流实体上的-hbdbus-协议扩展)
    + [3.13) `SOCK`](#313-sock)
       * [3.13.1) `stream` 方法](#3131-stream-方法)
       * [3.13.2) `dgram` 方法](#3132-dgram-方法)
@@ -5597,28 +5599,19 @@ $STREAM.open(
         [, <'[read || write || append || create || truncate || nonblock] | default' $opt = 'default':
                - 'read':        `Open for reading only`
                - 'write':       `Open for writing only`
-               - 'append':      `Open in append mode.  Before each write, the offset is positioned at the end of the stream`
+               - 'append':      `Open in append mode. Before each write, the offset is positioned at the end of the stream`
                - 'create':      `If $uri does not exist, create it as a regular file`
-               - 'truncate':    `If $uri already  exists and is a regular file and the access mode allows writing it will be truncated to length 0`
+               - 'truncate':    `If $uri already exists and is a regular file and the access mode allows writing it will be truncated to length 0`
                - 'nonblock':    `Open the $uri in nonblocking mode`
                - 'default':     `equivalent to 'read write'`
            >
-            [, < 'raw | unix | ws | wss' $presentation_protocol = 'raw': `the presentation protocol will be used on the stream.`
-                   - 'raw':         `no presentation protocol.`
-                   - 'unix':        `WebSocket-like; only for UNIX socket connections.`
-                   - 'ws':          `WebSocket; only for TCP connections.`
-                   - 'wss':         `Secure WebSocket; only for TCP connections.`
-               >
-               [, < 'none | hbdbus | http | https' $app_protocol = 'none': `the application protocol will be used on the stream.`
-                   - 'none':        `no application protocol.`
-                   - 'hbdbus':      `HybridOS data bus protocol.`
-                   - 'http':        `Hyper Text Transfer Protocol.`
-                   - 'https':       `Secure Hyper Text Transfer Protocol.`
-                  >
-                    [, <object $options: `the options for presentation protocol and application protocol.` >
-                    ]
-               ]
-            ]
+           [, < 'none | hbdbus ' $app_protocol = 'none': `the application protocol will be used on the stream.`
+               - 'none':        `no application protocol.`
+               - 'hbdbus':      `HybridOS data bus protocol.`
+              >
+                [, <object $extra_options: `the extra options.` >
+                ]
+           ]
         ]
 ) native/stream | undefined
 ```
@@ -5631,18 +5624,19 @@ $STREAM.open(
 - `file://Documents/mydata`：当前工作路径下的 `Document/mydata` 文件。
 - `pipe:///usr/bin/wc`：在子进程中执行指定的系统程序，创建匿名管道作为子进程的标准输入、输出和错误。可通过 URI 中的查询参数传递命令行所需要的选项和/或参数。
 - `fifo:///var/tmp/namedpipe`：FIFO，也就是命名管道。
-- `unix:///var/run/myapp.sock`：UNIX 套接字。
-- `tcp://foo.com:1100`：TCP 套接字。
-- `udp://foo.com:1100`：UDP 套接字。
+- `unix:///var/run/myapp.sock`：裸的 UNIX 套接字。
+- `tcp://foo.com:1100`：裸的 TCP 套接字。
+- `udp://foo.com:1100`：裸的 UDP 套接字。
+- `ws://foo.com:1100`：WebSocket。
+- `wss://foo.com:1100`：安全 WebSocket。
+- `msg:///var/run/hbdbus:1100`：在裸的 UNIX 套接字上提供类似 WebSocket 消息处理机制。
 
-我们可以在 `open` 方法中指定一个或者多个数据的过滤器，这些数据过滤器可担任不同的角色，比如：
+我们可以在 `open` 方法中指定流数据的更高层应用协议，通过扩展流实体提供的方法来方便程序的使用，比如：
 
-- `ws/wss`：使用 WebSocket 表述层协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 WebSocket 协议发送和接收消息数据包。
-- `http/https`: 使用 HTTP 应用层协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 HTTP 协议发送请求或处理响应头。
-- `hbdbus`：使用 HBDBus 数据总线协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 HBDBus 数据总线订阅事件或者发起远程过程调用并获得结果。
+- `hbdbus`：使用 HBDBus 数据总线协议处理数据，方便程序通过 HBDBus 数据总线订阅事件或者发起远程过程调用并获得结果。
 - `mqtt`：使用 MQTT 物联网协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 MQTT 数据总线订阅事件或者发起远程过程调用并获得结果。
 
-解释器最少应实现对 `file://` 的支持，其他类型以及过滤器，可根据情况选择实现。解释器也可以自定义过滤器，比如可提供对各种 MIME 类型的支持，从而可以将 PNG、JPEG 等位图文件解码为表达位图的对象，其中包括位图的分辨率以及各扫描线上像素点颜色值组成的字节序。
+解释器最少应实现对 `file://` 的支持，其他套接字类型及扩展协议，可根据情况选择实现。
 
 **异常**
 
@@ -6046,6 +6040,33 @@ du -BM hvml-spec-v1.0-zh.md
 `pipe` 流实体应该额外提供 `writeeof` 方法，用于父进程一侧向管道写入 EOF（文件尾）字符。此操作相当于关闭子进程的标准输入（stdin），大部分交互式命令行程序在遇到标准输入被关闭时，会选择退出。
 
 `pipe` 流实体应该额外提供 `status` 方法，用于检查子进程的状态。该方法返回一个数组，第一个成员是表示状态的字符串，第二个成员给出状态对应的值。
+
+#### 3.12.7) `ws`、`msg` 流实体
+
+使用 URI 图式 `ws://`、`wss://`、`msg://` 打开的流实体，将提供如下新方法：
+
+- `send`：发送消息数据包（文本或者二进制数据）。
+
+同时提供如下可观察事件：
+
+- `message`：收到来自服务器端的消息时。
+- `error`：出现错误时。
+
+#### 3.12.8) `ws`、`msg` 流实体上的 `hbdbus` 协议扩展
+
+在 URI 图式 `ws://`、`wss://`、`us://` 的流实体上，可使用 `hbdbus` 协议，对应的扩展方法有：
+
+- `subscribe`：订阅一个事件。
+- `unsubscribe`：取消对事件的订阅。
+- `call`：发起一个远程过程调用。
+- `register_procedure`：登记一个远程过程调用。
+
+同时提供如下可观察事件：
+
+- `event:<bubble-name>`：接收到来自 `bubble-name` 的事件时。
+- `result:<method-name>`：接收到来自 `method-name` 的结果时。
+- `call:<method-name>`：接收到针对 `method-name` 的调用请求时。
+- `error`：出现错误时。
 
 ### 3.13) `SOCK`
 
