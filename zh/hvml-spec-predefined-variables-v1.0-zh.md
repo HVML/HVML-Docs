@@ -6070,8 +6070,8 @@ du -BM hvml-spec-v1.0-zh.md
 同时提供如下可观察事件：
 
 - `message`：收到来自服务器端的消息。
-- `error:[message | websocket ]`：出现错误。
-- `close`：连接被另一端要求关闭。
+- `error:[message | websocket ]`：出现 Message 或 WebSocket 协议相关的错误；事件数据中包含错误码及错误消息：`{ "errCode": 5, "errMsg": "Invalid Value" }`。
+- `close`：由于读写错误或者其他不可恢复的原因，连接关闭。
 
 #### 3.12.9) `hbdbus` 协议扩展
 
@@ -6090,10 +6090,16 @@ du -BM hvml-spec-v1.0-zh.md
 
 同时提供如下可观察事件：
 
-- `event:<bubble-name>`：接收到来自 `bubble-name` 的事件。
-- `result:<method-name>`：接收到来自 `method-name` 的结果。
-- `called:<method-name>`：接收到针对 `method-name` 的调用请求。
-- `error:hbdbus`：出现错误。
+1. `event:<bubble-name>`：接收到一个事件，`bubble-name` 是该事件的泡泡名。
+1. `result:<method-name>`：接收到调用远程过程调用的的结果，`method-name` 是该远程过程调用的方法名。
+1. `call:<method-name>`：接收到针对 `method-name` 的调用请求。
+1. `state:ready`：验证通过，接口就绪。
+1. `error:hbdbus`：出现 HBDBus 相关的错误；事件数据中包含错误码及错误消息：`{ "errCode": 5, "errMsg": "Invalid Value" }`。
+1. `close`：由于读写错误或者其他不可恢复的原因，连接关闭。
+
+前三个事件的数据，可参阅 HBDBus 相关文档：
+
+- [合璧操作系统设备端数据总线概要设计](https://github.com/HybridOS2/Documents/blob/master/zh/hybridos-design-data-bus-zh.md)
 
 ### 3.13) `SOCK`
 
@@ -8631,7 +8637,7 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
 
-#### RCb) 230531
+#### RCc) 230531
 
 1. 调整 `$STREAM.open` 和 `$SOCK.accept` 两个方法的参数。
 1. 增加 `$STREAM.listener` 属性。
