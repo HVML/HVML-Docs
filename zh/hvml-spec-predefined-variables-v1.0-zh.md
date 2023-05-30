@@ -204,9 +204,10 @@ Language: Chinese
       * [3.12.3) `stdin` 静态属性](#3123-stdin-静态属性)
       * [3.12.4) `stdout` 静态属性](#3124-stdout-静态属性)
       * [3.12.5) `stderr` 静态属性](#3125-stderr-静态属性)
-      * [3.12.6) `pipe` 流实体](#3126-pipe-流实体)
-      * [3.12.7) `message`、`websocket` 和 `secure-websocket` 协议扩展](#3127-messagewebsocket-和-secure-websocket-协议扩展)
-      * [3.12.8) `hbdbus` 协议扩展](#3128-hbdbus-协议扩展)
+      * [3.12.6) `listener` 属性](#3126-listener-属性)
+      * [3.12.7) `pipe` 流实体](#3127-pipe-流实体)
+      * [3.12.8) `message`、`websocket` 协议扩展](#3128-messagewebsocket-协议扩展)
+      * [3.12.9) `hbdbus` 协议扩展](#3129-hbdbus-协议扩展)
    + [3.13) `SOCK`](#313-sock)
       * [3.13.1) `stream` 方法](#3131-stream-方法)
       * [3.13.2) `dgram` 方法](#3132-dgram-方法)
@@ -5605,11 +5606,10 @@ $STREAM.open(
                - 'nonblock':    `Open the $uri in nonblocking mode`
                - 'default':     `equivalent to 'read write'`
            >
-           [, < 'raw | message | websocket | secure-websocket | hbdbus' $ext_protocol = 'raw': `the extended protocol will be used on the stream.`
+           [, < 'raw | message | websocket | hbdbus' $ext_protocol = 'raw': `the extended protocol will be used on the stream.`
                - 'raw':                 `No extended protocol.`
                - 'message':             `WebSocket-like message-based protocol; only for `unix://` and `fifo://` connections.`
                - 'websocket':           `WebSocket protocol; only for `tcp:// connections.`
-               - 'secure-websocket':    `Secure WebSocket protocol; only for `tcp://` connections.`
                - 'hbdbus':              `HybridOS data bus protocol; only for `unix://` and `tcp://` connections.`
               >
                 [, <object $extra_options: `the extra options.` >
@@ -5635,7 +5635,6 @@ $STREAM.open(
 
 - `message`：在 UNIX 套接字之上使用类似 WebSocket 的、基于消息的方式处理数据。
 - `websocket`：在 TCP 套接字之上使用 WebSocket 协议处理数据。
-- `secure-websocket`：在 TCP 套接字之上使用安全的 WebSocket 协议处理数据。
 - `hbdbus`：使用 HBDBus 数据总线协议处理数据，方便程序通过 HBDBus 数据总线订阅事件或者发起远程过程调用并获得结果。
 - `mqtt`：使用 MQTT 物联网协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 MQTT 数据总线订阅事件或者发起远程过程调用并获得结果。
 
@@ -6014,7 +6013,23 @@ $STREAM.stdout.writelines($SYS.uname_prt('kernel-name'))
 
 这是一个静态属性，其对应一个流实体，值可用于流式读写的写入接口，是 C 语言标准错误流的封装。
 
-#### 3.12.6) `pipe` 流实体
+#### 3.12.6) `listener` 属性
+
+该属性反应的是流实体事件的监听者（协程）。默认情况下，流实体的监听者为创建流实体的协程。通过该属性的设置器，可修改监听者为新的协程。注意，作为新监听者的协程，必须必须和原监听者属于同一行者。
+
+**描述**
+
+```js
+$STREAM.listener ulongint | null: `the corouting identifier of the current listener`.
+```
+
+```js
+$STREAM.listener(!
+        <ulongint $cid: `the new listener of the stream entity`.>
+) ulongint | null | false: `the old listener of the current listener`.
+```
+
+#### 3.12.7) `pipe` 流实体
 
 **查询参数**
 
@@ -6044,20 +6059,21 @@ du -BM hvml-spec-v1.0-zh.md
 
 `pipe` 流实体应该额外提供 `status` 方法，用于检查子进程的状态。该方法返回一个数组，第一个成员是表示状态的字符串，第二个成员给出状态对应的值。
 
-#### 3.12.7) `message`、`websocket` 和 `secure-websocket` 协议扩展
+#### 3.12.8) `message`、`websocket` 协议扩展
 
-在使用 URI 图式 `fifo://`、`unix://` 的流实体上，可使用 `message`、`websocket` 和 `secure-websocket` 扩展协议，从而使用基于消息的数据处理方式。
+在使用 URI 图式 `fifo://`、`unix://` 的流实体上，可使用 `message` 或 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
 
 对应的扩展方法有：
 
-- `send`：发送消息数据包（文本或者二进制数据）。
+- `send`：发送消息数据；参数为字符串时以文本方式发送，参数为字节序列时以二进制方式发送。
 
 同时提供如下可观察事件：
 
-- `message`：收到来自服务器端的消息数据包。
-- `error`：出现错误。
+- `message`：收到来自服务器端的消息。
+- `error:[message | websocket ]`：出现错误。
+- `close`：连接被另一端要求关闭。
 
-#### 3.12.8) `hbdbus` 协议扩展
+#### 3.12.9) `hbdbus` 协议扩展
 
 在使用 URI 图式 `tcp://`、`unix://` 的流实体上，可使用 `hbdbus` 扩展协议。
 
@@ -6066,15 +6082,18 @@ du -BM hvml-spec-v1.0-zh.md
 - `subscribe`：订阅一个事件。
 - `unsubscribe`：取消对事件的订阅。
 - `call`：发起一个远程过程调用。
+- `send_result`：发送被调用的过程执行结果。
 - `register_evnt`：登记一个事件。
 - `register_proc`：登记一个远程过程调用。
+- `revoke_evnt`：登记一个事件。
+- `revoke_proc`：登记一个远程过程调用。
 
 同时提供如下可观察事件：
 
 - `event:<bubble-name>`：接收到来自 `bubble-name` 的事件。
 - `result:<method-name>`：接收到来自 `method-name` 的结果。
-- `call:<method-name>`：接收到针对 `method-name` 的调用请求。
-- `error`：出现错误。
+- `called:<method-name>`：接收到针对 `method-name` 的调用请求。
+- `error:hbdbus`：出现错误。
 
 ### 3.13) `SOCK`
 
@@ -6194,7 +6213,6 @@ $streamSocket.accept(
            - 'raw':         `no any protocol.`
            - 'message':     `WebSocket-like, but only for UNIX socket connections.`
            - 'websocket':   `WebSocket.`
-           - 'secure-websocket': `Secure WebSocket.`
            - 'hbdbus':      `HybridOS data bus protocol.`
            - 'http':        `Hyper text transfer protocol.`
            - 'https':       `Secure hyper text transfer protocol.`
@@ -8615,7 +8633,9 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 
 #### RCb) 230531
 
-1. 调整 `$STREAM.open` 和 `$SOCK.accept` 两个方法的参数，区分表述层协议和应用层协议。
+1. 调整 `$STREAM.open` 和 `$SOCK.accept` 两个方法的参数。
+1. 增加 `$STREAM.listener` 属性。
+1. 增加针对 `message`、`hbdbus` 扩展协议的接口描述。
 
 #### RCb) 230430
 
