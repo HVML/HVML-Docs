@@ -740,7 +740,7 @@ HVML 还提供一个称为替身表达式的功能，可以让我们将一个表
             ]
         </init>
 
-        <init as="databus" with=$STREAM.open('unix:///var/tmp/hbdbus.sock','default','HBDBus') >
+        <init as="databus" with=$STREAM.open('unix:///var/tmp/hbdbus.sock','default','hbdbus') />
 
         <archetype name="user_item">
             <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
@@ -837,8 +837,8 @@ HVML 还提供一个称为替身表达式的功能，可以让我们将一个表
             </test>
         </define>
 
-        <choose on=$databus.subscribe('@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED')>
-            <observe on="$databus" for="event:$?" in="#theStatusBar" with=$onBatteryChanged />
+        <choose on $databus.subscribe('edpt://localhost/cn.fmsoft.hybridos.settings/powerd/', 'BatteryChanged')>
+            <observe on $databus for 'event:BatteryChanged' in '#theStatusBar' with '$onBatteryChanged' />
         </choose>
 
         <observe on=".avatar" for="click">
@@ -4467,8 +4467,8 @@ Content-Type: text/plain
             </test>
         </define>
 
-        <choose on=$databus.subscribe('@localhost/cn.fmsoft.hybridos.settings/powerd/BATTERYCHANGED')>
-            <observe on="$databus" for="event:$?" in="#the-header" with=$onBatteryChanged />
+        <choose on=$databus.subscribe('edpt://localhost/cn.fmsoft.hybridos.settings/powerd', 'BatteryChanged')>
+            <observe on="$databus" for="event:BatteryChanged" in="#the-header" with=$onBatteryChanged />
         </choose>
     </body>
 ```
@@ -4512,8 +4512,8 @@ Content-Type: text/plain
 类似地，我们要在状态栏上显示当前的 WiFi 名称或者移动网络的运营商名称时：
 
 ```hvml
-    <choose on=$databus.subscribe('@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED')>
-        <observe on="$databus" for="event:$?" in="#the-header">
+    <choose on=$databus.subscribe('edpt://localhost/cn.fmsoft.hybridos.settings/inetd', 'NetworkChanged')>
+        <observe on="$databus" for="event:NetworkChanged" in="#the-header">
             <update on="span.mobile-operator" at="textContent" with="$?.name">
                 <except>
                     <p>Failed to update mobile operator</p>
@@ -6656,7 +6656,7 @@ SYSTEM 标识符字符串的格式如下：
             ]
         </init>
 
-        <init as="databus" with=$STREAM.open('unix:///var/run/hbdbus.sock','default','HBDBus') />
+        <init as="databus" with=$STREAM.open('unix:///var/run/hbdbus.sock','default','hbdbus') />
 
         <header id="theStatusBar">
             <img class="mobile-status" src="" />
