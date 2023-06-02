@@ -1,11 +1,11 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RCc  
+Version: 1.0-RCd  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: May 31, 2023  
+Last Modified Date: Jun 30, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -8631,6 +8631,7 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 
 发布历史：
 
+- 2023 年 06 月 30 日：发布 V1.0 RCd，标记为 'v1.0-rcd-230630'。
 - 2023 年 05 月 31 日：发布 V1.0 RCc，标记为 'v1.0-rcc-230531'。
 - 2023 年 04 月 30 日：发布 V1.0 RCb，标记为 'v1.0-rcb-230430'。
 - 2023 年 03 月 31 日：发布 V1.0 RCa，标记为 'v1.0-rca-230331'。
@@ -8643,6 +8644,10 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 - 2022 年 06 月 01 日：发布 V1.0 RC3，标记为 'v1.0-pv-rc3-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
+
+#### RCd) 230630
+
+1. 调整针对 `message` 和`hbdbus` 扩展协议的接口描述。
 
 #### RCc) 230531
 
