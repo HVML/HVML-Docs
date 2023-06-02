@@ -6094,7 +6094,14 @@ du -BM hvml-spec-v1.0-zh.md
 1. `result:<method-name>`：接收到调用远程过程调用的的结果，`method-name` 是该远程过程调用的方法名。
 1. `call:<method-name>`：接收到针对 `method-name` 的调用请求。
 1. `state:ready`：验证通过，接口就绪。
-1. `error:hbdbus`：出现 HBDBus 相关的错误；事件数据中包含错误码及错误消息：`{ "errCode": 5, "errMsg": "Invalid Value" }`。
+1. `state:LostEventGenerator`：丢失已订阅的事件发生者；事件数据中包含事件发生者：
+   `{ "endpointName": "edpt://host.name/app.name/runner.name" }`。
+1. `state:LostEventBubble`：已订阅的事件被撤销；事件数据中包含事件发生者及事件的泡泡名称：
+   `{ "endpointName": "edpt://host.name/app.name/runner.name", "bubbleName": "ABubble" }`。
+1. `state:SystemShuttingDown`：系统关闭中；事件数据中包含发送系统终止调用的端点名称以及终止时间（自 UNIX Epoch 以来的秒数，字符串）：
+   `{ "endpointName": "edpt://host.name/app.name/runner.name", "shutdownTime": "2300000" }`。
+1. `error:hbdbus`：出现 HBDBus 相关的错误；事件数据中包含错误码及错误消息：
+    `{ "errCode": 5, "errMsg": "Invalid Value" }`。
 1. `close`：由于读写错误或者其他不可恢复的原因，连接关闭。
 
 前三个事件的数据，可参阅 HBDBus 相关文档：
