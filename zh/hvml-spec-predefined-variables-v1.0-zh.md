@@ -36,7 +36,8 @@ Language: Chinese
       * [2.1.1) 批量新增定时器](#211-批量新增定时器)
       * [2.1.2) 新增一个定时器](#212-新增一个定时器)
       * [2.1.3) 移除一个定时器](#213-移除一个定时器)
-      * [2.1.4) 修改特定定时器的属性](#214-修改特定定时器的属性)
+      * [2.1.4) 移除多个定时器](#214-移除多个定时器)
+      * [2.1.5) 修改特定定时器的属性](#215-修改特定定时器的属性)
    + [2.2) `REQ`](#22-req)
 - [3) 必要动态变量](#3-必要动态变量)
    + [3.1) `SYS`](#31-sys)
@@ -308,6 +309,7 @@ Language: Chinese
          - [4.4.10.3) CPython 代码动态对象的 `eval` 方法](#44103-cpython-代码动态对象的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RCd) 230630](#rcd-230630)
       * [RCc) 230531](#rcc-230531)
       * [RCb) 230430](#rcb-230430)
       * [RCa) 230331](#rca-230331)
@@ -469,7 +471,7 @@ Language: Chinese
 #### 2.1.1) 批量新增定时器
 
 ```html
-    <update on "$TIMERS" to "unite">
+    <update on="$TIMERS" to="unite">
         [
             { "id" : "foo", "interval" : 1000, "active" : "no" },
             { "id" : "bar", "interval" : 2000, "active" : "no" },
@@ -481,7 +483,7 @@ Language: Chinese
 #### 2.1.2) 新增一个定时器
 
 ```html
-    <update on="$TIMERS" to="append">
+    <update on="$TIMERS" to="add">
         { "id" : "foobar", "interval" : 3000, "active" : "yes" }
     </update>
 ```
@@ -489,12 +491,23 @@ Language: Chinese
 #### 2.1.3) 移除一个定时器
 
 ```html
-    <update on="$TIMERS" to="subtract">
+    <update on="$TIMERS" to="remove">
         { "id" : "foobar" }
     </update>
 ```
 
-#### 2.1.4) 修改特定定时器的属性
+#### 2.1.4) 移除多个定时器
+
+```html
+    <update on="$TIMERS" to="subtract">
+        [
+            { "id" : "foo" },
+            { "id" : "bar" }
+        ]
+    </update>
+```
+
+#### 2.1.5) 修改特定定时器的属性
 
 ```html
     <!-- activate the timer `foo` -->
