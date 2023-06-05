@@ -152,6 +152,7 @@ Language: Chinese
       * [RCd) 230630](#rcd-230630)
          - [RCd.1) 调整某些动作元素的属性及执行规则](#rcd1-调整某些动作元素的属性及执行规则)
          - [RCd.2) 调整 `update` 元素并新增 `wholly` 副词属性](#rcd2-调整-update-元素并新增-wholly-副词属性)
+         - [RCd.3) 增加 `_eventSubName` 临时变量](#rcd3-增加-_eventsubname-临时变量)
       * [RCc) 230531](#rcc-230531)
          - [RCc.1) 新增渲染器事件](#rcc1-新增渲染器事件)
       * [RCb) 230430](#rcb-230430)
@@ -4449,7 +4450,7 @@ Content-Type: text/plain
 当 `observe` 观察的事件到来时，解释器应切换到 `observe` 自身定义的操作组或者其 `with` 属性引用的由 `define` 定义的操作组中执行 HVML 程序。此时，对应操作组的前置栈帧中，应定义如下的上下文变量：
 
 - `$?`：事件的负载（payload）数据；若被观察的是变量，则就是被观察变量对应的数据。
-- `$!`：在用户数据中，预定义两个临时变量，用于表示完整的事件名称和事件源，名称分别为 `_eventName` 和 `_eventSource`。
+- `$!`：在用户数据中，预定义三个临时变量，用于表示事件主名称、子名称和事件源，名称分别为 `_eventName`、 `_eventSubName` 和 `_eventSource`。
 - `$@`：`observe` 的 `in` 属性定义的目标文档位置，或者 `observe` 继承自其的目标文档位置。
 
 当我们在 `observe` 元素中使用 `with` 属性定义要引用的操作组时，HVML 程序的执行效果等同于 `include` 动作元素的效果，也就是说，应做就地执行而不是调用由 `with` 属性指定的操作组。
@@ -7525,6 +7526,14 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 - [2.1.14) 副词属性](#2114-副词属性)
 - [2.5.2) `update` 标签](#252-update-标签)
+
+##### RCd.3) 增加 `_eventSubName` 临时变量
+
+当 `observe` 观察的事件到来时，解释器应在对应操作组的前置栈帧的用户数据（`$!`）中，预定义三个临时变量，用于表示事件主名称、子名称和事件源，名称分别为 `_eventName`、 `_eventSubName` 和 `_eventSource`。
+
+相关章节：
+
+- [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
 
 #### RCc) 230531
 
