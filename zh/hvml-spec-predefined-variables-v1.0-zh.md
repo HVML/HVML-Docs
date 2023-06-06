@@ -124,8 +124,9 @@ Language: Chinese
       * [3.7.23) `base64_decode` 方法](#3723-base64_decode-方法)
       * [3.7.24) `arith` 方法](#3724-arith-方法)
       * [3.7.25) `bitwise` 方法](#3725-bitwise-方法)
-      * [3.7.26) `contains` 方法](#3726-contains-方法)
-      * [3.7.27) `has` 方法](#3727-has-方法)
+      * [3.7.26) `isdivisible` 方法](#3726-isdivisible-方法)
+      * [3.7.27) `match_members` 方法](#3727-match_members-方法)
+      * [3.7.28) `match_properties` 方法](#3728-match_properties-方法)
    + [3.8) `L`](#38-l)
       * [3.8.1) `not` 方法](#381-not-方法)
       * [3.8.2) `and` 方法](#382-and-方法)
@@ -3318,33 +3319,68 @@ $DATA.bitwise( '|', 0, 15 )
     // ulongint: 15UL
 ```
 
-#### 3.7.26) `contains` 方法
+#### 3.7.26) `isdivisible` 方法
 
-判断一个线性容器（如数组、元组、集合）中是否包含给定的值。
+判断一个数是否可以整除另一个数。
 
 **描述**
 
 ```js
-$DATA.contains(
-        <linctnr $haystack: `the linear container to search in.` >,
-        <any $needle: `the variant to search for in the haystack.` >
-        [, < 'exact | number | case | caseless | wildcard | regexp' $method = 'exact': `the search method:`
-            - 'exact':      `compaer two variants exactly.`
-            - 'number':     `comparing two variants as numbers.`
-            - 'case':       `comparing two variants as strings case-sensitively.`
-            - 'caseless':   `comparing two variants as strings case-insensitively.`
-            - 'wildcard':   `comparing two variants as strings and @needle as a whildcard.`
-            - 'regexp':     `comparing two variants as strings and @needle as a regular expression.`
-        > ]
-) longint
+$DATA.isdivisible(
+        < any $dividend: the number as dividend >,
+        < any $divisor: the number as divisor >
+) boolean | undefined
 ```
 
-判断线性容器 `haystack` 中是否包含指定的值 `needle`，并返回第一个匹配的值在线性容器中的索引值。
+该方法判断给定的除数（`$divisor`）是否可以整除被除数（`$dividend`），返回布尔型。
 
 **异常**
 
-- `ArgumentMissed`：可忽略异常；静默求值时返回 `-1L`。
-- `WrongDataType`：可忽略异常；静默求值时返回 `-1L`。
+该方法可能产生如下异常：
+
+- `ArgumentMissed`：缺少必要参数。可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：错误的数据类型（被除数或除数无法转换为 `longint` 类型）。可忽略异常，静默求值时返回 `undefined`。
+- `ZeroDivision`：除数为零。可忽略异常，静默求值时返回 `undefined`。
+
+**示例**
+
+```js
+#DATA.isdivisiable(6, 3)
+    // boolean: true
+
+#DATA.isdivisiable(5, 2)
+    // boolean: false
+```
+
+#### 3.7.27) `match_members` 方法
+
+返回一个线性容器（如数组、元组、集合）中和给定值匹配的所有成员之索引或值。
+
+**描述**
+
+```js
+$DATA.match_members(
+        <linctnr $haystack: `the linear container to search in.` >,
+        <any $needle: `the variant to search for in the haystack.` >
+        [, < '[exact | number | case | caseless | wildcard | regexp] || [indexes | values]' $method = 'exact indexes': `the search method:`
+            - 'exact':      `compares two variants exactly.`
+            - 'number':     `compares two variants as numbers.`
+            - 'case':       `compares two variants as strings case-sensitively.`
+            - 'caseless':   `compares two variants as strings case-insensitively.`
+            - 'wildcard':   `compares two variants as strings and @needle as a whildcard.`
+            - 'regexp':     `compares two variants as strings and @needle as a regular expression.`
+            - 'indexes':    `returns the indexes of the matched members.`
+            - 'values':     `returns the values of the matched members.`
+        > ]
+) array | undefined
+```
+
+根据给定的匹配方法，以数组形式返回线性容器 `haystack` 中所有和 `needle` 匹配的成员（索引或值）。
+
+**异常**
+
+- `ArgumentMissed`：可忽略异常；静默求值时返回 `undefined`。
+- `WrongDataType`：可忽略异常；静默求值时返回 `undefined`。
 
 **参数**
 
@@ -3353,50 +3389,67 @@ $DATA.contains(
 - `needle`  
 要搜索的变体。
 - `method`  
-指定匹配方法，可选精确（exact）、数值（numeric）、区分大小写（case）、不区分大小写（caseless）四种方法。
+指定匹配方法，可选精确（exact）、数值（numeric）、区分大小写（case）、不区分大小写（caseless）、通配符（wildcard）、正则表达式（regexp）六种方法；并可指定返回值类型：索引（indexes）或值（values）。
 
 **返回值**
 
-如果 `needle` 在 `haystack` 当中，返回 >= 0 的索引值，否则返回 `-1L`。
+在 `haystack` 当中所有匹配 `needle` 的成员之索引或者其值构成的数组。
 
 **示例**
 
 ```js
-$DATA.contains([1, 2, 3], 3)
-    // longint: 2L
+$DATA.match_members([1, 2, 3, 4, 3], 3)
+    // [2, 4]
 
-$DATA.contains(['a', 'b'], 'c')
-    // longint: -1L
+$DATA.match_members([1, 2, 3, 4, 3], 3, 'values')
+    // [3, 3]
+
+$DATA.match_members(['a', 'b'], 'c', 'exact')
+    // []
+
+$DATA.match_members(['a', 'b', 'A', 'C'], 'a', 'caseless values')
+    // ['a', 'A']
+
+$DATA.match_members(['a1', 'a2', 'a3', 'b1'], 'a*', 'wildcard values')
+    // ['a1', 'a2', 'a3']
+
+$DATA.match_members(['a1', 'a2', 'a3', 'b1'], 'a*', 'regexp values')
+    // ['a1', 'a2', 'a3']
+
+$DATA.match_members(['zh_CN', 'zh_TW', 'zh_HK', 'zh_MO'], '^zh', 'regexp values')
+    // ['zh_CN', 'zh_TW', 'zh_HK', 'zh_MO']
 ```
 
-#### 3.7.27) `has` 方法
+#### 3.7.28) `match_properties` 方法
 
-判断一个对象中是否包含由指定键名定义的属性。
+返回一个对象中属性名匹配给定条件的所有属性名、属性值或者键值对。
 
 **描述**
 
 ```js
-$DATA.has(
+$DATA.match_properties(
         <object $haystack: `the object to search in.` >,
-        <any $needle: `the key value to search for in the haystack.` >
-        [, < 'exact | number | case | caseless | wildcard | regexp' $method = 'exact': `the search method:`
+        <string $needle: `the key to search for in the haystack.` >
+        [, < '[exact | number | case | caseless | wildcard | regexp] || [keys | values | kv-pairs]' $method = 'exact keys': `the search method:`
             - 'exact':      `compaer two variants exactly.`
-            - 'number':     `comparing two variants as numbers.`
-            - 'case':       `comparing two variants as strings case-sensitively.`
-            - 'caseless':   `comparing two variants as strings case-insensitively.`
-            - 'wildcard':   `comparing two variants as strings and @needle as a whildcard.`
-            - 'regexp':     `comparing two variants as strings and @needle as a regular expression.`
+            - 'number':     `comparing needle and key as numbers.`
+            - 'case':       `comparing needle and key as strings case-sensitively.`
+            - 'caseless':   `comparing needle and key as strings case-insensitively.`
+            - 'wildcard':   `comparing needle and key as strings and @needle as a whildcard.`
+            - 'regexp':     `comparing needle and key as strings and @needle as a regular expression.`
+            - 'keys':       `returns the matched keys`
+            - 'values':     `returns the matched values.`
+            - 'kv-pairs':   `returns the matched key-value pairs.`
         > ]
-) any | undefined
+) array | undefined
 ```
 
-判断对象 `haystack` 中是否包含由指定键名 `needle` 定义的属性，若有则返回对应的属性值，否则产生异常或者返回 `undefined`。
+查找对象 `haystack` 中所有属性名匹配 `needle` 的属性，返回对应的数组。
 
 **异常**
 
 - `ArgumentMissed`：可忽略异常；静默求值时返回 `undefined`。
 - `WrongDataType`：可忽略异常；静默求值时返回 `undefined`。
-- `NoSuchKey`：可忽略异常；静默求值时返回 `undefined`。
 
 **参数**
 
@@ -3405,20 +3458,26 @@ $DATA.has(
 - `needle`  
 要搜索的键名。
 - `method`  
-指定匹配方法，可选精确（exact）、数值（numeric）、区分大小写（case）、不区分大小写（caseless）四种方法。
+指定 `$needle` 和键名的匹配方法，可选精确（exact）、数值（numeric）、区分大小写（case）、不区分大小写（caseless）、通配符（wildcard）、正则表达式（regexp）六种方法；并可指定返回值类型：键名（keys）、键值（values）或键值对（kv-pairs）。
 
 **返回值**
 
-如果 `needle` 指定的键名在 `haystack` 中有任何匹配的属性，则返回第一个匹配的属性值。
+在 `haystack` 中，键名和 `needle` 匹配的所有键名、键值或者键值对组成的数组。
 
 **示例**
 
 ```js
-$DATA.has({ "a": 1, "b": 2, "c": 3}, "a")
-    // 1
+$DATA.match_properties({ "a": 1, "b": 2, "c": 3}, "a")
+    // ['a']
 
-$DATA.has({ "a": 1, "b": 2, "c": 3}, "C", 'caseless')
-    // 3
+$DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless')
+    // ['a', 'A']
+
+$DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless value')
+    // [1, 3]
+
+$DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless kv')
+    // [ {'k': 'a', 'v': 1}, {'k': 'A', 'v': 3} ]
 ```
 
 ### 3.8) `L`
