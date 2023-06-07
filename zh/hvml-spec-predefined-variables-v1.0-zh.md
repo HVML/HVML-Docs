@@ -3361,17 +3361,18 @@ $DATA.isdivisible(
 ```js
 $DATA.match_members(
         <linctnr $haystack: `the linear container to search in.` >,
-        <any $needle: `the variant to search for in the haystack.` >
-        [, < '[exact | auto | number | case | caseless | wildcard | regexp] || [indexes | values]' $method = 'exact indexes': `the search method:`
+        <any | string $needle: `the variant to search for in the haystack.` >
+        [, < '[exact | auto | number | case | caseless | wildcard | regexp] || [indexes | values | iv-pairs]' $method = 'exact indexes': `the search method:`
             - 'exact':      `compares two variants exactly.`
             - 'auto':       `compares two variants automatically.`
             - 'number':     `compares two variants as numbers.`
             - 'case':       `compares two variants as strings case-sensitively.`
             - 'caseless':   `compares two variants as strings case-insensitively.`
-            - 'wildcard':   `compares two variants as strings and @needle as a whildcard.`
-            - 'regexp':     `compares two variants as strings and @needle as a regular expression.`
+            - 'wildcard':   `compares two variants as strings and @needle (must be a string) as a whildcard.`
+            - 'regexp':     `compares two variants as strings and @needle (must be a string) as a regular expression.`
             - 'indexes':    `returns the indexes of the matched members.`
             - 'values':     `returns the values of the matched members.`
+            - 'iv-pairs':   `returns the index-value pairs (tuples) of the matched members.`
         > ]
 ) array | undefined
 ```
@@ -3414,8 +3415,11 @@ $DATA.match_members(['a', 'b', 'A', 'C'], 'a', 'caseless values')
 $DATA.match_members(['a1', 'a2', 'a3', 'b1'], 'a*', 'wildcard values')
     // ['a1', 'a2', 'a3']
 
-$DATA.match_members(['a1', 'a2', 'a3', 'b1'], 'a*', 'regexp values')
-    // ['a1', 'a2', 'a3']
+$DATA.match_members(['a1', 'a2', 'a3', 'b1'], 'a*', 'wildcard indexes')
+    // [0, 1, 2]
+
+$DATA.match_members(['a1', 'a2', 'b1', 'a3'], 'a*', 'wildcard iv-pairs')
+    // [ [!0, 'a1'], [!1, 'a2'], [! 3, 'a3'] ]
 
 $DATA.match_members(['zh_CN', 'zh_TW', 'zh_HK', 'zh_MO'], '^zh', 'regexp values')
     // ['zh_CN', 'zh_TW', 'zh_HK', 'zh_MO']
@@ -3441,7 +3445,7 @@ $DATA.match_properties(
             - 'regexp':     `compares the needle and the key as strings and @needle as a regular expression.`
             - 'keys':       `returns the matched keys`
             - 'values':     `returns the matched values.`
-            - 'kv-pairs':   `returns the matched key-value pairs.`
+            - 'kv-pairs':   `returns the matched key-value pairs as tuples.`
         > ]
 ) array | undefined
 ```
@@ -3473,13 +3477,13 @@ $DATA.match_properties({ "a": 1, "b": 2, "c": 3}, "a")
     // ['a']
 
 $DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless')
-    // ['a', 'A']
+    // ['A', 'a' ]
 
 $DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless values')
     // [1, 3]
 
 $DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless kv-pairs')
-    // [ [! 'a', 1 ], [! 'A',  3 ] ]
+    // [ [! 'A',  3 ], [! 'a', 1 ] ]
 ```
 
 ### 3.8) `L`
