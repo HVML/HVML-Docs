@@ -3362,8 +3362,9 @@ $DATA.isdivisible(
 $DATA.match_members(
         <linctnr $haystack: `the linear container to search in.` >,
         <any $needle: `the variant to search for in the haystack.` >
-        [, < '[exact | number | case | caseless | wildcard | regexp] || [indexes | values]' $method = 'exact indexes': `the search method:`
+        [, < '[exact | auto | number | case | caseless | wildcard | regexp] || [indexes | values]' $method = 'exact indexes': `the search method:`
             - 'exact':      `compares two variants exactly.`
+            - 'auto':       `compares two variants automatically.`
             - 'number':     `compares two variants as numbers.`
             - 'case':       `compares two variants as strings case-sensitively.`
             - 'caseless':   `compares two variants as strings case-insensitively.`
@@ -3430,13 +3431,14 @@ $DATA.match_members(['zh_CN', 'zh_TW', 'zh_HK', 'zh_MO'], '^zh', 'regexp values'
 $DATA.match_properties(
         <object $haystack: `the object to search in.` >,
         <string $needle: `the key to search for in the haystack.` >
-        [, < '[exact | number | case | caseless | wildcard | regexp] || [keys | values | kv-pairs]' $method = 'exact keys': `the search method:`
-            - 'exact':      `compaer two variants exactly.`
-            - 'number':     `comparing needle and key as numbers.`
-            - 'case':       `comparing needle and key as strings case-sensitively.`
-            - 'caseless':   `comparing needle and key as strings case-insensitively.`
-            - 'wildcard':   `comparing needle and key as strings and @needle as a whildcard.`
-            - 'regexp':     `comparing needle and key as strings and @needle as a regular expression.`
+        [, < '[exact | auto | number | case | caseless | wildcard | regexp] || [keys | values | kv-pairs]' $method = 'exact keys': `the search method:`
+            - 'exact':      `compares the needle and the key exactly.`
+            - 'auto':       `compares the needle and the key automatically.`
+            - 'number':     `compares the needle and the key as numbers.`
+            - 'case':       `compares the needle and the key as strings case-sensitively.`
+            - 'caseless':   `compares the needle and the key as strings case-insensitively.`
+            - 'wildcard':   `compares the needle and the key as strings and @needle as a whildcard.`
+            - 'regexp':     `compares the needle and the key as strings and @needle as a regular expression.`
             - 'keys':       `returns the matched keys`
             - 'values':     `returns the matched values.`
             - 'kv-pairs':   `returns the matched key-value pairs.`
@@ -3473,11 +3475,11 @@ $DATA.match_properties({ "a": 1, "b": 2, "c": 3}, "a")
 $DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless')
     // ['a', 'A']
 
-$DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless value')
+$DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless values')
     // [1, 3]
 
-$DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless kv')
-    // [ {'k': 'a', 'v': 1}, {'k': 'A', 'v': 3} ]
+$DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless kv-pairs')
+    // [ [! 'a', 1 ], [! 'A',  3 ] ]
 ```
 
 ### 3.8) `L`
