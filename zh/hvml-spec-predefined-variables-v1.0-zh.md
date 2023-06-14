@@ -6141,7 +6141,7 @@ du -BM hvml-spec-v1.0-zh.md
 
 #### 3.12.8) `message`、`websocket` 协议扩展
 
-在使用 URI 图式 `fifo://`、`unix://` 的流实体上，可使用 `message` 或 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
+在使用 URI 图式 `fifo://`、`unix://`、`tcp://` 的流实体上，可使用 `message` 或 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
 
 对应的扩展方法有：
 
@@ -6152,6 +6152,18 @@ du -BM hvml-spec-v1.0-zh.md
 - `message`：收到来自服务器端的消息。
 - `error:[message | websocket ]`：出现 Message 或 WebSocket 协议相关的错误；事件数据中包含错误码及错误消息：`{ "errCode": 5, "errMsg": "Invalid Value" }`。
 - `close`：由于读写错误或者其他不可恢复的原因，连接关闭。
+
+当使用 `websocket` 协议扩展时，可指定如下额外选项：
+
+```json
+{
+    "secure": true,                     /* 是否使用 TLS 安全 */
+    "resource_name": "",                /* 指定服务器端的资源名称 */
+    "origin": "hvml.org",               /* 指定服务器端可接受的 Origin */
+    "protocols": ["protA", "protB"],    /* 指定期望的协议 */
+    "extensions": ["zip"],              /* 指定客户端可支持的扩展 */
+}
+```
 
 #### 3.12.9) `hbdbus` 协议扩展
 
