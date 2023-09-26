@@ -1,11 +1,11 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0-RCe  
+Version: 1.0-RCf  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Aug. 31, 2023  
+Last Modified Date: Sep. 30, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -2241,6 +2241,8 @@ HVML 定义的异常如下：
 
 - `.avatar` 表示所有 `class` 属性包含 `avatar` 的元素（集合）。
 - `#the-user-list` 表示 `id` 属性为 `the-user-list` 的元素。
+- `div` 表示文档中所有标签名称为 `div` 的元素。
+- `div.user-name` 表示文档中所有具有类名 `user-name` 的 `div` 元素。
 - `:root` 表示文档的根元素。
 - `*` 表示文档中的所有元素。
 
@@ -2256,7 +2258,7 @@ HVML 定义的异常如下：
     <update on="#the-user-list > li" at="attr.class" with="text-info" />
 ```
 
-本质上，我们在上述两种标签的 `on` 属性值中使用 CSS 选择器选择目标文档的元素汇集时，解释器实质调用的是 `$DOC.query(<selector>)`方法。
+本质上，我们在上述两种标签的 `on` 属性值中使用 CSS 选择器选择目标文档的元素汇集时，解释器实质调用的是 `$DOC.query(<selector>)`方法。需要注意的是，解释器可以针对某些简单的 CSS 选择器做特殊处理，比如对 `#the-time` 这样的选择器，判断为通过标识符来确定单个元素，通过和渲染器配合，就可以在某种程度上提高处理性能。
 
 由于通过 CSS 选择器指定的元素汇集通常指目标文档中的单个或者多个位置，故而我们使用“目标文档位置”一词来统称元素或元素汇集。
 
@@ -4601,7 +4603,9 @@ Content-Type: text/plain
 
 - `$?`：事件的负载（payload）数据；若被观察的是变量，则就是被观察变量对应的数据。
 - `$!`：在用户数据中，预定义三个临时变量，用于表示事件主名称、子名称和事件源，名称分别为 `_eventName`、 `_eventSubName` 和 `_eventSource`。
-- `$@`：`observe` 的 `in` 属性定义的目标文档位置，或者 `observe` 继承自其的目标文档位置。
+- `$@`：`observe` 的 `in` 属性定义的目标文档位置确定；若未显式定义 `in` 属性，则：
+   * 若事件来自渲染器页面上的某个元素，则定义为该元素对应的目标文档位置；否则，
+   * 定义为 `observe` 继承自其父元素的目标文档位置。
 
 当我们在 `observe` 元素中使用 `with` 属性定义要引用的操作组时，HVML 程序的执行效果等同于 `include` 动作元素的效果，也就是说，应做就地执行而不是调用由 `with` 属性指定的操作组。
 
@@ -7636,6 +7640,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
+- 2023 年 09 月 30 日：发布 V1.0 RCf，标记为 'v1.0-rcf-230930'。
 - 2023 年 08 月 31 日：发布 V1.0 RCe，标记为 'v1.0-rce-230831'。
 - 2023 年 06 月 30 日：发布 V1.0 RCd，标记为 'v1.0-rcd-230630'。
 - 2023 年 05 月 31 日：发布 V1.0 RCc，标记为 'v1.0-rcc-230531'。
@@ -7650,6 +7655,18 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
+
+#### RCf) 230930
+
+##### RCf.1) `observe` 中 `$@` 的规则调整
+
+主要修订内容如下：
+
+若事件来自渲染器页面上的某个元素，且未显式指定文档位置，则优先定义为该元素对应的目标文档位置。
+
+相关章节：
+
+- [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
 
 #### RCe) 230831
 
