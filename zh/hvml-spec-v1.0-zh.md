@@ -1,7 +1,7 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0-RCf  
+Version: 1.0-RCg  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
@@ -2466,8 +2466,17 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 2) 定义渲染器可直接访问的公共资源
 
-此时，`hvml` 用来表述一个应用对外提供的公共资源（assets），比如图片和样式文件。此时，我们可使用如下保留名称：
+当 `hvml` 用来表述一个应用对外提供的公共资源（assets），比如图片和样式文件时，采用如下格式：
 
+```
+hvml://<host_name>[:<port>]/<app_name>/<runner_name>/<page_group_name>/<path_to_assert>?<query_string>
+```
+
+此时，我们可使用如下保留名称：
+
+- 主机名称：
+   - 使用 `_originhost` 这一保留名称指代源主机。
+   - 可使用可选的端口号。
 - 应用名称：
    - 使用 `_self` 这一保留名称指代当前应用。
    - 使用 `_renderer` 这一保留名称指代渲染器。
@@ -2477,8 +2486,9 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
    - 使用 `_self` 这一保留名称指代当前行者。
    - 使用 `_shared` 这一保留名称指代共享的公开资源。
    - 使用 `_filesystem` 这一保留名称指代文件系统。
+   - 使用 `_http`、 `_https`、 `_ftp` 等保留名称指代可重定向的 URL 图式。
 - 页面组名称：始终使用 `-`。
-- 页面名称：指代正在定位的资源相对存储路径。
+- 资源路径：指代正在定位的资源相对存储路径。
 
 比如使用下面的 URL 可从当前应用的内建资源中装载一个 PNG 文件：
 
@@ -2486,15 +2496,23 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 
 若当前应用名称为 `cn.fmsoft.hvml.test`，按 HybridOS 的应用安装规范，以上 URI 相当于：
 
-`file://app/cn.fmsoft.hvml.test/_shared/assets/logo.png`
+`file://app/cn.fmsoft.hvml.test/exported/assets/logo.png`
 
-类似地，使用 `_renderer` 保留名称可指代渲染器本身，从而可通过下面的 URI 可从渲染器的内建资源中装载指定，如，
+类似地，使用 `_renderer` 保留名称可指代渲染器本身，从而可通过下面的 URI 从渲染器的内建资源中装载指定资源，如，
 
 `hvml://localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css`
 
 再如，使用 `_system` 这一保留的应用名称以及 `_filesystem` 这一保留的行者名称，可从文件系统的指定目录中装载资源，如：
 
-`hvml://localhost/_system/_filesystem/-/usr/shared/hvml-log.svg`
+`hvml://localhost/_system/_filesystem/-/usr/shared/hvml-logo.svg`
+
+又如，若在目标文档中使用下面的 URL，则可通过当前应用的源主机提供的 HTTP 服务装载一个 PNG 文件：
+
+`hvml://_originhost/_self/_http/-/assets/logo.png`
+
+若当前应用名称为 `cn.fmsoft.hvml.test`，连接时分配的来源主机为 `hosta`，按 HybridOS 的应用安装规范，以上 URI 相当于：
+
+`http://hosta/cn.fmsoft.hvml.test/exported/assets/logo.png`
 
 ##### 2.1.19.2) `hvml+run` 图式
 
@@ -7642,6 +7660,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
+- 2023 年 10 月 31 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231031'。
 - 2023 年 09 月 30 日：发布 V1.0 RCf，标记为 'v1.0-rcf-230930'。
 - 2023 年 08 月 31 日：发布 V1.0 RCe，标记为 'v1.0-rce-230831'。
 - 2023 年 06 月 30 日：发布 V1.0 RCd，标记为 'v1.0-rcd-230630'。
@@ -7657,6 +7676,18 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
+
+#### RCg) 231031
+
+##### RCg.1) 增强 `hvml` 图式
+
+主要修订内容如下：
+
+增强 `hvml` 图式以支持 URL 重定向。
+
+相关章节：
+
+- [2.1.19.1) `hvml` 图式](#21191-hvml-图式)
 
 #### RCf) 230930
 
