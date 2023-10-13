@@ -308,6 +308,29 @@ Language: Chinese
          - [4.4.10.1) CPython 代码动态对象 `entity` 属性](#44101-cpython-代码动态对象-entity-属性)
          - [4.4.10.2) CPython 代码动态对象 `local` 属性](#44102-cpython-代码动态对象-local-属性)
          - [4.4.10.3) CPython 代码动态对象的 `eval` 方法](#44103-cpython-代码动态对象的-eval-方法)
+   + [4.5) `SQLITE`](#45-sqlite)
+      * [4.5.1) `impl` 属性](#451-impl-属性)
+      * [4.5.2) `info` 属性](#452-info-属性)
+      * [4.5.3) `connect` 方法](#453-connect-方法)
+      * [4.5.4) SQLiteConnect 动态对象](#454-sqliteconnect-动态对象)
+         - [4.5.4.1) `cursor` 方法](#4541-cursor-方法)
+         - [4.5.4.2) `commit` 方法](#4542-commit-方法)
+         - [4.5.4.3) `rollback` 方法](#4543-rollback-方法)
+         - [4.5.4.4) `close` 方法](#4544-close-方法)
+         - [4.5.4.5) `execute` 方法](#4545-execute-方法)
+         - [4.5.4.6) `executemany` 方法](#4546-executemany-方法)
+      * [4.5.5) SQLiteCursor 动态对象](#455-sqlitecursor-动态对象)
+         - [4.5.5.1) `execute` 方法](#4551-execute-方法)
+         - [4.5.5.2) `executemany` 方法](#4552-executemany-方法)
+         - [4.5.5.3) `fetchone` 方法](#4553-fetchone-方法)
+         - [4.5.5.4) `fetchmany` 方法](#4554-fetchmany-方法)
+         - [4.5.5.5) `fetchall` 方法](#4555-fetchall-方法)
+         - [4.5.5.6) `rowcount` 属性](#4556-rowcount-属性)
+         - [4.5.5.7) `lastrowid` 属性](#4557-lastrowid-属性)
+         - [4.5.5.8) `description` 属性](#4558-description-属性)
+         - [4.5.5.9) `connection` 属性](#4559-connection-属性)
+      * [4.5.6) SQLiteRow 动态对象](#456-sqliterow-动态对象)
+         - [4.5.6.1) `keys` 方法](#4561-keys-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RCd) 230630](#rcd-230630)
@@ -8566,7 +8589,7 @@ $PY.stringify({{ $PY.import('math'); $PY.math.pi }})
 ```js
 $PY.compile(
     string $py_code: `the Python code`
-) native/pyObject::code | undefined
+) native/pyCodeObject | undefined
 ```
 
 该方法编译一段 Python 代码，返回一个代表 CPython 代码的动态对象，之后可在该动态对象之上执行 `eval` 方法或访问 `local` 属性。
@@ -8607,7 +8630,7 @@ $pyCodeObject.entity
 
 ```js
 $pyCodeObject.entity
-    // native/pyObject:code
+    // native/pyObject::code
 ```
 
 ##### 4.4.10.2) CPython 代码动态对象 `local` 属性
@@ -8716,6 +8739,151 @@ $PY.compile('x + y').eval( { x: 4, y: 5 } )
 $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
     // 8
 ```
+
+### 4.5) `SQLITE`
+
+`SQLITE` 是一个可装载的动态对象，默认绑定为行者级变量。该对象使用 SQLite 完成数据库的增删改查功能。
+
+#### 4.5.1) `impl` 属性
+
+通过该属性获取 `$SQLITE` 变量实现者的信息，包括开发商、作者、许可证等。
+
+**描述**
+
+```js
+$SQLITE.impl object:
+    `an object contains the following properties:`
+        - 'vendor':         < string: `the vendor name of this dynamic object, e.g., "HVML Community"` >
+        - 'author':         < string: `the author name of this dynamic object, e.g., "Vincent Wei"` >
+        - 'verName':        < string: `the version name of this dynamic object, e.g., "0.1.0"` >
+        - 'verCode':        < string: `the version code fo this dynmaic object, e.g., "0"` >
+        - 'license':        < string: `the license of this implementation fo this dynmaic objec, e.g., "LGPLv3+"` >
+```
+
+该属性返回描述当前 CPython 解释器相关信息的对象。
+
+**异常**
+
+- 访问该属性不产生异常。
+
+**示例**
+
+```js
+$SQLITE.impl
+    /* object:
+       {
+            'vendor':       'HVML Community',
+            'author':       'Vincent Wei',
+            'verName':      '0.1.0',
+            'verCode':      '0',
+            'license':      'LGPLv3+',
+       }
+    */
+```
+
+#### 4.5.2) `info` 属性
+
+通过该属性获取 `$SQLITE` 所使用的 CPython 库的版本号、编译器、平台、构建信息、版权等信息。
+
+**描述**
+
+```js
+$SQLITE.info object:
+    `an object contains the following properties:`
+        - 'version':        < string: `the version of this Python interpreter.` >
+        - 'platform':       < string: `the platform identifier for the current platform.` >
+        - 'copyright':      < string: `the official copyright string for the current Python version.` >
+        - 'compiler':       < string: `an indication of the compiler used to build the current Python version, in square brackets (e.g., [GCC 2.7.2.2])` >
+        - 'build-info':     < string: `information about the sequence number and build date and time of the current Python interpreter instance, e.g., "#67, Aug  1 1997, 22:34:28"` >
+```
+
+该属性返回描述当前 SQLite 实现者的对象。
+
+**异常**
+
+- 访问该属性不产生异常。
+
+**示例**
+
+```js
+$SQLITE.info
+    /* object:
+       {
+            'version':      '3.10.9',
+            'platform':     'Linux',
+            'copyright':    'Copyright ...',
+            'compiler':     '[GCC 2.7.2.2]',
+            'build-info':   '#67, Aug 1 1997, 22:34:28',
+       }
+    */
+```
+
+#### 4.5.3) `connect` 方法
+
+连接到指定的 SQLite 数据库。
+
+**描述**
+
+```js
+$SQLITE.connect(
+    string $dbname: `the database name.`
+) native/SQLiteConnect | undefined
+```
+
+该方法连接到指定的 SQLite 数据库，返回一个代表 SQLite 连接的动态对象。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- ...
+
+**示例**
+
+```js
+$SQLITE.connect(':memory:')
+    // native/SQLiteConnect
+```
+
+#### 4.5.4) SQLiteConnect 动态对象
+
+##### 4.5.4.1) `cursor` 方法
+
+##### 4.5.4.2) `commit` 方法
+
+##### 4.5.4.3) `rollback` 方法
+
+##### 4.5.4.4) `close` 方法
+
+##### 4.5.4.5) `execute` 方法
+
+##### 4.5.4.6) `executemany` 方法
+
+#### 4.5.5) SQLiteCursor 动态对象
+
+##### 4.5.5.1) `execute` 方法
+
+##### 4.5.5.2) `executemany` 方法
+
+##### 4.5.5.3) `fetchone` 方法
+
+##### 4.5.5.4) `fetchmany` 方法
+
+##### 4.5.5.5) `fetchall` 方法
+
+##### 4.5.5.6) `rowcount` 属性
+
+##### 4.5.5.7) `lastrowid` 属性
+
+##### 4.5.5.8) `description` 属性
+
+##### 4.5.5.9) `connection` 属性
+
+#### 4.5.6) SQLiteRow 动态对象
+
+##### 4.5.6.1) `keys` 方法
 
 ## 附录
 
