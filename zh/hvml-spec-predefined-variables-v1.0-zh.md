@@ -54,24 +54,25 @@ Language: Chinese
       * [3.1.11) `random_sequence` 方法](#3111-random_sequence-方法)
       * [3.1.12) `random` 方法](#3112-random-方法)
    + [3.2) `RUNNER`](#32-runner)
-      * [3.2.1) `app_name` 属性](#321-app_name-属性)
-      * [3.2.2) `run_name` 属性](#322-run_name-属性)
+      * [3.2.1) `appName` 属性](#321-appname-属性)
+      * [3.2.2) `runName` 属性](#322-runname-属性)
       * [3.2.3) `rid` 属性](#323-rid-属性)
       * [3.2.4) `uri` 属性](#324-uri-属性)
-      * [3.2.5) `myObj` 静态属性](#325-myobj-静态属性)
-      * [3.2.6) `user` 属性](#326-user-属性)
-      * [3.2.7) `chan` 方法](#327-chan-方法)
-         - [3.2.7.1) 通道实体的 `send` 方法](#3271-通道实体的-send-方法)
-         - [3.2.7.2) 通道实体的 `recv` 方法](#3272-通道实体的-recv-方法)
-         - [3.2.7.3) 通道实体的 `cap` 属性](#3273-通道实体的-cap-属性)
-         - [3.2.7.4) 通道实体的 `len` 属性](#3274-通道实体的-len-属性)
-         - [3.2.7.5) 通道实体上的事件](#3275-通道实体上的事件)
+      * [3.2.5) `autoSwitchingRdr` 属性](#325-autoswitchingrdr-属性)
+      * [3.2.6) `myObj` 静态属性](#326-myobj-静态属性)
+      * [3.2.7) `user` 属性](#327-user-属性)
+      * [3.2.8) `chan` 方法](#328-chan-方法)
+         - [3.2.8.1) 通道实体的 `send` 方法](#3281-通道实体的-send-方法)
+         - [3.2.8.2) 通道实体的 `recv` 方法](#3282-通道实体的-recv-方法)
+         - [3.2.8.3) 通道实体的 `cap` 属性](#3283-通道实体的-cap-属性)
+         - [3.2.8.4) 通道实体的 `len` 属性](#3284-通道实体的-len-属性)
+         - [3.2.8.5) 通道实体上的事件](#3285-通道实体上的事件)
    + [3.3) `CRTN`](#33-crtn)
       * [3.3.1) `target` 属性](#331-target-属性)
       * [3.3.2) `base` 属性](#332-base-属性)
-      * [3.3.3) `max_iteration_count` 属性](#333-max_iteration_count-属性)
-      * [3.3.4) `max_recursion_depth` 属性](#334-max_recursion_depth-属性)
-      * [3.3.5) `max_embedded_levels` 属性](#335-max_embedded_levels-属性)
+      * [3.3.3) `maxIterationCount` 属性](#333-maxiterationcount-属性)
+      * [3.3.4) `maxRecursionDepth` 属性](#334-maxrecursiondepth-属性)
+      * [3.3.5) `maxEmbeddedLevels` 属性](#335-maxembeddedlevels-属性)
       * [3.3.6) `timeout` 属性](#336-timeout-属性)
       * [3.3.7) `cid` 属性](#337-cid-属性)
       * [3.3.8) `token` 属性](#338-token-属性)
@@ -333,6 +334,7 @@ Language: Chinese
          - [4.5.6.1) `keys` 方法](#4561-keys-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RCg) 231031](#rcg-231031)
       * [RCd) 230630](#rcd-230630)
       * [RCc) 230531](#rcc-230531)
       * [RCb) 230430](#rcb-230430)
@@ -366,7 +368,7 @@ Language: Chinese
 - 解释器（interpreter），指解析并运行 HVML 程序的计算机软件。
 - 渲染器（renderer），指渲染 HVML 协程生成的目标文档并和用户交互的计算机软件。
 - 行者（runner），每个解释器实例对应一个行者，连接到渲染器后对应一个渲染器会话。
-- 静态属性（static property），指一个对象上键值为普通数据的属性，其键值不是动态值。我们通常使用小写开头的驼峰命名法命名这类属性，如 `myObj`。
+- 静态属性（static property），指一个对象上键值为普通数据的属性，其键值不是动态生成的。我们通常使用小写开头的驼峰命名法命名这类属性，如 `myObj`。
 - 动态属性（dynamic property），指一个对象上键值为动态值的属性，在动态属性上，我们通常可以提供一个获取器或者一个设置器，用于获取该属性的当前值或者改变该属性的当前值。
 - 获取器（getter），指一个动态属性的获取器。调用获取器返回该方法的动态属性值。
 - 设置器（setter），指一个动态属性的设置器。调用特定方法的设置器，将完成对应属性的设置工作。
@@ -1159,14 +1161,14 @@ $SYS.random(-10FL)
 
 该变量是一个行者级内置变量，解释器在创建一个新的行者时，会自动创建并绑定。该变量主要用于行者相关的信息，并提供给用户在当前行者的不同协程之间共享数据的机制。
 
-#### 3.2.1) `app_name` 属性
+#### 3.2.1) `appName` 属性
 
 获取当前行者的应用名称。
 
 **描述**
 
 ```js
-$RUNNER.app_name
+$RUNNER.appName
     string : `the app name of current runner.`
 ```
 
@@ -1179,18 +1181,18 @@ $RUNNER.app_name
 **示例**
 
 ```js
-$RUNNER.app_name
+$RUNNER.appName
     // string: 'cn.fmsoft.hvml.sample'
 ```
 
-#### 3.2.2) `run_name` 属性
+#### 3.2.2) `runName` 属性
 
 获取当前行者的行者名称。
 
 **描述**
 
 ```js
-$RUNNER.run_name
+$RUNNER.runName
     string : `the runner name of current runner.`
 ```
 
@@ -1203,7 +1205,7 @@ $RUNNER.run_name
 **示例**
 
 ```js
-$RUNNER.run_name
+$RUNNER.runName
     // string: 'hello'
 ```
 
@@ -1255,7 +1257,41 @@ $RUNNER.uri
     // string: 'edpt://localhost/cn.fmsoft.hvml.caculator/main'
 ```
 
-#### 3.2.5) `myObj` 静态属性
+#### 3.2.5) `autoSwitchingRdr` 属性
+
+获取或设置当前行者是否允许自动切换渲染器。
+
+**描述**
+
+```js
+$RUNNER.autoSwitchingRdr
+    boolean : `if auto switching renderer is enabled.`
+```
+
+获取当前行者的 `autoSwitchingRdr` 属性值。
+
+```js
+$RUNNER.autoSwitchingRdr(!
+        <boolean $enable: ``>,
+) boolean : `returns the current value of 'autoSwitchingRdr' property.`
+```
+
+设置当前行者的 `autoSwitchingRdr` 属性值。
+
+**异常**
+
+该属性的获取器及设置器不产生异常。
+
+**示例**
+
+```js
+$RUNNER.autoSwitchingRdr
+    // true
+$RUNNER.autoSwitchingRdr(! false )
+    // false
+```
+
+#### 3.2.6) `myObj` 静态属性
 
 `myObj` 是 `RUNNER` 的一个静态属性，用来定义用户自定义键值对，初始为一个空对象。程序可使用 `update` 元素设置其内容：
 
@@ -1284,7 +1320,7 @@ $RUNNER.uri
     </observe>
 ```
 
-#### 3.2.6) `user` 属性
+#### 3.2.7) `user` 属性
 
 通过该属性获取或设置用户键值对。
 
@@ -1339,7 +1375,7 @@ $RUNNER.user(! 'userId', undefined )
     // true
 ```
 
-#### 3.2.7) `chan` 方法
+#### 3.2.8) `chan` 方法
 
 获取或者创建通道。
 
@@ -1402,7 +1438,7 @@ $RUNNER.chan( 'channel0' )
     // undefined
 ```
 
-##### 3.2.7.1) 通道实体的 `send` 方法
+##### 3.2.8.1) 通道实体的 `send` 方法
 
 向通道发送数据。
 
@@ -1425,7 +1461,7 @@ $channel.send(
 
 **示例**
 
-##### 3.2.7.2) 通道实体的 `recv` 方法
+##### 3.2.8.2) 通道实体的 `recv` 方法
 
 从通道实体中接收数据。
 
@@ -1444,7 +1480,7 @@ $channel.recv() any | undefined
 - `EntityGone`：通道消失（已关闭）。可忽略异常；静默求值时返回 `undefined`。
 - `Timeout`：超时。可忽略异常；静默求值时返回 `undefined`。
 
-##### 3.2.7.3) 通道实体的 `cap` 属性
+##### 3.2.8.3) 通道实体的 `cap` 属性
 
 获得通道实体的容量。
 
@@ -1462,7 +1498,7 @@ $channel.cap ulongint | false
 
 - `EntityGone`：通道消失（已关闭）。可忽略异常；静默求值时返回 `false`。
 
-##### 3.2.7.4) 通道实体的 `len` 属性
+##### 3.2.8.4) 通道实体的 `len` 属性
 
 获得通道实体中的数据项个数。
 
@@ -1480,7 +1516,7 @@ $channel.len ulongint | false
 
 - `EntityGone`：通道消失（已关闭）。可忽略异常；静默求值时返回 `false`。
 
-##### 3.2.7.5) 通道实体上的事件
+##### 3.2.8.5) 通道实体上的事件
 
 在通道实体上，可观察如下事件：
 
@@ -1557,7 +1593,7 @@ $CRTN.base(! "https://foo.example.com//app/hvml/" )
     // string: 'https://foo.example.com/app/hvml'
 ```
 
-#### 3.3.3) `max_iteration_count` 属性
+#### 3.3.3) `maxIterationCount` 属性
 
 可通过该属性获取或设置 HVML 协程在执行 `iterate` 动作元素时的最大迭代次数，用于检测可能的死循环。
 
@@ -1566,13 +1602,13 @@ $CRTN.base(! "https://foo.example.com//app/hvml/" )
 **描述**
 
 ```js
-$CRTN.max_iteration_count ulongint: `the current maximal iteration count.`
+$CRTN.maxIterationCount ulongint: `the current maximal iteration count.`
 ```
 
 该属性获取器返回当前的最大迭代次数值。
 
 ```js
-$CRTN.max_iteration_count(!
+$CRTN.maxIterationCount(!
         <real $new_value: `the new maximal interation count`>
 ) ulongint | false : `the new maximal iteration count.`
 ```
@@ -1592,10 +1628,10 @@ $CRTN.max_iteration_count(!
 **示例**
 
 ```js
-$CRTN.max_iteration_count(! 10000UL )
+$CRTN.maxIterationCount(! 10000UL )
 ```
 
-#### 3.3.4) `max_recursion_depth` 属性
+#### 3.3.4) `maxRecursionDepth` 属性
 
 可通过该属性获取或设置 HVML 协程在递归执行某个功能时的最大递归深度，以防止栈溢出。
 
@@ -1604,13 +1640,13 @@ $CRTN.max_iteration_count(! 10000UL )
 **描述**
 
 ```js
-$CRTN.max_recursion_depth ulongint: `the current maximal recursion depth value.`
+$CRTN.maxRecursionDepth ulongint: `the current maximal recursion depth value.`
 ```
 
 该属性获取器返回当前的最大递归深度值。
 
 ```js
-$CRTN.max_recursion_depth(!
+$CRTN.maxRecursionDepth(!
         <real $new_value: `new maximal recursion depth`>
 ) ulongint | false: `the new maximal recursion depth value.`
 ```
@@ -1630,10 +1666,10 @@ $CRTN.max_recursion_depth(!
 **示例**
 
 ```js
-$CRTN.max_recursion_depth(! 10000UL )
+$CRTN.maxRecursionDepth(! 10000UL )
 ```
 
-#### 3.3.5) `max_embedded_levels` 属性
+#### 3.3.5) `maxEmbeddedLevels` 属性
 
 该属性获取或设置解析 eJSON 数据或者处理容器数据时，允许的最大嵌套层级。
 
@@ -1642,13 +1678,13 @@ $CRTN.max_recursion_depth(! 10000UL )
 **描述**
 
 ```js
-$CRTN.max_embedded_levels ulongint: `the current maximal embedded levels.`
+$CRTN.maxEmbeddedLevels ulongint: `the current maximal embedded levels.`
 ```
 
 该属性获取器返回当前的最大容器数据嵌套层级。
 
 ```js
-$CRTN.max_embedded_levels(!
+$CRTN.maxEmbeddedLevels(!
         <real $new_value: `new maximal embedded levels`>
 ) ulongint | false: `the new maximal embedded levels.`
 ```
@@ -1668,7 +1704,7 @@ $CRTN.max_embedded_levels(!
 **示例**
 
 ```js
-$CRTN.max_embedded_levels(! 64UL )
+$CRTN.maxEmbeddedLevels(! 64UL )
 ```
 
 #### 3.3.6) `timeout` 属性
@@ -8891,6 +8927,7 @@ $SQLITE.connect(':memory:')
 
 发布历史：
 
+- 2023 年 10 月 31 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231031'。
 - 2023 年 06 月 30 日：发布 V1.0 RCd，标记为 'v1.0-rcd-230630'。
 - 2023 年 05 月 31 日：发布 V1.0 RCc，标记为 'v1.0-rcc-230531'。
 - 2023 年 04 月 30 日：发布 V1.0 RCb，标记为 'v1.0-rcb-230430'。
@@ -8904,6 +8941,16 @@ $SQLITE.connect(':memory:')
 - 2022 年 06 月 01 日：发布 V1.0 RC3，标记为 'v1.0-pv-rc3-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
+
+#### RCg) 231031
+
+1. 新增 `$RUNNER.autoSwitchingRdr` 属性。
+1. 调整属性名称：
+   - `$RUNNER.app_name` 为 `$RUNNER.appName`。
+   - `$RUNNER.run_name` 为 `$RUNNER.runName`。
+   - `$CRTN.max_iteration_count` 为 `$RUNNER.maxIterationCount`。
+   - `$CRTN.max_recursion_depth` 为 `$RUNNER.maxRecursionDepth`。
+   - `$CRTN.max_embedded_levels` 为 `$RUNNER.maxEmbeddedLevels`。
 
 #### RCd) 230630
 
@@ -8974,8 +9021,8 @@ $SQLITE.connect(':memory:')
 #### RC3) 220601
 
 1. 新增接口：
-   - `$RUNNER.app_name`：返回当前行者的应用名称。
-   - `$RUNNER.run_name`：返回当前行者的行者名称。
+   - `$RUNNER.appName`：返回当前行者的应用名称。
+   - `$RUNNER.runName`：返回当前行者的行者名称。
 1. 移除全局级动态变量的提法。
 1. 将 `$SYS` 调整为行者级动态变量。
 1. 调整 `$FS.rename` 方法返回值类型（boolean）。
