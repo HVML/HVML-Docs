@@ -5,7 +5,7 @@ Version: 1.0-RCg
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Sep. 30, 2023  
+Last Modified Date: Oct. 31, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -88,6 +88,7 @@ Language: Chinese
       * [2.3.2) `head` 标签](#232-head-标签)
       * [2.3.3) `body` 标签](#233-body-标签)
       * [2.3.4) `hvml` 标签的内容](#234-hvml-标签的内容)
+      * [2.3.5) 初始目标文档的处理](#235-初始目标文档的处理)
    + [2.4) 模板标签详解](#24-模板标签详解)
       * [2.4.1) `archetype` 标签](#241-archetype-标签)
       * [2.4.2) `archedata` 标签](#242-archedata-标签)
@@ -2483,12 +2484,11 @@ hvml://<host_name>[:<port>]/<app_name>/<runner_name>/<page_group_name>/<path_to_
 - 应用名称：
    - 使用 `_self` 这一保留名称指代当前应用。
    - 使用 `_renderer` 这一保留名称指代渲染器。
-   - 使用 `_system` 保留名称指代操作系统。
+   - 使用 `_filesystem` 这一保留名称指代文件系统。
 - 行者名称：
    - 使用 `_builtin` 这一保留名称指代（渲染器的）内建资源。
    - 使用 `_self` 这一保留名称指代当前行者。
    - 使用 `_shared` 这一保留名称指代共享的公开资源。
-   - 使用 `_filesystem` 这一保留名称指代文件系统。
    - 使用 `_http`、 `_https`、 `_ftp` 等保留名称指代可重定向的 URL 图式。
 - 页面组名称：始终使用 `-`。
 - 资源路径：指代正在定位的资源相对存储路径。
@@ -2505,13 +2505,13 @@ hvml://<host_name>[:<port>]/<app_name>/<runner_name>/<page_group_name>/<path_to_
 
 `hvml://localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css`
 
-再如，使用 `_system` 这一保留的应用名称以及 `_filesystem` 这一保留的行者名称，可从文件系统的指定目录中装载资源，如：
+再如，使用 `_filesystem` 这一保留的应用名称，可从文件系统的指定目录中装载资源，如：
 
-`hvml://localhost/_system/_filesystem/-/usr/shared/hvml-logo.svg`
+`hvml://localhost/_filesystem/_http/-/usr/shared/hvml-logo.svg`
 
 又如，若在目标文档中使用下面的 URL，则可通过当前应用的源主机提供的 HTTP 服务装载一个 PNG 文件：
 
-`hvml://_originhost/_self/_http/-/assets/logo.png`
+`hvml://_originhost/_self/_http/_static/assets/logo.png`
 
 若当前应用名称为 `cn.fmsoft.hvml.test`，连接时分配的来源主机为 `hosta`，按 HybridOS 的应用安装规范，以上 URI 相当于：
 
@@ -3049,7 +3049,7 @@ $DATA.numerify(
 `hvml` 标签定义一个 HVML 程序（或 HVML 文档）。`hvml` 标签支持如下属性：
 
 - `target`：定义 HVML 程序的目标标记语言，取 `void`、 `html`、 `xml` 等值，通常是某种目标标记语言（或目标文档类型）的名称。HVML 解释器应至少支持 `void` 这一特殊的目标标记语言；顾名思义，`void` 类型不产生任何实际的目标文档内容，故而无需渲染器即可正常运行，此时，HVML 程序和一般的脚本程序并无本质区别。当目标标记语言定义为 `void` 时，解释器将维护一个特殊的 eDOM 树，对这个 eDOM 树的任何更新都将被完全忽略，而在其上执行 `$DOC.query` 将始终返回空的元素汇集。
-- `template`：定义 HVML 程序初始装载的目标文档模板文件，该文件将被装载作为初始的 eDOM。使用预先准备好的 HTML 模板文件，可避免使用 HVML 生成 HTML 文档，从而提高 HVML 程序的首轮执行效率。注意当 `target` 为 `void` 时，将忽略该属性。
+- `template`：定义 HVML 程序初始装载的目标文档文件（模板），该文件将被装载作为初始的 eDOM。使用预先准备好的 HTML 模板文件，可避免使用 HVML 生成 HTML 文档，从而提高 HVML 程序的首轮执行速度。注意当 `target` 为 `void` 时，将忽略该属性。
 
 注意，`target` 属性、`template` 属性和所有 HVML 副词属性，都不应该被克隆到目标文档的根元素中。
 
@@ -3105,6 +3105,83 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 ```
 
 就上述 HVML 程序，`hvml` 元素的结果数据将作为整个 HVML 协程的执行结果。因此，以上程序的正常执行结果为最后一个求值表达式的求值结果：6（写入 "11:00" 字符串以及额外的新行符到标准输入的字节数）。
+
+#### 2.3.5) 初始目标文档的处理
+
+在 `hvml` 标签中，我们可以使用 `template` 属性定义一个初始的目标文档。
+
+若不指定 `hvml` 标签的 `template` 属性，则解释器将为该 HVML 程序创建一个空的目标文档。若指定 `template` 属性，则应该按 `target` 属性指定的目标文档类型同步加载并解析 `template` 属性指定的内容；若一切正常，则将该文档作为该 HVML 程序的初始目标文档。当 `target` 指定的文档类型为 `void` 时，解释器可忽略 `template` 属性。
+
+`template` 属性的值可以有如下几种指定方式：
+
+1. 使用完整的 URL，如 `file:///app/xxx/a.html` 或者 `https://www.hvml.org/xxx/a.html?user=A`。或者，
+1. 解释器所在系统上文件系统的绝对路径，必须以 `/` 开头。或者，
+1. 解释器当前路径的相对路径，不以 `/` 开头。
+
+当一个 HVML 程序定义有初始文档时，初始的目标文档位置，应指向 `body` 元素（目标文档为 HTML 时）或根元素（目标文档为 XML 等其他格式时）。
+
+当目标文档为 HTML 格式时，做如下特别约定：若在 HVML 程序中存在 `head`、 `body` 等标签，则在执行对应元素时，应隐式调整目标文档的位置指向 `head` 或者 `body`。
+
+如下面的初始文档内容：
+
+```html
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <title>初始文档</title>
+    </head>
+    <body>
+        <p>本内容由初始文档定义</p>
+    </body>
+</html>
+```
+
+若使用以上初始文档的 HVML 程序定义如下：
+
+```hvml
+<!DOCTYPE hvml>
+<hvml target="html" template="init.html">
+    <observe on $RDR for 'rdrState:pageClosed'>
+        <exit with 'ok' />
+    </observe>
+</hvml>
+```
+
+则当该 HVML 程序首轮执行完毕，生成的目标文档和初始文档相同。
+
+而如果使用下的 HVML 程序：
+
+```hvml
+<!DOCTYPE hvml>
+<hvml target="html" template="init.html">
+    <head>
+        <base href="file:///app/" />
+    </head>
+    <body>
+        <p>本内容由 HVML 程序定义</p>
+
+        <observe on $RDR for 'rdrState:pageClosed'>
+            <exit with 'ok' />
+        </observe>
+    </body>
+</hvml>
+```
+
+则当上述 HVML 程序首轮执行完毕后，生成的目标文档内容为：
+
+```html
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <title>初始文档</title>
+        <base href="file:///app/" />
+    </head>
+    <body>
+        <p>本内容由初始文档定义</p>
+        <p>本内容由 HVML 程序定义</p>
+    </body>
+</html>
+```
 
 ### 2.4) 模板标签详解
 
@@ -7702,6 +7779,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 相关章节：
 
 - [2.3.1) `hvml` 标签](#231-hvml-标签)
+- [2.3.5) 初始目标文档的处理](#235-初始目标文档的处理)
 
 #### RCf) 230930
 
