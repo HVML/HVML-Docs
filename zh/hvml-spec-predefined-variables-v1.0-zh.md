@@ -1,11 +1,11 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RCd  
+Version: 1.0-RCg  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Jun 30, 2023  
+Last Modified Date: Nov. 30, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -78,9 +78,10 @@ Language: Chinese
       * [3.3.8) `token` 属性](#338-token-属性)
       * [3.3.9) `uri` 属性](#339-uri-属性)
       * [3.3.10) `curator` 属性](#3310-curator-属性)
-      * [3.3.11) `native_crtn` 方法](#3311-native_crtn-方法)
-      * [3.3.12) `static` 属性](#3312-static-属性)
-      * [3.3.13) `temp` 属性](#3313-temp-属性)
+      * [3.3.11) `sendingDocumentByURL` 属性](#3311-sendingdocumentbyurl-属性)
+      * [3.3.12) `native_crtn` 方法](#3312-native_crtn-方法)
+      * [3.3.13) `static` 属性](#3313-static-属性)
+      * [3.3.14) `temp` 属性](#3314-temp-属性)
    + [3.4) `DOC`](#34-doc)
       * [3.4.1) `doctype` 方法](#341-doctype-方法)
       * [3.4.2) `select` 方法](#342-select-方法)
@@ -334,7 +335,7 @@ Language: Chinese
          - [4.5.6.1) `keys` 方法](#4561-keys-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
-      * [RCg) 231031](#rcg-231031)
+      * [RCg) 231130](#rcg-231130)
       * [RCd) 230630](#rcd-230630)
       * [RCc) 230531](#rcc-230531)
       * [RCb) 230430](#rcb-230430)
@@ -1857,7 +1858,46 @@ $CRTN.curator
     // ulongint: 5UL
 ```
 
-#### 3.3.11) `native_crtn` 方法
+#### 3.3.11) `sendingDocumentByURL` 属性
+
+通过该属性获取或设置当前 HVML 协程是否使用 URL 来发送初始目标文档的内容，默认关闭。注意对该属性的修改仅针对通过套接字通讯的渲染器，且在进入事件循环阶段后无效。
+
+**描述**
+
+```js
+$CRTN.sendingDocumentByURL boolean : `a boolean indicates whether sending the initial document contents by URL.`
+```
+
+该属性获取器获取当前 HVML 协程是否使用 URL 来发送初始的目标文档内容。
+
+```js
+$CRTN.sendingDocumentByURL(!
+        <boolean $on_or_off: `a boolean controls whether sending the initial document contents by URL`>
+) boolean
+```
+
+该属性设置器设置当前 HVML 协程是否使用 URL 来发送初始的目标文档内容，并返回该属性的当前值 `true` 或 `false`。当传入无效值时，抛出异常；在静默求值时不设置该属性的值，且返回该属性的当前值。
+
+**异常**
+
+该属性的获取器不产生异常。
+
+该属性是设置器可产生如下异常，均为可忽略异常：
+
+- `ArgumentMissed`：设置器中未指定参数。
+- `WrongDataType`：设置器中指定了非实数类参数类型。
+
+**示例**
+
+```js
+$CRTN.sendingDocumentByURL
+    // boolean: false
+
+$CRTN.sendingDocumentByURL(! true )
+    // boolean: true
+```
+
+#### 3.3.12) `native_crtn` 方法
 
 该方法返回一个可被观察的原生实体，用于代表一个特定的子协程。
 
@@ -1886,7 +1926,7 @@ $CRTN.native_crtn
     // native/crtn
 ```
 
-#### 3.3.12) `static` 属性
+#### 3.3.13) `static` 属性
 
 该属性反映的是当前协程在当前执行栈对应的静态变量，应被实现为原生实体。通过该原生实体的属性之获取器和设置器来访问当前协程在指定命名空间中的静态变量。
 
@@ -1943,7 +1983,7 @@ $CRTN.static.x
     // array: [0, 1, 2]
 ```
 
-#### 3.3.13) `temp` 属性
+#### 3.3.14) `temp` 属性
 
 该属性反映的是当前协程在执行栈中对应的临时变量，应被实现为原生实体。通过该原生实体的属性获取器和设置器来访问当前协程在指定命名空间中的临时变量。
 
@@ -8927,7 +8967,7 @@ $SQLITE.connect(':memory:')
 
 发布历史：
 
-- 2023 年 10 月 31 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231031'。
+- 2023 年 11 月 30 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231130'。
 - 2023 年 06 月 30 日：发布 V1.0 RCd，标记为 'v1.0-rcd-230630'。
 - 2023 年 05 月 31 日：发布 V1.0 RCc，标记为 'v1.0-rcc-230531'。
 - 2023 年 04 月 30 日：发布 V1.0 RCb，标记为 'v1.0-rcb-230430'。
@@ -8942,7 +8982,7 @@ $SQLITE.connect(':memory:')
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
 
-#### RCg) 231031
+#### RCg) 231130
 
 1. 新增 `$RUNNER.autoSwitchingRdr` 属性。
 1. 调整属性名称：
@@ -8951,6 +8991,7 @@ $SQLITE.connect(':memory:')
    - `$CRTN.max_iteration_count` 为 `$RUNNER.maxIterationCount`。
    - `$CRTN.max_recursion_depth` 为 `$RUNNER.maxRecursionDepth`。
    - `$CRTN.max_embedded_levels` 为 `$RUNNER.maxEmbeddedLevels`。
+1. 新增 `$CRTN.sendingDocumentByURL` 属性。
 
 #### RCd) 230630
 

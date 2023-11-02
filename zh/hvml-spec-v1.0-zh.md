@@ -5,7 +5,7 @@ Version: 1.0-RCg
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Oct. 31, 2023  
+Last Modified Date: Nov. 30, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -158,7 +158,7 @@ Language: Chinese
 - [5) 总结](#5-总结)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
-      * [RCg) 231031](#rcg-231031)
+      * [RCg) 231130](#rcg-231130)
          - [RCg.1) 增强 `hvml` 图式](#rcg1-增强-hvml-图式)
          - [RCg.2) 增强 `hvml` 标签使之支持 `template` 属性](#rcg2-增强-hvml-标签使之支持-template-属性)
       * [RCf) 230930](#rcf-230930)
@@ -2489,7 +2489,7 @@ hvml://<host_name>[:<port>]/<app_name>/<runner_name>/<page_group_name>/<path_to_
    - 使用 `_builtin` 这一保留名称指代（渲染器的）内建资源。
    - 使用 `_self` 这一保留名称指代当前行者。
    - 使用 `_shared` 这一保留名称指代共享的公开资源。
-   - 使用 `_http`、 `_https`、 `_ftp` 等保留名称指代可重定向的 URL 图式。
+   - 使用 `_http`、 `_https`、 `_ftp`、 `_file` 等保留名称指代可重定向的 URL 图式。
 - 页面组名称：始终使用 `-`。
 - 资源路径：指代正在定位的资源相对存储路径。
 
@@ -2499,7 +2499,7 @@ hvml://<host_name>[:<port>]/<app_name>/<runner_name>/<page_group_name>/<path_to_
 
 若当前应用名称为 `cn.fmsoft.hvml.test`，按 HybridOS 的应用安装规范，以上 URI 相当于：
 
-`file://app/cn.fmsoft.hvml.test/exported/assets/logo.png`
+`file:///app/cn.fmsoft.hvml.test/exported/assets/logo.png`
 
 类似地，使用 `_renderer` 保留名称可指代渲染器本身，从而可通过下面的 URI 从渲染器的内建资源中装载指定资源，如，
 
@@ -5700,7 +5700,7 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
             _renderer: {
                 title: 'Hello, world!',
                 class: 'hello',
-                layoutStyle: 'with:200px;height:100px',
+                layoutStyle: 'window-size:480px 480px;window-postion:center;',
                 toolkitStyle: { 'darkMode': false, 'fullScreen': false, 'backgroundColor': 0xFF0000 },
             },
         }
@@ -7741,7 +7741,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
-- 2023 年 10 月 31 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231031'。
+- 2023 年 11 月 30 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231130'。
 - 2023 年 09 月 30 日：发布 V1.0 RCf，标记为 'v1.0-rcf-230930'。
 - 2023 年 08 月 31 日：发布 V1.0 RCe，标记为 'v1.0-rce-230831'。
 - 2023 年 06 月 30 日：发布 V1.0 RCd，标记为 'v1.0-rcd-230630'。
@@ -7758,7 +7758,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
 
-#### RCg) 231031
+#### RCg) 231130
 
 ##### RCg.1) 增强 `hvml` 图式
 
