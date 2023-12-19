@@ -331,8 +331,6 @@ Language: Chinese
          - [4.5.5.7) `lastrowid` 属性](#4557-lastrowid-属性)
          - [4.5.5.8) `description` 属性](#4558-description-属性)
          - [4.5.5.9) `connection` 属性](#4559-connection-属性)
-      * [4.5.6) SQLiteRow 动态对象](#456-sqliterow-动态对象)
-         - [4.5.6.1) `keys` 方法](#4561-keys-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
       * [RCg) 231130](#rcg-231130)
