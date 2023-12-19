@@ -8820,6 +8820,32 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 
 `SQLITE` 是一个可装载的动态对象，默认绑定为行者级变量。该对象使用 SQLite 完成数据库的增删改查功能。
 
+大多数 SQL 数据库引擎（除了 SQLite 之外的每个 SQL 数据库引擎）都使用静态、严格的类型。 对于静态类型，值的数据类型由其容器（存储值的特定列）决定。 SQLite 使用更通用的动态类型系统。 在 SQLite 中，值的数据类型与值本身相关联，而不是与其容器相关联。
+
+在 SQLite 数据库中，每个值都具有以下存储类（Storage Classes）之一：
+
+  * NULL: 空值。
+  * INTEGER: 有符号整型，根据值的大小存储在0, 1, 2, 3, 4, 6 或 8 个字节中。
+  * REAL: 浮点数，存储 8 字节的 IEEE 浮点数。
+  * TEXT: 文本字符串，使用数据库编码（UTF-8, UTF-16BE 或 UTF-16LE）存储。
+  * BLOB: 用来存储二进制数据。
+
+存储类（Storage Classes）比数据类型（Datatype）更通用。在大多数情况下，“存储类”与“数据类型”没有区别，并且这两个术语可以互换使用。
+
+详细信息可以参看SQLite 官方文档: [Datatypes In SQLite](https://www.sqlite.org/datatype3.html)
+
+
+类型对应关系：
+
+| SQLite 类型 | SQLite C/C++ API macro  | 变体类型  |
+| --------    |  -------------------    | --------- |
+| NULL        |   SQLITE_NULL           | null      |
+| INTEGER     |   SQLITE_INTEGER        | longint   |
+| REAL        |   SQLITE_FLOAT          | number    |
+| TEXT        |   SQLITE3_TEXT          | string    |
+| BLOB        |   SQLITE_BLOB           | bsequence |
+
+
 #### 4.5.1) `impl` 属性
 
 通过该属性获取 `$SQLITE` 变量实现者的信息，包括开发商、作者、许可证等。
@@ -8836,7 +8862,7 @@ $SQLITE.impl object:
         - 'license':        < string: `the license of this implementation fo this dynmaic objec, e.g., "LGPLv3+"` >
 ```
 
-该属性返回描述当前 CPython 解释器相关信息的对象。
+该属性返回描述当前 SQLite 相关信息的对象。
 
 **异常**
 
@@ -8859,18 +8885,18 @@ $SQLITE.impl
 
 #### 4.5.2) `info` 属性
 
-通过该属性获取 `$SQLITE` 所使用的 CPython 库的版本号、编译器、平台、构建信息、版权等信息。
+通过该属性获取 `$SQLITE` 所使用的 SQLite 库的版本号、编译器、平台、构建信息、版权等信息。
 
 **描述**
 
 ```js
 $SQLITE.info object:
     `an object contains the following properties:`
-        - 'version':        < string: `the version of this Python interpreter.` >
+        - 'version':        < string: `the version of this sqlite library.` >
         - 'platform':       < string: `the platform identifier for the current platform.` >
-        - 'copyright':      < string: `the official copyright string for the current Python version.` >
-        - 'compiler':       < string: `an indication of the compiler used to build the current Python version, in square brackets (e.g., [GCC 2.7.2.2])` >
-        - 'build-info':     < string: `information about the sequence number and build date and time of the current Python interpreter instance, e.g., "#67, Aug  1 1997, 22:34:28"` >
+        - 'copyright':      < string: `the official copyright string for the current sqlite version.` >
+        - 'compiler':       < string: `an indication of the compiler used to build the current sqlite version, in square brackets (e.g., [GCC 2.7.2.2])` >
+        - 'build-info':     < string: `information about the sequence number and build date and time of the current sqlite library, e.g., "#67, Aug  1 1997, 22:34:28"` >
 ```
 
 该属性返回描述当前 SQLite 实现者的对象。
@@ -8893,6 +8919,7 @@ $SQLITE.info
        }
     */
 ```
+
 
 #### 4.5.3) `connect` 方法
 
@@ -8925,41 +8952,457 @@ $SQLITE.connect(':memory:')
 
 #### 4.5.4) SQLiteConnect 动态对象
 
+每个打开的 SQLite 数据库都由一个 SQLiteConnect 对象表示，该对象是通过使用 $SQLITE.connect() 创建的。它的主要目的是创建 SQLiteCursor 对象，以及 Transaction 控制。
+
 ##### 4.5.4.1) `cursor` 方法
+
+创建一个 SQLiteCursor 对象。
+
+**描述**
+
+```js
+$sqliteConn.cursor(
+) SQLiteCursor | undefined
+```
+
+该方法连接创建一个 SQLiteCursor 动态对象。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `MemoryFailure`：内存分配失败。不可忽略异常。
+
+**示例**
+
+```js
+$sqliteConn.cursor()
+    // SQLiteCursor
+```
 
 ##### 4.5.4.2) `commit` 方法
 
+将任何挂起的事务提交到数据库。
+
+**描述**
+
+```js
+$sqliteConn.commit()
+```
+
+该方法提交当前的事务。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$sqliteConn.commit()
+```
+
 ##### 4.5.4.3) `rollback` 方法
+
+回滚待处理的事务。
+
+**描述**
+
+```js
+$sqliteConn.rollback()
+```
+回滚自上一次调用 commit() 以来对数据库所做的更改。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$sqliteConn.rollback()
+```
 
 ##### 4.5.4.4) `close` 方法
 
+关闭数据库链接。
+
+**描述**
+
+```js
+$sqliteConn.close()
+```
+
+该方法关闭数据库连接。请注意，该方法自动调用 commit()。如果之前未调用 commit() 方法，就直接关闭数据库连接，所做的所有更改将全部丢失！
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$sqliteConn.close()
+```
+
 ##### 4.5.4.5) `execute` 方法
+
+执行一个 SQL 语句。
+
+**描述**
+
+```js
+$sqliteConn.execute(
+        < string $sql: `the sql.` >
+        [, <array $parameters: the sql parameters> ]
+) SQLiteCursor | undefined
+```
+
+创建一个新的 SQLiteCursor 对象，并在上面执行 SQL 语句，返回该 SQLiteCursor 对象。
+
+该方法可能产生的异常：
+
+- `MemoryFailure`：内存分配失败。不可忽略异常。
+
+**示例**
+
+```js
+$sqliteConn.execute('select * from users')
+```
 
 ##### 4.5.4.6) `executemany` 方法
 
+批量执行 SQL 语句。
+
+**描述**
+
+```js
+$sqliteConn.executemany(
+        < string $sql: `the sql.` >
+        [, <array $parameters: the sql parameters> ]
+) SQLiteCursor | undefined
+```
+
+创建一个新的 SQLiteCursor 对象，并在上面批量执行 SQL 语句，返回该 SQLiteCursor 对象。
+$parameters 是一个包含多个数组的数组，每个子数组对应 sql 语句的参数。
+
+该方法可能产生的异常：
+
+- `MemoryFailure`：内存分配失败。不可忽略异常。
+
+**示例**
+
+```js
+$sqliteConn.executemany('insert into user values(?, ?, ?)', [[1, 'zhang san', 15], [2, 'li si', 20]])
+```
+
 #### 4.5.5) SQLiteCursor 动态对象
+
+SQLiteCursor 对象表示数据库游标，用于执行 SQL 语句并管理获取操作的上下文。
+游标是使用 SQLiteConnect对象的cursor()、execute() 或 executemany() 创建的。
 
 ##### 4.5.5.1) `execute` 方法
 
+执行一个 SQL 语句。
+
+**描述**
+
+```js
+$sqliteCursor.execute(
+        < string $sql: `the sql.` >
+        [, <array $parameters: the sql parameters> ]
+)
+```
+
+在当前 SQLiteCursor 对象上面执行 SQL 语句。
+
+该方法可能产生的异常：
+
+- `MemoryFailure`：内存分配失败。不可忽略异常。
+- `InvalidValue`：传入无效数据; 可忽略异常。
+
+**示例**
+
+```js
+$sqliteCursor.execute('select * from users')
+```
+
 ##### 4.5.5.2) `executemany` 方法
+
+批量执行 SQL 语句。
+
+**描述**
+
+```js
+$sqliteCursor.executemany(
+        < string $sql: `the sql.` >
+        [, <array $parameters: the sql parameters> ]
+)
+```
+
+在当前 SQLiteCursor 对象上面批量执行 SQL 语句。
+$parameters 是一个包含多个数组的数组，每个子数组对应 sql 语句的参数。
+
+该方法可能产生的异常：
+
+- `MemoryFailure`：内存分配失败。不可忽略异常。
+- `InvalidValue`：传入无效数据; 可忽略异常。
+
+**示例**
+
+```js
+$sqliteCursor.executemany('insert into user values(?, ?, ?)', [[1, 'zhang san', 15], [2, 'li si', 20]])
+```
 
 ##### 4.5.5.3) `fetchone` 方法
 
+从结果集中返回下一行数据。
+
+**描述**
+
+```js
+$sqliteCursor.fetchone(
+        [
+            <'tuple | object' $result_type = 'tuple':
+                - 'tuple':   `Return result set as a tuple`
+                - 'object':  `Return result set as a object`
+            >
+            [, <object $result_options: `The result option. Only valid when $result_type is 'object'.`
+                 - 'name-mapping': object $column_name_mapping: `The column name mapping.`
+                 - 'type-conversion': $column_type_conversion: `The column type conversion.`
+               >
+            ]
+        ]
+) tuple | object | null
+```
+
+从结果集中返回下一行数据，如果没有更多的数据，则返回 null。
+
+我们可以在 `fetchone` 方法中指定返回值的类型:
+
+`tuple` ： 以元组的形式返回结果，元组中的每个成员都是一个字段的值。
+`object` ： 以对象的形式返回结果，每个键值对表示一个字段的数据（字段名:字段值）。
+
+当 $result_type 为 `object` 时，我们通过参数 $result_options 为结果设置键名的映射以及类型转换。
+
+该方法可能产生的异常：
+
+- `MemoryFailure`：内存分配失败。不可忽略异常。
+
+**示例**
+
+```js
+$sqliteCursor.fetchone()
+    // tuple: [! 1, 'zhang san', 15 ]
+
+$sqliteCursor.fetchone('object')
+    // object: { id:1, name:'zhang san', age:15 }
+
+$sqliteCursor.fetchone('object', {'name-mapping': {'name':'title'}, 'type-conversion':{'age':'ulongint'}} )
+    // object: { id:1, title:'zhang san', age:15UL }
+```
+
 ##### 4.5.5.4) `fetchmany` 方法
+
+从结果集中返回多行数据。
+
+**描述**
+
+```js
+$sqliteCursor.fetchmany(
+    < ulongint $size: `the number of rows to fetch.` >
+    [,
+        <'tuple | object' $result_row_type = 'tuple':
+            - 'tuple':   `Return row data as a tuple`
+            - 'object':  `Return row data as a object`
+        >
+        [, <object $result_row_options: `The result row option. Only valid when $result_row_type is 'object'.`
+             - 'name-mapping': object $column_name_mapping: `The column name mapping.`
+             - 'type-conversion': $column_type_conversion: `The column type conversion.`
+           >
+        ]
+    ]
+) array | null
+```
+
+从结果集中以数组的行式返回指定数量的行数据，数组的每个成员表示一行数据。
+如果可用行数小于 `$size`，则返回尽可能多的可用行。
+如果没有更多可用行，则返回 `null`。
+
+我们可以在 `fetchmany` 方法中指定返回的每一行数据的类型:
+
+`tuple` ： 以元组的形式返回结果，元组中的每个成员都是一个字段的值。
+`object` ： 以对象的形式返回结果，每个键值对表示一个字段的数据（字段名:字段值）。
+
+当 $result_row_type 为 `object` 时，我们通过参数 $result_row_options 为结果设置键名的映射以及类型转换。
+
+该方法可能产生的异常：
+
+- `MemoryFailure`：内存分配失败。不可忽略异常。
+
+**示例**
+
+```js
+$sqliteCursor.fethmany(2L)
+    // [[! 1, 'zhang san', 15 ], [!2, 'li si', 20]]
+
+$sqliteCursor.fetchone(2L, 'object')
+    // [{ id:1, name:'zhang san', age:15 }, { id:2, name:'li si', age:20 }]
+
+$sqliteCursor.fetchone(2L, 'object', {'name-mapping': {'name':'title'}, 'type-conversion':{'age':'ulongint'}} )
+    // [{ id:1, title:'zhang san', age:15UL }, { id:2, title:'li si', age:20UL }]
+```
 
 ##### 4.5.5.5) `fetchall` 方法
 
+从结果集中返回所有（剩余）行。
+
+**描述**
+
+```js
+$sqliteCursor.fetchall(
+    [
+        <'tuple | object' $result_row_type = 'tuple':
+            - 'tuple':   `Return row data as a tuple`
+            - 'object':  `Return row data as a object`
+        >
+        [, <object $result_row_options: `The result row option. Only valid when $result_row_type is 'object'.`
+             - 'name-mapping': object $column_name_mapping: `The column name mapping.`
+             - 'type-conversion': $column_type_conversion: `The column type conversion.`
+           >
+        ]
+    ]
+) array | null
+```
+
+从结果集中以数组的行式返回剩余行。 如果没有更多可用行，则返回 `null`。
+
+我们可以在 `fetchall` 方法中指定返回行数据的类型:
+
+`tuple` ： 以元组的形式返回结果，元组中的每个成员都是一个字段的值。
+`object` ： 以对象的形式返回结果，每个键值对表示一个字段的数据（字段名:字段值）。
+
+当 $result_row_type 为 `object` 时，我们通过参数 $result_row_options 为结果设置键名的映射以及类型转换。
+
+该方法可能产生的异常：
+
+- `MemoryFailure`：内存分配失败。不可忽略异常。
+
+**示例**
+
+```js
+$sqliteCursor.fethall()
+    // [[! 1, 'zhang san', 15 ], [!2, 'li si', 20]]
+
+$sqliteCursor.fetchall('object')
+    // [{ id:1, name:'zhang san', age:15 }, { id:2, name:'li si', age:20 }]
+
+$sqliteCursor.fetchall('object', {'name-mapping': {'name':'title'}, 'type-conversion':{'age':'ulongint'}} )
+    // [{ id:1, title:'zhang san', age:15UL }, { id:2, title:'li si', age:20UL }]
+```
+
 ##### 4.5.5.6) `rowcount` 属性
+
+通过该属性获取INSERT、UPDATE、DELETE 和 REPLACE 语句修改的行数(其它语句为 -1)。
+
+**描述**
+
+```js
+$sqliteCursor.rowcount longint:
+```
+
+通过该属性获取INSERT、UPDATE、DELETE 和 REPLACE 语句修改的行数(其它语句为 -1)，仅在语句运行完成后由 execute() 和executemany() 方法更新。
+
+**异常**
+
+- 访问该属性不产生异常。
+
+**示例**
+
+```js
+$sqliteCursor.rowcount
+    /* longint:
+        10
+    */
+```
 
 ##### 4.5.5.7) `lastrowid` 属性
 
+通过该属性获取最后插入行的行 ID 。
+
+**描述**
+
+```js
+$sqliteCursor.lastrowid longint | null:
+```
+
+通过该属性获取最后插入行的行 ID，初始值为 null，仅在使用 execute() 方法成功执行 INSERT 或 REPLACE 语句后才会更新它。
+
+注意：如果建表时使用了 `WITHOUT ROWID` 就没有该记录。
+
+**异常**
+
+- 访问该属性不产生异常。
+
+**示例**
+
+```js
+$sqliteCursor.lastrowid
+    /* null
+    */
+```
+
 ##### 4.5.5.8) `description` 属性
+
+通过该属性可以获得最后一个查询的列名称。
+
+**描述**
+
+```js
+$sqliteCursor.description tuple | null:
+```
+
+通过该属性可以获得最后一个查询的列名称。
+
+它也是为没有任何匹配行的 SELECT 语句设置的。
+
+
+**异常**
+
+- 访问该属性不产生异常。
+
+**示例**
+
+```js
+$sqliteCursor.description
+    /* tuple: [!'id', 'name', 'age']
+    */
+```
 
 ##### 4.5.5.9) `connection` 属性
 
-#### 4.5.6) SQLiteRow 动态对象
+通过该属性可以获得创建该 SQLiteCursor 的 SQLiteConnect。
 
-##### 4.5.6.1) `keys` 方法
+**描述**
+
+```js
+$sqliteCursor.connection SQLiteConnect:
+```
+
+通过该属性可以获得创建该 SQLiteCursor 的 SQLiteConnect。
+
+
+**异常**
+
+- 访问该属性不产生异常。
+
+**示例**
+
+```js
+$sqliteCursor.connection
+    /* SQLiteConnect
+    */
+```
 
 ## 附录
 
