@@ -9165,8 +9165,8 @@ $sqliteCursor.fetchone(
                 - 'tuple':   `Return result set as a tuple`
                 - 'object':  `Return result set as a object`
             >
-            [, <object $name_mapping': `The column name mapping. Only valid when $result_type is 'object'.`
-                [, <object $type_conversion': `The column type conversion. Only valid when $result_type is 'object'.`
+            [, <object $name_mapping: `The column name mapping. Only valid when $result_type is 'object'.`
+                [, <object $type_conversion: `The column type conversion. Only valid when $result_type is 'object'.`
                 ]
             ]
         ]
@@ -9216,8 +9216,8 @@ $sqliteCursor.fetchmany(
             - 'tuple':   `Return row data as a tuple`
             - 'object':  `Return row data as a object`
         >
-        [, <object $name_mapping': `The column name mapping. Only valid when $result_type is 'object'.`
-            [, <object $type_conversion': `The column type conversion. Only valid when $result_type is 'object'.`
+        [, <object $name_mapping: `The column name mapping. Only valid when $result_type is 'object'.`
+            [, <object $type_conversion: `The column type conversion. Only valid when $result_type is 'object'.`
             ]
         ]
     ]
@@ -9268,8 +9268,8 @@ $sqliteCursor.fetchall(
             - 'tuple':   `Return row data as a tuple`
             - 'object':  `Return row data as a object`
         >
-        [, <object $name_mapping': `The column name mapping. Only valid when $result_type is 'object'.`
-            [, <object $type_conversion': `The column type conversion. Only valid when $result_type is 'object'.`
+        [, <object $name_mapping: `The column name mapping. Only valid when $result_type is 'object'.`
+            [, <object $type_conversion: `The column type conversion. Only valid when $result_type is 'object'.`
             ]
         ]
     ]
