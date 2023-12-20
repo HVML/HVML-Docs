@@ -9165,10 +9165,9 @@ $sqliteCursor.fetchone(
                 - 'tuple':   `Return result set as a tuple`
                 - 'object':  `Return result set as a object`
             >
-            [, <object $result_options: `The result option. Only valid when $result_type is 'object'.`
-                 - 'name-mapping': object $column_name_mapping: `The column name mapping.`
-                 - 'type-conversion': $column_type_conversion: `The column type conversion.`
-               >
+            [, <object $name_mapping': `The column name mapping. Only valid when $result_type is 'object'.`
+                [, <object $type_conversion': `The column type conversion. Only valid when $result_type is 'object'.`
+                ]
             ]
         ]
 ) tuple | object | null
@@ -9181,7 +9180,7 @@ $sqliteCursor.fetchone(
 `tuple` ： 以元组的形式返回结果，元组中的每个成员都是一个字段的值。
 `object` ： 以对象的形式返回结果，每个键值对表示一个字段的数据（字段名:字段值）。
 
-当 $result_type 为 `object` 时，我们通过参数 $result_options 为结果设置键名的映射以及类型转换。
+当 $result_type 为 `object` 时，我们通过参数 $name_mapping 为结果设置键名的映射，通过参数 $type_conversion 指定类型转换。
 
 该方法可能产生的异常：
 
@@ -9196,8 +9195,11 @@ $sqliteCursor.fetchone()
 $sqliteCursor.fetchone('object')
     // object: { id:1, name:'zhang san', age:15 }
 
-$sqliteCursor.fetchone('object', {'name-mapping': {'name':'title'}, 'type-conversion':{'age':'ulongint'}} )
+$sqliteCursor.fetchone('object', {'name':'title'}, {'age':'ulongint'} )
     // object: { id:1, title:'zhang san', age:15UL }
+
+$sqliteCursor.fetchone('object', null, {'age':'ulongint'} )
+    // object: { id:1, name:'zhang san', age:15UL }
 ```
 
 ##### 4.5.5.4) `fetchmany` 方法
@@ -9214,10 +9216,9 @@ $sqliteCursor.fetchmany(
             - 'tuple':   `Return row data as a tuple`
             - 'object':  `Return row data as a object`
         >
-        [, <object $result_row_options: `The result row option. Only valid when $result_row_type is 'object'.`
-             - 'name-mapping': object $column_name_mapping: `The column name mapping.`
-             - 'type-conversion': $column_type_conversion: `The column type conversion.`
-           >
+        [, <object $name_mapping': `The column name mapping. Only valid when $result_type is 'object'.`
+            [, <object $type_conversion': `The column type conversion. Only valid when $result_type is 'object'.`
+            ]
         ]
     ]
 ) array | null
@@ -9232,7 +9233,7 @@ $sqliteCursor.fetchmany(
 `tuple` ： 以元组的形式返回结果，元组中的每个成员都是一个字段的值。
 `object` ： 以对象的形式返回结果，每个键值对表示一个字段的数据（字段名:字段值）。
 
-当 $result_row_type 为 `object` 时，我们通过参数 $result_row_options 为结果设置键名的映射以及类型转换。
+当 $result_row_type 为 `object` 时，我们通过参数 $name_mapping 为结果设置键名的映射，通过参数 $type_conversion 指定类型转换。
 
 该方法可能产生的异常：
 
@@ -9247,8 +9248,11 @@ $sqliteCursor.fethmany(2L)
 $sqliteCursor.fetchone(2L, 'object')
     // [{ id:1, name:'zhang san', age:15 }, { id:2, name:'li si', age:20 }]
 
-$sqliteCursor.fetchone(2L, 'object', {'name-mapping': {'name':'title'}, 'type-conversion':{'age':'ulongint'}} )
+$sqliteCursor.fetchone(2L, 'object', {'name':'title'}, {'age':'ulongint'} )
     // [{ id:1, title:'zhang san', age:15UL }, { id:2, title:'li si', age:20UL }]
+
+$sqliteCursor.fetchone(2L, 'object', null, {'age':'ulongint'} )
+    // [{ id:1, name:'zhang san', age:15UL }, { id:2, name:'li si', age:20UL }]
 ```
 
 ##### 4.5.5.5) `fetchall` 方法
@@ -9264,10 +9268,9 @@ $sqliteCursor.fetchall(
             - 'tuple':   `Return row data as a tuple`
             - 'object':  `Return row data as a object`
         >
-        [, <object $result_row_options: `The result row option. Only valid when $result_row_type is 'object'.`
-             - 'name-mapping': object $column_name_mapping: `The column name mapping.`
-             - 'type-conversion': $column_type_conversion: `The column type conversion.`
-           >
+        [, <object $name_mapping': `The column name mapping. Only valid when $result_type is 'object'.`
+            [, <object $type_conversion': `The column type conversion. Only valid when $result_type is 'object'.`
+            ]
         ]
     ]
 ) array | null
@@ -9280,7 +9283,7 @@ $sqliteCursor.fetchall(
 `tuple` ： 以元组的形式返回结果，元组中的每个成员都是一个字段的值。
 `object` ： 以对象的形式返回结果，每个键值对表示一个字段的数据（字段名:字段值）。
 
-当 $result_row_type 为 `object` 时，我们通过参数 $result_row_options 为结果设置键名的映射以及类型转换。
+当 $result_row_type 为 `object` 时，我们通过参数 $name_mapping 为结果设置键名的映射，通过参数 $type_conversion 指定类型转换。
 
 该方法可能产生的异常：
 
@@ -9295,8 +9298,11 @@ $sqliteCursor.fethall()
 $sqliteCursor.fetchall('object')
     // [{ id:1, name:'zhang san', age:15 }, { id:2, name:'li si', age:20 }]
 
-$sqliteCursor.fetchall('object', {'name-mapping': {'name':'title'}, 'type-conversion':{'age':'ulongint'}} )
+$sqliteCursor.fetchall('object', {'name':'title'}, {'age':'ulongint'} )
     // [{ id:1, title:'zhang san', age:15UL }, { id:2, title:'li si', age:20UL }]
+
+$sqliteCursor.fetchall('object', null, {'age':'ulongint'} )
+    // [{ id:1, name:'zhang san', age:15UL }, { id:2, name:'li si', age:20UL }]
 ```
 
 ##### 4.5.5.6) `rowcount` 属性
