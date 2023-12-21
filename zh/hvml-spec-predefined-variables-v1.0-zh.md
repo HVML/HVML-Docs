@@ -8939,6 +8939,7 @@ $SQLITE.connect(
 
 - `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
 - `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常。
 - ...
 
 **示例**
@@ -9028,7 +9029,7 @@ $sqliteConn.rollback()
 **描述**
 
 ```js
-$sqliteConn.close()
+$sqliteConn.close() boolean
 ```
 
 该方法关闭数据库连接。请注意，该方法自动调用 commit()。如果之前未调用 commit() 方法，就直接关闭数据库连接，所做的所有更改将全部丢失！
@@ -9041,6 +9042,7 @@ $sqliteConn.close()
 
 ```js
 $sqliteConn.close()
+    // true
 ```
 
 ##### 4.5.4.5) `execute` 方法
@@ -9305,7 +9307,30 @@ $sqliteCursor.fetchall('object', null, {'age':'ulongint'} )
     // [{ id:1, name:'zhang san', age:15UL }, { id:2, name:'li si', age:20UL }]
 ```
 
-##### 4.5.5.6) `rowcount` 属性
+##### 4.5.4.6) `close` 方法
+
+关闭游标。
+
+**描述**
+
+```js
+$sqliteCursor.close() boolean
+```
+
+该方法关闭游标。请注意，关闭游标后，不能使用该游标进行任何操作。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$sqliteCursor.close()
+    // true
+```
+
+##### 4.5.5.7) `rowcount` 属性
 
 通过该属性获取INSERT、UPDATE、DELETE 和 REPLACE 语句修改的行数(其它语句为 -1)。
 
@@ -9330,7 +9355,7 @@ $sqliteCursor.rowcount
     */
 ```
 
-##### 4.5.5.7) `lastrowid` 属性
+##### 4.5.5.8) `lastrowid` 属性
 
 通过该属性获取最后插入行的行 ID 。
 
@@ -9356,7 +9381,7 @@ $sqliteCursor.lastrowid
     */
 ```
 
-##### 4.5.5.8) `description` 属性
+##### 4.5.5.9) `description` 属性
 
 通过该属性可以获得最后一个查询的列名称。
 
@@ -9383,7 +9408,7 @@ $sqliteCursor.description
     */
 ```
 
-##### 4.5.5.9) `connection` 属性
+##### 4.5.5.10) `connection` 属性
 
 通过该属性可以获得创建该 SQLiteCursor 的 SQLiteConnect。
 
