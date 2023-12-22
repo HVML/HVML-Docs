@@ -8843,6 +8843,43 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 | TEXT        |   SQLITE3_TEXT          | string    |
 | BLOB        |   SQLITE_BLOB           | bsequence |
 
+亲合类型（Affinity）转换：
+
+fetchone/fetchmany/fetchall 时可以指定类型转换，下面列出了 SQLite 支持的常见亲合类型与变体类型的对应关系：
+
+|     亲合类型            | 变体类型  |  描述 |
+|     --------            | --------- | :--   |
+| int                     | longint   | int : 4 字节 |
+| integer                 | longint   | integer: 4 字节 |
+| tinyint                 | longint   | tinyint : 1 字节 |
+| smallint                | longint   | smallint: 2 字节 |
+| mediumint               | longint   | mediumint: 3 字节 |
+| bigint                  | longint   | bitint: 8 字节 |
+| unsigned big int        | ulongint  | unsigned big int: 8 字节 |
+| int2                    | longint   | int2: 2 字节 |
+| int4                    | longint   | int4: 4 字节 |
+| int8                    | longint   | int8: 8 字节 |
+| character               | string    | |
+| varchar                 | string    | |
+| varying character       | string    | |
+| nchar                   | string    | |
+| native character        | string    | |
+| nvarchar                | string    | |
+| text                    | string    | |
+| clob                    | string    | |
+| blob                    | bsequence | |
+| binary                  | bsequence | |
+| real                    | number    | |
+| double                  | number    | |
+| double precision        | number    | |
+| float                   | number    | |
+| numeric                 | number    | |
+| decimal                 | number    | |
+| decimal                 | number    | |
+| boolean                 | boolean   | |
+| bit                     | boolean   | |
+| date                    | string    | 以 YYYY-MM-DD HH:MM:SS.SSS 返回 |
+| datetime                | string    | 以 YYYY-MM-DD HH:MM:SS.SSS 返回 |
 
 #### 4.5.1) `impl` 属性
 
