@@ -8875,7 +8875,6 @@ fetchone/fetchmany/fetchall 时可以指定类型转换，下面列出了 SQLite
 | float                   | number    | |
 | numeric                 | number    | |
 | decimal                 | number    | |
-| decimal                 | number    | |
 | boolean                 | boolean   | |
 | bit                     | boolean   | |
 | date                    | string    | 以 YYYY-MM-DD HH:MM:SS.SSS 返回 |
