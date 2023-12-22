@@ -8843,9 +8843,7 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 | TEXT        |   SQLITE3_TEXT          | string    |
 | BLOB        |   SQLITE_BLOB           | bsequence |
 
-亲合类型（Affinity）转换：
-
-fetchone/fetchmany/fetchall 时可以指定类型转换，下面列出了 SQLite 支持的常见亲合类型与变体类型的对应关系：
+fetchone/fetchmany/fetchall 时可以使用亲合类型（Affinity）关健字指定想要结果的数据类型，下面列出了 SQLite 支持的常见亲合类型与变体类型的对应关系：
 
 |     亲合类型            | 变体类型  |  描述 |
 |     --------            | --------- | :--   |
@@ -8879,6 +8877,46 @@ fetchone/fetchmany/fetchall 时可以指定类型转换，下面列出了 SQLite
 | bit                     | boolean   | |
 | date                    | string    | 以 YYYY-MM-DD HH:MM:SS.SSS 返回 |
 | datetime                | string    | 以 YYYY-MM-DD HH:MM:SS.SSS 返回 |
+
+当指定的结果数据类型与原始类型不一致时，则会进行类型转换，规则如下：
+
+|   SQLite  类型          |  原始类型   |  指定类型  |  转换 |
+|  --------               |  ---------  | :--   |
+|   SQLITE_NULL           |  null       |  null      |  null |
+|   SQLITE_NULL           |  null       |  longint   |  0L   |
+|   SQLITE_NULL           |  null       |  ulongint  |  0UL  |
+|   SQLITE_NULL           |  null       |  number    |  0.0f |
+|   SQLITE_NULL           |  null       |  boolean   |  false |
+|   SQLITE_NULL           |  null       |  string    |  "null" |
+|   SQLITE_NULL           |  null       |  bsequence |  字符串"null" 组成的字节序列 |
+|   SQLITE_INTEGER        |  longint    |  null      |  null |
+|   SQLITE_INTEGER        |  longint    |  longint   | |
+|   SQLITE_INTEGER        |  longint    |  ulongint  | 转成 ulongint |
+|   SQLITE_INTEGER        |  longint    |  number    | 转成 number |
+|   SQLITE_INTEGER        |  longint    |  boolean   | != 0 为 true |
+|   SQLITE_INTEGER        |  longint    |  string    | 转为字符串  |
+|   SQLITE_INTEGER        |  longint    |  bsequence | 转为字符串，再构建成字节序列 |
+|   SQLITE_FLOAT          |  number     |  null      | null |
+|   SQLITE_FLOAT          |  number     |  longint   | 转为 longint |
+|   SQLITE_FLOAT          |  number     |  ulongint  | 转为 ulongint |
+|   SQLITE_FLOAT          |  number     |  number    | |
+|   SQLITE_FLOAT          |  number     |  boolean   | != 0 为 true |
+|   SQLITE_FLOAT          |  number     |  string    | 转为字符串 |
+|   SQLITE_FLOAT          |  number     |  bsequence | 使用 blob 获取数据，转为字节序列 |
+|   SQLITE3_TEXT          |  string     |  null      | null |
+|   SQLITE3_TEXT          |  string     |  longint   | 转为 longint |
+|   SQLITE3_TEXT          |  string     |  ulongint  | 转为 ulongint |
+|   SQLITE3_TEXT          |  string     |  number    | 转为 number |
+|   SQLITE3_TEXT          |  string     |  boolean   | 长度 > 0 为 true |
+|   SQLITE3_TEXT          |  string     |  string    | |
+|   SQLITE3_TEXT          |  string     |  bsequence | 字符串构建字节序列 |
+|   SQLITE_BLOB           |  bsequence  |  null      | null |
+|   SQLITE_BLOB           |  bsequence  |  longint   | 转为 longint |
+|   SQLITE_BLOB           |  bsequence  |  ulongint  | 转为 ulongint |
+|   SQLITE_BLOB           |  bsequence  |  number    | 转为 number |
+|   SQLITE_BLOB           |  bsequence  |  boolean   | 长度 > 0 为 true |
+|   SQLITE_BLOB           |  bsequence  |  string    | 转为 字符串  |
+|   SQLITE_BLOB           |  bsequence  |  bsequence | |
 
 #### 4.5.1) `impl` 属性
 
