@@ -8983,9 +8983,7 @@ $SQLITE.info
        {
             'version':      '3.10.9',
             'platform':     'Linux',
-            'copyright':    'Copyright ...',
-            'compiler':     '[GCC 2.7.2.2]',
-            'build-info':   '#67, Aug 1 1997, 22:34:28',
+            'build-info':   '2022-01-06 13:25:41 872ba256cbf61d9290b571c0e6d82a20c224ca3ad82971edc46b29818d5dalt1',
        }
     */
 ```
@@ -9018,6 +9016,12 @@ $SQLITE.connect(
 
 ```js
 $SQLITE.connect(':memory:')
+    // native/SQLiteConnect
+
+$SQLITE.connect('/tmp/test.db')
+    // native/SQLiteConnect
+
+$SQLITE.connect('file:///tmp/test_uri.db')
     // native/SQLiteConnect
 ```
 
