@@ -9329,13 +9329,13 @@ $sqliteCursor.fetchmany(
 $sqliteCursor.fethmany(2L)
     // [[! 1, 'zhang san', 15 ], [!2, 'li si', 20]]
 
-$sqliteCursor.fetchone(2L, 'object')
+$sqliteCursor.fethmany(2L, 'object')
     // [{ id:1, name:'zhang san', age:15 }, { id:2, name:'li si', age:20 }]
 
-$sqliteCursor.fetchone(2L, 'object', {'name':'title'}, {'age':'ulongint'} )
+$sqliteCursor.fethmany(2L, 'object', {'name':'title'}, {'age':'ulongint'} )
     // [{ id:1, title:'zhang san', age:15UL }, { id:2, title:'li si', age:20UL }]
 
-$sqliteCursor.fetchone(2L, 'object', null, {'age':'ulongint'} )
+$sqliteCursor.fethmany(2L, 'object', null, {'age':'ulongint'} )
     // [{ id:1, name:'zhang san', age:15UL }, { id:2, name:'li si', age:20UL }]
 ```
 
