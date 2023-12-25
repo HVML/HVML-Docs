@@ -8966,8 +8966,6 @@ $SQLITE.info object:
     `an object contains the following properties:`
         - 'version':        < string: `the version of this sqlite library.` >
         - 'platform':       < string: `the platform identifier for the current platform.` >
-        - 'copyright':      < string: `the official copyright string for the current sqlite version.` >
-        - 'compiler':       < string: `an indication of the compiler used to build the current sqlite version, in square brackets (e.g., [GCC 2.7.2.2])` >
         - 'build-info':     < string: `information about the sequence number and build date and time of the current sqlite library, e.g., "#67, Aug  1 1997, 22:34:28"` >
 ```
 
