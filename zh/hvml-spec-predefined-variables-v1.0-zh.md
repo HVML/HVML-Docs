@@ -8881,7 +8881,7 @@ fetchone/fetchmany/fetchall 时可以使用亲合类型（Affinity）关健字�
 当指定的结果数据类型与原始类型不一致时，则会进行类型转换，规则如下：
 
 |   SQLite  类型          |  原始类型   |  指定类型  |  转换 |
-|  --------               |  ---------  | :--   |
+|  --------               |  ---------  | :--   | :-- |
 |   SQLITE_NULL           |  null       |  null      |  null |
 |   SQLITE_NULL           |  null       |  longint   |  0L   |
 |   SQLITE_NULL           |  null       |  ulongint  |  0UL  |
