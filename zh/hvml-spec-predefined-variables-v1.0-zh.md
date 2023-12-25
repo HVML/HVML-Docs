@@ -8887,8 +8887,8 @@ fetchone/fetchmany/fetchall 时可以使用亲合类型（Affinity）关健字�
 |   SQLITE_NULL           |  null       |  ulongint  |  0UL  |
 |   SQLITE_NULL           |  null       |  number    |  0.0f |
 |   SQLITE_NULL           |  null       |  boolean   |  false |
-|   SQLITE_NULL           |  null       |  string    |  "null" |
-|   SQLITE_NULL           |  null       |  bsequence |  字符串"null" 组成的字节序列 |
+|   SQLITE_NULL           |  null       |  string    |  空字符串 |
+|   SQLITE_NULL           |  null       |  bsequence |  空字节序列 |
 |   SQLITE_INTEGER        |  longint    |  null      |  null |
 |   SQLITE_INTEGER        |  longint    |  longint   | |
 |   SQLITE_INTEGER        |  longint    |  ulongint  | 转成 ulongint |
