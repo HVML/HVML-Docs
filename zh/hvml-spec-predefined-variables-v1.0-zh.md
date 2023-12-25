@@ -9062,19 +9062,22 @@ $sqliteConn.cursor()
 **描述**
 
 ```js
-$sqliteConn.commit()
+$sqliteConn.commit() boolean
 ```
 
 该方法提交当前的事务。
 
 **异常**
 
-该方法不产生异常。
+该方法可能产生的异常：
+
+- `ExternalFailure`：外部异常，非法操作 sqlite3时产生，比如操作已关闭的数据库链接。
 
 **示例**
 
 ```js
 $sqliteConn.commit()
+  // true
 ```
 
 ##### 4.5.4.3) `rollback` 方法
@@ -9084,18 +9087,21 @@ $sqliteConn.commit()
 **描述**
 
 ```js
-$sqliteConn.rollback()
+$sqliteConn.rollback() boolean
 ```
 回滚自上一次调用 commit() 以来对数据库所做的更改。
 
 **异常**
 
-该方法不产生异常。
+该方法可能产生的异常：
+
+- `ExternalFailure`：外部异常，非法操作 sqlite3时产生，比如操作已关闭的数据库链接。
 
 **示例**
 
 ```js
 $sqliteConn.rollback()
+    // true
 ```
 
 ##### 4.5.4.4) `close` 方法
