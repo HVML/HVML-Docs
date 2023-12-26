@@ -9145,6 +9145,8 @@ $sqliteConn.execute(
 该方法可能产生的异常：
 
 - `MemoryFailure`：内存分配失败。不可忽略异常。
+- `InvalidValue`：传入无效数据; 可忽略异常。
+- `ExternalFailure`：外部异常，非法操作 sqlite3时产生，比如操作已关闭的数据库链接。
 
 **示例**
 
@@ -9171,6 +9173,8 @@ $parameters 是一个包含多个数组的数组，每个子数组对应 sql 语
 该方法可能产生的异常：
 
 - `MemoryFailure`：内存分配失败。不可忽略异常。
+- `InvalidValue`：传入无效数据; 可忽略异常。
+- `ExternalFailure`：外部异常，非法操作 sqlite3时产生，比如操作已关闭的数据库链接。
 
 **示例**
 
@@ -9202,6 +9206,7 @@ $sqliteCursor.execute(
 
 - `MemoryFailure`：内存分配失败。不可忽略异常。
 - `InvalidValue`：传入无效数据; 可忽略异常。
+- `ExternalFailure`：外部异常，非法操作 sqlite3时产生，比如操作已关闭的数据库链接。
 
 **示例**
 
@@ -9229,6 +9234,7 @@ $parameters 是一个包含多个数组的数组，每个子数组对应 sql 语
 
 - `MemoryFailure`：内存分配失败。不可忽略异常。
 - `InvalidValue`：传入无效数据; 可忽略异常。
+- `ExternalFailure`：外部异常，非法操作 sqlite3时产生，比如操作已关闭的数据库链接。
 
 **示例**
 
@@ -9269,6 +9275,8 @@ $sqliteCursor.fetchone(
 该方法可能产生的异常：
 
 - `MemoryFailure`：内存分配失败。不可忽略异常。
+- `WrongDataType`：非实数类参数类型。可忽略异常。
+- `ExternalFailure`：外部异常，非法操作 sqlite3时产生，比如操作已关闭的数据库链接。
 
 **示例**
 
@@ -9322,6 +9330,8 @@ $sqliteCursor.fetchmany(
 该方法可能产生的异常：
 
 - `MemoryFailure`：内存分配失败。不可忽略异常。
+- `WrongDataType`：非实数类参数类型。可忽略异常。
+- `ExternalFailure`：外部异常，非法操作 sqlite3时产生，比如操作已关闭的数据库链接。
 
 **示例**
 
@@ -9372,6 +9382,8 @@ $sqliteCursor.fetchall(
 该方法可能产生的异常：
 
 - `MemoryFailure`：内存分配失败。不可忽略异常。
+- `WrongDataType`：非实数类参数类型。可忽略异常。
+- `ExternalFailure`：外部异常，非法操作 sqlite3时产生，比如操作已关闭的数据库链接。
 
 **示例**
 
