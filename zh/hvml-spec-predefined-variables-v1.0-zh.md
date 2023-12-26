@@ -8875,8 +8875,8 @@ fetchone/fetchmany/fetchall 时可以使用亲合类型（Affinity）关健字�
 | decimal                 | number    | |
 | boolean                 | boolean   | |
 | bit                     | boolean   | |
-| date                    | string    | 以 YYYY-MM-DD HH:MM:SS.SSS 返回 |
-| datetime                | string    | 以 YYYY-MM-DD HH:MM:SS.SSS 返回 |
+| date                    | string    | 以 YYYY-MM-DD HH:MM:SS 返回 |
+| datetime                | string    | 以 YYYY-MM-DD HH:MM:SS 返回 |
 
 当指定的结果数据类型与原始类型不一致时，则会进行类型转换，规则如下：
 
@@ -8887,21 +8887,21 @@ fetchone/fetchmany/fetchall 时可以使用亲合类型（Affinity）关健字�
 |   SQLITE_NULL           |  null       |  ulongint  |  0UL  |
 |   SQLITE_NULL           |  null       |  number    |  0.0f |
 |   SQLITE_NULL           |  null       |  boolean   |  false |
-|   SQLITE_NULL           |  null       |  string    |  空字符串 |
+|   SQLITE_NULL           |  null       |  string    |  空字符串，当亲和类型 date/datetime 时返回字符串 "1970-01-01 00:00:00" |
 |   SQLITE_NULL           |  null       |  bsequence |  空字节序列 |
 |   SQLITE_INTEGER        |  longint    |  null      |  null |
 |   SQLITE_INTEGER        |  longint    |  longint   | |
 |   SQLITE_INTEGER        |  longint    |  ulongint  | 转成 ulongint |
 |   SQLITE_INTEGER        |  longint    |  number    | 转成 number |
 |   SQLITE_INTEGER        |  longint    |  boolean   | != 0 为 true |
-|   SQLITE_INTEGER        |  longint    |  string    | 转为字符串  |
+|   SQLITE_INTEGER        |  longint    |  string    | 转为字符串，当亲和类型 date/datetime 时，把数值当做 Unix Timestamp 并转换为 YYYY-MM-DD HH:MM:SS 形式返回   |
 |   SQLITE_INTEGER        |  longint    |  bsequence | 转为字符串，再构建成字节序列 |
 |   SQLITE_FLOAT          |  number     |  null      | null |
 |   SQLITE_FLOAT          |  number     |  longint   | 转为 longint |
 |   SQLITE_FLOAT          |  number     |  ulongint  | 转为 ulongint |
 |   SQLITE_FLOAT          |  number     |  number    | |
 |   SQLITE_FLOAT          |  number     |  boolean   | != 0 为 true |
-|   SQLITE_FLOAT          |  number     |  string    | 转为字符串 |
+|   SQLITE_FLOAT          |  number     |  string    | 转为字符串，当亲和类型 date/datetime 时，把数值当做 Unix Timestamp 并转换为 YYYY-MM-DD HH:MM:SS 形式返回 |
 |   SQLITE_FLOAT          |  number     |  bsequence | 使用 blob 获取数据，转为字节序列 |
 |   SQLITE3_TEXT          |  string     |  null      | null |
 |   SQLITE3_TEXT          |  string     |  longint   | 转为 longint |
