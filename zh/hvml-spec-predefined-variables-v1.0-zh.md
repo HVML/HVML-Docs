@@ -9162,8 +9162,8 @@ $sqliteConn.execute('select * from users')
 
 ```js
 $sqliteConn.executemany(
-        < string $sql: `the sql.` >
-        [, <array $parameters: the sql parameters> ]
+        <string $sql: `the sql.` >,
+        <array $parameters: the sql parameters>
 ) SQLiteCursor | undefined
 ```
 
@@ -9222,8 +9222,8 @@ $sqliteCursor.execute('select * from users')
 
 ```js
 $sqliteCursor.executemany(
-        < string $sql: `the sql.` >
-        [, <array $parameters: the sql parameters> ]
+        <string $sql: `the sql.` >,
+        <array $parameters: the sql parameters>
 )
 ```
 
