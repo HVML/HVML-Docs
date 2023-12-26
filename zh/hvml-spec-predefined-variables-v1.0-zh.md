@@ -8895,21 +8895,21 @@ fetchone/fetchmany/fetchall 时可以使用亲合类型（Affinity）关健字�
 |   SQLITE_INTEGER        |  longint    |  number    | 转成 number |
 |   SQLITE_INTEGER        |  longint    |  boolean   | != 0 为 true |
 |   SQLITE_INTEGER        |  longint    |  string    | 转为字符串，当亲和类型 date/datetime 时，把数值当做 Unix Timestamp 并转换为 YYYY-MM-DD HH:MM:SS 形式返回   |
-|   SQLITE_INTEGER        |  longint    |  bsequence | 转为字符串，再构建成字节序列 |
+|   SQLITE_INTEGER        |  longint    |  bsequence | 使用 sqlite3_column_blob 获取数据，再构建成字节序列 |
 |   SQLITE_FLOAT          |  number     |  null      | null |
 |   SQLITE_FLOAT          |  number     |  longint   | 转为 longint |
 |   SQLITE_FLOAT          |  number     |  ulongint  | 转为 ulongint |
 |   SQLITE_FLOAT          |  number     |  number    | |
 |   SQLITE_FLOAT          |  number     |  boolean   | != 0 为 true |
 |   SQLITE_FLOAT          |  number     |  string    | 转为字符串，当亲和类型 date/datetime 时，把数值当做 Unix Timestamp 并转换为 YYYY-MM-DD HH:MM:SS 形式返回 |
-|   SQLITE_FLOAT          |  number     |  bsequence | 使用 blob 获取数据，转为字节序列 |
+|   SQLITE_FLOAT          |  number     |  bsequence | 使用 sqlite3_column_blob 获取数据，再构建成字节序列 |
 |   SQLITE3_TEXT          |  string     |  null      | null |
 |   SQLITE3_TEXT          |  string     |  longint   | 转为 longint |
 |   SQLITE3_TEXT          |  string     |  ulongint  | 转为 ulongint |
 |   SQLITE3_TEXT          |  string     |  number    | 转为 number |
 |   SQLITE3_TEXT          |  string     |  boolean   | 长度 > 0 为 true |
 |   SQLITE3_TEXT          |  string     |  string    | |
-|   SQLITE3_TEXT          |  string     |  bsequence | 字符串构建字节序列 |
+|   SQLITE3_TEXT          |  string     |  bsequence | 使用 sqlite3_column_blob 获取数据，再构建成字节序列 |
 |   SQLITE_BLOB           |  bsequence  |  null      | null |
 |   SQLITE_BLOB           |  bsequence  |  longint   | 转为 longint |
 |   SQLITE_BLOB           |  bsequence  |  ulongint  | 转为 ulongint |
