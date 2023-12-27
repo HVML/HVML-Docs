@@ -8843,7 +8843,7 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 | TEXT        |   SQLITE3_TEXT          | string    |
 | BLOB        |   SQLITE_BLOB           | bsequence |
 
-fetchone/fetchmany/fetchall 时可以使用亲合类型（Affinity）关健字指定想要结果的数据类型，下面列出了 SQLite 支持的常见亲合类型与变体类型的对应关系：
+使用 fetchone/fetchmany/fetchall 获取数据时可以使用亲合类型（Affinity）关健字指定结果的数据类型，下表是亲合类型与变体类型的对应关系：
 
 |     亲合类型            | 变体类型  |  描述 |
 |     --------            | --------- | :--   |
