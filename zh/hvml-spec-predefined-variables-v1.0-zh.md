@@ -8848,15 +8848,23 @@ fetchone/fetchmany/fetchall 时可以使用亲合类型（Affinity）关健字�
 |     亲合类型            | 变体类型  |  描述 |
 |     --------            | --------- | :--   |
 | int                     | longint   | int : 4 字节 |
+| int2                    | longint   | int2: 2 字节 |
+| int4                    | longint   | int4: 4 字节 |
+| int8                    | longint   | int8: 8 字节 |
 | integer                 | longint   | integer: 4 字节 |
 | tinyint                 | longint   | tinyint : 1 字节 |
 | smallint                | longint   | smallint: 2 字节 |
 | mediumint               | longint   | mediumint: 3 字节 |
 | bigint                  | longint   | bitint: 8 字节 |
-| unsigned big int        | ulongint  | unsigned big int: 8 字节 |
-| int2                    | longint   | int2: 2 字节 |
-| int4                    | longint   | int4: 4 字节 |
-| int8                    | longint   | int8: 8 字节 |
+| unsigned int            | ulongint  | |
+| unsigned int2           | ulongint  | |
+| unsigned int4           | ulongint  | |
+| unsigned int8           | ulongint  | |
+| unsigned integer        | ulongint  | |
+| unsigned tinyint        | ulongint  | |
+| unsigned smallint       | ulongint  | |
+| unsigned mediumint      | ulongint  | |
+| unsigned bigint         | ulongint  | |
 | character               | string    | |
 | varchar                 | string    | |
 | varying character       | string    | |
@@ -8875,48 +8883,8 @@ fetchone/fetchmany/fetchall 时可以使用亲合类型（Affinity）关健字�
 | decimal                 | number    | |
 | boolean                 | boolean   | |
 | bit                     | boolean   | |
-| date                    | string    | 以 YYYY-MM-DD HH:MM:SS 返回 |
+| date                    | string    | 以 YYYY-MM-DD 返回 |
 | datetime                | string    | 以 YYYY-MM-DD HH:MM:SS 返回 |
-
-当指定的结果数据类型与原始类型不一致时，则会进行类型转换，规则如下：
-
-|   SQLite  类型          |  原始类型   |  指定类型  |  转换 |
-|  --------               |  ---------  | :--   | :-- |
-|   SQLITE_NULL           |  null       |  null      |  null |
-|   SQLITE_NULL           |  null       |  longint   |  0L   |
-|   SQLITE_NULL           |  null       |  ulongint  |  0UL  |
-|   SQLITE_NULL           |  null       |  number    |  0.0f |
-|   SQLITE_NULL           |  null       |  boolean   |  false |
-|   SQLITE_NULL           |  null       |  string    |  空字符串，当亲和类型 date/datetime 时返回字符串 "1970-01-01 00:00:00" |
-|   SQLITE_NULL           |  null       |  bsequence |  空字节序列 |
-|   SQLITE_INTEGER        |  longint    |  null      |  null |
-|   SQLITE_INTEGER        |  longint    |  longint   | |
-|   SQLITE_INTEGER        |  longint    |  ulongint  | 转成 ulongint |
-|   SQLITE_INTEGER        |  longint    |  number    | 转成 number |
-|   SQLITE_INTEGER        |  longint    |  boolean   | != 0 为 true |
-|   SQLITE_INTEGER        |  longint    |  string    | 转为字符串，当亲和类型 date/datetime 时，把数值当做 Unix Timestamp 并转换为 YYYY-MM-DD HH:MM:SS 形式返回   |
-|   SQLITE_INTEGER        |  longint    |  bsequence | 使用 sqlite3_column_blob 获取数据，再构建成字节序列 |
-|   SQLITE_FLOAT          |  number     |  null      | null |
-|   SQLITE_FLOAT          |  number     |  longint   | 转为 longint |
-|   SQLITE_FLOAT          |  number     |  ulongint  | 转为 ulongint |
-|   SQLITE_FLOAT          |  number     |  number    | |
-|   SQLITE_FLOAT          |  number     |  boolean   | != 0 为 true |
-|   SQLITE_FLOAT          |  number     |  string    | 转为字符串，当亲和类型 date/datetime 时，把数值当做 Unix Timestamp 并转换为 YYYY-MM-DD HH:MM:SS 形式返回 |
-|   SQLITE_FLOAT          |  number     |  bsequence | 使用 sqlite3_column_blob 获取数据，再构建成字节序列 |
-|   SQLITE3_TEXT          |  string     |  null      | null |
-|   SQLITE3_TEXT          |  string     |  longint   | 转为 longint |
-|   SQLITE3_TEXT          |  string     |  ulongint  | 转为 ulongint |
-|   SQLITE3_TEXT          |  string     |  number    | 转为 number |
-|   SQLITE3_TEXT          |  string     |  boolean   | 长度 > 0 为 true |
-|   SQLITE3_TEXT          |  string     |  string    | |
-|   SQLITE3_TEXT          |  string     |  bsequence | 使用 sqlite3_column_blob 获取数据，再构建成字节序列 |
-|   SQLITE_BLOB           |  bsequence  |  null      | null |
-|   SQLITE_BLOB           |  bsequence  |  longint   | 转为 longint |
-|   SQLITE_BLOB           |  bsequence  |  ulongint  | 转为 ulongint |
-|   SQLITE_BLOB           |  bsequence  |  number    | 转为 number |
-|   SQLITE_BLOB           |  bsequence  |  boolean   | 长度 > 0 为 true |
-|   SQLITE_BLOB           |  bsequence  |  string    | 转为 字符串  |
-|   SQLITE_BLOB           |  bsequence  |  bsequence | |
 
 #### 4.5.1) `impl` 属性
 
@@ -9287,10 +9255,10 @@ $sqliteCursor.fetchone()
 $sqliteCursor.fetchone('object')
     // object: { id:1, name:'zhang san', age:15 }
 
-$sqliteCursor.fetchone('object', {'name':'title'}, {'age':'ulongint'} )
+$sqliteCursor.fetchone('object', {'name':'title'}, {'age':'unsigned int'} )
     // object: { id:1, title:'zhang san', age:15UL }
 
-$sqliteCursor.fetchone('object', null, {'age':'ulongint'} )
+$sqliteCursor.fetchone('object', null, {'age':'unsigned int'} )
     // object: { id:1, name:'zhang san', age:15UL }
 ```
 
@@ -9342,10 +9310,10 @@ $sqliteCursor.fethmany(2L)
 $sqliteCursor.fethmany(2L, 'object')
     // [{ id:1, name:'zhang san', age:15 }, { id:2, name:'li si', age:20 }]
 
-$sqliteCursor.fethmany(2L, 'object', {'name':'title'}, {'age':'ulongint'} )
+$sqliteCursor.fethmany(2L, 'object', {'name':'title'}, {'age':'unsigned int'} )
     // [{ id:1, title:'zhang san', age:15UL }, { id:2, title:'li si', age:20UL }]
 
-$sqliteCursor.fethmany(2L, 'object', null, {'age':'ulongint'} )
+$sqliteCursor.fethmany(2L, 'object', null, {'age':'unsigned int'} )
     // [{ id:1, name:'zhang san', age:15UL }, { id:2, name:'li si', age:20UL }]
 ```
 
@@ -9394,10 +9362,10 @@ $sqliteCursor.fethall()
 $sqliteCursor.fetchall('object')
     // [{ id:1, name:'zhang san', age:15 }, { id:2, name:'li si', age:20 }]
 
-$sqliteCursor.fetchall('object', {'name':'title'}, {'age':'ulongint'} )
+$sqliteCursor.fetchall('object', {'name':'title'}, {'age':'unsigned int'} )
     // [{ id:1, title:'zhang san', age:15UL }, { id:2, title:'li si', age:20UL }]
 
-$sqliteCursor.fetchall('object', null, {'age':'ulongint'} )
+$sqliteCursor.fetchall('object', null, {'age':'unsigned int'} )
     // [{ id:1, name:'zhang san', age:15UL }, { id:2, name:'li si', age:20UL }]
 ```
 
