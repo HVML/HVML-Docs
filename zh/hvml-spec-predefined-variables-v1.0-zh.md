@@ -1,11 +1,11 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RCd  
+Version: 1.0-RCh  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Jun 30, 2023  
+Last Modified Date: Dec. 31, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
@@ -310,6 +310,7 @@ Language: Chinese
          - [4.4.10.3) CPython 代码动态对象的 `eval` 方法](#44103-cpython-代码动态对象的-eval-方法)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RCh) 231231](#rch-231231)
       * [RCd) 230630](#rcd-230630)
       * [RCc) 230531](#rcc-230531)
       * [RCb) 230430](#rcb-230430)
@@ -8723,6 +8724,7 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 
 发布历史：
 
+- 2023 年 12 月 31 日：发布 V1.0 RCh，标记为 'v1.0-rch-231231'。
 - 2023 年 06 月 30 日：发布 V1.0 RCd，标记为 'v1.0-rcd-230630'。
 - 2023 年 05 月 31 日：发布 V1.0 RCc，标记为 'v1.0-rcc-230531'。
 - 2023 年 04 月 30 日：发布 V1.0 RCb，标记为 'v1.0-rcb-230430'。
@@ -8736,6 +8738,10 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 - 2022 年 06 月 01 日：发布 V1.0 RC3，标记为 'v1.0-pv-rc3-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
+
+#### RCh) 231231
+
+1. 增加针对可装载动态对象 `SQLite` 的接口描述。
 
 #### RCd) 230630
 
