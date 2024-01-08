@@ -1,19 +1,19 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RCg  
+Version: 1.0-RCh  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Nov. 30, 2023  
+Last Modified Date: Jan. 31, 2024  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
 
 *Copyright Notice*
 
-版权所有 &copy; 2021, 2022, 2023 魏永明  
-版权所有 &copy; 2021, 2022, 2023 北京飞漫软件技术有限公司  
+版权所有 &copy; 2021, 2022, 2023, 2024 魏永明  
+版权所有 &copy; 2021, 2022, 2023, 2024 北京飞漫软件技术有限公司  
 保留所有权利
 
 此文档不受 HVML 相关软件开源许可证的管辖。
@@ -188,6 +188,7 @@ Language: Chinese
       * [3.10.35) `rot13` 方法](#31035-rot13-方法)
       * [3.10.36) `count_chars` 方法](#31036-count_chars-方法)
       * [3.10.37) `count_bytes` 方法](#31037-count_bytes-方法)
+      * [3.10.38) `codepoints` 方法](#31038-codepoints-方法)
    + [3.11) `URL`](#311-url)
       * [3.11.1) `encode` 方法](#3111-encode-方法)
       * [3.11.2) `decode` 方法](#3112-decode-方法)
@@ -327,12 +328,14 @@ Language: Chinese
          - [4.5.5.3) `fetchone` 方法](#4553-fetchone-方法)
          - [4.5.5.4) `fetchmany` 方法](#4554-fetchmany-方法)
          - [4.5.5.5) `fetchall` 方法](#4555-fetchall-方法)
-         - [4.5.5.6) `rowcount` 属性](#4556-rowcount-属性)
-         - [4.5.5.7) `lastrowid` 属性](#4557-lastrowid-属性)
-         - [4.5.5.8) `description` 属性](#4558-description-属性)
-         - [4.5.5.9) `connection` 属性](#4559-connection-属性)
+         - [4.5.5.6) `close` 方法](#4556-close-方法)
+         - [4.5.5.7) `rowcount` 属性](#4557-rowcount-属性)
+         - [4.5.5.8) `lastrowid` 属性](#4558-lastrowid-属性)
+         - [4.5.5.9) `description` 属性](#4559-description-属性)
+         - [4.5.5.10) `connection` 属性](#45510-connection-属性)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [RCh) 240131](#rch-240131)
       * [RCg) 231130](#rcg-231130)
       * [RCd) 230630](#rcd-230630)
       * [RCc) 230531](#rcc-230531)
@@ -5427,14 +5430,14 @@ $STR.rot13(
 ```js
 $STR.count_chars(
         < string $string: the examined string. >
-        [, < 'object | string' $mode = 'object':
-            'object' - returns an object with the character as key and the frequency of every character as value.
-            'string' - returns a string containing all unique characters. >
+        [,
+            < 'object | string' $mode = 'object':
+               - 'object' - `returns an object with the character as key and the frequency of every character as value.`
+               - 'string' - `returns a string containing all unique characters. `
+            >
         ]
 ) object | string
 ```
-
-
 
 **参数**
 
@@ -5455,18 +5458,17 @@ $STR.count_chars(
 ```js
 $STR.count_bytes(
         < string | bsequence $data: the examined data. >
-        [, < 'object-all | object-appeared | object-not-appeared | string-appeared | string-not-appeared' $mode = 'object-all':
-            'object-all' - returns an object with the byte-value as key and the frequency of every byte as value.
-            'object-appeared' - same as 0 but only byte-values with a frequency greater than zero are listed.
-            'object-not-appeared' - same as 0 but only byte-values with a frequency equal to zero are listed.
-            'bytes-appeared' - a binary sequence containing all unique bytes is returned.
-            'bytes-not-appeared' - a binary sequence containing all not used bytes is returned.
+        [, < 'tuple-all | object-all | object-appeared | object-not-appeared | bytes-appeared | bytes-not-appeared' $mode = 'tuple-all':
+            'tuple-all' - `returns a tuple with the byte-value (0 ~ 255) as index and the frequency of every byte as value.`
+            'object-all' - `returns an object with the byte-value (decimal string) as key and the frequency of every byte as value.`
+            'object-appeared' - `same as 'object-all' but  only byte-values with a frequency greater than zero are listed.`
+            'object-not-appeared' - `same as 'object-all' but only byte-values with a frequency equal to zero are listed.`
+            'bytes-appeared' - `a binary sequence containing all unique bytes is returned.`
+            'bytes-not-appeared' - `a binary sequence containing all not used bytes is returned.`
             >
         ]
-) object | bsequence
+) tuple | object | bsequence
 ```
-
-
 
 **参数**
 
@@ -5477,6 +5479,43 @@ $STR.count_bytes(
 **参见**
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
+
+#### 3.10.38) `codepoints` 方法
+
+将字符串中的字符转换为 Unicode 码点（codepoint）构成的数组或元组。
+
+**描述**
+
+```js
+$STR.codepoints(
+        < string $the_string: the string. >
+        [, < 'array | tuple' $return_type = 'array':
+            - 'array' - `returns an array of codepoints.`
+            - 'tuple' - `returns a tuple of codepoints.`
+            >
+        ]
+) array | tuple: `The array or tuple contains all Unicode codepoints of the string.`
+```
+
+该方法将给定的字符串中的各个字符转换为 Unicode 码点（codepoint），并返回由各码点构成的数组或者元组。码点值的类型为 `number`。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回空数组。
+- `WrongDataType`：传入了不正确的数据类型；可忽略异常，静默求值时返回空数组。
+
+**示例**
+
+```js
+$STR.codepoints('HVML的昵称是呼噜猫')
+    // array: [ 110, 126, 115, 114, 30340, 26165, 31216, 26159, 21628, 22108, 29483 ]
+
+$STR.codepoints('HVML的昵称是呼噜猫', 'tuple')
+    // tuple: [! 110, 126, 115, 114, 30340, 26165, 31216, 26159, 21628, 22108, 29483 ]
+```
 
 ### 3.11) `URL`
 
@@ -9369,7 +9408,7 @@ $sqliteCursor.fetchall('object', null, {'age':'unsigned int'} )
     // [{ id:1, name:'zhang san', age:15UL }, { id:2, name:'li si', age:20UL }]
 ```
 
-##### 4.5.4.6) `close` 方法
+##### 4.5.5.6) `close` 方法
 
 关闭游标。
 
@@ -9501,6 +9540,7 @@ $sqliteCursor.connection
 
 发布历史：
 
+- 2024 年 01 月 31 日：发布 V1.0 RCh，标记为 'v1.0-rch-240131'。
 - 2023 年 11 月 30 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231130'。
 - 2023 年 06 月 30 日：发布 V1.0 RCd，标记为 'v1.0-rcd-230630'。
 - 2023 年 05 月 31 日：发布 V1.0 RCc，标记为 'v1.0-rcc-230531'。
@@ -9515,6 +9555,10 @@ $sqliteCursor.connection
 - 2022 年 06 月 01 日：发布 V1.0 RC3，标记为 'v1.0-pv-rc3-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
+
+#### RCh) 240131
+
+1. 新增 `$STR.codepoints` 方法。
 
 #### RCg) 231130
 
