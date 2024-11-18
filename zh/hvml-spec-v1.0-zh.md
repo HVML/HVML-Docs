@@ -5510,8 +5510,8 @@ Content-Type: text/plain
 
 在 `request` 标签的 `to` 属性中引用动态属性时，其名称应符合 `set:prop[<property_name>]` 或 `get:prop.style[<style_property_name>]` 的形式。前者用于引用元素的动态属性值，后者用于引用元素的渲染用样式属性（如 CSS 样式）。但在如下几种情况下可采用简化形式：
 
-- 若动态属性名称符合 `literal_variable_token` 规范，则可在 `get/set:` 之后省略 `prop.` 并直接使用其名称，如 `set:value`；否则应使用 `prop[<property_name>]` 这样的写法，如 `get:proprop[-data-value]`。
-- 若渲染用样式属性的名称符合`literal_variable_token` 规范，则可省略 `prop.` 并使用 `set:style.<property_name>` 这样的写法，如 `set:style.width`；否则应使用 `get:style[<property_name>]` 这样的用法，如 `get:style[-webkit-translate]`。
+- 若动态属性名称符合 `literal_variable_token` 规范，则可在 `get/set:` 之后省略 `prop.` 并直接使用其名称，如 `set:value`；否则应使用 `prop[<property_name>]` 这样的写法，如 `get:prop[-data-value]`。
+- 若渲染用样式属性的名称符合`literal_variable_token` 规范，则使用 `set:style.<property_name>` 这样的写法，如 `set:style.width`；否则应使用 `get:style[<property_name>]` 这样的用法，如 `get:style[-webkit-translate]`。
 
 我们还可以使用 `request` 在指定的元素上执行一段渲染器支持的函数调用代码，并在函数调用代码中使用渲染器设定的如下预定义变量：
 
