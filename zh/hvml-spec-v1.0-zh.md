@@ -1,19 +1,19 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0-RCg  
+Version: 1.0-RCh  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Nov. 30, 2023  
+Last Modified Date: Nov. 18, 2024  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
 
 *Copyright Notice*
 
-版权所有 &copy; 2020, 2021, 2022, 2023 魏永明  
-版权所有 &copy; 2021, 2022, 2023 北京飞漫软件技术有限公司  
+版权所有 &copy; 2020, 2021, 2022, 2023, 2024 魏永明  
+版权所有 &copy; 2021, 2022, 2023, 2024 北京飞漫软件技术有限公司  
 保留所有权利
 
 此文档不受 HVML 相关软件开源许可证的管辖。
@@ -2421,9 +2421,11 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
 - 当我们在一个元素上设置 `dataContent` 键值时，相当于移除该元素的所有子孙节点（若有），并设置该元素的数据内容为对应的键值。
 - 当我们在一个元素上获得 `content` 键名的键值时，相当于获得这个元素所有子孙节点（包括内容和子孙元素）在内的文档片段的文本表达；在设置该键名的键值时，相当于使用文本表达来创建该元素的子孙节点（替换掉原有子孙节点）。
 - 我们可以使用 `attr.class` 这样的复合键名来引用一个元素的静态属性。引用一个未定义的静态属性时，按属性值为 `undefined` 值对待。
-- 使用 `prop.selectedIndex` 或 `prop.style.width`、`prop.style[width]` 这样的属性名来引用一个元素的动态属性（property）。引用一个未定义的动态属性时，按属性值为 `undefined` 对待。
+- 我们可以使用 `prop.selectedIndex` 或 `prop.style.width`、`prop.style[width]` 这样的写法来引用一个元素的动态属性（property）或渲染用样式属性（style property）。这两种属性由渲染器维护，统称为动态属性。当引用一个未定义的动态属性时，按属性值为 `undefined` 对待。
 
 通常，我们通过 `update` 元素修改元素的静态属性（attribute）和内容（content）；而对动态属性（property），比如 `input` 框中输入的内容，则需要使用 `request` 元素来获取或者设置。
+
+元素的动态属性通常用于反应界面上的展现状态或者交互状态，比如 `input` 元素对应的输入框中，用户在输入框中输入的内容、当前插入符的位置、当前选中的范围等均属于动态属性。元素的动态属性由渲染器维护，加载时，将从文档元素的静态属性中初始化动态属性。在 HVML 程序中，应使用 `request` 动作元素来获取或设置文档元素的动态属性。当我们通过 `update` 动作元素修改文档元素的静态属性，相当于修改 eDOM。
 
 注：目前只有规划中的 SGML 支持使用数据作为元素的内容，即 `dataContent`。
 
@@ -5506,6 +5508,10 @@ Content-Type: text/plain
     <request on="#myInput" to="get:value" />
 ```
 
+在 `request` 标签的 `to` 属性中引用动态属性时，其名称应符合 `set:prop[<property_name>]` 或 `get:prop.style[<style_property_name>]` 的形式。前者用于引用元素的动态属性值，后者用于引用元素的渲染用样式属性（如 CSS 样式）。但在如下几种情况下可采用简化形式：
+
+- 若动态属性名称符合 `literal_variable_token` 规范，则可在 `get/set:` 之后省略 `prop.` 并直接使用其名称，如 `set:value`；否则应使用 `prop[<property_name>]` 这样的写法，如 `get:proprop[-data-value]`。
+- 若渲染用样式属性的名称符合`literal_variable_token` 规范，则可省略 `prop.` 并使用 `set:style.<property_name>` 这样的写法，如 `set:style.width`；否则应使用 `get:style[<property_name>]` 这样的用法，如 `get:style[-webkit-translate]`。
 
 我们还可以使用 `request` 在指定的元素上执行一段渲染器支持的函数调用代码，并在函数调用代码中使用渲染器设定的如下预定义变量：
 
@@ -7741,6 +7747,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
+- 2024 年 11 月 30 日：发布 V1.0 RCh，标记为 'v1.0-rch-241130'。
 - 2023 年 11 月 30 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231130'。
 - 2023 年 09 月 30 日：发布 V1.0 RCf，标记为 'v1.0-rcf-230930'。
 - 2023 年 08 月 31 日：发布 V1.0 RCe，标记为 'v1.0-rce-230831'。
@@ -7757,6 +7764,19 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
+
+#### RCh) 241130
+
+##### RCh.1) 细化了动态属性的写法
+
+主要修订内容如下：
+
+说明了文档元素静态属性和动态属性的区别，并细化了 `request` 标签中动态属性的写法。
+
+相关章节：
+
+- [2.1.17) 文档片段的结构化数据表达](#2117-文档片段的结构化数据表达)
+- [2.5.16) `request` 标签](#2516-request-标签)
 
 #### RCg) 231130
 
