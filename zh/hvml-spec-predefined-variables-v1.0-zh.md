@@ -5492,9 +5492,9 @@ $STREAM.open(
            >
            [, < 'raw | message | websocket | hbdbus' $ext_protocol = 'raw': `the extended protocol will be used on the stream.`
                - 'raw':                 `No extended protocol.`
-               - 'message':             `WebSocket-like message-based protocol; only for `unix://` and `fifo://` connections.`
-               - 'websocket':           `WebSocket protocol; only for `tcp:// connections.`
-               - 'hbdbus':              `HybridOS data bus protocol; only for `unix://` and `tcp://` connections.`
+               - 'message':             `WebSocket-like message-based protocol; only for `local://` and `fifo://` connections.`
+               - 'websocket':           `WebSocket protocol; only for `inetvN:// connections.`
+               - 'hbdbus':              `HybridOS data bus protocol; only for `local://` and `inetvN://` connections.`
               >
                 [, <object $extra_options: `the extra options.` >
                 ]
@@ -5511,9 +5511,9 @@ $STREAM.open(
 - `file://Documents/mydata`：当前工作路径下的 `Document/mydata` 文件。
 - `pipe:///usr/bin/wc`：在子进程中执行指定的系统程序，创建匿名管道作为子进程的标准输入、输出和错误。可通过 URI 中的查询参数传递命令行所需要的选项和/或参数。
 - `fifo:///var/tmp/namedpipe`：FIFO，也就是命名管道。
-- `unix:///var/run/myapp.sock`：裸的 UNIX 套接字。
-- `tcp://foo.com:1100`：裸的 TCP 套接字。
-- `udp://foo.com:1100`：裸的 UDP 套接字。
+- `local:///var/run/myapp.sock`：裸的 UNIX 套接字。
+- `inetv4://foo.com:1100`：裸的 Internet v4 套接字。
+- `inetv6://foo.com:1100`：裸的 Internet v6 套接字。
 
 我们可以在 `open` 方法中指定流数据的更高层应用协议，通过扩展流实体提供的方法来方便程序的使用，比如：
 
@@ -5949,7 +5949,7 @@ du -BM hvml-spec-v1.0-zh.md
 
 #### 3.12.9) `message`、`websocket` 协议扩展
 
-在使用 URI 图式 `fifo://`、`unix://`、`tcp://` 的流实体上，可使用 `message` 或 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
+在使用 URI 图式 `fifo://`、`local://`、`inetvN://` 的流实体上，可使用 `message` 或 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
 
 对应的扩展方法有：
 
@@ -5975,7 +5975,7 @@ du -BM hvml-spec-v1.0-zh.md
 
 #### 3.12.10) `hbdbus` 协议扩展
 
-在使用 URI 图式 `tcp://`、`unix://` 的流实体上，可使用 `hbdbus` 扩展协议。
+在使用 URI 图式 `inetvN://`、`local://` 的流实体上，可使用 `hbdbus` 扩展协议。
 
 对应的扩展方法有：
 
@@ -6012,8 +6012,8 @@ du -BM hvml-spec-v1.0-zh.md
 
 `$SOCKET` 是一个行者级内置变量，该变量可用于创建流套接字或者数据报套接字，并监听该套接字上的连接请求，或者直接收发消息。该变量主要提供如下接口：
 
-- 使用 `$SOCKET` 提供的 `stream()` 方法，可创建一个用于监听连接请求的流套接字原生实体。
-- 使用 `$SOCKET` 提供的 `dgram()` 方法，可创建一个数据报套接字原生实体。
+- 使用 `$SOCKET` 提供的 `stream()` 方法，可创建一个用于监听连接请求的流套接字（streamSocket）原生实体。
+- 使用 `$SOCKET` 提供的 `dgram()` 方法，可创建一个数据报套接字（datagramSocket）原生实体。
 
 流套接字（streamSocket）原生实体主要提供如下接口：
 
@@ -6024,10 +6024,10 @@ du -BM hvml-spec-v1.0-zh.md
 - `accept()` 方法，用于接受连接请求并返回一个流（stream）实体。和 `$STREAM.open` 方法类似，可传入扩展协议以及参数。
 - `deny()` 方法，用于拒绝一个连接请求。
 
-下面的 HVML 代码，在指定的 UNIX 域套接字上监听连接请求（`connAttempt` 事件），然后在表示流套接字（streamSocket）原生实体上调用 `accept` 方法：
+下面的 HVML 代码，在指定的 UNIX 域流套接字上监听连接请求（`connAttempt` 事件），然后在表示流套接字连接（streamSocketConnection）的原生实体上调用 `accept` 方法：
 
 ```html
-    <choose on $SOCKET.stream('unix:///var/run/myapp.sock') >
+    <choose on $SOCKET.stream('local:///var/run/myapp.sock') >
         <observe on $? for 'connAttempt' >
             <choose on $?.accept('message') >
                 ...
@@ -6036,8 +6036,7 @@ du -BM hvml-spec-v1.0-zh.md
     </choose>
 ```
 
-`$streamSocketConnection.accept()` 方法返回一个 “流（stream）实体” ，从而可利用 [流实体](#312-stream)提供的接口发送或接受数据。
-
+`$streamSocketConnection.accept()` 方法返回一个流（stream）实体 ，从而可利用 [流实体](#312-stream)提供的接口发送或接收数据。
 
 #### 3.13.1) `stream` 方法
 
@@ -6047,11 +6046,11 @@ du -BM hvml-spec-v1.0-zh.md
 
 ```js
 $SOCK.stream(
-        < string $uri: `the URI of the stream.` >
-        [, <'[create || truncate || nonblock] | default' $opt = 'default':
+        < string $uri: `the URI of the stream socket.` >
+        [, <'[create || nonblock] | default' $opt = 'default':
                - 'create':      `If $uri does not exist, try to create it`
-               - 'nonblock':    `Open the $uri in nonblocking mode`
-               - 'default':     `equivalent to 'create nonblock'`
+               - 'nonblock':    `Open the socket in nonblocking mode`
+               - 'default':     `equivalent to 'create nonblock ipv4'`
            >
                 [, <longint $backlog: `the backlog.` >
                 ]
@@ -6064,8 +6063,9 @@ $SOCK.stream(
 
 该方法使用 URI 指定要打开的流套接字位置，如：
 
-- `unix:///var/run/myapp.sock`：UNIX 套接字。
-- `tcp://foo.com:1100`：TCP 套接字。
+- `local:///var/run/myapp.sock`：本地套接字。
+- `inetv4://foo.com:1100`：Internet v4 套接字。
+- `inetv6://foo.com:1100`：Internet v6 套接字。
 
 **异常**
 
@@ -6081,7 +6081,7 @@ $SOCK.stream(
 **示例**
 
 ```js
-$SOCK.stream("unix://var/run/myapp.sock")
+$SOCK.stream("local://var/run/myapp.sock")
 ```
 
 #### 3.13.2) `dgram` 方法
@@ -6106,8 +6106,9 @@ $SOCK.dgram(
 
 该方法使用 URI 指定要打开的流套接字位置，如：
 
-- `unix:///var/run/myapp.sock`：UNIX 数据报套接字。
-- `udp://foo.com:1100`：UDP 数据报套接字。
+- `local:///var/run/myapp.sock`：本地数据报套接字。
+- `inetv4://foo.com:1100`：Internet v4 数据报套接字。
+- `inetv6://foo.com:1100`：Internet v6 数据报套接字。
 
 **异常**
 
@@ -6123,7 +6124,7 @@ $SOCK.dgram(
 **示例**
 
 ```js
-$SOCK.stream("unix://var/run/myapp.sock")
+$SOCK.stream("local://var/run/myapp.sock")
 ```
 
 #### 3.13.3) 流套接字实体
@@ -7141,7 +7142,7 @@ $FS.file_is(
             'dir' - `a directory.`
             'regular' - `a regular file.`
             'symlink' - `a symbolic link.`
-            'socket' - `a unix socket file.`
+            'socket' - `a local/unix socket file.`
             'pipe' - ``a named pipe file or just a pipe file.``
             'block' - `a block device file.`
             'char' - `a character device file.`
@@ -9254,6 +9255,10 @@ $sqliteCursor.connection
 #### OR0) 250228
 
 1. 重新整理 `SOCKET`。
+1. 用于指定流套接字位置的 URI 变更：
+   - 使用 `local` 替代 `unix`（实现上可同时支持）。
+   - 引入 `inetv4` 和 `inetv6` 分别表示 Internet v4 或 v6 地址。
+   - 移除 `tcp://` 和 `udp://`。
 
 #### RCh) 240131
 
