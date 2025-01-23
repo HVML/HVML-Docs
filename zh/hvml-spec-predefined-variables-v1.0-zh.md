@@ -1,19 +1,19 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-RCh  
+Version: 1.0-OR0  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Jan. 31, 2024  
-Status: Release Candidate  
-Release Name: 硕鼠  
+Last Modified Date: Jan. 31, 2025  
+Status: Official Release  
+Release Name: 丑牛  
 Language: Chinese
 
 *Copyright Notice*
 
-版权所有 &copy; 2021, 2022, 2023, 2024 魏永明  
-版权所有 &copy; 2021, 2022, 2023, 2024 北京飞漫软件技术有限公司  
+版权所有 &copy; 2021, 2022, 2023, 2024, 2025 北京飞漫软件技术有限公司  
+版权所有 &copy; 2021, 2022, 2023, 2024, 2025 魏永明  
 保留所有权利
 
 此文档不受 HVML 相关软件开源许可证的管辖。
@@ -335,6 +335,7 @@ Language: Chinese
          - [4.5.5.10) `connection` 属性](#45510-connection-属性)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
+      * [OR0) 250131](#or0-250131)
       * [RCh) 240131](#rch-240131)
       * [RCg) 231130](#rcg-231130)
       * [RCd) 230630](#rcd-230630)
@@ -6336,26 +6337,36 @@ du -BM hvml-spec-v1.0-zh.md
 
 - [合璧操作系统设备端数据总线概要设计](https://github.com/HybridOS2/Documents/blob/master/zh/hybridos-design-data-bus-zh.md)
 
-### 3.13) `SOCK`
+### 3.13) `SOCKET`
 
-`$SOCK` 是一个行者级内置变量，该变量用于创建流套接字或者数据报套接字，并监听该套接字上的连接请求或者接收消息或发送消息。
+`$SOCKET` 是一个行者级内置变量，该变量可用于创建流套接字或者数据报套接字，并监听该套接字上的连接请求，或者直接收发消息。该变量主要提供如下接口：
 
-下面的 HVML 代码，在指定的 UNIX 域套接字上监听连接请求，然后在表示流套接字的原生实体上调用 `accept` 方法：
+- 使用 `$SOCKET` 提供的 `stream()` 方法，可创建一个用于监听连接请求的流套接字原生实体。
+- 使用 `$SOCKET` 提供的 `dgram()` 方法，可创建一个数据报套接字原生实体。
+
+流套接字（streamSocket）原生实体主要提供如下接口：
+
+- `connAttempt` 事件，用于通知一个新的连接请求。该事件的负载为一个流套接字连接（streamSocketConnection）原生实体。
+
+流套接字连接（streamSocketConnection）原生实体主要提供如下接口：
+
+- `accept()` 方法，用于接受连接请求并返回一个流（stream）实体。和 `$STREAM.open` 方法类似，可传入扩展协议以及参数。
+- `deny()` 方法，用于拒绝一个连接请求。
+
+下面的 HVML 代码，在指定的 UNIX 域套接字上监听连接请求（`connAttempt` 事件），然后在表示流套接字（streamSocket）原生实体上调用 `accept` 方法：
 
 ```html
-    <choose on $SOCK.listen('unix:///var/run/myapp.sock') >
-        <observe on $? for 'connRequest' >
-            <choose on $?.accept() >
+    <choose on $SOCKET.stream('unix:///var/run/myapp.sock') >
+        <observe on $? for 'connAttempt' >
+            <choose on $?.accept('message') >
                 ...
             </choose>
         </observe>
     </choose>
 ```
 
-`$SOCK.listen` 方法返回的原生实体，称为“流套接字（streamSocket）实体”。流套接字实体应提供如下基本接口：
+`$streamSocketConnection.accept()` 方法返回一个 “流（stream）实体” ，从而可利用 [流实体](#312-stream)提供的接口发送或接受数据。
 
-- `connRequest` 事件，用于通知一个新的连接请求。
-- `accept`：接受连接请求并创建一个流（stream）实体。可 `$STREAM.open` 方法类似，可传入扩展协议以及参数。
 
 #### 3.13.1) `stream` 方法
 
@@ -6444,7 +6455,39 @@ $SOCK.dgram(
 $SOCK.stream("unix://var/run/myapp.sock")
 ```
 
-##### 3.13.2.1) 流套接字实体的 `accept` 方法
+#### 3.13.3) 流套接字实体接口
+
+##### 3.13.3.1) `sendto` 方法
+
+通过该方法发送消息。
+
+##### 3.13.3.2) `recvfrom` 方法
+
+通过该方法接收消息。
+
+##### 3.13.3.3) `close` 方法
+
+关闭流套接字。
+
+#### 3.13.4) 数据报套接字实体接口
+
+##### 3.13.4.1) `sendto` 方法
+
+通过该方法发送消息。
+
+##### 3.13.4.2) `recvfrom` 方法
+
+通过该方法接收消息。
+
+##### 3.13.4.3) `close` 方法
+
+关闭数据报套接字。
+
+#### 3.13.5) 流套接字连接实体
+
+流套接字连接（streamSocketConnection）实体代表一个来自客户端的流套接字连接请求。可通过该实体提供的方法接受或拒绝一个连接请求。
+
+##### 3.13.5.1) `accept`
 
 接受来自客户端的连接请求，并创建对应的流实体。
 
@@ -6479,33 +6522,13 @@ $streamSocket.accept(
 
 **示例**
 
-##### 3.13.2.2) 流套接字实体的 `send` 方法
+##### 3.13.5.2) `deny` 方法
 
-通过该方法发送消息。
+拒绝连接请求。
 
-##### 3.13.2.3) 流套接字实体的 `recv` 方法
+##### 3.13.5.3) `peer` 属性
 
-通过该方法接收消息。
-
-##### 3.13.2.4) 流套接字实体的 `close` 方法
-
-关闭流套接字实体。
-
-##### 3.13.2.5) 流套接字实体的 `peer` 属性
-
-通过该属性，可获取接受连接请求的流套接字对应的对端（peer）地址信息。
-
-##### 3.13.2.6) 数据报套接字实体的 `send` 方法
-
-通过该方法发送消息。
-
-##### 3.13.2.7) 数据报套接字实体的 `recv` 方法
-
-通过该方法接收消息。
-
-##### 3.13.2.8) 数据报套接字实体的 `close` 方法
-
-关闭流套接字实体。
+通过该属性，可获取发起连接请求的流套接字对应的对端（peer）地址信息。
 
 ## 4) 可选动态变量
 
