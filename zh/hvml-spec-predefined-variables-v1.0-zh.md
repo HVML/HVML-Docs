@@ -6050,7 +6050,7 @@ $SOCK.stream(
         [, <'[create || nonblock] | default' $opt = 'default':
                - 'create':      `If $uri does not exist, try to create it`
                - 'nonblock':    `Open the socket in nonblocking mode`
-               - 'default':     `equivalent to 'create nonblock ipv4'`
+               - 'default':     `equivalent to 'create nonblock'`
            >
                 [, <longint $backlog: `the backlog.` >
                 ]
