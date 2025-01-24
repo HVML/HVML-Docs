@@ -1,19 +1,19 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0-RCh  
+Version: 1.0-OR0  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Nov. 18, 2024  
+Last Modified Date: Feb. 28, 2025  
 Status: Release Candidate  
-Release Name: 硕鼠  
+Release Name: 丑牛  
 Language: Chinese
 
 *Copyright Notice*
 
-版权所有 &copy; 2020, 2021, 2022, 2023, 2024 魏永明  
-版权所有 &copy; 2021, 2022, 2023, 2024 北京飞漫软件技术有限公司  
+版权所有 &copy; 2020, 2021, 2022, 2023, 2024, 2025 魏永明  
+版权所有 &copy; 2021, 2022, 2023, 2024, 2025 北京飞漫软件技术有限公司  
 保留所有权利
 
 此文档不受 HVML 相关软件开源许可证的管辖。
@@ -950,7 +950,7 @@ HVML 定义如下基本容器（basic container）类型：
 HVML 还定义有如下两种特殊数据类型：
 
 - 动态值（dynamic value）。动态值本质上由 `获取器（getter）` 和 `设置器（setter）` 方法构成，读取时，由获取器返回对应的值，设置时，由设置器完成对应的工作。
-- 原生实体（native entity）。由底层实现的原生实体，通常用于代表一些可执行复杂操作的抽象数据，如读写流、长连接等。这些复杂操作包括实现虚拟属性上的获取器或设置器方法，实现对原生对象的观察（observe）等。
+- 原生实体（native entity）。由底层实现的原生实体，通常用于代表一些可执行复杂操作的抽象对象，如读写流、数据报套接字等。这些复杂操作包括实现虚拟属性上的获取器或设置器方法，实现对原生对象的观察（observe）等。
 
 上述特殊数据类型属于内部数据类型，仅在运行时有效，在 HVML 代码中可通过变量和表达式访问。
 
@@ -1065,7 +1065,7 @@ id:1,name:Tom,age:2,male:true,;id:2,name:Jerry,age:3,male:true,
 
 “序列化（serialize）”指按照 JSON 或者 eJSON 格式化任意数据。eJSON 格式，可见本文档 [2.2.5) eJSON 语法](#225-ejson-语法)。
 
-序列化时，若按照 JSON 格式输出，则对 eJSON 扩展类型的数据，应统一输出为 `null` 或特定格式的字符串。
+序列化时，若按照 JSON 格式输出，则对 eJSON 扩展类型的数据，应统一输出为 `null` 或特定格式的字符串，这主要涉及如下三种数据类型：
 
 1. `undefined`。
 1. 动态值。
@@ -1470,6 +1470,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 - `rdrState:pageActivated`：当前协程对应的渲染器页面获得焦点。
 - `rdrState:pageDeactivated`：当前协程对应的渲染器页面失去焦点。
 - `rdrState:pageSuppressed`：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
+- `rdrState:pageRestored`：当前协程的文档内容从压制中恢复。
 - `rdrState:pageReloaded`：当前协程的文档内容重新装载到渲染器。
 - `rdrState:pageClosed`：协程对应的渲染器页面被用户关闭。
 - `rdrState:connLost`：协程所在行者丢失渲染器的连接。
@@ -1651,10 +1652,10 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
     </observe>
 ```
 
-另外，`STREAM` 变量应使用可扩展的实现，一方面，我们可以扩展流实体的类型，比如从文件、匿名管道、命名管道到 Unix 套接字、TCP 连接，另一方面，我们可以通过支持不同的协议来扩展流实体提供的操作方法，从而在流实体上提供额外的读写方法。比如，当某个解释器实现的 `$STREAM` 方法支持发送 HTTP 协议时，即可实现发送 HTTP 请求以及处理 HTTP 协议的方法：
+另外，`STREAM` 变量应使用可扩展的实现，一方面，我们可以扩展流实体的类型，比如从文件、匿名管道、命名管道到 UNIX/Local 套接字、因特网连接，另一方面，我们可以通过支持不同的协议来扩展流实体提供的操作方法，从而在流实体上提供额外的读写方法。比如，当某个解释器实现的 `$STREAM` 方法支持发送 HTTP 协议时，即可实现发送 HTTP 请求以及处理 HTTP 协议的方法：
 
 ```hvml
-    <init as="myFetcher" on="$STREAM.open('tcp://foo.com:80','default','http')">
+    <init as="myFetcher" on="$STREAM.open('inetv4://foo.com:80','default','http')">
         <choose on="$myFetcher.http_send_request('GET','/')" />
         <choose on="$myFetcher.http_read_response_header()" />
     </init>
@@ -1681,12 +1682,12 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 `$STREAM` 变量本质上是一个必要的行者级动态对象。
 
-11) `$SOCK`
+11) `$SOCKET`
 
-`$SOCK` 是一个用于创建流套接字或数据报套接字的原生实体对象。该变量是一个必要的行者级动态对象。
+`$SOCKET` 是一个用于创建流套接字或数据报套接字的原生实体对象。该变量是一个必要的行者级动态对象。
 
-1. `$SOCK.stream()`：创建流套接字并在其上监听来自客户端的连接请求。该方法返回一个流套接字实体，可观察流套接字实体上的 `connRequest` 事件，并调用 `accept()` 方法接受连接请求。流套接字实体上的 `accept()` 方法将返回一个流实体。
-1. `$SOCK.dgram()`：创建数据报套接字。
+1. `$SOCKET.stream()`：创建流套接字并在其上监听来自客户端的连接请求。该方法返回一个流套接字实体，可观察流套接字实体上的 `connAttempt` 事件，并调用随该事件构造的流套接字连接实体的 `accept()` 方法接受连接请求。流套接字连接实体上的 `accept()` 方法将返回一个流实体。
+1. `$SOCKET.dgram()`：创建数据报套接字。
 
 12) `$RDR`
 
@@ -4821,7 +4822,7 @@ Content-Type: text/plain
 ```hvml
 <hvml lang="en">
     <head>
-        <init as="mqtt" with=$STREAM.open('tcp://foo.bar.com:1366','default','mqtt') />
+        <init as="mqtt" with=$STREAM.open('inetv4://foo.bar.com:1366','default','mqtt') />
     </head>
 
     <body>
@@ -5496,6 +5497,8 @@ Content-Type: text/plain
     document.getElementById('#my-video').doSomething(['value for foo', 'value for bar']);
 ```
 
+在不支持 JavaScript 的渲染器中，以上请求将由渲染器自定义的方式进行处理，比如调用为 `to` 属性值事先准备的一个函数，并将 `with` 属性的值作为参数传入该函数。
+
 我们在 `to` 属性中使用具有 `get:` 或者 `set:` 前缀的方法名，可用来获取或者设置特定文档元素的动态属性值。比如下面的代码将 `#myInput` 元素设置为禁止，并使用 `noreturn` 副词属性，忽略响应。
 
 ```hvml
@@ -5528,7 +5531,7 @@ Content-Type: text/plain
 
 ```js
 const method = new Function('ELEMENT', 'ARG', 'return bootstrap.Carousel.getInstance(ELEMENT).to(ARG)');
-const result = method(document.getElementByHVMLHandle('4567834'), 0);
+const result = method(document.getElementById('myModal'), 0);
 ```
 
 使用这种方法时，当参数为数组时，可使用渲染器脚本语言支持的方式引用其中的成员，如 `ARG[0]`、`ARG[1]`。
@@ -7667,7 +7670,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
-        <init as="braceletInfo" with=$STREAM.open('tcp://foo.bar:1300','default','mqtt') />
+        <init as="braceletInfo" with=$STREAM.open('inetv4://foo.bar:1300','default','mqtt') />
 
         <update on="$TIMERS" to="unite">
             [
@@ -7747,6 +7750,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
+- 2025 年 02 月 28 日：发布 V1.0 OR0，标记为 'v1.0-or0-250228'。
 - 2024 年 11 月 30 日：发布 V1.0 RCh，标记为 'v1.0-rch-241130'。
 - 2023 年 11 月 30 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231130'。
 - 2023 年 09 月 30 日：发布 V1.0 RCf，标记为 'v1.0-rcf-230930'。
@@ -7764,6 +7768,24 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
+
+#### OR0) 250228
+
+##### OR0.1) 调整预定义变量 `$SOCK` 的名称
+
+将预定义变量 `$SOCK` 名称调整为 `$SOCKET`，并调整了相关内容。
+
+相关章节：
+
+- [2.1.6.3) 预定义变量](#2163-预定义变量)
+
+##### OR0.2) 新增 `rdrState:pageRestored` 事件
+
+- `rdrState:pageRestored`：当前协程对应的渲染器页面从压制中恢复。
+
+相关章节：
+
+- [2.1.6.3) 预定义变量](#2163-预定义变量)
 
 #### RCh) 241130
 
@@ -8892,7 +8914,7 @@ def on_battery_changed (on_value, with_value, root_in_scope):
 - `send` 标签用来在指定的长连接上发出一个消息。
 - `disconnect` 标签用于显式关闭一个先前建立的外部数据源连接。
 
-- `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URL，如 `tcp://foo.com:2345`、 `unix:///var/run/hbdbus.sock`。
+- `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URL，如 `inetv4://foo.com:2345`、 `unix:///var/run/hbdbus.sock`。
 - `for`：在 `connect` 标签中，用于定义协议或用途。
 - `with`：在 `send` 元素中定义发送请求或消息时的参数。
 
