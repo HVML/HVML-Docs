@@ -6006,7 +6006,7 @@ du -BM hvml-spec-v1.0-zh.md
 **描述**
 
 ```js
-$SOCK.stream(
+$SOCKET.stream(
         < string $uri: `the URI of the stream socket.` >
         [, <'[create || nonblock] | default' $opt = 'default':
                - 'create':      `If $uri does not exist, try to create it`
@@ -6042,7 +6042,7 @@ $SOCK.stream(
 **示例**
 
 ```js
-$SOCK.stream("local://var/run/myapp.sock")
+$SOCKET.stream("local://var/run/myapp.sock")
 ```
 
 #### 3.13.2) `dgram` 方法
@@ -6052,7 +6052,7 @@ $SOCK.stream("local://var/run/myapp.sock")
 **描述**
 
 ```js
-$SOCK.dgram(
+$SOCKET.dgram(
         < string $uri: `the URI of the dgram socket.` >
         [, <'[create || truncate || nonblock] | default' $opt = 'default':
                - 'create':      `If $uri does not exist, try to create it`
@@ -6085,7 +6085,7 @@ $SOCK.dgram(
 **示例**
 
 ```js
-$SOCK.stream("local://var/run/myapp.sock")
+$SOCKET.stream("local://var/run/myapp.sock")
 ```
 
 #### 3.13.3) 流套接字实体
