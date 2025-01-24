@@ -168,7 +168,7 @@ Language: Chinese
 
 #### 2.1.1) 批量新增定时器
 
-```html
+```hvml
     <update on="$TIMERS" to="unite">
         [
             { "id" : "foo", "interval" : 1000, "active" : "no" },
@@ -180,7 +180,7 @@ Language: Chinese
 
 #### 2.1.2) 新增一个定时器
 
-```html
+```hvml
     <update on="$TIMERS" to="add">
         { "id" : "foobar", "interval" : 3000, "active" : "yes" }
     </update>
@@ -188,7 +188,7 @@ Language: Chinese
 
 #### 2.1.3) 移除一个定时器
 
-```html
+```hvml
     <update on="$TIMERS" to="remove">
         { "id" : "foobar" }
     </update>
@@ -196,7 +196,7 @@ Language: Chinese
 
 #### 2.1.4) 移除多个定时器
 
-```html
+```hvml
     <update on="$TIMERS" to="subtract">
         [
             { "id" : "foo" },
@@ -207,7 +207,7 @@ Language: Chinese
 
 #### 2.1.5) 修改特定定时器的属性
 
-```html
+```hvml
     <!-- activate the timer `foo` -->
     <choose on="$TIMERS" by="FILTER: AS 'foo'">
         <update on="$?" at=".active" with="yes" />
@@ -216,7 +216,7 @@ Language: Chinese
 
 或，
 
-```html
+```hvml
     <update on="$TIMERS" to="overwrite">
         { "id" : "foo", "interval": 1500, "active" : "yes" }
     </update>
@@ -967,7 +967,7 @@ $RUNNER.autoSwitchingRdr(! false )
 
 `myObj` 是 `RUNNER` 的一个静态属性，用来定义用户自定义键值对，初始为一个空对象。程序可使用 `update` 元素设置其内容：
 
-```html
+```hvml
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
@@ -986,7 +986,7 @@ $RUNNER.autoSwitchingRdr(! false )
 
 由于 `$RUNNER` 是行者级变量，故而可以在当前行者的另一个 HVML 协程中观察该数据上的变化：
 
-```html
+```hvml
     <observe on="$RUNNER.myObj" for="change:AUTHOR" in="#theStatusBar">
         ...
     </observe>
@@ -1785,13 +1785,13 @@ $DOC.serialize
 
 在以上接口支持下，HVML 动作元素中通过 CSS 选择器引用元素时，如：
 
-```html
+```hvml
 <update on '#the-user-stats > h2 > span' at 'textContent attr.class' with ["10", "text-warning"] />
 ```
 
 相当于：
 
-```html
+```hvml
 <update on $DOC.query('#the-user-stats > h2 > span') at 'textContent attr.class' with ["10", "text-warning"] />
 ```
 
@@ -3768,7 +3768,7 @@ $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) }
 
 `map` 是 `T` 的一个静态属性，用来定义字符串映射表，初始为空对象。程序可使用 `update` 元素设置其内容：
 
-```html
+```hvml
 <!DOCTYPE hvml>
 <hvml target="html">
     <head>
@@ -5384,7 +5384,7 @@ $URL.assemble(
 
 下面的 HVML 代码，打开了一个本地文件，然后在代表读取流的原生实体上调用 `readstruct` 方法：
 
-```html
+```hvml
     <init as="formats">
         [
             "bytes:2 padding:2 u32le u32le",
@@ -5415,7 +5415,7 @@ $URL.assemble(
 
 通常来讲，流实体应该是可被观察的，从而可以监听读取流上是否有数据等待读取，或者是否可向写入流中写入数据。比如，我们可以观察 `$STREAM.stdin`，以便监听用户的输入：
 
-```html
+```hvml
     <observe on="$STREAM.stdin" for="read">
         <choose on="$?.readlines(1)">
             ...
@@ -5425,7 +5425,7 @@ $URL.assemble(
 
 另外，`STREAM` 变量应使用可扩展的实现，从而针对不同的流类型，在流实体上提供额外的读写方法，从而可以实现对某些应用层协议的支持。比如，当某个解释器实现的 `$STREAM` 方法支持发送 HTTP 请求时，即可实现额外用于处理 HTTP 协议头的方法：
 
-```html
+```hvml
     <observe on="$STREAM.open('http://foo.com/')" for="read">
         <choose on="$?.http_get_headers()">
             ...
@@ -5987,7 +5987,7 @@ du -BM hvml-spec-v1.0-zh.md
 
 下面的 HVML 代码，在指定的 UNIX 域流套接字上监听连接请求（`connAttempt` 事件），然后在表示流套接字连接（streamSocketConnection）的原生实体上调用 `accept` 方法：
 
-```html
+```hvml
     <choose on $SOCKET.stream('local:///var/run/myapp.sock') >
         <observe on $? for 'connAttempt' >
             <choose on $?.accept('message') >
