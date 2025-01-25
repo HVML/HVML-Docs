@@ -829,6 +829,22 @@ $SYS.random(-10FL)
 - C 标准函数：`srandom_r()`
 - C 标准函数：`initstate_r()`
 
+#### 3.1.13) `spawn` 方法
+
+创建子进程。
+
+**描述**
+
+```js
+$SYS.spawn(
+        <string $prog_path: `the path of the executable program.`>,
+        <object $env: `the environment keeps for child process.`>,
+        <string $chdir: `chdir to this directory before spawning.`>,
+        <string $chroot: `chroot to this directory after spawning.`>,
+        <object $fds: `how to handle the opened file descriptors.`>,
+) array of native/stream | false
+```
+
 ### 3.2) `RUNNER`
 
 该变量是一个行者级内置变量，解释器在创建一个新的行者时，会自动创建并绑定。该变量主要用于行者相关的信息，并提供给用户在当前行者的不同协程之间共享数据的机制。
@@ -5473,8 +5489,8 @@ $STREAM.open(
 - `pipe:///usr/bin/wc`：在子进程中执行指定的系统程序，创建匿名管道作为子进程的标准输入、输出和错误。可通过 URI 中的查询参数传递命令行所需要的选项和/或参数。
 - `fifo:///var/tmp/namedpipe`：FIFO，也就是命名管道。
 - `local:///var/run/myapp.sock`：裸的 UNIX 套接字。
-- `inetv4://foo.com:1100`：裸的 Internet v4 套接字。
-- `inetv6://foo.com:1100`：裸的 Internet v6 套接字。
+- `inet4://foo.com:1100`：裸的 Internet v4 套接字。
+- `inet6://foo.com:1100`：裸的 Internet v6 套接字。
 
 我们可以在 `open` 方法中指定流数据的更高层应用协议，通过扩展流实体提供的方法来方便程序的使用，比如：
 
@@ -5982,16 +5998,21 @@ du -BM hvml-spec-v1.0-zh.md
 
 流套接字连接（streamSocketConnection）原生实体主要提供如下接口：
 
-- `accept()` 方法，用于接受连接请求并返回一个流（stream）实体。和 `$STREAM.open` 方法类似，可传入扩展协议以及参数。
-- `deny()` 方法，用于拒绝一个连接请求。
+- `accept()` 方法：用于接受连接请求并返回一个流（stream）实体。和 `$STREAM.open` 方法类似，可传入扩展协议以及参数。
+- `deny()` 方法：用于拒绝一个连接请求。
+- `handshake` 事件：在以指定的协议接受来自客户端的连接请求，且接受到来自客户端的握手信息后激发此事件。在处理此事件时，可通过协议专属的属性获得请求相关的信息，或者调用协议专属的方法做应答，亦可拒绝请求关闭连接。
 
-下面的 HVML 代码，在指定的 UNIX 域流套接字上监听连接请求（`connAttempt` 事件），然后在表示流套接字连接（streamSocketConnection）的原生实体上调用 `accept` 方法：
+下面的 HVML 代码，在指定的 UNIX 域流套接字上监听连接请求（`connAttempt` 事件），然后在表示流套接字连接（streamSocketConnection）的原生实体上调用 `accept()` 方法。注意在 `accept()` 方法中，指定了 `websocket` 协议，故而要继续监听 `handshake` 事件，并在处理此事件时做最终响应或者拒绝请求等。
 
 ```hvml
-    <choose on $SOCKET.stream('local:///var/run/myapp.sock') >
+    <choose on $SOCKET.stream('inet6://foobar.com:8888') >
         <observe on $? for 'connAttempt' >
-            <choose on $?.accept('message') >
-                ...
+            <init as 'stream' with $?.accept('websocket') >
+                <observe on $? for 'handshake' >
+                    <inherit>
+                        $stream.ws_send_handshake_resp(...)
+                    </inherit>
+                </observe>
             </choose>
         </observe>
     </choose>
@@ -6025,8 +6046,8 @@ $SOCKET.stream(
 该方法使用 URI 指定要打开的流套接字位置，如：
 
 - `local:///var/run/myapp.sock`：本地套接字。
-- `inetv4://foo.com:1100`：Internet v4 套接字。
-- `inetv6://foo.com:1100`：Internet v6 套接字。
+- `inet4://foo.com:1100`：Internet v4 套接字。
+- `inet6://foo.com:1100`：Internet v6 套接字。
 
 **异常**
 
@@ -6068,8 +6089,8 @@ $SOCKET.dgram(
 该方法使用 URI 指定要打开的流套接字位置，如：
 
 - `local:///var/run/myapp.sock`：本地数据报套接字。
-- `inetv4://foo.com:1100`：Internet v4 数据报套接字。
-- `inetv6://foo.com:1100`：Internet v6 数据报套接字。
+- `inet4://foo.com:1100`：Internet v4 数据报套接字。
+- `inet6://foo.com:1100`：Internet v6 数据报套接字。
 
 **异常**
 
@@ -6088,55 +6109,27 @@ $SOCKET.dgram(
 $SOCKET.stream("local://var/run/myapp.sock")
 ```
 
-#### 3.13.3) 流套接字实体
-
-##### 3.13.3.1) `sendto` 方法
-
-通过该方法发送消息。
-
-##### 3.13.3.2) `recvfrom` 方法
-
-通过该方法接收消息。
-
-##### 3.13.3.3) `close` 方法
-
-关闭流套接字。
-
-#### 3.13.4) 数据报套接字实体
-
-##### 3.13.4.1) `sendto` 方法
-
-通过该方法发送消息。
-
-##### 3.13.4.2) `recvfrom` 方法
-
-通过该方法接收消息。
-
-##### 3.13.4.3) `close` 方法
-
-关闭数据报套接字。
-
-#### 3.13.5) 流套接字连接实体
+#### 3.13.3) 流套接字连接实体
 
 流套接字连接（streamSocketConnection）实体代表一个来自客户端的流套接字连接请求。可通过该实体提供的方法接受或拒绝一个连接请求。
 
-##### 3.13.5.1) `accept`
+##### 3.1.3.3.1) `accept`
 
 接受来自客户端的连接请求，并创建对应的流实体。
 
 ```js
 $streamSocket.accept(
-    [, <'raw | message | websocket | secure-websocket | hbdbus | http | https' $extended_protocol = 'raw': `the extended protocol will be used on the stream.`
-           - 'raw':         `no any protocol.`
+    <'raw | message | websocket | secure-websocket | hbdbus | http | https' $extended_protocol = 'raw': `the extended protocol will be used on the stream.`
+           - 'raw':         `No any protocol.`
            - 'message':     `WebSocket-like, but only for UNIX socket connections.`
            - 'websocket':   `WebSocket.`
+           - 'secure-websocket':   `Secure WebSocket.`
            - 'hbdbus':      `HybridOS data bus protocol.`
            - 'http':        `Hyper text transfer protocol.`
            - 'https':       `Secure hyper text transfer protocol.`
         >
         [, <object $options: `the options for protocols.` >
         ]
-    ]
 ) native/stream | undefined
 ```
 
@@ -6155,13 +6148,47 @@ $streamSocket.accept(
 
 **示例**
 
-##### 3.13.5.2) `deny` 方法
+##### 3.1.3.3.2) `deny` 方法
 
 拒绝连接请求。
 
-##### 3.13.5.3) `peer` 属性
+##### 3.1.3.3.3) `peer` 属性
 
 通过该属性，可获取发起连接请求的流套接字对应的对端（peer）地址信息。
+
+##### 3.1.3.3.4) `ws_headers` 属性
+
+在指定使用 `websocket` 协议调用 `accept()` 方法成功后，该属性可用。通过该属性，可获取 WebSocket 客户端通过 HTTP Headers 发送来的请求信息。
+
+#### 3.13.4) 流套接字实体的扩展方法
+
+调用流套接字连接（streamSocketConnection）实体的 `accept()` 方法返回的流套接字原生实体，会根据应用层协议的不同提供一些扩展接口。
+
+##### 3.13.4.1) `sendto` 方法
+
+通过该方法发送消息。
+
+##### 3.13.4.2) `recvfrom` 方法
+
+通过该方法接收消息。
+
+##### 3.13.4.3) `ws_send_handshake_resp` 方法
+
+在指定使用 `websocket` 协议调用 `accept()` 方法成功后，该方法可用。通过该方法可向客户端发送指定的握手应答。
+
+#### 3.13.5) 数据报套接字实体
+
+##### 3.13.5.1) `sendto` 方法
+
+通过该方法发送消息。
+
+##### 3.13.5.2) `recvfrom` 方法
+
+通过该方法接收消息。
+
+##### 3.13.5.3) `close` 方法
+
+关闭数据报套接字。
 
 ## 4) 可选动态变量
 
@@ -9218,7 +9245,7 @@ $sqliteCursor.connection
 1. 重新整理 `SOCKET`。
 1. 用于指定流套接字位置的 URI 变更：
    - 使用 `local` 替代 `unix`（实现上可同时支持）。
-   - 引入 `inetv4` 和 `inetv6` 分别表示 Internet v4 或 v6 地址。
+   - 引入 `inet4` 和 `inet6` 分别表示 Internet v4 或 v6 地址。
    - 移除 `tcp://` 和 `udp://`。
 1. 删除 `$CRTN.sendingDocumentByURL` 属性。
 
