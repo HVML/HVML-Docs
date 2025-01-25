@@ -831,13 +831,14 @@ $SYS.random(-10FL)
 
 #### 3.1.13) `spawn` 方法
 
-创建子进程。
+创建子进程并在其中执行给定的程序。
 
 **描述**
 
 ```js
 $SYS.spawn(
         <string $prog_path: `the path of the executable program.`>
+        <array | tuple $argv: `the arguments to pass to the program.`>
         [, <object $env: `the environment keeps for child process.`>
             [, <object $options: `options for before or after spawning.`>
             ]
@@ -5908,6 +5909,10 @@ $stream.seek(
 $stream.seek(10, 'set')
     // ulongint: 10L
 ```
+
+##### 3.12.7.8) `fd` 属性
+
+获取流对应的文件描述符（仅针对 POSIX 系统）。
 
 #### 3.12.8) `pipe` 流实体
 
