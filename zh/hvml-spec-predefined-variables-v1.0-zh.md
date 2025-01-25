@@ -837,12 +837,27 @@ $SYS.random(-10FL)
 
 ```js
 $SYS.spawn(
-        <string $prog_path: `the path of the executable program.`>,
-        <object $env: `the environment keeps for child process.`>,
-        <string $chdir: `chdir to this directory before spawning.`>,
-        <string $chroot: `chroot to this directory after spawning.`>,
-        <object $fds: `how to handle the opened file descriptors.`>,
+        <string $prog_path: `the path of the executable program.`>
+        [, <object $env: `the environment keeps for child process.`>
+            [, <object $options: `options for before or after spawning.`>
+            ]
+        ]
 ) array of native/stream | false
+```
+
+用于子进程创建的选项使用一个对象描述：
+
+```js
+{
+    'chdir': <string: `chdir to directory before spawning`>,
+    'chroot': <string: `chroot to this directory after spawning (root only)`>,
+    'chown': <string: `change the user of the child process.`>,
+    'chgrp': <string: `change the group of the child process.`>,
+    'stdin':  <string: `[close | pipe ] || a full path starts with '/'`>,
+    'stdout': <string: `[close | pipe ] || a full path starts with '/'`>,
+    'stderr': <string: `[close | pipe ] || a full path starts with '/'`>,
+    'keepfds': <array | tuple: `The file descriptors to keep for child process`>,
+}
 ```
 
 ### 3.2) `RUNNER`
