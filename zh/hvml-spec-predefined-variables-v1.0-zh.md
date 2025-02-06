@@ -5546,6 +5546,59 @@ $STREAM.open(
 $STREAM.open("file://abc.md", "read write")
 ```
 
+#### 3.12.2) `from` 方法
+
+基于一个已有的文件描述符创建流实体。
+
+**描述**
+
+```js
+$STREAM.from(
+        < longint $fd: `the file descriptor.` >
+        [, <'[append || nonblock] | keep' $flags:
+               - 'append':      `Set the file descriptor in append mode.`
+               - 'nonblock':    `Set the file descriptor in nonblocking mode.`
+               - 'keep':        `Do not change the file descriptor status flags`
+           >
+           [, < 'raw | message | websocket | hbdbus' $ext_protocol = 'raw': `the extended protocol will be used on the stream.`
+               - 'raw':                 `No extended protocol.`
+               - 'message':             `WebSocket-like message-based protocol; only for 'local://' and 'fifo://' connections.`
+               - 'websocket':           `WebSocket protocol; only for 'inetN:// connections.`
+               - 'hbdbus':              `HybridOS data bus protocol; only for 'local://' and 'inetN://' connections.`
+              >
+                [, <object $extra_options: `the extra options.` >
+                ]
+           ]
+        ]
+) native/stream | undefined
+```
+
+该方法基于一个已有的文件描述符创建一个流实体，返回一个代表流的原生实体值。
+
+我们可以通过第三个可选参数指定流数据的更高层应用协议，通过扩展流实体提供的方法来方便程序的使用，比如：
+
+- `message`：在 UNIX 套接字之上使用类似 WebSocket 的、基于消息的方式处理数据。
+- `websocket`：在流套接字之上使用 WebSocket 协议处理数据。
+- `hbdbus`：使用 HBDBus 数据总线协议处理数据，方便程序通过 HBDBus 数据总线订阅事件或者发起远程过程调用并获得结果。
+- `mqtt`：使用 MQTT 物联网协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 MQTT 数据总线订阅事件或者发起远程过程调用并获得结果。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
+
+**备注**
+
+1. 流的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用 `$STREAM.close` 方法释放流实体占用的系统资源。
+
+**示例**
+
+```js
+$STREAM.from(5, 'keep', 'websocket')
+```
+
 #### 3.12.2) `close` 方法
 
 关闭流。
@@ -6152,7 +6205,6 @@ $SOCKET.dgram("local://var/run/myapp.sock")
 
 ```js
 $streamSocket.accept(
-    <'nonblock | default' $fd_opts: `the options of the new file descriptor for the new connection.`,
     <'raw | message | websocket | hbdbus' $extended_protocol = 'raw': `the extended protocol will be used on the stream.`
            - 'raw':         `No any protocol.`
            - 'message':     `WebSocket-like, but only for UNIX socket connections.`
