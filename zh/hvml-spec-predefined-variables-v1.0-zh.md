@@ -838,15 +838,19 @@ $SYS.random(-10FL)
 ```js
 $SYS.spawn(
         <string $prog_path: `the path of the executable program.`>
-        <array | tuple $argv: `the arguments to pass to the program.`>
+        <array | tuple | null $close_fds: `the file descriptors to close before the new child process starting execution.`>
+        <array | tuple | null $open_files: `the files to open before the new child process starting execution.`>
+        <array | tuple | null $dup2_fds: `the file descriptors to have a dup2 operation on them.`>
+        <array | tuple | null $inherit_fds: `the file descriptors to be marked for inheritance into the new process image.`>
+        <array | tuple | null $argv: `the arguments to pass to the program.`>
         [, <object $env: `the environment keeps for child process.`>
-            [, <object $options: `options for before or after spawning.`>
+            [, <object $options: `other options for before or after spawning.`>
             ]
         ]
 ) array of native/stream | false
 ```
 
-用于子进程创建的选项使用一个对象描述：
+用于子进程创建的选项 `$options` 使用一个对象描述：
 
 ```js
 {
@@ -854,12 +858,26 @@ $SYS.spawn(
     'chroot': <string: `chroot to this directory after spawning (root only)`>,
     'chown': <string: `change the user of the child process.`>,
     'chgrp': <string: `change the group of the child process.`>,
-    'stdin':  <string: `[close | pipe ] || a full path starts with '/'`>,
-    'stdout': <string: `[close | pipe ] || a full path starts with '/'`>,
-    'stderr': <string: `[close | pipe ] || a full path starts with '/'`>,
-    'keepfds': <array | tuple: `The file descriptors to keep for child process`>,
 }
 ```
+
+**参见**
+
+- POSIX 标准函数：`posix_spawn()`
+
+#### 3.1.14) `pipe` 方法
+
+创建用于父子进程通讯的单向匿名管道。
+
+**描述**
+
+```js
+$SYS.pipe() tuple with two longint elements | false
+```
+
+**参见**
+
+- POSIX 标准函数：`pipe()`
 
 ### 3.2) `RUNNER`
 
@@ -5465,7 +5483,61 @@ $URL.assemble(
     </choose>
 ```
 
-#### 3.12.1) `open` 方法
+#### 3.12.1) `from` 方法
+
+基于一个已有的文件描述符创建流实体。
+
+**描述**
+
+```js
+$STREAM.from(
+        < longint $fd: `the file descriptor.` >
+        [, <'[append || nonblock || cloexec] | keep' $flags = 'keep':
+               - 'append':      `Set the file descriptor in append mode.`
+               - 'nonblock':    `Set the file descriptor in nonblocking mode.`
+               - 'cloexec':     `Set the file descriptor flag close-on-exec.`
+               - 'keep':        `Do not change the file descriptor (status) flags.`
+           >
+           [, < 'raw | message | websocket | hbdbus' $ext_protocol = 'raw': `the extended protocol will be used on the stream.`
+               - 'raw':                 `No extended protocol.`
+               - 'message':             `WebSocket-like message-based protocol; only for 'local://' and 'fifo://' connections.`
+               - 'websocket':           `WebSocket protocol; only for 'inetN:// connections.`
+               - 'hbdbus':              `HybridOS data bus protocol; only for 'local://' and 'inetN://' connections.`
+              >
+                [, <object $extra_options: `the extra options.` >
+                ]
+           ]
+        ]
+) native/stream | undefined
+```
+
+该方法基于一个已有的文件描述符创建一个流实体，返回一个代表流的原生实体值。
+
+我们可以通过第三个可选参数指定流数据的更高层应用协议，通过扩展流实体提供的方法来方便程序的使用，比如：
+
+- `message`：在 UNIX 套接字之上使用类似 WebSocket 的、基于消息的方式处理数据。
+- `websocket`：在流套接字之上使用 WebSocket 协议处理数据。
+- `hbdbus`：使用 HBDBus 数据总线协议处理数据，方便程序通过 HBDBus 数据总线订阅事件或者发起远程过程调用并获得结果。
+- `mqtt`：使用 MQTT 物联网协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 MQTT 数据总线订阅事件或者发起远程过程调用并获得结果。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
+
+**备注**
+
+1. 流的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用 `$STREAM.close` 方法释放流实体占用的系统资源。
+
+**示例**
+
+```js
+$STREAM.from(5, 'keep', 'websocket')
+```
+
+#### 3.12.2) `open` 方法
 
 打开流，返回一个代表流的原生实体值。这个原生实体可以被观察。
 
@@ -5474,14 +5546,15 @@ $URL.assemble(
 ```js
 $STREAM.open(
         < string $uri: `the URI of the stream.` >
-        [, <'[read || write || append || create || truncate || nonblock] | default' $opt = 'default':
+        [, <'[read || write || append || create || truncate || nonblock || cloexec] | default' $opt = 'default':
                - 'read':        `Open for reading only`
                - 'write':       `Open for writing only`
                - 'append':      `Open in append mode. Before each write, the offset is positioned at the end of the stream`
                - 'create':      `If $uri does not exist, create it as a regular file`
                - 'truncate':    `If $uri already exists and is a regular file and the access mode allows writing it will be truncated to length 0`
                - 'nonblock':    `Open the $uri in nonblocking mode`
-               - 'default':     `equivalent to 'read write'`
+               - 'cloexec':     `Set the file descriptor flag close-on-exec.`
+               - 'default':     `equivalent to 'read write cloexec'`
            >
            [, < 'raw | message | websocket | hbdbus' $ext_protocol = 'raw': `the extended protocol will be used on the stream.`
                - 'raw':                 `No extended protocol.`
@@ -5546,60 +5619,7 @@ $STREAM.open(
 $STREAM.open("file://abc.md", "read write")
 ```
 
-#### 3.12.2) `from` 方法
-
-基于一个已有的文件描述符创建流实体。
-
-**描述**
-
-```js
-$STREAM.from(
-        < longint $fd: `the file descriptor.` >
-        [, <'[append || nonblock] | keep' $flags:
-               - 'append':      `Set the file descriptor in append mode.`
-               - 'nonblock':    `Set the file descriptor in nonblocking mode.`
-               - 'keep':        `Do not change the file descriptor status flags`
-           >
-           [, < 'raw | message | websocket | hbdbus' $ext_protocol = 'raw': `the extended protocol will be used on the stream.`
-               - 'raw':                 `No extended protocol.`
-               - 'message':             `WebSocket-like message-based protocol; only for 'local://' and 'fifo://' connections.`
-               - 'websocket':           `WebSocket protocol; only for 'inetN:// connections.`
-               - 'hbdbus':              `HybridOS data bus protocol; only for 'local://' and 'inetN://' connections.`
-              >
-                [, <object $extra_options: `the extra options.` >
-                ]
-           ]
-        ]
-) native/stream | undefined
-```
-
-该方法基于一个已有的文件描述符创建一个流实体，返回一个代表流的原生实体值。
-
-我们可以通过第三个可选参数指定流数据的更高层应用协议，通过扩展流实体提供的方法来方便程序的使用，比如：
-
-- `message`：在 UNIX 套接字之上使用类似 WebSocket 的、基于消息的方式处理数据。
-- `websocket`：在流套接字之上使用 WebSocket 协议处理数据。
-- `hbdbus`：使用 HBDBus 数据总线协议处理数据，方便程序通过 HBDBus 数据总线订阅事件或者发起远程过程调用并获得结果。
-- `mqtt`：使用 MQTT 物联网协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 MQTT 数据总线订阅事件或者发起远程过程调用并获得结果。
-
-**异常**
-
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
-
-**备注**
-
-1. 流的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用 `$STREAM.close` 方法释放流实体占用的系统资源。
-
-**示例**
-
-```js
-$STREAM.from(5, 'keep', 'websocket')
-```
-
-#### 3.12.2) `close` 方法
+#### 3.12.3) `close` 方法
 
 关闭流。
 
@@ -5628,11 +5648,11 @@ $STREAM.close(
 $STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
 ```
 
-#### 3.12.3) `stdin` 静态属性
+#### 3.12.4) `stdin` 静态属性
 
 这是一个静态属性，对应一个流实体，其值可用于流式读写的读取接口，是 C 语言标准输入流的封装。
 
-#### 3.12.4) `stdout` 静态属性
+#### 3.12.5) `stdout` 静态属性
 
 这是一个静态属性，对应一个流实体，其值可用于流式读写的写入接口，是 C 语言标准输出流的封装。
 
@@ -5643,11 +5663,11 @@ $STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
 $STREAM.stdout.writelines($SYS.uname_prt('kernel-name'))
 ```
 
-#### 3.12.5) `stderr` 静态属性
+#### 3.12.6) `stderr` 静态属性
 
 这是一个静态属性，其对应一个流实体，值可用于流式读写的写入接口，是 C 语言标准错误流的封装。
 
-#### 3.12.6) `listener` 属性
+#### 3.12.7) `listener` 属性
 
 该属性反应的是流实体事件的监听者（协程）。默认情况下，流实体的监听者为创建流实体的协程。通过该属性的设置器，可修改监听者为新的协程。注意，作为新监听者的协程，必须必须和原监听者属于同一行者。
 
@@ -5665,9 +5685,9 @@ $STREAM.listener(!
 ) ulongint | null | false: `the old listener of the current listener`.
 ```
 
-#### 3.12.7) 流实体
+#### 3.12.8) 流实体
 
-##### 3.12.7.1) `readstruct` 方法
+##### 3.12.8.1) `readstruct` 方法
 
 从流中读取一个二进制结构，并转换为适当的数据。
 
@@ -5706,7 +5726,7 @@ $stream.readstruct('i16le i32le')
     // array: [10, 10]
 ```
 
-##### 3.12.7.2) `writestruct` 方法
+##### 3.12.8.2) `writestruct` 方法
 
 将多个数据按照指定的结构格式写入流。
 
@@ -5760,7 +5780,7 @@ $stream.writestruct("i16le:2 i32le", [10, 15], 255)
 // 写入文件(16进制)：0x0a 0x00 0x0f 0x00 0xff 0x00 0x00 0x00
 ```
 
-##### 3.12.7.3) `readlines` 方法
+##### 3.12.8.3) `readlines` 方法
 
 从流中读取给定行数，返回字符串数组。
 
@@ -5801,7 +5821,7 @@ $stream.readlines(10)
     // array: ["This is the string to write", "Second line"]
 ```
 
-##### 3.12.7.4) `writelines` 方法
+##### 3.12.8.4) `writelines` 方法
 
 将字符串写入流中。
 
@@ -5841,7 +5861,7 @@ $STREAM.stdout.writelines(["This is the string to write", "Second line"])
     // Second line
 ```
 
-##### 3.12.7.5) `readbytes` 方法
+##### 3.12.8.5) `readbytes` 方法
 
 从流中读取一个字节序列，返回一个字节序列。
 
@@ -5882,7 +5902,7 @@ $STREAM.stdin.readbytes(10)
     // bsequence: bx77726974652073747269
 ```
 
-##### 3.12.7.6) `writebytes` 方法
+##### 3.12.8.6) `writebytes` 方法
 
 将一个字节序列写入流。
 
@@ -5922,7 +5942,7 @@ $STREAM.stdout.writebytes("write string")
 
 注意：字符串作为字节序列写入时，应该写入结尾的空字符。
 
-##### 3.12.7.7) `seek` 方法
+##### 3.12.8.7) `seek` 方法
 
 在流中执行定位操作。
 
@@ -5964,15 +5984,15 @@ $stream.seek(10, 'set')
     // ulongint: 10L
 ```
 
-##### 3.12.7.8) `fd` 属性
+##### 3.12.8.8) `fd` 属性
 
 获取流对应的文件描述符（仅针对 POSIX 系统）。
 
-##### 3.12.7.9) `peer_addr` 属性
+##### 3.12.8.9) `peer_addr` 属性
 
 获取套接字流对应的对端地址，如 UNIX 套接字另一端的套接字文件路径，网络套接字另一端的 IP 地址等。
 
-#### 3.12.8) `pipe` 流实体
+#### 3.12.9) `pipe` 流实体
 
 **查询参数**
 
@@ -6002,7 +6022,7 @@ du -BM hvml-spec-v1.0-zh.md
 
 `pipe` 流实体应该额外提供 `status` 方法，用于检查子进程的状态。该方法返回一个数组，第一个成员是表示状态的字符串，第二个成员给出状态对应的值。
 
-#### 3.12.9) `message`、`websocket` 协议扩展
+#### 3.12.10) `message`、`websocket` 协议扩展
 
 在使用 URI 图式 `fifo://`、`local://`、`inetN://` 的流实体上，可使用 `message` 或 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
 
@@ -6028,7 +6048,7 @@ du -BM hvml-spec-v1.0-zh.md
 }
 ```
 
-#### 3.12.10) `hbdbus` 协议扩展
+#### 3.12.11) `hbdbus` 协议扩展
 
 在使用 URI 图式 `inetN://`、`local://` 的流实体上，可使用 `hbdbus` 扩展协议。
 
@@ -6068,7 +6088,7 @@ du -BM hvml-spec-v1.0-zh.md
 `$SOCKET` 是一个行者级内置变量，该变量可用于创建流套接字或者数据报套接字，并监听该套接字上的连接请求，或者直接收发消息。该变量主要提供如下接口：
 
 - 使用 `$SOCKET` 提供的 `stream()` 方法，可创建一个用于监听连接请求的流套接字（streamSocket）原生实体。
-- 使用 `$SOCKET` 提供的 `dgram()` 方法，可创建一个数据报套接字（datagramSocket）原生实体。
+- 使用 `$SOCKET` 提供的 `dgram()` 方法，可创建一个数据报套接字（dgramSocket）原生实体。
 
 流套接字（streamSocket）原生实体主要提供如下接口：
 
@@ -6076,7 +6096,7 @@ du -BM hvml-spec-v1.0-zh.md
 - `accept()` 方法：用于接受连接请求并返回一个流（stream）实体。和 `$STREAM.open()` 方法类似，可传入扩展协议以及参数。
 - `close()` 方法：用于关闭流套接字原生实体。
 
-数据报套接字（datagramSocket）原生实体主要提供如下接口：
+数据报套接字（dgramSocket）原生实体主要提供如下接口：
 
 - `newMessage` 事件，用于通知数据报套接字上有新的消息可接收。
 - `sendto()` 方法：用于向指定套接字发送消息。
@@ -6113,10 +6133,11 @@ du -BM hvml-spec-v1.0-zh.md
 ```js
 $SOCKET.stream(
         < string $uri: `the URI of the stream socket.` >
-        [, <'[override || global] | default' $opt = 'default':
-               - 'override':    `If $uri exists, unlink it first.`
+        [, <'[override || global || cloexec] | default' $opt = 'default':
+               - 'override':    `If $uri exists, try to unlink it first if it is not alive.`
                - 'global':      `Create a globally accessible socket.`
-               - 'default':     `equivalent to 'override global'`
+               - 'cloexec':     `Set the file descriptor flag close-on-exec.`
+               - 'default':     `equivalent to 'override cloexec'`
            >
                 [, <longint $backlog: `the backlog.` >
                 ]
@@ -6160,10 +6181,11 @@ $SOCKET.stream("local://var/run/myapp.sock")
 ```js
 $SOCKET.dgram(
         < string $uri: `the URI of the dgram socket.` >
-        [, <'[override || global] | default' $opt = 'default':
-               - 'override':    `If $uri exists, unlink it first.`
+        [, <'[override || global || cloexec] | default' $opt = 'default':
+               - 'override':    `If $uri exists, try to unlink it first if it is not alive.`
                - 'global':      `Create a globally accessible socket.`
-               - 'default':     `equivalent to 'override global'`
+               - 'cloexec':     `Set the file descriptor flag close-on-exec.`
+               - 'default':     `Equivalent to 'override cloexec'`
            >
         ]
 ) native/dgramSocket | undefined
@@ -6205,7 +6227,12 @@ $SOCKET.dgram("local://var/run/myapp.sock")
 
 ```js
 $streamSocket.accept(
-    <'raw | message | websocket | hbdbus' $extended_protocol = 'raw': `the extended protocol will be used on the stream.`
+    <'[nonblock || cloexec] | default' $flags:
+           - 'nonblock':    `Set the file descriptor in nonblocking mode.`
+           - 'cloexec':     `Set the file descriptor flag close-on-exec.`
+           - 'default':     `Equivalent to 'cloexec'.`
+    >
+    [, <'raw | message | websocket | hbdbus' $extended_protocol = 'raw': `the extended protocol will be used on the stream.`
            - 'raw':         `No any protocol.`
            - 'message':     `WebSocket-like, but only for UNIX socket connections.`
            - 'websocket':   `WebSocket.`
@@ -6213,6 +6240,7 @@ $streamSocket.accept(
         >
         [, <object $options: `the options for protocols.` >
         ]
+    ]
 ) native/stream | undefined
 ```
 
@@ -7217,7 +7245,7 @@ $FS.file_is(
             'regular' - `a regular file.`
             'symlink' - `a symbolic link.`
             'socket' - `a local/unix socket file.`
-            'pipe' - ``a named pipe file or just a pipe file.``
+            'pipe' - `a named pipe file or just a pipe file.`
             'block' - `a block device file.`
             'char' - `a character device file.`
             'executable'/'exe' - `is executable.`
@@ -9335,6 +9363,8 @@ $sqliteCursor.connection
    - 移除 `tcp://` 和 `udp://`。
 1. 删除 `$CRTN.sendingDocumentByURL` 属性。
 1. 新增 `$STREAM.peer_addr` 属性。
+1. 新增 `$SYS.pipe` 方法。
+1. 新增 `$SYS.spawn` 方法。
 
 #### RCh) 240131
 
