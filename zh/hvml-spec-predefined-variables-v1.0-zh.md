@@ -6133,11 +6133,10 @@ du -BM hvml-spec-v1.0-zh.md
 ```js
 $SOCKET.stream(
         < string $uri: `the URI of the stream socket.` >
-        [, <'[override || global || cloexec] | default' $opt = 'default':
-               - 'override':    `If $uri exists, try to unlink it first if it is not alive.`
+        [, <'[global || cloexec] | default' $opt = 'default':
                - 'global':      `Create a globally accessible socket.`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
-               - 'default':     `equivalent to 'override cloexec'`
+               - 'default':     `equivalent to 'cloexec'`
            >
                 [, <longint $backlog: `the backlog.` >
                 ]
@@ -6181,11 +6180,10 @@ $SOCKET.stream("local://var/run/myapp.sock")
 ```js
 $SOCKET.dgram(
         < string $uri: `the URI of the dgram socket.` >
-        [, <'[override || global || cloexec] | default' $opt = 'default':
-               - 'override':    `If $uri exists, try to unlink it first if it is not alive.`
+        [, <'[global || cloexec] | default' $opt = 'default':
                - 'global':      `Create a globally accessible socket.`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
-               - 'default':     `Equivalent to 'override cloexec'`
+               - 'default':     `Equivalent to 'cloexec'`
            >
         ]
 ) native/dgramSocket | undefined
@@ -6217,11 +6215,39 @@ $SOCKET.dgram(
 $SOCKET.dgram("local://var/run/myapp.sock")
 ```
 
-#### 3.13.3) 流套接字实体
+#### 3.13.3) `close` 方法
+
+关闭一个流套接字（streamSocket）或者数据报套接字（dgramSocket）。
+
+**描述**
+
+```js
+$SOCKET.close( streamSocket | dgramSocket $entity )
+    true | false
+```
+
+该方法关闭一个流套接字或者数据报套接字。
+
+**异常**
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+
+**备注**
+
+1. 流套接字或者数据报套接字的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用该方法释放套接字实体占用的系统资源。
+
+**示例**
+
+```js
+$SOCKET.close($streamSocket)
+```
+
+#### 3.13.4) 流套接字实体
 
 流套接字（streamSocket）实体代表一个正在指定套接字上监听客户端连接请求的流套接字，可通过该实体提供的方法接受一个连接请求。
 
-##### 3.13.3.1) `accept`
+##### 3.13.4.1) `accept`
 
 接受来自客户端的连接请求，并创建对应的流实体。
 
@@ -6249,35 +6275,79 @@ $streamSocket.accept(
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回已读取数据。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回已读取数据。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
-- `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空数组。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空数组。
-- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回空数组。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空数组。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
 
 **示例**
 
-##### 3.13.3.2) `close` 方法
+##### 3.13.4.2) `close` 方法
 
-该方法关闭一个流套接字。
+该方法关闭流套接字。
 
-#### 3.13.4) 数据报套接字实体
+**描述**
 
-##### 3.13.4.1) `sendto` 方法
+```js
+$streamSocket.close()
+    true | false
+```
+
+该方法关闭流套接字以释放系统资源。
+
+**异常**
+
+该方法不产生异常。
+
+**备注**
+
+1. 流套接字或者数据报套接字的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用该方法释放套接字实体占用的系统资源。
+
+**示例**
+
+```js
+$streamSocket.close()
+    // true
+```
+
+#### 3.13.5) 数据报套接字实体
+
+##### 3.13.5.1) `sendto` 方法
 
 通过该方法发送消息。
 
-##### 3.13.4.2) `recvfrom` 方法
+##### 3.13.5.2) `recvfrom` 方法
 
 通过该方法接收消息。
 
-##### 3.13.4.3) `close` 方法
+##### 3.13.5.3) `close` 方法
 
-关闭数据报套接字。
+该方法关闭数据报套接字。
 
-#### 3.13.5) `message`、`websocket` 协议扩展
+**描述**
+
+```js
+$dgramSocket.close()
+    true | false
+```
+
+该方法关闭数据报套接字以释放系统资源。
+
+**异常**
+
+该方法不产生异常。
+
+**备注**
+
+1. 流套接字或者数据报套接字的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用该方法释放套接字实体占用的系统资源。
+
+**示例**
+
+```js
+$dgramSocket.close()
+    // true
+```
+
+#### 3.13.6) `message`、`websocket` 协议扩展
 
 在使用 URI 图式 `local://`、`inetN://` 的流实体上，可使用 `message` 或 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
 
