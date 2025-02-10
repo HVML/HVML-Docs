@@ -6330,7 +6330,7 @@ $dgramSocket.sendto(
     [,
         < longint $offset = 0: `the offset in $bytes.`>
         [,
-            < longint $length = 0: `the number of bytes to send; a value less than or equal to 0 means all left bytes.`>
+            < longint $length = -1: `the number of bytes to send; a value less than 0 means to send all left bytes.`>
         ]
     ]
 ) undefined | longint: `undefined or the number of bytes sent.`
