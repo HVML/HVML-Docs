@@ -5546,7 +5546,7 @@ $STREAM.from(5, 'keep', 'websocket')
 ```js
 $STREAM.open(
         < string $uri: `the URI of the stream.` >
-        [, <'[read || write || append || create || truncate || nonblock || cloexec] | default' $opt = 'default':
+        [, <'[read || write || append || create || truncate || nonblock || cloexec || nameless] | default' $opt = 'default':
                - 'read':        `Open for reading only`
                - 'write':       `Open for writing only`
                - 'append':      `Open in append mode. Before each write, the offset is positioned at the end of the stream`
@@ -5554,6 +5554,7 @@ $STREAM.open(
                - 'truncate':    `If $uri already exists and is a regular file and the access mode allows writing it will be truncated to length 0`
                - 'nonblock':    `Open the $uri in nonblocking mode`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
+               - 'nameless':    `Do not assign a name to the socket; only for local socket.`
                - 'default':     `equivalent to 'read write cloexec'`
            >
            [, < 'raw | message | websocket | hbdbus' $ext_protocol = 'raw': `the extended protocol will be used on the stream.`
@@ -6106,7 +6107,7 @@ du -BM hvml-spec-v1.0-zh.md
 下面的 HVML 代码，在指定的 INET6 域流套接字上监听连接请求（`connAttempt` 事件），然后调用 `accept()` 方法。注意在 `accept()` 方法中，因指定了 `websocket` 协议，要继续监听 `handshake` 事件，并在处理此事件时做后续响应或者关闭请求等。
 
 ```hvml
-    <init as 'streamSocket' with  $SOCKET.stream('inet6://foobar.com:8888') >
+    <init as 'streamSocket' with  $SOCKET.stream('inet6://foobar.com:8888', ...) >
         <observe on $? for 'connAttempt' >
             <init as 'wsStream' with $streamSocket.accept('websocket', ...) >
                 <observe on $wsStream for 'handshake' >
@@ -6183,7 +6184,7 @@ $SOCKET.dgram(
         < string $uri: `the URI of the dgram socket.` >
         [, <'[global || nameless || nonblock || cloexec] | default' $opt = 'default':
                - 'global':      `Create a globally accessible socket; only for local socket.`
-               - 'nameless':    `Do not assign a name to the socket.`
+               - 'nameless':    `Do not assign a name to the socket; only for local socket.`
                - 'nonblock':    `Create the sockete in nonblocking mode.`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
                - 'default':     `Equivalent to 'cloexec'.`
@@ -6322,18 +6323,21 @@ $streamSocket.close()
 ```js
 $dgramSocket.sendto(
     < string $dest: `the URI of the destination address.` >,
-    < 'dontwait || confirm' $flags:
+    < '[dontwait || confirm] | default' $flags:
            - 'dontwait':    `Enable a nonblocking operation.`
            - 'confirm':     `Tell the link layer that forward progress happened: you got a successful reply from the other side.`
+           - 'default':     `No any option specified.`
     >,
     < bsequence $bytes: `the data to send.` >
     [,
-        < longint $offset = 0: `the offset in $bytes.`>
+        < ulongint $offset = 0: `the offset in $bytes.`>
         [,
             < longint $length = -1: `the number of bytes to send; a value less than 0 means to send all left bytes.`>
         ]
     ]
-) undefined | longint: `undefined or the number of bytes sent.`
+) undefined | object: `undefined or an object described the number of bytes sent or the error.`
+    - 'sent':  <longint: `the number of bytes sent, or -1 if an error occurred.`>,
+    - 'errorname': <string | null: `the system error name if $sent is less than 0.`>,
 ```
 
 该方法通过数据报套接字向指定的目标地址发送一条消息，返回实际发送的字节数。
@@ -6353,18 +6357,19 @@ $dgramSocket.sendto(
 
 ```js
 $dgramSocket.recvfrom(
-    <'dontwait || nosource || trunc' $flags:
+    <'[ dontwait || nosource || trunc] | default' $flags:
            - 'dontwait':    `Enable a nonblocking operation.`
            - 'nosource':    `Not intersted in the source address.`
-           - 'trunc':       `Return the real length of the message, even when it was longer than the length of .`
+           - 'trunc':       `Return the real length of the message, even when it was longer than the length of desired.`
+           - 'default':     `No any option specified.`
     >,
-    <longint $length: `The number of bytes desired.`>
+    <longint $length: `The number of bytes to receive.`>
 ) undefined | object: `undefined or an object describing the message and the source address:`
-    - 'length':  <longint: `the number of bytes received, or -1 if an error occurred.`,
-    - 'bytes': < bsequence | null:  `null or a byte sequence storing the bytes received.`,
-    - 'source-addr': < string | null:  `the source address or numeric host.`,
-    - 'source-port': < string | null:  `the optional source port.`,
-   ) | undefined
+    - 'recved':  <longint: `the number of bytes received, or -1 if an error occurred.`>,
+    - 'bytes': <bsequence | null:  `null or a byte sequence storing the bytes received.`>,
+    - 'errorname': <string | null: `the system error name if $recved is less than 0.`>,
+    - 'source-addr': < string | null:  `the source address or numeric host.`>,
+    - 'source-port': < longint | null:  `the optional source port.`>,
 ```
 
 该方法在数据报套接字上接收一条消息，返回一个对象。
