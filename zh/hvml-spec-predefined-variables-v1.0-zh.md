@@ -1579,7 +1579,7 @@ $CRTN.curator
     // ulongint: 5UL
 ```
 
-#### 3.3.12) `native_crtn` 方法
+#### 3.3.11) `native_crtn` 方法
 
 该方法返回一个可被观察的原生实体，用于代表一个特定的子协程。
 
@@ -1608,7 +1608,7 @@ $CRTN.native_crtn
     // native/crtn
 ```
 
-#### 3.3.13) `static` 属性
+#### 3.3.12) `static` 属性
 
 该属性反映的是当前协程在当前执行栈对应的静态变量，应被实现为原生实体。通过该原生实体的属性之获取器和设置器来访问当前协程在指定命名空间中的静态变量。
 
@@ -1665,7 +1665,7 @@ $CRTN.static.x
     // array: [0, 1, 2]
 ```
 
-#### 3.3.14) `temp` 属性
+#### 3.3.13) `temp` 属性
 
 该属性反映的是当前协程在执行栈中对应的临时变量，应被实现为原生实体。通过该原生实体的属性获取器和设置器来访问当前协程在指定命名空间中的临时变量。
 
@@ -6094,14 +6094,14 @@ du -BM hvml-spec-v1.0-zh.md
 
 - `connAttempt` 事件，用于通知一个新的客户端连接请求。
 - `accept()` 方法：用于接受连接请求并返回一个流（stream）实体。和 `$STREAM.open()` 方法类似，可传入扩展协议以及参数。
-- `close()` 方法：用于关闭流套接字原生实体。
+- `close()` 方法：用于关闭流套接字。
 
 数据报套接字（dgramSocket）原生实体主要提供如下接口：
 
-- `newMessage` 事件，用于通知数据报套接字上有新的消息可接收。
-- `sendto()` 方法：用于向指定套接字发送消息。
-- `recvfrom()` 方法：用于接收来自数据报套接字的消息。
-- `close()` 方法：用于关闭数据报套接字原生实体。
+- `newDatagram` 事件，用于通知数据报套接字上有新的数据报（消息）可接收。
+- `sendto()` 方法：用于通过数据报套接字向指定的目标地址发送一条消息。
+- `recvfrom()` 方法：用于接收数据报套接字上收到的消息。
+- `close()` 方法：用于关闭数据报套接字。
 
 下面的 HVML 代码，在指定的 INET6 域流套接字上监听连接请求（`connAttempt` 事件），然后调用 `accept()` 方法。注意在 `accept()` 方法中，因指定了 `websocket` 协议，要继续监听 `handshake` 事件，并在处理此事件时做后续响应或者关闭请求等。
 
@@ -6150,6 +6150,7 @@ $SOCKET.stream(
 该方法使用 URI 指定要打开的流套接字位置，如：
 
 - `local:///var/run/myapp.sock`：本地套接字。
+- `unix:///var/run/myapp.sock`：本地套接字。
 - `inet://foo.com:1100`：Internet v4 or v6 套接字。
 - `inet4://foo.com:1100`：Internet v4 套接字。
 - `inet6://foo.com:1100`：Internet v6 套接字。
@@ -6180,10 +6181,12 @@ $SOCKET.stream("local://var/run/myapp.sock")
 ```js
 $SOCKET.dgram(
         < string $uri: `the URI of the dgram socket.` >
-        [, <'[global || cloexec] | default' $opt = 'default':
-               - 'global':      `Create a globally accessible socket.`
+        [, <'[global || nameless || nonblock || cloexec] | default' $opt = 'default':
+               - 'global':      `Create a globally accessible socket; only for local socket.`
+               - 'nameless':    `Do not assign a name to the socket.`
+               - 'nonblock':    `Create the sockete in nonblocking mode.`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
-               - 'default':     `Equivalent to 'cloexec'`
+               - 'default':     `Equivalent to 'cloexec'.`
            >
         ]
 ) native/dgramSocket | undefined
@@ -6194,6 +6197,7 @@ $SOCKET.dgram(
 该方法使用 URI 指定要打开的流套接字位置，如：
 
 - `local:///var/run/myapp.sock`：本地数据报套接字。
+- `unix:///var/run/myapp.sock`：本地数据报套接字。
 - `inet://foo.com:1100`：Internet v4 or v6 数据报套接字。
 - `inet4://foo.com:1100`：Internet v4 数据报套接字。
 - `inet6://foo.com:1100`：Internet v6 数据报套接字。
@@ -6315,9 +6319,65 @@ $streamSocket.close()
 
 通过该方法发送消息。
 
+```js
+$dgramSocket.sendto(
+    < string $dest: `the URI of the destination address.` >,
+    < 'dontwait || confirm' $flags:
+           - 'dontwait':    `Enable a nonblocking operation.`
+           - 'confirm':     `Tell the link layer that forward progress happened: you got a successful reply from the other side.`
+    >,
+    < bsequence $bytes: `the data to send.` >
+    [,
+        < longint $offset = 0: `the offset in $bytes.`>
+        [,
+            < longint $length = 0: `the number of bytes to send; a value less than or equal to 0 means all left bytes.`>
+        ]
+    ]
+) undefined | longint: `undefined or the number of bytes sent.`
+```
+
+该方法通过数据报套接字向指定的目标地址发送一条消息，返回实际发送的字节数。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
+
+**示例**
+
 ##### 3.13.5.2) `recvfrom` 方法
 
-通过该方法接收消息。
+通过该方法接收一条消息。
+
+```js
+$dgramSocket.recvfrom(
+    <'dontwait || nosource || trunc' $flags:
+           - 'dontwait':    `Enable a nonblocking operation.`
+           - 'nosource':    `Not intersted in the source address.`
+           - 'trunc':       `Return the real length of the message, even when it was longer than the length of .`
+    >,
+    <longint $length: `The number of bytes desired.`>
+) undefined | object: `undefined or an object describing the message and the source address:`
+    - 'length':  <longint: `the number of bytes received, or -1 if an error occurred.`,
+    - 'bytes': < bsequence | null:  `null or a byte sequence storing the bytes received.`,
+    - 'source-addr': < string | null:  `the source address or numeric host.`,
+    - 'source-port': < string | null:  `the optional source port.`,
+   ) | undefined
+```
+
+该方法在数据报套接字上接收一条消息，返回一个对象。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
+
+**示例**
+
 
 ##### 3.13.5.3) `close` 方法
 
