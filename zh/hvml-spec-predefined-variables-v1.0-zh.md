@@ -829,6 +829,24 @@ $SYS.random(-10FL)
 - C 标准函数：`srandom_r()`
 - C 标准函数：`initstate_r()`
 
+#### 3.1.13) `remove` 方法
+
+移除目录项。
+
+**描述**
+
+```js
+$SYS.remove(
+        <string $path: `the path of a file or an empty directory.`>
+) true | false
+```
+
+该方法移除一个由 `$path` 指定的文件或者目录。
+
+**参见**
+
+- C 标准函数：`remove()`
+
 #### 3.1.13) `spawn` 方法
 
 创建子进程并在其中执行给定的程序。
@@ -5457,7 +5475,9 @@ $URL.assemble(
 - `readbytes` 和 `writebytes` 方法：读写字节序列。
 - `readstruct` 和 `writestruct` 方法：读写二进制数据结构。
 - `readlines` 和 `writelines` 方法：读写文本行。
-- `seek`：在可定位流中重新定位流的读写位置。
+- `seek` 方法：在可定位流中重新定位流的读写位置。
+- `stream:readable` 事件：用于观察流实体上有可读数据。
+- `stream:writable` 事件：用于观察流实体上可写入数据。
 
 为方便使用，我们在 `$STREAM` 变量上提供如下静态属性：
 
@@ -5466,21 +5486,21 @@ $URL.assemble(
 通常来讲，流实体应该是可被观察的，从而可以监听读取流上是否有数据等待读取，或者是否可向写入流中写入数据。比如，我们可以观察 `$STREAM.stdin`，以便监听用户的输入：
 
 ```hvml
-    <observe on="$STREAM.stdin" for="read">
+    <observe on="$STREAM.stdin" for="stream:readable">
         <choose on="$?.readlines(1)">
             ...
         </choose>
     </observe>
 ```
 
-另外，`STREAM` 变量应使用可扩展的实现，从而针对不同的流类型，在流实体上提供额外的读写方法，从而可以实现对某些应用层协议的支持。比如，当某个解释器实现的 `$STREAM` 方法支持发送 HTTP 请求时，即可实现额外用于处理 HTTP 协议头的方法：
+另外，`STREAM` 变量应使用可扩展的实现，从而针对不同的流类型，在流实体上提供额外的读写方法或者事件，从而可以实现对某些应用层协议的支持。比如，当某个解释器实现的 `$STREAM` 方法支持 WebSocket 协议扩展时，即可通过 `message` 事件处理来自服务器的消息：
 
 ```hvml
-    <observe on="$STREAM.open('http://foo.com/')" for="read">
-        <choose on="$?.http_get_headers()">
+    <init as 'wsStream' with $STREAM.open('inet://foo.com:8080/', 'websocket', ...) >
+        <observe on $wsStream for 'message'>
             ...
-        </choose>
-    </choose>
+        </observe>
+    </init>
 ```
 
 #### 3.12.1) `from` 方法
@@ -5993,6 +6013,10 @@ $stream.seek(10, 'set')
 
 获取套接字流对应的对端地址，如 UNIX 套接字另一端的套接字文件路径，网络套接字另一端的 IP 地址等。
 
+##### 3.12.8.10) `peer_port` 属性
+
+获取 INET 套接字流对应的对端端口。
+
 #### 3.12.9) `pipe` 流实体
 
 **查询参数**
@@ -6118,9 +6142,9 @@ du -BM hvml-spec-v1.0-zh.md
                 <observe on $wsStream for 'message' >
                     ...
                 </observe>
-            </choose>
+            </init>
         </observe>
-    </choose>
+    </init>
 ```
 
 `$streamSocket.accept()` 方法返回一个流（stream）实体 ，从而可利用 [流实体](#312-stream)提供的接口获取对端信息，或者发送或接收数据。
@@ -6286,7 +6310,31 @@ $streamSocket.accept(
 
 **示例**
 
-##### 3.13.4.2) `close` 方法
+##### 3.13.4.2) `fd` 方法
+
+该方法获取流套接字的文件描述符。
+
+**描述**
+
+```js
+$streamSocket.fd()
+    longint
+```
+
+该获取器返回流套接字对应的文件描述符。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$streamSocket.fd()
+    // 3L
+```
+
+##### 3.13.4.3) `close` 方法
 
 该方法关闭流套接字。
 
@@ -6328,7 +6376,7 @@ $dgramSocket.sendto(
            - 'confirm':     `Tell the link layer that forward progress happened: you got a successful reply from the other side.`
            - 'default':     `No any option specified.`
     >,
-    < bsequence $bytes: `the data to send.` >
+    < bsequence | string $bytes: `the data to send.` >
     [,
         < ulongint $offset = 0: `the offset in $bytes.`>
         [,
@@ -6383,8 +6431,31 @@ $dgramSocket.recvfrom(
 
 **示例**
 
+##### 3.13.5.3) `fd` 方法
 
-##### 3.13.5.3) `close` 方法
+该方法获取数据报套接字的文件描述符。
+
+**描述**
+
+```js
+$dgramSocket.fd()
+    longint
+```
+
+该获取器返回数据报套接字对应的文件描述符。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$dgramSocket.fd()
+    // 3L
+```
+
+##### 3.13.5.4) `close` 方法
 
 该方法关闭数据报套接字。
 
@@ -9491,15 +9562,16 @@ $sqliteCursor.connection
 
 #### OR0) 250228
 
-1. 重新整理 `SOCKET`。
+1. 重新整理 `$SOCKET` 和 `$STREAM`。
 1. 用于指定流套接字位置的 URI 变更：
    - 使用 `local` 替代 `unix`（实现上可同时支持）。
    - 引入 `inet`、`inet4` 和 `inet6` 分别表示 Internet v4 或 v6 地址。
    - 移除 `tcp://` 和 `udp://`。
 1. 删除 `$CRTN.sendingDocumentByURL` 属性。
-1. 新增 `$STREAM.peer_addr` 属性。
 1. 新增 `$SYS.pipe` 方法。
 1. 新增 `$SYS.spawn` 方法。
+1. 新增 `$streamSocket.peer_addr` 方法。
+1. 新增 `$streamSocket.peer_port` 方法。
 
 #### RCh) 240131
 
