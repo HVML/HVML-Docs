@@ -44,7 +44,7 @@ Language: Chinese
          - [2.1.4.5) 键值对象](#2145-键值对象)
       * [2.1.5) 可变数据和不可变数据](#215-可变数据和不可变数据)
       * [2.1.6) 变量](#216-变量)
-         - [2.1.6.1) 变量的类型](#2161-变量的类型)
+    - [2.1.6.1) 变量的类型](#2161-变量的类型)
          - [2.1.6.2) 上下文变量](#2162-上下文变量)
          - [2.1.6.3) 预定义变量](#2163-预定义变量)
          - [2.1.6.4) 集合变量](#2164-集合变量)
@@ -1491,6 +1491,8 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 - `readstruct` 和 `writestruct` 方法：读写二进制数据结构。
 - `readlines` 和 `writelines` 方法：读写文本行。
 - `seek`：在可定位流中重新定位流的读写位置。
+- `stream:readable` 事件：用于观察流实体上有可读数据。
+- `stream:writable` 事件：用于观察流实体上可写入数据。
 
 为方便使用，我们在 `$STREAM` 变量上提供如下静态属性：
 
@@ -1499,8 +1501,8 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 流实体应该是可被观察的，从而可以监听读取流上是否有数据等待读取，或者是否可向写入流中写入数据。比如，我们可以观察 `$STREAM.stdin`，以便监听用户的输入：
 
 ```hvml
-    <observe on="$STREAM.stdin" for="read">
-        <choose on="$?.readlines(1)">
+    <observe on $STREAM.stdin for 'stream:readable'>
+        <choose on $?.readlines(1)>
             ...
         </choose>
     </observe>
@@ -1510,7 +1512,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ```hvml
     <init as="myFetcher" on="$STREAM.open('inetv4://foo.com:80','default','http')">
-        <choose on="$myFetcher.http_send_request('GET','/')" />
+        <choose on="$myFetcher.http_send_request('GET', '/')" />
         <choose on="$myFetcher.http_read_response_header()" />
     </init>
 ```
@@ -1525,11 +1527,11 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
         }
     </init>
 
-    <observe on="$mySteams.in" for="read">
+    <observe on="$mySteams.in" for="stream:readable">
         <choose on="$?.out.writelines($myStreams.in.readlines(1))" />
     </observe>
 
-    <observe on="$mySteams.out" for="read">
+    <observe on="$mySteams.out" for="stream:readable">
         <choose on="$STREAM.stdout.writelines($myStreams.out.readlines(1))" />
     </observe>
 ```
@@ -1538,10 +1540,44 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 11) `$SOCKET`
 
-`$SOCKET` 是一个用于创建流套接字或数据报套接字的原生实体对象。该变量是一个必要的行者级动态对象。
+`$SOCKET` 是一个用于创建流套接字或数据报套接字的原生实体对象。该变量是一个必要的行者级动态对象。该变量主要提供如下接口：
 
-1. `$SOCKET.stream()`：创建流套接字并在其上监听来自客户端的连接请求。该方法返回一个流套接字实体，可观察流套接字实体上的 `connAttempt` 事件，并调用随该事件构造的流套接字连接实体的 `accept()` 方法接受连接请求。流套接字连接实体上的 `accept()` 方法将返回一个流实体。
-1. `$SOCKET.dgram()`：创建数据报套接字。
+- 使用 `$SOCKET` 提供的 `stream()` 方法，可创建一个用于监听连接请求的流套接字（streamSocket）原生实体。
+- 使用 `$SOCKET` 提供的 `dgram()` 方法，可创建一个数据报套接字（dgramSocket）原生实体。
+
+流套接字（streamSocket）原生实体主要提供如下接口：
+
+- `socket:connAttempt` 事件，用于通知一个新的客户端连接请求。
+- `accept()` 方法：用于接受连接请求并返回一个流（stream）实体。和 `$STREAM.open()` 方法类似，可传入扩展协议以及参数。
+- `close()` 方法：用于关闭流套接字。
+
+数据报套接字（dgramSocket）原生实体主要提供如下接口：
+
+- `socket:newDatagram` 事件，用于通知数据报套接字上有新的数据报（消息）可接收。
+- `sendto()` 方法：用于通过数据报套接字向指定的目标地址发送一条消息。
+- `recvfrom()` 方法：用于接收数据报套接字上收到的消息。
+- `close()` 方法：用于关闭数据报套接字。
+
+下面的 HVML 代码，在指定的 INET6 域流套接字上监听连接请求（`connAttempt` 事件），然后调用 `accept()` 方法。注意在 `accept()` 方法中，因指定了 `websocket` 协议，要继续监听 `handshake` 事件，并在处理此事件时做后续响应或者关闭请求等。
+
+```hvml
+    <init as 'streamSocket' with  $SOCKET.stream('inet6://foobar.com:8888', ...) >
+        <observe on $? for 'connAttempt' >
+            <init as 'wsStream' with $streamSocket.accept('websocket', ...) >
+                <observe on $wsStream for 'handshake' >
+                    <inherit>
+                        $wsStream.send_handshake_resp(...)
+                    </inherit>
+                </observe>
+                <observe on $wsStream for 'message' >
+                    ...
+                </observe>
+            </init>
+        </observe>
+    </init>
+```
+
+`$streamSocket.accept()` 方法返回一个流（stream）实体 ，从而可利用流实体提供的接口获取对端信息，或者发送或接收数据等。
 
 12) `$RDR`
 
@@ -4557,7 +4593,16 @@ Content-Type: text/plain
 - `change:detached`：表示先前关联到该变量上的有效数据被取消关联，其值被重置为 `undefined`，比如先前发起的异步请求操作失败，未能获得有效数据的情形。
 - `except:<exceptionName>`：表示在获取该变量对应的数据时出现异常，可能是请求出错，也可能是解析出错。具体信息，由事件的子类型给出。
 
-当 `observe` 观察的事件到来时，解释器应切换到 `observe` 自身定义的操作组或者其 `with` 属性引用的由 `define` 定义的操作组中执行 HVML 程序。此时，对应操作组的前置栈帧中，应定义如下的上下文变量：
+在执行 `observe` 标签定义的动作元素时，应在 `observe` 元素上隐式创建如下静态变量，从而将 `observe` 元素的各属性或内容的值保存起来以备使用：
+
+- `$_observedAgainst`：`against` 属性定义的值；字符串或 `undefined`。
+- `$_observedOn`：`on` 属性定义的值；当 `against` 属性生效时，为 `undefined`。
+- `$_observedFor`：`for` 属性定义的值。
+- `$_observedIn`：`in` 属性定义的值；字符串或 `undefined`。该值将在事件到来时用于确定上下文变量 `$@` 的值。
+- `$_observedWith`：`with` 属性的值。
+- `$_observedContent`：内容的值。
+
+当 `observe` 观察的事件到来时，解释器应切换到 `observe` 自身定义的操作组或者其 `with` 属性引用的由 `define` 定义的操作组中执行 HVML 程序；此时，解释器不应该对其属性和内容再次执行求值操作，取而代之，解释器应在其对应操作组的前置栈帧中，基于事件或前述的隐式静态变量确定如下上下文变量的值：
 
 - `$?`：事件的负载（payload）数据；若被观察的是变量，则就是被观察变量对应的数据。
 - `$!`：在用户数据中，预定义三个临时变量，用于表示事件主名称、子名称和事件源，名称分别为 `_eventName`、 `_eventSubName` 和 `_eventSource`。
@@ -4776,7 +4821,7 @@ Content-Type: text/plain
 
 `fire` 元素将把 `with` 属性指定的数据作为事件数据包的 `payload` 进行处理，并根据 `on` 属性指定的元素或者数据确定事件的源，`for` 属性值作为事件名称打包事件数据包，并将事件加入到事件队列中。
 
-对同一个事件，我们可以在 HVML 程序的多个地方进行观察并执行不同的动作。当我们需要撤销特定的观察时，可以在 `observe` 标签中使用 `as` 属性为这个观察命名，之后使用 `init` 将该变量重置为 `undefine` 即可移除这个观察：
+对同一个事件，我们可以在 HVML 程序的多个地方进行观察并执行不同的动作。当我们需要撤销特定的观察时，可以在 `observe` 标签中使用 `as` 属性为这个观察命名，之后使用 `init` 将该变量重置为 `undefine` 即可移除这个观察（包括隐式静态变量）：
 
 ```hvml
     <choose on="$TIMERS" by="FILTER: AS 'foo'">
@@ -4822,7 +4867,7 @@ Content-Type: text/plain
 
 将移除对所有定时器的到期事件观察。
 
-最后，`observe` 支持 `once` 副词属性，具有该副词属性的观察，将在执行一次后由解释器自动解除。
+最后，`observe` 支持 `once` 副词属性，具有该副词属性的观察，将在执行一次后由解释器自动解除。此种情况下，解释器应移除隐式静态变量。
 
 #### 2.5.12) `call` 和 `return` 标签
 
@@ -7625,9 +7670,10 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 #### OR0) 250228
 
-##### OR0.1) 调整预定义变量 `$SOCK` 的名称
+##### OR0.1) 调整预定义变量
 
-将预定义变量 `$SOCK` 名称调整为 `$SOCKET`，并调整了相关内容。
+- 将预定义变量 `$SOCK` 名称调整为 `$SOCKET`，并调整了相关内容。
+- 调整 `$STREAM` 预定义变量的接口描述。
 
 相关章节：
 
@@ -7652,6 +7698,17 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 相关章节：
 
 - [2.1.5) 可变数据和不可变数据](#215-可变数据和不可变数据)
+
+##### OR0.4) 微调 `observe` 元素的动作
+
+主要修订内容如下：
+
+1. 增加 `observe` 动作发生时的隐式静态变量之描述。
+1. 隐式静态变量的移除。
+
+相关章节：
+
+- [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
 
 #### RCh) 241130
 

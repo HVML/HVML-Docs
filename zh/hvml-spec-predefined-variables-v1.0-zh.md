@@ -6117,13 +6117,13 @@ du -BM hvml-spec-v1.0-zh.md
 
 流套接字（streamSocket）原生实体主要提供如下接口：
 
-- `connAttempt` 事件，用于通知一个新的客户端连接请求。
+- `socket:connAttempt` 事件，用于通知一个新的客户端连接请求。
 - `accept()` 方法：用于接受连接请求并返回一个流（stream）实体。和 `$STREAM.open()` 方法类似，可传入扩展协议以及参数。
 - `close()` 方法：用于关闭流套接字。
 
 数据报套接字（dgramSocket）原生实体主要提供如下接口：
 
-- `newDatagram` 事件，用于通知数据报套接字上有新的数据报（消息）可接收。
+- `socket:newDatagram` 事件，用于通知数据报套接字上有新的数据报（消息）可接收。
 - `sendto()` 方法：用于通过数据报套接字向指定的目标地址发送一条消息。
 - `recvfrom()` 方法：用于接收数据报套接字上收到的消息。
 - `close()` 方法：用于关闭数据报套接字。
