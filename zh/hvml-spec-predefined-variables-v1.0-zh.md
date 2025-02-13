@@ -6133,7 +6133,7 @@ du -BM hvml-spec-v1.0-zh.md
 ```hvml
     <init as 'streamSocket' with  $SOCKET.stream('inet6://foobar.com:8888', ...) >
         <observe on $? for 'connAttempt' >
-            <init as 'wsStream' with $streamSocket.accept('websocket', ...) >
+            <init as 'wsStream' with $streamSocket.accept('default', 'websocket', ...) >
                 <observe on $wsStream for 'handshake' >
                     <inherit>
                         $wsStream.send_handshake_resp(...)
@@ -6158,8 +6158,9 @@ du -BM hvml-spec-v1.0-zh.md
 ```js
 $SOCKET.stream(
         < string $uri: `the URI of the stream socket.` >
-        [, <'[global || cloexec] | default' $opt = 'default':
+        [, <'[global || || nonblock || cloexec] | default' $opt = 'default':
                - 'global':      `Create a globally accessible socket.`
+               - 'nonblock':    `Create the sockete in nonblocking mode.`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
                - 'default':     `equivalent to 'cloexec'`
            >
@@ -6296,10 +6297,10 @@ $streamSocket.accept(
         [, <object $options: `the options for protocols.` >
         ]
     ]
-) native/stream | undefined
+) native/stream | null | undefined
 ```
 
-该方法接受流套接字上的连接请求，返回一个流实体。
+该方法接受流套接字上的连接请求，返回一个流实体；当套接字被标记为非阻塞，但目前无连接可接受时，返回 `null`。
 
 **异常**
 
