@@ -865,7 +865,7 @@ $SYS.spawn(
             [, <object $options: `other options for before or after spawning.`>
             ]
         ]
-) array of native/stream | false
+) true | false
 ```
 
 用于子进程创建的选项 `$options` 使用一个对象描述：
@@ -896,6 +896,22 @@ $SYS.pipe() tuple with two longint elements | false
 **参见**
 
 - POSIX 标准函数：`pipe()`
+
+#### 3.1.15) `close` 方法
+
+关闭给定的文件描述符。
+
+**描述**
+
+```js
+$SYS.close(
+        <longint $fd: `the file descriptor to be closed.`>
+) true | false
+```
+
+**参见**
+
+- POSIX 标准函数：`close()`
 
 ### 3.2) `RUNNER`
 
@@ -9616,7 +9632,9 @@ $sqliteCursor.connection
    - 移除 `tcp://` 和 `udp://`。
 1. 删除 `$CRTN.sendingDocumentByURL` 属性。
 1. 新增 `$SYS.pipe` 方法。
+1. 新增 `$SYS.close` 方法。
 1. 新增 `$SYS.spawn` 方法。
+1. 新增 `$streamSocket.fd` 方法。
 1. 新增 `$streamSocket.peer_addr` 方法。
 1. 新增 `$streamSocket.peer_port` 方法。
 
