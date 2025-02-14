@@ -6504,10 +6504,22 @@ $dgramSocket.close()
 
 ```json
 {
-    "secure": true,                     /* 是否使用 TLS 安全 */
-    "origin": "hvml.org",               /* 指定 origin 域名 */
-    "protocols": ["protA", "protB"],    /* 指定期望的协议 */
-    "extensions": ["zip"],              /* 指定客户端可支持的扩展 */
+    "origin": "hvml.org",               /* 指定源域名。 */
+
+    "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
+
+    "server-ssl-cert: "...",            /* 指定 SSL 证书文件；当用作服务器且 secure 为真时必须指定。 */
+    "server-ssl-key: "...",             /* 指定 SSL 私钥文件；当用作服务器且 secure 为真时必须指定。 */
+
+    "client-ssl-key: "...",             /* 指定 SSL 公钥文件；当用作客户端且 secure 为真时必须指定。 */
+
+    "ssl-session: "...",                /* secure 为真时，若指定有该属性，则使用该会话数据；否则创建新的 SSL 会话。*/
+
+    "client-user-agent": "...",         /* 指定客户端 User-Agent。 */
+    "client-referer": "...",            /* 指定客户端 Referer。 */
+
+    "client-protocols": ["protA", "protB"],     /* 指定期望的协议。 */
+    "client-extensions": ["zip"],               /* 指定客户端可支持的扩展。 */
 }
 ```
 
