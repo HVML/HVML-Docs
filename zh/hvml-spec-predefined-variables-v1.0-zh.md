@@ -5538,7 +5538,7 @@ $STREAM.from(
 我们可以通过第三个可选参数指定流数据的更高层应用协议，通过扩展流实体提供的方法来方便程序的使用，比如：
 
 - `message`：在 UNIX 套接字之上使用类似 WebSocket 的、基于消息的方式处理数据。
-- `websocket`：在流套接字之上使用 WebSocket 协议处理数据。
+- `websocket`：在 INET 套接字之上使用 WebSocket 协议处理数据。
 - `hbdbus`：使用 HBDBus 数据总线协议处理数据，方便程序通过 HBDBus 数据总线订阅事件或者发起远程过程调用并获得结果。
 - `mqtt`：使用 MQTT 物联网协议处理数据，该过滤器会扩展流实体上提供的方法，从而可以通过 MQTT 数据总线订阅事件或者发起远程过程调用并获得结果。
 
@@ -5552,6 +5552,39 @@ $STREAM.from(
 **备注**
 
 1. 流的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用 `$STREAM.close` 方法释放流实体占用的系统资源。
+2. 当使用 `websocket` 协议扩展时，可指定如下额外选项：
+
+```json
+{
+    "server": true,                     /* 扮演服务器还是客户端。 */
+
+    "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
+
+    /* 以下属性用于服务器端： */
+
+    "server-ssl-cert: "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
+    "server-ssl-key: "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
+
+    "server-ssl-session-id: "...", /* server 为真且 secure 为真时，若指定有该属性，则将启用 SSL/TLS 会话的外部缓存机制，以便复用已有的 SSL/TLS 会话。*/
+
+    /* 以下属性用于客户端： */
+
+    "request-path": "...",              /* GET 方法对应的请求路径。*/
+    "connection": "...",                /* 连接名称。*/
+    "host": "...",                      /* 主机名。*/
+    "origin": "hvml.org",               /* 源域名。 */
+
+    "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
+    "client-ssl-key: "...",             /* 指定 SSL 公钥文件；当用作客户端且 secure 为真时必须指定。 */
+
+    "client-user-agent": "...",         /* 指定客户端 User-Agent。 */
+    "client-referer": "...",            /* 指定客户端 Referer。 */
+
+    "client-protocols": ["protA", "protB"],     /* 指定期望的协议。 */
+    "client-extensions": ["zip"],               /* 指定客户端可支持的扩展。 */
+}
+```
+
 
 **示例**
 
@@ -6516,10 +6549,10 @@ $dgramSocket.close()
 {
     "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
 
-    "server-ssl-cert: "...",            /* 指定 SSL 证书文件；当用作服务器且 secure 为真时必须指定。 */
-    "server-ssl-key: "...",             /* 指定 SSL 私钥文件；当用作服务器且 secure 为真时必须指定。 */
+    "server-ssl-cert: "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
+    "server-ssl-key: "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
 
-    "server-ssl-session: "...",         /* secure 为真时，若指定有该属性，则使用该会话数据；否则创建新的 SSL 会话。*/
+    "server-ssl-session-id: "...",      /* 当 secure 为真时，若指定有该属性，则将使用 SSL/TLS 会话的外部缓存机制，以便后续可被其他进程复用该会话信息。*/
 }
 ```
 
