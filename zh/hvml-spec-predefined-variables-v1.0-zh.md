@@ -5476,8 +5476,10 @@ $URL.assemble(
 - `readstruct` 和 `writestruct` 方法：读写二进制数据结构。
 - `readlines` 和 `writelines` 方法：读写文本行。
 - `seek` 方法：在可定位流中重新定位流的读写位置。
-- `stream:readable` 事件：用于观察流实体上有可读数据。
-- `stream:writable` 事件：用于观察流实体上可写入数据。
+- `stream:readable` 事件：有可读数据。
+- `stream:writable` 事件：可写入数据。
+- `stream:hangup` 事件：被挂起；通常针对管道和套接字，表明连接的对端已断开。
+- `stream:error` 事件：错误。
 
 为方便使用，我们在 `$STREAM` 变量上提供如下静态属性：
 
@@ -6065,11 +6067,19 @@ du -BM hvml-spec-v1.0-zh.md
 
 ```json
 {
-    "secure": true,                     /* 是否使用 TLS 安全 */
-    "resource_name": "",                /* 指定服务器端的资源名称 */
-    "origin": "hvml.org",               /* 指定服务器端可接受的 Origin */
-    "protocols": ["protA", "protB"],    /* 指定期望的协议 */
-    "extensions": ["zip"],              /* 指定客户端可支持的扩展 */
+    "request-path": "...",              /* GET 方法对应的请求路径。*/
+    "connection": "...",                /* 连接名称。*/
+    "host": "...",                      /* 主机名。*/
+    "origin": "hvml.org",               /* 源域名。 */
+
+    "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
+    "client-ssl-key: "...",             /* 指定 SSL 公钥文件；当用作客户端且 secure 为真时必须指定。 */
+
+    "client-user-agent": "...",         /* 指定客户端 User-Agent。 */
+    "client-referer": "...",            /* 指定客户端 Referer。 */
+
+    "client-protocols": ["protA", "protB"],     /* 指定期望的协议。 */
+    "client-extensions": ["zip"],               /* 指定客户端可支持的扩展。 */
 }
 ```
 
@@ -6486,11 +6496,11 @@ $dgramSocket.close()
 
 #### 3.13.6) `message`、`websocket` 协议扩展
 
-在使用 URI 图式 `local://`、`inetN://` 的流实体上，可使用 `message` 或 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
+在使用 URI 图式 `local://`、`inetN://` 的流套接字实体上，在调用 `accept()` 方法时，可使用 `message` 或 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
 
 对应的扩展方法有：
 
-- `send_handshake_resp()` 方法：通过该方法可向客户端发送指定的握手应答。
+- `send_handshake_resp()` 方法：通过该方法可向客户端发送指定的握手应答；仅 `websocket` 扩展协议。
 - `send()` 方法：发送消息数据；参数为字符串时以文本方式发送，参数为字节序列时以二进制方式发送。
 
 同时提供如下可观察事件：
@@ -6504,22 +6514,12 @@ $dgramSocket.close()
 
 ```json
 {
-    "origin": "hvml.org",               /* 指定源域名。 */
-
     "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
 
     "server-ssl-cert: "...",            /* 指定 SSL 证书文件；当用作服务器且 secure 为真时必须指定。 */
     "server-ssl-key: "...",             /* 指定 SSL 私钥文件；当用作服务器且 secure 为真时必须指定。 */
 
-    "client-ssl-key: "...",             /* 指定 SSL 公钥文件；当用作客户端且 secure 为真时必须指定。 */
-
-    "ssl-session: "...",                /* secure 为真时，若指定有该属性，则使用该会话数据；否则创建新的 SSL 会话。*/
-
-    "client-user-agent": "...",         /* 指定客户端 User-Agent。 */
-    "client-referer": "...",            /* 指定客户端 Referer。 */
-
-    "client-protocols": ["protA", "protB"],     /* 指定期望的协议。 */
-    "client-extensions": ["zip"],               /* 指定客户端可支持的扩展。 */
+    "server-ssl-session: "...",         /* secure 为真时，若指定有该属性，则使用该会话数据；否则创建新的 SSL 会话。*/
 }
 ```
 
