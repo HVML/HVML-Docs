@@ -5560,14 +5560,14 @@ $STREAM.from(
 
     "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
 
-    /* 以下属性用于服务器端： */
+    /* 以下属性在套接字扮演服务器时指定： */
 
     "server-ssl-cert: "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
     "server-ssl-key: "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
 
     "server-ssl-session-id-context: "..." | bx...., /* server 为真且 secure 为真时，若指定有该属性，则将启用 SSL/TLS 会话的外部缓存机制，以便复用已有的 SSL/TLS 会话。*/
 
-    /* 以下属性用于客户端： */
+    /* 以下属性在套接字扮演客户端时指定： */
 
     "request-path": "...",              /* GET 方法对应的请求路径。*/
     "connection": "...",                /* 连接名称。*/
@@ -5589,7 +5589,7 @@ $STREAM.from(
 **示例**
 
 ```js
-$STREAM.from(5, 'keep', 'websocket')
+$STREAM.from(5, 'keep', 'websocket', ...)
 ```
 
 #### 3.12.2) `open` 方法
@@ -6552,7 +6552,8 @@ $dgramSocket.close()
     "server-ssl-cert: "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
     "server-ssl-key: "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
 
-    "server-ssl-session-id-context: "..." | bx..., /* 当 secure 为真时，若指定有该属性，则将使用 SSL/TLS 会话的外部缓存机制，以便后续可被其他进程复用该会话信息。*/
+    "server-ssl-session-id-context": "", /* 当 secure 为真时，若指定有该属性，则将使用 SSL/TLS 会话的外部缓存机制，以便后续可被其他进程复用该会话信息。*/
+    "server-ssl-session-cache-mode": "", /* 许可字符串如 '0644' 或 'u+rw,go+r'。 */
 }
 ```
 
