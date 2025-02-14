@@ -5565,7 +5565,7 @@ $STREAM.from(
     "server-ssl-cert: "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
     "server-ssl-key: "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
 
-    "server-ssl-session-id: "...", /* server 为真且 secure 为真时，若指定有该属性，则将启用 SSL/TLS 会话的外部缓存机制，以便复用已有的 SSL/TLS 会话。*/
+    "server-ssl-session-id-context: "..." | bx...., /* server 为真且 secure 为真时，若指定有该属性，则将启用 SSL/TLS 会话的外部缓存机制，以便复用已有的 SSL/TLS 会话。*/
 
     /* 以下属性用于客户端： */
 
@@ -6552,7 +6552,7 @@ $dgramSocket.close()
     "server-ssl-cert: "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
     "server-ssl-key: "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
 
-    "server-ssl-session-id: "...",      /* 当 secure 为真时，若指定有该属性，则将使用 SSL/TLS 会话的外部缓存机制，以便后续可被其他进程复用该会话信息。*/
+    "server-ssl-session-id-context: "..." | bx..., /* 当 secure 为真时，若指定有该属性，则将使用 SSL/TLS 会话的外部缓存机制，以便后续可被其他进程复用该会话信息。*/
 }
 ```
 
