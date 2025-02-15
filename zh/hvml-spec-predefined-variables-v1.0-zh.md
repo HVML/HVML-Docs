@@ -336,16 +336,16 @@ $SYS.uname_prt string: `the kernel name.`
 ```js
 $SYS.uname_prt(
         <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which = 'default':
-            - 'kernel-name':        `includes kernel name (e.g., 'Linux')`
-            - 'kernel-release':     `includes kernel release (e.g., '2.6.28')`
-            - 'kernel-version':     `includes kernel version`
-            - 'nodename':           `includes the network node hostname`
-            - 'machine':            `includes machine hardware name`
-            - 'processor':          `includes the processor type`
-            - 'hardware-platform':  `includes the hardware platform`
-            - 'operating-system':   `includes the operating system (e.g., 'GNU/Linux')`
-            - 'all':                `includes all parts`
-            - 'default':            `is equivalent to 'kernel-name'`
+            - 'kernel-name':        `Include kernel name (e.g., 'Linux').`
+            - 'kernel-release':     `Include kernel release (e.g., '2.6.28').`
+            - 'kernel-version':     `Include kernel version.`
+            - 'nodename':           `Include the network node hostname.`
+            - 'machine':            `Include machine hardware name.`
+            - 'processor':          `Include the processor type.`
+            - 'hardware-platform':  `Include the hardware platform.`
+            - 'operating-system':   `Include the operating system (e.g., 'GNU/Linux').`
+            - 'all':                `Include all parts.`
+            - 'default':            `The equivalent to 'kernel-name'.`
         >
 ) string: `the string concatenated the desired system information parts together.`
 ```
@@ -890,14 +890,56 @@ $SYS.spawn(
 **描述**
 
 ```js
-$SYS.pipe() tuple with two longint elements | false
+$SYS.pipe(
+        [ < '[cloexec || nonblock] | default' $flags = 'default': `the flags on the new file descriptors.`:
+           - 'nonblock':    `Set the file descriptor in nonblocking mode.`
+           - 'cloexec':     `Set the file descriptor flag close-on-exec.`
+           - 'default':     `The equivalent to 'cloexec'.` >
+        ]
+) tuple with two longint elements | false
 ```
 
 **参见**
 
 - POSIX 标准函数：`pipe()`
 
-#### 3.1.15) `close` 方法
+#### 3.1.15) `fdflags` 方法
+
+获取或设置文件描述符标志、文件描述符状态标志等。
+
+**描述**
+
+- 获取器：
+
+```js
+$SYS.fdflags(
+        <longint $fd: `the file descriptor.`>,
+        <'cloexec | append | nonblock' $flags:
+           - 'cloexec':     `Get the file descriptor flag close-on-exec.`
+           - 'append':      `Get the file descriptor statu flag of O_APPEND.`
+           - 'nonblock':    `Get the file descriptor statu flag of O_NONBLOCK.`
+        >
+) true | false
+```
+
+- 设置器：
+
+```js
+$SYS.fdflags(!
+        <longint $fd: `the file descriptor.`>,
+        <'cloexec || append || nonblock' $flags:
+           - 'cloexec':     `Set the file descriptor flag close-on-exec.`
+           - 'append':      `Set the file descriptor statu flag of O_APPEND.`
+           - 'nonblock':    `Set the file descriptor statu flag of O_NONBLOCK.`
+        >
+) true | false
+```
+
+**参见**
+
+- POSIX 标准函数：`fcntl()`
+
+#### 3.1.16) `close` 方法
 
 关闭给定的文件描述符。
 
@@ -905,7 +947,7 @@ $SYS.pipe() tuple with two longint elements | false
 
 ```js
 $SYS.close(
-        <longint $fd: `the file descriptor to be closed.`>
+        <longint $fd: `The file descriptor to be closed.`>
 ) true | false
 ```
 
@@ -1076,9 +1118,9 @@ $RUNNER.autoSwitchingRdr(! false )
     </observe>
 ```
 
-#### 3.2.7) `user` 属性
+#### 3.2.7) `user` 方法
 
-通过该属性获取或设置用户键值对。
+通过该方法获取或设置用户键值对。
 
 **描述**
 
@@ -5626,7 +5668,7 @@ $STREAM.open(
                - 'nonblock':    `Open the $uri in nonblocking mode`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
                - 'nameless':    `Do not assign a name to the socket; only for local socket.`
-               - 'default':     `equivalent to 'read write cloexec'`
+               - 'default':     `The equivalent to 'read write cloexec'`
            >
            [, < 'raw | message | websocket | hbdbus' $ext_protocol = 'raw': `the extended protocol will be used on the stream.`
                - 'raw':                 `No extended protocol.`
@@ -6024,10 +6066,10 @@ $STREAM.stdout.writebytes("write string")
 $stream.seek(
         < number $offset: `the offset to be set`>,
         [, <'set | current | end | default' $whence = 'default':
-            - 'set':     `The $stream offset is set to offset bytes`
+            - 'set':     `The $stream offset is set to offset bytes.`
             - 'current': `The $stream offset is set to its current location plus offset bytes`
             - 'end':     `The $stream offset is set to the size of the file plus offset bytes.`
-            - 'default': `is equivalent to 'set'`
+            - 'default': `The equivalent to 'set'.`
            >
         ]
 ) ulongint | false
@@ -6060,13 +6102,130 @@ $stream.seek(10, 'set')
 
 获取流对应的文件描述符（仅针对 POSIX 系统）。
 
+**描述**
+
+```js
+$stream.fd longint | false
+```
+
+通过该属性的获取器获得流底层对应的文件描述符。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+
+**示例**
+
+```js
+$STREAM.stdin.fd
+    // 0L
+```
+
 ##### 3.12.8.9) `peer_addr` 属性
 
 获取套接字流对应的对端地址，如 UNIX 套接字另一端的套接字文件路径，网络套接字另一端的 IP 地址等。
 
+**描述**
+
+```js
+$stream.peer_addr string | null
+```
+
+通过该属性的获取器获得套接字流对端的英特网地址。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+
+**示例**
+
+```js
+$stream.peer_addr()
+    // 0L
+```
+
 ##### 3.12.8.10) `peer_port` 属性
 
 获取 INET 套接字流对应的对端端口。
+
+**描述**
+
+```js
+$stream.peer_port string | null
+```
+
+通过该属性的获取器获得套接字流对端的端口地址。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+
+**示例**
+
+```js
+$stream.peer_port()
+    // 0L
+```
+
+##### 3.12.8.11) `sockopt` 属性
+
+获取或设置套接字流的选项。
+
+**描述**
+
+- 获取器
+
+```js
+$stream.sockopt(
+        <'type | nread | nwrite | recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
+            - 'type':           `The socket type.`
+            - 'nread':          `The number of bytes to be read.`
+            - 'nwrite':         `The number of bytes written not yet sent by the protocol.`
+            - 'recv-timeout':   `The timeout value for input.`
+            - 'send-timeout':   `The timeout value for output.`
+            - 'recv-buffer':    `The buffer size for input.`
+            - 'send-buffer':    `The buffer size for output.`
+        >
+) number | false
+```
+
+通过获取器获得套接字流的指定选项值。
+
+- 设置器
+
+```js
+$stream.sockopt(!
+        <'recv-timeout | send-timeout ' $option:
+            - 'recv-timeout':   `The timeout value for input.`
+            - 'send-timeout':   `The timeout value for output.`
+            - 'recv-buffer':    `The buffer size for input.`
+            - 'send-buffer':    `The buffer size for output.`
+        >,
+        < number $value: `The option value to be set.`>,
+) true | false
+```
+
+通过设置器设置套接字流的指定选项值。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+- `Unsupported`：不支持该操作（非套接字）; 可忽略异常，静默求值时返回 `false`。
+
+**备注**
+
+1. 仅支持套接字类型的流。
+
+**示例**
+
+```js
+# 设置套接字流的超时时间为 1 秒。
+$stream.sockopt('recv-timeout', 1.0)
+    // true
+```
 
 #### 3.12.9) `pipe` 流实体
 
@@ -6221,7 +6380,7 @@ $SOCKET.stream(
                - 'global':      `Create a globally accessible socket.`
                - 'nonblock':    `Create the sockete in nonblocking mode.`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
-               - 'default':     `equivalent to 'cloexec'`
+               - 'default':     `The equivalent to 'cloexec'.`
            >
                 [, <longint $backlog: `the backlog.` >
                 ]
@@ -9633,10 +9792,12 @@ $sqliteCursor.connection
 1. 删除 `$CRTN.sendingDocumentByURL` 属性。
 1. 新增 `$SYS.pipe` 方法。
 1. 新增 `$SYS.close` 方法。
+1. 新增 `$SYS.fdflags` 方法。
 1. 新增 `$SYS.spawn` 方法。
-1. 新增 `$streamSocket.fd` 方法。
-1. 新增 `$streamSocket.peer_addr` 方法。
-1. 新增 `$streamSocket.peer_port` 方法。
+1. 新增 `$streamSocket.fd` 属性。
+1. 新增 `$streamSocket.peer_addr` 属性。
+1. 新增 `$streamSocket.peer_port` 属性。
+1. 新增 `$streamSocket.sockopt` 方法。
 
 #### RCh) 240131
 
