@@ -847,7 +847,7 @@ $SYS.remove(
 
 - C 标准函数：`remove()`
 
-#### 3.1.13) `spawn` 方法
+#### 3.1.14) `spawn` 方法
 
 创建子进程并在其中执行给定的程序。
 
@@ -883,7 +883,7 @@ $SYS.spawn(
 
 - POSIX 标准函数：`posix_spawn()`
 
-#### 3.1.14) `pipe` 方法
+#### 3.1.15) `pipe` 方法
 
 创建用于父子进程通讯的单向匿名管道。
 
@@ -903,7 +903,7 @@ $SYS.pipe(
 
 - POSIX 标准函数：`pipe()`
 
-#### 3.1.15) `fdflags` 方法
+#### 3.1.16) `fdflags` 方法
 
 获取或设置文件描述符标志、文件描述符状态标志等。
 
@@ -939,7 +939,7 @@ $SYS.fdflags(!
 
 - POSIX 标准函数：`fcntl()`
 
-#### 3.1.16) `close` 方法
+#### 3.1.17) `close` 方法
 
 关闭给定的文件描述符。
 
@@ -6380,7 +6380,7 @@ $SOCKET.stream(
                - 'global':      `Create a globally accessible socket.`
                - 'nonblock':    `Create the sockete in nonblocking mode.`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
-               - 'default':     `The equivalent to 'cloexec'.`
+               - 'default':     `The equivalent to 'cloexec nonblock'.`
            >
                 [, <longint $backlog: `the backlog.` >
                 ]
@@ -6491,11 +6491,72 @@ $SOCKET.close( streamSocket | dgramSocket $entity )
 $SOCKET.close($streamSocket)
 ```
 
-#### 3.13.4) 流套接字实体
+#### 3.13.4) `sockopt` 属性
+
+获取或设置套接字选项。
+
+**描述**
+
+- 获取器
+
+```js
+$SOCKET.sockopt(native/streamSocket | native/dgramSocket,
+        <'type | nread | nwrite | recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
+            - 'type':           `The socket type.`
+            - 'nread':          `The number of bytes to be read.`
+            - 'nwrite':         `The number of bytes written not yet sent by the protocol.`
+            - 'recv-timeout':   `The timeout value for input.`
+            - 'send-timeout':   `The timeout value for output.`
+            - 'recv-buffer':    `The buffer size for input.`
+            - 'send-buffer':    `The buffer size for output.`
+        >
+) number | false
+```
+
+通过获取器获得套接字流的指定选项值。
+
+- 设置器
+
+```js
+$SOCKET.sockopt(!
+        native/streamSocket | native/dgramSocket,
+        <'recv-timeout | send-timeout ' $option:
+            - 'recv-timeout':   `The timeout value for input.`
+            - 'send-timeout':   `The timeout value for output.`
+            - 'recv-buffer':    `The buffer size for input.`
+            - 'send-buffer':    `The buffer size for output.`
+        >,
+        < number $value: `The option value to be set.`>,
+) true | false
+```
+
+通过设置器设置套接的指定选项值。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+- `Unsupported`：不支持该操作（非套接字）; 可忽略异常，静默求值时返回 `false`。
+
+**备注**
+
+1. 仅支持套接字类型的流。
+
+**示例**
+
+```js
+# 设置一个流套接字实体对应的套接字超时时间为 1 秒。
+$SOCKET.sockopt($streamSocket, 'recv-timeout', 1.0)
+    // true
+```
+
+#### 3.13.5) 流套接字实体
 
 流套接字（streamSocket）实体代表一个正在指定套接字上监听客户端连接请求的流套接字，可通过该实体提供的方法接受一个连接请求。
 
-##### 3.13.4.1) `accept`
+##### 3.13.5.1) `accept`
 
 接受来自客户端的连接请求，并创建对应的流实体。
 
@@ -6504,7 +6565,7 @@ $streamSocket.accept(
     <'[nonblock || cloexec] | default' $flags:
            - 'nonblock':    `Set the file descriptor in nonblocking mode.`
            - 'cloexec':     `Set the file descriptor flag close-on-exec.`
-           - 'default':     `Equivalent to 'cloexec'.`
+           - 'default':     `Equivalent to 'cloexec nonblock'.`
     >
     [, <'raw | message | websocket | hbdbus' $extended_protocol = 'raw': `the extended protocol will be used on the stream.`
            - 'raw':         `No any protocol.`
@@ -6529,7 +6590,7 @@ $streamSocket.accept(
 
 **示例**
 
-##### 3.13.4.2) `fd` 方法
+##### 3.13.5.2) `fd` 方法
 
 该方法获取流套接字的文件描述符。
 
@@ -6553,7 +6614,7 @@ $streamSocket.fd()
     // 3L
 ```
 
-##### 3.13.4.3) `close` 方法
+##### 3.13.5.3) `close` 方法
 
 该方法关闭流套接字。
 
@@ -6581,9 +6642,9 @@ $streamSocket.close()
     // true
 ```
 
-#### 3.13.5) 数据报套接字实体
+#### 3.13.6) 数据报套接字实体
 
-##### 3.13.5.1) `sendto` 方法
+##### 3.13.6.1) `sendto` 方法
 
 通过该方法发送消息。
 
@@ -6618,7 +6679,7 @@ $dgramSocket.sendto(
 
 **示例**
 
-##### 3.13.5.2) `recvfrom` 方法
+##### 3.13.6.2) `recvfrom` 方法
 
 通过该方法接收一条消息。
 
@@ -6650,7 +6711,7 @@ $dgramSocket.recvfrom(
 
 **示例**
 
-##### 3.13.5.3) `fd` 方法
+##### 3.13.6.3) `fd` 方法
 
 该方法获取数据报套接字的文件描述符。
 
@@ -6674,7 +6735,7 @@ $dgramSocket.fd()
     // 3L
 ```
 
-##### 3.13.5.4) `close` 方法
+##### 3.13.6.4) `close` 方法
 
 该方法关闭数据报套接字。
 
@@ -6702,7 +6763,7 @@ $dgramSocket.close()
     // true
 ```
 
-#### 3.13.6) `message`、`websocket` 协议扩展
+#### 3.13.7) `message`、`websocket` 协议扩展
 
 在使用 URI 图式 `local://`、`inetN://` 的流套接字实体上，在调用 `accept()` 方法时，可使用 `message` 或 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
 
@@ -9794,10 +9855,11 @@ $sqliteCursor.connection
 1. 新增 `$SYS.close` 方法。
 1. 新增 `$SYS.fdflags` 方法。
 1. 新增 `$SYS.spawn` 方法。
-1. 新增 `$streamSocket.fd` 属性。
-1. 新增 `$streamSocket.peer_addr` 属性。
-1. 新增 `$streamSocket.peer_port` 属性。
-1. 新增 `$streamSocket.sockopt` 方法。
+1. 新增 `$stream.fd` 属性。
+1. 新增 `$stream.peer_addr` 属性。
+1. 新增 `$stream.peer_port` 属性。
+1. 新增 `$stream.sockopt` 属性。
+1. 新增 `$SOCKET.sockopt` 属性。
 
 #### RCh) 240131
 
