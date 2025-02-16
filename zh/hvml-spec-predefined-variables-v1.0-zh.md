@@ -6430,7 +6430,7 @@ $SOCKET.dgram(
                - 'nameless':    `Do not assign a name to the socket; only for local socket.`
                - 'nonblock':    `Create the sockete in nonblocking mode.`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
-               - 'default':     `Equivalent to 'cloexec'.`
+               - 'default':     `The equivalent to 'cloexec nonblock'.`
            >
         ]
 ) native/dgramSocket | undefined
