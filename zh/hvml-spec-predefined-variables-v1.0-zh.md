@@ -939,6 +939,68 @@ $SYS.fdflags(!
 
 - POSIX 标准函数：`fcntl()`
 
+#### 3.12.11) `sockopt` 属性
+
+获取或设置套接字的选项。
+
+**描述**
+
+- 获取器
+
+```js
+$SYS.sockopt(
+        <longint $fd: `The file descriptor.`>,
+        <'type | nread | nwrite | recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
+            - 'type':           `The socket type.`
+            - 'nread':          `The number of bytes to be read.`
+            - 'nwrite':         `The number of bytes written not yet sent by the protocol.`
+            - 'recv-timeout':   `The timeout value for input.`
+            - 'send-timeout':   `The timeout value for output.`
+            - 'recv-buffer':    `The buffer size for input.`
+            - 'send-buffer':    `The buffer size for output.`
+        >
+) number | false
+```
+
+通过获取器获得套接字流的指定选项值。
+
+- 设置器
+
+```js
+$SYS.sockopt(!
+        <longint $fd: `The file descriptor.`>,
+        <'recv-timeout | send-timeout ' $option:
+            - 'recv-timeout':   `The timeout value for input.`
+            - 'send-timeout':   `The timeout value for output.`
+            - 'recv-buffer':    `The buffer size for input.`
+            - 'send-buffer':    `The buffer size for output.`
+        >,
+        < number $value: `The option value to be set.`>,
+) true | false
+```
+
+通过设置器设置套接字流的指定选项值。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+- `Unsupported`：不支持该操作（非套接字文件描述符）; 可忽略异常，静默求值时返回 `false`。
+
+**备注**
+
+1. 仅支持套接字。
+
+**示例**
+
+```js
+# 设置套接字流的超时时间为 1 秒。
+$SYS.sockopt($stream.fd, 'recv-timeout', 1.0)
+    // true
+```
+
 #### 3.1.17) `close` 方法
 
 关闭给定的文件描述符。
@@ -6167,66 +6229,6 @@ $stream.peer_port()
     // 0L
 ```
 
-##### 3.12.8.11) `sockopt` 属性
-
-获取或设置套接字流的选项。
-
-**描述**
-
-- 获取器
-
-```js
-$stream.sockopt(
-        <'type | nread | nwrite | recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
-            - 'type':           `The socket type.`
-            - 'nread':          `The number of bytes to be read.`
-            - 'nwrite':         `The number of bytes written not yet sent by the protocol.`
-            - 'recv-timeout':   `The timeout value for input.`
-            - 'send-timeout':   `The timeout value for output.`
-            - 'recv-buffer':    `The buffer size for input.`
-            - 'send-buffer':    `The buffer size for output.`
-        >
-) number | false
-```
-
-通过获取器获得套接字流的指定选项值。
-
-- 设置器
-
-```js
-$stream.sockopt(!
-        <'recv-timeout | send-timeout ' $option:
-            - 'recv-timeout':   `The timeout value for input.`
-            - 'send-timeout':   `The timeout value for output.`
-            - 'recv-buffer':    `The buffer size for input.`
-            - 'send-buffer':    `The buffer size for output.`
-        >,
-        < number $value: `The option value to be set.`>,
-) true | false
-```
-
-通过设置器设置套接字流的指定选项值。
-
-**异常**
-
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
-- `Unsupported`：不支持该操作（非套接字）; 可忽略异常，静默求值时返回 `false`。
-
-**备注**
-
-1. 仅支持套接字类型的流。
-
-**示例**
-
-```js
-# 设置套接字流的超时时间为 1 秒。
-$stream.sockopt('recv-timeout', 1.0)
-    // true
-```
-
 #### 3.12.9) `pipe` 流实体
 
 **查询参数**
@@ -6489,67 +6491,6 @@ $SOCKET.close( streamSocket | dgramSocket $entity )
 
 ```js
 $SOCKET.close($streamSocket)
-```
-
-#### 3.13.4) `sockopt` 属性
-
-获取或设置套接字选项。
-
-**描述**
-
-- 获取器
-
-```js
-$SOCKET.sockopt(native/streamSocket | native/dgramSocket,
-        <'type | nread | nwrite | recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
-            - 'type':           `The socket type.`
-            - 'nread':          `The number of bytes to be read.`
-            - 'nwrite':         `The number of bytes written not yet sent by the protocol.`
-            - 'recv-timeout':   `The timeout value for input.`
-            - 'send-timeout':   `The timeout value for output.`
-            - 'recv-buffer':    `The buffer size for input.`
-            - 'send-buffer':    `The buffer size for output.`
-        >
-) number | false
-```
-
-通过获取器获得套接字流的指定选项值。
-
-- 设置器
-
-```js
-$SOCKET.sockopt(!
-        native/streamSocket | native/dgramSocket,
-        <'recv-timeout | send-timeout ' $option:
-            - 'recv-timeout':   `The timeout value for input.`
-            - 'send-timeout':   `The timeout value for output.`
-            - 'recv-buffer':    `The buffer size for input.`
-            - 'send-buffer':    `The buffer size for output.`
-        >,
-        < number $value: `The option value to be set.`>,
-) true | false
-```
-
-通过设置器设置套接的指定选项值。
-
-**异常**
-
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
-- `Unsupported`：不支持该操作（非套接字）; 可忽略异常，静默求值时返回 `false`。
-
-**备注**
-
-1. 仅支持套接字类型的流。
-
-**示例**
-
-```js
-# 设置一个流套接字实体对应的套接字超时时间为 1 秒。
-$SOCKET.sockopt($streamSocket, 'recv-timeout', 1.0)
-    // true
 ```
 
 #### 3.13.5) 流套接字实体
@@ -9854,12 +9795,11 @@ $sqliteCursor.connection
 1. 新增 `$SYS.pipe` 方法。
 1. 新增 `$SYS.close` 方法。
 1. 新增 `$SYS.fdflags` 方法。
+1. 新增 `$SYS.sockopt` 属性。
 1. 新增 `$SYS.spawn` 方法。
 1. 新增 `$stream.fd` 属性。
 1. 新增 `$stream.peer_addr` 属性。
 1. 新增 `$stream.peer_port` 属性。
-1. 新增 `$stream.sockopt` 属性。
-1. 新增 `$SOCKET.sockopt` 属性。
 
 #### RCh) 240131
 
