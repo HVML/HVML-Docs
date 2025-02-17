@@ -6183,14 +6183,14 @@ $STREAM.stdin.fd
     // 0L
 ```
 
-##### 3.12.8.9) `peer_addr` 属性
+##### 3.12.8.9) `peerAddr` 属性
 
 获取套接字流对应的对端地址，如 UNIX 套接字另一端的套接字文件路径，网络套接字另一端的 IP 地址等。
 
 **描述**
 
 ```js
-$stream.peer_addr string | null
+$stream.peerAddr string | null
 ```
 
 通过该属性的获取器获得套接字流对端的英特网地址。
@@ -6202,18 +6202,18 @@ $stream.peer_addr string | null
 **示例**
 
 ```js
-$stream.peer_addr()
+$stream.peerAddr()
     // 0L
 ```
 
-##### 3.12.8.10) `peer_port` 属性
+##### 3.12.8.10) `peerPort` 属性
 
 获取 INET 套接字流对应的对端端口。
 
 **描述**
 
 ```js
-$stream.peer_port string | null
+$stream.peerPort string | null
 ```
 
 通过该属性的获取器获得套接字流对端的端口地址。
@@ -6225,7 +6225,7 @@ $stream.peer_port string | null
 **示例**
 
 ```js
-$stream.peer_port()
+$stream.peerPort()
     // 0L
 ```
 
@@ -9798,8 +9798,8 @@ $sqliteCursor.connection
 1. 新增 `$SYS.sockopt` 属性。
 1. 新增 `$SYS.spawn` 方法。
 1. 新增 `$stream.fd` 属性。
-1. 新增 `$stream.peer_addr` 属性。
-1. 新增 `$stream.peer_port` 属性。
+1. 新增 `$stream.peerAddr` 属性。
+1. 新增 `$stream.peerPort` 属性。
 
 #### RCh) 240131
 
