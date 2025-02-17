@@ -891,10 +891,11 @@ $SYS.spawn(
 
 ```js
 $SYS.pipe(
-        [ < '[cloexec || nonblock] | default' $flags = 'default': `the flags on the new file descriptors.`:
+        [ < '[cloexec || nonblock] | default | none' $flags = 'default': `The flags on the new file descriptors.`:
            - 'nonblock':    `Set the file descriptor in nonblocking mode.`
            - 'cloexec':     `Set the file descriptor flag close-on-exec.`
-           - 'default':     `The equivalent to 'cloexec'.` >
+           - 'default':     `The equivalent to 'cloexec'.`
+           - 'none':        `No additinal flags are specified.`  >
         ]
 ) tuple with two longint elements | false
 ```
@@ -959,7 +960,7 @@ $SYS.sockopt(
             - 'recv-buffer':    `The buffer size for input.`
             - 'send-buffer':    `The buffer size for output.`
         >
-) number | false
+) string | number | longint | false
 ```
 
 通过获取器获得套接字流的指定选项值。
@@ -969,13 +970,13 @@ $SYS.sockopt(
 ```js
 $SYS.sockopt(!
         <longint $fd: `The file descriptor.`>,
-        <'recv-timeout | send-timeout ' $option:
+        <'recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
             - 'recv-timeout':   `The timeout value for input.`
             - 'send-timeout':   `The timeout value for output.`
             - 'recv-buffer':    `The buffer size for input.`
             - 'send-buffer':    `The buffer size for output.`
         >,
-        < number $value: `The option value to be set.`>,
+        < number | longint $value: `The option value to be set.`>,
 ) true | false
 ```
 
@@ -3405,6 +3406,75 @@ $DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless kv-pairs')
     // [ [! 'A',  3 ], [! 'a', 1 ] ]
 ```
 
+#### 3.7.29) `makebytesbuffer` 方法
+
+构造一个可用作缓冲区的字节序列。
+
+**描述**
+
+```js
+$DATA.makebytesbuffer(
+        < ulongint $size: the size of the bufer in bytes. >
+) bsequence | undefined
+```
+
+该方法构造一个可用作缓冲区的字节序列。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数。可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：错误的数据类型。可忽略异常，静默求值时返回 `undefined`。
+
+**示例**
+
+```js
+#DATA.makebytesbuffer(16)
+    // bsequence
+```
+
+#### 3.7.30) `appendbytes2buffer` 方法
+
+将一个字节序列或字符串追加到缓冲区。
+
+**描述**
+
+```js
+$DATA.appendbytes2buffer(
+        < bsequence $buf: `The buffer.` >,
+        < bsequence | string $bytes: `The bytes will be append to the buffer.` >
+        [, < ulongint $offset = 0: `The offset in $bytes.`>
+            [, < ulongint $length = 0: `The maximum length to append; 0 means all.`>
+                [, < '[ignore-null-byte || truncate ]' $options = 'ignore-null-byte': `the options:`
+                    - 'ignore-null-byte':   `Ignore the terminating null byte if $bytes is a string.`
+                    - 'truncate':           `Truncate the data if the buffer is not enough large.`
+                    - 'keep-char-intact':   `Keep all multi-byte characters in UTF-8 are intact.`
+                    >
+                ]
+            ]
+        ]
+) ulongint
+```
+
+该方法将一个字节序列或字符串追加到缓冲区中；返回真正复制的字节数。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `ArgumentMissed`：缺少必要参数。可忽略异常，静默求值时返回 `0L`。
+- `WrongDataType`：错误的数据类型。可忽略异常，静默求值时返回 `0L`。
+- `InvalidValue`：无效参数。可忽略异常，静默求值时返回 `0L`。
+
+**示例**
+
+```js
+$DATA.appendbytes2buffer($DATA.makebytesbuffer(16), bx0011223344)
+    // 5UL
+```
+
 ### 3.8) `L`
 
 该变量是一个行者级内置变量，主要用于逻辑运算。
@@ -5742,10 +5812,10 @@ $STREAM.open(
                 ]
            ]
         ]
-) native/stream | undefined
+) native/stream | null | undefined
 ```
 
-该方法打开一个流，返回一个代表流的原生实体值。
+该方法打开一个流，返回一个代表流的原生实体值；当打开一个套接字流且通过扩展选项设置了超时值（`recv-timeout`）时，该方法可能因超时而返回 `null`。
 
 该方法使用 URI 指定要打开的流位置以及传输层类型名称，如：
 
@@ -6078,7 +6148,32 @@ $STREAM.stdin.readbytes(10)
     // bsequence: bx77726974652073747269
 ```
 
-##### 3.12.8.6) `writebytes` 方法
+##### 3.12.8.6) `readbytes2buffer` 方法
+
+从流中读取数据将其追加到用作缓冲区的字节序列中。
+
+**描述**
+
+```js
+$stream.readbytes2bufer(
+        < bsequence $buffer: `The byte seqence as a buffer.`>
+        < ulongint $length: `The length to read in bytes.`>
+) ulongint
+```
+
+该方法从 `$stream` 流中读取指定长度的字节，并将其追加到指定的缓冲区中。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `0UL`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `0UL`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `0UL`。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时 `0UL`。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回 `0UL`。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `0UL`。
+
+##### 3.12.8.7) `writebytes` 方法
 
 将一个字节序列写入流。
 
@@ -6118,7 +6213,7 @@ $STREAM.stdout.writebytes("write string")
 
 注意：字符串作为字节序列写入时，应该写入结尾的空字符。
 
-##### 3.12.8.7) `seek` 方法
+##### 3.12.8.8) `seek` 方法
 
 在流中执行定位操作。
 
@@ -6160,7 +6255,7 @@ $stream.seek(10, 'set')
     // ulongint: 10L
 ```
 
-##### 3.12.8.8) `fd` 属性
+##### 3.12.8.9) `fd` 属性
 
 获取流对应的文件描述符（仅针对 POSIX 系统）。
 
@@ -6183,7 +6278,7 @@ $STREAM.stdin.fd
     // 0L
 ```
 
-##### 3.12.8.9) `peerAddr` 属性
+##### 3.12.8.10) `peerAddr` 属性
 
 获取套接字流对应的对端地址，如 UNIX 套接字另一端的套接字文件路径，网络套接字另一端的 IP 地址等。
 
@@ -6206,7 +6301,7 @@ $stream.peerAddr()
     // 0L
 ```
 
-##### 3.12.8.10) `peerPort` 属性
+##### 3.12.8.11) `peerPort` 属性
 
 获取 INET 套接字流对应的对端端口。
 
@@ -6378,11 +6473,12 @@ du -BM hvml-spec-v1.0-zh.md
 ```js
 $SOCKET.stream(
         < string $uri: `the URI of the stream socket.` >
-        [, <'[global || || nonblock || cloexec] | default' $opt = 'default':
+        [, <'[global || || nonblock || cloexec] | default | none' $opt = 'default':
                - 'global':      `Create a globally accessible socket.`
                - 'nonblock':    `Create the sockete in nonblocking mode.`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
                - 'default':     `The equivalent to 'cloexec nonblock'.`
+               - 'none':        `No additional flags are specified.`
            >
                 [, <longint $backlog: `the backlog.` >
                 ]
@@ -6427,12 +6523,13 @@ $SOCKET.stream("local://var/run/myapp.sock")
 ```js
 $SOCKET.dgram(
         < string $uri: `the URI of the dgram socket.` >
-        [, <'[global || nameless || nonblock || cloexec] | default' $opt = 'default':
+        [, <'[global || nameless || nonblock || cloexec] | default | none' $opt = 'default':
                - 'global':      `Create a globally accessible socket; only for local socket.`
                - 'nameless':    `Do not assign a name to the socket; only for local socket.`
                - 'nonblock':    `Create the sockete in nonblocking mode.`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
                - 'default':     `The equivalent to 'cloexec nonblock'.`
+               - 'none':        `No additional flags are specified.`
            >
         ]
 ) native/dgramSocket | undefined
@@ -6503,10 +6600,11 @@ $SOCKET.close($streamSocket)
 
 ```js
 $streamSocket.accept(
-    <'[nonblock || cloexec] | default' $flags:
+    <'[nonblock || cloexec] | default | none' $flags:
            - 'nonblock':    `Set the file descriptor in nonblocking mode.`
            - 'cloexec':     `Set the file descriptor flag close-on-exec.`
            - 'default':     `Equivalent to 'cloexec nonblock'.`
+           - 'none':        `No additional flags are specified.`
     >
     [, <'raw | message | websocket | hbdbus' $extended_protocol = 'raw': `the extended protocol will be used on the stream.`
            - 'raw':         `No any protocol.`
@@ -6520,7 +6618,9 @@ $streamSocket.accept(
 ) native/stream | null | undefined
 ```
 
-该方法接受流套接字上的连接请求，返回一个流实体；当套接字被标记为非阻塞，但目前无连接可接受时，返回 `null`。
+该方法接受流套接字上的连接请求，返回一个流实体；如下情况下返回 `null`：
+   - 当套接字被标记为非阻塞，但目前无连接可接受时；
+   - 当套接字以阻塞方式等待接受连接，但达到或超过 `$SYS.sockopt` 设置的超时时间时。
 
 **异常**
 
@@ -6595,7 +6695,7 @@ $dgramSocket.sendto(
     < '[dontwait || confirm] | default' $flags:
            - 'dontwait':    `Enable a nonblocking operation.`
            - 'confirm':     `Tell the link layer that forward progress happened: you got a successful reply from the other side.`
-           - 'default':     `No any option specified.`
+           - 'default':     `No additional flags are specified.`
     >,
     < bsequence | string $bytes: `the data to send.` >
     [,
@@ -6630,7 +6730,7 @@ $dgramSocket.recvfrom(
            - 'dontwait':    `Enable a nonblocking operation.`
            - 'nosource':    `Not intersted in the source address.`
            - 'trunc':       `Return the real length of the message, even when it was longer than the length of desired.`
-           - 'default':     `No any option specified.`
+           - 'default':     `No additional flags are specified.`
     >,
     <longint $length: `The number of bytes to receive.`>
 ) undefined | object: `undefined or an object describing the message and the source address:`
@@ -9800,6 +9900,9 @@ $sqliteCursor.connection
 1. 新增 `$stream.fd` 属性。
 1. 新增 `$stream.peerAddr` 属性。
 1. 新增 `$stream.peerPort` 属性。
+1. 新增 `$DATA.makebytesbuffer` 方法。
+1. 新增 `$DATA.appendbytes2buffer` 方法。
+1. 新增 `$STREAM.readbytes2buffer` 方法。
 
 #### RCh) 240131
 
