@@ -953,14 +953,15 @@ $SYS.sockopt(
         <longint $fd: `The file descriptor.`>,
         <'type | nread | nwrite | recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
             - 'type':           `The socket type.`
-            - 'nread':          `The number of bytes to be read.`
-            - 'nwrite':         `The number of bytes written not yet sent by the protocol.`
+            - 'nread':          `The number of bytes to be read. (macOS only)`
+            - 'nwrite':         `The number of bytes written not yet sent by the protocol. (macOS only)`
             - 'recv-timeout':   `The timeout value for input.`
             - 'send-timeout':   `The timeout value for output.`
             - 'recv-buffer':    `The buffer size for input.`
             - 'send-buffer':    `The buffer size for output.`
+            - 'keep-alive':     `Keep alive.`
         >
-) string | number | longint | false
+) string | number | longint | true | false
 ```
 
 通过获取器获得套接字流的指定选项值。
@@ -975,8 +976,9 @@ $SYS.sockopt(!
             - 'send-timeout':   `The timeout value for output.`
             - 'recv-buffer':    `The buffer size for input.`
             - 'send-buffer':    `The buffer size for output.`
+            - 'keep-alive':     `Keep alive.`
         >,
-        < number | longint $value: `The option value to be set.`>,
+        < number | longint | boolean $value: `The option value to be set.`>,
 ) true | false
 ```
 
@@ -2404,14 +2406,14 @@ $DATA.type( 3.5 )
     // string: `number`
 ```
 
-#### 3.7.2) `size` 方法
+#### 3.7.2) `memsize` 方法
 
 返回数据占用的内存大小。
 
 **描述**
 
 ```js
-$DATA.size(
+$DATA.memsize(
         [ <any $data> ]
 ) ulongint
 ```
@@ -2427,10 +2429,10 @@ $DATA.size(
 **示例**
 
 ```js
-$DATA.size
+$DATA.memsize
     // ulongint: 32UL
 
-$DATA.size( "HVML" )
+$DATA.memsize( "HVML" )
     // ulongint: 32UL
 ```
 
@@ -3467,12 +3469,46 @@ $DATA.appendbytes2buffer(
 - `ArgumentMissed`：缺少必要参数。可忽略异常，静默求值时返回 `0L`。
 - `WrongDataType`：错误的数据类型。可忽略异常，静默求值时返回 `0L`。
 - `InvalidValue`：无效参数。可忽略异常，静默求值时返回 `0L`。
+- `TooLong`：新的字节序列太长，缓冲区容不下。可忽略异常，静默求值时返回 `0L`。
 
 **示例**
 
 ```js
 $DATA.appendbytes2buffer($DATA.makebytesbuffer(16), bx0011223344)
     // 5UL
+```
+
+#### 3.7.31) `rollbytesbuffer` 方法
+
+重置字节缓冲区。
+
+**描述**
+
+```js
+$DATA.rollbytesbuffer(
+        < bsequence $buf: `The buffer.` >,
+        [, < longint $offset = -1: `The offset to copy the left bytes to the buffer head.`>
+        ]
+) ulongint | false
+```
+
+该方法滚动一个字节序列缓冲区，将从 `$offset` 指定的偏移位置处复制剩余的字节（若有）到缓冲区的头部。该方法返回滚动后缓冲区中有效字节的长度。
+
+当 `$offset` 指定的值小于 0 时，此方法将重置缓冲区中的内容。
+
+**异常**
+
+该方法可能产生如下异常：
+
+- `ArgumentMissed`：缺少必要参数。可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的数据类型。可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：无效参数。可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```js
+$DATA.rollbytesbuffer($DATA.appendbytes2buffer($DATA.makebytesbuffer(16), bx0011223344))
+    // 0L
 ```
 
 ### 3.8) `L`
@@ -6043,13 +6079,13 @@ $stream.readlines(
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时空数组。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时空数组。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
-- `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空数组。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空数组。
-- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回空数组。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空数组。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时 `null`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时 `null`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时 `null`。
+- `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回 `null`。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `null`。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回 `null`。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `null`。
 
 **示例**
 
@@ -6124,14 +6160,13 @@ $stream.readbytes(
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字节序列。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回空字节序列。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回空字节序列。
-- `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空字节序列。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空字节序列。
-- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回空字节序列。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空字节序列。
-
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `null`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `null`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `null`。
+- `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回 `null`。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `null`。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回 `null`。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `null`。
 
 **示例**
 
@@ -6473,7 +6508,7 @@ du -BM hvml-spec-v1.0-zh.md
 ```js
 $SOCKET.stream(
         < string $uri: `the URI of the stream socket.` >
-        [, <'[global || || nonblock || cloexec] | default | none' $opt = 'default':
+        [, <'[global || nonblock || cloexec] | default | none' $opt = 'default':
                - 'global':      `Create a globally accessible socket.`
                - 'nonblock':    `Create the sockete in nonblocking mode.`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
@@ -9902,7 +9937,9 @@ $sqliteCursor.connection
 1. 新增 `$stream.peerPort` 属性。
 1. 新增 `$DATA.makebytesbuffer` 方法。
 1. 新增 `$DATA.appendbytes2buffer` 方法。
+1. 新增 `$DATA.rollbytesbuffer` 方法。
 1. 新增 `$STREAM.readbytes2buffer` 方法。
+1. 重命名 `$DATA.size` 方法为 `$DATA.memsize` 方法。
 
 #### RCh) 240131
 

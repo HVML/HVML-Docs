@@ -5238,7 +5238,7 @@ Content-Type: text/plain
 ```hvml
     <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
         <update on="p > a" at="textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
-        <catch for `NoData` raw>
+        <catch for `NoData`>
             <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
         </catch>
         <catch for `NoSuchKey`>
