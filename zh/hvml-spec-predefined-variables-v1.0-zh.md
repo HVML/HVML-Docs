@@ -1249,11 +1249,11 @@ $CRTN.enable_log(
     <'[ emerg || alert || crit || error || notice || info || debug ] | all | default' $levels:
            - 'emerg':      `Enable the emergency messages.`
            - 'alert':      `Enable the alert messages.`
-           - 'critical':   `Enable the critical  messages.`
+           - 'critical':   `Enable the critical messages.`
            - 'error':      `Enable the error messages.`
            - 'notice':     `Enable the notice messages.`
            - 'info':       `Enable the information messages.`
-           - 'debug':      `Enable the debug messages.`
+           - 'debug':      `Enable the debugging messages.`
            - 'all':        `Enable all level messages.`
            - 'default':    `Enable the notice, error, critical, alert, and emergency messages.` >
      <, 'stdout | stderr | syslog | /the/path/to/logfile ' | string $facility:   `The faccility for logging the messsages.` >
