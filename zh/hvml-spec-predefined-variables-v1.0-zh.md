@@ -1238,7 +1238,46 @@ $RUNNER.user(! 'userId', undefined )
     // true
 ```
 
-#### 3.2.8) `chan` 方法
+#### 3.2.8) `enable_log` 方法
+
+该方法设置行者的日志选项。
+
+**描述**
+
+```js
+$CRTN.enable_log(
+    <'[ emerg || alert || crit || error || notice || info || debug ] | all | default' $levels:
+           - 'emerg':      `Enable the emergency messages.`
+           - 'alert':      `Enable the alert messages.`
+           - 'critical':   `Enable the critical  messages.`
+           - 'error':      `Enable the error messages.`
+           - 'notice':     `Enable the notice messages.`
+           - 'info':       `Enable the information messages.`
+           - 'debug':      `Enable the debug messages.`
+           - 'all':        `Enable all level messages.`
+           - 'default':    `Enable the notice, error, critical, alert, and emergency messages.` >
+     <, 'stdout | stderr | syslog | /the/path/to/logfile ' | string $facility:   `The faccility for logging the messsages.` >
+) true | false
+```
+
+该方法设定行者的日志选项。若 `$facility` 为 '/' 打头的字符串时，视作日志文件的绝对路径。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：无效参数；可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```js
+$RUNNER.enable_log('all', 'stderr')
+    // true
+```
+
+#### 3.2.9) `chan` 方法
 
 获取或者创建通道。
 
@@ -1301,7 +1340,7 @@ $RUNNER.chan( 'channel0' )
     // undefined
 ```
 
-##### 3.2.8.1) 通道实体的 `send` 方法
+##### 3.2.9.1) 通道实体的 `send` 方法
 
 向通道发送数据。
 
@@ -1324,7 +1363,7 @@ $channel.send(
 
 **示例**
 
-##### 3.2.8.2) 通道实体的 `recv` 方法
+##### 3.2.9.2) 通道实体的 `recv` 方法
 
 从通道实体中接收数据。
 
@@ -1343,7 +1382,7 @@ $channel.recv() any | undefined
 - `EntityGone`：通道消失（已关闭）。可忽略异常；静默求值时返回 `undefined`。
 - `Timeout`：超时。可忽略异常；静默求值时返回 `undefined`。
 
-##### 3.2.8.3) 通道实体的 `cap` 属性
+##### 3.2.9.3) 通道实体的 `cap` 属性
 
 获得通道实体的容量。
 
@@ -1361,7 +1400,7 @@ $channel.cap ulongint | false
 
 - `EntityGone`：通道消失（已关闭）。可忽略异常；静默求值时返回 `false`。
 
-##### 3.2.8.4) 通道实体的 `len` 属性
+##### 3.2.9.4) 通道实体的 `len` 属性
 
 获得通道实体中的数据项个数。
 
@@ -1379,7 +1418,7 @@ $channel.len ulongint | false
 
 - `EntityGone`：通道消失（已关闭）。可忽略异常；静默求值时返回 `false`。
 
-##### 3.2.8.5) 通道实体上的事件
+##### 3.2.9.5) 通道实体上的事件
 
 在通道实体上，可观察如下事件：
 
@@ -1441,7 +1480,7 @@ $CRTN.base(!
 
 **异常**
 
-该属性的获取器不产生的异常。
+该属性的获取器不产生异常。
 
 该属性的设置器可产生如下异常，均为可忽略异常：
 
@@ -1480,7 +1519,7 @@ $CRTN.maxIterationCount(!
 
 **异常**
 
-该属性的获取器不产生的异常。
+该属性的获取器不产生异常。
 
 该属性的设置器可产生如下异常，均为可忽略异常：
 
@@ -1518,7 +1557,7 @@ $CRTN.maxRecursionDepth(!
 
 **异常**
 
-该属性的获取器不产生的异常。
+该属性的获取器不产生异常。
 
 该属性的设置器可产生如下异常，均为可忽略异常：
 
@@ -1653,7 +1692,7 @@ $CRTN.token(!
 
 **异常**
 
-该属性的获取器不产生的异常。
+该属性的获取器不产生异常。
 
 该属性的设置器可产生如下异常，均为可忽略异常：
 
@@ -2418,7 +2457,7 @@ $DATA.memsize(
 ) ulongint
 ```
 
-该方法返回数据占用的内存空间大小，返回值为 `ulongint` 类型。未指定数据时，按 `undefined` 处理。
+该方法返回数据占用的内存空间大小，返回值为 `ulongint` 类型。未指定数据时，将返回变体包装器的大小。
 
 注意：该函数的返回值和解释器的实现有关。开发者不应该期望不同的解释器针对同一数据返回同样的结果。
 
@@ -9940,6 +9979,7 @@ $sqliteCursor.connection
 1. 新增 `$DATA.rollbytesbuffer` 方法。
 1. 新增 `$STREAM.readbytes2buffer` 方法。
 1. 重命名 `$DATA.size` 方法为 `$DATA.memsize` 方法。
+1. 新增 `$RUNNER.enable_log` 方法。
 
 #### RCh) 240131
 
