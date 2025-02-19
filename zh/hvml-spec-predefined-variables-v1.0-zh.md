@@ -1238,18 +1238,18 @@ $RUNNER.user(! 'userId', undefined )
     // true
 ```
 
-#### 3.2.8) `enable_log` 方法
+#### 3.2.8) `enablelog` 方法
 
 该方法设置行者的日志选项。
 
 **描述**
 
 ```js
-$CRTN.enable_log(
+$RUNNER.enablelog(
     <'[ emerg || alert || crit || error || notice || info || debug ] | all | default' $levels:
            - 'emerg':      `Enable the emergency messages.`
            - 'alert':      `Enable the alert messages.`
-           - 'critical':   `Enable the critical messages.`
+           - 'crit':       `Enable the critical messages.`
            - 'error':      `Enable the error messages.`
            - 'notice':     `Enable the notice messages.`
            - 'info':       `Enable the information messages.`
@@ -1273,7 +1273,7 @@ $CRTN.enable_log(
 **示例**
 
 ```js
-$RUNNER.enable_log('all', 'stderr')
+$RUNNER.enablelog('all', 'stderr')
     // true
 ```
 
@@ -9979,7 +9979,7 @@ $sqliteCursor.connection
 1. 新增 `$DATA.rollbytesbuffer` 方法。
 1. 新增 `$STREAM.readbytes2buffer` 方法。
 1. 重命名 `$DATA.size` 方法为 `$DATA.memsize` 方法。
-1. 新增 `$RUNNER.enable_log` 方法。
+1. 新增 `$RUNNER.enablelog` 方法。
 
 #### RCh) 240131
 
