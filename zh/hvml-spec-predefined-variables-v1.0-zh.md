@@ -3476,27 +3476,27 @@ $DATA.makebytesbuffer(
     // bsequence
 ```
 
-#### 3.7.30) `appendbytes2buffer` 方法
+#### 3.7.30) `append2bytesbuffer` 方法
 
 将一个字节序列或字符串追加到缓冲区。
 
 **描述**
 
 ```js
-$DATA.appendbytes2buffer(
+$DATA.append2bytesbuffer(
         < bsequence $buf: `The buffer.` >,
         < bsequence | string $bytes: `The bytes will be append to the buffer.` >
-        [, < ulongint $offset = 0: `The offset in $bytes.`>
-            [, < ulongint $length = 0: `The maximum length to append; 0 means all.`>
-                [, < '[ignore-null-byte || truncate ]' $options = 'ignore-null-byte': `the options:`
-                    - 'ignore-null-byte':   `Ignore the terminating null byte if $bytes is a string.`
-                    - 'truncate':           `Truncate the data if the buffer is not enough large.`
-                    - 'keep-char-intact':   `Keep all multi-byte characters in UTF-8 are intact.`
-                    >
+        [, < '[truncate || utf8-chars] | all' $options = 'all': `the options:`
+            - 'all':        `Try to copy all new data to the buffer.`
+            - 'truncate':   `Truncate the data if the buffer is not enough large.`
+            - 'utf8-char':  `The new data are characters in UTF-8 and this method will keep all multi-byte characters in UTF-8 are intact.`
+            >
+            [, < ulongint $offset = 0: `The offset in $bytes.`>
+                [, < ulongint $length = 0: `The maximum length to append; 0 means all.`>
                 ]
             ]
         ]
-) ulongint
+) ulongint | false
 ```
 
 该方法将一个字节序列或字符串追加到缓冲区中；返回真正复制的字节数。
@@ -3505,15 +3505,15 @@ $DATA.appendbytes2buffer(
 
 该方法可能产生如下异常：
 
-- `ArgumentMissed`：缺少必要参数。可忽略异常，静默求值时返回 `0L`。
-- `WrongDataType`：错误的数据类型。可忽略异常，静默求值时返回 `0L`。
-- `InvalidValue`：无效参数。可忽略异常，静默求值时返回 `0L`。
-- `TooLong`：新的字节序列太长，缓冲区容不下。可忽略异常，静默求值时返回 `0L`。
+- `ArgumentMissed`：缺少必要参数。可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的数据类型。可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：无效参数。可忽略异常，静默求值时返回 `false`。
+- `TooLong`：要复制的字节太长，缓冲区容不下。可忽略异常，静默求值时返回 `false`。
 
 **示例**
 
 ```js
-$DATA.appendbytes2buffer($DATA.makebytesbuffer(16), bx0011223344)
+$DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011223344)
     // 5UL
 ```
 
@@ -3526,14 +3526,14 @@ $DATA.appendbytes2buffer($DATA.makebytesbuffer(16), bx0011223344)
 ```js
 $DATA.rollbytesbuffer(
         < bsequence $buf: `The buffer.` >,
-        [, < longint $offset = -1: `The offset to copy the left bytes to the buffer head.`>
+        [, < longint $offset = 0: `The offset to copy the left bytes to the buffer head.`>
         ]
 ) ulongint | false
 ```
 
 该方法滚动一个字节序列缓冲区，将从 `$offset` 指定的偏移位置处复制剩余的字节（若有）到缓冲区的头部。该方法返回滚动后缓冲区中有效字节的长度。
 
-当 `$offset` 指定的值小于 0 时，此方法将重置缓冲区中的内容。
+当 `$offset` 指定的值小于 0 时，此方法将清除缓冲区中的内容。
 
 **异常**
 
@@ -3546,7 +3546,7 @@ $DATA.rollbytesbuffer(
 **示例**
 
 ```js
-$DATA.rollbytesbuffer($DATA.appendbytes2buffer($DATA.makebytesbuffer(16), bx0011223344))
+$DATA.rollbytesbuffer($DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011223344))
     // 0L
 ```
 
@@ -9975,7 +9975,7 @@ $sqliteCursor.connection
 1. 新增 `$stream.peerAddr` 属性。
 1. 新增 `$stream.peerPort` 属性。
 1. 新增 `$DATA.makebytesbuffer` 方法。
-1. 新增 `$DATA.appendbytes2buffer` 方法。
+1. 新增 `$DATA.append2bytesbuffer` 方法。
 1. 新增 `$DATA.rollbytesbuffer` 方法。
 1. 新增 `$STREAM.readbytes2buffer` 方法。
 1. 重命名 `$DATA.size` 方法为 `$DATA.memsize` 方法。
