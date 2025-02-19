@@ -1246,17 +1246,65 @@ $RUNNER.user(! 'userId', undefined )
 
 ```js
 $RUNNER.enablelog(
-    <'[ emerg || alert || crit || error || notice || info || debug ] | all | default' $levels:
+    <'[ emerg || alert || crit || error || warning || notice || info || debug ] | all | default' $levels:
            - 'emerg':      `Enable the emergency messages.`
            - 'alert':      `Enable the alert messages.`
            - 'crit':       `Enable the critical messages.`
            - 'error':      `Enable the error messages.`
+           - 'warning':    `Enable the warning messages.`
            - 'notice':     `Enable the notice messages.`
            - 'info':       `Enable the information messages.`
            - 'debug':      `Enable the debugging messages.`
            - 'all':        `Enable all level messages.`
            - 'default':    `Enable the notice, error, critical, alert, and emergency messages.` >
-     <, 'stdout | stderr | syslog | /the/path/to/logfile ' | string $facility:   `The faccility for logging the messsages.` >
+     [
+        <, 'stdout | stderr | syslog | /the/path/to/logfile ' | string $facility = 'stdout': `The facility for logging the messsages.`:
+           - 'stdout':      `Use STDOUT as the log facility.`
+           - 'stderr':      `Use STDERR as the log facility.`
+           - 'syslog':      `Use SYSLOG as the log facility.`
+           - other:         `The path to a file as the log facility.`
+     ]
+) true | false
+```
+
+该方法设定行者的日志选项。若 `$facility` 为 '/' 打头的字符串时，视作日志文件的绝对路径。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：无效参数；可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```js
+$RUNNER.enablelog('all', 'stderr')
+    // true
+```
+
+#### 3.2.8) `logmsg` 方法
+
+该方法记录一条日志信息。
+
+**描述**
+
+```js
+$RUNNER.logmsg(
+    < string $msg: `The message to log.` >,
+    [, <'emerg | alert | crit | error | warning | notice | info | debug' $level = 'info':
+            - 'emerg':      `This is an emergency messages.`
+            - 'alert':      `This is an alert messages.`
+            - 'crit':       `This is a critical messages.`
+            - 'error':      `This is an error messages.`
+            - 'warning':    `This is a warning messages.`
+            - 'notice':     `This is a notice messages.`
+            - 'info':       `This is an information messages.`
+            - 'debug':      `This is a debugging messages.`
+        [, < string | null $tag = null: `The tag to prepend to the message.`:
+        ]
+    ]
 ) true | false
 ```
 
@@ -6191,7 +6239,7 @@ $STREAM.stdout.writelines(["This is the string to write", "Second line"])
 ```js
 $stream.readbytes(
         < real $length: `the length to read in bytes`>
-) bsequence
+) bsequence | null
 ```
 
 该方法从 `$stream` 流中读取指定长度的字节，并转换为字节序列返回。
@@ -6231,8 +6279,10 @@ $STREAM.stdin.readbytes(10)
 ```js
 $stream.readbytes2bufer(
         < bsequence $buffer: `The byte seqence as a buffer.`>
-        < ulongint $length: `The length to read in bytes.`>
-) ulongint | false
+        [,
+            < ulongint $length = 0: `The number of bytes to read; 0 means trying to fill full of the buffer.`>
+        ]
+) longint | false
 ```
 
 该方法从 `$stream` 流中读取指定长度的字节，并将其追加到指定的缓冲区中。
@@ -6242,7 +6292,7 @@ $stream.readbytes2bufer(
 - `MemoryFailure`：内存分配失败；不可忽略异常。
 - `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据，如只读字节序、长度过长等; 可忽略异常，静默求值时返回 `false`。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时 `false`。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `false`。
 
@@ -9979,6 +10029,7 @@ $sqliteCursor.connection
 1. 新增 `$STREAM.readbytes2buffer` 方法。
 1. 重命名 `$DATA.size` 方法为 `$DATA.memsize` 方法。
 1. 新增 `$RUNNER.enablelog` 方法。
+1. 新增 `$RUNNER.logmsg` 方法。
 
 #### RCh) 240131
 
