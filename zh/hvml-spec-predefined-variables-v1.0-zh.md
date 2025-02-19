@@ -6224,7 +6224,7 @@ $STREAM.stdin.readbytes(10)
 
 ##### 3.12.8.6) `readbytes2buffer` 方法
 
-从流中读取数据将其追加到用作缓冲区的字节序列中。
+从流中读取数据并将其追加到用作缓冲区的字节序列中。
 
 **描述**
 
@@ -6232,7 +6232,7 @@ $STREAM.stdin.readbytes(10)
 $stream.readbytes2bufer(
         < bsequence $buffer: `The byte seqence as a buffer.`>
         < ulongint $length: `The length to read in bytes.`>
-) ulongint
+) ulongint | false
 ```
 
 该方法从 `$stream` 流中读取指定长度的字节，并将其追加到指定的缓冲区中。
@@ -6240,12 +6240,11 @@ $stream.readbytes2bufer(
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `0UL`。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `0UL`。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `0UL`。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时 `0UL`。
-- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回 `0UL`。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `0UL`。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时 `false`。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `false`。
 
 ##### 3.12.8.7) `writebytes` 方法
 
