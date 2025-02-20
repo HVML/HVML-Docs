@@ -6063,22 +6063,23 @@ $STREAM.listener(!
 ```js
 $stream.readstruct(
         < string $format: `the format of the struct`>
-) array | real | string | bsequenc
+) array | real | string | bsequence | null
 ```
 
-该方法按指定的格式从流实体（`$stream`）中读取数据， 当 `$format` 指定的格式字符串包含多个基本数据类型时，该函数返回数组；
-否则返回单个数据。
+该方法按指定的格式从流实体（`$stream`）中读取数据， 当 `$format` 指定的格式字符串包含多个基本数据类型时，该函数返回数组，否则返回单个数据。
+
+该方法可能返回 `null`，表示可再次尝试读取数据。
 
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回已读取数据。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回已读取数据。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
-- `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空数组。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空数组。
-- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回空数组。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空数组。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `null`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `null`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时 `null`。
+- `NotDesiredEntity`：表示传递了一个未预期的实体（目标可能是一个目录），静默求值时返回 `null`。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `null`。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回 `null`。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `null`。
 
 **示例**
 
@@ -6108,33 +6109,33 @@ $stream.writestruct(
                 [, ... ]
             ]
         ]
-) ulongint
+) longint | false
 ```
 
-该函数将传入的多个实数、实数数组、字符串或字节序列按照 `$format` 指定的二进制格式写入流实体（`$stream`）。
+该方法将传入的多个实数、实数数组、字符串或字节序列按照 `$format` 指定的二进制格式写入流实体（`$stream`）。
 
 ```js
 $stream.writestruct(
         < string $format: `the format string; see Binary Format Notation.` >,
         < array $data >
-) ulongint
+) longint | false
 ```
 
 当传入三个参数，且第三个参数为数组时，该函数将传入的数组之成员依次按照 `$format` 指定的二进制格式写入流。
 
-该方法按指定的格式将数据写入流，返回写入的字节数。
+上述方法按指定的格式将数据写入流，返回写入的字节数。该方法可能返回 `-1L`，表示可再次尝试写入数据。
 
 **异常**
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回已写入的字节数。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回已写入的字节数。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回已写入的字节数。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回实际写入的字节数。
-- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回实际写入的字节数。
-- `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回实际写入的字节数。
-- `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回实际写入的字节数。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回实际写入的字节数。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `false`。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回 `false`。
+- `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回 `false`。
+- `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回 `false`。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `false`。
 
 **示例**
 
@@ -6158,7 +6159,7 @@ $stream.writestruct("i16le:2 i32le", [10, 15], 255)
 ```js
 $stream.readlines(
         < real $lines: `the number of lines to read`>
-) array
+) array | null
 ```
 
 该方法按指定行数读取数据，并转换为数组返回，数组的每个成员都是一行数据。
@@ -6198,24 +6199,26 @@ $stream.readlines(10)
 
 ```js
 $stream.writelines(
-        < 'string | array' $line: `the data to write`>
-) ulongint
+        < string | array $lines: `The data to be written.`>
+        [,
+            <string $line_terminator = '\n': `The line terminating characters`. >
+        ]
+) longint | false
 
 ```
 
-该方法将参数指定的字符串写入流，当参数是数组时，要求数组的每个成员都是字符串类型，写入时每个数组成员是单独的一行，返回写入的字节数。
+该方法将参数 `$lines` 指定的字符串或字符串数组写入流；当参数是数组时，要求数组的每个成员都是字符串类型，写入时每个数组成员是单独的一行。该方法返回写入的字节数。
 
 **异常**
 
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回实际写入的字节数。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回实际写入的字节数。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回实际写入的字节数。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回实际写入的字节数。
-- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回实际写入的字节数。
-- `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回实际写入的字节数。
-- `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回实际写入的字节数。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回实际写入的字节数。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `false`。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回 `false`。
+- `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回 `false`。
+- `TooLarge`：写入大小大小超过（配额）限制；可忽略异常，静默求值时返回 `false`。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `false`。
 
 **示例**
 
@@ -6306,23 +6309,22 @@ $stream.readbytes2bufer(
 
 ```js
 $stream.writebytes(
-        < 'string | bsequence' $data: ` the data to write`>
-) ulongint
+        < 'string | bsequence' $data: `The data to be written.`>
+) longint | false
 ```
 
-该方法将字节序列写入 `$stream` 流，返回写入的字节数。
+该方法将字节序列写入 `$stream` 流，返回写入的字节数。注意该方法不会将字符串尾部的空字符写入流。
 
 **异常**
 
-- `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回0。
-- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回0。
-- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回0。
-- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回0。
-- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回0。
-- `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回0。
-- `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回0。
-- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回0。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `false`。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回 `false`。
+- `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回 `false`。
+- `TooLarge`：写入大小大小超过（配额）限制；可忽略异常，静默求值时返回 `false`。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `false`。
 
 **示例**
 
@@ -6333,7 +6335,7 @@ $STREAM.stdout.writebytes(bx48564d4c3A202d5f2e)
 
 // 将字符串作为字节序列写入
 $STREAM.stdout.writebytes("write string")
-    // longint: 13L
+    // longint: 12L
 ```
 
 注意：字符串作为字节序列写入时，应该写入结尾的空字符。
