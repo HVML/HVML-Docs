@@ -6157,8 +6157,11 @@ $stream.writestruct("i16le:2 i32le", [10, 15], 255)
 
 ```js
 $stream.readlines(
-        < real $lines: `the number of lines to read`>
-) array
+        < real $lines: `The number of lines to read`>
+        [,
+            < string $line_terminator = '\n': `The string terminating a line.` >
+        ]
+) array | null
 ```
 
 该方法按指定行数读取数据，并转换为数组返回，数组的每个成员都是一行数据。
