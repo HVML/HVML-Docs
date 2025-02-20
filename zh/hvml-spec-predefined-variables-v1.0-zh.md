@@ -6076,6 +6076,7 @@ $stream.readstruct(
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回已读取数据。
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时空数组。
 - `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回空数组。
+- `NoData`：已到达文件尾部，无数据可读入; 可忽略异常，静默求值时返回 `null`。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回空数组。
 - `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回空数组。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回空数组。
@@ -6173,6 +6174,7 @@ $stream.readlines(
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时 `null`。
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时 `null`。
 - `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回 `null`。
+- `NoData`：已到达文件尾部，无数据可读入; 可忽略异常，静默求值时返回 `null`。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `null`。
 - `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回 `null`。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `null`。
@@ -6254,6 +6256,7 @@ $stream.readbytes(
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `null`。
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `null`。
 - `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回 `null`。
+- `NoData`：已到达文件尾部，无数据可读入; 可忽略异常，静默求值时返回 `null`。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `null`。
 - `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回 `null`。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `null`。
@@ -6298,6 +6301,7 @@ $stream.readbytes2bufer(
 - `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
 - `InvalidValue`：传入无效数据，如只读字节序、长度过长等; 可忽略异常，静默求值时返回 `false`。
+- `NoData`：已到达文件尾部，无数据可读入; 可忽略异常，静默求值时返回 `false`。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时 `false`。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `false`。
 
