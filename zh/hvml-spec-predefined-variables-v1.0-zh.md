@@ -5385,7 +5385,7 @@ $STR.htmlentities_decode(
 
 ```js
 $STR.nl2br(
-        < string $string: the input string. >
+        < string $string: `The input string.` >
         [, < boolean $is_xhtml = true:
             true - `use '<br />'.`
             false - `use '<br>'.`
@@ -5396,8 +5396,6 @@ $STR.nl2br(
         ]
 ) object | bsequence
 ```
-
-
 
 **参数**
 
@@ -5441,7 +5439,7 @@ $STR.rot13(
 
 ```js
 $STR.count_chars(
-        < string $string: the examined string. >
+        < string $string: `the examined string.` >
         [,
             < 'object | string' $mode = 'object':
                - 'object' - `returns an object with the character as key and the frequency of every character as value.`
@@ -5469,7 +5467,7 @@ $STR.count_chars(
 
 ```js
 $STR.count_bytes(
-        < string | bsequence $data: the examined data. >
+        < string | bsequence $data: `the examined data.` >
         [, < 'tuple-all | object-all | object-appeared | object-not-appeared | bytes-appeared | bytes-not-appeared' $mode = 'tuple-all':
             'tuple-all' - `returns a tuple with the byte-value (0 ~ 255) as index and the frequency of every byte as value.`
             'object-all' - `returns an object with the byte-value (decimal string) as key and the frequency of every byte as value.`
@@ -5539,10 +5537,10 @@ $STR.codepoints('HVML的昵称是呼噜猫', 'tuple')
 
 ```js
 $URL.encode(
-        <string |bsequence $data: the string or the byte sequence to be encoded.>
+        <string |bsequence $data: `The string or the byte sequence to be encoded.` >
         [, <'rfc1738 | rfc3986' $enc_type = 'rfc1738':
-          - 'rfc1738': encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.
-          - 'rfc3986': encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).
+          - 'rfc1738': `Encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
+          - 'rfc3986': `Encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).`
         ]
 ) string
 ```
@@ -5867,18 +5865,18 @@ $STREAM.from(
 1. 流的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用 `$STREAM.close` 方法释放流实体占用的系统资源。
 2. 当使用 `websocket` 协议扩展时，可指定如下额外选项：
 
-```json
+```js
 {
-    "server": true,                     /* 扮演服务器还是客户端。 */
+    "server": true | flase,              /* 扮演服务器还是客户端。 */
 
-    "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
+    "secure": true | flase,              /* 是否使用 SSL/TLS 安全。 */
 
     /* 以下属性在套接字扮演服务器时指定： */
 
-    "server-ssl-cert: "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
-    "server-ssl-key: "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
+    "server-ssl-cert": "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
+    "server-ssl-key": "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
 
-    "server-ssl-session-id-context: "..." | bx...., /* server 为真且 secure 为真时，若指定有该属性，则将启用 SSL/TLS 会话的外部缓存机制，以便复用已有的 SSL/TLS 会话。*/
+    "server-ssl-session-id-context": "..." | bx...., /* server 为真且 secure 为真时，若指定有该属性，则将启用 SSL/TLS 会话的外部缓存机制，以便复用已有的 SSL/TLS 会话。*/
 
     /* 以下属性在套接字扮演客户端时指定： */
 
@@ -6158,7 +6156,10 @@ $stream.writestruct("i16le:2 i32le", [10, 15], 255)
 
 ```js
 $stream.readlines(
-        < real $lines: `the number of lines to read`>
+        < real $lines: `The number of lines to read`>
+        [,
+            < string $line_terminator = '\n': `The string terminating a line.` >
+        ]
 ) array | null
 ```
 
@@ -6171,6 +6172,7 @@ $stream.readlines(
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时 `null`。
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时 `null`。
 - `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回 `null`。
+- `NoData`：已到达文件尾部，无数据可读入; 可忽略异常，静默求值时返回 `null`。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `null`。
 - `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回 `null`。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `null`。
@@ -6254,6 +6256,7 @@ $stream.readbytes(
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `null`。
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `null`。
 - `NotDesiredEntity`：表示传递了一个未预期的实体(目标可能是一个目录)，静默求值时返回 `null`。
+- `NoData`：已到达文件尾部，无数据可读入; 可忽略异常，静默求值时返回 `null`。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `null`。
 - `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回 `null`。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `null`。
@@ -6298,6 +6301,7 @@ $stream.readbytes2bufer(
 - `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
 - `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
 - `InvalidValue`：传入无效数据，如只读字节序、长度过长等; 可忽略异常，静默求值时返回 `false`。
+- `NoData`：已到达文件尾部，无数据可读入; 可忽略异常，静默求值时返回 `false`。
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时 `false`。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `false`。
 
@@ -6497,7 +6501,7 @@ du -BM hvml-spec-v1.0-zh.md
 
 当使用 `websocket` 协议扩展时，可指定如下额外选项：
 
-```json
+```js
 {
     "request-path": "...",              /* GET 方法对应的请求路径。*/
     "connection": "...",                /* 连接名称。*/
@@ -6505,7 +6509,7 @@ du -BM hvml-spec-v1.0-zh.md
     "origin": "hvml.org",               /* 源域名。 */
 
     "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
-    "client-ssl-key: "...",             /* 指定 SSL 公钥文件；当用作客户端且 secure 为真时必须指定。 */
+    "client-ssl-key": "...",             /* 指定 SSL 公钥文件；当用作客户端且 secure 为真时必须指定。 */
 
     "client-user-agent": "...",         /* 指定客户端 User-Agent。 */
     "client-referer": "...",            /* 指定客户端 Referer。 */
@@ -6949,12 +6953,12 @@ $dgramSocket.close()
 
 当使用 `websocket` 协议扩展时，可指定如下额外选项：
 
-```json
+```js
 {
-    "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
+    "secure": true,                      /* 是否使用 SSL/TLS 安全。 */
 
-    "server-ssl-cert: "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
-    "server-ssl-key: "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
+    "server-ssl-cert": "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
+    "server-ssl-key": "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
 
     "server-ssl-session-id-context": "", /* 当 secure 为真时，若指定有该属性，则将使用 SSL/TLS 会话的外部缓存机制，以便后续可被其他进程复用该会话信息。*/
     "server-ssl-session-cache-mode": "", /* 许可字符串如 '0644' 或 'u+rw,go+r'。 */
