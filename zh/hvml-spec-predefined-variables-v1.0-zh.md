@@ -5869,16 +5869,16 @@ $STREAM.from(
 
 ```js
 {
-    "server": true,                     /* 扮演服务器还是客户端。 */
+    "server": true | flase,              /* 扮演服务器还是客户端。 */
 
-    "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
+    "secure": true | flase,              /* 是否使用 SSL/TLS 安全。 */
 
     /* 以下属性在套接字扮演服务器时指定： */
 
-    "server-ssl-cert: "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
-    "server-ssl-key: "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
+    "server-ssl-cert": "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
+    "server-ssl-key": "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
 
-    "server-ssl-session-id-context: "..." | bx...., /* server 为真且 secure 为真时，若指定有该属性，则将启用 SSL/TLS 会话的外部缓存机制，以便复用已有的 SSL/TLS 会话。*/
+    "server-ssl-session-id-context": "..." | bx...., /* server 为真且 secure 为真时，若指定有该属性，则将启用 SSL/TLS 会话的外部缓存机制，以便复用已有的 SSL/TLS 会话。*/
 
     /* 以下属性在套接字扮演客户端时指定： */
 
@@ -6510,7 +6510,7 @@ du -BM hvml-spec-v1.0-zh.md
     "origin": "hvml.org",               /* 源域名。 */
 
     "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
-    "client-ssl-key: "...",             /* 指定 SSL 公钥文件；当用作客户端且 secure 为真时必须指定。 */
+    "client-ssl-key": "...",             /* 指定 SSL 公钥文件；当用作客户端且 secure 为真时必须指定。 */
 
     "client-user-agent": "...",         /* 指定客户端 User-Agent。 */
     "client-referer": "...",            /* 指定客户端 Referer。 */
@@ -6956,10 +6956,10 @@ $dgramSocket.close()
 
 ```js
 {
-    "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
+    "secure": true,                      /* 是否使用 SSL/TLS 安全。 */
 
-    "server-ssl-cert: "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
-    "server-ssl-key: "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
+    "server-ssl-cert": "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
+    "server-ssl-key": "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
 
     "server-ssl-session-id-context": "", /* 当 secure 为真时，若指定有该属性，则将使用 SSL/TLS 会话的外部缓存机制，以便后续可被其他进程复用该会话信息。*/
     "server-ssl-session-cache-mode": "", /* 许可字符串如 '0644' 或 'u+rw,go+r'。 */
