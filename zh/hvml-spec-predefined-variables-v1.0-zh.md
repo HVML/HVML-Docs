@@ -158,9 +158,9 @@ Language: Chinese
 
 ```js
 {
-    'id': <string: `the timer identifier, the key with unique restriction`>,
-    'interval': <string: `the interval of the timer in milliseconds`>,
-    'active': <string: `activated or not`>
+    'id': <string: `The timer identifier, the key with unique restriction.`>,
+    'interval': <string: `The interval of the timer in milliseconds.`>,
+    'active': <string: `Activated or not.`>
 }
 ```
 
@@ -209,8 +209,8 @@ Language: Chinese
 
 ```hvml
     <!-- activate the timer `foo` -->
-    <choose on="$TIMERS" by="FILTER: AS 'foo'">
-        <update on="$?" at=".active" with="yes" />
+    <choose on $TIMERS by 'FILTER: AS "foo"'>
+        <update on $? at '.active' with 'yes' />
     </choose>
 ```
 
@@ -250,8 +250,8 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ```js
 $SYS.const(
-        <string $name: `the constant name`>
-) any : `the constant value`
+        <string $name: `The constant name.`>
+) any : `The constant value.`
 ```
 
 该方法获取指定常量的值。成功时返回对应的数据；失败时将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `undefined`。
@@ -286,15 +286,15 @@ $SYS.const('HVML_SPEC_VERSION')
 
 ```js
 $SYS.uname object :
-    `an object contains the following properties:`
-        - 'kernel-name':        < string: `kernel name (e.g., 'Linux')` >
-        - 'kernel-release':     < string: `kernel release (e.g., '2.6.28')` >
-        - 'kernel-version':     < string: `kernel version` >
-        - 'nodename':           < string: `the network node hostname` >
-        - 'machine':            < string: `machine hardware name` >
-        - 'processor':          < string: `the processor type` >
-        - 'hardware-platform':  < string: `the hardware platform` >
-        - 'operating-system':   < string: `the operating system (e.g., 'GNU/Linux')` >
+    `An object contains the following properties:`
+        - 'kernel-name':        < string: `The kernel name (e.g., 'Linux').` >
+        - 'kernel-release':     < string: `The kernel release (e.g., '2.6.28').` >
+        - 'kernel-version':     < string: `The kernel version.` >
+        - 'nodename':           < string: `The network node hostname.` >
+        - 'machine':            < string: `The machine hardware name.` >
+        - 'processor':          < string: `The processor type.` >
+        - 'hardware-platform':  < string: `The hardware platform.` >
+        - 'operating-system':   < string: `The operating system (e.g., 'GNU/Linux').` >
 ```
 
 该方法获取系统信息，返回包含有内核名称、版本号等键值对的对象。注意，对某些不支持的系统特征，将返回空字符串。
@@ -307,8 +307,7 @@ $SYS.uname object :
 
 ```js
 $SYS.uname
-    /* object:
-       {
+    // object: {
             'kernel-name':      'Linux',
             'kernel-release':   '5.4.0-99-generic',
             'kernel-version':   '#112-Ubuntu SMP Thu Feb 3 13:50:55 UTC 2022',
@@ -318,7 +317,6 @@ $SYS.uname
             'hardware-platform':'x86_64',
             'operating-system': 'GNU/Linux'
        }
-    */
 ```
 
 #### 3.1.3) `uname_prt` 方法
@@ -328,7 +326,7 @@ $SYS.uname
 **描述**
 
 ```js
-$SYS.uname_prt string: `the kernel name.`
+$SYS.uname_prt string: `The kernel name.`
 ```
 
 该方法获取内核名称，返回字符串。
@@ -347,7 +345,7 @@ $SYS.uname_prt(
             - 'all':                `Include all parts.`
             - 'default':            `The equivalent to 'kernel-name'.`
         >
-) string: `the string concatenated the desired system information parts together.`
+) string: `The string concatenated the desired system information parts together.`
 ```
 
 该方法返回多个指定特征的特征值，用空格分隔，串接为一个字符串返回。注意，对某些不支持的系统特征，按对应的特征值为空字符串处理。
@@ -375,7 +373,7 @@ $SYS.uname_prt('kernel-name kernel-release kernel-version')
 **描述**
 
 ```js
-$SYS.locale string : `the locale for the messages category.`
+$SYS.locale string : `The locale for the messages category.`
 ```
 
 该方法获得消息分类（messages category）的区域，返回字符串。
@@ -396,7 +394,7 @@ $SYS.locale(
             - 'measurement':    `Settings related to measurements (metric versus US customary) (*)`
             - 'identification': `Metadata describing the locale (*)`
         >
-) string | undefined : `the locale like 'zh_CN'.`
+) string | undefined : `The locale like 'zh_CN'.`
 ```
 
 该方法获取指定分类的区域，返回字符串。某些平台可能不支持特定的区域分类，比如姓名（`name`）分类。对不支持的区域分类，该函数将抛出 `Unsupported` 异常，或静默求值时返回 `undefined`。
@@ -418,7 +416,7 @@ $SYS.locale(!
             - 'identification': `Metadata describing the locale (*)`
             - 'all':            `All of the locale categories`
         >,
-        <string $locale: `the locale for $categories`>
+        <string $locale: `The locale for $categories.`>
 ) true | false
 ```
 
@@ -454,7 +452,7 @@ $SYS.locale
 **描述**
 
 ```js
-$SYS.time longint: `the calendar time (seconds since Epoch)`
+$SYS.time longint: `The calendar time (seconds since Epoch)`
 ```
 
 该方法获取当前日历时间（自 Epoch 以来的秒数），返回值类型为 `longint`。
@@ -506,7 +504,7 @@ $SYS.time_us longdouble :
 ```js
 $SYS.time_us(
         [
-            < 'longdouble | object' $return_type = 'longdouble': `indicate the return type: a long double number or an object.`>
+            < 'longdouble | object' $return_type = 'longdouble': `Indicate the return type: a long double number or an object.`>
         ]
 ) longdouble | object : `A long double number or an object representing the number of seconds and microseconds since Epoch:`
         - 'sec': < longint: `seconds since Epoch` >
@@ -517,7 +515,7 @@ $SYS.time_us(
 
 ```js
 $SYS.time_us(!
-        <real $sec_us: `seconds with microseconds since Epoch`>
+        <real $sec_us: `Seconds with microseconds since Epoch`>
 ) true | false
 ```
 
@@ -562,7 +560,7 @@ $SYS.time_us
 
 ```js
 $SYS.sleep(
-        real $delay_time: `the delay time in seconds; a double or long double number representing the number of seconds (integral part) and microseconds/nanoseconds (fractional part) to delay.`
+        real $delay_time: `The delay time in seconds; a double or long double number representing the number of seconds (integral part) and microseconds/nanoseconds (fractional part) to delay.`
 ) real | false
 ```
 
@@ -603,9 +601,9 @@ $SYS.timezone : string | false
 
 ```js
 $SYS.timezone(!
-        <string $timezone: `new timezone`>
+        <string $timezone: `The new timezone`>
         [,
-            < 'local | global' $permanently = 'local': `change timezone permanently/globally or temporarily/locally.`>
+            < 'local | global' $permanently = 'local': `Change timezone permanently/globally or temporarily/locally.`>
         ]
 ) true | false
 ```
@@ -657,15 +655,15 @@ $SYS.timezone
 **描述**
 
 ```js
-$SYS.cwd string | false: `returns the current working directory on success, or @false on failure.`
+$SYS.cwd string | false: `Return the current working directory on success, or @false on failure.`
 ```
 
 该方法获取当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
 
 ```js
 $SYS.cwd(!
-        <string $dir: `the new path for the current working directory.`>
-) boolean: `returns @true on success or @false on failure.`
+        <string $dir: `The new path for the current working directory.`>
+) boolean: `Return @true on success or @false on failure.`
 ```
 
 该方法改变当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
@@ -698,7 +696,7 @@ $SYS.cwd(!
 
 ```js
 $SYS.env(
-        <string: `the environment variable name`>
+        <string: `The environment variable name`>
 ) string | undefined
 ```
 
@@ -706,9 +704,9 @@ $SYS.env(
 
 ```js
 $SYS.env(!
-        <string: `the environment variable name`>,
-        <string | undefined: `the value`>
-) true | false: `returns @true on success, otherwise @false if evaluated silently.`
+        <string: `The environment variable name`>,
+        <string | undefined: `The value`>
+) true | false: `Return @true on success, otherwise @false if evaluated silently.`
 ```
 
 该方法设置指定的环境变量，返回布尔数据，指明是否覆盖了已有环境变量。
@@ -742,7 +740,7 @@ $SYS.env(! 'LOGNAME', 'tom' )
 
 ```js
 $SYS.random_sequence(
-        <number $length: `the length of the random byte sequence`>
+        <number $length: `The length of the random byte sequence`>
 ) bsequence | false
 ```
 
@@ -772,14 +770,14 @@ $SYS.random(! $DATA.fetchreal($SYS.random_sequence(4), 'u32') )
 **描述**
 
 ```js
-$SYS.random longint: `a random between 0 and RAND_MAX.`
+$SYS.random longint: `A random between 0 and RAND_MAX.`
 ```
 
 该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值（`longint`）。
 
 ```js
 $SYS.random(
-        <real $max: `the max value`>
+        <real $max: `The max value`>
 ) real | false: `A random real number between 0 and $max. The type of return value will be same as the type of $max.`
 ```
 
@@ -787,8 +785,8 @@ $SYS.random(
 
 ```js
 $SYS.random(!
-        <real $seed: `the random seed`>
-        [, <number $complexity: `a number equal or greater than 8 to indicates how sophisticated the random number generator it should use - the larger, the better the random numbers will be.>
+        <real $seed: `The random seed`>
+        [, <number $complexity: `A number equal or greater than 8 to indicates how sophisticated the random number generator it should use - the larger, the better the random numbers will be.>
         ]
 ) boolean: `@true for success, @false otherwise.`
 ```
@@ -837,7 +835,7 @@ $SYS.random(-10FL)
 
 ```js
 $SYS.remove(
-        <string $path: `the path of a file or an empty directory.`>
+        <string $path: `The path of a file or an empty directory.`>
 ) true | false
 ```
 
@@ -855,13 +853,13 @@ $SYS.remove(
 
 ```js
 $SYS.spawn(
-        <string $prog_path: `the path of the executable program.`>
-        <array | tuple | null $close_fds: `the file descriptors to close before the new child process starting execution.`>
-        <array | tuple | null $open_files: `the files to open before the new child process starting execution.`>
-        <array | tuple | null $dup2_fds: `the file descriptors to have a dup2 operation on them.`>
-        <array | tuple | null $inherit_fds: `the file descriptors to be marked for inheritance into the new process image.`>
-        <array | tuple | null $argv: `the arguments to pass to the program.`>
-        [, <object $env: `the environment keeps for child process.`>
+        <string $prog_path: `The path of the executable program.`>
+        <array | tuple | null $close_fds: `The file descriptors to close before the new child process starting execution.`>
+        <array | tuple | null $open_files: `The files to open before the new child process starting execution.`>
+        <array | tuple | null $dup2_fds: `The file descriptors to have a dup2 operation on them.`>
+        <array | tuple | null $inherit_fds: `The file descriptors to be marked for inheritance into the new process image.`>
+        <array | tuple | null $argv: `The arguments to pass to the program.`>
+        [, <object $env: `The environment keeps for child process.`>
             [, <object $options: `other options for before or after spawning.`>
             ]
         ]
@@ -914,7 +912,7 @@ $SYS.pipe(
 
 ```js
 $SYS.fdflags(
-        <longint $fd: `the file descriptor.`>,
+        <longint $fd: `The file descriptor.`>,
         <'cloexec | append | nonblock' $flags:
            - 'cloexec':     `Get the file descriptor flag close-on-exec.`
            - 'append':      `Get the file descriptor statu flag of O_APPEND.`
@@ -927,7 +925,7 @@ $SYS.fdflags(
 
 ```js
 $SYS.fdflags(!
-        <longint $fd: `the file descriptor.`>,
+        <longint $fd: `The file descriptor.`>,
         <'cloexec || append || nonblock' $flags:
            - 'cloexec':     `Set the file descriptor flag close-on-exec.`
            - 'append':      `Set the file descriptor statu flag of O_APPEND.`
@@ -1032,7 +1030,7 @@ $SYS.close(
 
 ```js
 $RUNNER.appName
-    string : `the app name of current runner.`
+    string : `The app name of current runner.`
 ```
 
 该方法获取当前行者的应用名称。
@@ -1056,7 +1054,7 @@ $RUNNER.appName
 
 ```js
 $RUNNER.runName
-    string : `the runner name of current runner.`
+    string : `The runner name of current runner.`
 ```
 
 该方法获取当前行者的行者名称。
@@ -1080,7 +1078,7 @@ $RUNNER.runName
 
 ```js
 $RUNNER.rid
-    ulongint : `the identifier of the current runner.`
+    ulongint : `The identifier of the current runner.`
 ```
 
 该方法获取当前行者的行者标识符。
@@ -1104,7 +1102,7 @@ $RUNNER.sid
 
 ```js
 $RUNNER.uri
-    string : `the URI of the current runner.`
+    string : `The URI of the current runner.`
 ```
 
 该方法获取当前行者的 URI，形似 `edpt://localhost/cn.fmsoft.hvml.caculator/main`。
@@ -1136,7 +1134,7 @@ $RUNNER.autoSwitchingRdr
 ```js
 $RUNNER.autoSwitchingRdr(!
         <boolean $enable: ``>,
-) boolean : `returns the current value of 'autoSwitchingRdr' property.`
+) boolean : `Return the current value of 'autoSwitchingRdr' property.`
 ```
 
 设置当前行者的 `autoSwitchingRdr` 属性值。
@@ -1191,17 +1189,17 @@ $RUNNER.autoSwitchingRdr(! false )
 
 ```js
 $RUNNER.user(
-        <string $key: `the user defined key name`>
-) any | undefined : `the variant value corresponding to the key name $key.`
+        <string $key: `The user defined key name`>
+) any | undefined : `The variant value corresponding to the key name $key.`
 ```
 
 该方法获取指定键名对应的键值。当指定的键名未被设置时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `undefined`。
 
 ```js
 $RUNNER.user(!
-        <string $key: `the user defined key name`>,
-        <any | undefined $value: `the new variant value`>
-) boolean : `returns @true when the old value was overridden or @false when a new key-value pair was created.`
+        <string $key: `The user defined key name`>,
+        <any | undefined $value: `The new variant value`>
+) boolean : `Return @true when the old value was overridden or @false when a new key-value pair was created.`
 ```
 
 该方法设置指定键名的值，返回布尔数据，指明是否覆盖了已有键值。注意，传入键值为 `undefined` 会执行移除对应键值对的操作。当移除一个并不存在的键值对时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `false`。
@@ -1258,11 +1256,11 @@ $RUNNER.enablelog(
            - 'all':        `Enable all level messages.`
            - 'default':    `Enable the notice, error, critical, alert, and emergency messages.` >
      [
-        <, 'stdout | stderr | syslog | /the/path/to/logfile ' | string $facility = 'stdout': `The facility for logging the messsages.`:
+        <, 'stdout | stderr | syslog | file' | string $facility = 'stdout': `The facility for logging the messsages.`:
            - 'stdout':      `Use STDOUT as the log facility.`
            - 'stderr':      `Use STDERR as the log facility.`
            - 'syslog':      `Use SYSLOG as the log facility.`
-           - other:         `The path to a file as the log facility.`
+           - 'file':        `Use the logging file as the log facility.`
      ]
 ) true | false
 ```
@@ -1333,8 +1331,8 @@ $RUNNER.enablelog('all', 'stderr')
 
 ```js
 $RUNNER.chan(
-        <string $name: `the user defined channel name`>
-) native/channel | undefined : `the native entity representing the channel or undefined if not found.`
+        <string $name: `The user defined channel name`>
+) native/channel | undefined : `The native entity representing the channel or undefined if not found.`
 ```
 
 该方法获取指定通道名称对应的原生实体。返回的数据对应一个代表通道（channel）的原生实体，称为“通道实体（channel entity）”。通道实体提供如下方法：
@@ -1344,9 +1342,9 @@ $RUNNER.chan(
 
 ```js
 $RUNNER.chan(!
-        <string $name: `the user defined channel name`>
+        <string $name: `The user defined channel name`>
         [,
-            <ulongint $cap = 1: `the capability of the channel.`>
+            <ulongint $cap = 1: `The capability of the channel.`>
         ]
 ) boolean : `@true for success or @false when error.`
 ```
@@ -1492,7 +1490,7 @@ $channel.len ulongint | false
 **描述**
 
 ```js
-$CRTN.target string: `the target document type such as 'html'`
+$CRTN.target string: `The target document type such as 'html'`
 ```
 
 获取当前 HVML 协程的目标文档类型，也就是 `hvml` 标签的 `target` 属性值。
@@ -1513,15 +1511,15 @@ $CRTN.target
 可通过该属性获取或设置 HVML 协程的基础 URL。
 
 ```js
-$CRTN.base string: `the base URL.`
+$CRTN.base string: `The base URL.`
 ```
 
 该属性获取器返回当前的基础 URL，如 `file:///app/com.example.foo/hvml`。
 
 ```js
 $CRTN.base(!
-        <string $new_url: `the new base URL`>
-) string | false: `the new base URL normalized from $new_url or `false` for invalid $new_url.`
+        <string $new_url: `The new base URL`>
+) string | false: `The new base URL normalized from $new_url or `false` for invalid $new_url.`
 ```
 
 该属性设置器设置 HVML 协程的基础 URL 为预期值，返回正规化处理后的基础 URL。若传递的 `$new_url` 不是合法的或不支持的 URL，则抛出异常；或在静默求值时，对可忽略异常返回 `false`。
@@ -1552,15 +1550,15 @@ $CRTN.base(! "https://foo.example.com//app/hvml/" )
 **描述**
 
 ```js
-$CRTN.maxIterationCount ulongint: `the current maximal iteration count.`
+$CRTN.maxIterationCount ulongint: `The current maximal iteration count.`
 ```
 
 该属性获取器返回当前的最大迭代次数值。
 
 ```js
 $CRTN.maxIterationCount(!
-        <real $new_value: `the new maximal interation count`>
-) ulongint | false : `the new maximal iteration count.`
+        <real $new_value: `The new maximal interation count`>
+) ulongint | false : `The new maximal iteration count.`
 ```
 
 该属性设置器设置最大迭代次数值并返回设置后的值。当传入无效值（比如零）时抛出异常；或在静默求值时，对可忽略异常返回 `false`。
@@ -1590,7 +1588,7 @@ $CRTN.maxIterationCount(! 10000UL )
 **描述**
 
 ```js
-$CRTN.maxRecursionDepth ulongint: `the current maximal recursion depth value.`
+$CRTN.maxRecursionDepth ulongint: `The current maximal recursion depth value.`
 ```
 
 该属性获取器返回当前的最大递归深度值。
@@ -1598,7 +1596,7 @@ $CRTN.maxRecursionDepth ulongint: `the current maximal recursion depth value.`
 ```js
 $CRTN.maxRecursionDepth(!
         <real $new_value: `new maximal recursion depth`>
-) ulongint | false: `the new maximal recursion depth value.`
+) ulongint | false: `The new maximal recursion depth value.`
 ```
 
 该属性设置器设置最大递归深度值，返回设置后的值。当传入无效值时抛出异常；或在静默求值时，对可忽略异常返回 `false`。
@@ -1628,7 +1626,7 @@ $CRTN.maxRecursionDepth(! 10000UL )
 **描述**
 
 ```js
-$CRTN.maxEmbeddedLevels ulongint: `the current maximal embedded levels.`
+$CRTN.maxEmbeddedLevels ulongint: `The current maximal embedded levels.`
 ```
 
 该属性获取器返回当前的最大容器数据嵌套层级。
@@ -1636,7 +1634,7 @@ $CRTN.maxEmbeddedLevels ulongint: `the current maximal embedded levels.`
 ```js
 $CRTN.maxEmbeddedLevels(!
         <real $new_value: `new maximal embedded levels`>
-) ulongint | false: `the new maximal embedded levels.`
+) ulongint | false: `The new maximal embedded levels.`
 ```
 
 该属性设置器设置最大允许的容器数据嵌套层级，返回设置后的值。当传入无效值时抛出异常；或在静默求值时，对可忽略异常返回 `false`。
@@ -1666,15 +1664,15 @@ $CRTN.maxEmbeddedLevels(! 64UL )
 **描述**
 
 ```js
-$CRTN.timeout number : `the current timeout value (in seconds)`
+$CRTN.timeout number : `The current timeout value (in seconds)`
 ```
 
 该属性获取器返回当前超时值。
 
 ```js
 $CRTN.timeout(!
-        <number $new_timeout: `the new timeout value (in seconds)`>
-) number | false: `the new timeout value`
+        <number $new_timeout: `The new timeout value (in seconds)`>
+) number | false: `The new timeout value`
 ```
 
 该属性设置器设置超时值，并返回设置后的值。当传入无效值时，抛出异常；或在静默求值时，对可忽略异常返回 `false`。
@@ -1704,7 +1702,7 @@ $CRTN.timeout(! 3.5 )
 **描述**
 
 ```js
-$CRTN.cid ulongint : `the corontine identifier`
+$CRTN.cid ulongint : `The corontine identifier`
 ```
 
 **异常**
@@ -1725,15 +1723,15 @@ $CRTN.cid
 **描述**
 
 ```js
-$CRTN.token string : `the corontine token`
+$CRTN.token string : `The corontine token`
 ```
 
 该方法获取当前 HVML 协程的令牌（token），形如 `3cd5`。
 
 ```js
 $CRTN.token(!
-        <string $new_token: `the new token for the coroutine`>
-) string | false: `the new token`
+        <string $new_token: `The new token for the coroutine`>
+) string | false: `The new token`
 ```
 
 该方法设置当前 HVML 协程的令牌，并返回 `true` 或 `false`。当传入无效值（如下划线打头、不符合协程令牌规范）时，抛出异常；或在静默求值时，对可忽略异常返回 `false`。
@@ -1768,7 +1766,7 @@ $CRTN.token
 **描述**
 
 ```js
-$CRTN.uri string : `the corontine URI`
+$CRTN.uri string : `The corontine URI`
 ```
 
 该方法获取当前 HVML 协程的 URI，形如 `//localhost/cn.fmsoft.hvml.calculator/main/CRTN/7`。
@@ -1791,7 +1789,7 @@ $CRTN.uri
 **描述**
 
 ```js
-$CRTN.curator ulongint : `the corontine identifier of the curator of the current coroutine`
+$CRTN.curator ulongint : `The corontine identifier of the curator of the current coroutine`
 ```
 
 该属性获取器获取当前 HVML 协程的监护协程标识符，若该协程没有监护协程，则返回 0UL。
@@ -1815,7 +1813,7 @@ $CRTN.curator
 
 ```js
 $CRTN.native_crtn(
-    ulongint $cid: `the corontine identifier of one child coroutine`
+    ulongint $cid: `The corontine identifier of one child coroutine`
 ) native/crtn | undefined
 ```
 
@@ -1845,7 +1843,7 @@ $CRTN.native_crtn
 ```js
 $CRTN.static.<variable>(
     [,
-        < string | ulongint $namspace = 1L: `the name space of the variable`.
+        < string | ulongint $namspace = 1L: `The name space of the variable`.
     ]
 ) any | undefined
 ```
@@ -1854,9 +1852,9 @@ $CRTN.static.<variable>(
 
 ```js
 $CRTN.static.<variable>(!
-    < any $value: `the new value.` >,
+    < any $value: `The new value.` >,
     [,
-        < string | ulongint $namspace = 1L: `the name space of the variable`.
+        < string | ulongint $namspace = 1L: `The name space of the variable`.
     ]
 ) boolean
 ```
@@ -1902,7 +1900,7 @@ $CRTN.static.x
 ```js
 $CRTN.temp.<variable>(
     [,
-        < string | ulongint $namspace = 1L: `the name space of the variable`.
+        < string | ulongint $namspace = 1L: `The name space of the variable`.
     ]
 ) any | undefined
 ```
@@ -1911,9 +1909,9 @@ $CRTN.temp.<variable>(
 
 ```js
 $CRTN.temp.<variable>(!
-    < any $value: `the new value.` >,
+    < any $value: `The new value.` >,
     [,
-        < string | ulongint $namspace = 1L: `the name space of the variable`.
+        < string | ulongint $namspace = 1L: `The name space of the variable`.
     ]
 ) boolean
 ```
@@ -1961,7 +1959,7 @@ $CRTN.temp.x
 该方法返回文档类型，字符串。
 
 ```js
-$DOC.doctype string : `the target DOCTYPE, such as 'html'`
+$DOC.doctype string : `The target DOCTYPE, such as 'html'`
 ```
 
 该方法返回目标文档的文档类型；字符串，如 `html`。
@@ -2002,7 +2000,7 @@ $DOC.select(
 
 ```js
 $DOC.query(
-    < string $selector: `the CSS selector.` >
+    < string $selector: `The CSS selector.` >
 ) native/elementCollection
 ```
 
@@ -2022,7 +2020,7 @@ $DOC.serialize(
         - 'loose':      `Serialize the document loosely with line-breaks and indents.`
        >
     ]
-) string | false: `the serialized document, such as '<html><body></body></html>'`
+) string | false: `The serialized document, such as '<html><body></body></html>'`
 ```
 
 该方法串行化目标文档；结果为字符串，如 `<html><body></body></html>`。
@@ -2096,11 +2094,11 @@ $DOC.query("#foo").attr(! "bar", "qux")
 该属性的获取器返回当前的渲染器状态对象。该属性不提供设置器。
 
 ```js
-$RDR.state object : `an object describing the current state of the renderer:`
-        - 'comm':               < string: `the communication method; an empty string if not connected.` >
-        - 'prot':               < string: `the protocol name, such as "PURCMC".` >
-        - 'prot-version':       < string: `the protocol version` >
-        - 'prot-ver-code':      < ulongint: `the protocol version code` >
+$RDR.state object : `An object describing the current state of the renderer:`
+        - 'comm':               < string: `The communication method; an empty string if not connected.` >
+        - 'prot':               < string: `The protocol name, such as "PURCMC".` >
+        - 'prot-version':       < string: `The protocol version` >
+        - 'prot-ver-code':      < ulongint: `The protocol version code` >
         - 'uri':                < string: `machine hardware name` >
 ```
 
@@ -2120,16 +2118,16 @@ $RDR.state
 该属性的获取器返回解释器和渲染器之间的通讯统计信息。该属性不提供设置器。
 
 ```js
-$RDR.stats object | null: `an object describing the statistics of the communication between the interpreter and the renderer:`
-        - 'nrRequestsSent':         < ulongint: `the number of requests sent to the renderer.` >
-        - 'nrRequestsRecv':         < ulongint: `the number of requests received from the renderer.` >
-        - 'nrResponsesSent':        < ulongint: `the number of responses sent to the renderer.` >
-        - 'nrResponsesRecv':        < ulongint: `the number of responses received from the renderer.` >
-        - 'nrEventsSent':           < ulongint: `the number of events sent to the renderer.` >
-        - 'nrEventsRecv':           < ulongint: `the number of events received from the renderer.` >
-        - 'bytesSent':              < ulongint: `the total bytes sent to the renderer.` >
-        - 'bytesRecv':              < ulongint: `the total bytes received from the renderer.` >
-        - 'durationSeconds':        < ulongint: `the duration seconds of the connection.` >
+$RDR.stats object | null: `An object describing the statistics of the communication between the interpreter and the renderer:`
+        - 'nrRequestsSent':         < ulongint: `The number of requests sent to the renderer.` >
+        - 'nrRequestsRecv':         < ulongint: `The number of requests received from the renderer.` >
+        - 'nrResponsesSent':        < ulongint: `The number of responses sent to the renderer.` >
+        - 'nrResponsesRecv':        < ulongint: `The number of responses received from the renderer.` >
+        - 'nrEventsSent':           < ulongint: `The number of events sent to the renderer.` >
+        - 'nrEventsRecv':           < ulongint: `The number of events received from the renderer.` >
+        - 'bytesSent':              < ulongint: `The total bytes sent to the renderer.` >
+        - 'bytesRecv':              < ulongint: `The total bytes received from the renderer.` >
+        - 'durationSeconds':        < ulongint: `The duration seconds of the connection.` >
 ```
 
 **异常**
@@ -2148,7 +2146,7 @@ $RDR.stats
 该方法断开当前的渲染器并连接到指定的渲染器。
 
 ```js
-$RDR.connect( string : `a string prepresenting the communication method of the renderer`
+$RDR.connect( string : `A string prepresenting the communication method of the renderer`
         <'headless | thread | socket | websocket ' $comm = 'headless' >,
         [, <string $uri: `URI of the target renderer.` > ]
 ) true | false
@@ -2221,7 +2219,7 @@ $DATETIME.time_prt(
             [, <string $timezone>
             ]
         ]
-) string | false: `a date and time string in the given time format $format and the time zone $timezone for the specified calendar time $seconds.`
+) string | false: `A date and time string in the given time format $format and the time zone $timezone for the specified calendar time $seconds.`
 ```
 
 该方法获得指定日历时间在给定时区，以给定格式化标准/规范名称（如 ISO8601、RFC850）形式展示的时间字符串。
@@ -2400,8 +2398,8 @@ $DATETIME.mktime(
 
 ```js
 $DATETIME.fmttime(
-        <string $format: `the format string`>
-        [, <null | number | longint | ulongint | longdouble: `the calendar time (seconds since Epoch); @null for the current calendar time.`>
+        <string $format: `The format string`>
+        [, <null | number | longint | ulongint | longdouble: `The calendar time (seconds since Epoch); @null for the current calendar time.`>
             [, <string $timezone>
             ]
         ]
@@ -2442,8 +2440,8 @@ $DATETIME.fmttime("现在是中国标准时间 %H:%M", null, 'Asia/Shanghai')
 
 ```js
 $DATETIME.fmtbdtime(
-        <string $format: `the format string`>,
-        <null | object $bdtime: `the broken-down time object returned by utctime() or localtime(); @null for the current calendar time in current timzone.`
+        <string $format: `The format string`>,
+        <null | object $bdtime: `The broken-down time object returned by utctime() or localtime(); @null for the current calendar time in current timzone.`
 ) string | false
 ```
 
@@ -2700,13 +2698,13 @@ $DATA.serialize([1, 2])
 
 ```js
 $DATA.sort(
-        < array | set $data >,
-        < 'asc | desc' $method = 'asc': sorting ascendingly or descendingly >
+        < array | set $data: `An array or set to sort.` >,
+        < 'asc | desc' $method = 'asc': `Indicate sorting ascendingly or descendingly.` >
         [, < 'auto | number | case | caseless' $method = 'auto':
-            - 'auto':       `comparing members automatically;`
-            - 'number':     `comparing members as numbers;`
-            - 'case':       `comparing members as strings case-sensitively;`
-            - 'caseless':   `comparing members as strings case-insensitively.` >
+            - 'auto':       `Compare members automatically.`
+            - 'number':     `Compare members as numbers.`
+            - 'case':       `Compare members as strings case-sensitively.`
+            - 'caseless':   `Compare members as strings case-insensitively.` >
         ]
 ) $data | false
 ```
@@ -2736,7 +2734,7 @@ $DATA.sort([3, 4, 1, 0], 'asc')
 
 ```js
 $DATA.shuffle(
-        < array | set $data >,
+        < array | set $data: `An array or set to shuffle.` >
 ) $data | false
 ```
 
@@ -2764,13 +2762,13 @@ $DATA.shuffle([1, 2, 3, 4, 5])
 
 ```js
 $DATA.compare(
-        < any: the first data >,
-        < any: the second data >
+        < any: `The first data.` >,
+        < any: `The second data.` >
         [, < 'auto | number | case | caseless' = 'auto':
-            - 'auto':       `comparing automatically;`
-            - 'number':     `comparing as numbers;`
-            - 'case':       `comparing as strings case-sensitively;`
-            - 'caseless':   `comparing as strings case-insensitively.` >
+            - 'auto':       `Compare automatically.`
+            - 'number':     `Compare two items as numbers.`
+            - 'case':       `Compare two items as strings case-sensitively.`
+            - 'caseless':   `Compare two items as strings case-insensitively.` >
         ]
 ) number | undefined
 ```
@@ -2804,7 +2802,7 @@ $DATA.compare(1, "1")
 
 ```js
 $DATA.parse(
-        < string: $string: the JSON/EJSON string to be parsed. >
+        < string: $string: `The JSON/EJSON string to be parsed.` >
 ) any | undefined
 ```
 
@@ -2835,8 +2833,8 @@ $DATA.parse(
 
 ```js
 $DATA.isequal(
-        < any: the first data >,
-        < any: the second data >
+        < any: `The first data.` >,
+        < any: `The second data.` >
 ) boolean | undefined
 ```
 
@@ -2865,10 +2863,10 @@ $DATA.isequal(
 **描述**
 
 ```js
-$DATA.fetchstr( <bsequece $bytes>,
-        < 'utf8 | utf16 | utf32 | utf16le | utf32le | utf16be | utf32be' $encoding: `the encoding; see Binary Format Notation.` >
-        [, < null | real $length = null: `the length to decode in bytes.` >
-            [, < real $offset = 0: `the offset in the byte sequence.` > ]
+$DATA.fetchstr( < bsequece $bytes: `The byte squence to fetch string.` >,
+        < 'utf8 | utf16 | utf32 | utf16le | utf32le | utf16be | utf32be' $encoding: `The encoding; see Binary Format Notation.` >
+        [, < null | real $length = null: `The length to decode in bytes.` >
+            [, < real $offset = 0: `The offset in the byte sequence.` > ]
         ]
 ) string
 ```
@@ -2912,9 +2910,12 @@ $DATA.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8:6' )
 该方法在给定的二进制序列的指定位置，按指定的实数类型（以及大小头顺序）提取实数，返回相应的实数类型。
 
 ```js
-$DATA.fetchreal( <bsequece $bytes>,
-        <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128 ...' $binary_format: `the binary format and/or endianness; see Binary Format Notation`>
-        [, < real $offset = 0: `the offset in the byte sequence.` > ]
+$DATA.fetchreal(
+        < bsequece $bytes: `The byte sequence to fetcher a real number.` >,
+        <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128 ...' $binary_format: `The binary format and/or endianness; see Binary Format Notation`>
+        [,
+            < real $offset = 0: `The offset in the byte sequence.` >
+        ]
 ) real | array | undefined
 ```
 
@@ -2947,13 +2948,13 @@ $DATA.fetchreal( bx0a00, 'i8:2', 0 )
 
 ```js
 $DATA.crc32(
-        < any $data>
-        < 'CRC-32 | CRC-32/BZIP2 | CRC-32/MPEG-2 | CRC-32/POSIX | CRC-32/XFER | CRC-32/ISCSI | CRC-32C | CRC-32/BASE91-D | CRC-32D | CRC-32/JAMCRC | CRC-32/AIXM | CRC-32Q' $algo = 'CRC-32': `the name of CRC32 algorithm; use @null for default algorithm.`>
-        < 'ulongint | binary | uppercase | lowercase' $type = 'ulongint': `the type of return data:`
-            - 'ulongint': `a unsigned longint value have the CRC32 checksum.`
-            - 'binary': `a byte sequence (totally 4 bytes).`
-            - 'uppercase': `a 8-character hexadecimal string in uppercase letters.`
-            - 'lowercase': `a 8-character hexadecimal string in lowercase letters.` >
+        < any $data: `The data.`>
+        < 'CRC-32 | CRC-32/BZIP2 | CRC-32/MPEG-2 | CRC-32/POSIX | CRC-32/XFER | CRC-32/ISCSI | CRC-32C | CRC-32/BASE91-D | CRC-32D | CRC-32/JAMCRC | CRC-32/AIXM | CRC-32Q' $algo = 'CRC-32': `The name of CRC32 algorithm; use @null for default algorithm.`>
+        < 'ulongint | binary | uppercase | lowercase' $type = 'ulongint': `The type of return data:`
+            - 'ulongint': `A unsigned longint value have the CRC32 checksum.`
+            - 'binary': `A byte sequence (totally 4 bytes).`
+            - 'uppercase': `A 8-character hexadecimal string in uppercase letters.`
+            - 'lowercase': `A 8-character hexadecimal string in lowercase letters.` >
 ) ulongint | bsequence | string | undefined
 ```
 
@@ -2988,7 +2989,7 @@ $DATA.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
 ```js
 $DATA.md5(
         < any $data >
-        < 'binary | uppercase | lowercase' $type = 'binary': `the type of return data:`
+        < 'binary | uppercase | lowercase' $type = 'binary': `The type of return data:`
             'binary'    - `the MD5 digest is returned as a binary sequence (totally 16 bytes).`
             'uppercase' - `the MD5 digest is returned as a 32-character hexadecimal number in uppercase letters.`
             'lowercase' - `the MD5 digest is returned as a 32-character hexadecimal number in lowercase letters.`
@@ -3013,7 +3014,7 @@ $DATA.md5(
 ```js
 $DATA.sha1(
         < any $data >
-        < 'binary | uppercase | lowercase' $type = 'binary': `the type of return data:`
+        < 'binary | uppercase | lowercase' $type = 'binary': `The type of return data:`
             'binary'    - `the MD5 digest is returned as a binary sequence (totally 20 bytes).`
             'uppercase' - `the MD5 digest is returned as a 40-character hexadecimal number in uppercase letters.`
             'lowercase' - `the MD5 digest is returned as a 40-character hexadecimal number in lowercase letters.`
@@ -3037,10 +3038,10 @@ $DATA.sha1(
 
 ```js
 $DATA.pack(
-        <string $format: `the format string; see Binary Format Notation.` >,
-        <real | string | bsequence | array $first: `the first data.` >
-        [,  <real | string | bsequence | array $second: `the second data.` >
-            [, <real | string | bsequence | array $third: `the third data.` >
+        <string $format: `The format string; see Binary Format Notation.` >,
+        <real | string | bsequence | array $first: `The first data.` >
+        [,  <real | string | bsequence | array $second: `The second data.` >
+            [, <real | string | bsequence | array $third: `The third data.` >
                 [, ... ]
             ]
         ]
@@ -3051,7 +3052,7 @@ $DATA.pack(
 
 ```js
 $DATA.pack(
-        < string $format: `the format string; see Binary Format Notation.` >,
+        < string $format: `The format string; see Binary Format Notation.` >,
         < array $data >
 ) string
 ```
@@ -3096,8 +3097,8 @@ $DATA.pack( "i16le:2 i32le", [10, 15], 255)
 
 ```js
 $DATA.unpack(
-        <string $format: `the format string; see Binary Format Notation.` >,
-        <bsequence $data: `the data.`>
+        <string $format: `The format string; see Binary Format Notation.` >,
+        <bsequence $data: `The data.`>
 ) array | real | string | bsequenc
 ```
 
@@ -3336,8 +3337,8 @@ $DATA.bitwise( '|', 0, 15 )
 
 ```js
 $DATA.isdivisible(
-        < any $dividend: the number as dividend >,
-        < any $divisor: the number as divisor >
+        < any $dividend: `The number as dividend >,
+        < any $divisor: `The number as divisor >
 ) boolean | undefined
 ```
 
@@ -3369,19 +3370,19 @@ $DATA.isdivisible(
 
 ```js
 $DATA.match_members(
-        <linctnr $haystack: `the linear container to search in.` >,
-        <any | string $needle: `the variant to search for in the haystack.` >
-        [, < '[exact | auto | number | case | caseless | wildcard | regexp] || [indexes | values | iv-pairs]' $method = 'exact indexes': `the search method:`
-            - 'exact':      `compares two variants exactly.`
-            - 'auto':       `compares two variants automatically.`
-            - 'number':     `compares two variants as numbers.`
-            - 'case':       `compares two variants as strings case-sensitively.`
-            - 'caseless':   `compares two variants as strings case-insensitively.`
-            - 'wildcard':   `compares two variants as strings and @needle (must be a string) as a whildcard.`
-            - 'regexp':     `compares two variants as strings and @needle (must be a string) as a regular expression.`
-            - 'indexes':    `returns the indexes of the matched members.`
-            - 'values':     `returns the values of the matched members.`
-            - 'iv-pairs':   `returns the index-value pairs (tuples) of the matched members.`
+        <linctnr $haystack: `The linear container to search in.` >,
+        <any | string $needle: `The variant to search for in the haystack.` >
+        [, < '[exact | auto | number | case | caseless | wildcard | regexp] || [indexes | values | iv-pairs]' $method = 'exact indexes': `The search method:`
+            - 'exact':      `Compare two variants exactly.`
+            - 'auto':       `Compare two variants automatically.`
+            - 'number':     `Compare two variants as numbers.`
+            - 'case':       `Compare two variants as strings case-sensitively.`
+            - 'caseless':   `Compare two variants as strings case-insensitively.`
+            - 'wildcard':   `Compare two variants as strings and @needle (must be a string) as a whildcard.`
+            - 'regexp':     `Compare two variants as strings and @needle (must be a string) as a regular expression.`
+            - 'indexes':    `Return the indexes of the matched members.`
+            - 'values':     `Return the values of the matched members.`
+            - 'iv-pairs':   `Return the index-value pairs (tuples) of the matched members.`
         > ]
 ) array | undefined
 ```
@@ -3442,19 +3443,19 @@ $DATA.match_members(['zh_CN', 'zh_TW', 'zh_HK', 'zh_MO'], '^zh', 'regexp values'
 
 ```js
 $DATA.match_properties(
-        <object $haystack: `the object to search in.` >,
-        <string $needle: `the key to search for in the haystack.` >
-        [, < '[exact | auto | number | case | caseless | wildcard | regexp] || [keys | values | kv-pairs]' $method = 'exact keys': `the search method:`
-            - 'exact':      `compares the needle and the key exactly.`
-            - 'auto':       `compares the needle and the key automatically.`
-            - 'number':     `compares the needle and the key as numbers.`
-            - 'case':       `compares the needle and the key as strings case-sensitively.`
-            - 'caseless':   `compares the needle and the key as strings case-insensitively.`
-            - 'wildcard':   `compares the needle and the key as strings and @needle as a whildcard.`
-            - 'regexp':     `compares the needle and the key as strings and @needle as a regular expression.`
-            - 'keys':       `returns the matched keys`
-            - 'values':     `returns the matched values.`
-            - 'kv-pairs':   `returns the matched key-value pairs as tuples.`
+        <object $haystack: `The object to search in.` >,
+        <string $needle: `The key to search for in the haystack.` >
+        [, < '[exact | auto | number | case | caseless | wildcard | regexp] || [keys | values | kv-pairs]' $method = 'exact keys': `The search method:`
+            - 'exact':      `Compare the needle and the key exactly.`
+            - 'auto':       `Compare the needle and the key automatically.`
+            - 'number':     `Compare the needle and the key as numbers.`
+            - 'case':       `Compare the needle and the key as strings case-sensitively.`
+            - 'caseless':   `Compare the needle and the key as strings case-insensitively.`
+            - 'wildcard':   `Compare the needle and the key as strings and @needle as a whildcard.`
+            - 'regexp':     `Compare the needle and the key as strings and @needle as a regular expression.`
+            - 'keys':       `Return the matched keys`
+            - 'values':     `Return the matched values.`
+            - 'kv-pairs':   `Return the matched key-value pairs as tuples.`
         > ]
 ) array | undefined
 ```
@@ -3503,7 +3504,7 @@ $DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless kv-pairs')
 
 ```js
 $DATA.makebytesbuffer(
-        < ulongint $size: the size of the bufer in bytes. >
+        < ulongint $size: `The size of the bufer in bytes. >
 ) bsequence | undefined
 ```
 
@@ -3534,7 +3535,7 @@ $DATA.makebytesbuffer(
 $DATA.append2bytesbuffer(
         < bsequence $buf: `The buffer.` >,
         < bsequence | string $bytes: `The bytes will be append to the buffer.` >
-        [, < '[truncate || utf8-chars] | all' $options = 'all': `the options:`
+        [, < '[truncate || utf8-chars] | all' $options = 'all': `The options:`
             - 'all':        `Try to copy all new data to the buffer.`
             - 'truncate':   `Truncate the data if the buffer is not enough large.`
             - 'utf8-char':  `The new data are characters in UTF-8 and this method will keep all multi-byte characters in UTF-8 are intact.`
@@ -4126,7 +4127,7 @@ $L.strle("case", 'A', 'Z')
 ```js
 $L.eval(
         <string: `logical expression`>
-        [, <object: `the parameter map`> ]
+        [, <object: `The parameter map`> ]
 ) boolean | undefined
 ```
 
@@ -4176,8 +4177,8 @@ $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) }
 
 ```js
 $T.get(
-        <string $text: `the original text.` >
-) string : `the translated text.`
+        <string $text: `The original text.` >
+) string : `The translated text.`
 ```
 
 该方法根据原始文本返回翻译的文本。若 `$T.map` 中没有匹配的文本，则返回原始文本本身。
@@ -4212,8 +4213,8 @@ $T.get('Hello, world!')
 
 ```js
 $STR.contains(
-        <string $haystack: `the string to search in.` >,
-        <string $needle: `the substring to search for in the haystack.` >
+        <string $haystack: `The string to search in.` >,
+        <string $needle: `The substring to search for in the haystack.` >
         [, < boolean $case_insensitivity = false:
             false - `performs a case-sensitive check;`
             true - `performs a case-insensitive check.` >
@@ -4263,8 +4264,8 @@ $STR.contains('Hello, world!', '')
 
 ```js
 $STR.starts_with(
-        <string $haystack: `the string to search in.`>,
-        <string $needle: `the substring to search for in the haystack.`>
+        <string $haystack: `The string to search in.`>,
+        <string $needle: `The substring to search for in the haystack.`>
         [, <boolean $case_insensitivity = false:
             false - `performs a case-sensitive check;`
             true - `performs a case-insensitive check.`>
@@ -4312,8 +4313,8 @@ $STR.starts_with('Hello, world', '')
 
 ```js
 $STR.ends_with(
-        <string $haystack: `the string to search in.`>,
-        <string $needle: `the substring to search for in the haystack.`>
+        <string $haystack: `The string to search in.`>,
+        <string $needle: `The substring to search for in the haystack.`>
         [, <boolean $case_insensitivity = false:
             false - `performs a case-sensitive check;`
             true - `performs a case-insensitive check.`>
@@ -4361,9 +4362,9 @@ $STR.ends_with('Hello, world', '')
 
 ```js
 $STR.explode(
-        <string $string: `the input string to explode.`>
-        [, <string $separator = '': `the boundary string.`>
-            [, <real $limit = 0: `the limitation of members in the result array.`>]
+        <string $string: `The input string to explode.`>
+        [, <string $separator = '': `The boundary string.`>
+            [, <real $limit = 0: `The limitation of members in the result array.`>]
         ]
 ) array
 ```
@@ -4420,8 +4421,8 @@ $STR.explode('中华人民共和国', '', 2)
 
 ```js
 $STR.implode(
-        <array $pieces: `the array to implode.`>
-        [, <string $separator = '': `the boundary string.`>]
+        <array $pieces: `The array to implode.`>
+        [, <string $separator = '': `The boundary string.`>]
 ) string
 ```
 
@@ -4471,7 +4472,7 @@ $STR.implode(['汉', '字'])
 
 ```js
 $STR.shuffle(
-        <string $string: `the input string to shuffle.`>
+        <string $string: `The input string to shuffle.`>
 ) string
 ```
 
@@ -5439,11 +5440,11 @@ $STR.rot13(
 
 ```js
 $STR.count_chars(
-        < string $string: `the examined string.` >
+        < string $string: `The examined string.` >
         [,
             < 'object | string' $mode = 'object':
-               - 'object' - `returns an object with the character as key and the frequency of every character as value.`
-               - 'string' - `returns a string containing all unique characters. `
+               - 'object' - `Return an object with the character as key and the frequency of every character as value.`
+               - 'string' - `Return a string containing all unique characters. `
             >
         ]
 ) object | string
@@ -5467,10 +5468,10 @@ $STR.count_chars(
 
 ```js
 $STR.count_bytes(
-        < string | bsequence $data: `the examined data.` >
+        < string | bsequence $data: `The examined data.` >
         [, < 'tuple-all | object-all | object-appeared | object-not-appeared | bytes-appeared | bytes-not-appeared' $mode = 'tuple-all':
-            'tuple-all' - `returns a tuple with the byte-value (0 ~ 255) as index and the frequency of every byte as value.`
-            'object-all' - `returns an object with the byte-value (decimal string) as key and the frequency of every byte as value.`
+            'tuple-all' - `Return a tuple with the byte-value (0 ~ 255) as index and the frequency of every byte as value.`
+            'object-all' - `Return an object with the byte-value (decimal string) as key and the frequency of every byte as value.`
             'object-appeared' - `same as 'object-all' but  only byte-values with a frequency greater than zero are listed.`
             'object-not-appeared' - `same as 'object-all' but only byte-values with a frequency equal to zero are listed.`
             'bytes-appeared' - `a binary sequence containing all unique bytes is returned.`
@@ -5498,10 +5499,10 @@ $STR.count_bytes(
 
 ```js
 $STR.codepoints(
-        < string $the_string: the string. >
+        < string $the_string: `The string. >
         [, < 'array | tuple' $return_type = 'array':
-            - 'array' - `returns an array of codepoints.`
-            - 'tuple' - `returns a tuple of codepoints.`
+            - 'array' - `Return an array of codepoints.`
+            - 'tuple' - `Return a tuple of codepoints.`
             >
         ]
 ) array | tuple: `The array or tuple contains all Unicode codepoints of the string.`
@@ -5585,10 +5586,10 @@ $URL.rawencode('HVML: 全球首款可编程标记语言!', 'rfc3986')
 
 ```js
 $URL.decode(
-        <string $str: the string to be decoded.>
-        [, < 'binary | string' $type = 'string': `the type of return data:`
-            - 'binary': `the decoded data returned as a binary sequence.`
-            - 'string': `the decoded data returned as a string in UTF-8 encoding.` >
+        <string $str: `The string to be decoded.>
+        [, < 'binary | string' $type = 'string': `The type of return data:`
+            - 'binary': `The decoded data returned as a binary sequence.`
+            - 'string': `The decoded data returned as a string in UTF-8 encoding.` >
             [, <'rfc1738 | rfc3986' $enc_type = 'rfc1738':
               - 'rfc1738': decoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.
               - 'rfc3986':  decoding is performed according to RFC 3986, and spaces are expected being percent encoded (%20).
@@ -5637,8 +5638,8 @@ $URL.decode('HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7
 ```js
 $URL.build_query(
     < object | array $query_data >
-    [, < string $numeric_prefix = '': the numeric prefix for the argument names if `query_data` is an array. >
-        [, <string $arg_separator = '&': the character used to separate the arguments. >
+    [, < string $numeric_prefix = '': `The numeric prefix for the argument names if `query_data` is an array. >
+        [, <string $arg_separator = '&': `The character used to separate the arguments. >
             [, <'[real-json | real-ejson] || [rfc1738 | rfc3986]' $opts = 'real-json rfc1738':
               - 'real-json':    `use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
               - 'real-ejson':   `use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
@@ -5681,7 +5682,7 @@ $URL.build_query(
 ```js
 $URL.parse_query(
     < string $query_string >
-    [, <string $arg_separator = '&': the character used to separate the arguments. >
+    [, <string $arg_separator = '&': `The character used to separate the arguments. >
         [, <'[array | object] || [string | binary | auto] || [rfc1738 | rfc3986]' $opts = 'object auto rfc1738':
           - 'array':    `construct an array with the query string; this will ignore the argument names in the query string.`
           - 'object':   `construct an object with the query string.`
@@ -5716,9 +5717,9 @@ $URL.parse_query(
 
 ```js
 $URL.parse(
-        <string $url: the URL to parse.>,
+        <string $url: `The URL to parse.>,
         [,
-            <'all | [scheme || host || port || user || password || path || query || fragment]' $components = 'all': the components want to parse.>
+            <'all | [scheme || host || port || user || password || path || query || fragment]' $components = 'all': `The components want to parse.>
         ]
 ) object | string
 ```
@@ -5743,7 +5744,7 @@ $URL.parse(
 
 ```js
 $URL.assemble(
-        <object $broken_down_url: `the broken-down URL object.`>
+        <object $broken_down_url: `The broken-down URL object.`>
 ) string
 ```
 
@@ -5824,20 +5825,20 @@ $URL.assemble(
 
 ```js
 $STREAM.from(
-        < longint $fd: `the file descriptor.` >
+        < longint $fd: `The file descriptor.` >
         [, <'[append || nonblock || cloexec] | keep' $flags = 'keep':
                - 'append':      `Set the file descriptor in append mode.`
                - 'nonblock':    `Set the file descriptor in nonblocking mode.`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
                - 'keep':        `Do not change the file descriptor (status) flags.`
            >
-           [, < 'raw | message | websocket | hbdbus' $ext_protocol = 'raw': `the extended protocol will be used on the stream.`
+           [, < 'raw | message | websocket | hbdbus' $ext_protocol = 'raw': `The extended protocol will be used on the stream.`
                - 'raw':                 `No extended protocol.`
                - 'message':             `WebSocket-like message-based protocol; only for 'local://' and 'fifo://' connections.`
                - 'websocket':           `WebSocket protocol; only for 'inetN:// connections.`
                - 'hbdbus':              `HybridOS data bus protocol; only for 'local://' and 'inetN://' connections.`
               >
-                [, <object $extra_options: `the extra options.` >
+                [, <object $extra_options: `The extra options.` >
                 ]
            ]
         ]
@@ -5911,7 +5912,7 @@ $STREAM.from(5, 'keep', 'websocket', ...)
 
 ```js
 $STREAM.open(
-        < string $uri: `the URI of the stream.` >
+        < string $uri: `The URI of the stream.` >
         [, <'[read || write || append || create || truncate || nonblock || cloexec || nameless] | default' $opt = 'default':
                - 'read':        `Open for reading only`
                - 'write':       `Open for writing only`
@@ -5923,13 +5924,13 @@ $STREAM.open(
                - 'nameless':    `Do not assign a name to the socket; only for local socket.`
                - 'default':     `The equivalent to 'read write cloexec'`
            >
-           [, < 'raw | message | websocket | hbdbus' $ext_protocol = 'raw': `the extended protocol will be used on the stream.`
+           [, < 'raw | message | websocket | hbdbus' $ext_protocol = 'raw': `The extended protocol will be used on the stream.`
                - 'raw':                 `No extended protocol.`
                - 'message':             `WebSocket-like message-based protocol; only for 'local://' and 'fifo://' connections.`
                - 'websocket':           `WebSocket protocol; only for 'inetN:// connections.`
                - 'hbdbus':              `HybridOS data bus protocol; only for 'local://' and 'inetN://' connections.`
               >
-                [, <object $extra_options: `the extra options.` >
+                [, <object $extra_options: `The extra options.` >
                 ]
            ]
         ]
@@ -5994,7 +5995,7 @@ $STREAM.open("file://abc.md", "read write")
 
 ```js
 $STREAM.close(
-        < stream $stream: `the stream entity to close.` >
+        < stream $stream: `The stream entity to close.` >
 ) boolean
 ```
 
@@ -6043,13 +6044,13 @@ $STREAM.stdout.writelines($SYS.uname_prt('kernel-name'))
 **描述**
 
 ```js
-$STREAM.listener ulongint | null: `the corouting identifier of the current listener`.
+$STREAM.listener ulongint | null: `The corouting identifier of the current listener`.
 ```
 
 ```js
 $STREAM.listener(!
-        <ulongint $cid: `the new listener of the stream entity`.>
-) ulongint | null | false: `the old listener of the current listener`.
+        <ulongint $cid: `The new listener of the stream entity`.>
+) ulongint | null | false: `The old listener of the current listener`.
 ```
 
 #### 3.12.8) 流实体
@@ -6060,7 +6061,7 @@ $STREAM.listener(!
 
 ```js
 $stream.readstruct(
-        < string $format: `the format of the struct`>
+        < string $format: `The format of the struct`>
 ) array | real | string | bsequence | null
 ```
 
@@ -6100,10 +6101,10 @@ $stream.readstruct('i16le i32le')
 
 ```js
 $stream.writestruct(
-        <string $format: `the format string; see Binary Format Notation.` >,
-        <real | string | bsequence | array $first: `the first data.` >
-        [,  <real | string | bsequence | array $second: `the second data.` >
-            [, <real | string | bsequence | array $third: `the third data.` >
+        <string $format: `The format string; see Binary Format Notation.` >,
+        <real | string | bsequence | array $first: `The first data.` >
+        [,  <real | string | bsequence | array $second: `The second data.` >
+            [, <real | string | bsequence | array $third: `The third data.` >
                 [, ... ]
             ]
         ]
@@ -6114,7 +6115,7 @@ $stream.writestruct(
 
 ```js
 $stream.writestruct(
-        < string $format: `the format string; see Binary Format Notation.` >,
+        < string $format: `The format string; see Binary Format Notation.` >,
         < array $data >
 ) longint | false
 ```
@@ -6243,7 +6244,7 @@ $STREAM.stdout.writelines(["This is the string to write", "Second line"])
 
 ```js
 $stream.readbytes(
-        < real $length: `the length to read in bytes`>
+        < real $length: `The length to read in bytes`>
 ) bsequence | null
 ```
 
@@ -6352,7 +6353,7 @@ $STREAM.stdout.writebytes("write string")
 
 ```js
 $stream.seek(
-        < number $offset: `the offset to be set`>,
+        < number $offset: `The offset to be set`>,
         [, <'set | current | end | default' $whence = 'default':
             - 'set':     `The $stream offset is set to offset bytes.`
             - 'current': `The $stream offset is set to its current location plus offset bytes`
@@ -6582,7 +6583,7 @@ du -BM hvml-spec-v1.0-zh.md
             <init as 'wsStream' with $streamSocket.accept('default', 'websocket', ...) >
                 <observe on $wsStream for 'handshake' >
                     <inherit>
-                        $wsStream.send_handshake_resp(...)
+                        $_observedOn.send_handshake_resp(...)
                     </inherit>
                 </observe>
                 <observe on $wsStream for 'message' >
@@ -6603,7 +6604,7 @@ du -BM hvml-spec-v1.0-zh.md
 
 ```js
 $SOCKET.stream(
-        < string $uri: `the URI of the stream socket.` >
+        < string $uri: `The URI of the stream socket.` >
         [, <'[global || nonblock || cloexec] | default | none' $opt = 'default':
                - 'global':      `Create a globally accessible socket.`
                - 'nonblock':    `Create the sockete in nonblocking mode.`
@@ -6611,7 +6612,7 @@ $SOCKET.stream(
                - 'default':     `The equivalent to 'cloexec nonblock'.`
                - 'none':        `No additional flags are specified.`
            >
-                [, <longint $backlog: `the backlog.` >
+                [, <longint $backlog: `The backlog.` >
                 ]
             ]
         ]
@@ -6653,7 +6654,7 @@ $SOCKET.stream("local://var/run/myapp.sock")
 
 ```js
 $SOCKET.dgram(
-        < string $uri: `the URI of the dgram socket.` >
+        < string $uri: `The URI of the dgram socket.` >
         [, <'[global || nameless || nonblock || cloexec] | default | none' $opt = 'default':
                - 'global':      `Create a globally accessible socket; only for local socket.`
                - 'nameless':    `Do not assign a name to the socket; only for local socket.`
@@ -6737,13 +6738,13 @@ $streamSocket.accept(
            - 'default':     `Equivalent to 'cloexec nonblock'.`
            - 'none':        `No additional flags are specified.`
     >
-    [, <'raw | message | websocket | hbdbus' $extended_protocol = 'raw': `the extended protocol will be used on the stream.`
+    [, <'raw | message | websocket | hbdbus' $extended_protocol = 'raw': `The extended protocol will be used on the stream.`
            - 'raw':         `No any protocol.`
            - 'message':     `WebSocket-like, but only for UNIX socket connections.`
            - 'websocket':   `WebSocket.`
            - 'hbdbus':      `HybridOS data bus protocol.`
         >
-        [, <object $options: `the options for protocols.` >
+        [, <object $options: `The options for protocols.` >
         ]
     ]
 ) native/stream | null | undefined
@@ -6822,22 +6823,22 @@ $streamSocket.close()
 
 ```js
 $dgramSocket.sendto(
-    < string $dest: `the URI of the destination address.` >,
+    < string $dest: `The URI of the destination address.` >,
     < '[dontwait || confirm] | default' $flags:
            - 'dontwait':    `Enable a nonblocking operation.`
            - 'confirm':     `Tell the link layer that forward progress happened: you got a successful reply from the other side.`
            - 'default':     `No additional flags are specified.`
     >,
-    < bsequence | string $bytes: `the data to send.` >
+    < bsequence | string $bytes: `The data to send.` >
     [,
-        < ulongint $offset = 0: `the offset in $bytes.`>
+        < ulongint $offset = 0: `The offset in $bytes.`>
         [,
-            < longint $length = -1: `the number of bytes to send; a value less than 0 means to send all left bytes.`>
+            < longint $length = -1: `The number of bytes to send; a value less than 0 means to send all left bytes.`>
         ]
     ]
 ) undefined | object: `undefined or an object described the number of bytes sent or the error.`
-    - 'sent':  <longint: `the number of bytes sent, or -1 if an error occurred.`>,
-    - 'errorname': <string | null: `the system error name if $sent is less than 0.`>,
+    - 'sent':  <longint: `The number of bytes sent, or -1 if an error occurred.`>,
+    - 'errorname': <string | null: `The system error name if $sent is less than 0.`>,
 ```
 
 该方法通过数据报套接字向指定的目标地址发送一条消息，返回实际发送的字节数。
@@ -6865,11 +6866,11 @@ $dgramSocket.recvfrom(
     >,
     <longint $length: `The number of bytes to receive.`>
 ) undefined | object: `undefined or an object describing the message and the source address:`
-    - 'recved':  <longint: `the number of bytes received, or -1 if an error occurred.`>,
+    - 'recved':  <longint: `The number of bytes received, or -1 if an error occurred.`>,
     - 'bytes': <bsequence | null:  `null or a byte sequence storing the bytes received.`>,
-    - 'errorname': <string | null: `the system error name if $recved is less than 0.`>,
-    - 'source-addr': < string | null:  `the source address or numeric host.`>,
-    - 'source-port': < longint | null:  `the optional source port.`>,
+    - 'errorname': <string | null: `The system error name if $recved is less than 0.`>,
+    - 'source-addr': < string | null: `The source address or numeric host.`>,
+    - 'source-port': < longint | null: `The optional source port.`>,
 ```
 
 该方法在数据报套接字上接收一条消息，返回一个对象。
@@ -7036,9 +7037,9 @@ $MATH.const_l('1/sqrt(2)')
 // 原型
 // 设置自定义常数
 $MATH.const(!
-        <string: `a user-defined const name`>,
-        <number: the constant>
-        [, <longdouble: the constant>]
+        <string: `A user-defined const name`>,
+        <number: `The constant>
+        [, <longdouble: `The constant>]
 ) boolean
 
 // 示例：设置 c（真空光速）为 299792458
@@ -7619,8 +7620,8 @@ $MATH.sqrt_l(9.0)
 ```js
 // 原型
 $FS.list(
-        [ <string $path: `the path to list`>
-            [, <string $filters: `the list of semicolon separated name filters.`> ]
+        [ <string $path: `The path to list`>
+            [, <string $filters: `The list of semicolon separated name filters.`> ]
         ]
 ) array
 ```
@@ -7629,27 +7630,27 @@ $FS.list(
 
 ```js
 {
-    'name': <string: `name of the file (directory entry')`>,
-    'dev_major': <ulongint: `the major ID of device containing file`>,
-    'dev_minor': <ulongint: `the minor ID of device containing file`>,
-    'inode': <ulongint: `inode numbe`r>
-    'type': <string: `file type like 'd', 'b', 's', ...`>,
-    'mode_digits': <string: `file mode like `0644``>,
-    'mode_alphas': <string: `file mode like `rwxrwxr-x``>,
-    'nlink': <ulongint: `number of hard links`>,
-    'uid': <number: `the user ID of owner`>,
-    'gid': <number: `the group ID of owner`>,
-    'rdev_major': <ulongint: `the major device ID if it is a special file`>,
-    'rdev_minor': <ulongint: `the minor device ID if it is a special file`>,
-    'size': <ulongint: `total size in bytes`>,
-    'blksize': <ulongint: `block size for filesystem I/O`>,
-    'blocks': <ulongint: `Number of 512B blocks allocated`>,
-    'atime_sec': <ulongint: `time of last acces (seconds since Epoch)`>,
-    'atime_nsec': <ulongint: `time of last acces (nanoseconds since 'atime_sec')`>,
-    'mtime_sec': <ulongint: `time of last modification (seconds since Epoch)`>,
-    'mtime_nsec': <ulongint: `time of last modification (nanoseconds since 'mtime_sec')`>,
-    'ctime_sec': <ulongint: `time of last status change (seconds since Epoch`)>
-    'ctime_nsec': <ulongint: `time of last status change (nanoseconds since 'ctime_sec'`)>
+    'name': <string: `The name of the file (directory entry')`>,
+    'dev_major': <ulongint: `The major ID of device containing file`>,
+    'dev_minor': <ulongint: `The minor ID of device containing file`>,
+    'inode': <ulongint: `The inode numbe`r>
+    'type': <string: `The file type like 'd', 'b', 's', ...`>,
+    'mode_digits': <string: `The file mode like `0644``>,
+    'mode_alphas': <string: `The file mode like `rwxrwxr-x``>,
+    'nlink': <ulongint: `The number of hard links`>,
+    'uid': <number: `The user ID of owner`>,
+    'gid': <number: `The group ID of owner`>,
+    'rdev_major': <ulongint: `The major device ID if it is a special file`>,
+    'rdev_minor': <ulongint: `The minor device ID if it is a special file`>,
+    'size': <ulongint: `The total size in bytes`>,
+    'blksize': <ulongint: `The block size for filesystem I/O`>,
+    'blocks': <ulongint: `The number of 512B blocks allocated`>,
+    'atime_sec': <ulongint: `The time of last acces (seconds since Epoch)`>,
+    'atime_nsec': <ulongint: `The time of last acces (nanoseconds since 'atime_sec')`>,
+    'mtime_sec': <ulongint: `The time of last modification (seconds since Epoch)`>,
+    'mtime_nsec': <ulongint: `The time of last modification (nanoseconds since 'mtime_sec')`>,
+    'ctime_sec': <ulongint: `The time of last status change (seconds since Epoch`)>
+    'ctime_nsec': <ulongint: `The time of last status change (nanoseconds since 'ctime_sec'`)>
 }
 ```
 
@@ -7675,7 +7676,7 @@ $FS.list('/etc', "*.txt; *.md")
 
 ```js
 // 原型
-$FS.list_prt(<string: path>[, <string: the list of semicolon separated name filters>[, '[mode || nlink || uid || gid || size || blksize || atime || ctime || mtime || name] | all | default']])
+$FS.list_prt(<string: path>[, <string: `The list of semicolon separated name filters>[, '[mode || nlink || uid || gid || size || blksize || atime || ctime || mtime || name] | all | default']])
 
 // 示例：列出指定路径下的所有目录项，仅列出目录项名称和类型。
 $FS.list_prt($path)
@@ -7697,9 +7698,9 @@ $FS.list_prt($path, "*.txt; *.md", "mode nlink uid gid size blksize atime ctime 
 
 ```js
 $FS.basename(
-        <string $path: a path.>
+        <string $path: `The path to the file`. >
         [,
-            <string $suffix = '': if the name component ends in `suffix` this will also be cut off.>
+            <string $suffix = '': `If the name component ends in `suffix` this will also be cut off.` >
         ]
 ) string
 ```
@@ -7745,8 +7746,8 @@ $FS.chgrp(
 
 ```js
 $FS.chmod(
-        <string $filename: `path to the file.`>,
-        <string $permissions: `the permission string like '0644' or 'u+rwx,go+rx'.`>
+        <string $filename: `The path to the file.`>,
+        <string $permissions: `The permission string like '0644' or 'u+rwx,go+rx'.`>
 ) boolean
 ```
 
@@ -7768,7 +7769,7 @@ $FS.chmod(
 
 ```js
 $FS.chown(
-        <string $filename: `path to the file`.>,
+        <string $filename: `The path to the file`.>,
         <string | number $user: `A user name or a user identifier.`>
 ) boolean
 ```
@@ -7814,7 +7815,7 @@ $FS.copy(
 
 ```js
 $FS.dirname(
-        <string $path: `a path.`>
+        <string $path: `A path.`>
         [,
             <real $levels = 1: `The number of parent directories to go up.`>
         ]
@@ -7851,15 +7852,15 @@ $FS.disk_usage(
 
 ```js
 {
-    'free_blocks': <ulongint: `the number of free blocks`>,
-    'free_inodes': <ulongint: `the number of free inodes`>,
+    'free_blocks': <ulongint: `The number of free blocks`>,
+    'free_inodes': <ulongint: `The number of free inodes`>,
 
-    'total_blocks': <ulongint: `the number of total blocks`>,
-    'total_inodes': <ulongint: `the number of total inodes`>,
+    'total_blocks': <ulongint: `The number of total blocks`>,
+    'total_inodes': <ulongint: `The number of total inodes`>,
 
-    'mount_point': <string: `the mount point of the file system`>,
-    'dev_majar': <ulongint: `the majar device ID`>,
-    'dev_minor': <ulongint: `the minor device ID`>,
+    'mount_point': <string: `The mount point of the file system`>,
+    'dev_majar': <ulongint: `The majar device ID`>,
+    'dev_minor': <ulongint: `The minor device ID`>,
 }
 ```
 
@@ -7900,18 +7901,18 @@ $FS.file_exists(
 
 ```js
 $FS.file_is(
-        <string $filename: `the path to a file or directory.`>
+        <string $filename: `The path to a file or directory.`>
         <'[ dir | regular | symlink | socket | pipe | block | char ] || [ executable | exe ] || [readable | read] || [writable write]' $which = 'regular readable':
-            'dir' - `a directory.`
-            'regular' - `a regular file.`
-            'symlink' - `a symbolic link.`
-            'socket' - `a local/unix socket file.`
-            'pipe' - `a named pipe file or just a pipe file.`
-            'block' - `a block device file.`
-            'char' - `a character device file.`
-            'executable'/'exe' - `is executable.`
-            'readable'/'read' - `is readable.`
-            'writable'/'write' - `is writable.`
+            'dir' - `A directory.`
+            'regular' - `A regular file.`
+            'symlink' - `A symbolic link.`
+            'socket' - `A local/unix socket file.`
+            'pipe' - `A named pipe file or just a pipe file.`
+            'block' - `A block device file.`
+            'char' - `A character device file.`
+            'executable'/'exe' - `The file is executable.`
+            'readable'/'read' - `The file is readable.`
+            'writable'/'write' - `The file is writable.`
        >
 ) boolean
 ```
@@ -8009,22 +8010,22 @@ $FS.linkinfo(
 $FS.lstat(
         <string $filename: `The path to the file or directory.`>
         [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
-            'dev' - `returns ID of device containing the file.`
-            'inode' - `returns inode number.`
-            'type' - `returns file type like 'd', 'b', or 's'.`
-            'mode_digits' - `returns file mode like '0644'.`
-            'mode_alphas' - `returns file mode like 'rwxrwxr-x'.`
-            'nlink' - `returns number of hard links.`
-            'uid' - `returns the user ID of owner.`
-            'gid' - `returns the group ID of owner.`
-            'rdev' - `returns the device ID if it is a special file.`
-            'size' - `returns total size in bytes.`
-            'blksize' - `returns block size for filesystem I/O.`
-            'blocks' - `returns number of 512B blocks allocated.`
-            'atime' - `returns time of last acces.`
-            'mtime' - `returns time of last modification.`
-            'ctime' - `returns time of last status change.`
-            'all' - `returns all above information.`
+            'dev' - `Return ID of device containing the file.`
+            'inode' - `Return inode number.`
+            'type' - `Return file type like 'd', 'b', or 's'.`
+            'mode_digits' - `Return file mode like '0644'.`
+            'mode_alphas' - `Return file mode like 'rwxrwxr-x'.`
+            'nlink' - `Return number of hard links.`
+            'uid' - `Return the user ID of owner.`
+            'gid' - `Return the group ID of owner.`
+            'rdev' - `Return the device ID if it is a special file.`
+            'size' - `Return total size in bytes.`
+            'blksize' - `Return block size for filesystem I/O.`
+            'blocks' - `Return number of 512B blocks allocated.`
+            'atime' - `Return time of last acces.`
+            'mtime' - `Return time of last modification.`
+            'ctime' - `Return time of last status change.`
+            'all' - `Return all above information.`
             'default' - 'type mode_digits uid gid size rdev ctime'
             >
         ]
@@ -8039,26 +8040,26 @@ $FS.lstat(
 
 ```js
 {
-    'dev_major': <ulongint: `the major ID of device containing file`>,
-    'dev_minor': <ulongint: `the minor ID of device containing file`>,
+    'dev_major': <ulongint: `The major ID of device containing file`>,
+    'dev_minor': <ulongint: `The minor ID of device containing file`>,
     'inode': <ulongint: `inode numbe`r>
     'type': <string: `file type like 'd', 'b', or 's'`>,
     'mode_digits': <string: `file mode like '0644'`>,
     'mode_alphas': <string: `file mode like 'rwxrwxr-x'`>,
     'nlink': <number: `number of hard links`>,
-    'uid': <number: `the user ID of owner`>,
-    'gid': <number: `the group ID of owner`>,
-    'rdev_major': <ulongint: `the major device ID if it is a special file`>,
-    'rdev_minor': <ulongint: `the minor device ID if it is a special file`>,
-    'size': <ulongint: `total size in bytes`>,
-    'blksize': <ulongint: `block size for filesystem I/O`>,
-    'blocks': <ulongint: `number of 512B blocks allocated`>,
-    'atime_sec': <ulongint: `time of last acces (seconds since Epoch)`>,
-    'atime_nsec': <ulongint: `time of last acces (nanoseconds since 'atime_sec')`>,
-    'mtime_sec': <ulongint: `time of last modification (seconds since Epoch)`>,
-    'mtime_nsec': <ulongint: `time of last modification (nanoseconds since 'mtime_sec')`>,
-    'ctime_sec': <ulongint: `time of last status change (seconds since Epoch`)>
-    'ctime_nsec': <ulongint: `time of last status change (nanoseconds since 'ctime_sec'`)>
+    'uid': <number: `The user ID of owner`>,
+    'gid': <number: `The group ID of owner`>,
+    'rdev_major': <ulongint: `The major device ID if it is a special file`>,
+    'rdev_minor': <ulongint: `The minor device ID if it is a special file`>,
+    'size': <ulongint: `The total size in bytes`>,
+    'blksize': <ulongint: `The block size for filesystem I/O`>,
+    'blocks': <ulongint: `The number of 512B blocks allocated`>,
+    'atime_sec': <ulongint: `The time of last acces (seconds since Epoch)`>,
+    'atime_nsec': <ulongint: `The time of last acces (nanoseconds since 'atime_sec')`>,
+    'mtime_sec': <ulongint: `The time of last modification (seconds since Epoch)`>,
+    'mtime_nsec': <ulongint: `The time of last modification (nanoseconds since 'mtime_sec')`>,
+    'ctime_sec': <ulongint: `The time of last status change (seconds since Epoch`)>
+    'ctime_nsec': <ulongint: `The time of last status change (nanoseconds since 'ctime_sec'`)>
 }
 ```
 
@@ -8242,22 +8243,22 @@ $FS.rmdir(
 $FS.stat(
         <string $filename: `The path to the file or directory.`>
         [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
-            'dev' - `returns ID of device containing the file.`
-            'inode' - `returns inode number.`
-            'type' - `returns file type like 'd', 'b', or 's'.`
-            'mode_digits' - `returns file mode like '0644';`
-            'mode_alphas' - `returns file mode like 'rwxrwxr-x';`
-            'nlink' - `returns number of hard links.`
-            'uid' - `returns the user ID of owner.`
-            'gid' - `returns the group ID of owner.`
-            'rdev' - `returns the device ID if it is a special file.`
-            'size' - `returns total size in bytes.`
-            'blksize' - `returns block size for filesystem I/O.`
-            'blocks' - `returns number of 512B blocks allocated.`
-            'atime' - `returns time of last acces.`
-            'mtime' - `returns time of last modification.`
-            'ctime' - `returns time of last status change.`
-            'all' - `returns all above information.`
+            'dev' - `Return ID of device containing the file.`
+            'inode' - `Return inode number.`
+            'type' - `Return file type like 'd', 'b', or 's'.`
+            'mode_digits' - `Return file mode like '0644';`
+            'mode_alphas' - `Return file mode like 'rwxrwxr-x';`
+            'nlink' - `Return number of hard links.`
+            'uid' - `Return the user ID of owner.`
+            'gid' - `Return the group ID of owner.`
+            'rdev' - `Return the device ID if it is a special file.`
+            'size' - `Return total size in bytes.`
+            'blksize' - `Return block size for filesystem I/O.`
+            'blocks' - `Return number of 512B blocks allocated.`
+            'atime' - `Return time of last acces.`
+            'mtime' - `Return time of last modification.`
+            'ctime' - `Return time of last status change.`
+            'all' - `Return all above information.`
             'default' - 'type mode_digits uid gid size rdev ctime'
             >
         ]
@@ -8272,26 +8273,26 @@ $FS.stat(
 
 ```js
 {
-    dev_major: <ulongint: the major ID of device containing file>,
-    dev_minor: <ulongint: the minor ID of device containing file>,
-    inode: <ulongint: inode number>
-    type: <string: file type like 'd', 'b', 's', ...>,
-    mode_digits: <string: file mode like `0644`>,
-    mode_alphas: <string: file mode like `rwxrwxr-x`>,
-    nlink: <ulongint: number of hard links>,
-    uid: <ulongint: the user ID of owner>,
-    gid: <ulongint: the group ID of owner>,
-    rdev_major: <ulongint: the major device ID if it is a special file>,
-    rdev_minor: <ulongint: the minor device ID if it is a special file>,
-    size: <ulongint: total size in bytes>,
-    blksize: <ulongint: block size for filesystem I/O>,
-    blocks: <ulongint: Number of 512B blocks allocated>,
-    atime_sec: <ulongint: time of last acces (seconds since Epoch)>,
-    atime_nsec: <ulongint: time of last acces (nanoseconds since `atime_sec`)>,
-    mtime_sec: <ulongint: time of last modification (seconds since Epoch)>,
-    mtime_nsec: <ulongint: time of last modification (nanoseconds since `mtime_sec`)>,
-    ctime_sec: <ulongint: time of last status change (seconds since Epoch)>
-    ctime_nsec: <ulongint: time of last status change (nanoseconds since `ctime_sec`)>
+    dev_major: < ulongint: `The major ID of device containing file.` >,
+    dev_minor: < ulongint: `The minor ID of device containing file.` >,
+    inode: < ulongint: `The inode number.` >
+    type: < string: `The file type like 'd', 'b', 's', ...` >,
+    mode_digits: < string: `The file mode like '0644'` >,
+    mode_alphas: < string: `The file mode like 'rwxrwxr-x'` >,
+    nlink: < ulongint: `The number of hard links.` >,
+    uid: <ulongint: `The user ID of owner.` >,
+    gid: <ulongint: `The group ID of owner.` >,
+    rdev_major: <ulongint: `The major device ID if it is a special file.` >,
+    rdev_minor: <ulongint: `The minor device ID if it is a special file.` >,
+    size: <ulongint: `The total size in bytes.` >,
+    blksize: <ulongint: `The block size for filesystem I/O.` >,
+    blocks: <ulongint: `The number of 512B blocks allocated.` >,
+    atime_sec: <ulongint: `The time of last acces (seconds since Epoch).` >,
+    atime_nsec: <ulongint: `The time of last acces (nanoseconds since atime_sec).` >,
+    mtime_sec: <ulongint: `The time of last modification (seconds since Epoch).` >,
+    mtime_nsec: <ulongint: `The time of last modification (nanoseconds since mtime_sec).` >,
+    ctime_sec: <ulongint: `The time of last status change (seconds since Epoch).` >
+    ctime_nsec: <ulongint: `The time of last status change (nanoseconds since `time_sec).` >
 }
 ```
 
@@ -8309,8 +8310,8 @@ $FS.stat(
 
 ```js
 $FS.link(
-        < string $target: Target of the link. >,
-        < string $link: The link name. >
+        < string $target: `Target of the link.` >,
+        < string $link: `The link name.` >
 ) boolean
 ```
 
@@ -8332,8 +8333,8 @@ $FS.link(
 
 ```js
 $FS.tempname(
-        < string $directory: The directory where the temporary filename will be created. >
-        < string $prefix: The prefix of the generated temporary filename. >
+        < string $directory: `The directory where the temporary filename will be created.` >
+        < string $prefix: `The prefix of the generated temporary filename.` >
 ) string | false
 ```
 
@@ -8356,9 +8357,9 @@ $FS.tempname(
 
 ```js
 $FS.touch(
-        < string $filename: Path to the file. >
-        [, <real $mtime = 0: The modification time, if it is 0 or negative, use the current system time. >
-            [, <real $atime = 0: The access time, if it is 0 or negative, use `mtime`. > ]
+        < string $filename: `The path to the file.` >
+        [, <real $mtime = 0: `The modification time, if it is 0 or negative, use the current system time.` >
+            [, <real $atime = 0: `The access time, if it is 0 or negative, use `mtime`. > ]
         ]
 ) boolean
 ```
@@ -8381,7 +8382,7 @@ $FS.touch(
 
 ```js
 $FS.umask(
-        [ string $mask = '': The new umask. ]
+        [ string $mask = '': `The new umask.` ]
 ) string
 ```
 
@@ -8403,7 +8404,7 @@ $FS.umask(
 
 ```js
 $FS.unlink(
-        < string $filename: Path to the file. >
+        < string $filename: `Path to the file.` >
 ) boolean
 ```
 
@@ -8427,10 +8428,10 @@ $FS.unlink(
 $FS.file_contents(
         < string $filename: `Path to the file.` >
         < '[binary | string] || [strict | silent]' $flags:
-            'binary' - `reads the contents as a byte sequence.`
-            'string' - `reads the contents as a string in UTF-8.`
-            'strict' - `throw the `BadEncoding` exception for a bad encoded string.`
-            'silent' - `stops reading for any error and returns the read data.`
+            'binary' - `Read the contents as a byte sequence.`
+            'string' - `Read the contents as a string in UTF-8.`
+            'strict' - `Throw the `BadEncoding` exception for a bad encoded string.`
+            'silent' - `Stop reading for any error and return the read data.`
         >
         [, <longint $offset = 0: `The offset where the reading starts. Negative offsets count from the end of the file.` >
             [, <ulongint $length = 0: `Maximum length of data read. The default is to read until end of file is reached.` > ]
@@ -8443,8 +8444,8 @@ $FS.file_contents(!
         < string $filename: `Path to the file.` >
         < string | bsequenc $data: `The data to write, can be either a string or a byte sequence.`
         < 'append || lock': $flags:
-            'append' - `if file $filename already exists, append the data to the file instead of overwriting it.`
-            'lock' - `acquires an exclusive lock on the file while proceeding to the writing.`
+            'append' - `If file $filename already exists, append the data to the file instead of overwriting it.`
+            'lock' - `Acquire an exclusive lock on the file while proceeding to the writing.`
         >
 ) ulongint | false
 ```
@@ -8498,22 +8499,22 @@ $FS.opendir(
 ```js
 $dirStream.stat(
         < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
-            'dev' - `returns ID of device containing the file.`
-            'inode' - `returns inode number.`
-            'type' - `returns file type like 'd', 'b', or 's'.`
-            'mode_digits' - `returns file mode like '0644';`
-            'mode_alphas' - `returns file mode like 'rwxrwxr-x';`
-            'nlink' - `returns number of hard links.`
-            'uid' - `returns the user ID of owner.`
-            'gid' - `returns the group ID of owner.`
-            'rdev' - `returns the device ID if it is a special file.`
-            'size' - `returns total size in bytes.`
-            'blksize' - `returns block size for filesystem I/O.`
-            'blocks' - `returns number of 512B blocks allocated.`
-            'atime' - `returns time of last acces.`
-            'mtime' - `returns time of last modification.`
-            'ctime' - `returns time of last status change.`
-            'all' - `returns all above information.`
+            'dev' - `Return ID of device containing the file.`
+            'inode' - `Return inode number.`
+            'type' - `Return file type like 'd', 'b', or 's'.`
+            'mode_digits' - `Return file mode like '0644';`
+            'mode_alphas' - `Return file mode like 'rwxrwxr-x';`
+            'nlink' - `Return number of hard links.`
+            'uid' - `Return the user ID of owner.`
+            'gid' - `Return the group ID of owner.`
+            'rdev' - `Return the device ID if it is a special file.`
+            'size' - `Return total size in bytes.`
+            'blksize' - `Return block size for filesystem I/O.`
+            'blocks' - `Return number of 512B blocks allocated.`
+            'atime' - `Return time of last acces.`
+            'mtime' - `Return time of last modification.`
+            'ctime' - `Return time of last status change.`
+            'all' - `Return all above information.`
             'default' - 'name type mode_digits uid gid size rdev ctime'
         >
 ) object | false
@@ -8525,26 +8526,26 @@ $dirStream.stat(
 
 ```js
 {
-    dev_major: <ulongint: the major ID of device containing the directory entry>,
-    dev_minor: <ulongint: the minor ID of device containing the directory entry>,
-    inode: <ulongint: inode number>
-    type: <string: file type like 'd', 'b', 's', ...>,
-    mode_digits: <string: file mode like `0644`>,
-    mode_alphas: <string: file mode like `rwxrwxr-x`>,
-    nlink: <ulongint: number of hard links>,
-    uid: <ulongint: the user ID of owner>,
-    gid: <ulongint: the group ID of owner>,
-    rdev_major: <ulongint: the major device ID if it is a special file>,
-    rdev_minor: <ulongint: the minor device ID if it is a special file>,
-    size: <ulongint: total size in bytes>,
-    blksize: <ulongint: block size for filesystem I/O>,
-    blocks: <ulongint: Number of 512B blocks allocated>,
-    atime_sec: <ulongint: time of last acces (seconds since Epoch)>,
-    atime_nsec: <ulongint: time of last acces (nanoseconds since `atime_sec`)>,
-    mtime_sec: <ulongint: time of last modification (seconds since Epoch)>,
-    mtime_nsec: <ulongint: time of last modification (nanoseconds since `mtime_sec`)>,
-    ctime_sec: <ulongint: time of last status change (seconds since Epoch)>
-    ctime_nsec: <ulongint: time of last status change (nanoseconds since `ctime_sec`)>
+    dev_major: <ulongint: `The major ID of device containing the directory entry.` >,
+    dev_minor: <ulongint: `The minor ID of device containing the directory entry.` >,
+    inode: <ulongint: `The inode number.` >
+    type: <string: `The file type like 'd', 'b', 's', ...` >,
+    mode_digits: <string: `The file mode like '0644'.` >,
+    mode_alphas: <string: The file mode like 'rwxrwxr-x'.` >,
+    nlink: <ulongint: The number of hard links.` >,
+    uid: <ulongint: `The user ID of owner.` >,
+    gid: <ulongint: `The group ID of owner.` >,
+    rdev_major: <ulongint: `The major device ID if it is a special file.` >,
+    rdev_minor: <ulongint: `The minor device ID if it is a special file.` >,
+    size: <ulongint: `The total size in bytes.` >,
+    blksize: <ulongint: `The block size for filesystem I/O.` >,
+    blocks: <ulongint: `The number of 512B blocks allocated.` >,
+    atime_sec: <ulongint: `The time of last acces (seconds since Epoch).` >,
+    atime_nsec: <ulongint: `The time of last acces (nanoseconds since atime_sec).` >,
+    mtime_sec: <ulongint: `The time of last modification (seconds since Epoch).` >,
+    mtime_nsec: <ulongint: `The time of last modification (nanoseconds since mtime_sec.).` >,
+    ctime_sec: <ulongint: `The time of last status change (seconds since Epoch).` >
+    ctime_nsec: <ulongint: `The time of last status change (nanoseconds since ctime_sec).` >
 }
 ```
 
@@ -8725,11 +8726,11 @@ $FILE.bin.tail($file, -5)
 ```js
 $PY.impl object:
     `an object contains the following properties:`
-        - 'vendor':         < string: `the vendor name of this dynamic object, e.g., "HVML Community"` >
-        - 'author':         < string: `the author name of this dynamic object, e.g., "Vincent Wei"` >
-        - 'verName':        < string: `the version name of this dynamic object, e.g., "0.1.0"` >
-        - 'verCode':        < string: `the version code fo this dynmaic object, e.g., "0"` >
-        - 'license':        < string: `the license of this implementation fo this dynmaic objec, e.g., "LGPLv3+"` >
+        - 'vendor':         < string: `The vendor name of this dynamic object, e.g., "HVML Community"` >
+        - 'author':         < string: `The author name of this dynamic object, e.g., "Vincent Wei"` >
+        - 'verName':        < string: `The version name of this dynamic object, e.g., "0.1.0"` >
+        - 'verCode':        < string: `The version code fo this dynmaic object, e.g., "0"` >
+        - 'license':        < string: `The license of this implementation fo this dynmaic objec, e.g., "LGPLv3+"` >
 ```
 
 该属性返回描述当前 CPython 解释器相关信息的对象。
@@ -8762,10 +8763,10 @@ $PY.impl
 ```js
 $PY.info object:
     `an object contains the following properties:`
-        - 'version':        < string: `the version of this Python interpreter.` >
-        - 'platform':       < string: `the platform identifier for the current platform.` >
-        - 'copyright':      < string: `the official copyright string for the current Python version.` >
-        - 'compiler':       < string: `an indication of the compiler used to build the current Python version, in square brackets (e.g., [GCC 2.7.2.2])` >
+        - 'version':        < string: `The version of this Python interpreter.` >
+        - 'platform':       < string: `The platform identifier for the current platform.` >
+        - 'copyright':      < string: `The official copyright string for the current Python version.` >
+        - 'compiler':       < string: `An indication of the compiler used to build the current Python version, in square brackets (e.g., [GCC 2.7.2.2])` >
         - 'build-info':     < string: `information about the sequence number and build date and time of the current Python interpreter instance, e.g., "#67, Aug  1 1997, 22:34:28"` >
 ```
 
@@ -8798,20 +8799,20 @@ $PY.info
 
 ```js
 $PY.global()
-    object : `the global variables of the current __main__ module in the Python interpreter.`
+    object : `The global variables of the current __main__ module in the Python interpreter.`
 ```
 
 该属性获取器返回当前 Python 解释器 `__main__` 模块的全部全局变量及其值。注意，键名具有 `__` 前缀和 `__` 后缀的键值对将被忽略。
 
 ```js
-$PY.global(<string $name: `the global variable name`>) any | undefined
+$PY.global(<string $name: `The global variable name`>) any | undefined
 ```
 
 该属性获取器返回当前 Python 解释器 `__main__` 模块的指定全局变量的值。
 
 ```js
 $PY.global(!
-        <object $globals: `the object defined new global variables`>
+        <object $globals: `The object defined new global variables`>
 ) true | false
 ```
 
@@ -8819,8 +8820,8 @@ $PY.global(!
 
 ```js
 $PY.global(!
-        <string $name: `the global variable name`>,
-        <any $value: `the value`>
+        <string $name: `The global variable name`>,
+        <any $value: `The value`>
 ) true | false
 ```
 
@@ -8874,14 +8875,14 @@ $PY.global.x
 
 ```js
 $PY.local()
-    object : `the local variables used when executing $PY.run().`
+    object : `The local variables used when executing $PY.run().`
 ```
 
 该属性获取器返回当前的局部变量及其值。
 
 ```js
 $PY.local(
-        <string $name: `the local variable name`>
+        <string $name: `The local variable name`>
 ) any | undefined
 ```
 
@@ -8889,7 +8890,7 @@ $PY.local(
 
 ```js
 $PY.local(!
-        <object $local: `the object defined new local variables`>
+        <object $local: `The object defined new local variables`>
 ) true | false
 ```
 
@@ -8897,8 +8898,8 @@ $PY.local(!
 
 ```js
 $PY.local(!
-        <string $name: `the local variable name`>,
-        <any $value: `the value`>
+        <string $name: `The local variable name`>,
+        <any $value: `The value`>
 ) true | false
 ```
 
@@ -8943,7 +8944,7 @@ $PY.local('x')
 
 ```js
 $PY.except
-    null | string : `the last exception name reported by CPython.`
+    null | string : `The last exception name reported by CPython.`
 ```
 
 该方法返回 `$PY` 动态变量上的最后一个 Python 内部错误对应的异常名称，初始为 `null`，可用于进一步区别 Python 异常。
@@ -9033,15 +9034,15 @@ $PY.pythonize('Hello, World!').upper()()
 
 ```js
 $PY.run(
-    <string $cmd_mod_file: `an isolated expressions, a single statement, an arbitrarily long Python source code, a module name, or a file name`>
+    <string $cmd_mod_file: `An isolated expressions, a single statement, an arbitrarily long Python source code, a module name, or a file name`>
         [, < '[command | statement | source | module | file] || skip-first-line || dont-write-byte-code' $options = 'command':
-            - 'command': `evaluate an isolated expressions.`
-            - 'statement': `run a single statement.`
-            - 'source': `run an arbitrarily long Python source code.`
-            - 'module': `run a Python library module as a script.`
-            - 'file': `run a Python file as a script.`
-            - 'skip-first-line': `skip first line of source, allowing use of non-Unix forms of #!cmd.`
-            - 'dont-write-byte-code': `don't write .pyc files on import.`
+            - 'command': `Evaluate an isolated expressions.`
+            - 'statement': `Run a single statement.`
+            - 'source': `Run an arbitrarily long Python source code.`
+            - 'module': `Run a Python library module as a script.`
+            - 'file': `Run a Python file as a script.`
+            - 'skip-first-line': `Skip first line of source, allowing use of non-Unix forms of #!cmd.`
+            - 'dont-write-byte-code': `Don't write .pyc files on import.`
             >
         ]
 ) any | undefined
@@ -9081,9 +9082,9 @@ $PY.run('pow(2,3)')
 
 ```js
 $PY.import(
-    <string $name: `the Python module name`>
+    <string $name: `The Python module name`>
     [,
-        <array $fromlist = []: `the names of objects or submodules that should be imported from the module given by $name.`>
+        <array $fromlist = []: `The names of objects or submodules that should be imported from the module given by $name.`>
     ]
 ) true | false
 ```
@@ -9131,7 +9132,7 @@ $PY.power(2, 2)
 
 ```js
 $PY.stringify(
-    string $py_code: `a native entity with name prefix "pyObject::"`
+    string $py_code: `A native entity with name prefix "pyObject::"`
 ) string | false
 ```
 
@@ -9159,7 +9160,7 @@ $PY.stringify({{ $PY.import('math'); $PY.math.pi }})
 
 ```js
 $PY.compile(
-    string $py_code: `the Python code`
+    string $py_code: `The Python code`
 ) native/pyCodeObject | undefined
 ```
 
@@ -9188,7 +9189,7 @@ $PY.compile('c = 4 + 2')
 
 ```js
 $pyCodeObject.entity
-    native/pyObject::code : `the pyObject::code entity of this pyCodeObject.`
+    native/pyObject::code : `The pyObject::code entity of this pyCodeObject.`
 ```
 
 该属性获取器返回 `$pyCodeObject` 对应的 CPython 代码对象原生实体。
@@ -9212,14 +9213,14 @@ $pyCodeObject.entity
 
 ```js
 $pyCodeObject.local
-    object : `the local variables used when executing $pyCodeObject.eval().`
+    object : `The local variables used when executing $pyCodeObject.eval().`
 ```
 
 该属性获取器返回 `$pyCodeObject` 的局部变量及其值。
 
 ```js
 $pyCodeObject.local(
-        <string $name: `the local variable name`>
+        <string $name: `The local variable name`>
 ) any | undefined
 ```
 
@@ -9227,7 +9228,7 @@ $pyCodeObject.local(
 
 ```js
 $pyCodeObject.local(!
-        <object $local: `the object defined new local variables`>
+        <object $local: `The object defined new local variables`>
 ) true | false
 ```
 
@@ -9235,8 +9236,8 @@ $pyCodeObject.local(!
 
 ```js
 $pyCodeObject.local(!
-        <string $name: `the local variable name`>,
-        <any $value: `the value`>
+        <string $name: `The local variable name`>,
+        <any $value: `The value`>
 ) true | false
 ```
 
@@ -9282,9 +9283,9 @@ $pyCodeObject.local('x')
 ```js
 $pyCodeObject.eval(
     [
-        <object $globals = null: `the global variables defined by an object`>,
+        <object $globals = null: `The global variables defined by an object`>,
         [
-            <object $locals = null : `the local variables defined by an object`>
+            <object $locals = null : `The local variables defined by an object`>
         ],
     ]
 ) any
@@ -9334,54 +9335,54 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 
 | SQLite 类型 | SQLite C/C++ API macro  | 变体类型  |
 | --------    |  -------------------    | --------- |
-| NULL        |   SQLITE_NULL           | null      |
-| INTEGER     |   SQLITE_INTEGER        | longint   |
-| REAL        |   SQLITE_FLOAT          | number    |
-| TEXT        |   SQLITE3_TEXT          | string    |
-| BLOB        |   SQLITE_BLOB           | bsequence |
+| `NULL`        |   `SQLITE_NULL`           | `null`      |
+| `INTEGER`     |   `SQLITE_INTEGER`        | `longint`   |
+| `REAL`        |   `SQLITE_FLOAT`          | `number`    |
+| `TEXT`        |   `SQLITE3_TEXT`          | `string`    |
+| `BLOB`        |   `SQLITE_BLOB`           | `bsequence` |
 
 使用 fetchone/fetchmany/fetchall 获取数据时可以使用亲合类型（Affinity）关健字指定结果的数据类型，下表是亲合类型与变体类型的对应关系：
 
 |     亲合类型            | 变体类型  |  描述 |
 |     --------            | --------- | :--   |
-| int                     | longint   | int : 4 字节 |
-| int2                    | longint   | int2: 2 字节 |
-| int4                    | longint   | int4: 4 字节 |
-| int8                    | longint   | int8: 8 字节 |
-| integer                 | longint   | integer: 4 字节 |
-| tinyint                 | longint   | tinyint : 1 字节 |
-| smallint                | longint   | smallint: 2 字节 |
-| mediumint               | longint   | mediumint: 3 字节 |
-| bigint                  | longint   | bitint: 8 字节 |
-| unsigned int            | ulongint  | |
-| unsigned int2           | ulongint  | |
-| unsigned int4           | ulongint  | |
-| unsigned int8           | ulongint  | |
-| unsigned integer        | ulongint  | |
-| unsigned tinyint        | ulongint  | |
-| unsigned smallint       | ulongint  | |
-| unsigned mediumint      | ulongint  | |
-| unsigned bigint         | ulongint  | |
-| character               | string    | |
-| varchar                 | string    | |
-| varying character       | string    | |
-| nchar                   | string    | |
-| native character        | string    | |
-| nvarchar                | string    | |
-| text                    | string    | |
-| clob                    | string    | |
-| blob                    | bsequence | |
-| binary                  | bsequence | |
-| real                    | number    | |
-| double                  | number    | |
-| double precision        | number    | |
-| float                   | number    | |
-| numeric                 | number    | |
-| decimal                 | number    | |
-| boolean                 | boolean   | |
-| bit                     | boolean   | |
-| date                    | string    | 以 YYYY-MM-DD 返回 |
-| datetime                | string    | 以 YYYY-MM-DD HH:MM:SS 返回 |
+| `int`                     | `longint`   | int: 4 字节 |
+| `int2`                    | `longint`   | int2: 2 字节 |
+| `int4`                    | `longint`   | int4: 4 字节 |
+| `int8`                    | `longint`   | int8: 8 字节 |
+| `integer`                 | `longint`   | integer: 4 字节 |
+| `tinyint`                 | `longint`   | tinyint : 1 字节 |
+| `smallint`                | `longint`   | smallint: 2 字节 |
+| `mediumint`               | `longint`   | mediumint: 3 字节 |
+| `bigint`                  | `longint`   | bitint: 8 字节 |
+| `unsigned int`            | `ulongint`  | |
+| `unsigned int2`           | `ulongint`  | |
+| `unsigned int4`           | `ulongint`  | |
+| `unsigned int8`           | `ulongint`  | |
+| `unsigned integer`        | `ulongint`  | |
+| `unsigned tinyint`        | `ulongint`  | |
+| `unsigned smallint`       | `ulongint`  | |
+| `unsigned mediumint`      | `ulongint`  | |
+| `unsigned bigint`         | `ulongint`  | |
+| `character`               | `string`    | |
+| `varchar`                 | `string`    | |
+| `varying character `      | `string`    | |
+| `nchar`                   | `string`    | |
+| `native character `       | `string`    | |
+| `nvarchar`                | `string`    | |
+| `text`                    | `string`    | |
+| `clob`                    | `string`    | |
+| `blob`                    | `bsequence` | |
+| `binary`                  | `bsequence` | |
+| `real`                    | `number`    | |
+| `double`                  | `number`    | |
+| `double precision`        | `number`    | |
+| `float`                   | `number`    | |
+| `numeric`                 | `number`    | |
+| `decimal`                 | `number`    | |
+| `boolean`                 | `boolean`   | |
+| `bit`                     | `boolean`   | |
+| `date`                    | `string`    | 以 YYYY-MM-DD 返回 |
+| `datetime`                | `string`    | 以 YYYY-MM-DD HH:MM:SS 返回 |
 
 #### 4.5.1) `impl` 属性
 
@@ -9391,12 +9392,12 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 
 ```js
 $SQLITE.impl object:
-    `an object contains the following properties:`
-        - 'vendor':         < string: `the vendor name of this dynamic object, e.g., "HVML Community"` >
-        - 'author':         < string: `the author name of this dynamic object, e.g., "Vincent Wei"` >
-        - 'verName':        < string: `the version name of this dynamic object, e.g., "0.1.0"` >
-        - 'verCode':        < string: `the version code fo this dynmaic object, e.g., "0"` >
-        - 'license':        < string: `the license of this implementation fo this dynmaic objec, e.g., "LGPLv3+"` >
+    `An object contains the following properties:`
+        - 'vendor':         < string: `The vendor name of this dynamic object, e.g., "HVML Community"` >
+        - 'author':         < string: `The author name of this dynamic object, e.g., "Vincent Wei"` >
+        - 'verName':        < string: `The version name of this dynamic object, e.g., "0.1.0"` >
+        - 'verCode':        < string: `The version code fo this dynmaic object, e.g., "0"` >
+        - 'license':        < string: `The license of this implementation fo this dynmaic objec, e.g., "LGPLv3+"` >
 ```
 
 该属性返回描述当前 SQLite 相关信息的对象。
@@ -9409,15 +9410,13 @@ $SQLITE.impl object:
 
 ```js
 $SQLITE.impl
-    /* object:
-       {
+    // object: {
             'vendor':       'HVML Community',
             'author':       'Vincent Wei',
             'verName':      '0.1.0',
             'verCode':      '0',
             'license':      'LGPLv3+',
        }
-    */
 ```
 
 #### 4.5.2) `info` 属性
@@ -9428,9 +9427,9 @@ $SQLITE.impl
 
 ```js
 $SQLITE.info object:
-    `an object contains the following properties:`
-        - 'version':        < string: `the version of this sqlite library.` >
-        - 'platform':       < string: `the platform identifier for the current platform.` >
+    `An object contains the following properties:`
+        - 'version':        < string: `The version of this sqlite library.` >
+        - 'platform':       < string: `The platform identifier for the current platform.` >
         - 'build-info':     < string: `information about the sequence number and build date and time of the current sqlite library, e.g., "#67, Aug  1 1997, 22:34:28"` >
 ```
 
@@ -9444,13 +9443,11 @@ $SQLITE.info object:
 
 ```js
 $SQLITE.info
-    /* object:
-       {
+    // object: {
             'version':      '3.10.9',
             'platform':     'Linux',
             'build-info':   '2022-01-06 13:25:41 872ba256cbf61d9290b571c0e6d82a20c224ca3ad82971edc46b29818d5dalt1',
        }
-    */
 ```
 
 
@@ -9462,7 +9459,7 @@ $SQLITE.info
 
 ```js
 $SQLITE.connect(
-    string $dbname: `the database name.`
+    string $dbname: `The database name.`
 ) native/SQLiteConnect | undefined
 ```
 
@@ -9600,8 +9597,8 @@ $sqliteConn.close()
 
 ```js
 $sqliteConn.execute(
-        < string $sql: `the sql.` >
-        [, <array $parameters: the sql parameters> ]
+        < string $sql: `The sql.` >
+        [, <array $parameters: `The sql parameters> ]
 ) SQLiteCursor | undefined
 ```
 
@@ -9627,8 +9624,8 @@ $sqliteConn.execute('select * from users')
 
 ```js
 $sqliteConn.executemany(
-        <string $sql: `the sql.` >,
-        <array $parameters: the sql parameters>
+        <string $sql: `The sql.` >,
+        <array $parameters: `The sql parameters>
 ) SQLiteCursor | undefined
 ```
 
@@ -9660,8 +9657,8 @@ SQLiteCursor 对象表示数据库游标，用于执行 SQL 语句并管理获�
 
 ```js
 $sqliteCursor.execute(
-        < string $sql: `the sql.` >
-        [, <array $parameters: the sql parameters> ]
+        < string $sql: `The sql.` >
+        [, <array $parameters: `The sql parameters> ]
 )
 ```
 
@@ -9687,8 +9684,8 @@ $sqliteCursor.execute('select * from users')
 
 ```js
 $sqliteCursor.executemany(
-        <string $sql: `the sql.` >,
-        <array $parameters: the sql parameters>
+        < string $sql: `The SQL.` >,
+        < array $parameters: `The SQL parameters.` >
 )
 ```
 
@@ -9735,7 +9732,7 @@ $sqliteCursor.fetchone(
 `tuple` ： 以元组的形式返回结果，元组中的每个成员都是一个字段的值。
 `object` ： 以对象的形式返回结果，每个键值对表示一个字段的数据（字段名:字段值）。
 
-当 $result_type 为 `object` 时，我们通过参数 $name_mapping 为结果设置键名的映射，通过参数 $type_conversion 指定类型转换。
+当 `$result_type` 为 `object` 时，我们通过参数 `$name_mapping` 为结果设置键名的映射，通过参数 `$type_conversion` 指定类型转换。
 
 该方法可能产生的异常：
 
@@ -9767,11 +9764,11 @@ $sqliteCursor.fetchone('object', null, {'age':'unsigned int'} )
 
 ```js
 $sqliteCursor.fetchmany(
-    < ulongint $size: `the number of rows to fetch.` >
+    < ulongint $size: `The number of rows to fetch.` >
     [,
         <'tuple | object' $result_row_type = 'tuple':
-            - 'tuple':   `Return row data as a tuple`
-            - 'object':  `Return row data as a object`
+            - 'tuple':   `Return row data as a tuple.`
+            - 'object':  `Return row data as a object.`
         >
         [, <object $name_mapping: `The column name mapping. Only valid when $result_type is 'object'.`
             [, <object $type_conversion: `The column type conversion. Only valid when $result_type is 'object'.`
@@ -9790,7 +9787,7 @@ $sqliteCursor.fetchmany(
 `tuple` ： 以元组的形式返回结果，元组中的每个成员都是一个字段的值。
 `object` ： 以对象的形式返回结果，每个键值对表示一个字段的数据（字段名:字段值）。
 
-当 $result_row_type 为 `object` 时，我们通过参数 $name_mapping 为结果设置键名的映射，通过参数 $type_conversion 指定类型转换。
+当 `$result_row_type` 为 `object` 时，我们通过参数 `$name_mapping` 为结果设置键名的映射，通过参数 `$type_conversion` 指定类型转换。
 
 该方法可能产生的异常：
 
@@ -9842,7 +9839,7 @@ $sqliteCursor.fetchall(
 `tuple` ： 以元组的形式返回结果，元组中的每个成员都是一个字段的值。
 `object` ： 以对象的形式返回结果，每个键值对表示一个字段的数据（字段名:字段值）。
 
-当 $result_row_type 为 `object` 时，我们通过参数 $name_mapping 为结果设置键名的映射，通过参数 $type_conversion 指定类型转换。
+当 `$result_row_type` 为 `object` 时，我们通过参数 `$name_mapping` 为结果设置键名的映射，通过参数 `$type_conversion` 指定类型转换。
 
 该方法可能产生的异常：
 
@@ -9899,7 +9896,7 @@ $sqliteCursor.close()
 $sqliteCursor.rowcount longint:
 ```
 
-通过该属性获取INSERT、UPDATE、DELETE 和 REPLACE 语句修改的行数(其它语句为 -1)，仅在语句运行完成后由 execute() 和executemany() 方法更新。
+通过该属性获取 `INSERT`、`UPDATE`、`DELETE` 和 `REPLACE` 语句修改的行数(其它语句为 `-1`)，仅在语句运行完成后由 `execute()` 和 `executemany()` 方法更新。
 
 **异常**
 
@@ -9988,8 +9985,7 @@ $sqliteCursor.connection SQLiteConnect:
 
 ```js
 $sqliteCursor.connection
-    /* SQLiteConnect
-    */
+    // SQLiteConnect
 ```
 
 ## 附录
