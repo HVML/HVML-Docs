@@ -860,7 +860,7 @@ $SYS.spawn(
         <array | tuple | null $inherit_fds: `The file descriptors to be marked for inheritance into the new process image.`>
         <array | tuple | null $argv: `The arguments to pass to the program.`>
         [, <object $env: `The environment keeps for child process.`>
-            [, <object $options: `other options for before or after spawning.`>
+            [, <object $options: `Other options for before or after spawning.`>
             ]
         ]
 ) true | false
@@ -2990,9 +2990,9 @@ $DATA.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
 $DATA.md5(
         < any $data >
         < 'binary | uppercase | lowercase' $type = 'binary': `The type of return data:`
-            'binary'    - `the MD5 digest is returned as a binary sequence (totally 16 bytes).`
-            'uppercase' - `the MD5 digest is returned as a 32-character hexadecimal number in uppercase letters.`
-            'lowercase' - `the MD5 digest is returned as a 32-character hexadecimal number in lowercase letters.`
+            'binary'    - `The MD5 digest is returned as a binary sequence (totally 16 bytes).`
+            'uppercase' - `The MD5 digest is returned as a 32-character hexadecimal number in uppercase letters.`
+            'lowercase' - `The MD5 digest is returned as a 32-character hexadecimal number in lowercase letters.`
         >
 ) string | bsequence
 ```
@@ -3015,9 +3015,9 @@ $DATA.md5(
 $DATA.sha1(
         < any $data >
         < 'binary | uppercase | lowercase' $type = 'binary': `The type of return data:`
-            'binary'    - `the MD5 digest is returned as a binary sequence (totally 20 bytes).`
-            'uppercase' - `the MD5 digest is returned as a 40-character hexadecimal number in uppercase letters.`
-            'lowercase' - `the MD5 digest is returned as a 40-character hexadecimal number in lowercase letters.`
+            'binary'    - `The MD5 digest is returned as a binary sequence (totally 20 bytes).`
+            'uppercase' - `The MD5 digest is returned as a 40-character hexadecimal number in uppercase letters.`
+            'lowercase' - `The MD5 digest is returned as a 40-character hexadecimal number in lowercase letters.`
         >
 ) string | bsequence
 ```
@@ -4216,8 +4216,8 @@ $STR.contains(
         <string $haystack: `The string to search in.` >,
         <string $needle: `The substring to search for in the haystack.` >
         [, < boolean $case_insensitivity = false:
-            false - `performs a case-sensitive check;`
-            true - `performs a case-insensitive check.` >
+            - false:  `Perform a case-sensitive check;`
+            - true:   `Perform a case-insensitive check.` >
         ]
 ) boolean
 ```
@@ -4267,8 +4267,8 @@ $STR.starts_with(
         <string $haystack: `The string to search in.`>,
         <string $needle: `The substring to search for in the haystack.`>
         [, <boolean $case_insensitivity = false:
-            false - `performs a case-sensitive check;`
-            true - `performs a case-insensitive check.`>
+            - false:  `Perform a case-sensitive check;`
+            - true:   `Perform a case-insensitive check.`>
         ]
 ) boolean
 ```
@@ -4316,8 +4316,8 @@ $STR.ends_with(
         <string $haystack: `The string to search in.`>,
         <string $needle: `The substring to search for in the haystack.`>
         [, <boolean $case_insensitivity = false:
-            false - `performs a case-sensitive check;`
-            true - `performs a case-insensitive check.`>
+            - false:    `Perform a case-sensitive check;`
+            - true:     `Perform a case-insensitive check.`>
         ]
 ) boolean
 ```
@@ -4514,8 +4514,8 @@ $STR.replace(
         <string | array $replace>,
         <array | string $subject>
         [, <boolean $case_insensitivity = false:
-            false - `performs case-sensitive replacements;`
-            true - `performs case-insensitive replacements.`>
+            - false:  `Perform case-sensitive replacements;`
+            - true:   `Perform case-insensitive replacements.`>
         ]
 ) string | array
 ```
@@ -4940,8 +4940,8 @@ $STR.substr_compare(
     <real $offset2>,
     [, <real $length = 0>
         [, <boolean $case_insensitivity = false:
-            false - `performs a case-sensitive comparison;`
-            true - `performs a case-insensitive comparison.`>
+            false -  `Perform a case-sensitive comparison;`
+            true -  `Perform a case-insensitive comparison.`>
         ]
     ]
 ) number
@@ -5023,8 +5023,8 @@ $STR.strstr(
         <string $needle>
         [, <bool $before_needle = false>
             [, <bool $case_insensitivity = false:
-                false - `performs a case-sensitive check;`
-                true - `performs a case-insensitive check.`>
+                false -  `Perform a case-sensitive check;`
+                true -  `Perform a case-insensitive check.`>
             ]
         ]
 )  string | false
@@ -5053,8 +5053,8 @@ $STR.strpos(
         <string $needle>
         [, <real $offset = 0>
             [, <bool $case_insensitivity = false:
-                false - `performs a case-sensitive check;`
-                true - `performs a case-insensitive check.`>
+                false -  `Perform a case-sensitive check;`
+                true -  `Perform a case-insensitive check.`>
             ]
         ]
 ) ulongint | false
@@ -5082,8 +5082,8 @@ $STR.strpbrk(
         <string $string>,
         <string $characters>
         [, <bool $case_insensitivity = false:
-            false - `performs a case-sensitive check;`
-            true - `performs a case-insensitive check.`>
+            - false:     `Perform a case-sensitive check;`
+            - true:      `Perform a case-insensitive check.`>
         ]
 ) string | false
 ```
@@ -5309,23 +5309,23 @@ $STR.translate(
 $STR.htmlentities_encode(
         <string $string: `The input string.`>,
         <'[compat | quotes | noquotes] || [ignore | substitute | disallowed] || [html401 | xml1 | xhtml | html5]' $flags:
-            'compat'    - `Will convert double-quotes and leave single-quotes alone.`
-            'quotes'    - `Will convert both double and single quotes.`
-            'noquotes'  - `Will leave both double and single quotes unconverted.`
-            'ignore'    - `Silently discard invalid code unit sequences instead of returning an empty string. Using this flag is discouraged.`
-            'substitute' - `Replace invalid code unit sequences with a Unicode Replacement Character U+FFFD or &#FFFD.`
-            'disallowed' - `Replace invalid code points for the given document type with a Unicode Replacement Character U+FFFD or &#FFFD.`
-            'html401'   - `Handle code as HTML 4.01.`
-            'xml1'      - `Handle code as XML 1.`
-            'xhtml'     - `Handle code as XHTML.`
-            'html5'     - `Handle code as HTML 5.`
+            - 'compat':     `Will convert double-quotes and leave single-quotes alone.`
+            - 'quotes':     `Will convert both double and single quotes.`
+            - 'noquotes':   `Will leave both double and single quotes unconverted.`
+            - 'ignore':     `Silently discard invalid code unit sequences instead of returning an empty string. Using this flag is discouraged.`
+            - 'substitute': `Replace invalid code unit sequences with a Unicode Replacement Character U+FFFD or &#FFFD.`
+            - 'disallowed': `Replace invalid code points for the given document type with a Unicode Replacement Character U+FFFD or &#FFFD.`
+            - 'html401':    `Handle code as HTML 4.01.`
+            - 'xml1':       `Handle code as XML 1.`
+            - 'xhtml':      `Handle code as XHTML.`
+            - 'html5':      `Handle code as HTML 5.`
         >
         [, <boolean $all = false:
-            false- `only the certain characters have special significance in HTML are translated into these entities.`
-            true - `all characters which have HTML character entity equivalents are translated into these entities.`>
+                - false:    `Only the certain characters have special significance in HTML are translated into these entities.`
+                - true:     `All characters which have HTML character entity equivalents are translated into these entities.`>
             [, <boolean $double_encode = true:
-                true - `will convert everything.`
-                false - `will not encode existing html entities.`>
+                - true:     `Convert everything.`
+                - false:    `Do not encode existing HTML entities.`>
             ]
         ]
 ) string
@@ -5352,17 +5352,17 @@ $STR.htmlentities_encode(
 $STR.htmlentities_decode(
         <string $string: `The input string.`>,
         <'[compat | quotes | noquotes] || substitute || [html401 | xml1 | xhtml | html5]' $flags:
-            'compat'    - `Will convert double-quotes and leave single-quotes alone.`
-            'quotes'    - `Will convert both double and single quotes.`
-            'noquotes'  - `Will leave both double and single quotes unconverted.`
-            'substitute' - `Replace invalid code unit sequences with a Unicode Replacement Character U+FFFD or &#FFFD.`
-            'html401'   - `Handle code as HTML 4.01.`
-            'xml1'      - `Handle code as XML 1.`
-            'xhtml'     - `Handle code as XHTML.`
-            'html5'     - `Handle code as HTML 5.` >
+            - 'compat':     `Will convert double-quotes and leave single-quotes alone.`
+            - 'quotes':     `Will convert both double and single quotes.`
+            - 'noquotes':   `Will leave both double and single quotes unconverted.`
+            - 'substitute': `Replace invalid code unit sequences with a Unicode Replacement Character U+FFFD or &#FFFD.`
+            - 'html401':    `Handle code as HTML 4.01.`
+            - 'xml1':       `Handle code as XML 1.`
+            - 'xhtml':      `Handle code as XHTML.`
+            - 'html5':      `Handle code as HTML 5.` >
         [, <boolean $all = false:
-            false- `only the certain characters have special significance in HTML are translated into these entities.`
-            true - `all characters which have HTML character entity equivalents are translated into these entities.` >
+            - false:        `Only the certain characters have special significance in HTML are translated into these entities.`
+            - true:         `All characters which have HTML character entity equivalents are translated into these entities.` >
         ]
 ) string | bsequence
 ```
@@ -5388,12 +5388,12 @@ $STR.htmlentities_decode(
 $STR.nl2br(
         < string $string: `The input string.` >
         [, < boolean $is_xhtml = true:
-            true - `use '<br />'.`
-            false - `use '<br>'.`
+            - true: `Use '<br />'.`
+            - false: `Use '<br>'.`
         ]
         [, < boolean $lowercases = true:
-            true - `use 'br'.`
-            false - `use 'BR'.`
+            - true: `Use 'br'.`
+            - false: `Use 'BR'.`
         ]
 ) object | bsequence
 ```
@@ -5420,8 +5420,6 @@ $STR.rot13(
 ) string
 ```
 
-
-
 **参数**
 
 **返回值**
@@ -5443,8 +5441,8 @@ $STR.count_chars(
         < string $string: `The examined string.` >
         [,
             < 'object | string' $mode = 'object':
-               - 'object' - `Return an object with the character as key and the frequency of every character as value.`
-               - 'string' - `Return a string containing all unique characters. `
+               - 'object': `Return an object with the character as key and the frequency of every character as value.`
+               - 'string': `Return a string containing all unique characters. `
             >
         ]
 ) object | string
@@ -5470,12 +5468,12 @@ $STR.count_chars(
 $STR.count_bytes(
         < string | bsequence $data: `The examined data.` >
         [, < 'tuple-all | object-all | object-appeared | object-not-appeared | bytes-appeared | bytes-not-appeared' $mode = 'tuple-all':
-            'tuple-all' - `Return a tuple with the byte-value (0 ~ 255) as index and the frequency of every byte as value.`
-            'object-all' - `Return an object with the byte-value (decimal string) as key and the frequency of every byte as value.`
-            'object-appeared' - `same as 'object-all' but  only byte-values with a frequency greater than zero are listed.`
-            'object-not-appeared' - `same as 'object-all' but only byte-values with a frequency equal to zero are listed.`
-            'bytes-appeared' - `a binary sequence containing all unique bytes is returned.`
-            'bytes-not-appeared' - `a binary sequence containing all not used bytes is returned.`
+            - 'tuple-all':  `Return a tuple with the byte-value (0 ~ 255) as index and the frequency of every byte as value.`
+            - 'object-all': `Return an object with the byte-value (decimal string) as key and the frequency of every byte as value.`
+            - 'object-appeared': `Same as 'object-all' but  only byte-values with a frequency greater than zero are listed.`
+            - 'object-not-appeared': `Same as 'object-all' but only byte-values with a frequency equal to zero are listed.`
+            - 'bytes-appeared': `A binary sequence containing all unique bytes is returned.`
+            - 'bytes-not-appeared': `A binary sequence containing all not used bytes is returned.`
             >
         ]
 ) tuple | object | bsequence
@@ -5501,8 +5499,8 @@ $STR.count_bytes(
 $STR.codepoints(
         < string $the_string: `The string. >
         [, < 'array | tuple' $return_type = 'array':
-            - 'array' - `Return an array of codepoints.`
-            - 'tuple' - `Return a tuple of codepoints.`
+            - 'array': `Return an array of codepoints.`
+            - 'tuple': `Return a tuple of codepoints.`
             >
         ]
 ) array | tuple: `The array or tuple contains all Unicode codepoints of the string.`
@@ -5686,11 +5684,11 @@ $URL.parse_query(
         [, <'[array | object] || [string | binary | auto] || [rfc1738 | rfc3986]' $opts = 'object auto rfc1738':
           - 'array':    `construct an array with the query string; this will ignore the argument names in the query string.`
           - 'object':   `construct an object with the query string.`
-          - 'auto':     `the argument values will be decoded as strings first; if failed, decoded into binary sequences.`
-          - 'binary':   `the argument values will be decoded as binary sequences.`
-          - 'string':   `the argument values will be decoded as strings.` >
-          - 'rfc1738':  `the query string is encoded per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
-          - 'rfc3986':  `the query string is encoded according to RFC 3986, and spaces will be percent encoded (%20).`
+          - 'auto':     `The argument values will be decoded as strings first; if failed, decoded into binary sequences.`
+          - 'binary':   `The argument values will be decoded as binary sequences.`
+          - 'string':   `The argument values will be decoded as strings.` >
+          - 'rfc1738':  `The query string is encoded per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
+          - 'rfc3986':  `The query string is encoded according to RFC 3986, and spaces will be percent encoded (%20).`
         ]
     ]
 ) object
