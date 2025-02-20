@@ -5385,7 +5385,7 @@ $STR.htmlentities_decode(
 
 ```js
 $STR.nl2br(
-        < string $string: the input string. >
+        < string $string: `The input string.` >
         [, < boolean $is_xhtml = true:
             true - `use '<br />'.`
             false - `use '<br>'.`
@@ -5396,8 +5396,6 @@ $STR.nl2br(
         ]
 ) object | bsequence
 ```
-
-
 
 **参数**
 
@@ -5441,7 +5439,7 @@ $STR.rot13(
 
 ```js
 $STR.count_chars(
-        < string $string: the examined string. >
+        < string $string: `the examined string.` >
         [,
             < 'object | string' $mode = 'object':
                - 'object' - `returns an object with the character as key and the frequency of every character as value.`
@@ -5469,7 +5467,7 @@ $STR.count_chars(
 
 ```js
 $STR.count_bytes(
-        < string | bsequence $data: the examined data. >
+        < string | bsequence $data: `the examined data.` >
         [, < 'tuple-all | object-all | object-appeared | object-not-appeared | bytes-appeared | bytes-not-appeared' $mode = 'tuple-all':
             'tuple-all' - `returns a tuple with the byte-value (0 ~ 255) as index and the frequency of every byte as value.`
             'object-all' - `returns an object with the byte-value (decimal string) as key and the frequency of every byte as value.`
@@ -5539,10 +5537,10 @@ $STR.codepoints('HVML的昵称是呼噜猫', 'tuple')
 
 ```js
 $URL.encode(
-        <string |bsequence $data: the string or the byte sequence to be encoded.>
+        <string |bsequence $data: `The string or the byte sequence to be encoded.` >
         [, <'rfc1738 | rfc3986' $enc_type = 'rfc1738':
-          - 'rfc1738': encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.
-          - 'rfc3986': encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).
+          - 'rfc1738': `Encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
+          - 'rfc3986': `Encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).`
         ]
 ) string
 ```
