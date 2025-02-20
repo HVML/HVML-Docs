@@ -5867,7 +5867,7 @@ $STREAM.from(
 1. 流的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用 `$STREAM.close` 方法释放流实体占用的系统资源。
 2. 当使用 `websocket` 协议扩展时，可指定如下额外选项：
 
-```json
+```js
 {
     "server": true,                     /* 扮演服务器还是客户端。 */
 
@@ -6502,7 +6502,7 @@ du -BM hvml-spec-v1.0-zh.md
 
 当使用 `websocket` 协议扩展时，可指定如下额外选项：
 
-```json
+```js
 {
     "request-path": "...",              /* GET 方法对应的请求路径。*/
     "connection": "...",                /* 连接名称。*/
@@ -6954,7 +6954,7 @@ $dgramSocket.close()
 
 当使用 `websocket` 协议扩展时，可指定如下额外选项：
 
-```json
+```js
 {
     "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
 
