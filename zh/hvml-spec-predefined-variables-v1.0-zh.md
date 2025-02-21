@@ -997,7 +997,7 @@ $SYS.sockopt(!
 **示例**
 
 ```js
-# 设置套接字流的超时时间为 1 秒。
+// 设置套接字流的超时时间为 1 秒。
 $SYS.sockopt($stream.fd, 'recv-timeout', 1.0)
     // true
 ```
@@ -8468,7 +8468,7 @@ $FS.file_contents(!
 
 ```js
 $FS.opendir(
-        < string $pathname: Path to the directory. >
+        < string $pathname: `Path to the directory.` >
 ) native/dirStream | false
 ```
 
@@ -8498,23 +8498,23 @@ $FS.opendir(
 ```js
 $dirStream.stat(
         < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
-            'dev' - `Return ID of device containing the file.`
-            'inode' - `Return inode number.`
-            'type' - `Return file type like 'd', 'b', or 's'.`
-            'mode_digits' - `Return file mode like '0644';`
-            'mode_alphas' - `Return file mode like 'rwxrwxr-x';`
-            'nlink' - `Return number of hard links.`
-            'uid' - `Return the user ID of owner.`
-            'gid' - `Return the group ID of owner.`
-            'rdev' - `Return the device ID if it is a special file.`
-            'size' - `Return total size in bytes.`
-            'blksize' - `Return block size for filesystem I/O.`
-            'blocks' - `Return number of 512B blocks allocated.`
-            'atime' - `Return time of last acces.`
-            'mtime' - `Return time of last modification.`
-            'ctime' - `Return time of last status change.`
-            'all' - `Return all above information.`
-            'default' - 'name type mode_digits uid gid size rdev ctime'
+            - 'dev':            `Return ID of device containing the file.`
+            - 'inode':          `Return inode number.`
+            - 'type':           `Return file type like 'd', 'b', or 's'.`
+            - 'mode_digits':    `Return file mode like '0644';`
+            - 'mode_alphas':    `Return file mode like 'rwxrwxr-x';`
+            - 'nlink':          `Return number of hard links.`
+            - 'uid':            `Return the user ID of owner.`
+            - 'gid':            `Return the group ID of owner.`
+            - 'rdev':           `Return the device ID if it is a special file.`
+            - 'size':           `Return total size in bytes.`
+            - 'blksize':        `Return block size for filesystem I/O.`
+            - 'blocks':         `Return number of 512B blocks allocated.`
+            - 'atime':          `Return time of last acces.`
+            - 'mtime':          `Return time of last modification.`
+            - 'ctime':          `Return time of last status change.`
+            - 'all':            `Return all above information.`
+            - 'default':        `The equivalent to 'name type mode_digits uid gid size rdev ctime'.`
         >
 ) object | false
 ```
@@ -8525,26 +8525,26 @@ $dirStream.stat(
 
 ```js
 {
-    dev_major: <ulongint: `The major ID of device containing the directory entry.` >,
-    dev_minor: <ulongint: `The minor ID of device containing the directory entry.` >,
-    inode: <ulongint: `The inode number.` >
-    type: <string: `The file type like 'd', 'b', 's', ...` >,
-    mode_digits: <string: `The file mode like '0644'.` >,
-    mode_alphas: <string: The file mode like 'rwxrwxr-x'.` >,
-    nlink: <ulongint: The number of hard links.` >,
-    uid: <ulongint: `The user ID of owner.` >,
-    gid: <ulongint: `The group ID of owner.` >,
-    rdev_major: <ulongint: `The major device ID if it is a special file.` >,
-    rdev_minor: <ulongint: `The minor device ID if it is a special file.` >,
-    size: <ulongint: `The total size in bytes.` >,
-    blksize: <ulongint: `The block size for filesystem I/O.` >,
-    blocks: <ulongint: `The number of 512B blocks allocated.` >,
-    atime_sec: <ulongint: `The time of last acces (seconds since Epoch).` >,
-    atime_nsec: <ulongint: `The time of last acces (nanoseconds since atime_sec).` >,
-    mtime_sec: <ulongint: `The time of last modification (seconds since Epoch).` >,
-    mtime_nsec: <ulongint: `The time of last modification (nanoseconds since mtime_sec.).` >,
-    ctime_sec: <ulongint: `The time of last status change (seconds since Epoch).` >
-    ctime_nsec: <ulongint: `The time of last status change (nanoseconds since ctime_sec).` >
+    dev_major:      <ulongint: `The major ID of device containing the directory entry.` >,
+    dev_minor:      <ulongint: `The minor ID of device containing the directory entry.` >,
+    inode:          <ulongint: `The inode number.` >
+    type:           <string: `The file type like 'd', 'b', 's', ...` >,
+    mode_digits:    <string: `The file mode like '0644'.` >,
+    mode_alphas:    <string: The file mode like 'rwxrwxr-x'.` >,
+    nlink:          <ulongint: The number of hard links.` >,
+    uid:            <ulongint: `The user ID of owner.` >,
+    gid:            <ulongint: `The group ID of owner.` >,
+    rdev_major:     <ulongint: `The major device ID if it is a special file.` >,
+    rdev_minor:     <ulongint: `The minor device ID if it is a special file.` >,
+    size:           <ulongint: `The total size in bytes.` >,
+    blksize:        <ulongint: `The block size for filesystem I/O.` >,
+    blocks:         <ulongint: `The number of 512B blocks allocated.` >,
+    atime_sec:      <ulongint: `The time of last acces (seconds since Epoch).` >,
+    atime_nsec:     <ulongint: `The time of last acces (nanoseconds since atime_sec).` >,
+    mtime_sec:      <ulongint: `The time of last modification (seconds since Epoch).` >,
+    mtime_nsec:     <ulongint: `The time of last modification (nanoseconds since mtime_sec.).` >,
+    ctime_sec:      <ulongint: `The time of last status change (seconds since Epoch).` >
+    ctime_nsec:     <ulongint: `The time of last status change (nanoseconds since ctime_sec).` >
 }
 ```
 
@@ -9035,13 +9035,13 @@ $PY.pythonize('Hello, World!').upper()()
 $PY.run(
     <string $cmd_mod_file: `An isolated expressions, a single statement, an arbitrarily long Python source code, a module name, or a file name`>
         [, < '[command | statement | source | module | file] || skip-first-line || dont-write-byte-code' $options = 'command':
-            - 'command': `Evaluate an isolated expressions.`
-            - 'statement': `Run a single statement.`
-            - 'source': `Run an arbitrarily long Python source code.`
-            - 'module': `Run a Python library module as a script.`
-            - 'file': `Run a Python file as a script.`
-            - 'skip-first-line': `Skip first line of source, allowing use of non-Unix forms of #!cmd.`
-            - 'dont-write-byte-code': `Don't write .pyc files on import.`
+            - 'command':    `Evaluate an isolated expressions.`
+            - 'statement':  `Run a single statement.`
+            - 'source':     `Run an arbitrarily long Python source code.`
+            - 'module':     `Run a Python library module as a script.`
+            - 'file':       `Run a Python file as a script.`
+            - 'skip-first-line':        `Skip first line of source, allowing use of non-Unix forms of #!cmd.`
+            - 'dont-write-byte-code':   `Don't write .pyc files on import.`
             >
         ]
 ) any | undefined
