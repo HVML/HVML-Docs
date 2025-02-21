@@ -5875,7 +5875,8 @@ $STREAM.from(
     "server-ssl-cert": "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
     "server-ssl-key": "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
 
-    "server-ssl-session-id-context": "..." | bx...., /* server 为真且 secure 为真时，若指定有该属性，则将启用 SSL/TLS 会话的外部缓存机制，以便复用已有的 SSL/TLS 会话。*/
+    "server-ssl-session-id-context": "...", /* server 为真且 secure 为真时，若指定有该属性，则将启用 SSL/TLS 会话的外部缓存机制，以便复用已有的 SSL/TLS 会话。*/
+    "server-ssl-session-size": 256,         /* server 为真且 secure 为真时，若同时指定有 `server-ssl-session-id-context`，则可使用该属性指定缓存的 SSL/TLS 会话数量。*/
 
     /* 以下属性在套接字扮演客户端时指定： */
 
