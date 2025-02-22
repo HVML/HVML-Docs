@@ -5866,33 +5866,17 @@ $STREAM.from(
 
 ```js
 {
-    "server": true | flase,              /* 扮演服务器还是客户端。 */
+    'request-path': < string: `The path for GET method.` >,
+    'connection':   < string: `The connection name.` >,
+    'host':         < string: `The client host name.` >,
+    'origin':       < string: `The origin domain name.` >,
+    'user-agent':   < string: `The user-agent of the client.` >,
+    'referer':      < string: `The referer URL.` >,
 
-    "secure": true | flase,              /* 是否使用 SSL/TLS 安全。 */
+    'protocols':    < array | undefined: `The application protocols desired by the client, e.g., [ "GameA", "GameB" ].` >,
+    'extensions':   < array | undefined: `The extensions which are supported by the client, e.g., [ "zip" ].` >,
 
-    /* 以下属性在套接字扮演服务器时指定： */
-
-    "server-ssl-cert": "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
-    "server-ssl-key": "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
-
-    "server-ssl-session-id-context": "...", /* server 为真且 secure 为真时，若指定有该属性，则将启用 SSL/TLS 会话的外部缓存机制，以便复用已有的 SSL/TLS 会话。*/
-    "server-ssl-session-size": 256,         /* server 为真且 secure 为真时，若同时指定有 `server-ssl-session-id-context`，则可使用该属性指定缓存的 SSL/TLS 会话数量。*/
-
-    /* 以下属性在套接字扮演客户端时指定： */
-
-    "request-path": "...",              /* GET 方法对应的请求路径。*/
-    "connection": "...",                /* 连接名称。*/
-    "host": "...",                      /* 主机名。*/
-    "origin": "hvml.org",               /* 源域名。 */
-
-    "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
-    "client-ssl-key: "...",             /* 指定 SSL 公钥文件；当用作客户端且 secure 为真时必须指定。 */
-
-    "client-user-agent": "...",         /* 指定客户端 User-Agent。 */
-    "client-referer": "...",            /* 指定客户端 Referer。 */
-
-    "client-protocols": ["protA", "protB"],     /* 指定期望的协议。 */
-    "client-extensions": ["zip"],               /* 指定客户端可支持的扩展。 */
+    'ssl-key:       < string | undefined: `The SSL public key file if use SSL to connect to the server.` >
 }
 ```
 
@@ -6503,19 +6487,17 @@ du -BM hvml-spec-v1.0-zh.md
 
 ```js
 {
-    "request-path": "...",              /* GET 方法对应的请求路径。*/
-    "connection": "...",                /* 连接名称。*/
-    "host": "...",                      /* 主机名。*/
-    "origin": "hvml.org",               /* 源域名。 */
+    'request-path': < string: `The path for GET method.` >,
+    'connection':   < string: `The connection name.` >,
+    'host':         < string: `The client host name.` >,
+    'origin':       < string: `The origin domain name.` >,
+    'user-agent':   < string: `The user-agent of the client.` >,
+    'referer':      < string: `The referer URL.` >,
 
-    "secure": true,                     /* 是否使用 SSL/TLS 安全。 */
-    "client-ssl-key": "...",             /* 指定 SSL 公钥文件；当用作客户端且 secure 为真时必须指定。 */
+    'protocols':    < array | undefined: `The application protocols desired by the client, e.g., [ "GameA", "GameB" ].` >,
+    'extensions':   < array | undefined: `The extensions which are supported by the client, e.g., [ "zip" ].` >,
 
-    "client-user-agent": "...",         /* 指定客户端 User-Agent。 */
-    "client-referer": "...",            /* 指定客户端 Referer。 */
-
-    "client-protocols": ["protA", "protB"],     /* 指定期望的协议。 */
-    "client-extensions": ["zip"],               /* 指定客户端可支持的扩展。 */
+    'ssl-key:       < string | undefined: `The SSL public key file if use SSL to connect to the server.` >
 }
 ```
 
@@ -6609,9 +6591,15 @@ $SOCKET.stream(
                - 'nonblock':    `Create the sockete in nonblocking mode.`
                - 'cloexec':     `Set the file descriptor flag close-on-exec.`
                - 'default':     `The equivalent to 'cloexec nonblock'.`
-               - 'none':        `No additional flags are specified.`
-           >
-                [, <longint $backlog: `The backlog.` >
+               - 'none':        `No additional flags are specified.` >
+            [, <longint $backlog = 32: `The backlog.` >
+                [, < object | null $ssl_opts = null: `An object describing the options for SSL; null for not using SSL.`:
+                    - 'ssl-cert':   < string: `The SSL certification file.` >,
+                    - 'ssl-key':    < string: `The SSL private key file.` >,
+                    - 'ssl-session-cache-id':       < string: `Use the external SSL session cache to enable sharing the sessions between processes.` >
+                    - 'ssl-session-cache-users':    < ['group || other'] | undefined: `Specify the extra users who can access the shared SSL session cache except the owner.` >
+                    - 'ssl-session-cache-size':     < real = 256: `Specify the size of the cache: how many sessions to cache.` >
+                    >
                 ]
             ]
         ]
@@ -6743,7 +6731,7 @@ $streamSocket.accept(
            - 'websocket':   `WebSocket.`
            - 'hbdbus':      `HybridOS data bus protocol.`
         >
-        [, <object $options: `The options for protocols.` >
+        [, <object $extra_opts: `The extra options for extended protocols.` >
         ]
     ]
 ) native/stream | null | undefined
@@ -6761,6 +6749,11 @@ $streamSocket.accept(
 - `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
 
 **示例**
+
+```js
+$streamSocket.accept('default', 'websocket', ...)
+    // native/stream
+```
 
 ##### 3.13.4.2) `fd` 方法
 
@@ -6951,19 +6944,23 @@ $dgramSocket.close()
 - `error:[message | websocket ]`：出现 Message 或 WebSocket 协议相关的错误；事件数据中包含错误码及错误消息：`{ "errCode": 5, "errMsg": "Invalid Value" }`。
 - `close`：由于读写错误或者其他不可恢复的原因，连接关闭。
 
-当使用 `websocket` 协议扩展时，可指定如下额外选项：
+当使用 `websocket` 协议扩展时，可使用一个对象指定如下额外选项：
 
 ```js
 {
-    "secure": true,                      /* 是否使用 SSL/TLS 安全。 */
+    'request-path': < string: `The path for GET method.` >,
+    'connection':   < string: `The connection name.` >,
+    'host':         < string: `The client host name.` >,
+    'origin':       < string: `The origin domain name.` >,
+    'user-agent':   < string: `The user-agent of the client.` >,
+    'referer':      < string: `The referer URL.` >,
 
-    "server-ssl-cert": "...",            /* 指定 SSL 证书文件；secure 为真时必须指定。 */
-    "server-ssl-key": "...",             /* 指定 SSL 私钥文件；secure 为真时必须指定。 */
-
-    "server-ssl-session-id-context": "", /* 当 secure 为真时，若指定有该属性，则将使用 SSL/TLS 会话的外部缓存机制，以便后续可被其他进程复用该会话信息。*/
-    "server-ssl-session-cache-mode": "", /* 许可字符串如 '0644' 或 'u+rw,go+r'。 */
+    'protocols':    < array | undefined: `The application protocols desired by the client, e.g., [ "GameA", "GameB" ].` >,
+    'extensions':   < array | undefined: `The extensions which are supported by the client, e.g., [ "zip" ].` >,
 }
 ```
+
+注意，在使用 `websocket` 扩展时，如果流套接字实体开启了 SSL/TLS，将在 `accept()` 之后生成的流实体上强制启用 SSL/TLS。
 
 ## 4) 可选动态变量
 
