@@ -5866,20 +5866,24 @@ $STREAM.from(
 
 ```js
 {
-    'request-path': < string: `The path for GET method.` >,
-    'connection':   < string: `The connection name.` >,
-    'host':         < string: `The client host name.` >,
+    /* The following properties are client-only. */
+    'path':         < string: `The path for GET method.` >,
+    'host':         < string: `The host name.` >,
     'origin':       < string: `The origin domain name.` >,
     'user-agent':   < string: `The user-agent of the client.` >,
     'referer':      < string: `The referer URL.` >,
+    'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB" ].` >,
+    'extensions':   < string | undefined: `The extensions which are supported by the client, e.g., "zip".` >,
 
-    'protocols':    < array | undefined: `The application protocols desired by the client, e.g., [ "GameA", "GameB" ].` >,
-    'extensions':   < array | undefined: `The extensions which are supported by the client, e.g., [ "zip" ].` >,
+    /* This property is for clients and the server. */
+    'secure:        < boolean | undefined: `Indicate whether or not use SSL.` >
 
-    'ssl-key:       < string | undefined: `The SSL public key file if use SSL to connect to the server.` >
+    /* The following properties are server-only ones for worker processes, after the dispacther process has been accepted the connection. */
+    'ssl-session-cache-id': < string | undefined: `Use the external SSL session cache to enable sharing the SSL sessions between processes.` >
+    'handshake':    < boolean: `Indicate if the dispatcher has been handled the WebSocket handshake.` >
+    'subprotocol':  < string | undefined: `The sub-protocol determined by the dispatcher after the handshake.` >
 }
 ```
-
 
 **示例**
 
@@ -6476,28 +6480,30 @@ du -BM hvml-spec-v1.0-zh.md
 对应的扩展方法有：
 
 - `send`：发送消息数据；参数为字符串时以文本方式发送，参数为字节序列时以二进制方式发送。
+- `handshake`：收到来自客户端的握手请求或者服务器端的握手应答。若是服务器，则该事件的负载包含客户端通过 HTTP Headers 发送而来的握手请求信息；若是客户端，则该事件的负载包含服务器的握手应答数据（如 HTTP 请求状态、服务器端选择的协议等）。
+- `send_handshake_resp()` 方法：通过该方法可向客户端发送指定的握手应答；仅 `websocket` 扩展协议。
 
 同时提供如下可观察事件：
 
-- `message`：收到来自服务器端的消息。
-- `error:[message | websocket ]`：出现 Message 或 WebSocket 协议相关的错误；事件数据中包含错误码及错误消息：`{ "errCode": 5, "errMsg": "Invalid Value" }`。
+- `message`：收到来自对端的文本或二进制消息。
+- `error`：出现 Message、SSL、WebSocket 协议相关的错误；事件负载中包含错误码及错误消息：`{ "errCode": 5, "errMsg": "Invalid Value" }`。
 - `close`：由于读写错误或者其他不可恢复的原因，连接关闭。
 
 当使用 `websocket` 协议扩展时，可指定如下额外选项：
 
 ```js
 {
-    'request-path': < string: `The path for GET method.` >,
-    'connection':   < string: `The connection name.` >,
+    'path':         < string: `The path for GET method.` >,
     'host':         < string: `The client host name.` >,
     'origin':       < string: `The origin domain name.` >,
     'user-agent':   < string: `The user-agent of the client.` >,
     'referer':      < string: `The referer URL.` >,
 
-    'protocols':    < array | undefined: `The application protocols desired by the client, e.g., [ "GameA", "GameB" ].` >,
-    'extensions':   < array | undefined: `The extensions which are supported by the client, e.g., [ "zip" ].` >,
+    'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB" ].` >,
+    'extensions':   < string | undefined: `The extensions which are supported by the client, e.g., "zip".` >,
 
-    'ssl-key:       < string | undefined: `The SSL public key file if use SSL to connect to the server.` >
+    'secure:        < boolean | undefined: `Indicate whether or not use SSL to connect to the server.` >
+    'ssl-session-cache-id': < string: `Use the external SSL session cache to enable sharing the sessions between processes.` >
 }
 ```
 
@@ -6939,24 +6945,25 @@ $dgramSocket.close()
 
 同时提供如下可观察事件：
 
-- `handshake`：收到来自客户端的握手数据。该事件的负载包含客户端通过 HTTP Headers 发送而来的请求信息。
-- `message`：收到来自客户端的消息。
-- `error:[message | websocket ]`：出现 Message 或 WebSocket 协议相关的错误；事件数据中包含错误码及错误消息：`{ "errCode": 5, "errMsg": "Invalid Value" }`。
-- `close`：由于读写错误或者其他不可恢复的原因，连接关闭。
+- `handshake`：收到来自客户端的握手请求或者服务器端的握手应答。若是服务器，则该事件的负载包含客户端通过 HTTP Headers 发送而来的握手请求信息；若是客户端，则该事件的负载包含服务器的握手应答数据（如 HTTP 请求状态、服务器端选择的协议等）。
+- `message:`：收到来自客户端的文本或二进制消息。
+- `error`：出现 Message、SSL、WebSocket 协议相关的错误；事件数据中包含错误码及错误消息：`{ "errCode": 5, "errMsg": "Invalid Value" }`。
+- `close`：由于读写错误或者其他不可恢复的原因，连接被关闭。
 
 当使用 `websocket` 协议扩展时，可使用一个对象指定如下额外选项：
 
 ```js
 {
-    'request-path': < string: `The path for GET method.` >,
-    'connection':   < string: `The connection name.` >,
-    'host':         < string: `The client host name.` >,
-    'origin':       < string: `The origin domain name.` >,
-    'user-agent':   < string: `The user-agent of the client.` >,
-    'referer':      < string: `The referer URL.` >,
+    'path':         < string | undefined: `The path for GET method.` >,
+    'host':         < string | undefined: `The client host name.` >,
+    'origin':       < string | undefined: `The origin domain name.` >,
+    'useragent':    < string | undefined: `The user-agent of the client.` >,
+    'referer':      < string | undefined: `The referer URL.` >,
 
-    'protocols':    < array | undefined: `The application protocols desired by the client, e.g., [ "GameA", "GameB" ].` >,
-    'extensions':   < array | undefined: `The extensions which are supported by the client, e.g., [ "zip" ].` >,
+    'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB" ].` >,
+    'extensions':   < string | undefined: `The extensions which are supported by the client, e.g., "zip".` >,
+
+    'secure:        < boolean | undefined: `Indicate whether or not use SSL to connect to the server.` >
 }
 ```
 
