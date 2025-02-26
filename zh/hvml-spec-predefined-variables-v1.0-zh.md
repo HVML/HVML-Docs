@@ -5808,7 +5808,7 @@ $URL.assemble(
 另外，`STREAM` 变量应使用可扩展的实现，从而针对不同的流类型，在流实体上提供额外的读写方法或者事件，从而可以实现对某些应用层协议的支持。比如，当某个解释器实现的 `$STREAM` 方法支持 WebSocket 协议扩展时，即可通过 `message` 事件处理来自服务器的消息：
 
 ```hvml
-    <init as 'wsStream' with $STREAM.open('inet://foo.com:8080/', 'websocket', ...) >
+    <init as 'wsStream' with $STREAM.open('inet://foo.com:8080/', 'default', 'websocket', ...) >
         <observe on $wsStream for 'message'>
             ...
         </observe>
@@ -5870,12 +5870,13 @@ $STREAM.from(
     'path':         < string: `The path for GET method.` >,
     'host':         < string: `The host name.` >,
     'origin':       < string: `The origin domain name.` >,
-    'user-agent':   < string: `The user-agent of the client.` >,
+    'useragent':    < string: `The user-agent of the client.` >,
     'referer':      < string: `The referer URL.` >,
     'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB" ].` >,
     'extensions':   < string | undefined: `The extensions which are supported by the client, e.g., "zip".` >,
 
     /* This property is for clients and the server. */
+    'maxpayloadsize:    < ulongint | undefined: `The maximum size of a payload allowed; use the default value (16K) if not defined.` >
     'secure:        < boolean | undefined: `Indicate whether or not use SSL.` >
 
     /* The following properties are server-only ones for worker processes, after the dispacther process has been accepted the connection. */
@@ -6479,8 +6480,8 @@ du -BM hvml-spec-v1.0-zh.md
 
 对应的扩展方法有：
 
-- `send`：发送消息数据；参数为字符串时以文本方式发送，参数为字节序列时以二进制方式发送。
-- `handshake`：收到来自客户端的握手请求或者服务器端的握手应答。若是服务器，则该事件的负载包含客户端通过 HTTP Headers 发送而来的握手请求信息；若是客户端，则该事件的负载包含服务器的握手应答数据（如 HTTP 请求状态、服务器端选择的协议等）。
+- `handshake` 事件：收到来自客户端的握手请求或者服务器端的握手应答。若是服务器，则该事件的负载包含客户端通过 HTTP Headers 发送而来的握手请求信息；若是客户端，则该事件的负载包含服务器的握手应答数据（如 HTTP 请求状态、服务器端选择的协议等）。
+- `send()` 方法：发送消息数据；参数为字符串时以文本方式发送，参数为字节序列时以二进制方式发送。
 - `send_handshake_resp()` 方法：通过该方法可向客户端发送指定的握手应答；仅 `websocket` 扩展协议。
 
 同时提供如下可观察事件：
@@ -6502,6 +6503,7 @@ du -BM hvml-spec-v1.0-zh.md
     'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB" ].` >,
     'extensions':   < string | undefined: `The extensions which are supported by the client, e.g., "zip".` >,
 
+    'maxpayloadsize:    < ulongint | undefined: `The maximum size of a payload allowed; use the default value (16K) if not defined.` >
     'secure:        < boolean | undefined: `Indicate whether or not use SSL to connect to the server.` >
     'ssl-session-cache-id': < string: `Use the external SSL session cache to enable sharing the sessions between processes.` >
 }
@@ -6963,6 +6965,7 @@ $dgramSocket.close()
     'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB" ].` >,
     'extensions':   < string | undefined: `The extensions which are supported by the client, e.g., "zip".` >,
 
+    'maxpayloadsize:    < ulongint | undefined: `The maximum size of a payload allowed; use the default value (16K) if not defined.` >
     'secure:        < boolean | undefined: `Indicate whether or not use SSL to connect to the server.` >
 }
 ```
