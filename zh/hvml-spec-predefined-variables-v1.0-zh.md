@@ -5584,13 +5584,13 @@ $URL.rawencode('HVML: 全球首款可编程标记语言!', 'rfc3986')
 
 ```js
 $URL.decode(
-        <string $str: `The string to be decoded.>
+        <string $str: `The string to be decoded.` >
         [, < 'binary | string' $type = 'string': `The type of return data:`
             - 'binary': `The decoded data returned as a binary sequence.`
             - 'string': `The decoded data returned as a string in UTF-8 encoding.` >
             [, <'rfc1738 | rfc3986' $enc_type = 'rfc1738':
-              - 'rfc1738': decoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.
-              - 'rfc3986':  decoding is performed according to RFC 3986, and spaces are expected being percent encoded (%20).
+              - 'rfc1738': `Decoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
+              - 'rfc3986':  `Decoding is performed according to RFC 3986, and spaces are expected being percent encoded (%20).`
             ]
         ]
 ) string | bseqence
@@ -5639,10 +5639,10 @@ $URL.build_query(
     [, < string $numeric_prefix = '': `The numeric prefix for the argument names if `query_data` is an array. >
         [, <string $arg_separator = '&': `The character used to separate the arguments. >
             [, <'[real-json | real-ejson] || [rfc1738 | rfc3986]' $opts = 'real-json rfc1738':
-              - 'real-json':    `use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
-              - 'real-ejson':   `use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
-              - 'rfc1738':      `encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
-              - 'rfc3986':      `encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).`
+              - 'real-json':    `Use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
+              - 'real-ejson':   `Use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
+              - 'rfc1738':      `Encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
+              - 'rfc3986':      `Encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).`
             ]
         ]
     ]
