@@ -4510,9 +4510,9 @@ $STR.shuffle('beijing') // string: 'jbienig'
 
 ```js
 $STR.replace(
-        <string | array $search>,
-        <string | array $replace>,
-        <array | string $subject>
+        <string | array $search: `The substring to search.`>,
+        <string | array $replace: `The replacement string.`>,
+        <array | string $subject: `The subject to operate.`>
         [, <boolean $case_insensitivity = false:
             - false:  `Perform case-sensitive replacements;`
             - true:   `Perform case-insensitive replacements.`>
@@ -4663,7 +4663,7 @@ $STR.format_p('There are two boys: #0 and #1', 'Tom', 'Jerry')
 ```js
 $STR.scan_p(
         <string $string: `The input string being parsed.`>,
-        <string $format: `string contains placeholders.`>,
+        <string $format: `The string contains placeholders.`>,
 ) array | object | any
 ```
 
@@ -4698,9 +4698,9 @@ $STR.scan_p('My name is "Tom"', 'My name is #?')
 
 ```js
 $STR.join(
-        <any $data1>,
-        <any $data2>
-        [, <any $data3>
+        <any $data1: `The first data to join.`>,
+        <any $data2: `The second data to join.`>
+        [, <any $data3: `The third data to join.`>
             [, ...]
         ]
 ) string
@@ -4739,7 +4739,7 @@ $STR.join(1, ', ', 2, ', ', 3)
 
 ```js
 $STR.nr_bytes(
-        <string | bsequence $data>
+        <string | bsequence $data: `The string or byte sequence to count.`>
 ) ulongint
 ```
 
@@ -4770,7 +4770,7 @@ $STR.nr_bytes( bb )
 
 ```js
 $STR.nr_chars(
-        <string $string>
+        <string $string: `The string to count.`>
 ) ulongint | false
 ```
 
@@ -4808,7 +4808,7 @@ $STR.nr_chars('中国')
 
 ```js
 $STR.tolower(
-        <string $string>
+        <string $string: `The input string.`>
 ) string
 ```
 
@@ -4842,7 +4842,7 @@ $STR.tolower('Hello, world')
 
 ```js
 $STR.toupper(
-        <string $string>
+        <string $string: `The input string.`>
 ) string
 ```
 
@@ -4876,9 +4876,9 @@ $STR.toupper('Hello, world')
 
 ```js
 $STR.substr(
-        <string $string>,
-        <real $offset>
-        [, <real $length>]
+        <string $string: `The input string.`>,
+        <real $offset: `The offset of the desired substring in the input string.`>
+        [, <real $length: `The length of the desired substring.`>]
 ) string
 ```
 
@@ -4965,10 +4965,10 @@ $STR.substr_compare(
 
 ```js
 $STR.substr_count(
-    <string $haystack>,
-    <string $needle>
-    [, <real $offset = 0>
-        [, <real $length = 0>
+    <string $haystack: `The input string.`>,
+    <string $needle: `The substring to search.`>
+    [, <real $offset = 0: `The offset to starting search.`>
+        [, <real $length = 0: `The length of searching.` >
         ]
     ]
 ) ulongint
@@ -4992,11 +4992,11 @@ $STR.substr_count(
 
 ```js
 $STR.substr_replace(
-    <array|string $string>,
-    <array|string $replace>,
-    <array|real $offset>
+    <array | string $string: `The input string.`>,
+    <array | string $replace: `The replacement string.`>,
+    <array | real $offset: `If $offset is non-negative, the replacing will begin at the $offset'th offset into string. If offset is negative, the replacing will begin at the $offset'th character from the end of string.`>
     [,
-        <array|real $length = 0>
+        <array|real $length: `If given and is positive, it represents the length of the portion of string which is to be replaced. If it is negative, it represents the number of characters from the end of string at which to stop replacing. If it is not given, then it will default to strlen( string ); i.e. end the replacing at the end of string. Of course, if length is zero then this function will have the effect of inserting replace into string at the given offset offset.`>
     ]
 ) string|array
 ```
@@ -5019,8 +5019,8 @@ $STR.substr_replace(
 
 ```js
 $STR.strstr(
-        <string $haystack>,
-        <string $needle>
+        <string $haystack: `The string in which to find the substring $needle.`>,
+        <string $needle: `The substring to find in $haystack.`>
         [, <bool $before_needle = false>
             [, <bool $case_insensitivity = false:
                 false -  `Perform a case-sensitive check;`
@@ -5049,11 +5049,11 @@ $STR.strstr(
 
 ```js
 $STR.strpos(
-        <string $haystack>,
-        <string $needle>
-        [, <real $offset = 0>
+        <string $haystack: `The string in which to find the substring $needle.`>,
+        <string $needle: `The substring to find in $haystack.`>
+        [, <real $offset = 0: `The offset starting to search. If $offset is less than 0, this method will return the last occurrence of $needle.`>
             [, <bool $case_insensitivity = false:
-                false -  `Perform a case-sensitive check;`
+                false -  `Perform a case-sensitive check.`
                 true -  `Perform a case-insensitive check.`>
             ]
         ]
@@ -5079,10 +5079,10 @@ $STR.strpos(
 
 ```js
 $STR.strpbrk(
-        <string $string>,
-        <string $characters>
+        <string $string: `The string.`>,
+        <string $characters: `The characters to search in the string.`>
         [, <bool $case_insensitivity = false:
-            - false:     `Perform a case-sensitive check;`
+            - false:     `Perform a case-sensitive check.`
             - true:      `Perform a case-insensitive check.`>
         ]
 ) string | false
@@ -5106,8 +5106,8 @@ $STR.strpbrk(
 
 ```js
 $STR.split(
-        <string $string>
-        [, <real $length = 1> ]
+        <string $string: `The original string to split.`>
+        [, <real $length = 1: `The length of one substring.`> ]
 ) array
 ```
 
@@ -5129,11 +5129,9 @@ $STR.split(
 
 ```js
 $STR.chunk_split(
-        <string $string>
-        [,
-            <real $length = 76>
-            [,
-                <string $separator = "\r\n">
+        <string $string: `The original string to split.`>
+        [, <real $length = 76: `The length of a chunk.``>
+            [, <string $separator = '\r\n': `The seperator between two chunks.`>
             ]
         ]
 ) string
@@ -5157,9 +5155,9 @@ $STR.chunk_split(
 
 ```js
 $STR.trim(
-        <string $string>
-        [, <string $position "left | right | both" = "both">
-            [, <string $characters = " \n\r\t\v\f"> ]
+        <string $string: `The orignal string to trim.`>
+        [, < 'left | right | both' $position  = 'both': `The trimming position.`>
+            [, <string $characters = " \n\r\t\v\f": `The characters to trim from the original string.`>]
         ]
 ) string
 ```
@@ -5184,10 +5182,10 @@ $STR.trim(
 
 ```js
 $STR.pad(
-    <string $string>,
-    <real $length>,
-    [, <string $pad_string = " ">,
-        [, <string $pad_type 'left | right | both' = 'right'> ]
+    <string $string: `The original string.`>,
+    <real $length: `The length of the new string after padded.`>,
+    [, <string $pad_string = " ": `The string use to pad.`>,
+        [, <'left | right | both' $pad_type = 'right': `The padding position.`> ]
     ]
 ) string
 ```
@@ -5210,8 +5208,8 @@ $STR.pad(
 
 ```js
 $STR.repeat(
-        <string $string>,
-        <real $times>
+        <string $string: `The string to repeat.`>,
+        <real $times: `The number of times to repeat the string.`>
 ) string
 ```
 
@@ -5233,7 +5231,7 @@ $STR.repeat(
 
 ```js
 $STR.reverse(
-        <string $string>
+        <string $string: `The string to reverse.`>
 ) string
 ```
 
@@ -5253,10 +5251,10 @@ $STR.reverse(
 
 **描述**
 
-```
+```js
 $STR.tokenize(
-        <string $string>,
-        <string $delimiters>
+        <string $string: `The string to break.`>,
+        <string $delimiters: `The delimiters to sperate the tokens.`>
 ) array
 ```
 
@@ -5416,7 +5414,7 @@ $STR.nl2br(
 
 ```js
 $STR.rot13(
-        <string $string>
+        <string $string: `The string to convert.`>
 ) string
 ```
 
@@ -5497,7 +5495,7 @@ $STR.count_bytes(
 
 ```js
 $STR.codepoints(
-        < string $the_string: `The string. >
+        < string $the_string: `The string to convert.` >
         [, < 'array | tuple' $return_type = 'array':
             - 'array': `Return an array of codepoints.`
             - 'tuple': `Return a tuple of codepoints.`
