@@ -2969,7 +2969,7 @@ $DATA.crc32(
 
 **示例**
 
-```
+```js
 $DATA.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
     // string: '7AD1CDE5'
 ```
@@ -2990,9 +2990,9 @@ $DATA.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
 $DATA.md5(
         < any $data >
         < 'binary | uppercase | lowercase' $type = 'binary': `The type of return data:`
-            'binary'    - `The MD5 digest is returned as a binary sequence (totally 16 bytes).`
-            'uppercase' - `The MD5 digest is returned as a 32-character hexadecimal number in uppercase letters.`
-            'lowercase' - `The MD5 digest is returned as a 32-character hexadecimal number in lowercase letters.`
+            - 'binary':     `The MD5 digest is returned as a binary sequence (totally 16 bytes).`
+            - 'uppercase':  `The MD5 digest is returned as a 32-character hexadecimal number in uppercase letters.`
+            - 'lowercase':  `The MD5 digest is returned as a 32-character hexadecimal number in lowercase letters.`
         >
 ) string | bsequence
 ```
@@ -3015,9 +3015,9 @@ $DATA.md5(
 $DATA.sha1(
         < any $data >
         < 'binary | uppercase | lowercase' $type = 'binary': `The type of return data:`
-            'binary'    - `The MD5 digest is returned as a binary sequence (totally 20 bytes).`
-            'uppercase' - `The MD5 digest is returned as a 40-character hexadecimal number in uppercase letters.`
-            'lowercase' - `The MD5 digest is returned as a 40-character hexadecimal number in lowercase letters.`
+            - 'binary':     `The MD5 digest is returned as a binary sequence (totally 20 bytes).`
+            - 'uppercase':  `The MD5 digest is returned as a 40-character hexadecimal number in uppercase letters.`
+            - 'lowercase':  `The MD5 digest is returned as a 40-character hexadecimal number in lowercase letters.`
         >
 ) string | bsequence
 ```
@@ -3137,8 +3137,8 @@ $DATA.unpack( "i16le", bx0a000a000000)
 $DATA.bin2hex(
         <string | bsequence $data>
         [, < 'lowercase | uppercase' $options = 'lowercase':
-            - 'lowercase': `use lowercase letters for hexadecimal digits.`
-            - 'uppercase': `use uppercase letters for hexadecimal digits.`
+            - 'lowercase': `Use lowercase letters for hexadecimal digits.`
+            - 'uppercase': `Use uppercase letters for hexadecimal digits.`
             >
         ]
 ) string
@@ -5130,7 +5130,7 @@ $STR.split(
 ```js
 $STR.chunk_split(
         <string $string: `The original string to split.`>
-        [, <real $length = 76: `The length of a chunk.``>
+        [, <real $length = 76: `The length of a chunk.`>
             [, <string $separator = '\r\n': `The seperator between two chunks.`>
             ]
         ]
@@ -5634,8 +5634,8 @@ $URL.decode('HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7
 ```js
 $URL.build_query(
     < object | array $query_data >
-    [, < string $numeric_prefix = '': `The numeric prefix for the argument names if `query_data` is an array. >
-        [, <string $arg_separator = '&': `The character used to separate the arguments. >
+    [, < string $numeric_prefix = '': `The numeric prefix for the argument names if $query_data is an array.` >
+        [, <string $arg_separator = '&': `The character used to separate the arguments. `>
             [, <'[real-json | real-ejson] || [rfc1738 | rfc3986]' $opts = 'real-json rfc1738':
               - 'real-json':    `Use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
               - 'real-ejson':   `Use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
@@ -5870,7 +5870,7 @@ $STREAM.from(
     'origin':       < string: `The origin domain name.` >,
     'useragent':    < string: `The user-agent of the client.` >,
     'referer':      < string: `The referer URL.` >,
-    'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB" ].` >,
+    'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB".` >,
     'extensions':   < string | undefined: `The extensions which are supported by the client, e.g., "zip".` >,
 
     /* This property is for clients and the server. */
@@ -6498,7 +6498,7 @@ du -BM hvml-spec-v1.0-zh.md
     'user-agent':   < string: `The user-agent of the client.` >,
     'referer':      < string: `The referer URL.` >,
 
-    'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB" ].` >,
+    'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB".` >,
     'extensions':   < string | undefined: `The extensions which are supported by the client, e.g., "zip".` >,
 
     'maxpayloadsize:    < ulongint | undefined: `The maximum size of a payload allowed; use the default value (16K) if not defined.` >
@@ -6960,7 +6960,7 @@ $dgramSocket.close()
     'useragent':    < string | undefined: `The user-agent of the client.` >,
     'referer':      < string | undefined: `The referer URL.` >,
 
-    'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB" ].` >,
+    'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB".` >,
     'extensions':   < string | undefined: `The extensions which are supported by the client, e.g., "zip".` >,
 
     'maxpayloadsize:    < ulongint | undefined: `The maximum size of a payload allowed; use the default value (16K) if not defined.` >
@@ -8432,10 +8432,10 @@ $FS.unlink(
 $FS.file_contents(
         < string $filename: `Path to the file.` >
         < '[binary | string] || [strict | silent]' $flags:
-            'binary' - `Read the contents as a byte sequence.`
-            'string' - `Read the contents as a string in UTF-8.`
-            'strict' - `Throw the `BadEncoding` exception for a bad encoded string.`
-            'silent' - `Stop reading for any error and return the read data.`
+            - 'binary': `Read the contents as a byte sequence.`
+            - 'string': `Read the contents as a string in UTF-8.`
+            - 'strict': `Throw the `BadEncoding` exception for a bad encoded string.`
+            - 'silent': `Stop reading for any error and return the read data.`
         >
         [, <longint $offset = 0: `The offset where the reading starts. Negative offsets count from the end of the file.` >
             [, <ulongint $length = 0: `Maximum length of data read. The default is to read until end of file is reached.` > ]
@@ -8448,8 +8448,8 @@ $FS.file_contents(!
         < string $filename: `Path to the file.` >
         < string | bsequenc $data: `The data to write, can be either a string or a byte sequence.`
         < 'append || lock': $flags:
-            'append' - `If file $filename already exists, append the data to the file instead of overwriting it.`
-            'lock' - `Acquire an exclusive lock on the file while proceeding to the writing.`
+            - 'append': `If file $filename already exists, append the data to the file instead of overwriting it.`
+            - 'lock':   `Acquire an exclusive lock on the file while proceeding to the writing.`
         >
 ) ulongint | false
 ```
