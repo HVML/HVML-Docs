@@ -4542,7 +4542,9 @@ Content-Type: text/plain
 
     <include with $calcGreatestCommonDivisor on {x: 3, y: 6} >
 
-        $STREAM.stdout.writelines($STR.format_c("GCD of 3 and 6 is %d", $?))
+        <inherit>
+            $STREAM.stdout.writelines($STR.format_c("GCD of 3 and 6 is %d", $?))
+        </inherit>
 
     </include>
 ```

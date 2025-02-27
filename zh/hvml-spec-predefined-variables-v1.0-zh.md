@@ -1319,7 +1319,7 @@ $RUNNER.logmsg(
 **示例**
 
 ```js
-$RUNNER.enablelog('all', 'stderr')
+$RUNNER.logmsg('This is a log')
     // true
 ```
 
