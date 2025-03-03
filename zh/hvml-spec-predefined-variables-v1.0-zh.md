@@ -6845,7 +6845,7 @@ $dgramSocket.close()
 
 #### 3.14.1) `message` 扩展协议
 
-在使用 URI 图式 `fifo://`、`local://` 的流实体上，在调用 `$STREAM.open()`、`$STREAM.from()` 和 `$streamSocket.accept()` 方法时，可使用 `message` 扩展协议，从而使用基于消息的数据处理方式。对应的接口有：
+在使用 URI 方案 `fifo://`、`local://` 的流实体上，在调用 `$STREAM.open()`、`$STREAM.from()` 和 `$streamSocket.accept()` 方法时，可使用 `message` 扩展协议，从而使用基于消息的数据处理方式。对应的接口有：
 
 - `message` 事件：收到来自对端的消息数据，其负载是表示消息的变体；若消息为文本，则对应变体类型为字符串（string），若消息为二进制数据，则对应变体类型为字节序列（bsequence）。
 - `error` 事件：当产生输入输出或协议错误时，将激发此事件，其负载是一个对象，包括错误编号（`code`）以及附言（`postscript`）两个属性，如 `{ "code": 5, "postscript": "Invalid Value" }`。
@@ -6854,7 +6854,7 @@ $dgramSocket.close()
 
 #### 3.14.2) `websocket` 扩展协议
 
-在使用 URI 图式 `inet<N>://` 的流实体上，在调用 `$STREAM.open()`、`$STREAM.from()` 和 `$streamSocket.accept()` 方法时，可使用 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
+在使用 URI 方案 `inet<N>://` 的流实体上，在调用 `$STREAM.open()`、`$STREAM.from()` 和 `$streamSocket.accept()` 方法时，可使用 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
 
 对应接口有：
 
@@ -6898,7 +6898,7 @@ $dgramSocket.close()
 
 #### 3.14.3) `hbdbus` 扩展协议
 
-在使用 URI 图式 `inetN://`、`local://` 的流实体上，在调用 `$STREAM.open()`、`$STREAM.from()` 和 `$streamSocket.accept()` 方法时，可使用 `hbdbus` 扩展协议。
+在使用 URI 方案 `inetN://`、`local://` 的流实体上，在调用 `$STREAM.open()`、`$STREAM.from()` 和 `$streamSocket.accept()` 方法时，可使用 `hbdbus` 扩展协议。
 
 `hbdbus` 扩展协议基于 `message` 或者 `websocket` 扩展协议实现，提供如下方法：
 
