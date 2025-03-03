@@ -5803,7 +5803,7 @@ $URL.assemble(
     </observe>
 ```
 
-另外，`STREAM` 变量应使用可扩展的实现，从而针对不同的流类型，在流实体上提供额外的读写方法或者事件，从而可以实现对某些应用层协议的支持。比如，当某个解释器实现的 `$STREAM` 方法支持 WebSocket 协议扩展时，即可通过 `message` 事件处理来自服务器的消息：
+另外，`STREAM` 变量应使用可扩展的实现，从而针对不同的流类型，在流实体上提供额外的读写方法或者事件，从而可以实现对某些应用层协议的支持。比如，当某个解释器实现的 `$STREAM` 方法支持 WebSocket 扩展协议时，即可通过 `message` 事件处理来自服务器的消息：
 
 ```hvml
     <init as 'wsStream' with $STREAM.open('inet://foo.com:8080/', 'default', 'websocket', ...) >
@@ -5860,29 +5860,6 @@ $STREAM.from(
 **备注**
 
 1. 流的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用 `$STREAM.close` 方法释放流实体占用的系统资源。
-2. 当使用 `websocket` 协议扩展时，可指定如下额外选项：
-
-```js
-{
-    /* The following properties are client-only. */
-    'path':         < string: `The path for GET method.` >,
-    'host':         < string: `The host name.` >,
-    'origin':       < string: `The origin domain name.` >,
-    'useragent':    < string: `The user-agent of the client.` >,
-    'referer':      < string: `The referer URL.` >,
-    'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB".` >,
-    'extensions':   < string | undefined: `The extensions which are supported by the client, e.g., "zip".` >,
-
-    /* This property is for clients and the server. */
-    'maxpayloadsize:    < ulongint | undefined: `The maximum size of a payload allowed; use the default value (16K) if not defined.` >
-    'secure:        < boolean | undefined: `Indicate whether or not use SSL.` >
-
-    /* The following properties are server-only ones for worker processes, after the dispacther process has been accepted the connection. */
-    'ssl-session-cache-id': < string | undefined: `Use the external SSL session cache to enable sharing the SSL sessions between processes.` >
-    'handshake':    < boolean: `Indicate if the dispatcher has been handled the WebSocket handshake.` >
-    'subprotocol':  < string | undefined: `The sub-protocol determined by the dispatcher after the handshake.` >
-}
-```
 
 **示例**
 
@@ -6472,76 +6449,6 @@ du -BM hvml-spec-v1.0-zh.md
 
 `pipe` 流实体应该额外提供 `status` 方法，用于检查子进程的状态。该方法返回一个数组，第一个成员是表示状态的字符串，第二个成员给出状态对应的值。
 
-#### 3.12.10) `message`、`websocket` 协议扩展
-
-在使用 URI 图式 `fifo://`、`local://`、`inetN://` 的流实体上，可使用 `message` 或 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
-
-对应的扩展方法有：
-
-- `handshake` 事件：收到来自客户端的握手请求或者服务器端的握手应答。若是服务器，则该事件的负载包含客户端通过 HTTP Headers 发送而来的握手请求信息；若是客户端，则该事件的负载包含服务器的握手应答数据（如 HTTP 请求状态、服务器端选择的协议等）。
-- `send()` 方法：发送消息数据；参数为字符串时以文本方式发送，参数为字节序列时以二进制方式发送。
-- `send_handshake_resp()` 方法：通过该方法可向客户端发送指定的握手应答；仅 `websocket` 扩展协议。
-
-同时提供如下可观察事件：
-
-- `message`：收到来自对端的文本或二进制消息。
-- `error`：出现 Message、SSL、WebSocket 协议相关的错误；事件负载中包含错误码及错误消息：`{ "errCode": 5, "errMsg": "Invalid Value" }`。
-- `close`：由于读写错误或者其他不可恢复的原因，连接关闭。
-
-当使用 `websocket` 协议扩展时，可指定如下额外选项：
-
-```js
-{
-    'path':         < string: `The path for GET method.` >,
-    'host':         < string: `The client host name.` >,
-    'origin':       < string: `The origin domain name.` >,
-    'user-agent':   < string: `The user-agent of the client.` >,
-    'referer':      < string: `The referer URL.` >,
-
-    'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB".` >,
-    'extensions':   < string | undefined: `The extensions which are supported by the client, e.g., "zip".` >,
-
-    'maxpayloadsize:    < ulongint | undefined: `The maximum size of a payload allowed; use the default value (16K) if not defined.` >
-    'secure:        < boolean | undefined: `Indicate whether or not use SSL to connect to the server.` >
-    'ssl-session-cache-id': < string: `Use the external SSL session cache to enable sharing the sessions between processes.` >
-}
-```
-
-#### 3.12.11) `hbdbus` 协议扩展
-
-在使用 URI 图式 `inetN://`、`local://` 的流实体上，可使用 `hbdbus` 扩展协议。
-
-对应的扩展方法有：
-
-- `subscribe`：订阅一个事件。
-- `unsubscribe`：取消对事件的订阅。
-- `call`：发起一个远程过程调用。
-- `send_result`：发送被调用的过程执行结果。
-- `register_evnt`：登记一个事件。
-- `register_proc`：登记一个远程过程调用。
-- `revoke_evnt`：登记一个事件。
-- `revoke_proc`：登记一个远程过程调用。
-
-同时提供如下可观察事件：
-
-1. `event:<bubble-name>`：接收到一个事件，`bubble-name` 是该事件的泡泡名。
-1. `result:<method-name>`：接收到调用远程过程调用的的结果，`method-name` 是该远程过程调用的方法名。
-1. `call:<method-name>`：接收到针对 `method-name` 的调用请求。
-1. `state:ready`：验证通过，接口就绪。
-1. `state:LostEventGenerator`：丢失已订阅的事件发生者；事件数据中包含事件发生者：
-   `{ "endpointName": "edpt://host.name/app.name/runner.name" }`。
-1. `state:LostEventBubble`：已订阅的事件被撤销；事件数据中包含事件发生者及事件的泡泡名称：
-   `{ "endpointName": "edpt://host.name/app.name/runner.name", "bubbleName": "ABubble" }`。
-1. `state:SystemShuttingDown`：系统关闭中；事件数据中包含发送系统终止调用的端点名称以及终止时间（自 UNIX Epoch 以来的秒数，字符串）：
-   `{ "endpointName": "edpt://host.name/app.name/runner.name", "shutdownTime": "2300000" }`。
-1. `error:hbdbus`：出现 HBDBus 相关的错误；事件数据中包含错误码及错误消息：
-    `{ "errCode": 5, "errMsg": "Invalid Value" }`。
-1. `close`：由于读写错误或者其他不可恢复的原因，连接关闭。
-
-前三个事件的数据，可参阅 HBDBus 相关文档：
-
-- [合璧操作系统设备端数据总线概要设计](https://github.com/HybridOS2/Documents/blob/master/zh/hybridos-design-data-bus-zh.md)
-
 ### 3.13) `SOCKET`
 
 `$SOCKET` 是一个行者级内置变量，该变量可用于创建流套接字或者数据报套接字，并监听该套接字上的连接请求，或者直接收发消息。该变量主要提供如下接口：
@@ -6934,41 +6841,95 @@ $dgramSocket.close()
     // true
 ```
 
-#### 3.13.6) `message`、`websocket` 协议扩展
+### 3.14) 针对流实体的扩展协议
 
-在使用 URI 图式 `local://`、`inetN://` 的流套接字实体上，在调用 `accept()` 方法时，可使用 `message` 或 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
+#### 3.14.1) `message` 扩展协议
 
-对应的扩展方法有：
+在使用 URI 图式 `fifo://`、`local://` 的流实体上，在调用 `$STREAM.open()`、`$STREAM.from()` 和 `$streamSocket.accept()` 方法时，可使用 `message` 扩展协议，从而使用基于消息的数据处理方式。对应的接口有：
 
-- `send_handshake_resp()` 方法：通过该方法可向客户端发送指定的握手应答；仅 `websocket` 扩展协议。
+- `message` 事件：收到来自对端的消息数据，其负载是表示消息的变体；若消息为文本，则对应变体类型为字符串（string），若消息为二进制数据，则对应变体类型为字节序列（bsequence）。
+- `error` 事件：当产生输入输出或协议错误时，将激发此事件，其负载是一个对象，包括错误编号（`code`）以及附言（`postscript`）两个属性，如 `{ "code": 5, "postscript": "Invalid Value" }`。
+- `close` 事件：当对端要求关闭时，将激发此事件，其负载是一个对象，包括错误编号（`code`）以及附言（`postscript`）两个属性，如 `{ "code": 0, "postscript": "Bye" }`。
 - `send()` 方法：发送消息数据；参数为字符串时以文本方式发送，参数为字节序列时以二进制方式发送。
 
-同时提供如下可观察事件：
+#### 3.14.2) `websocket` 扩展协议
 
-- `handshake`：收到来自客户端的握手请求或者服务器端的握手应答。若是服务器，则该事件的负载包含客户端通过 HTTP Headers 发送而来的握手请求信息；若是客户端，则该事件的负载包含服务器的握手应答数据（如 HTTP 请求状态、服务器端选择的协议等）。
-- `message:`：收到来自客户端的文本或二进制消息。
-- `error`：出现 Message、SSL、WebSocket 协议相关的错误；事件数据中包含错误码及错误消息：`{ "errCode": 5, "errMsg": "Invalid Value" }`。
-- `close`：由于读写错误或者其他不可恢复的原因，连接被关闭。
+在使用 URI 图式 `inet<N>://` 的流实体上，在调用 `$STREAM.open()`、`$STREAM.from()` 和 `$streamSocket.accept()` 方法时，可使用 `websocket` 扩展协议，从而使用基于消息的数据处理方式。
 
-当使用 `websocket` 协议扩展时，可使用一个对象指定如下额外选项：
+对应接口有：
+
+- `handshake` 事件：收到来自客户端的握手请求或者服务器端的握手应答时激发此事件。若是服务器，则该事件的负载包含客户端通过 HTTP Headers 发送而来的握手请求信息；若是客户端，则该事件的负载包含服务器的握手应答数据（如 HTTP 请求状态、服务器端选择的协议等）。
+- `message` 事件：收到来自对端的消息数据，其负载是表示消息的变体；若消息为文本，则对应变体类型为字符串（string），若消息为二进制数据，则对应变体类型为字节序列（bsequence）。
+- `error` 事件：当产生输入输出或协议错误时，将激发此事件，其负载是一个对象，包括错误编号（`code`）以及附言（`postscript`）两个属性，如 `{ "code": 5, "postscript": "Invalid Value" }`。
+- `close` 事件：当对端要求关闭时，将激发此事件，其负载是一个对象，包括错误编号（`code`）以及附言（`postscript`）两个属性，如 `{ "code": 0, "postscript": "Bye" }`。
+- `send()` 方法：发送消息数据；参数为字符串时以文本方式发送，参数为字节序列时以二进制方式发送。
+- `send_handshake_resp()` 方法：通过该方法可向客户端发送指定的握手应答（HTTP 状态码）。
+
+当使用 `websocket` 扩展协议时，可指定如下协议选项：
 
 ```js
 {
-    'path':         < string | undefined: `The path for GET method.` >,
-    'host':         < string | undefined: `The client host name.` >,
-    'origin':       < string | undefined: `The origin domain name.` >,
-    'useragent':    < string | undefined: `The user-agent of the client.` >,
-    'referer':      < string | undefined: `The referer URL.` >,
-
+    /* The following properties are client-only. */
+    'path':         < string: `The path for GET method.` >,
+    'host':         < string: `The host name.` >,
+    'origin':       < string: `The origin domain name.` >,
+    'useragent':    < string: `The user-agent of the client.` >,
+    'referer':      < string: `The referer URL.` >,
     'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB".` >,
     'extensions':   < string | undefined: `The extensions which are supported by the client, e.g., "zip".` >,
 
-    'maxpayloadsize:    < ulongint | undefined: `The maximum size of a payload allowed; use the default value (16K) if not defined.` >
-    'secure:        < boolean | undefined: `Indicate whether or not use SSL to connect to the server.` >
+    'secure':       < boolean | undefined: `Indicate whether or not use SSL.` >
+
+    /* Some configuration properties for both client and server. */
+    'maxframepayloadsize': < ulongint | undefined: `The maximum size of a message allowed; use the default value (4K) if not defined.` >
+    'maxmessagesize':    < ulongint | undefined: `The maximum size of a message allowed; use the default value (16K) if not defined.` >
+    'noresptimetoping':  < real | undefined: `The maximum no response seconds to send a PING message to the peer; use the default value (30) if not defined.` >
+    'noresptimetoclose': < real | undefined: `The maximum no response seconds to close the socket; use the default value (90) if not defined.` >
+
+    /* The following properties are server-only ones for worker processes, after the dispacther process has been accepted the connection. */
+    'sslsessioncacheid': < string | undefined: `Use the external SSL session cache to enable sharing the SSL sessions among the dispatcher process and the worker processes.` >
+    'handshake':    < boolean: `Indicate if the dispatcher has been handled the WebSocket handshake.` >
+    'subprotocol':  < string | undefined: `The sub-protocol determined by the dispatcher after the handshake.` >
+    'extension':    < string | undefined: `The extension determined by the dispatcher after the handshake.` >,
 }
 ```
 
-注意，在使用 `websocket` 扩展时，如果流套接字实体开启了 SSL/TLS，将在 `accept()` 之后生成的流实体上强制启用 SSL/TLS。
+注意，在使用 `websocket` 扩展时，如果在调用 `$SOCKET.stream()` 创建流套接字实体时开启了 SSL/TLS，将在调用 `$streamSocket.accept()` 之后生成的流实体上强制启用 SSL/TLS。
+
+#### 3.14.3) `hbdbus` 扩展协议
+
+在使用 URI 图式 `inetN://`、`local://` 的流实体上，在调用 `$STREAM.open()`、`$STREAM.from()` 和 `$streamSocket.accept()` 方法时，可使用 `hbdbus` 扩展协议。
+
+`hbdbus` 扩展协议基于 `message` 或者 `websocket` 扩展协议实现，提供如下方法：
+
+1. `subscribe()`：订阅一个事件。
+1. `unsubscribe()`：取消对事件的订阅。
+1. `call()`：发起一个远程过程调用。
+1. `send_result()`：发送被调用的过程执行结果。
+1. `register_evnt()`：登记一个事件。
+1. `register_proc()`：登记一个远程过程调用。
+1. `revoke_evnt()`：注销一个事件。
+1. `revoke_proc()`：注销一个远程过程调用。
+
+同时提供如下可观察事件：
+
+1. `event:<bubble-name>`：接收到一个事件，`bubble-name` 是该事件的泡泡名。
+1. `result:<method-name>`：接收到调用远程过程调用的的结果，`method-name` 是该远程过程调用的方法名。
+1. `call:<method-name>`：接收到针对 `method-name` 的调用请求。
+1. `state:ready`：验证通过，接口就绪。
+1. `state:LostEventGenerator`：丢失已订阅的事件发生者；事件负载中包含事件发生者：
+   `{ "endpointName": "edpt://host.name/app.name/runner.name" }`。
+1. `state:LostEventBubble`：已订阅的事件被撤销；事件负载中包含事件发生者及事件的泡泡名称：
+   `{ "endpointName": "edpt://host.name/app.name/runner.name", "bubbleName": "ABubble" }`。
+1. `state:SystemShuttingDown`：系统关闭中；事件负载中包含发送系统终止调用的端点名称以及终止时间（自 UNIX Epoch 以来的秒数，字符串）：
+   `{ "endpointName": "edpt://host.name/app.name/runner.name", "shutdownTime": "2300000" }`。
+1. `error:hbdbus`：出现 HBDBus 相关的错误；事件负载中包含错误码及错误消息：
+    `{ "errCode": 5, "errMsg": "Invalid Value" }`。
+1. `close`：当对端要求关闭时，将激发此事件，其负载是一个对象，包括错误编号（`code`）以及附言（`postscript`）两个属性，如 `{ "code": 0, "postscript": "Bye" }`。
+
+前三个事件的数据，可参阅 HBDBus 相关文档：
+
+- [合璧操作系统设备端数据总线概要设计](https://github.com/HybridOS2/Documents/blob/master/zh/hybridos-design-data-bus-zh.md)
 
 ## 4) 可选动态变量
 
