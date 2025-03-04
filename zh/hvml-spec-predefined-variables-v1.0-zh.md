@@ -6507,11 +6507,11 @@ $SOCKET.stream(
                - 'none':        `No additional flags are specified.` >
             [, <longint $backlog = 32: `The backlog.` >
                 [, < object | null $ssl_opts = null: `An object describing the options for SSL; null for not using SSL.`:
-                    - 'ssl-cert':   < string: `The SSL certification file.` >,
-                    - 'ssl-key':    < string: `The SSL private key file.` >,
-                    - 'ssl-session-cache-id':       < string: `Use the external SSL session cache to enable sharing the sessions between processes.` >
-                    - 'ssl-session-cache-users':    < ['group || other'] | undefined: `Specify the extra users who can access the shared SSL session cache except the owner.` >
-                    - 'ssl-session-cache-size':     < real = 256: `Specify the size of the cache: how many sessions to cache.` >
+                    - 'sslcert':   < string: `The SSL certification file.` >,
+                    - 'sslkey':    < string: `The SSL private key file.` >,
+                    - 'sslsessioncacheid':  < string: `Use the external SSL session cache to enable sharing the sessions between processes.` >
+                    - 'sslsessioncacheusers': < ['group || other']: `Specify the extra users who can access the shared SSL session cache except the owner.` >
+                    - 'sslsessioncachesize': < real = 256: `Specify the size of the cache: how many sessions to cache.` >
                     >
                 ]
             ]
@@ -6851,6 +6851,18 @@ $dgramSocket.close()
 - `error` 事件：当产生输入输出或协议错误时，将激发此事件，其负载是一个对象，包括错误编号（`code`）以及附言（`postscript`）两个属性，如 `{ "code": 5, "postscript": "Invalid Value" }`。
 - `close` 事件：当对端要求关闭时，将激发此事件，其负载是一个对象，包括错误编号（`code`）以及附言（`postscript`）两个属性，如 `{ "code": 0, "postscript": "Bye" }`。
 - `send()` 方法：发送消息数据；参数为字符串时以文本方式发送，参数为字节序列时以二进制方式发送。
+
+当使用 `message` 扩展协议时，可指定如下协议选项：
+
+```js
+{
+    /* Some configuration properties. */
+    'maxframepayloadsize': < ulongint | undefined: `The maximum size of a message allowed; use the default value (4K) if not defined.` >
+    'maxmessagesize':    < ulongint | undefined: `The maximum size of a message allowed; use the default value (16K) if not defined.` >
+    'noresptimetoping':  < real | undefined: `The maximum no response seconds to send a PING message to the peer; use the default value (30) if not defined.` >
+    'noresptimetoclose': < real | undefined: `The maximum no response seconds to close the socket; use the default value (90) if not defined.` >
+}
+```
 
 #### 3.14.2) `websocket` 扩展协议
 
