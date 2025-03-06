@@ -4377,7 +4377,7 @@ $STR.explode(
 输入字符串。
 - `seperator`  
 分隔字符串。`separator` 为空时，按字符分隔输入字符串；省略 `separator` 时，视同分隔字符串为空字符串。
-- `limit`
+- `limit`  
    如果 `limit` 参数是正数，则返回的数组包含最多 `limit` 个成员，而最后那个成员将包含 `string` 的剩余部分。
    如果 `limit` 参数是负数，则返回除了最后的 `-limit` 个元素外的所有元素。
    如果 `limit` 是 0，表示不受限制。
