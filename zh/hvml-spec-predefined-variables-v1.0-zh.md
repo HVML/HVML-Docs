@@ -4510,9 +4510,9 @@ $STR.shuffle('beijing') // string: 'jbienig'
 
 ```js
 $STR.replace(
+        <string | array $subject: `The subject to operate.`>
         <string | array $search: `The substring to search.`>,
         <string | array $replace: `The replacement string.`>,
-        <array | string $subject: `The subject to operate.`>
         [, <boolean $case_insensitivity = false:
             - false:  `Perform case-sensitive replacements;`
             - true:   `Perform case-insensitive replacements.`>
@@ -4528,12 +4528,12 @@ $STR.replace(
 
 如果 `search` 和 `replace` 都是数组，它们的值将会被依次处理。
 
+- `subject`  
+执行替换的数组或者字符串，也就是常说的 `haystack`。如果 `subject` 是一个数组，替换操作将遍历整个 `subject`，返回值也将是一个数组。
 - `search`  
 查找的目标值，也就是 needle。一个数组可以指定多个目标。
 - `replace`  
 `search` 的替换值。一个数组可以被用来指定多重替换。
-- `subject`  
-执行替换的数组或者字符串，也就是常说的 `haystack`。如果 `subject` 是一个数组，替换操作将遍历整个 `subject`，返回值也将是一个数组。
 - `case_insensitivity`  
 指定是否忽略大小写（可选）；默认为忽略大小写。
 
