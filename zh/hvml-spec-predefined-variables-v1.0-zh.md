@@ -4740,14 +4740,18 @@ $STR.join(1, ', ', 2, ', ', 3)
 ```js
 $STR.nr_bytes(
         <string | bsequence $data: `The string or byte sequence to count.`>
+        [,
+            <boolean $count_null_byte = true: `Determine whether to count the terminating null byte.`>
+        ]
 ) ulongint
 ```
 
-该方法返回字符串或者字节序列以字节度量时的长度，返回值为 `ulongint` 类型。注意，对字符串，该函数的返回值始终包含用作字符串结尾的空字符。
+该方法返回字符串或者字节序列以字节度量时的长度，返回值为 `ulongint` 类型。注意，对字符串，该函数的返回值默认包含用作字符串结尾的空字符，除非为第二个参数 `$count_null_byte` 传递 `false` 值。
 
 **异常**
 
-该方法不产生异常。
+- `ArgumentMissed`：可忽略异常；静默求值时返回 `false`。
+- `WrongDataType`：可忽略异常；静默求值时返回 `false`。
 
 **示例**
 
@@ -4760,6 +4764,9 @@ $STR.nr_bytes( "HVML" )
 
 $STR.nr_bytes( bb )
     // ulongint: 0
+
+$STR.nr_bytes( "HVML", false )
+    // ulongint: 4UL
 ```
 
 #### 3.10.14) `nr_chars` 方法
