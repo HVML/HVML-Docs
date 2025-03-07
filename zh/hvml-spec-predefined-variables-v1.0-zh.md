@@ -5,7 +5,7 @@ Version: 1.0-OR0
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Feb. 28, 2025  
+Last Modified Date: Mar. 28, 2025  
 Status: Official Release  
 Release Name: 丑牛  
 Language: Chinese
@@ -3599,6 +3599,33 @@ $DATA.rollbytesbuffer($DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011
     // 0L
 ```
 
+#### 3.7.32) `key` 方法
+
+使用数据构建一个可作唯一性键的字符串。
+
+**描述**
+
+```js
+$DATA.key(
+        [ < any $data: `The data.` > ]
+) string
+```
+
+该方法根据所传入的数据创建一个可作为唯一性键值的字符串；若不传入参数，则视作 `undefined`。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$DATA.key
+    // "453456"
+$DATA.key('')
+    // "FE456"
+```
+
 ### 3.8) `L`
 
 该变量是一个行者级内置变量，主要用于逻辑运算。
@@ -4750,8 +4777,8 @@ $STR.nr_bytes(
 
 **异常**
 
-- `ArgumentMissed`：可忽略异常；静默求值时返回 `false`。
-- `WrongDataType`：可忽略异常；静默求值时返回 `false`。
+- `ArgumentMissed`：可忽略异常；静默求值时返回 `0UL`。
+- `WrongDataType`：可忽略异常；静默求值时返回 `0UL`。
 
 **示例**
 
@@ -9978,7 +10005,7 @@ $sqliteCursor.connection
 
 发布历史：
 
-- 2025 年 02 月 28 日：发布 V1.0 OR0，标记为 'v1.0-or0-250228'。
+- 2025 年 03 月 28 日：发布 V1.0 OR0，标记为 'v1.0-or0-250328'。
 - 2024 年 01 月 31 日：发布 V1.0 RCh，标记为 'v1.0-rch-240131'。
 - 2023 年 11 月 30 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231130'。
 - 2023 年 06 月 30 日：发布 V1.0 RCd，标记为 'v1.0-rcd-230630'。
@@ -9995,7 +10022,7 @@ $sqliteCursor.connection
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
 
-#### OR0) 250228
+#### OR0) 250328
 
 1. 重新整理 `$SOCKET` 和 `$STREAM`。
 1. 用于指定流套接字位置的 URI 变更：
@@ -10018,6 +10045,7 @@ $sqliteCursor.connection
 1. 重命名 `$DATA.size` 方法为 `$DATA.memsize` 方法。
 1. 新增 `$RUNNER.enablelog` 方法。
 1. 新增 `$RUNNER.logmsg` 方法。
+1. 新增 `$DATA.key` 方法。
 
 #### RCh) 240131
 
