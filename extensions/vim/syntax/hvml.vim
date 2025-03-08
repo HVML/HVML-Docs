@@ -18,18 +18,22 @@ unlet b:current_syntax
 syn case match
 
 syn match   shTodo          contained "\<\%(COMBAK\|FIXME\|TODO\|XXX\)\ze:\=\>"
-syn match   shQuickComment  contained "^#.*$" contains=shTodo,@Spell
+syn match   shQuickComment  /^#.*/ contains=shTodo,@Spell
 
-syn match   hvmlExpression  contained "\$.*" contains=Identifier,hvmlString,htmlString,hvmlCompoundExpression
-syn region  hvmlCompoundExpression contained start=+{{+ end=+}}+ contains=hvmlExpression
-syn region  hvmlString  contained start=+"""+ end=+"""+me=s-1 contains=htmlSpecialChar,hvmlExpression,@htmlPreproc
-syn region  hvmlString  contained start=+'''+ end=+'''+ contains=htmlSpecialChar,@htmlPreproc
+syn region  hvmlString  start=+"""+ end=+"""+me=s-1 contains=hvmlExpression,hvmlCompoundExpression,@htmlPreproc
+syn region  hvmlString  start=+'''+ end=+'''+
+syn match   hvmlExpression  "\$.*" contained contains=Identifier,hvmlString,htmlString,hvmlCompoundExpression
+syn match   hvmlCEOperatorAnd  "&&" contained
+syn match   hvmlCEOperatorOR   "||" contained
+syn region  hvmlCompoundExpression start=+{{+ end=+}}+ contains=hvmlExpression,hvmlCEOperatorAnd,hvmlCEOperatorOR,hvmlCompoundExpression
 syn match   hvmlValue   contained "=[\t ]*[^'" \t>][^ \t>]*"hs=s+1   contains=javaScriptExpression,@htmlPreproc
 
 syn region  hvmlEndTag  start=+</+      end=+>+ contains=hvmlTagN,htmlTagError
-syn region  hvmlTag     start=+<[^/]+   end=+>+ fold contains=hvmlTagN,htmlString,hvmlString,hvmlPrepArg,hvmlValue,hvmlAdvArg,htmlTagError,@htmlPreproc,@htmlArgCluster
+syn region  hvmlTag     start=+<[^/]+   end=+>+ fold contains=hvmlTagN,htmlString,hvmlString,hvmlPrepArg,hvmlValue,hvmlAdvArg,htmlTagError,hvmlExpressionInTag,@htmlPreproc,@htmlArgCluster
 syn match   hvmlTagN    contained +<\s*[-a-zA-Z0-9]\++hs=s+1 contains=htmlTagName,hvmlTagName,hvmlActionTagName,@hvmlTagNameCluster
 syn match   hvmlTagN    contained +</\s*[-a-zA-Z0-9]\++hs=s+2 contains=htmlTagName,hvmlTagName,hvmlActionTagName,@hvmlTagNameCluster
+
+" syn region  hvmlContent start=+>+ end=+<+ contains=Identifier,hvmlExpression,hvmlString,htmlString,hvmlCompoundExpression
 
 " HVML tag names
 syn keyword hvmlTagName contained hvml archetype archedata error except
@@ -48,16 +52,18 @@ syn keyword hvmlAdvArg  contained sync async excl uniq indv case caseless asc de
 hi def link shTodo              Todo
 hi def link shQuickComment      Comment
 
-hi def link hvmlTag             Function
-hi def link hvmlEndTag          Identifier
-hi def link hvmlPrepArg         Type
+hi def link hvmlTag             Delimiter
+hi def link hvmlEndTag          Delimiter
+hi def link hvmlPrepArg         Operator
 hi def link hvmlAdvArg          Exception
 hi def link hvmlString          String
-hi def link hvmlActionTagName   Special
+hi def link hvmlActionTagName   Include
 hi def link hvmlTagName         htmlTagName
 
-hi def link hvmlExpression  Statement
+hi def link hvmlExpression          Function
+hi def link hvmlExpressionIn        Function
 hi def link hvmlCompoundExpression  Statement
+" hi def link hvmlContent             Function
 
 let b:current_syntax = "hvml"
 
