@@ -2645,7 +2645,7 @@ $DATA.stringify(123)
 ```js
 $DATA.serialize(
         <any $data>
-        [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape' $options = `real-json runtime-null plain bseq-hex-string`:
+        [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape' $options = `real-json runtime-string plain bseq-hex-string no-slash-escape`:
             - 'real-json':          `use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
             - 'real-ejson':         `use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
             - 'runtime-null':       `treat all HVML-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
@@ -3601,17 +3601,17 @@ $DATA.rollbytesbuffer($DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011
 
 #### 3.7.32) `key` 方法
 
-使用数据构建一个可作唯一性键的字符串。
+使用数据构建一个可作唯一性键值的无符号长整数。
 
 **描述**
 
 ```js
 $DATA.key(
-        [ < any $data: `The data.` > ]
-) string
+        < any $data: `The data.` >
+) ulongint
 ```
 
-该方法根据所传入的数据创建一个可作为唯一性键值的字符串；若不传入参数，则视作 `undefined`。
+该方法根据所传入的数据返回一个可作为唯一性键值的无符号长整数；若不传入参数，则视作 `undefined`。
 
 **异常**
 
@@ -3621,9 +3621,9 @@ $DATA.key(
 
 ```js
 $DATA.key
-    // "453456"
+    // 453456UL
 $DATA.key('')
-    // "FE456"
+    // FE456UL
 ```
 
 ### 3.8) `L`

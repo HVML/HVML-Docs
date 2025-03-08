@@ -2135,11 +2135,11 @@ HVML 定义的异常如下：
 - `descendingly`：在 `sort` 元素中，用于指定数据项的排列顺序为降序；可简写为 `desc`。
 - `silently`：用于指示解释器执行静默求值和操作，以忽略对当前元素属性、内容进行求值，或者执行元素定义的操作时遇到的可忽略异常；在外部元素中使用 `hvml:silently` 这一写法。
 - `temporarily`：在 `init` 等定义变量的动作元素中，用于指定变量是临时的而非静态的；所有临时变量，在上下文变量（`$!`）中维护；可简写为 `temp`。
-- `nosetotail`：在 `iterate` 动作元素中，用于将上次迭代的结果作为下次迭代的输入数据；等价写法：“nose-to-tail”
+- `nosetotail`：在 `iterate` 动作元素中，用于将上次迭代的结果作为下次迭代的输入数据；等价写法：`nose-to-tail`。
 - `responsively`：在骨架元素中，用于定义其文本内容是响应式的；可简写为 `resp`。
-- `noreturn`：在 `request` 元素中，用于定义忽略该请求的返回值；等价写法：“no-return”。
+- `noreturn`：在 `request` 元素中，用于定义忽略该请求的返回值；等价写法：`no-return`。
 - `concurrently`：在 `call` 元素中，用于定义一个并发调用；可简写为 `conc`。
-- `constantly`：在 `bind` 元素中，用于说明被绑定的表达式将对同一参数返回不变的值；可简写为“const”
+- `constantly`：在 `bind` 元素中，用于说明被绑定的表达式将对同一参数返回不变的值；可简写为 `const`。
 - `must-yield`：表明每执行一次具有该属性的元素，应强制当前协程出让（yield）处理器；在外部元素中使用 `hvml:must-yield` 这一写法。
 
 注意：在 HVML 中，我们无需为副词属性赋值。
