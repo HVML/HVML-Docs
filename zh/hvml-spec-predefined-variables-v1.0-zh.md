@@ -10140,26 +10140,20 @@ $sqliteCursor.connection
 #### RC2) 220501
 
 1. 将 `$STREAM` 变量调整为必要变量。
-
 1. 原设计为 `$STREAM` 方法的 `readstruct` 等，全部调整为流实体的方法。
-
 1. 原设计为 `$FS` 方法的 `readdir` 和 `rewinddir` 方法，调整为目录流实体的方法。
-
 1. 调整接口，使用字符串选项而非布尔标志：
    - `$SYS.time_us`
    - `$SYS.timezone`
-
 1. 使用 `regexp` 关键词替代 `reg`：
    - `$STR.streq`
    - `$STR.strne`
-
 1. 新增方法
    - `$SYS.sleep`
    - `$DATA.pack`
    - `$DATA.unpack`
    - `$STR.scan_c`
    - `$STR.scan_p`
-
 1. 新增方法
    - `$CRTN.target`
 
