@@ -853,11 +853,12 @@ $SYS.remove(
 
 ```js
 $SYS.spawn(
-        <string $prog_path: `The path of the executable program.`>
+        <string $prog_path: `The path or the filename of the executable program.`>
         <array | tuple $file_actions: `A linear container which speicifies the file-related actions to be performed in the child between the fork(2) and exec(3) steps.`>
         <array | tuple $argv: `The arguments will be passed to the program.`>
-        [, <object $env = null: `The environment will be kept for child process.`>
-            [, <['resetids || setsid ] $flags: `The flags for spawning.`
+        [, <array $env = [! ]: `The environment (*key=value* strings) will be kept for child process.`>
+            [, <['search | resetids || setsid ] $flags: `The flags for spawning.`
+                - 'search': `The executable file is specified as a simple filename; the system searches for this file in the list of directories specified by PATH.
                 - 'resetids': `Reset the effective UID and GID to the real UID and GID of the parent process.`
                 - `setsid': `The child process shall create a new session and become the session leader.` >
                 [, < object $extra_options : `The extra options for spawning.` >
@@ -884,7 +885,7 @@ $SYS.spawn(
 ```js
 {
     'chdir': <string: `Call chdir(2) to change the current working directory to this path before spawning`>,
-    'chroot': <string: `Call chroot(2) to change the root directory after spawning (root only)`>,
+    'chroot': <string: `Call chroot(2) to change the root directory before spawning (root only)`>,
 }
 ```
 
