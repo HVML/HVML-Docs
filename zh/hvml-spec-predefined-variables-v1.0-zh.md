@@ -847,33 +847,44 @@ $SYS.remove(
 
 #### 3.1.14) `spawn` 方法
 
-创建子进程并在其中执行给定的程序。
+创建子进程并在其中执行给定的程序；该方法返回子进程的标识符。
 
 **描述**
 
 ```js
 $SYS.spawn(
         <string $prog_path: `The path of the executable program.`>
-        <array | tuple | null $close_fds: `The file descriptors to close before the new child process starting execution.`>
-        <array | tuple | null $open_files: `The files to open before the new child process starting execution.`>
-        <array | tuple | null $dup2_fds: `The file descriptors to have a dup2 operation on them.`>
-        <array | tuple | null $inherit_fds: `The file descriptors to be marked for inheritance into the new process image.`>
-        <array | tuple | null $argv: `The arguments to pass to the program.`>
-        [, <object $env: `The environment keeps for child process.`>
-            [, <object $options: `Other options for before or after spawning.`>
+        <array | tuple $file_actions: `A linear container which speicifies the file-related actions to be performed in the child between the fork(2) and exec(3) steps.`>
+        <array | tuple $argv: `The arguments will be passed to the program.`>
+        [, <object $env = null: `The environment will be kept for child process.`>
+            [, <['resetids || setsid ] $flags: `The flags for spawning.`
+                - 'resetids': `Reset the effective UID and GID to the real UID and GID of the parent process.`
+                - `setsid': `The child process shall create a new session and become the session leader.` >
+                [, < object $extra_options : `The extra options for spawning.` >
             ]
         ]
-) true | false
+) longint | false
 ```
 
-用于子进程创建的选项 `$options` 使用一个对象描述：
+用于指定在执行程序之前要完成的文件操作 `$file_actions` 由一个个对象构成：
 
 ```js
 {
-    'chdir': <string: `chdir to directory before spawning`>,
-    'chroot': <string: `chroot to this directory after spawning (root only)`>,
-    'chown': <string: `change the user of the child process.`>,
-    'chgrp': <string: `change the group of the child process.`>,
+    'action':   < '[open | close | dup2 ]': `The file action to be performed.` >
+    'fd':       < longint : `The file descriptor.` >
+    'path':     < sring : `The path of the file to be opened if action is 'open'.` >
+    'oflags':   < '[read || write || append || create || truncate || nonblock || cloexec]' : `The open flags if action is 'open'.` >
+    'cmode':    < 'string: `The permission string like '0644' or 'u+rwx,go+rx' if action is 'open'.` >
+    'newfd':    < longint: `The new file descriptor if action is 'dup2'.` >
+}
+```
+
+用于子进程创建的选项 `$extra_options` 使用一个对象描述：
+
+```js
+{
+    'chdir': <string: `Call chdir(2) to change the current working directory to this path before spawning`>,
+    'chroot': <string: `Call chroot(2) to change the root directory after spawning (root only)`>,
 }
 ```
 
@@ -2646,21 +2657,21 @@ $DATA.stringify(123)
 $DATA.serialize(
         <any $data>
         [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape' $options = `real-json runtime-string plain bseq-hex-string no-slash-escape`:
-            - 'real-json':          `use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
-            - 'real-ejson':         `use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
-            - 'runtime-null':       `treat all HVML-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
-            - 'runtime-string':     `use string placehodlers for HVML-specific runtime types: "<undefined>", "<dynamic>", and "<native>".`
-            - 'plain':              `do not use any extra formatting characters (whitespace, newline, or tab).`
-            - 'spaced':             `use minimal space characters to format the output.`
-            - 'pretty':             `use two-space to beautify the output.`
-            - 'pretty-tab':         `use tab instead of two-space to beautify the output.`
-            - 'bseq-hex-string':    `serialize binary sequence as hexadecimal string, e.g. "A0B0C0567890".`
-            - 'bseq-hex':           `use hexadecimal form to serialize binary sequence.`
-            - 'bseq-bin':           `use binary form to serialize binary sequence.`
-            - 'bseq-bin-dots':      `use binary form to serialize binary sequence and use dots to seperate the binary digits per four digits. e.g., b1100.1010.`
-            - 'bseq-base64':        `use Base64 to serialize binary sequence.`
-            - 'no-trailing-zero':   `drop trailing zero for float values.`
-            - 'no-slash-escape':    `do not escape the forward slashes ('/').`
+            - 'real-json':          `Use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
+            - 'real-ejson':         `Use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
+            - 'runtime-null':       `Treat all HVML-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
+            - 'runtime-string':     `Use string placehodlers for HVML-specific runtime types: "<undefined>", "<dynamic>", and "<native>".`
+            - 'plain':              `Do not use any extra formatting characters (whitespace, newline, or tab).`
+            - 'spaced':             `Use minimal space characters to format the output.`
+            - 'pretty':             `Use two-space to beautify the output.`
+            - 'pretty-tab':         `Use tab instead of two-space to beautify the output.`
+            - 'bseq-hex-string':    `Serialize binary sequence as hexadecimal string, e.g. "A0B0C0567890".`
+            - 'bseq-hex':           `Use hexadecimal form to serialize binary sequence.`
+            - 'bseq-bin':           `Use binary form to serialize binary sequence.`
+            - 'bseq-bin-dots':      `Use binary form to serialize binary sequence and use dots to seperate the binary digits per four digits. e.g., b1100.1010.`
+            - 'bseq-base64':        `Use Base64 to serialize binary sequence.`
+            - 'no-trailing-zero':   `Drop trailing zero for float values.`
+            - 'no-slash-escape':    `Do not escape the forward slashes ('/').`
            >
         ]
 ) string
