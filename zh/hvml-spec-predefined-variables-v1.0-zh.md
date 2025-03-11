@@ -857,11 +857,11 @@ $SYS.spawn(
         <array | tuple $file_actions: `A linear container which speicifies the file-related actions to be performed in the child between the fork(2) and exec(3) steps.`>
         <array | tuple $argv: `The arguments will be passed to the program.`>
         [, <array $env = [! ]: `The environment (*key=value* strings) will be kept for child process.`>
-            [, <['search | resetids || setsid ] $flags: `The flags for spawning.`
+            [, < ['search | resetids || setsid ] $flags: `The flags for spawning.`
                 - 'search': `The executable file is specified as a simple filename; the system searches for this file in the list of directories specified by PATH.
                 - 'resetids': `Reset the effective UID and GID to the real UID and GID of the parent process.`
-                - `setsid': `The child process shall create a new session and become the session leader.` >
-                [, < object $extra_options : `The extra options for spawning.` >
+                - `setsid': `The child process shall create a new session and become the session leader.`>
+                [, < object $extra_options: `The extra options are reserved for future use.` >
             ]
         ]
 ) longint | false
@@ -877,15 +877,6 @@ $SYS.spawn(
     'oflags':   < '[read || write || append || create || truncate || nonblock || cloexec]' : `The open flags if action is 'open'.` >
     'cmode':    < 'string: `The permission string like '0644' or 'u+rwx,go+rx' for the new file if action is 'open'.` >
     'newfd':    < longint: `The new file descriptor if action is 'dup2'.` >
-}
-```
-
-用于子进程创建的选项 `$extra_options` 使用一个对象描述：
-
-```js
-{
-    'chdir': <string: `Call chdir(2) to change the current working directory to this path before spawning`>,
-    'chroot': <string: `Call chroot(2) to change the root directory before spawning (root only)`>,
 }
 ```
 
