@@ -10038,6 +10038,8 @@ $sqliteCursor.connection
 1. 新增 `$SYS.fdflags` 方法。
 1. 新增 `$SYS.sockopt` 属性。
 1. 新增 `$SYS.spawn` 方法。
+1. 新增 `$SYS.remove` 方法。
+1. 新增 `$SYS.access` 方法。
 1. 新增 `$stream.fd` 属性。
 1. 新增 `$stream.peerAddr` 属性。
 1. 新增 `$stream.peerPort` 属性。
