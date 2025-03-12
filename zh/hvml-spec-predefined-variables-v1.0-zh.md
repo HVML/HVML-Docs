@@ -884,6 +884,28 @@ $SYS.spawn(
 
 - POSIX 标准函数：`posix_spawn()`
 
+#### 3.1.15) `access` 方法
+
+测试文件的可访问性。
+
+**描述**
+
+```js
+$SYS.access(
+        < string $path: `The path to the file or the directory.` >
+        [, < '[read || write || execute || existence]' $mode = 'existence': `Indicate the access permissions to test: `
+           - 'read':        `For read permission.`
+           - 'write':       `For write permission.`
+           - 'execute':     `For execute/search permission.`
+           - 'existence':   `For existence.` >
+        ]
+) true | false
+```
+
+**参见**
+
+- POSIX 标准函数：`access()`
+
 #### 3.1.15) `pipe` 方法
 
 创建用于父子进程通讯的单向匿名管道。
@@ -10033,6 +10055,7 @@ $sqliteCursor.connection
    - 引入 `inet`、`inet4` 和 `inet6` 分别表示 Internet v4 或 v6 地址。
    - 移除 `tcp://` 和 `udp://`。
 1. 删除 `$CRTN.sendingDocumentByURL` 属性。
+1. 新增 `$SYS.access` 方法。
 1. 新增 `$SYS.pipe` 方法。
 1. 新增 `$SYS.close` 方法。
 1. 新增 `$SYS.fdflags` 方法。
