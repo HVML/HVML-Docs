@@ -875,7 +875,7 @@ $SYS.spawn(
     'fd':       < longint : `The file descriptor.` >
     'path':     < sring : `The path of the file to be opened if action is 'open'.` >
     'oflags':   < '[read || write || append || create || truncate || nonblock || cloexec]' : `The open flags if action is 'open'.` >
-    'cmode':    < 'string: `The permission string like '0644' or 'u+rwx,go+rx' if action is 'open'.` >
+    'cmode':    < 'string: `The permission string like '0644' or 'u+rwx,go+rx' for the new file if action is 'open'.` >
     'newfd':    < longint: `The new file descriptor if action is 'dup2'.` >
 }
 ```
@@ -10061,6 +10061,8 @@ $sqliteCursor.connection
 1. 新增 `$SYS.fdflags` 方法。
 1. 新增 `$SYS.sockopt` 属性。
 1. 新增 `$SYS.spawn` 方法。
+1. 新增 `$SYS.remove` 方法。
+1. 新增 `$SYS.access` 方法。
 1. 新增 `$stream.fd` 属性。
 1. 新增 `$stream.peerAddr` 属性。
 1. 新增 `$stream.peerPort` 属性。
