@@ -2114,7 +2114,31 @@ $DOC.query("#foo").attr(! "bar", "qux")
 
 `RDR` 是一个内置的行者级动态变量，该变量用于访问当前行者连接的渲染器。
 
-#### 3.5.1) `state` 属性
+#### 3.5.1) `info` 属性
+
+该属性的获取器返回当前的渲染器信息对象。该属性不提供设置器。
+
+```js
+$RDR.info object : `An object describing the information of the renderer:`
+        - 'name':           < string: `The name of the renderer.` >
+        - 'version':        < string: `The version of the renderer.` >
+        - 'locale':         < string: `The locale of the renderer.` >
+        - 'html':           < string: `The HTML version supported by the renderer.` >
+        - 'vendor':         < string: `The vendor of the renderer.` >
+```
+
+**异常**
+
+（无）
+
+**示例**
+
+```js
+$RDR.info
+    // { 'name': 'Chrome', 'version': '5.0', 'locale': 'zh_CN', 'html': '5.3', 'vendor': 'FMSoft'}
+```
+
+#### 3.5.2) `state` 属性
 
 该属性的获取器返回当前的渲染器状态对象。该属性不提供设置器。
 
@@ -2138,7 +2162,7 @@ $RDR.state
     // { 'comm': 'socket', 'prot': 'PURCMC', 'prot-version': '110', 'prot-ver-code': 110UL, 'uri': 'unix:///var/tmp/purcmc.sock'}
 ```
 
-#### 3.5.2) `stats` 属性
+#### 3.5.3) `stats` 属性
 
 该属性的获取器返回解释器和渲染器之间的通讯统计信息。该属性不提供设置器。
 
@@ -2166,7 +2190,7 @@ $RDR.stats
     // { 'nrRequestsSent': 5UL, 'nrResponsesRecv': 5UL, 'nrRequestsRecv': 0, 'nrResponsesSent': 0, 'nrEventsSent': 0, 'nrEventsRecv': 10UL, 'bytesSent': 2368UL, 'bytesRecv': 468UL, 'durationSeconds': 10UL }
 ```
 
-#### 3.5.3) `connect` 方法
+#### 3.5.4) `connect` 方法
 
 该方法断开当前的渲染器并连接到指定的渲染器。
 
@@ -2192,7 +2216,7 @@ $RDR.connect('socket', 'unix:///var/tmp/purcmc.sock')
     // true
 ```
 
-#### 3.5.4) `disconn` 方法
+#### 3.5.5) `disconn` 方法
 
 该方法断开当前的渲染器。
 
