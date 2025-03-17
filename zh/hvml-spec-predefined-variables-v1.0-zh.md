@@ -853,17 +853,17 @@ $SYS.remove(
 
 ```js
 $SYS.spawn(
-        <string $prog_path: `The path or the filename of the executable program.`>
-        <array | tuple $file_actions: `A linear container which speicifies the file-related actions to be performed in the child between the fork(2) and exec(3) steps.`>
-        <array | tuple $argv: `The arguments will be passed to the program.`>
-        [, <array $env = [! ]: `The environment (*key=value* strings) will be kept for child process.`>
-            [, < ['search | resetids || setsid ] $flags: `The flags for spawning.`
-                - 'search': `The executable file is specified as a simple filename; the system searches for this file in the list of directories specified by PATH.
-                - 'resetids': `Reset the effective UID and GID to the real UID and GID of the parent process.`
-                - `setsid': `The child process shall create a new session and become the session leader.`>
-                [, < object $extra_options: `The extra options are reserved for future use.` >
-            ]
+    <string $prog_path: `The path or the filename of the executable program.`>
+    <array | tuple $file_actions: `A linear container which speicifies the file-related actions to be performed in the child between the fork(2) and exec(3) steps.`>
+    <array | tuple $argv: `The arguments will be passed to the program.`>
+    [, <array $env = [! ]: `The environment (*key=value* strings) will be kept for child process.`>
+        [, < ['search | resetids || setsid ] $flags: `The flags for spawning.`
+            - 'search': `The executable file is specified as a simple filename; the system searches for this file in the list of directories specified by PATH.
+            - 'resetids': `Reset the effective UID and GID to the real UID and GID of the parent process.`
+            - `setsid': `The child process shall create a new session and become the session leader.`>
+            [, < object $extra_options: `The extra options are reserved for future use.` >
         ]
+    ]
 ) longint | false
 ```
 
@@ -874,7 +874,7 @@ $SYS.spawn(
     'action':   < '[open | close | dup2 ]': `The file action to be performed.` >
     'fd':       < longint : `The file descriptor.` >
     'path':     < sring : `The path of the file to be opened if action is 'open'.` >
-    'oflags':   < '[read || write || append || create || truncate || nonblock || cloexec]' : `The open flags if action is 'open'.` >
+    'oflags':   < '[read || write || append || create || excl || truncate || nonblock || cloexec]' : `The open flags if action is 'open'.` >
     'cmode':    < 'string: `The permission string like '0644' or 'u+rwx,go+rx' for the new file if action is 'open'.` >
     'newfd':    < longint: `The new file descriptor if action is 'dup2'.` >
 }
@@ -892,13 +892,13 @@ $SYS.spawn(
 
 ```js
 $SYS.access(
-        < string $path: `The path to the file or the directory.` >
-        [, < '[read || write || execute || existence]' $mode = 'existence': `Indicate the access permissions to test: `
-           - 'read':        `For read permission.`
-           - 'write':       `For write permission.`
-           - 'execute':     `For execute/search permission.`
-           - 'existence':   `For existence.` >
-        ]
+    < string $path: `The path to the file or the directory.` >
+    [, < '[read || write || execute || existence]' $mode = 'existence': `Indicate the access permissions to test: `
+       - 'read':        `For read permission.`
+       - 'write':       `For write permission.`
+       - 'execute':     `For execute/search permission.`
+       - 'existence':   `For existence.` >
+    ]
 ) true | false
 ```
 
@@ -914,12 +914,12 @@ $SYS.access(
 
 ```js
 $SYS.pipe(
-        [ < '[cloexec || nonblock] | default | none' $flags = 'default': `The flags on the new file descriptors.`:
-           - 'nonblock':    `Set the file descriptor in nonblocking mode.`
-           - 'cloexec':     `Set the file descriptor flag close-on-exec.`
-           - 'default':     `The equivalent to 'cloexec'.`
-           - 'none':        `No additinal flags are specified.`  >
-        ]
+    [ < '[cloexec || nonblock] | default | none' $flags = 'default': `The flags on the new file descriptors.`:
+       - 'nonblock':    `Set the file descriptor in nonblocking mode.`
+       - 'cloexec':     `Set the file descriptor flag close-on-exec.`
+       - 'default':     `The equivalent to 'cloexec'.`
+       - 'none':        `No additinal flags are specified.`  >
+    ]
 ) tuple with two longint elements | false
 ```
 
@@ -937,12 +937,12 @@ $SYS.pipe(
 
 ```js
 $SYS.fdflags(
-        <longint $fd: `The file descriptor.`>,
-        <'cloexec | append | nonblock' $flags:
-           - 'cloexec':     `Get the file descriptor flag close-on-exec.`
-           - 'append':      `Get the file descriptor statu flag of O_APPEND.`
-           - 'nonblock':    `Get the file descriptor statu flag of O_NONBLOCK.`
-        >
+    <longint $fd: `The file descriptor.`>,
+    <'cloexec | append | nonblock' $flags:
+       - 'cloexec':     `Get the file descriptor flag close-on-exec.`
+       - 'append':      `Get the file descriptor statu flag of O_APPEND.`
+       - 'nonblock':    `Get the file descriptor statu flag of O_NONBLOCK.`
+    >
 ) true | false
 ```
 
@@ -950,12 +950,12 @@ $SYS.fdflags(
 
 ```js
 $SYS.fdflags(!
-        <longint $fd: `The file descriptor.`>,
-        <'cloexec || append || nonblock' $flags:
-           - 'cloexec':     `Set the file descriptor flag close-on-exec.`
-           - 'append':      `Set the file descriptor statu flag of O_APPEND.`
-           - 'nonblock':    `Set the file descriptor statu flag of O_NONBLOCK.`
-        >
+    <longint $fd: `The file descriptor.`>,
+    <'cloexec || append || nonblock' $flags:
+       - 'cloexec':     `Set the file descriptor flag close-on-exec.`
+       - 'append':      `Set the file descriptor statu flag of O_APPEND.`
+       - 'nonblock':    `Set the file descriptor statu flag of O_NONBLOCK.`
+    >
 ) true | false
 ```
 
@@ -973,17 +973,17 @@ $SYS.fdflags(!
 
 ```js
 $SYS.sockopt(
-        <longint $fd: `The file descriptor.`>,
-        <'type | nread | nwrite | recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
-            - 'type':           `The socket type.`
-            - 'nread':          `The number of bytes to be read. (macOS only)`
-            - 'nwrite':         `The number of bytes written not yet sent by the protocol. (macOS only)`
-            - 'recv-timeout':   `The timeout value for input.`
-            - 'send-timeout':   `The timeout value for output.`
-            - 'recv-buffer':    `The buffer size for input.`
-            - 'send-buffer':    `The buffer size for output.`
-            - 'keep-alive':     `Keep alive.`
-        >
+    <longint $fd: `The file descriptor.`>,
+    <'type | nread | nwrite | recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
+        - 'type':           `The socket type.`
+        - 'nread':          `The number of bytes to be read. (macOS only)`
+        - 'nwrite':         `The number of bytes written not yet sent by the protocol. (macOS only)`
+        - 'recv-timeout':   `The timeout value for input.`
+        - 'send-timeout':   `The timeout value for output.`
+        - 'recv-buffer':    `The buffer size for input.`
+        - 'send-buffer':    `The buffer size for output.`
+        - 'keep-alive':     `Keep alive.`
+    >
 ) string | number | longint | true | false
 ```
 
@@ -993,15 +993,15 @@ $SYS.sockopt(
 
 ```js
 $SYS.sockopt(!
-        <longint $fd: `The file descriptor.`>,
-        <'recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
-            - 'recv-timeout':   `The timeout value for input.`
-            - 'send-timeout':   `The timeout value for output.`
-            - 'recv-buffer':    `The buffer size for input.`
-            - 'send-buffer':    `The buffer size for output.`
-            - 'keep-alive':     `Keep alive.`
-        >,
-        < number | longint | boolean $value: `The option value to be set.`>,
+    <longint $fd: `The file descriptor.`>,
+    <'recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
+        - 'recv-timeout':   `The timeout value for input.`
+        - 'send-timeout':   `The timeout value for output.`
+        - 'recv-buffer':    `The buffer size for input.`
+        - 'send-buffer':    `The buffer size for output.`
+        - 'keep-alive':     `Keep alive.`
+    >,
+    < number | longint | boolean $value: `The option value to be set.`>,
 ) true | false
 ```
 
@@ -1027,7 +1027,38 @@ $SYS.sockopt($stream.fd, 'recv-timeout', 1.0)
     // true
 ```
 
-#### 3.1.19) `close` 方法
+#### 3.1.19) `open` 方法
+
+打开给定文件。
+
+**描述**
+
+```js
+$SYS.open(
+    <string $file_path: `The path of the file to open.`>
+    [,
+        <'[read || write || append || create || excl || truncate || nonblock || cloexec]' $oflags = 'read write cloexec':   < `The open flags.` >
+        [,
+            < 'string $cmode: `The permission string like '0644' or 'u+rwx,go+rx' when creating a new file.` >
+        ]
+    ]
+) longint | false
+```
+
+该方法以默认方式或者指定的选项打开或创建指定的文件。
+
+**异常**
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+- `Unsupported`：不支持该操作; 可忽略异常，静默求值时返回 `false`。
+
+**参见**
+
+- POSIX 标准函数：`open()`
+
+#### 3.1.20) `close` 方法
 
 关闭给定的文件描述符。
 
@@ -1035,13 +1066,39 @@ $SYS.sockopt($stream.fd, 'recv-timeout', 1.0)
 
 ```js
 $SYS.close(
-        <longint $fd: `The file descriptor to be closed.`>
+    <longint $fd: `The file descriptor to be closed.`>
 ) true | false
 ```
 
 **参见**
 
 - POSIX 标准函数：`close()`
+
+#### 3.1.21) `sendfile` 方法
+
+在文件描述符之间复制数据。
+
+**描述**
+
+```js
+$SYS.sendfile(
+    <longint $out_fd: `The output file descriptor.`>,
+    <longint $in_fd: `The input file descriptor.`>
+    [,
+        <ulongint $offset = null: `The file offset from which the method will start reading data from $in_fd.  \
+                If $offset is @null, then data will be read from $in_fd starting at the file offset, and the file offset will be updated by the call.` >
+        [,
+            <ulongint $count = 4096UL: `The number of bytes to copy between the file descriptors. `>
+        ]
+    ]
+) [! $bytes_copied, $new_offset ] | false
+```
+
+该方法在两个文件描述符之间复制数据。该方法借助操作系统内核提供的 `sendfile()` 系统调用完成文件内容的复制，避免了将数据读入用户空间再从用户空间写入内核的过程，从而可大幅提高性能。
+
+**参见**
+
+- Linux 系统调用：`sendfile()`
 
 ### 3.2) `RUNNER`
 
