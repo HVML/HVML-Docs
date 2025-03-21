@@ -1091,7 +1091,7 @@ $SYS.sendfile(
             <ulongint $count = 4096UL: `The number of bytes to copy between the file descriptors. `>
         ]
     ]
-) [! $bytes_copied, $new_offset ] | false
+) [! $bytes_sent, $new_offset ] | false
 ```
 
 该方法在两个文件描述符之间复制数据。该方法借助操作系统内核提供的 `sendfile()` 系统调用完成文件内容的复制，避免了将数据读入用户空间再从用户空间写入内核的过程，从而可大幅提高性能。
@@ -6260,7 +6260,7 @@ $stream.writestruct("i16le:2 i32le", [10, 15], 255)
 
 ```js
 $stream.readlines(
-        < real $lines: `The number of lines to read`>
+        < real $lines: `The number of lines to read; 0 means reading all lines available.`>
         [,
             < string $line_terminator = '\n': `The string terminating a line.` >
         ]
@@ -7030,18 +7030,18 @@ $dgramSocket.close()
     'subprotocols': < string | undefined: `The application subprotocols desired by the client, e.g., "GameA, GameB".` >,
     'extensions':   < string | undefined: `The extensions which are supported by the client, e.g., "zip".` >,
 
-    'secure':       < boolean | undefined: `Indicate whether or not use SSL.` >
+    'secure':       < boolean | undefined: `Indicate whether or not use SSL.` >,
 
     /* Some configuration properties for both client and server. */
-    'maxframepayloadsize': < ulongint | undefined: `The maximum size of a message allowed; use the default value (4K) if not defined.` >
-    'maxmessagesize':    < ulongint | undefined: `The maximum size of a message allowed; use the default value (16K) if not defined.` >
-    'noresptimetoping':  < real | undefined: `The maximum no response seconds to send a PING message to the peer; use the default value (30) if not defined.` >
-    'noresptimetoclose': < real | undefined: `The maximum no response seconds to close the socket; use the default value (90) if not defined.` >
+    'maxframepayloadsize': < ulongint | undefined: `The maximum size of a message allowed; use the default value (4K) if not defined.` >,
+    'maxmessagesize':    < ulongint | undefined: `The maximum size of a message allowed; use the default value (16K) if not defined.` >,
+    'noresptimetoping':  < real | undefined: `The maximum no response seconds to send a PING message to the peer; use the default value (30) if not defined.` >,
+    'noresptimetoclose': < real | undefined: `The maximum no response seconds to close the socket; use the default value (90) if not defined.` >,
 
     /* The following properties are server-only ones for worker processes, after the dispacther process has been accepted the connection. */
-    'sslsessioncacheid': < string | undefined: `Use the external SSL session cache to enable sharing the SSL sessions among the dispatcher process and the worker processes.` >
-    'handshake':    < boolean: `Indicate if the dispatcher has been handled the WebSocket handshake.` >
-    'subprotocol':  < string | undefined: `The sub-protocol determined by the dispatcher after the handshake.` >
+    'sslsessioncacheid': < string | undefined: `Use the external SSL session cache to enable sharing the SSL sessions among the dispatcher process and the worker processes.` >,
+    'handshake':    < boolean: `Indicate if the dispatcher has been handled the WebSocket handshake.` >,
+    'subprotocol':  < string | undefined: `The sub-protocol determined by the dispatcher after the handshake.` >,
     'extension':    < string | undefined: `The extension determined by the dispatcher after the handshake.` >,
 }
 ```
