@@ -2655,7 +2655,7 @@ $DATA.count( [ 1.0, 2.0 ] )
     // ulongint: 2UL
 ```
 
-#### 3.7.3) `nr_children` 方法
+#### 3.7.4) `nr_children` 方法
 
 返回数据的子数据项个数；对非容器类数据，始终返回 0。
 
@@ -2686,7 +2686,7 @@ $DATA.nr_children( [ 1.0, 2.0 ] )
     // ulongint: 2UL
 ```
 
-#### 3.7.4) `numerify` 方法
+#### 3.7.5) `numerify` 方法
 
 对给定数据做数值化处理。
 
@@ -2714,7 +2714,7 @@ $DATA.numerify
     // number: 0
 ```
 
-#### 3.7.5) `booleanize` 方法
+#### 3.7.6) `booleanize` 方法
 
 对给定的数据做布尔化处理。
 
@@ -2739,7 +2739,7 @@ $DATA.booleanize
     // boolean: false
 ```
 
-#### 3.7.6) `stringify` 方法
+#### 3.7.7) `stringify` 方法
 
 对给定的数据做字符串化处理。
 
@@ -2770,7 +2770,7 @@ $DATA.stringify(123)
     // string: '123'
 ```
 
-#### 3.7.7) `serialize` 方法
+#### 3.7.8) `serialize` 方法
 
 对给定的数据做字符串化处理。
 
@@ -2824,7 +2824,7 @@ $DATA.serialize([1, 2])
     // string: '[1,2]'
 ```
 
-#### 3.7.8) `sort` 方法
+#### 3.7.9) `sort` 方法
 
 对数组或者集合执行排序。
 
@@ -2860,7 +2860,7 @@ $DATA.sort([3, 4, 1, 0], 'asc')
     // array: [0, 1, 3, 4]
 ```
 
-#### 3.7.9) `shuffle` 方法
+#### 3.7.10) `shuffle` 方法
 
 随机打乱给定数组或者集合的成员顺序。
 
@@ -2888,7 +2888,7 @@ $DATA.shuffle([1, 2, 3, 4, 5])
     // array: [4, 3, 2, 5, 1]
 ```
 
-#### 3.7.10) `compare` 方法
+#### 3.7.11) `compare` 方法
 
 比较两个数据。
 
@@ -2928,7 +2928,7 @@ $DATA.compare(1, "1")
     // number: 0
 ```
 
-#### 3.7.11) `parse` 方法
+#### 3.7.12) `parse` 方法
 
 解析 JSON/eJSON 字符串，返回数据。
 
@@ -2959,7 +2959,7 @@ $DATA.parse(
     // array: []
 ```
 
-#### 3.7.12) `isequal` 方法
+#### 3.7.13) `isequal` 方法
 
 判断两个数据是否完全相等。
 
@@ -2990,7 +2990,7 @@ $DATA.isequal(
     // boolean: true
 ```
 
-#### 3.7.13) `fetchstr` 方法
+#### 3.7.14) `fetchstr` 方法
 
 从二进制字节序列中抽取指定编码的字符串。
 
@@ -3039,7 +3039,7 @@ $DATA.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8:6' )
     // string: "北京"
 ```
 
-#### 3.7.14) `fetchreal` 方法
+#### 3.7.15) `fetchreal` 方法
 
 该方法在给定的二进制序列的指定位置，按指定的实数类型（以及大小头顺序）提取实数，返回相应的实数类型。
 
@@ -3074,7 +3074,7 @@ $DATA.fetchreal( bx0a00, 'i8:2', 0 )
     // array: [ 10L, 00L ]
 ```
 
-#### 3.7.15) `crc32` 方法
+#### 3.7.16) `crc32` 方法
 
 计算任意数据的 CRC32 多项式值。
 
@@ -3114,7 +3114,7 @@ $DATA.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
 - [CRC 在线计算]<https://crccalc.com/>
 - [Catalogue of parametrised CRC algorithms](https://reveng.sourceforge.io/crc-catalogue/17plus.htm)
 
-#### 3.7.16) `md5` 方法
+#### 3.7.17) `md5` 方法
 
 计算任意数据的 MD5 散列值。
 
@@ -3139,7 +3139,7 @@ $DATA.md5(
 
 - PHP `md5()` 函数：<https://www.php.net/manual/en/function.md5.php>
 
-#### 3.7.17) `sha1` 方法
+#### 3.7.18) `sha1` 方法
 
 计算任意数据的 SHA1 散列值。
 
@@ -3164,7 +3164,7 @@ $DATA.sha1(
 
 - PHP `sha1()` 函数：<https://www.php.net/manual/en/function.sha1.php>
 
-#### 3.7.18) `pack` 方法
+#### 3.7.19) `pack` 方法
 
 将多个数据打包为二进制序列。
 
@@ -3223,7 +3223,7 @@ $DATA.pack( "i16le:2 i32le", [10, 15], 255)
 
 - [1.2) 二进制格式表示法](#12-二进制格式表示法)
 
-#### 3.7.19) `unpack` 方法
+#### 3.7.20) `unpack` 方法
 
 将二进制序列分解为多个数据。
 
@@ -3261,7 +3261,7 @@ $DATA.unpack( "i16le", bx0a000a000000)
 
 - [1.2) 二进制格式表示法](#12-二进制格式表示法)
 
-#### 3.7.20) `bin2hex` 方法
+#### 3.7.21) `bin2hex` 方法
 
 将字符串或者字节序列转换为十六进制字符串表达。
 
@@ -3298,7 +3298,7 @@ $DATA.bin2hex( bb0000.1111.1111.0000, 'uppercase')
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.bin2hex.php>
 
-#### 3.7.21) `hex2bin` 方法
+#### 3.7.22) `hex2bin` 方法
 
 十六进制字符串转换为字节序列。
 
@@ -3331,7 +3331,7 @@ $DATA.hex2bin( '0FF0' )
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.hex2bin.php>
 
-#### 3.7.22) `base64_encode` 方法
+#### 3.7.23) `base64_encode` 方法
 
 使用 MIME Base64 编码字符串或者字节序列。
 
@@ -3367,7 +3367,7 @@ $DATA.base64_encode('HVML 是全球首款可编程标记语言')
 - PHP `base64_encode()` 函数：<https://www.php.net/manual/en/function.base64-encode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.7.23) `base64_decode` 方法
+#### 3.7.24) `base64_decode` 方法
 
 解码使用 MIME Base64 编码的字符串。
 
@@ -3401,7 +3401,7 @@ $DATA.base64_decode( 'SFZNTA==' )
 - PHP `base64_decode()` 函数：<https://www.php.net/manual/en/function.base64-decode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.7.24) `arith` 方法
+#### 3.7.25) `arith` 方法
 
 基于两个数值做简单整数算术运算。
 
@@ -3432,7 +3432,7 @@ $DATA.arith( '+', 3, 2 )
     // longint: 5L
 ```
 
-#### 3.7.25) `bitwise` 方法
+#### 3.7.26) `bitwise` 方法
 
 基于两项数值的位元计算。
 
@@ -3463,7 +3463,7 @@ $DATA.bitwise( '|', 0, 15 )
     // ulongint: 15UL
 ```
 
-#### 3.7.26) `isdivisible` 方法
+#### 3.7.27) `isdivisible` 方法
 
 判断一个数是否可以整除另一个数。
 
@@ -3496,7 +3496,7 @@ $DATA.isdivisible(
     // boolean: false
 ```
 
-#### 3.7.27) `match_members` 方法
+#### 3.7.28) `match_members` 方法
 
 返回一个线性容器（如数组、元组、集合）中和给定值匹配的所有成员之索引或值。
 
@@ -3569,7 +3569,7 @@ $DATA.match_members(['zh_CN', 'zh_TW', 'zh_HK', 'zh_MO'], '^zh', 'regexp values'
     // ['zh_CN', 'zh_TW', 'zh_HK', 'zh_MO']
 ```
 
-#### 3.7.28) `match_properties` 方法
+#### 3.7.29) `match_properties` 方法
 
 返回一个对象中属性名匹配给定条件的所有属性名、属性值或者键值对。
 
@@ -3630,7 +3630,7 @@ $DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless kv-pairs')
     // [ [! 'A',  3 ], [! 'a', 1 ] ]
 ```
 
-#### 3.7.29) `makebytesbuffer` 方法
+#### 3.7.30) `makebytesbuffer` 方法
 
 构造一个可用作缓冲区的字节序列。
 
@@ -3659,7 +3659,7 @@ $DATA.makebytesbuffer(
     // bsequence
 ```
 
-#### 3.7.30) `append2bytesbuffer` 方法
+#### 3.7.31) `append2bytesbuffer` 方法
 
 将一个字节序列或字符串追加到缓冲区。
 
@@ -3700,7 +3700,7 @@ $DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011223344)
     // 5UL
 ```
 
-#### 3.7.31) `rollbytesbuffer` 方法
+#### 3.7.32) `rollbytesbuffer` 方法
 
 重置字节缓冲区。
 
@@ -3733,7 +3733,7 @@ $DATA.rollbytesbuffer($DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011
     // 0L
 ```
 
-#### 3.7.32) `key` 方法
+#### 3.7.33) `key` 方法
 
 使用数据构建一个可作唯一性键值的无符号长整数。
 
