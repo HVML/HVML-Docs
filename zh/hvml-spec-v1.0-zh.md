@@ -5,7 +5,7 @@ Version: 1.0-OR0
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Feb. 28, 2025  
+Last Modified Date: Mar. 31, 2025  
 Status: Release Candidate  
 Release Name: 丑牛  
 Language: Chinese
