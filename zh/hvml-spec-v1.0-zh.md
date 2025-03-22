@@ -102,7 +102,7 @@ Language: Chinese
          - [2.5.7.2) 不使用迭代执行器](#2572-不使用迭代执行器)
       * [2.5.8) `reduce` 标签](#258-reduce-标签)
       * [2.5.9) `sort` 标签](#259-sort-标签)
-      * [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
+      * [2.5.10) `define` 和 `execute` 标签](#2510-define-和-execute-标签)
       * [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
       * [2.5.12) `call` 和 `return` 标签](#2512-call-和-return-标签)
       * [2.5.13) `bind` 标签](#2513-bind-标签)
@@ -156,6 +156,7 @@ Language: Chinese
          - [OR0.3) 移除 `complex` 和固有方法](#or03-移除-complex-和固有方法)
          - [OR0.4) 微调 `observe` 元素的动作](#or04-微调-observe-元素的动作)
          - [OR0.5) 新增两个异常](#or05-新增两个异常)
+         - [OR0.6) 修改 `include` 标签名为 `execute`](#or06-修改-include-标签名为-execute)
       * [RCh) 241130](#rch-241130)
          - [RCh.1) 细化了动态属性的写法](#rch1-细化了动态属性的写法)
       * [RCg) 231130](#rcg-231130)
@@ -203,7 +204,7 @@ Language: Chinese
          - [RC6.4) 新增元组容器类型](#rc64-新增元组容器类型)
          - [RC6.5) 重新求值](#rc65-重新求值)
       * [RC5) 220701](#rc5-220701)
-         - [RC5.1) 调整对 `include` 标签的描述](#rc51-调整对-include-标签的描述)
+         - [RC5.1) 调整对 `execute` 标签的描述](#rc51-调整对-execute-标签的描述)
          - [RC5.2) 调整 `request` 标签](#rc52-调整-request-标签)
          - [RC5.3) 调整 `load` 和 `call` 标签](#rc53-调整-load-和-call-标签)
          - [RC5.4) HVML URI 方案及协程描述符](#rc54-hvml-uri-方案及协程描述符)
@@ -583,7 +584,7 @@ HVML 程序在一个抽象的栈式虚拟机上执行。一个 HVML 程序被解
 </define>
 
 <!-- 该元素根据当前 `hvml` 元素的 `target` 属性值就地执行不同的操作组。-->
-<include with ${output_$CRTN.target} on $T.get('Hello, world!') />
+<execute with ${output_$CRTN.target} on $T.get('Hello, world!') />
 ```
 
 第六，内置事件驱动。
@@ -1258,7 +1259,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
         <!-- start the reader coroutine and wait for the result -->
         <load from "#reader">
-            $STREAM.stdout.writelines("The result got from the reader: `$?`")
+            <inherit on $STREAM.stdout.writelines("The result got from the reader: `$?`") />
         </load>
 
     </body>
@@ -1267,7 +1268,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
         <init as chan with $RUNNER.chan('myChannel') />
 
         <iterate on [ 'H', 'V', 'M', 'L' ]>
-            $chan.send($?)
+            <inherit on $chan.send($?) /?
 
             <sleep for '1s' />
 
@@ -1287,7 +1288,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
             <!-- the channel has been closed if $chan.recv() returns false -->
             <iterate with $?.recv() silently>
-                $STREAM.stdout.writelines("$DATETIME.time_prt: the data received: $?");
+                <inherit on $STREAM.stdout.writelines("$DATETIME.time_prt: the data received: $?") />
 
                 <init as result at '_grandparent' with "$result$?" />
             </iterate>
@@ -1566,12 +1567,12 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 - `recvfrom()` 方法：用于接收数据报套接字上收到的消息。
 - `close()` 方法：用于关闭数据报套接字。
 
-下面的 HVML 代码，在指定的 INET6 域流套接字上监听连接请求（`connAttempt` 事件），然后调用 `accept()` 方法。注意在 `accept()` 方法中，因指定了 `websocket` 协议，要继续监听 `handshake` 事件，并在处理此事件时做后续响应或者关闭请求等。
+下面的 HVML 代码，在指定的 INET6 域流套接字上监听连接请求（`socket:connAttempt` 事件），然后调用 `accept()` 方法。注意在 `accept()` 方法中，因指定了 `websocket` 协议，要继续监听 `handshake` 事件，并在处理此事件时做后续响应或者关闭请求等。
 
 ```hvml
     <init as 'streamSocket' with  $SOCKET.stream('inet6://foobar.com:8888', ...) >
-        <observe on $? for 'connAttempt' >
-            <init as 'wsStream' with $streamSocket.accept('websocket', ...) >
+        <observe on $? for 'socket:connAttempt' >
+            <init as 'wsStream' with $streamSocket.accept('default', 'websocket', ...) >
                 <observe on $wsStream for 'handshake' >
                     <inherit>
                         $wsStream.send_handshake_resp(...)
@@ -1926,7 +1927,7 @@ HVML 定义有如下几个基本的动作元素，用于操作数据或者元素
 - `define` 元素用来定义一个可供重用的操作组。
 - `return` 元素用来定义一个操作组的返回值。
 - `back` 元素用来弹出栈帧到指定的执行栈位置，相当于打断（break）默认的执行路径。
-- `include` 元素用来就地（in place）执行一个操作组。
+- `execute` 元素用来就地（in place）执行一个操作组。
 - `call` 元素用来调用一个操作组。
 - `catch` 元素用于捕获一个异常。
 
@@ -2102,7 +2103,7 @@ HVML 定义的异常如下：
 - `for`：在 `observe`、 `forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的事件名称；在 `match` 标签中，用于定义匹配条件。
 - `as`：在 `init`、 `define`、 `bind`、 `load` 等元素中定义变量名。
 - `at`：和 `as` 属性配合使用时，用于变量名的作用范围（scope）；在 `update` 元素中指定目标数据上的目标位置。
-- `with`：在 `init`、 `update`、 `define`、 `load` 等支持外部资源的元素中，配合 `from` 属性使用时，用来定义请求参数；在 `request` 元素中定义请求参数；在 `iterate` 元素中定义不使用执行器时迭代结果的求值表达式；在 `include` 元素中定义要引用的操作组；在 `test` 元素中定义测试条件；在 `call` 元素中定义传入操作组的实参。
+- `with`：在 `init`、 `update`、 `define`、 `load` 等支持外部资源的元素中，配合 `from` 属性使用时，用来定义请求参数；在 `request` 元素中定义请求参数；在 `iterate` 元素中定义不使用执行器时迭代结果的求值表达式；在 `execute` 元素中定义要引用的操作组；在 `test` 元素中定义测试条件；在 `call` 元素中定义传入操作组的实参。
 - `to`：在 `update` 标签中定义具体的更新动作，比如表示追加的 `append`，表示替换的 `displace` 等；在 `back` 标签中定义回退到的栈帧。
 - `by`：用于定义执行测试、选择、迭代、归约操作时的选择器、迭代器或归约器，统称为执行器（executor）。HVML 允许解释器支持内建（built-in）执行器。对简单的数据处理，可直接使用内置执行器，在复杂的数据处理情形中，可使用外部程序定义的类或者函数。在 HVML 中，我们使用如下前缀来表示不同的执行器类型：
    - `CLASS: ` 表示使用外部程序定义的类作为执行器。
@@ -4291,11 +4292,11 @@ Content-Type: text/plain
 
 当我们不使用外置执行器时，`on` 属性或者 `by` 属性指定的内建执行器，必须给出一个数组供排序使用；而当使用外置执行器时，`on` 属性指定的数据类型由外部执行器确定。比如，我们可以对一个字符串执行排序操作，执行的结果可能是，将字符串中所有的单词按照字典顺序排列。
 
-#### 2.5.10) `define` 和 `include` 标签
+#### 2.5.10) `define` 和 `execute` 标签
 
-`define` 标签用于定义一组可重用的操作组。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作，或者通过 `call` 标签调用这组操作并期待返回一个结果。在 HVML 中，我们将 `define` 标签定义的一组操作简称为操作组（operation group）。
+`define` 标签用于定义一组可重用的操作组。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `execute` 标签包含这组操作，或者通过 `call` 标签调用这组操作并期待返回一个结果。在 HVML 中，我们将 `define` 标签定义的一组操作简称为操作组（operation group）。
 
-`define` 元素通过 `as` 属性定义操作组的名称，其中包含了一组动作标签定义的子元素。`include` 元素将切换执行上下文到 `with` 属性指定的操作组中，`on` 属性传入的参数将作为结果数据（即 `$?` 变量的值）供操作组使用，而 `include` 元素通过内容定义的数据，将成为 `$^` 变量的值。如：
+`define` 元素通过 `as` 属性定义操作组的名称，其中包含了一组动作标签定义的子元素。`execute` 元素将切换执行上下文到 `with` 属性指定的操作组中，`on` 属性传入的参数将作为结果数据（即 `$?` 变量的值）供操作组使用，而 `execute` 元素通过内容定义的数据，将成为 `$^` 变量的值。如：
 
 ```hvml
         <archetype name="dir_entry">
@@ -4311,7 +4312,7 @@ Content-Type: text/plain
         </define>
 
         <listbox id="entries">
-            <include with="$fillDirEntries" on="/home" in="#entries" />
+            <execute with="$fillDirEntries" on="/home" in="#entries" />
         </listbox>
 
         <button id="goRoot">
@@ -4324,18 +4325,18 @@ Content-Type: text/plain
 
         <observe on="#goRoot" for="click">
             <clear on="#entries" />
-            <include with="$fillDirEntries" on="/" in="#entries" />
+            <execute with="$fillDirEntries" on="/" in="#entries" />
         </observe>
 
         <observe on="#goHome" for="click">
             <clear on="#entries" />
-            <include with="$fillDirEntries" on="/home" in="#entries" />
+            <execute with="$fillDirEntries" on="/home" in="#entries" />
         </observe>
 ```
 
-上面的 HVML 代码，在初始化 `listbox` 时，以及用户点击了 `#goRoot` 或者 `#goHome` 按钮时，使用了 `$fillDirEntries` 定义的操作组。注意，在使用 `include` 标签的三处地方，通过 `on` 属性传入了不同的参数，并使用 `in` 属性指定了目标文档位置。
+上面的 HVML 代码，在初始化 `listbox` 时，以及用户点击了 `#goRoot` 或者 `#goHome` 按钮时，使用了 `$fillDirEntries` 定义的操作组。注意，在使用 `execute` 标签的三处地方，通过 `on` 属性传入了不同的参数，并使用 `in` 属性指定了目标文档位置。
 
-本质上，`include` 元素完成的工作相当于复制指定的操作组到当前的位置执行，我们称之为就地执行（execute in place）。比如以上代码，若不使用 `define` 和 `include`，则相当于：
+本质上，`execute` 元素完成的工作相当于复制指定的操作组到当前的位置执行，我们称之为就地执行（execute in place）。比如以上代码，若不使用 `define` 和 `execute`，则相当于：
 
 ```hvml
         <archetype name="dir_entry">
@@ -4383,7 +4384,7 @@ Content-Type: text/plain
         </observe>
 ```
 
-`include` 就地执行操作组的效果类似于其他编程语言的闭包（closure）。比如以上的 `fillDirEntries` 操作组中使用了 `dir_entry` 这个模板，而该模板只定义了一次。但如果稍作修改，就可以在包含操作组之前，通过定义一个新的名为 `dir_entry` 的模板，即可覆盖默认的 `dir_entry` 模板。请注意其中的注释：
+`execute` 就地执行操作组的效果类似于其他编程语言的闭包（closure）。比如以上的 `fillDirEntries` 操作组中使用了 `dir_entry` 这个模板，而该模板只定义了一次。但如果稍作修改，就可以在包含操作组之前，通过定义一个新的名为 `dir_entry` 的模板，即可覆盖默认的 `dir_entry` 模板。请注意其中的注释：
 
 ```hvml
         <archetype name="dir_entry">
@@ -4405,7 +4406,7 @@ Content-Type: text/plain
             </archetype>
 
             <!-- `fillDirEntries` 操作组将使用上面这个新的 `dir_entry` 模板 -->
-            <include with="$fillDirEntries" on="/home" in="#entries" />
+            <execute with="$fillDirEntries" on="/home" in="#entries" />
         </listbox>
 
         <button id="goRoot">
@@ -4418,12 +4419,12 @@ Content-Type: text/plain
 
         <observe on="#goRoot" for="click">
             <clear on="#entries" />
-            <include with="$fillDirEntries" on="/" in="#entries" />
+            <execute with="$fillDirEntries" on="/" in="#entries" />
         </observe>
 
         <observe on="#goHome" for="click">
             <clear on="#entries" />
-            <include with="$fillDirEntries" on="/home" in="#entries" />
+            <execute with="$fillDirEntries" on="/home" in="#entries" />
         </observe>
 ```
 
@@ -4448,7 +4449,7 @@ Content-Type: text/plain
         </inherit>
     </define>
 
-    <include with="$listitems" on=['Line #1', 'Line #2'] />
+    <execute with="$listitems" on=['Line #1', 'Line #2'] />
 ```
 
 以上代码，当 `define` 元素的 `from` 属性指定的 HVML 片段装载或解析失败时，程序仍然可以正常运行，只是实际的操作效果有所不同。这一能力为我们提供了一项非常灵活的特性：
@@ -4490,7 +4491,7 @@ Content-Type: text/plain
 </hvml>
 ```
 
-以上代码，若在 `/module/html/` 目录下存在两个 HVML 片段文件：`A.hvml` 和 `B.hvml`，则会创建两个操作组：`opsA` 和 `opsB`，分别指向两个独立的 vDOM 片段树。当我们在 HVML 程序中使用 `include`、`call` 或者 `observe` 引用 `opsA` 和 `opsB` 时，将执行对应的 vDOM 片段树，而非原始的默认值操作组。
+以上代码，若在 `/module/html/` 目录下存在两个 HVML 片段文件：`A.hvml` 和 `B.hvml`，则会创建两个操作组：`opsA` 和 `opsB`，分别指向两个独立的 vDOM 片段树。当我们在 HVML 程序中使用 `execute`、`call` 或者 `observe` 引用 `opsA` 和 `opsB` 时，将执行对应的 vDOM 片段树，而非原始的默认值操作组。
 
 和 `init` 类似，在 `head` 元素定义的 `define`，将创建全局可见的操作组，也就是说，上述代码中定义的 `opsA` 和 `opsB` 的操作组是全局可见的。在 `body` 中使用 `define`，默认将在其父元素上绑定操作组名称，从而让该操作组在父元素为根的 vDOM 子树中可见。但我们可使用 `at` 属性指定操作组的名字空间（name space）：
 
@@ -4522,9 +4523,9 @@ Content-Type: text/plain
 </hvml>
 ```
 
-若 `define` 定义的操作组为空，则使用 `include` 或者 `call` 元素引用该操作组时，应抛出 `NoData` 异常。
+若 `define` 定义的操作组为空，则使用 `execute` 或者 `call` 元素引用该操作组时，应抛出 `NoData` 异常。
 
-`include` 元素的 `on` 属性定义的值，将成为 `define` 对应栈帧的结果数据；类似地，`call` 元素的 `with` 属性定义的值，将成为 `define` 对应栈帧的结果数据。为书写方便，当传递给操作组的数据是 `object` 时，解释器应将该对象中所有键名符合 HVML `literal_variable_token` 词法单元的属性，设置为 `define` 对应栈帧中的临时命名变量，从而获得类似函数形参的效果。比如如下代码计算两个正整数的最大公约数（greatest common divisor）：
+`execute` 元素的 `on` 属性定义的值，将成为 `define` 对应栈帧的结果数据；类似地，`call` 元素的 `with` 属性定义的值，将成为 `define` 对应栈帧的结果数据。为书写方便，当传递给操作组的数据是 `object` 时，解释器应将该对象中所有键名符合 HVML `literal_variable_token` 词法单元的属性，设置为 `define` 对应栈帧中的临时命名变量，从而获得类似函数形参的效果。比如如下代码计算两个正整数的最大公约数（greatest common divisor）：
 
 ```hvml
     <define as "calcGreatestCommonDivisor">
@@ -4554,18 +4555,18 @@ Content-Type: text/plain
 
     </define>
 
-    <include with $calcGreatestCommonDivisor on {x: 3, y: 6} >
+    <execute with $calcGreatestCommonDivisor on {x: 3, y: 6} >
 
         <inherit>
             $STREAM.stdout.writelines($STR.format_c("GCD of 3 and 6 is %d", $?))
         </inherit>
 
-    </include>
+    </execute>
 ```
 
-另外，我们可以在 `include` 元素或者 `call` 元素中使用 `in` 属性定义目标文档的位置，因此，该属性值将影响操作组的行为。
+另外，我们可以在 `execute` 元素或者 `call` 元素中使用 `in` 属性定义目标文档的位置，因此，该属性值将影响操作组的行为。
 
-我们可以在 `include` 元素中定义子元素，这些子元素会在 `define` 定义的操作组执行完毕后执行。
+我们可以在 `execute` 元素中定义子元素，这些子元素会在 `define` 定义的操作组执行完毕后执行。
 
 #### 2.5.11) `observe`、 `forget` 和 `fire` 标签
 
@@ -4626,7 +4627,7 @@ Content-Type: text/plain
    * 若事件来自渲染器页面上的某个元素，则定义为该元素对应的目标文档位置；否则，
    * 定义为 `observe` 继承自其父元素的目标文档位置。
 
-当我们在 `observe` 元素中使用 `with` 属性定义要引用的操作组时，HVML 程序的执行效果等同于 `include` 动作元素的效果，也就是说，应做就地执行而不是调用由 `with` 属性指定的操作组。
+当我们在 `observe` 元素中使用 `with` 属性定义要引用的操作组时，HVML 程序的执行效果等同于 `execute` 动作元素的效果，也就是说，应做就地执行而不是调用由 `with` 属性指定的操作组。
 
 当我们观察一项数据时，我们可获得该数据产生的事件或者数据本身上的变化。比如，我们可监听来自长连接的事件，异步请求的返回值，或者获得长连接上调用远程过程后返回的结果，亦可用来监听某些内部数据产生的事件，比如 `$TIMERS` 数据产生的定时器到期事件，等等。
 
@@ -4887,7 +4888,7 @@ Content-Type: text/plain
 
 #### 2.5.12) `call` 和 `return` 标签
 
-`include` 元素完成的工作相当于复制指定的操作组到当前的位置执行（就地执行，execute in place），所以和传统编程语言中的函数调用并不相同。如果要获得和函数调用相同的效果，使用 `call` 和 `return` 标签：
+`execute` 元素完成的工作相当于复制指定的操作组到当前的位置执行（就地执行，execute in place），所以和传统编程语言中的函数调用并不相同。如果要获得和函数调用相同的效果，使用 `call` 和 `return` 标签：
 
 ```hvml
         <define as="fillDirEntries">
@@ -4924,12 +4925,12 @@ Content-Type: text/plain
 
 在上述 HVML 代码中，`fillDirEntries` 使用 `return` 元素的 `with` 属性返回了目录项的个数，使之从一个操作组变成了一个带有返回值的函数。在使用这个函数时，使用 `call` 标签定义一个执行调用操作的动作元素，以便获得结果数据。
 
-`call` 元素和 `include` 元素有如下不同：
+`call` 元素和 `execute` 元素有如下不同：
 
 - `call` 元素对应栈帧中的结果数据可被操作组中的 `return` 元素或者操作组中的 `back` 元素覆盖。若操作组中没有 `return` 或者 `back` 元素来修改结果数据，则 `call` 元素对应栈帧中的结果数据将保持为 `undefined` 不变。
-- `include` 元素对应的栈帧中，初始的结果数据由其本身的 `on` 属性值或内容确定，可被操作组中的 `back` 元素覆盖，而操作组中的 `return` 元素仅用于回退到最近一个 `include` 所在栈帧，而不修改该 `include` 对应栈帧中的结果数据。
+- `execute` 元素对应的栈帧中，初始的结果数据由其本身的 `on` 属性值或内容确定，可被操作组中的 `back` 元素覆盖，而操作组中的 `return` 元素仅用于回退到最近一个 `execute` 所在栈帧，而不修改该 `execute` 对应栈帧中的结果数据。
 
-也就是说，`call` 和 `include` 的主要区别在于如何处理操作组中 `return` 元素定义的返回值：前者关心返回值，后者不关心返回值。在实践当中，`include` 一般用于操作目标文档，`call` 一般用作获取一个结果数据。
+也就是说，`call` 和 `execute` 的主要区别在于如何处理操作组中 `return` 元素定义的返回值：前者关心返回值，后者不关心返回值。在实践当中，`execute` 一般用于操作目标文档，`call` 一般用作获取一个结果数据。
 
 当使用 `call` 元素时，使用如下介词属性：
 
@@ -5774,11 +5775,11 @@ const result = method(document.getElementById('myModal'), 0);
     </define>
 
     <!--
-        This statement includes one of the operation sets defined above
+        This statement executes one of the operation sets defined above
         according to the value of `target` attribute of `hvml` element,
         and pass the result returned by `$T.get('Hello, world!')`.
     -->
-    <include with=${output_$CRTN.target} on="$T.get('Hello, world!')" />
+    <execute with=${output_$CRTN.target} on="$T.get('Hello, world!')" />
 
     <inherit>
         $STREAM.stdout.writelines("End of 'Hello, world!'");
@@ -6926,7 +6927,7 @@ SYSTEM 标识符字符串的格式如下：
    1. 数据动作元素（data operation elements）  
       `init` 和 `update` 元素。其内容必须是一个合法的参数化数据。
    1. 一般动作元素（ordinary operation elements）  
-       `erase`、 `clear`、 `test`、 `match`、 `choose`、 `iterate`、 `reduce`、 `observe`、 `fire`、 `load`、 `back`、 `define`、 `include`、 `call`、 `return` 和 `catch` 元素。
+       `erase`、 `clear`、 `test`、 `match`、 `choose`、 `iterate`、 `reduce`、 `observe`、 `fire`、 `load`、 `back`、 `define`、 `execute`、 `call`、 `return` 和 `catch` 元素。
    1. 片段模板元素（fragment template elements）  
       `archetype`、 `error` 和 `except` 元素。片段模板元素的内容通常是使用目标标记语言书写的文档片段。简称模板元素（template elements）。
    1. 数据模板元素（data template elements）  
@@ -7267,8 +7268,8 @@ SYSTEM 标识符字符串的格式如下：
 <!DOCTYPE hvml SYSTEM 'f: MATH'>
 <hvml target="void">
     <iterate on 0 onlyif $L.lt($0<, 10) with $MATH.add($0<, 1) >
-        $STREAM.stdout.writelines(
-                $STR.join($0<, ") Hello, world! --from COROUTINE-", $CRTN.cid))
+        <inherit on $STREAM.stdout.writelines(
+                $STR.join($0<, ") Hello, world! --from COROUTINE-", $CRTN.cid)) />
     </iterate>
 </hvml>
 ```
@@ -7671,7 +7672,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
-- 2025 年 02 月 28 日：发布 V1.0 OR0，标记为 'v1.0-or0-250228'。
+- 2025 年 03 月 31 日：发布 V1.0 OR0，标记为 'v1.0-or0-250331'。
 - 2024 年 11 月 30 日：发布 V1.0 RCh，标记为 'v1.0-rch-241130'。
 - 2023 年 11 月 30 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231130'。
 - 2023 年 09 月 30 日：发布 V1.0 RCf，标记为 'v1.0-rcf-230930'。
@@ -7740,6 +7741,15 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 相关章节：
 - [2.1.12) 错误和异常的处理](#2112-错误和异常的处理)
+
+##### OR0.6) 修改 `include` 标签名为 `execute`
+
+主要修订内容如下：
+
+1. 修改 `include` 标签名为 `execute`
+
+相关章节：
+- [2.5.10) `define` 和 `execute` 标签](#2510-define-和-execute-标签)
 
 #### RCh) 241130
 
@@ -8154,7 +8164,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 #### RC5) 220701
 
-##### RC5.1) 调整对 `include` 标签的描述
+##### RC5.1) 调整对 `execute` 标签的描述
 
 主要修订内容如下：
 
@@ -8162,7 +8172,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 相关章节：
 
-- [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
+- [2.5.10) `define` 和 `execute` 标签](#2510-define-和-execute-标签)
 
 ##### RC5.2) 调整 `request` 标签
 
@@ -8251,7 +8261,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 1. `$SESSION` 更名为 `$RUNNER`；`$HVML` 更名为 `$CRTN`；`$SYSTEM` 更名为 `$SYS`；`$REQUEST` 更名为 `$REQ`。
 1. 调整 `iterate` 不使用迭代执行器时的处理规则。
 1. `archetype` 标签增加 `type` 属性用于定义文本类型。
-1. `include` 或者 `call` 元素应用操作组时，若传递的实参为对象，可利用临时变量处理为多个形参，方便代码书写。
+1. `execute` 或者 `call` 元素应用操作组时，若传递的实参为对象，可利用临时变量处理为多个形参，方便代码书写。
 1. 增加对表达式 `${...}` 的描述：用于构建一个有效变量名。
 1. 修正 DOCTYPE 中 SYSTEM 标识符所定义的前缀的用途：用在可能和 HVML 标签冲突的外部标签上，而不是 HVML 标签上。
 
@@ -8264,7 +8274,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - [2.5.1) `init` 标签](#251-init-标签)
 - [2.5.7.2) 不使用迭代执行器](#2572-不使用迭代执行器)
 - [2.4.1) `archetype` 标签](#241-archetype-标签)
-- [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
+- [2.5.10) `define` 和 `execute` 标签](#2510-define-和-execute-标签)
 - [2.2.2) 求值表达式的语法](#222-求值表达式的语法)
 - [3.1.1) DOCTYPE](#311-doctype)
 
@@ -8388,7 +8398,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 相关章节：
 
-- [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
+- [2.5.10) `define` 和 `execute` 标签](#2510-define-和-execute-标签)
 - [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
 - [2.5.15) `back` 标签](#2515-back-标签)
 - [2.5.16) `request` 标签](#2516-request-标签)
