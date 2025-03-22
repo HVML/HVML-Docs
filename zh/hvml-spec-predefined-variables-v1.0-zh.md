@@ -1084,12 +1084,9 @@ $SYS.close(
 $SYS.sendfile(
     <longint $out_fd: `The output file descriptor.`>,
     <longint $in_fd: `The input file descriptor.`>
+    <ulongint $offset: `The file offset from which the method will start reading data from $in_fd. `>
     [,
-        <ulongint $offset = null: `The file offset from which the method will start reading data from $in_fd.  \
-                If $offset is @null, then data will be read from $in_fd starting at the file offset, and the file offset will be updated by the call.` >
-        [,
-            <ulongint $count = 4096UL: `The number of bytes to copy between the file descriptors. `>
-        ]
+        <ulongint $count = 4096UL: `The number of bytes to copy between the file descriptors. `>
     ]
 ) [! $bytes_sent, $new_offset ] | false
 ```
@@ -2629,7 +2626,7 @@ $DATA.memsize( "HVML" )
 
 #### 3.7.3) `count` 方法
 
-返回数据的子数据项个数。
+返回数据的数据项个数。
 
 **描述**
 
@@ -2639,7 +2636,7 @@ $DATA.count(
 ) ulongint
 ```
 
-该方法返回数据的子数据项个数，返回值为 `ulongint` 类型。未指定数据时，按 `undefined` 处理。
+该方法返回数据的数据项个数，返回值为 `ulongint` 类型。未指定数据时，按 `undefined` 处理。
 
 **异常**
 
@@ -2655,6 +2652,37 @@ $DATA.count( 3.5 )
     // ulongint: 1UL
 
 $DATA.count( [ 1.0, 2.0 ] )
+    // ulongint: 2UL
+```
+
+#### 3.7.3) `nr_children` 方法
+
+返回数据的子数据项个数；对非容器类数据，始终返回 0。
+
+**描述**
+
+```js
+$DATA.nr_children(
+        [ <any $data> ]
+) ulongint
+```
+
+该方法返回数据的子数据项个数，返回值为 `ulongint` 类型。未指定数据时，按 `undefined` 处理。和 `$DATA.count` 不同，该方法针对非容器类数据始终返回 0。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$DATA.nr_children
+    // ulongint: 0
+
+$DATA.nr_children( 3.5 )
+    // ulongint: 0
+
+$DATA.nr_children( [ 1.0, 2.0 ] )
     // ulongint: 2UL
 ```
 
