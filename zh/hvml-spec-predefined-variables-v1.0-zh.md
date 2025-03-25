@@ -1430,6 +1430,8 @@ $RUNNER.chan(!
 
 该方法创建或关闭（容量为 0 时）一个通道；亦可用于改变已有通道的容量（仅已有数据个数小于等于待设置容量时）。
 
+注意 `_htc` 被保留给临时通道使用，不能作为用户自定义通道名称的前缀。
+
 **异常**
 
 以上方法可能产生的异常：
@@ -1452,7 +1454,7 @@ $RUNNER.chan(! 'channel0', 10 )
 $RUNNER.chan(! 'channel0', 20 )
     // true
 
-// 获取 `chan` 通道
+// 获取 `chan10` 通道
 $RUNNER.chan( 'channel0' )
     // native/channel
 
@@ -1550,6 +1552,49 @@ $channel.len ulongint | false
 - `sendable`：可发送数据（缓冲区有空位）。
 - `receivable`：可接收数据（缓冲区有空位）。
 - `closed`：被关闭。
+
+#### 3.2.11) `mktempchan` 方法
+
+创建唯一性临时通道。
+
+**描述**
+
+```js
+$RUNNER.mktempchan(
+    [
+        <ulongint $cap = 1: `The capability of the channel.`>
+    ]
+) string | false: `The channel name.`
+```
+
+该方法创建一个具有全局唯一性的临时通道，返回通道名称。
+
+**异常**
+
+以上方法可能产生的异常：
+
+- `WrongDataType`：无效参数类型。可忽略异常；静默求值时返回 `false` 或 `undefined`。
+- `InvalidValue`：无效容量值。可忽略异常；静默求值时返回 `false` 或 `undefined`。
+
+**示例**
+
+```js
+// 创建一个临时通道
+$RUNNER.mktempchan( 10 )
+    // '_htc45ECF7'
+
+// 获取 `_htc45ECF7` 通道
+$RUNNER.chan( '_htc45ECF7' )
+    // native/channel
+
+// 通过设置通道容量为 0 从而关闭临时通道
+$RUNNER.chan(! '_htc45ECF7', 0 )
+    // true
+
+// 获取 `_htc45ECF7` 通道
+$RUNNER.chan( '_htc45ECF7' )
+    // undefined
+```
 
 ### 3.3) `CRTN`
 
