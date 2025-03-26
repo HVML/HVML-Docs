@@ -884,6 +884,31 @@ $SYS.spawn(
 
 - POSIX 标准函数：`posix_spawn()`
 
+#### 3.1.15) `kill` 方法
+
+向指定的进程或进程组发送信号。
+
+**描述**
+
+```js
+$SYS.kill(
+    <longint $pid: `The process identifier.`>
+    [, < ['HUP | INT | QUIT | ABRT | KILL | ALRM | TERM'] $signal = 'TERM': `The signal to send.`
+        - 'HUP':  `hang up`
+        - 'INT':  `interrupt`
+        - 'QUIT': `quit`
+        - 'ABRT': `abort`
+        - 'KILL': `non-catchable, non-ignorable kill`
+        - 'ALRM': `alarm clock`
+        - 'TERM': `software termination signal` >
+    ]
+) true | false
+```
+
+**参见**
+
+- POSIX 标准函数：`kill()`
+
 #### 3.1.15) `access` 方法
 
 测试文件的可访问性。
