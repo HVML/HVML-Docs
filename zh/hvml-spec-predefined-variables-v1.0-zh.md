@@ -1083,6 +1083,38 @@ $SYS.open(
 
 - POSIX 标准函数：`open()`
 
+#### 3.1.20) `seek` 方法
+
+修改文件的读写位置。
+
+**描述**
+
+```js
+$SYS.seek(
+    <ulongint $fd: `The file descriptor.`>
+    <longint $offset: `New offset.`>
+    [, <'[set | current |end]' $whence = 'set':   < `The direction.` >
+            - 'set':        `The offset is set to offset bytes.`>
+            - 'current':    `The offset is set to its current location plus offset bytes.`>
+            - 'end':        `The offset is set to the size of the file plus offset bytes.`>
+       >
+    ]
+) longint | false
+```
+
+该方法以修改文件的读写位置。
+
+**异常**
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+- `Unsupported`：不支持该操作; 可忽略异常，静默求值时返回 `false`。
+
+**参见**
+
+- POSIX 标准函数：`lseek()`
+
 #### 3.1.20) `close` 方法
 
 关闭给定的文件描述符。
