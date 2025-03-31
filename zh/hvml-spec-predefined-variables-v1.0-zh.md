@@ -884,6 +884,26 @@ $SYS.spawn(
 
 - POSIX 标准函数：`posix_spawn()`
 
+#### 3.1.15) `waitpid` 方法
+
+等待子进程退出。
+
+**描述**
+
+```js
+$SYS.waitpid(
+    <longint $pid: `The process identifier.`>
+    [, < ['nohang || untraced'] $options = '': `.`
+        - 'nohang':  `Indicate that the call should not block if there are no processes that wish to report status.`
+        - 'untraced':  `Indicate that children of the current process that are stopped due to a SIGTTIN, SIGTTOU, SIGTSTP, or SIGSTOP signal also have their status reported.`
+    ]
+) [! $pid, $state ] | false
+```
+
+**参见**
+
+- POSIX 标准函数：`waitpid()`
+
 #### 3.1.15) `kill` 方法
 
 向指定的进程或进程组发送信号。
