@@ -5,7 +5,7 @@ Version: 1.0-OR0
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Mar. 31, 2025  
+Last Modified Date: Apr. 30, 2025  
 Status: Official Release  
 Release Name: 丑牛  
 Language: Chinese
@@ -10261,7 +10261,7 @@ $sqliteCursor.connection
 
 发布历史：
 
-- 2025 年 03 月 31 日：发布 V1.0 OR0，标记为 'v1.0-or0-250331'。
+- 2025 年 04 月 30 日：发布 V1.0 OR0，标记为 'v1.0-or0-250430'。
 - 2024 年 01 月 31 日：发布 V1.0 RCh，标记为 'v1.0-rch-240131'。
 - 2023 年 11 月 30 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231130'。
 - 2023 年 06 月 30 日：发布 V1.0 RCd，标记为 'v1.0-rcd-230630'。
@@ -10278,7 +10278,7 @@ $sqliteCursor.connection
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
 
-#### OR0) 250331
+#### OR0) 250430
 
 1. 重新整理 `$SOCKET` 和 `$STREAM`。
 1. 用于指定流套接字位置的 URI 变更：
@@ -10288,6 +10288,7 @@ $sqliteCursor.connection
 1. 删除 `$CRTN.sendingDocumentByURL` 属性。
 1. 新增 `$SYS.access` 方法。
 1. 新增 `$SYS.pipe` 方法。
+1. 新增 `$SYS.open` 方法。
 1. 新增 `$SYS.close` 方法。
 1. 新增 `$SYS.fdflags` 方法。
 1. 新增 `$SYS.sockopt` 属性。
@@ -10305,6 +10306,8 @@ $sqliteCursor.connection
 1. 新增 `$RUNNER.enablelog` 方法。
 1. 新增 `$RUNNER.logmsg` 方法。
 1. 新增 `$DATA.key` 方法。
+1. 新增 `$SYS.kill` 方法。
+1. 新增 `$SYS.waitpid` 方法。
 
 #### RCh) 240131
 
