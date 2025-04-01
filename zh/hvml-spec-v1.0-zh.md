@@ -4613,9 +4613,9 @@ Content-Type: text/plain
 
 在容器类数据上，我们可以观察如下事件：
 
-- `change:modified`：表示容器中某个（直接子）数据项的值发生了变化，其负载为修改后的子数据项。
-- `change:inflated`：表示容器中新增了新的子数据项，其负载为该容器的子数据项数量。
-- `change:deflated`：表示容器中移除了某个条目，其负载为该容器的子数据项数量。
+- `change:modified`：表示容器中某个（直接子）数据项的值发生了变化，其负载为 `undefined`。
+- `change:inflated`：表示容器中新增了新的子数据项，其负载为 `undefined`。
+- `change:deflated`：表示容器中移除了某个条目，其负载为 `undefined`。
 
 在执行 `observe` 标签定义的动作元素时，应在 `observe` 元素上隐式创建一个对象，从而将 `observe` 元素的各属性或内容的值保存起来，该对象的属性包括：
 
