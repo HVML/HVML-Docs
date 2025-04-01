@@ -893,11 +893,19 @@ $SYS.spawn(
 ```js
 $SYS.waitpid(
     <longint $pid: `The process identifier.`>
-    [, < ['nohang || untraced'] $options = '': `.`
-        - 'nohang':  `Indicate that the call should not block if there are no processes that wish to report status.`
-        - 'untraced':  `Indicate that children of the current process that are stopped due to a SIGTTIN, SIGTTOU, SIGTSTP, or SIGSTOP signal also have their status reported.`
+    [, < ['none || nohang || untraced || continued'] $options = 'none': `The options, can be one or more of the following keywords:`
+        - 'none':       `No any options specified.`
+        - 'nohang':     `Indicate that the call should not block if there are no processes that wish to report status.`
+        - 'untraced':   `Indicate that children of the current process that are stopped due to a SIGTTIN, SIGTTOU, SIGTSTP, or SIGSTOP signal also have their status reported.`
+        - 'continued':  `Indicate that children of the current process that are continued due to a SIGCONT signal also have their status reported (Linux-only).`
     ]
-) [! $pid, $state ] | false
+) false | object: `An object describes the exit status of one children:`
+        - 'pid':        < longint: `The process identifier .` >
+        - 'cause':      < 'exited | signaled | stopped | continued': `Indicate the manner of exit of the process.` >
+        - 'exitstatus': < longint: `If the process terminated normally by a call to _exit(2) or exit(3), this property evaluates to the low-order 8 bits of the argument passed to _exit(2) or exit(3) by the child.`
+        - 'termsig':    < longint: `If the process terminated due to receipt of a signal, this property evaluates to the number of the signal that caused the termination of the process.` >
+        - 'stopsig':    < boolean: `if the process has not terminated, but has stopped and can be restarted, this property evaluates to the number of the signal that caused the process to stop.` >
+        - 'cordump':    < boolean: `Indicate if the termination of the process was accompanied by the creation of a core file containing an image of the process when the signal was received..` >
 ```
 
 **参见**
