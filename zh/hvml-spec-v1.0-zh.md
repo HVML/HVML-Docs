@@ -1,11 +1,11 @@
-# HVML 规范
+的# HVML 规范
 
 Subject: HVML Specification  
 Version: 1.0-OR0  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Mar. 31, 2025  
+Last Modified Date: Apr. 30, 2025  
 Status: Release Candidate  
 Release Name: 丑牛  
 Language: Chinese
@@ -150,13 +150,14 @@ Language: Chinese
 - [5) 总结](#5-总结)
 - [附录](#附录)
    + [附.1) 修订记录](#附1-修订记录)
-      * [OR0) 250331](#or0-250331)
+      * [OR0) 250430](#or0-250430)
          - [OR0.1) 调整预定义变量](#or01-调整预定义变量)
          - [OR0.2) 新增 `rdrState:pageRestored` 事件](#or02-新增-rdrstatepagerestored-事件)
          - [OR0.3) 移除 `complex` 和固有方法](#or03-移除-complex-和固有方法)
          - [OR0.4) 微调 `observe` 元素的动作](#or04-微调-observe-元素的动作)
          - [OR0.5) 新增两个异常](#or05-新增两个异常)
          - [OR0.6) 修改 `include` 标签名为 `execute`](#or06-修改-include-标签名为-execute)
+         - [OR0.7) 描述针对容器的事件名称](#or07-描述针对容器的事件名称)
       * [RCh) 241130](#rch-241130)
          - [RCh.1) 细化了动态属性的写法](#rch1-细化了动态属性的写法)
       * [RCg) 231130](#rcg-231130)
@@ -4610,6 +4611,12 @@ Content-Type: text/plain
 - `change:detached`：表示先前关联到该变量上的有效数据被取消关联，其值被重置为 `undefined`，比如先前发起的异步请求操作失败，未能获得有效数据的情形。
 - `except:<exceptionName>`：表示在获取该变量对应的数据时出现异常，可能是请求出错，也可能是解析出错。具体信息，由事件的子类型给出。
 
+在容器类数据上，我们可以观察如下事件：
+
+- `change:modified`：表示容器中某个（直接子）数据项的值发生了变化，其负载为修改后的子数据项。
+- `change:inflated`：表示容器中新增了新的子数据项，其负载为该容器的子数据项数量。
+- `change:deflated`：表示容器中移除了某个条目，其负载为该容器的子数据项数量。
+
 在执行 `observe` 标签定义的动作元素时，应在 `observe` 元素上隐式创建一个对象，从而将 `observe` 元素的各属性或内容的值保存起来，该对象的属性包括：
 
 - `_observedAgainst`：`against` 属性定义的值；若存在则为字符串。
@@ -7672,7 +7679,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
-- 2025 年 03 月 31 日：发布 V1.0 OR0，标记为 'v1.0-or0-250331'。
+- 2025 年 03 月 31 日：发布 V1.0 OR0，标记为 'v1.0-or0-250430'。
 - 2024 年 11 月 30 日：发布 V1.0 RCh，标记为 'v1.0-rch-241130'。
 - 2023 年 11 月 30 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231130'。
 - 2023 年 09 月 30 日：发布 V1.0 RCf，标记为 'v1.0-rcf-230930'。
@@ -7691,7 +7698,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
 
-#### OR0) 250331
+#### OR0) 250430
 
 ##### OR0.1) 调整预定义变量
 
@@ -7750,6 +7757,13 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 相关章节：
 - [2.5.10) `define` 和 `execute` 标签](#2510-define-和-execute-标签)
+
+##### OR0.7) 描述针对容器的事件名称
+
+规范针对容器数据的事件名称：`change:modified`、`change:inflated` 和 `change:deflated`。
+
+相关章节：
+- [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
 
 #### RCh) 241130
 

@@ -5,7 +5,7 @@ Version: 1.0-OR0
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Mar. 31, 2025  
+Last Modified Date: Apr. 30, 2025  
 Status: Official Release  
 Release Name: 丑牛  
 Language: Chinese
@@ -912,7 +912,7 @@ $SYS.waitpid(
 
 - POSIX 标准函数：`waitpid()`
 
-#### 3.1.15) `kill` 方法
+#### 3.1.16) `kill` 方法
 
 向指定的进程或进程组发送信号。
 
@@ -937,7 +937,7 @@ $SYS.kill(
 
 - POSIX 标准函数：`kill()`
 
-#### 3.1.16) `access` 方法
+#### 3.1.17) `access` 方法
 
 测试文件的可访问性。
 
@@ -959,7 +959,7 @@ $SYS.access(
 
 - POSIX 标准函数：`access()`
 
-#### 3.1.17) `pipe` 方法
+#### 3.1.18) `pipe` 方法
 
 创建用于父子进程通讯的单向匿名管道。
 
@@ -980,7 +980,7 @@ $SYS.pipe(
 
 - POSIX 标准函数：`pipe()`
 
-#### 3.1.18) `fdflags` 方法
+#### 3.1.19) `fdflags` 方法
 
 获取或设置文件描述符标志、文件描述符状态标志等。
 
@@ -1016,7 +1016,7 @@ $SYS.fdflags(!
 
 - POSIX 标准函数：`fcntl()`
 
-#### 3.1.19) `sockopt` 属性
+#### 3.1.20) `sockopt` 属性
 
 获取或设置套接字的选项。
 
@@ -1080,7 +1080,7 @@ $SYS.sockopt($stream.fd, 'recv-timeout', 1.0)
     // true
 ```
 
-#### 3.1.20) `open` 方法
+#### 3.1.21) `open` 方法
 
 打开给定文件。
 
@@ -1111,7 +1111,7 @@ $SYS.open(
 
 - POSIX 标准函数：`open()`
 
-#### 3.1.21) `seek` 方法
+#### 3.1.22) `seek` 方法
 
 修改文件的读写位置。
 
@@ -1143,7 +1143,7 @@ $SYS.seek(
 
 - POSIX 标准函数：`lseek()`
 
-#### 3.1.22) `close` 方法
+#### 3.1.23) `close` 方法
 
 关闭给定的文件描述符。
 
@@ -1159,7 +1159,7 @@ $SYS.close(
 
 - POSIX 标准函数：`close()`
 
-#### 3.1.23) `sendfile` 方法
+#### 3.1.24) `sendfile` 方法
 
 在文件描述符之间复制数据。
 
@@ -10269,7 +10269,7 @@ $sqliteCursor.connection
 
 发布历史：
 
-- 2025 年 03 月 31 日：发布 V1.0 OR0，标记为 'v1.0-or0-250331'。
+- 2025 年 04 月 30 日：发布 V1.0 OR0，标记为 'v1.0-or0-250430'。
 - 2024 年 01 月 31 日：发布 V1.0 RCh，标记为 'v1.0-rch-240131'。
 - 2023 年 11 月 30 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231130'。
 - 2023 年 06 月 30 日：发布 V1.0 RCd，标记为 'v1.0-rcd-230630'。
@@ -10286,7 +10286,7 @@ $sqliteCursor.connection
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
 
-#### OR0) 250331
+#### OR0) 250430
 
 1. 重新整理 `$SOCKET` 和 `$STREAM`。
 1. 用于指定流套接字位置的 URI 变更：
@@ -10296,6 +10296,7 @@ $sqliteCursor.connection
 1. 删除 `$CRTN.sendingDocumentByURL` 属性。
 1. 新增 `$SYS.access` 方法。
 1. 新增 `$SYS.pipe` 方法。
+1. 新增 `$SYS.open` 方法。
 1. 新增 `$SYS.close` 方法。
 1. 新增 `$SYS.fdflags` 方法。
 1. 新增 `$SYS.sockopt` 属性。
@@ -10313,6 +10314,8 @@ $sqliteCursor.connection
 1. 新增 `$RUNNER.enablelog` 方法。
 1. 新增 `$RUNNER.logmsg` 方法。
 1. 新增 `$DATA.key` 方法。
+1. 新增 `$SYS.kill` 方法。
+1. 新增 `$SYS.waitpid` 方法。
 
 #### RCh) 240131
 
