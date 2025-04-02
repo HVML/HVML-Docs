@@ -169,7 +169,7 @@ Language: Chinese
 #### 2.1.1) 批量新增定时器
 
 ```hvml
-    <update on="$TIMERS" to="unite">
+    <update on $TIMERS to unite>
         [
             { "id" : "foo", "interval" : 1000, "active" : "no" },
             { "id" : "bar", "interval" : 2000, "active" : "no" },
@@ -181,7 +181,7 @@ Language: Chinese
 #### 2.1.2) 新增一个定时器
 
 ```hvml
-    <update on="$TIMERS" to="add">
+    <update on $TIMERS to add>
         { "id" : "foobar", "interval" : 3000, "active" : "yes" }
     </update>
 ```
@@ -189,7 +189,7 @@ Language: Chinese
 #### 2.1.3) 移除一个定时器
 
 ```hvml
-    <update on="$TIMERS" to="remove">
+    <update on $TIMERS to remove>
         { "id" : "foobar" }
     </update>
 ```
@@ -197,7 +197,7 @@ Language: Chinese
 #### 2.1.4) 移除多个定时器
 
 ```hvml
-    <update on="$TIMERS" to="subtract">
+    <update on $TIMERS to subtract>
         [
             { "id" : "foo" },
             { "id" : "bar" }
@@ -210,14 +210,14 @@ Language: Chinese
 ```hvml
     <!-- activate the timer `foo` -->
     <choose on $TIMERS by 'FILTER: AS "foo"'>
-        <update on $? at '.active' with 'yes' />
+        <update on $?[0] at '.active' with 'yes' />
     </choose>
 ```
 
 或，
 
 ```hvml
-    <update on="$TIMERS" to="overwrite">
+    <update on $TIMERS to overwrite>
         { "id" : "foo", "interval": 1500, "active" : "yes" }
     </update>
 ```

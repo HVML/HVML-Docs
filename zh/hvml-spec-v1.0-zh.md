@@ -529,7 +529,7 @@ HVML 还支持具有简单逻辑处理能力的复合表达式（使用 `{{ ... 
 
     <!-- 使标识符为 `foo` 的定时器失效 -->
     <choose on $TIMERS by "FILTER: AS 'foo'">
-        <update on $? at '.active' with 'no' />
+        <update on $?[0] at '.active' with 'no' />
     </choose>
 ```
 
@@ -1357,7 +1357,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 ```hvml
 <head>
-    <update on="$TIMERS" to="unite">
+    <update on $TIMERS to unite>
         [
             { "id" : "foo", "interval" : 1000, "active" : "no" },
             { "id" : "bar", "interval" : 2000, "active" : "no" },
@@ -1371,14 +1371,14 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 只要在 HVML 中修改某个定时器的 `active` 参数即可激活这个定时器，然后使用 `observe` 标签即可监听定时器到期时间：
 
 ```hvml
-    <choose on="$TIMERS" by="FILTER: AS 'foo'">
-        <update on="$?" at=".active" with="yes" />
+    <choose on $TIMERS by 'FILTER: AS "foo"'>
+        <update on $?[0] at '.active' with 'yes' />
     </choose>
 
     ...
 
-    <observe on="$TIMERS" for="expired:foo" in="#the-header" >
-        <update on="> span.local-time" at="textContent" with="$SYS.time('%H:%m')" />
+    <observe on $TIMERS for 'expired:foo' in '#the-header' >
+        <update on '> span.local-time' at 'textContent' with $SYS.time('%H:%m') />
     </observe>
 ```
 
@@ -4848,8 +4848,8 @@ Content-Type: text/plain
 对同一个事件，我们可以在 HVML 程序的多个地方进行观察并执行不同的动作。当我们需要撤销特定的观察时，可以在 `observe` 标签中使用 `as` 属性为这个观察命名，之后使用 `init` 将该变量重置为 `undefine` 即可移除这个观察（包括隐式对象）：
 
 ```hvml
-    <choose on="$TIMERS" by="FILTER: AS 'foo'">
-        <update on="$?" at=".active" with="yes" />
+    <choose on $TIMERS by 'FILTER: AS "foo"'>
+        <update on $?[0] at '.active' with 'yes' />
     </choose>
 
     ...
@@ -5900,7 +5900,7 @@ const result = method(document.getElementById('myModal'), 0);
 
 ##### 2.6.1.2) `RANGE` 执行器
 
-该执行器作用于数组和集合数据上，使用下标范围来返回对应的数组单元列表（集合可视为不包含重复数据单元的数组）。比如对下面的数据：
+该执行器作用于数组、元组和集合数据上，使用下标范围来返回对应的数组单元列表（集合可视为不包含重复数据单元的数组）。比如对下面的数据：
 
 ```hvml
     <init as="regionStats">
@@ -5945,7 +5945,7 @@ const result = method(document.getElementById('myModal'), 0);
 
 ##### 2.6.1.3) `FILTER` 执行器
 
-该执行器作用于数组、对象和集合上，使用特定的条件过滤容器中的元素。比如对下面的数据：
+该执行器作用于数组、元组、对象和集合上，使用特定的条件过滤容器中的元素。比如对下面的数据：
 
 ```hvml
     <init as="myArray" uniquely>
@@ -6008,6 +6008,7 @@ const result = method(document.getElementById('myModal'), 0);
 1. 当使用字符串匹配分句时，则数据会首先被序列化为字符串，然后进行匹配处理。
 1. 当集合中的元素使用额外的唯一性键名来判断唯一性时，`FILTER` 指定的匹配条件，仅和唯一性键名对应的值相关。
 1. 当该执行器用于集合时，使用键值做过滤条件，并可使用类似 `KEY` 执行器一样的 `FOR` 分句指定返回的数据形式。
+1. 该执行器始终返回数组。
 
 对于集合数据，不指定 `by` 属性时，默认使用 `FILTER: ALL` 执行器。
 
