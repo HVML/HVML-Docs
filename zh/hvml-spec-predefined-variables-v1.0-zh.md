@@ -5597,6 +5597,8 @@ $STR.translate(
 
 #### 3.10.32) `htmlentities_encode` 方法
 
+（废弃；不计划实现）
+
 转换字符为 HTML 实体。
 
 **描述**
@@ -5640,6 +5642,8 @@ $STR.htmlentities_encode(
 
 #### 3.10.33) `htmlentities_decode` 方法
 
+（废弃；不计划实现）
+
 转换 HTML 实体为对应的字符。
 
 **描述**
@@ -5675,6 +5679,8 @@ $STR.htmlentities_decode(
 - PHP `htmlspecialchars_decode()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars-decode.php>
 
 #### 3.10.34) `nl2br` 方法
+
+（废弃；不计划实现）
 
 在字符串所有换行符之前插入 HTML 换行标记。
 
