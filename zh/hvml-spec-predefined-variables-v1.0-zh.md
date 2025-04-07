@@ -4697,7 +4697,10 @@ $STR.explode('汉字')
     // array: ['汉', '字']
 
 $STR.explode('中华人民共和国', '', 2)
-    // array: ['中', '华']
+    // array: ['中', '华人民共和国']
+
+$STR.explode(';aaa;;bbb;', ';')
+    // array: ['中', '华人民共和国']
 ```
 
 **参见**
@@ -4884,8 +4887,8 @@ $STR.format_c(
 $STR.format_c('Tom is %d years old, while Jerry is %d years old.', 9, 7)
     // string: 'Tom is 9 years old, while Jerry is 7 years old.'
 
-$STR.format_c('Tom is %d years old, while Jerry is %d years old.', [9, 7])
-    // string: 'Tom is 9 years old, while Jerry is 7 years old.'
+$STR.format_c('Tom is 0x%02A years old, while Jerry is 0x%02X years old.', [10, 15])
+    // string: 'Tom is 0x0A years old, while Jerry is 0x0F years old.'
 ```
 
 **参见**
@@ -5551,8 +5554,10 @@ $STR.reverse(
 
 ```js
 $STR.tokenize(
-        <string $string: `The string to break.`>,
-        <string $delimiters: `The delimiters to sperate the tokens.`>
+    <string $string: `The string to break.`>
+    [,
+        <string $delimiters = ' \t\n\v\f\r': `The delimiters to seperate the tokens.`>
+    ]
 ) array
 ```
 
@@ -5724,7 +5729,7 @@ $STR.rot13(
 
 **参见**
 
-- PHP `rot13()` 函数：<https://www.php.net/manual/en/function.rot13.php>
+- PHP `str_rot13()` 函数：<https://www.php.net/manual/en/function.str-rot13.php>
 
 #### 3.10.36) `count_chars` 方法
 
@@ -5816,10 +5821,10 @@ $STR.codepoints(
 
 ```js
 $STR.codepoints('HVML的昵称是呼噜猫')
-    // array: [ 110, 126, 115, 114, 30340, 26165, 31216, 26159, 21628, 22108, 29483 ]
+    // array: [ 72, 86, 77, 76, 30340, 26165, 31216, 26159, 21628, 22108, 29483 ]
 
 $STR.codepoints('HVML的昵称是呼噜猫', 'tuple')
-    // tuple: [! 110, 126, 115, 114, 30340, 26165, 31216, 26159, 21628, 22108, 29483 ]
+    // tuple: [! 72, 86, 77, 76, 30340, 26165, 31216, 26159, 21628, 22108, 29483 ]
 ```
 
 ### 3.11) `URL`
