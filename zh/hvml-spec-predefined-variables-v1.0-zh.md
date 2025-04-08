@@ -867,7 +867,7 @@ $SYS.spawn(
 ) longint | false
 ```
 
-用于指定在执行程序之前要完成的文件操作 `$file_actions` 由一个个对象构成：
+用于指定子进程在执行程序之前要完成的文件操作 `$file_actions` 由一个个对象构成：
 
 ```js
 {
@@ -1181,6 +1181,29 @@ $SYS.sendfile(
 **参见**
 
 - Linux 系统调用：`sendfile()`
+
+#### 3.1.25) `openpty` 方法
+
+创建伪终端。
+
+**描述**
+
+```js
+$SYS.openpty(
+    < '[noctty || rdwr] | default | none' $flags = 'default': `The flags when opening the new pseudoterminal device.`:
+       - 'noctty':      `Do not make this device the controlling terminal for the process.`
+       - 'rdwr':        `Open the device for both reading and writing.`
+       - 'default':     `The equivalent to 'rdwr'.`
+       - 'none':        `No additinal flags are specified.`  >
+    < object $win_sz:   `The window size of the pseudoterminal slave.` >
+) tuple  | false
+```
+
+该方法创建伪终端，通过元组返回伪终端的主（master）文件描述符、次（slave）文件描述符以及设备名称。应用程序可在 `$SYS.spawn()` 方法中，通过 `$file_actions` 参数复制次设备作为子进程的标准输入、输出和错误设备。
+
+**参见**
+
+- POSIX 标准函数：`posix_openpt()`。
 
 ### 3.2) `RUNNER`
 
