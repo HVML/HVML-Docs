@@ -1190,12 +1190,23 @@ $SYS.sendfile(
 
 ```js
 $SYS.openpty(
-    < '[noctty || rdwr] | default | none' $flags = 'default': `The flags when opening the new pseudoterminal device.`:
+    < '[noctty || rdwr] | default | none' $flags: `The flags when opening the new pseudoterminal device:`
        - 'noctty':      `Do not make this device the controlling terminal for the process.`
        - 'rdwr':        `Open the device for both reading and writing.`
        - 'default':     `The equivalent to 'rdwr'.`
        - 'none':        `No additinal flags are specified.`  >
-    < object $win_sz:   `The window size of the pseudoterminal slave.` >
+   [,
+        < ['none | inherit' ] | object $termio = 'inherit':
+                `The terminal parameters for slave:`
+            - 'none': `Use the system default.`
+            - 'inherit': `Use the current tty parameters if possible.`
+            - 'inherit-noecho': `Use the current tty parameters but without ECHO.`
+            - object: `An object specifying the parameters.`>
+        [,
+            < object $win_sz = { 'col': 80, 'row': 24 }:
+                `The window size of the pseudoterminal slave.` >
+        ]
+   ]
 ) tuple  | false
 ```
 
