@@ -58,7 +58,7 @@ syn keyword hvmlTagName contained hvml archetype archedata error except
 
 " HVML tag names
 syn keyword hvmlActionTagName contained init update erase clear test match differ
-syn keyword hvmlActionTagName contained choose iterate reduce sort define include
+syn keyword hvmlActionTagName contained choose iterate reduce sort define execute
 syn keyword hvmlActionTagName contained observe forget fire call return
 syn keyword hvmlActionTagName contained bind catch back request load exit inherit sleep
 
