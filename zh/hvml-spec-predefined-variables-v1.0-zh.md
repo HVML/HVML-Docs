@@ -999,7 +999,7 @@ $SYS.socketpair(
 
 - POSIX 标准函数：`socketpair()`
 
-#### 3.1.19) `fdflags` 方法
+#### 3.1.20) `fdflags` 方法
 
 获取或设置文件描述符标志、文件描述符状态标志等。
 
@@ -1035,7 +1035,7 @@ $SYS.fdflags(!
 
 - POSIX 标准函数：`fcntl()`
 
-#### 3.1.20) `sockopt` 属性
+#### 3.1.21) `sockopt` 属性
 
 获取或设置套接字的选项。
 
@@ -1099,7 +1099,7 @@ $SYS.sockopt($stream.fd, 'recv-timeout', 1.0)
     // true
 ```
 
-#### 3.1.21) `open` 方法
+#### 3.1.22) `open` 方法
 
 打开给定文件。
 
@@ -1130,7 +1130,7 @@ $SYS.open(
 
 - POSIX 标准函数：`open()`
 
-#### 3.1.22) `seek` 方法
+#### 3.1.23) `seek` 方法
 
 修改文件的读写位置。
 
@@ -1162,7 +1162,7 @@ $SYS.seek(
 
 - POSIX 标准函数：`lseek()`
 
-#### 3.1.23) `close` 方法
+#### 3.1.24) `close` 方法
 
 关闭给定的文件描述符。
 
@@ -1178,7 +1178,7 @@ $SYS.close(
 
 - POSIX 标准函数：`close()`
 
-#### 3.1.24) `sendfile` 方法
+#### 3.1.25) `sendfile` 方法
 
 在文件描述符之间复制数据。
 
@@ -1201,7 +1201,7 @@ $SYS.sendfile(
 
 - Linux 系统调用：`sendfile()`
 
-#### 3.1.25) `openpty` 方法
+#### 3.1.26) `openpty` 方法
 
 创建伪终端。
 
