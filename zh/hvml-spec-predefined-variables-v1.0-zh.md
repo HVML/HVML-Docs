@@ -980,6 +980,27 @@ $SYS.pipe(
 
 - POSIX 标准函数：`pipe()`
 
+#### 3.1.19) `socketpair` 方法
+
+创建一对连接好的匿名套接字。
+
+**描述**
+
+```js
+$SYS.socketpair(
+    [ < 'local | unix | inet4 | inet6' $domain = 'local': `The domain in which to create the sockets.`
+       - 'local':    `Host-internal protocols.`
+       - 'unix':     `Host-internal protocols; the equivalent to 'local'.`
+       - 'inet4':    `Internet version 4 protocols.`
+       - 'inet6':    `Internet version 6 protocols.`  >
+    ]
+) tuple with two longint elements | false
+```
+
+**参见**
+
+- POSIX 标准函数：`socketpair()`
+
 #### 3.1.19) `fdflags` 方法
 
 获取或设置文件描述符标志、文件描述符状态标志等。
