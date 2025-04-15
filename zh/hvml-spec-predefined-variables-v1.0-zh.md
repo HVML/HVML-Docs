@@ -988,11 +988,9 @@ $SYS.pipe(
 
 ```js
 $SYS.socketpair(
-    [ < 'local | unix | inet4 | inet6' $domain = 'local': `The domain in which to create the sockets.`
+    [ < 'local | unix ' $domain = 'local': `The domain in which to create the sockets.`
        - 'local':    `Host-internal protocols.`
        - 'unix':     `Host-internal protocols; the equivalent to 'local'.`
-       - 'inet4':    `Internet version 4 protocols.`
-       - 'inet6':    `Internet version 6 protocols.`  >
     ]
 ) tuple with two longint elements | false
 ```
