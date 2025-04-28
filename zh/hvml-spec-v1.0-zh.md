@@ -1,4 +1,4 @@
-的# HVML 规范
+# HVML 规范
 
 Subject: HVML Specification  
 Version: 1.0-OR0  
