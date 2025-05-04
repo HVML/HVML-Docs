@@ -2777,7 +2777,72 @@ $DATA.type( 3.5 )
     // string: `number`
 ```
 
-#### 3.7.2) `memsize` 方法
+#### 3.7.2) `is_container` 方法
+
+判断给定的数据是否为容器。
+
+**描述**
+
+```js
+$DATA.is_container(
+        [ <any $data> ]
+) string
+```
+
+该方法返回给定数据是否为容器（container）。若未指定数据，按 `undefined` 处理。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$DATA.is_container
+    // boolean: false
+
+$DATA.is_container( [1, 2, 3] )
+    // boolean: true
+
+$DATA.is_container( [!] )
+    // boolean: true
+
+$DATA.is_container( {} )
+    // boolean: true
+```
+
+#### 3.7.3) `is_linear_container` 方法
+
+判断给定的数据是否为线性容器。
+
+**描述**
+
+```js
+$DATA.is_linear_container(
+        [ <any $data> ]
+) string
+```
+
+该方法返回给定数据是否为线性容器（linctnr）。若未指定数据，按 `undefined` 处理。
+
+**异常**
+
+该方法不产生异常。
+
+**示例**
+
+```js
+$DATA.is_linear_container
+    // boolean: false
+
+$DATA.is_linear_container( [1, 2, 3] )
+    // boolean: true
+
+$DATA.is_linear_container( [!] )
+    // boolean: true
+```
+
+#### 3.7.4) `memsize` 方法
 
 返回数据占用的内存大小。
 
@@ -2807,7 +2872,7 @@ $DATA.memsize( "HVML" )
     // ulongint: 32UL
 ```
 
-#### 3.7.3) `count` 方法
+#### 3.7.5) `count` 方法
 
 返回数据的数据项个数。
 
@@ -2838,7 +2903,7 @@ $DATA.count( [ 1.0, 2.0 ] )
     // ulongint: 2UL
 ```
 
-#### 3.7.4) `nr_children` 方法
+#### 3.7.6) `nr_children` 方法
 
 返回数据的子数据项个数；对非容器类数据，始终返回 0。
 
@@ -2869,7 +2934,7 @@ $DATA.nr_children( [ 1.0, 2.0 ] )
     // ulongint: 2UL
 ```
 
-#### 3.7.5) `numerify` 方法
+#### 3.7.7) `numerify` 方法
 
 对给定数据做数值化处理。
 
@@ -2897,7 +2962,7 @@ $DATA.numerify
     // number: 0
 ```
 
-#### 3.7.6) `booleanize` 方法
+#### 3.7.8) `booleanize` 方法
 
 对给定的数据做布尔化处理。
 
@@ -2922,7 +2987,7 @@ $DATA.booleanize
     // boolean: false
 ```
 
-#### 3.7.7) `stringify` 方法
+#### 3.7.9) `stringify` 方法
 
 对给定的数据做字符串化处理。
 
@@ -2953,7 +3018,7 @@ $DATA.stringify(123)
     // string: '123'
 ```
 
-#### 3.7.8) `serialize` 方法
+#### 3.7.10) `serialize` 方法
 
 对给定的数据做字符串化处理。
 
@@ -3007,7 +3072,7 @@ $DATA.serialize([1, 2])
     // string: '[1,2]'
 ```
 
-#### 3.7.9) `sort` 方法
+#### 3.7.11) `sort` 方法
 
 对数组或者集合执行排序。
 
@@ -3043,7 +3108,7 @@ $DATA.sort([3, 4, 1, 0], 'asc')
     // array: [0, 1, 3, 4]
 ```
 
-#### 3.7.10) `shuffle` 方法
+#### 3.7.12) `shuffle` 方法
 
 随机打乱给定数组或者集合的成员顺序。
 
@@ -3071,7 +3136,7 @@ $DATA.shuffle([1, 2, 3, 4, 5])
     // array: [4, 3, 2, 5, 1]
 ```
 
-#### 3.7.11) `compare` 方法
+#### 3.7.13) `compare` 方法
 
 比较两个数据。
 
@@ -3111,7 +3176,7 @@ $DATA.compare(1, "1")
     // number: 0
 ```
 
-#### 3.7.12) `parse` 方法
+#### 3.7.14) `parse` 方法
 
 解析 JSON/eJSON 字符串，返回数据。
 
@@ -3142,7 +3207,7 @@ $DATA.parse(
     // array: []
 ```
 
-#### 3.7.13) `isequal` 方法
+#### 3.7.15) `isequal` 方法
 
 判断两个数据是否完全相等。
 
@@ -3173,7 +3238,7 @@ $DATA.isequal(
     // boolean: true
 ```
 
-#### 3.7.14) `fetchstr` 方法
+#### 3.7.16) `fetchstr` 方法
 
 从二进制字节序列中抽取指定编码的字符串。
 
@@ -3222,7 +3287,7 @@ $DATA.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8:6' )
     // string: "北京"
 ```
 
-#### 3.7.15) `fetchreal` 方法
+#### 3.7.17) `fetchreal` 方法
 
 该方法在给定的二进制序列的指定位置，按指定的实数类型（以及大小头顺序）提取实数，返回相应的实数类型。
 
@@ -3257,7 +3322,7 @@ $DATA.fetchreal( bx0a00, 'i8:2', 0 )
     // array: [ 10L, 00L ]
 ```
 
-#### 3.7.16) `crc32` 方法
+#### 3.7.18) `crc32` 方法
 
 计算任意数据的 CRC32 多项式值。
 
@@ -3297,7 +3362,7 @@ $DATA.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
 - [CRC 在线计算]<https://crccalc.com/>
 - [Catalogue of parametrised CRC algorithms](https://reveng.sourceforge.io/crc-catalogue/17plus.htm)
 
-#### 3.7.17) `md5` 方法
+#### 3.7.19) `md5` 方法
 
 计算任意数据的 MD5 散列值。
 
@@ -3322,7 +3387,7 @@ $DATA.md5(
 
 - PHP `md5()` 函数：<https://www.php.net/manual/en/function.md5.php>
 
-#### 3.7.18) `sha1` 方法
+#### 3.7.20) `sha1` 方法
 
 计算任意数据的 SHA1 散列值。
 
@@ -3347,7 +3412,7 @@ $DATA.sha1(
 
 - PHP `sha1()` 函数：<https://www.php.net/manual/en/function.sha1.php>
 
-#### 3.7.19) `pack` 方法
+#### 3.7.21) `pack` 方法
 
 将多个数据打包为二进制序列。
 
@@ -3406,7 +3471,7 @@ $DATA.pack( "i16le:2 i32le", [10, 15], 255)
 
 - [1.2) 二进制格式表示法](#12-二进制格式表示法)
 
-#### 3.7.20) `unpack` 方法
+#### 3.7.22) `unpack` 方法
 
 将二进制序列分解为多个数据。
 
@@ -3444,7 +3509,7 @@ $DATA.unpack( "i16le", bx0a000a000000)
 
 - [1.2) 二进制格式表示法](#12-二进制格式表示法)
 
-#### 3.7.21) `bin2hex` 方法
+#### 3.7.23) `bin2hex` 方法
 
 将字符串或者字节序列转换为十六进制字符串表达。
 
@@ -3481,7 +3546,7 @@ $DATA.bin2hex( bb0000.1111.1111.0000, 'uppercase')
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.bin2hex.php>
 
-#### 3.7.22) `hex2bin` 方法
+#### 3.7.24) `hex2bin` 方法
 
 十六进制字符串转换为字节序列。
 
@@ -3514,7 +3579,7 @@ $DATA.hex2bin( '0FF0' )
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.hex2bin.php>
 
-#### 3.7.23) `base64_encode` 方法
+#### 3.7.25) `base64_encode` 方法
 
 使用 MIME Base64 编码字符串或者字节序列。
 
@@ -3550,7 +3615,7 @@ $DATA.base64_encode('HVML 是全球首款可编程标记语言')
 - PHP `base64_encode()` 函数：<https://www.php.net/manual/en/function.base64-encode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.7.24) `base64_decode` 方法
+#### 3.7.26) `base64_decode` 方法
 
 解码使用 MIME Base64 编码的字符串。
 
@@ -3584,7 +3649,7 @@ $DATA.base64_decode( 'SFZNTA==' )
 - PHP `base64_decode()` 函数：<https://www.php.net/manual/en/function.base64-decode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.7.25) `arith` 方法
+#### 3.7.27) `arith` 方法
 
 基于两个数值做简单整数算术运算。
 
@@ -3615,7 +3680,7 @@ $DATA.arith( '+', 3, 2 )
     // longint: 5L
 ```
 
-#### 3.7.26) `bitwise` 方法
+#### 3.7.28) `bitwise` 方法
 
 基于两项数值的位元计算。
 
@@ -3646,7 +3711,7 @@ $DATA.bitwise( '|', 0, 15 )
     // ulongint: 15UL
 ```
 
-#### 3.7.27) `isdivisible` 方法
+#### 3.7.29) `isdivisible` 方法
 
 判断一个数是否可以整除另一个数。
 
@@ -3679,7 +3744,7 @@ $DATA.isdivisible(
     // boolean: false
 ```
 
-#### 3.7.28) `match_members` 方法
+#### 3.7.30) `match_members` 方法
 
 返回一个线性容器（如数组、元组、集合）中和给定值匹配的所有成员之索引或值。
 
@@ -3752,7 +3817,7 @@ $DATA.match_members(['zh_CN', 'zh_TW', 'zh_HK', 'zh_MO'], '^zh', 'regexp values'
     // ['zh_CN', 'zh_TW', 'zh_HK', 'zh_MO']
 ```
 
-#### 3.7.29) `match_properties` 方法
+#### 3.7.31) `match_properties` 方法
 
 返回一个对象中属性名匹配给定条件的所有属性名、属性值或者键值对。
 
@@ -3813,7 +3878,7 @@ $DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless kv-pairs')
     // [ [! 'A',  3 ], [! 'a', 1 ] ]
 ```
 
-#### 3.7.30) `makebytesbuffer` 方法
+#### 3.7.32) `makebytesbuffer` 方法
 
 构造一个可用作缓冲区的字节序列。
 
@@ -3842,7 +3907,7 @@ $DATA.makebytesbuffer(
     // bsequence
 ```
 
-#### 3.7.31) `append2bytesbuffer` 方法
+#### 3.7.33) `append2bytesbuffer` 方法
 
 将一个字节序列或字符串追加到缓冲区。
 
@@ -3883,7 +3948,7 @@ $DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011223344)
     // 5UL
 ```
 
-#### 3.7.32) `rollbytesbuffer` 方法
+#### 3.7.34) `rollbytesbuffer` 方法
 
 重置字节缓冲区。
 
@@ -3916,7 +3981,7 @@ $DATA.rollbytesbuffer($DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011
     // 0L
 ```
 
-#### 3.7.33) `key` 方法
+#### 3.7.35) `key` 方法
 
 使用数据构建一个可作唯一性键值的无符号长整数。
 
@@ -5665,21 +5730,18 @@ $STR.translate(
 $STR.htmlentities_encode(
     <string $string: `The input string.`>
     [,
-        <'[compat | quotes | noquotes] || [xml1 | html5]' $flags = 'quotes html5':
+        <'[compat | quotes | noquotes] || [xml1 | html5] || [conv-certain | conv-all] || [double-encode | keep-existing]'
+            $flags = 'quotes html5 conv-certain double-encode':
             - 'compat':     `Will convert double-quotes and leave single-quotes alone.`
             - 'quotes':     `Will convert both double and single quotes.`
             - 'noquotes':   `Will leave both double and single quotes unconverted.`
             - 'xml1':       `Handle code as XML 1.`
             - 'html5':      `Handle code as HTML 5.`
+            - 'conv-certain':   `Only the certain characters have special significance in HTML are translated into these entities.`
+            - 'conv-all':       `All characters which have HTML character entity equivalents are translated into these entities.`
+            - 'double-encode':  `Convert everything.`
+            - 'keep-existing':  `Do not encode existing HTML entities.`
         >
-        [, <boolean $all = false:
-                - false:    `Only the certain characters have special significance in HTML are translated into these entities.`
-                - true:     `All characters which have HTML character entity equivalents are translated into these entities.`>
-            [, <boolean $double_encode = true:
-                - true:     `Convert everything.`
-                - false:    `Do not encode existing HTML entities.`>
-            ]
-        ]
     ]
 ) string
 ```
@@ -5713,7 +5775,7 @@ $STR.htmlentities_decode(
             - 'xml1':       `Handle code as XML 1.`
             - 'html5':      `Handle code as HTML 5.` >
     ]
-) string | bsequence
+) string
 ```
 
 **参数**
@@ -10324,6 +10386,7 @@ $sqliteCursor.connection
 
 发布历史：
 
+- 2025 年 06 月 30 日：发布 V1.0 OR1，标记为 'v1.0-or1-250630'。
 - 2025 年 04 月 28 日：发布 V1.0 OR0，标记为 'v1.0-or0-250428'。
 - 2024 年 01 月 31 日：发布 V1.0 RCh，标记为 'v1.0-rch-240131'。
 - 2023 年 11 月 30 日：发布 V1.0 RCg，标记为 'v1.0-rcg-231130'。
@@ -10340,6 +10403,13 @@ $sqliteCursor.connection
 - 2022 年 06 月 01 日：发布 V1.0 RC3，标记为 'v1.0-pv-rc3-220601'。
 - 2022 年 05 月 01 日：发布 V1.0 RC2，标记为 'v1.0-pv-rc2-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC1，标记为 'v1.0-pv-rc1-220401'。
+
+#### OR1) 250630
+
+1. 新增 `$DATA.is_container` 方法。
+1. 新增 `$DATA.is_linear_container` 方法。
+1. 调整 `$STR.htmlentities_encode` 方法。
+1. 调整 `$STR.htmlentities_decode` 方法。
 
 #### OR0) 250428
 
@@ -10375,6 +10445,7 @@ $sqliteCursor.connection
 #### RCh) 240131
 
 1. 新增 `$STR.codepoints` 方法。
+1. 图爱总额灰姑娘 `$STR.codepoints` 方法。
 
 #### RCg) 231130
 
