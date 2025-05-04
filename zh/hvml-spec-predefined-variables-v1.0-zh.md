@@ -5730,18 +5730,16 @@ $STR.translate(
 $STR.htmlentities_encode(
     <string $string: `The input string.`>
     [,
-        <'[compat | quotes | noquotes] || [xml1 | html5] || [conv-certain | conv-all] || [double-encode | keep-existing]'
-            $flags = 'quotes html5 conv-certain double-encode':
-            - 'compat':     `Will convert double-quotes and leave single-quotes alone.`
-            - 'quotes':     `Will convert both double and single quotes.`
-            - 'noquotes':   `Will leave both double and single quotes unconverted.`
-            - 'xml1':       `Handle code as XML 1.`
-            - 'html5':      `Handle code as HTML 5.`
-            - 'conv-certain':   `Only the certain characters have special significance in HTML are translated into these entities.`
-            - 'conv-all':       `All characters which have HTML character entity equivalents are translated into these entities.`
-            - 'double-encode':  `Convert everything.`
-            - 'keep-existing':  `Do not encode existing HTML entities.`
-        >
+       <'[single-quotes || double-quotes || convert-all || double-encode'
+            $flags = 'single-quotes double-quotes double-encode':
+        - 'single-quotes':  `Convert single-quotes.`
+        - 'double-quotes':  `Convert double quotes.`
+        - 'convert-all':    `All characters which have HTML character entity
+                            equivalents are translated into these entities;
+                            or only the certain characters have special significance
+                            in HTML are translated into these entities.`
+        - 'double-encode':  `Convert everything; or keep the existing HTML entities.`
+       >
     ]
 ) string
 ```
@@ -5767,13 +5765,10 @@ $STR.htmlentities_encode(
 $STR.htmlentities_decode(
     <string $string: `The input string.`>
     [,
-        <'[compat | quotes | noquotes] || substitute || [xml1 | html5]' $flags:
-            - 'compat':     `Will convert double-quotes and leave single-quotes alone.`
-            - 'quotes':     `Will convert both double and single quotes.`
-            - 'noquotes':   `Will leave both double and single quotes unconverted.`
-            - 'substitute': `Replace invalid code unit sequences with a Unicode Replacement Character U+FFFD or &#FFFD.`
-            - 'xml1':       `Handle code as XML 1.`
-            - 'html5':      `Handle code as HTML 5.` >
+        <'keep-double-quotes || keep-single-quotes || substitute-invalid ]' $flags = 'substitute-invalid':
+            - 'keep-single-quotes': `Keep single-quotes unconverted.`
+            - 'keep-double-quotes': `Keep double-quotes unconverted.`
+            - 'substitute-invalid': `Replace invalid HTML entity with a Unicode Replacement Character U+FFFD; or ignore it.` >
     ]
 ) string
 ```
