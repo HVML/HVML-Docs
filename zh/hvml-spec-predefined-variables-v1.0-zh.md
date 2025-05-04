@@ -5657,25 +5657,19 @@ $STR.translate(
 
 #### 3.10.32) `htmlentities_encode` 方法
 
-（废弃；不计划实现）
-
 转换字符为 HTML 实体。
 
 **描述**
 
 ```js
 $STR.htmlentities_encode(
-        <string $string: `The input string.`>,
-        <'[compat | quotes | noquotes] || [ignore | substitute | disallowed] || [html401 | xml1 | xhtml | html5]' $flags:
+    <string $string: `The input string.`>
+    [,
+        <'[compat | quotes | noquotes] || [xml1 | html5]' $flags = 'quotes html5':
             - 'compat':     `Will convert double-quotes and leave single-quotes alone.`
             - 'quotes':     `Will convert both double and single quotes.`
             - 'noquotes':   `Will leave both double and single quotes unconverted.`
-            - 'ignore':     `Silently discard invalid code unit sequences instead of returning an empty string. Using this flag is discouraged.`
-            - 'substitute': `Replace invalid code unit sequences with a Unicode Replacement Character U+FFFD or &#FFFD.`
-            - 'disallowed': `Replace invalid code points for the given document type with a Unicode Replacement Character U+FFFD or &#FFFD.`
-            - 'html401':    `Handle code as HTML 4.01.`
             - 'xml1':       `Handle code as XML 1.`
-            - 'xhtml':      `Handle code as XHTML.`
             - 'html5':      `Handle code as HTML 5.`
         >
         [, <boolean $all = false:
@@ -5686,6 +5680,7 @@ $STR.htmlentities_encode(
                 - false:    `Do not encode existing HTML entities.`>
             ]
         ]
+    ]
 ) string
 ```
 
@@ -5702,28 +5697,22 @@ $STR.htmlentities_encode(
 
 #### 3.10.33) `htmlentities_decode` 方法
 
-（废弃；不计划实现）
-
 转换 HTML 实体为对应的字符。
 
 **描述**
 
 ```js
 $STR.htmlentities_decode(
-        <string $string: `The input string.`>,
-        <'[compat | quotes | noquotes] || substitute || [html401 | xml1 | xhtml | html5]' $flags:
+    <string $string: `The input string.`>
+    [,
+        <'[compat | quotes | noquotes] || substitute || [xml1 | html5]' $flags:
             - 'compat':     `Will convert double-quotes and leave single-quotes alone.`
             - 'quotes':     `Will convert both double and single quotes.`
             - 'noquotes':   `Will leave both double and single quotes unconverted.`
             - 'substitute': `Replace invalid code unit sequences with a Unicode Replacement Character U+FFFD or &#FFFD.`
-            - 'html401':    `Handle code as HTML 4.01.`
             - 'xml1':       `Handle code as XML 1.`
-            - 'xhtml':      `Handle code as XHTML.`
             - 'html5':      `Handle code as HTML 5.` >
-        [, <boolean $all = false:
-            - false:        `Only the certain characters have special significance in HTML are translated into these entities.`
-            - true:         `All characters which have HTML character entity equivalents are translated into these entities.` >
-        ]
+    ]
 ) string | bsequence
 ```
 
@@ -5735,7 +5724,7 @@ $STR.htmlentities_decode(
 
 **参见**
 
-- PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.html-entity-decode.php>
+- PHP `html_entity_decode()` 函数：<https://www.php.net/manual/en/function.html-entity-decode.php>
 - PHP `htmlspecialchars_decode()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars-decode.php>
 
 #### 3.10.34) `nl2br` 方法
