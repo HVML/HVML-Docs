@@ -42,8 +42,12 @@ Language: Chinese
 - 行者（runner），每个解释器实例对应一个行者，连接到渲染器后对应一个渲染器会话。
 - 静态属性（static property），指一个对象上键值为普通数据的属性，其键值不是动态生成的。我们通常使用小写开头的驼峰命名法命名这类属性，如 `myObj`。
 - 动态属性（dynamic property），指一个对象上键值为动态值的属性，在动态属性上，我们通常可以提供一个获取器或者一个设置器，用于获取该属性的当前值或者改变该属性的当前值。
-- 获取器（getter），指一个动态属性的获取器。调用获取器返回该方法的动态属性值。
-- 设置器（setter），指一个动态属性的设置器。调用特定方法的设置器，将完成对应属性的设置工作。
+- 获取器（getter），指一个动态属性的获取器，主要用于如下用途：
+   1. 调用获取器返回该方法的动态属性值。
+   1. 完成编码（encode）工作，比如将一个普通字符串编码为 Base64 格式字符串。
+- 设置器（setter），指一个动态属性的设置器，主要用于如下用途：
+   1. 调用特定方法的设置器，将完成对应属性的设置工作。
+   1. 完成解码（decode）工作，比如将 Base64 编码解码为正常字符串。
 - 方法（method），指动态对象提供的函数调用。我们通常使用下划线连接的全小写命名法，如 `starts_with`。
 
 按是否含有动态对象划分，HVML 预定义变量可分为：
@@ -3579,50 +3583,22 @@ $DATA.hex2bin( '0FF0' )
 
 - PHP `bin2hex()` 函数：<https://www.php.net/manual/en/function.hex2bin.php>
 
-#### 3.7.25) `base64_encode` 方法
+#### 3.7.25) `base64` 属性
 
-使用 MIME Base64 编码字符串或者字节序列。
+该属性的获取器使用 MIME Base64 编码字符串或者字节序列，而其设置器将解码使用 MIME Base64 编码的字符串。
 
 **描述**
 
 ```js
-$DATA.base64_encode(
+$DATA.base64(
         < string | bsequence $data >
 ) string
 ```
 
 该函数将给定的字符串或者二进制序列 `data` 按照 Base64 进行编码。
 
-**异常**
-
-该方法可能抛出如下异常：
-
-- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字符串。
-- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字符串。
-
-**示例**
-
 ```js
-$DATA.base64_encode( bx48564D4C )
-    // string: 'SFZNTA=='
-
-$DATA.base64_encode('HVML 是全球首款可编程标记语言')
-    // string: 'SFZNTCDmmK/lhajnkIPpppbmrL7lj6/nvJbnqIvmoIforrDor63oqIA='
-```
-
-**参见**
-
-- PHP `base64_encode()` 函数：<https://www.php.net/manual/en/function.base64-encode.php>
-- [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
-
-#### 3.7.26) `base64_decode` 方法
-
-解码使用 MIME Base64 编码的字符串。
-
-**描述**
-
-```js
-$DATA.base64_decode(
+$DATA.base64(!
         <string $data>,
 ) bsequence
 ```
@@ -3631,21 +3607,33 @@ $DATA.base64_decode(
 
 **异常**
 
-该方法可能抛出如下异常：
+获取器可能抛出如下异常：
 
 - `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字节序列。
 - `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字节序列。
 - `BadEncoding`：错误的 Base64 编码；可忽略异常，静默求值时返回空字节序列。
 
+设置器可能抛出如下异常：
+
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回空字符串。
+- `WrongDataType`：错误数据类型；可忽略异常，静默求值时返回空字符串。
+
 **示例**
 
 ```js
-$DATA.base64_decode( 'SFZNTA==' )
+$DATA.base64( bx48564D4C )
+    // string: 'SFZNTA=='
+
+$DATA.base64('HVML 是全球首款可编程标记语言')
+    // string: 'SFZNTCDmmK/lhajnkIPpppbmrL7lj6/nvJbnqIvmoIforrDor63oqIA='
+
+$DATA.base64(! 'SFZNTA==' )
     // bsequence: bx48564D4C
 ```
 
 **参见**
 
+- PHP `base64_encode()` 函数：<https://www.php.net/manual/en/function.base64-encode.php>
 - PHP `base64_decode()` 函数：<https://www.php.net/manual/en/function.base64-decode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
@@ -5720,14 +5708,14 @@ $STR.translate(
 
 - PHP `strtr()` 函数：<https://www.php.net/manual/en/function.strtr.php>
 
-#### 3.10.32) `htmlentities_encode` 方法
-
-转换字符为 HTML 实体。
+#### 3.10.32) `htmlentities` 属性
 
 **描述**
 
+该属性的获取器将转换给定字符串中的字符为 HTML 实体：
+
 ```js
-$STR.htmlentities_encode(
+$STR.htmlentities(
     <string $string: `The input string.`>
     [,
        <'[single-quotes || double-quotes || convert-all || double-encode'
@@ -5741,7 +5729,21 @@ $STR.htmlentities_encode(
         - 'double-encode':  `Convert everything; or keep the existing HTML entities.`
        >
     ]
-) string
+) string | false
+```
+
+该属性的设置器将转换给定字符串中的 HTML 实体为对应的 Unicode 字符：
+
+```js
+$STR.htmlentities(!
+    <string $string: `The input string.`>
+    [,
+        <'keep-double-quotes || keep-single-quotes || substitute-invalid ]' $flags = 'substitute-invalid':
+            - 'keep-single-quotes': `Keep single-quotes unconverted.`
+            - 'keep-double-quotes': `Keep double-quotes unconverted.`
+            - 'substitute-invalid': `Replace invalid HTML entity with a Unicode Replacement Character U+FFFD; or ignore it.` >
+    ]
+) string | false
 ```
 
 **参数**
@@ -5754,35 +5756,6 @@ $STR.htmlentities_encode(
 
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.htmlentities.php>
 - PHP `htmlspecialchars()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars.php>
-
-#### 3.10.33) `htmlentities_decode` 方法
-
-转换 HTML 实体为对应的字符。
-
-**描述**
-
-```js
-$STR.htmlentities_decode(
-    <string $string: `The input string.`>
-    [,
-        <'keep-double-quotes || keep-single-quotes || substitute-invalid ]' $flags = 'substitute-invalid':
-            - 'keep-single-quotes': `Keep single-quotes unconverted.`
-            - 'keep-double-quotes': `Keep double-quotes unconverted.`
-            - 'substitute-invalid': `Replace invalid HTML entity with a Unicode Replacement Character U+FFFD; or ignore it.` >
-    ]
-) string
-```
-
-**参数**
-
-**返回值**
-
-**示例**
-
-**参见**
-
-- PHP `html_entity_decode()` 函数：<https://www.php.net/manual/en/function.html-entity-decode.php>
-- PHP `htmlspecialchars_decode()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars-decode.php>
 
 #### 3.10.34) `nl2br` 方法
 
@@ -10403,8 +10376,8 @@ $sqliteCursor.connection
 
 1. 新增 `$DATA.is_container` 方法。
 1. 新增 `$DATA.is_linear_container` 方法。
-1. 调整 `$STR.htmlentities_encode` 方法。
-1. 调整 `$STR.htmlentities_decode` 方法。
+1. 使用 `$STR.htmlentities` 获取器和设置器分别用于编码和解码。
+1. 使用 `$STR.base64` 获取器和设置器分别用于编码和解码。
 
 #### OR0) 250428
 
