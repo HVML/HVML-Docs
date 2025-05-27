@@ -1397,7 +1397,7 @@ $RUNNER.autoSwitchingRdr(! false )
 由于 `$RUNNER` 是行者级变量，故而可以在当前行者的另一个 HVML 协程中观察该数据上的变化：
 
 ```hvml
-    <observe on="$RUNNER.myObj" for="change:AUTHOR" in="#theStatusBar">
+    <observe on $RUNNER.myObj for 'change:modified' in '#theStatusBar'>
         ...
     </observe>
 ```
