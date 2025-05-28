@@ -112,6 +112,7 @@ Language: Chinese
       * [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
       * [2.5.18) `inherit` 标签](#2518-inherit-标签)
       * [2.5.19) `sleep` 标签](#2519-sleep-标签)
+      * [2.5.20) `adapt` 标签](#2520-adapt-标签)
    + [2.6) 执行器](#26-执行器)
       * [2.6.1) 内建执行器](#261-内建执行器)
          - [2.6.1.1) `KEY` 执行器](#2611-key-执行器)
@@ -1388,6 +1389,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 `$L` 是一个动态对象，该对象完成数值对比、字符串对比以及逻辑与、或、异或、取反等逻辑操作，比如：
 
+1. `$L.assert(<any>)`：断言；若参数为假，则产生 `AssertionFailed` 异常，否则返回真值（`true`）。
 1. `$L.not(<any>)`：用于逻辑取反操作。
 1. `$L.and(<any>, <any>, ...)`：用于逻辑与运算。
 1. `$L.or(<any>, <any>, ...)`：用于逻辑或运算。
@@ -1982,6 +1984,7 @@ HVML 定义的异常如下：
    - `UnmetPrecondition`：未满足前置条件。
    - `Unsupported`：表示不支持某个特性或者某个要求的信息，比如某些区域（locale）分类。
    - `Interrupted`：表示当前的操作被打断，比如行者被要求终止时。
+   - `AssertionFailed`：断言失败；不可忽略异常。
 - 解析相关：
    - `BadEncoding`：表示错误的字符编码。
    - `BadHVMLTag`：表示错误的、不适合的标签，或者不匹配的 HVML 关闭标签。
@@ -5837,6 +5840,106 @@ const result = method(document.getElementById('myModal'), 0);
 
 `sleep` 的结果数据是剩余的休眠时间（秒数，数值类型），若未被打断，则为 0。
 
+#### 2.5.20) `adapt` 标签
+
+`adapt` 标签定义的动作元素，主要用于数据的转换或适配，可使用如下介词属性：
+
+- `on`：指定源数据。
+- `with`：指定数据构造模板的名称（由 `archedata` 定义）。
+
+如下面的示例代码：
+
+```hvml
+<archedata name="myMap">
+    { href: $?.src, title: $?.header }
+</archedata>
+
+<adapt on { src: '/assets/avatar/a.png', header: 'Boss' } with $myMap >
+    ...
+</adapt>
+```
+
+`adapt` 元素的执行结果是按照数据构造模板执行转换或适配后的数据。如上面 `adapt` 动作元素的执行结果为：
+
+```json
+{
+    href: '/assets/avatar/a.png',
+    title: 'Boss'
+}
+```
+
+在 `adapt` 标签中，可使用如下副词属性：
+
+- `individually`：当源数据为容器时，数据模板定义的转换将作用于每个数据项上。
+
+如下面的示例代码：
+
+```hvml
+<archedata name="myMap">
+    { href: $?.avatar, title: $?.name }
+</archedata>
+
+<init as 'users' uniquely against 'id'>
+    [
+        { "id": "1", "avatar": "/img/avatars/1.png",
+            "name": "Tom", "region": "en_US" },
+        { "id": "2", "avatar": "/img/avatars/2.png",
+            "name": "Jerry", "region": "zh_CN" },
+        { "id": "2", "avatar": "/img/avatars/2.png",
+            "name": "David", "region": "zh_CN" }
+    ]
+</init>
+
+<adapt on $users with $myMap individually>
+    ...
+</adapt>
+```
+
+则上述 `adapt` 元素的结果数据为：
+
+```json
+    [
+        { "href": "/img/hrefs/1.png", "title": "Tom" },
+        { "href": "/img/hrefs/2.png", "title": "Jerry" },
+        { "href": "/img/hrefs/2.png", "title": "David" }
+    ]
+```
+
+需要注意的是，上述示例代码中的 `users` 是一个集合，但经过适配后的数据将丢失 `id` 之上的唯一性键信息，而始终生成一个普通的数组。
+
+使用 `individually` 副词属性，我们亦可在对象的每个值上执行转换。如下面的代码所示：
+
+```hvml
+<archedata name="myMap">
+    { href: $?.avatar, title: $?.name }
+</archedata>
+
+<init as 'users' uniquely against 'id'>
+    {
+        '1': {"avatar": "/img/avatars/1.png",
+            "name": "Tom", "region": "en_US" },
+        '2': {"avatar": "/img/avatars/2.png",
+            "name": "Jerry", "region": "zh_CN" },
+        '3': {"avatar": "/img/avatars/2.png",
+            "name": "David", "region": "zh_CN" }
+    }
+</init>
+
+<adapt on $users with $myMap individually>
+    ...
+</adapt>
+```
+
+则上述 `adapt` 元素的结果数据为：
+
+```json
+    {
+        '1': { "href": "/img/hrefs/1.png", "title": "Tom" },
+        '2': { "href": "/img/hrefs/2.png", "title": "Jerry" },
+        '3': { "href": "/img/hrefs/2.png", "title": "David" }
+    }
+```
+
 ### 2.6) 执行器
 
 在 `choose`、 `iterate` 以及 `reduce` 等动作标签中，我们通常要使用 `by` 介词属性来定义如何执行选择、迭代或者归约操作，我们称之为规则，而实现相应的规则的代码或者功能模块被称为选择器、迭代器或归约器，统称为执行器（executor）。HVML 解释器可实现内置（built-in）执行器，通过简单的语法来指定在选择、迭代、归约数据时遵循什么样的规则。在复杂情形下，HVML 允许开发者调用外部程序（比如可动态加载的模块）来实现执行器。HVML 使用 `CLASS` 或 `FUNC` 前缀来表示使用外部定义的执行器。
@@ -7715,6 +7818,22 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 相关章节：
 
 - [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
+
+##### OR1.2) 新增 `adapt` 标签
+
+- 该标签用于定义一个完成数据转换或适配的动作元素。
+
+相关章节：
+
+- [2.5.20) `adapt` 标签](#2520-adapt-标签)
+
+##### OR1.3) 新增 `AssertionFailed` 异常
+
+- `$L.assert()` 方法产生该异常；该异常为不可忽略异常。
+
+相关章节：
+
+- [2.1.12) 错误和异常的处理](#2112-错误和异常的处理)
 
 #### OR0) 250428
 
