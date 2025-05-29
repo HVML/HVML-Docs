@@ -3637,7 +3637,7 @@ $DATA.base64(! 'SFZNTA==' )
 - PHP `base64_decode()` 函数：<https://www.php.net/manual/en/function.base64-decode.php>
 - [RFC 2045](http://www.faqs.org/rfcs/rfc2045) section 6.8
 
-#### 3.7.27) `arith` 方法
+#### 3.7.26) `arith` 方法
 
 基于两个数值做简单整数算术运算。
 
@@ -3668,7 +3668,7 @@ $DATA.arith( '+', 3, 2 )
     // longint: 5L
 ```
 
-#### 3.7.28) `bitwise` 方法
+#### 3.7.27) `bitwise` 方法
 
 基于两项数值的位元计算。
 
@@ -3699,7 +3699,7 @@ $DATA.bitwise( '|', 0, 15 )
     // ulongint: 15UL
 ```
 
-#### 3.7.29) `isdivisible` 方法
+#### 3.7.28) `isdivisible` 方法
 
 判断一个数是否可以整除另一个数。
 
@@ -3732,7 +3732,7 @@ $DATA.isdivisible(
     // boolean: false
 ```
 
-#### 3.7.30) `match_members` 方法
+#### 3.7.29) `match_members` 方法
 
 返回一个线性容器（如数组、元组、集合）中和给定值匹配的所有成员之索引或值。
 
@@ -3805,7 +3805,7 @@ $DATA.match_members(['zh_CN', 'zh_TW', 'zh_HK', 'zh_MO'], '^zh', 'regexp values'
     // ['zh_CN', 'zh_TW', 'zh_HK', 'zh_MO']
 ```
 
-#### 3.7.31) `match_properties` 方法
+#### 3.7.30) `match_properties` 方法
 
 返回一个对象中属性名匹配给定条件的所有属性名、属性值或者键值对。
 
@@ -3866,7 +3866,7 @@ $DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless kv-pairs')
     // [ [! 'A',  3 ], [! 'a', 1 ] ]
 ```
 
-#### 3.7.32) `makebytesbuffer` 方法
+#### 3.7.31) `makebytesbuffer` 方法
 
 构造一个可用作缓冲区的字节序列。
 
@@ -3895,7 +3895,7 @@ $DATA.makebytesbuffer(
     // bsequence
 ```
 
-#### 3.7.33) `append2bytesbuffer` 方法
+#### 3.7.32) `append2bytesbuffer` 方法
 
 将一个字节序列或字符串追加到缓冲区。
 
@@ -3936,7 +3936,7 @@ $DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011223344)
     // 5UL
 ```
 
-#### 3.7.34) `rollbytesbuffer` 方法
+#### 3.7.33) `rollbytesbuffer` 方法
 
 重置字节缓冲区。
 
@@ -3969,7 +3969,7 @@ $DATA.rollbytesbuffer($DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011
     // 0L
 ```
 
-#### 3.7.35) `key` 方法
+#### 3.7.34) `key` 方法
 
 使用数据构建一个可作唯一性键值的无符号长整数。
 
@@ -5757,7 +5757,7 @@ $STR.htmlentities(!
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.htmlentities.php>
 - PHP `htmlspecialchars()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars.php>
 
-#### 3.10.34) `nl2br` 方法
+#### 3.10.33) `nl2br` 方法
 
 （废弃；不计划实现）
 
@@ -5789,7 +5789,7 @@ $STR.nl2br(
 
 - PHP `nl2br()` 函数：<https://www.php.net/manual/en/function.nl2br.php>
 
-#### 3.10.35) `rot13` 方法
+#### 3.10.34) `rot13` 方法
 
 对字符串执行 ROT13 转换。
 
@@ -5811,7 +5811,7 @@ $STR.rot13(
 
 - PHP `str_rot13()` 函数：<https://www.php.net/manual/en/function.str-rot13.php>
 
-#### 3.10.36) `count_chars` 方法
+#### 3.10.35) `count_chars` 方法
 
 统计字符串中的字符出现次数。
 
@@ -5839,7 +5839,7 @@ $STR.count_chars(
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
-#### 3.10.37) `count_bytes` 方法
+#### 3.10.36) `count_bytes` 方法
 
 统计字符串或二进制字节序中的各个字节（0...255）出现的次数。
 
@@ -5870,7 +5870,7 @@ $STR.count_bytes(
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
-#### 3.10.38) `codepoints` 方法
+#### 3.10.37) `codepoints` 方法
 
 将字符串中的字符转换为 Unicode 码点（codepoint）构成的数组或元组。
 
