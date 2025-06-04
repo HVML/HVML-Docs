@@ -5517,7 +5517,7 @@ $STR.strpbrk(
 $STR.split(
         <string $string: `The original string to split.`>
         [, <real $length = 1: `The length of one substring.`> ]
-) array
+) array | false
 ```
 
 **参数**
@@ -5596,7 +5596,7 @@ $STR.pad(
     [, <string $pad_string = " ": `The string use to pad.`>,
         [, <'left | right | both' $pad_type = 'right': `The padding position.`> ]
     ]
-) string
+) string | false
 ```
 
 **参数**
@@ -5945,7 +5945,7 @@ URL 编码以字节为单位字节处理字符串或者字节序列中的字符�
 $URL.encode('HVML: 全球首款可编程标记语言!')
     // string: 'HVML%3A+%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21'
 
-$URL.rawencode('HVML: 全球首款可编程标记语言!', 'rfc3986')
+$URL.encode('HVML: 全球首款可编程标记语言!', 'rfc3986')
     // string: 'HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21'
 ```
 
