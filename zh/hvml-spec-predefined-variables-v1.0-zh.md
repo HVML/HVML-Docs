@@ -8314,8 +8314,8 @@ $FS.list(
     'dev_minor': <ulongint: `The minor ID of device containing file`>,
     'inode': <ulongint: `The inode numbe`r>
     'type': <string: `The file type like 'd', 'b', 's', ...`>,
-    'mode_digits': <string: `The file mode like `0644``>,
-    'mode_alphas': <string: `The file mode like `rwxrwxr-x``>,
+    'mode_digits': <string: `The file mode like '0644'`>,
+    'mode_alphas': <string: `The file mode like 'rwxrwxr-x'`>,
     'nlink': <ulongint: `The number of hard links`>,
     'uid': <number: `The user ID of owner`>,
     'gid': <number: `The group ID of owner`>,
@@ -8952,26 +8952,26 @@ $FS.stat(
 
 ```js
 {
-    dev_major: < ulongint: `The major ID of device containing file.` >,
-    dev_minor: < ulongint: `The minor ID of device containing file.` >,
-    inode: < ulongint: `The inode number.` >
-    type: < string: `The file type like 'd', 'b', 's', ...` >,
-    mode_digits: < string: `The file mode like '0644'` >,
-    mode_alphas: < string: `The file mode like 'rwxrwxr-x'` >,
-    nlink: < ulongint: `The number of hard links.` >,
-    uid: <ulongint: `The user ID of owner.` >,
-    gid: <ulongint: `The group ID of owner.` >,
-    rdev_major: <ulongint: `The major device ID if it is a special file.` >,
-    rdev_minor: <ulongint: `The minor device ID if it is a special file.` >,
-    size: <ulongint: `The total size in bytes.` >,
-    blksize: <ulongint: `The block size for filesystem I/O.` >,
-    blocks: <ulongint: `The number of 512B blocks allocated.` >,
-    atime_sec: <ulongint: `The time of last acces (seconds since Epoch).` >,
-    atime_nsec: <ulongint: `The time of last acces (nanoseconds since atime_sec).` >,
-    mtime_sec: <ulongint: `The time of last modification (seconds since Epoch).` >,
-    mtime_nsec: <ulongint: `The time of last modification (nanoseconds since mtime_sec).` >,
-    ctime_sec: <ulongint: `The time of last status change (seconds since Epoch).` >
-    ctime_nsec: <ulongint: `The time of last status change (nanoseconds since `time_sec).` >
+    'dev_major': < ulongint: `The major ID of device containing file.` >,
+    'dev_minor': < ulongint: `The minor ID of device containing file.` >,
+    'inode': < ulongint: `The inode number.` >
+    'type': < string: `The file type like 'd', 'b', 's', ...` >,
+    'mode_digits': < string: `The file mode like '0644'` >,
+    'mode_alphas': < string: `The file mode like 'rwxrwxr-x'` >,
+    'nlink': < ulongint: `The number of hard links.` >,
+    'uid': <ulongint: `The user ID of owner.` >,
+    'gid': <ulongint: `The group ID of owner.` >,
+    'rdev_major': <ulongint: `The major device ID if it is a special file.` >,
+    'rdev_minor': <ulongint: `The minor device ID if it is a special file.` >,
+    'size': <ulongint: `The total size in bytes.` >,
+    'blksize': <ulongint: `The block size for filesystem I/O.` >,
+    'blocks': <ulongint: `The number of 512B blocks allocated.` >,
+    'atime_sec': <ulongint: `The time of last acces (seconds since Epoch).` >,
+    'atime_nsec': <ulongint: `The time of last acces (nanoseconds since atime_sec).` >,
+    'mtime_sec': <ulongint: `The time of last modification (seconds since Epoch).` >,
+    'mtime_nsec': <ulongint: `The time of last modification (nanoseconds since mtime_sec).` >,
+    'ctime_sec': <ulongint: `The time of last status change (seconds since Epoch).` >
+    'ctime_nsec': <ulongint: `The time of last status change (nanoseconds since `time_sec).` >
 }
 ```
 
@@ -9210,8 +9210,8 @@ $dirStream.stat(
     inode:          <ulongint: `The inode number.` >
     type:           <string: `The file type like 'd', 'b', 's', ...` >,
     mode_digits:    <string: `The file mode like '0644'.` >,
-    mode_alphas:    <string: The file mode like 'rwxrwxr-x'.` >,
-    nlink:          <ulongint: The number of hard links.` >,
+    mode_alphas:    <string: `The file mode like 'rwxrwxr-x'.` >,
+    nlink:          <ulongint: `The number of hard links.` >,
     uid:            <ulongint: `The user ID of owner.` >,
     gid:            <ulongint: `The group ID of owner.` >,
     rdev_major:     <ulongint: `The major device ID if it is a special file.` >,
