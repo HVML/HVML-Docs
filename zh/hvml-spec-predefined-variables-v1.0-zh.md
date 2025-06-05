@@ -5369,6 +5369,18 @@ $STR.substr_compare(
 
 **示例**
 
+```js
+// 比较两个字符串的子串
+$STR.substr_compare('abcdef', 'bcd', 1)
+    // number: 0
+$STR.substr_compare('abcdef', 'bcd', 1, 3)
+    // number: 0
+$STR.substr_compare('abcdef', 'bcd', 1, 2)
+    // number: 1
+$STR.substr_compare('abcdef', 'bcd', 1, 2, true)
+    // number: 0
+```
+
 **参见**
 
 - PHP `substr_compare()` 函数：<https://www.php.net/manual/en/function.substr-compare.php>
@@ -5402,6 +5414,18 @@ $STR.substr_count(
 
 **示例**
 
+```js
+// 计算子字符串 "abc" 在字符串 "abcdefabc" 中出现的次数
+$STR.substr_count('abcdefabc', 'abc')
+    // ulongint: 2
+
+// 计算子字符串 "abc" 在字符串 "abcdefabc" 中从第 3 个字符开始的次数
+$STR.substr_count('abcdefabc', 'abc', 3)
+    // ulongint: 1
+// 计算子字符串 "abc" 在字符串 "abcdefabc" 中从第 3 个字符开始，长度为 3 的次数
+$STR.substr_count('abcdefabc', 'abc', 3, 3)
+    // ulongint: 0
+```
 
 **参见**
 
@@ -5438,6 +5462,21 @@ $STR.substr_replace(
 如果输入参数都是标量（非数组），则返回替换后的字符串；如果任一输入参数是数组，则返回替换后的字符串数组。
 
 **示例**
+
+```js
+$STR.substr_replace('Hello, world!', 'HVML', 0, 5)
+    // string: 'HVML, world!'
+$STR.substr_replace('Hello, world!', 'HVML', -6, 5)
+    // string: 'Hello, HVML!'
+$STR.substr_replace('Hello, world!', 'HVML', 0, 0)
+    // string: 'HVMLHello, world!'
+$STR.substr_replace('Hello, world!', 'HVML', -6, 0)
+    // string: 'Hello, HVMLworld!'
+$STR.substr_replace('Hello, world!', 'HVML', 0, -1)
+    // string: 'Hello, worldHVML'
+$STR.substr_replace('Hello, world!', 'HVML', -6, -1)
+    // string: 'Hello, worldHV'
+```
 
 **参见**
 
@@ -5479,6 +5518,15 @@ $STR.strstr(
 
 **示例**
 
+```js
+// 查找字符串 "Hello, world!" 中 "world" 第一次出现的位置
+$STR.strstr('Hello, world!', 'world')
+    // string: 'world!'
+// 查找字符串 "Hello, world!" 中 "world" 最后一次出现的位置
+$STR.strstr('Hello, world!', 'world', true)
+    // string: 'Hello, '
+```
+
 **参见**
 
 - PHP `strstr()` 函数：<https://www.php.net/manual/en/function.strstr.php>
@@ -5516,6 +5564,27 @@ $STR.strpos(
 如果发生错误，在静默求值时返回 `false`。
 
 **示例**
+
+```js
+// 在字符串 "Hello, World!" 中查找子字符串 "World" 的位置
+$STR.strpos("Hello, World!", "World")
+    // ulongint: 7UL
+// 在字符串 "Hello, World!" 中查找子字符串 "World" 的位置，不区分大小写
+$STR.strpos("Hello, World!", "World", 0, true)
+    // ulongint: 7UL
+// 在字符串 "Hello, World!" 中查找子字符串 "World" 的位置，从位置 8 开始搜索
+$STR.strpos("Hello, World!", "World", 8)
+    // ulongint: 13UL
+// 在字符串 "Hello, World!" 中查找子字符串 "World" 的位置，从位置 8 开始搜索，不区分大小写
+$STR.strpos("Hello, World!", "World", 8, true)
+    // ulongint: 13UL
+// 在字符串 "Hello, World!" 中查找子字符串 "World" 的位置，从位置 -1 开始搜索
+$STR.strpos("Hello, World!", "World", -1)
+    // ulongint: 13UL
+// 在字符串 "Hello, World!" 中查找子字符串 "World" 的位置，从位置 -1 开始搜索，不区分大小写
+$STR.strpos("Hello, World!", "World", -1, true)
+    // ulongint: 13UL
+```
 
 **参见**
 
@@ -5555,6 +5624,21 @@ $STR.strpbrk(
 
 **示例**
 
+```js
+$STR.strpbrk('Hello, world!', 'o')
+    // string: 'o, world!'
+$STR.strpbrk('Hello, world!', 'O', true)
+    // string: 'o, world!'
+$STR.strpbrk('Hello, world!', 'xyz')
+    // false
+$STR.strpbrk('中国', '国')
+    // '国'
+$STR.strpbrk('ａｂｃ', 'ｃ')
+    // string: 'ｃ'
+$STR.strpbrk('ａｂｃ', 'Ａ', true)
+    // string: 'ａｂｃ'
+```
+
 **参见**
 
 - PHP `strpbrk()` 函数：<https://www.php.net/manual/en/function.strpbrk.php>
@@ -5583,6 +5667,10 @@ $STR.split(
 
 **示例**
 
+```js
+$STR.split('abcdefghijklmnopqrstuvwxyz', 3)
+    // array: [ 'abc', 'def', 'ghi', 'jkl', 'mno', 'pqr', 'stu', 'vwx', 'yz' ]
+```
 **参见**
 
 - PHP `str_split()` 函数：<https://www.php.net/manual/en/function.str-split.php>
@@ -5614,6 +5702,13 @@ $STR.chunk_split(
 
 **示例**
 
+```js
+$STR.chunk_split('abcdefghijklmnopqrstuvwxyz', 5)
+    // string: 'abcde\r\nfghij\r\nklmno\r\npqrst\r\nuvwxy\r\nz'
+$STR.chunk_split('abcdefghijklmnopqrstuvwxyz', 5, ' ')
+    // string: 'abcde fghij klmno pqrst uvwxy z'
+```
+
 **参见**
 
 - PHP `chunk_split()` 函数：<https://www.php.net/manual/en/function.chunk-split.php>
@@ -5643,14 +5738,11 @@ $STR.trim(
 
 **示例**
 
-```hvml
-    <!-- 修剪默认空白字符 -->
-    {{ $STR.trim('   Hello World!  ') }}  
-    <!-- 结果：'Hello World!' -->
-
-    <!-- 自定义修剪字符 -->
-    {{ $STR.trim('---HVML***', '-*') }}
-    <!-- 结果：'HVML' -->
+```js
+$STR.trim('   Hello World!  ')
+    // string: 'Hello World!'
+$STR.trim('---HVML***', '-*')
+    // string: 'HVML'
 ```
 
 **参见**
@@ -5688,18 +5780,13 @@ $STR.pad(
 
 **示例**
 
-```
-    <!-- 默认右侧填充 -->
-    {{ $STR.pad('HVML', 8) }}  
-    <!-- 结果：'HVML    ' -->
-
-    <!-- 自定义填充字符和方向 -->
-    {{ $STR.pad('42', 5, '0', 'left') }}
-    <!-- 结果：'00042' -->
-
-    <!-- 两端均匀填充 -->
-    {{ $STR.pad('目录', 10, '─', 'both') }}
-    <!-- 结果：'───目录───' -->
+```js
+$STR.pad('HVML', 8)
+    // string: 'HVML    '
+$STR.pad('42', 5, '0', 'left')
+    // string: '00042'
+$STR.pad('目录', 10, '─', 'both')
+    // string: '───目录───'
 ```
 
 **参见**
@@ -5731,18 +5818,15 @@ $STR.repeat(
 
 **示例**
 
-```hvml
-    <!-- 基本用法 -->
-    {{ $STR.repeat('HVML ', 3) }}  
-    <!-- 结果：'HVML HVML HVML ' -->
-
-    <!-- 创建分隔线 -->
-    {{ $STR.repeat('-', 20) }}
-    <!-- 结果：'--------------------' -->
-
-    <!-- 重复次数为 0 -->
-    {{ $STR.repeat('不会显示', 0) }}
-    <!-- 结果：'' (空字符串) -->
+```js
+$STR.repeat('HVML', 3)
+    // string: 'HVMLHVMLHVML'
+$STR.repeat('HVML', 0)
+    // string: ''
+$STR.repeat('HVML', -1)
+    // string: ''
+$STR.repeat('HVML', 2.5)
+    // string: 'HVMLHVML'
 ```
 
 **参见**
@@ -5772,18 +5856,13 @@ $STR.reverse(
 
 **示例**
 
-```hvml
-    <!-- 基本用法 -->
-    {{ $STR.reverse('HVML') }}  
-    <!-- 结果：'LMVH' -->
-
-    <!-- 反转中文 -->
-    {{ $STR.reverse('你好世界') }}
-    <!-- 结果：'界世好你' -->
-
-    <!-- 反转包含特殊字符的字符串 -->
-    {{ $STR.reverse('A-B-C') }}
-    <!-- 结果：'C-B-A' -->
+```js
+$STR.reverse('HVML')
+    // string: 'LMVH'
+$STR.reverse('你好世界')
+    // string: '界世好你'
+$STR.reverse('A-B-C')
+    // string: 'C-B-A'
 ```
 
 **参见**
@@ -5817,14 +5896,11 @@ $STR.tokenize(
 
 **示例**
 
-```hvml
-    <!-- 基本用法 -->
-    {{ $STR.tokenize('Hello, HVML!', ', ') }}
-    <!-- 结果：['Hello', 'HVML!'] -->
-
-    <!-- 基本拆分 -->
-    {{ $STR.tokenize('apple,banana,orange', ',') }}
-    <!-- 结果：['apple', 'banana', 'orange'] -->
+```js
+$STR.tokenize('Hello, HVML!', ', ')
+    // array: [ 'Hello', 'HVML!' ]
+$STR.tokenize('apple,banana,orange', ',')
+    // array: [ 'apple', 'banana', 'orange' ]
 ```
 
 **参见**
@@ -5861,6 +5937,15 @@ $STR.translate(
 返回转换后的字符串。当使用 `$from` 和 `$to` 参数时，`$from` 中的每个字符将被替换为 `$to` 中对应位置的字符。当使用 `$from_to_pairs` 参数时，该对象中的每个键值对用于指定字符替换规则。
 
 **示例**
+
+```js
+$STR.translate('abcd', 'abc', 'xyz')
+    // string: 'xyzd'
+$STR.translate('hello world', { 'aeiou': '12345' })
+    // string: 'h2ll4 w4rld'
+$STR.translate('ABCD-1234', { 'ABCD': 'W', '1234': 'X' })
+    // string: 'W-X'
+```
 
 **参见**
 
@@ -5979,6 +6064,12 @@ $STR.rot13(
 
 **示例**
 
+```js
+$STR.rot13('Hello, HVML!')
+    // string: 'Uryyb, JBEYQ!'
+$STR.rot13('Uryyb, JBEYQ!')
+    // string: 'Hello, HVML!'
+```
 **参见**
 
 - PHP `str_rot13()` 函数：<https://www.php.net/manual/en/function.str-rot13.php>
@@ -6015,6 +6106,20 @@ $STR.count_chars(
 - 字符串: 当 `$mode` 为 'string' 时,返回一个包含字符串中所有唯一字符的字符串。
 
 **示例**
+
+```js
+$STR.count_chars('中国中国', 'object')
+    // object: {'中': 2UL, '国': 2UL}
+
+$STR.count_chars('中国', 'string')
+    // string: '中国'
+
+$STR.count_chars('A中B国A中B国', 'object')
+    // object: {'中': 2UL, '国': 2UL, 'A': 2UL, 'B': 2UL}
+
+$STR.count_chars('A中B国A中B国', 'string')
+    // string: 'A中B国'
+```
 
 **参见**
 
@@ -6060,6 +6165,26 @@ $STR.count_bytes(
 - 字节序列: 当 `$mode` 为 'bytes-appeared' 或 'bytes-not-appeared' 时
 
 **示例**
+
+```js
+$STR.count_bytes('')
+    // tuple: [!1UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL]
+
+$STR.count_bytes(bx02, 'object-appeared')
+    // object: { '2': 1UL }
+
+$STR.count_bytes(bx02, 'object-appeared')['3']
+    // undefined
+
+$STR.count_bytes(bx02, 'object-not-appeared')['1']
+    // 0UL
+
+$STR.count_bytes(bx02, 'object-not-appeared')['2']
+    // undefined
+
+$STR.count_bytes(bx2302, 'bytes-appeared')
+    // bsequece: bx0223
+```
 
 **参见**
 
