@@ -5909,7 +5909,7 @@ $STR.tokenize('apple,banana,orange', ',')
 
 #### 3.10.31) `translate` 方法
 
-转换指定子字符串。
+转换指定字符串中的字符。
 
 **描述**
 
@@ -5925,6 +5925,7 @@ $STR.translate(
     <object $from_to_pairs>,
 ) string
 ```
+
 **参数**
 
 - `$string`: 要转换的字符串。
@@ -5934,15 +5935,16 @@ $STR.translate(
 
 **返回值**
 
-返回转换后的字符串。当使用 `$from` 和 `$to` 参数时，`$from` 中的每个字符将被替换为 `$to` 中对应位置的字符。当使用 `$from_to_pairs` 参数时，该对象中的每个键值对用于指定字符替换规则。
+返回转换后的字符串。当使用 `$from` 和 `$to` 参数时，`$from` 中的每个字符将被替换为 `$to` 中对应位置的字符。当使用 `$from_to_pairs` 参数时，该对象中的每个键值对用于指定子字符串的替换规则。
 
 **示例**
 
 ```js
 $STR.translate('abcd', 'abc', 'xyz')
     // string: 'xyzd'
-$STR.translate('hello world', { 'aeiou': '12345' })
+$STR.translate('hello world', 'aeiou': '12345')
     // string: 'h2ll4 w4rld'
+
 $STR.translate('ABCD-1234', { 'ABCD': 'W', '1234': 'X' })
     // string: 'W-X'
 ```
