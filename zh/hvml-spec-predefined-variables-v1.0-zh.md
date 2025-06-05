@@ -5341,22 +5341,31 @@ $STR.substr('abcdef', -3, -1)
 
 ```js
 $STR.substr_compare(
-    <string $str1>,
-    <string $str2>,
-    <real $offset1>,
-    <real $offset2>,
-    [, <real $length = 0>
+    <string $haystack>,
+    <string $needle>,
+    <real $offset>,
+    [, <real $length = null>
         [, <boolean $case_insensitivity = false:
             false -  `Perform a case-sensitive comparison;`
             true -  `Perform a case-insensitive comparison.`>
         ]
     ]
-) number
+) number | false
 ```
 
 **参数**
 
+- `$haystack`: 要比较的主字符串。
+- `$needle`: 要比较的子字符串。
+- `$offset`: 开始比较的位置。如果为负数，则从主字符串末尾开始计数。
+- `$length`: 可选参数，指定比较的长度。默认值为待比较的子字符串长度和主字符串长度减去偏移量后的较大值。
+- `$case_insensitivity`: 可选参数，指定是否区分大小写。默认为 `false`，表示区分大小写。
+
 **返回值**
+
+如果 `$haystack` 从 `$offset` 位置开始的子串小于 `$needle`，返回小于 `0` 的数；如果两者相等，返回 `0`；如果大于，返回大于 `0` 的数。
+
+如果发生错误，在静默求值时返回 `false`。
 
 **示例**
 
@@ -5378,14 +5387,21 @@ $STR.substr_count(
         [, <real $length = 0: `The length of searching.` >
         ]
     ]
-) ulongint
+) ulongint | false
 ```
-
 **参数**
+
+- `$haystack`: 要搜索的输入字符串。
+- `$needle`: 要查找的子字符串。
+- `$offset`: 可选参数，指定开始搜索的偏移位置。默认为 `0`，即从字符串开头开始搜索。
+- `$length`: 可选参数，指定搜索的长度。默认为 `0`，即搜索到字符串末尾。
 
 **返回值**
 
+返回子字符串在目标字符串中出现的次数。如果发生错误，在静默求值时返回 `false`。
+
 **示例**
+
 
 **参见**
 
@@ -5403,14 +5419,23 @@ $STR.substr_replace(
     <array | string $replace: `The replacement string.`>,
     <array | real $offset: `If $offset is non-negative, the replacing will begin at the $offset'th offset into string. If offset is negative, the replacing will begin at the $offset'th character from the end of string.`>
     [,
-        <array|real $length: `If given and is positive, it represents the length of the portion of string which is to be replaced. If it is negative, it represents the number of characters from the end of string at which to stop replacing. If it is not given, then it will default to strlen( string ); i.e. end the replacing at the end of string. Of course, if length is zero then this function will have the effect of inserting replace into string at the given offset offset.`>
+        <array | real $length: `If given and is positive, it represents the length of the portion of string which is to be replaced. If it is negative, it represents the number of characters from the end of string at which to stop replacing. If it is not given, then it will default to strlen( string ); i.e. end the replacing at the end of string. Of course, if length is zero then this function will have the effect of inserting replace into string at the given offset offset.`>
     ]
-) string|array
+) string | array
 ```
 
 **参数**
 
+**参数**
+
+- `$string`：输入字符串或字符串数组。
+- `$replace`：用于替换的字符串或字符串数组。
+- `$offset`：指定替换的起始位置。如果为非负数，则从字符串开头的第 `$offset` 个位置开始替换；如果为负数，则从字符串末尾的第 `$offset` 个位置开始替换。可以是单个数值或数值数组。
+- `$length`：可选参数，指定要替换的长度。如果为正数，表示从起始位置开始替换的字符数；如果为负数，表示从字符串末尾倒数第几个字符停止替换；如果未指定，则默认替换到字符串末尾；如果为零，则表示在指定位置插入替换字符串。可以是单个数值或数值数组。
+
 **返回值**
+
+如果输入参数都是标量（非数组），则返回替换后的字符串；如果任一输入参数是数组，则返回替换后的字符串数组。
 
 **示例**
 
@@ -5439,7 +5464,18 @@ $STR.strstr(
 
 **参数**
 
+- `$haystack`: 要搜索的字符串。
+- `$needle`: 要在 `$haystack` 中查找的子字符串。
+- `$before_needle`: 可选参数，默认为 `false`。当设置为 `true` 时，返回 `$needle` 之前的字符串部分；当设置为 `false` 时，返回从 `$needle` 开始(含)到字符串结尾的部分。
+- `$case_insensitivity`: 可选参数，默认为 `false`。当设置为 `true` 时执行大小写不敏感的查找；当设置为 `false` 时执行大小写敏感的查找。
+
 **返回值**
+
+如果找到子字符串 `$needle`，则根据 `$before_needle` 的设置返回相应的字符串部分：
+- 当 `$before_needle` 为 `false` 时，返回从 `$needle` 开始到字符串结尾的部分。
+- 当 `$before_needle` 为 `true` 时，返回从字符串开始到 `$needle` 之前的部分。
+
+如果未找到子字符串，则返回 `false`。
 
 **示例**
 
@@ -5466,10 +5502,18 @@ $STR.strpos(
         ]
 ) ulongint | false
 ```
-
 **参数**
 
+- `$haystack`：要搜索的目标字符串。
+- `$needle`：要在目标字符串中查找的子字符串。
+- `$offset`：可选参数，指定开始搜索的偏移位置。如果为负数，则返回最后一次出现的位置。默认值为 0。
+- `$case_insensitivity`：可选参数，指定是否区分大小写。默认为 false，表示区分大小写。设置为 true 则不区分大小写。
+
 **返回值**
+
+如果找到子字符串，则返回其在目标字符串中的位置（从 0 开始计数）。如果未找到，则返回 `false`。
+
+如果发生错误，在静默求值时返回 `false`。
 
 **示例**
 
@@ -5497,9 +5541,17 @@ $STR.strpbrk(
 
 **参数**
 
+- `$string`：要搜索的字符串。
+- `$characters`：要在字符串中搜索的字符集合。
+- `$case_insensitivity`：可选参数，指定是否忽略大小写：
+   + `false`：执行区分大小写的搜索（默认）。
+   + `true`：执行不区分大小写的搜索。
+
 **返回值**
 
 返回以找到的字符开始的子字符串。如果没有找到，则返回 `false`。
+
+如果发生错误，在静默求值时返回 `false`。
 
 **示例**
 
@@ -5522,7 +5574,12 @@ $STR.split(
 
 **参数**
 
+- `$string`：要分割的原始字符串。
+- `$length`：可选参数，指定每个子字符串的长度，默认值为 1。
+
 **返回值**
+
+成功时返回分割后的字符串数组；失败时返回 `false`。
 
 **示例**
 
@@ -5545,10 +5602,15 @@ $STR.chunk_split(
         ]
 ) string
 ```
-
 **参数**
 
+- `$string`：要分割的原始字符串。
+- `$length`：可选参数，指定每个分割块的长度，默认为 76。
+- `$separator`：可选参数，指定分割块之间的分隔符，默认为 '\r\n'。
+
 **返回值**
+
+返回分割后的字符串。每个分割块的长度为 `$length`（最后一个分割块可能更短），块与块之间使用 `$separator` 分隔。
 
 **示例**
 
@@ -5570,12 +5632,26 @@ $STR.trim(
         ]
 ) string
 ```
-
 **参数**
+
+- `$str`: 需要处理的原始字符串。
+- `$characters` (可选): 指定要修剪的字符集合，默认值为 ` \n\r\t\v\f`。
 
 **返回值**
 
+返回修剪后的新字符串，原始字符串不受影响。
+
 **示例**
+
+```hvml
+    <!-- 修剪默认空白字符 -->
+    {{ $STR.trim('   Hello World!  ') }}  
+    <!-- 结果：'Hello World!' -->
+
+    <!-- 自定义修剪字符 -->
+    {{ $STR.trim('---HVML***', '-*') }}
+    <!-- 结果：'HVML' -->
+```
 
 **参见**
 
@@ -5601,9 +5677,30 @@ $STR.pad(
 
 **参数**
 
+- $string : 需要填充的原始字符串。
+- $length : 目标字符串长度（必须大于或等于原字符串长度）。
+- $pad_string (可选): 填充使用的字符串（默认空格），可接受多字符组合。
+- $pad_type (可选): 填充方向（`left` 仅左侧填充，`right` 仅右侧填充，`both` 两端均匀填充）。
+
 **返回值**
 
+- 成功时返回填充后的新字符串；发生错误时抛出异常，静默求值时返回 `false`。
+
 **示例**
+
+```
+    <!-- 默认右侧填充 -->
+    {{ $STR.pad('HVML', 8) }}  
+    <!-- 结果：'HVML    ' -->
+
+    <!-- 自定义填充字符和方向 -->
+    {{ $STR.pad('42', 5, '0', 'left') }}
+    <!-- 结果：'00042' -->
+
+    <!-- 两端均匀填充 -->
+    {{ $STR.pad('目录', 10, '─', 'both') }}
+    <!-- 结果：'───目录───' -->
+```
 
 **参见**
 
@@ -5624,9 +5721,29 @@ $STR.repeat(
 
 **参数**
 
+- `$string` : 需要重复的原始字符串。
+- `$times`: 重复次数，必须是非负整数。如果为 0，则返回空字符串；如果为小数，将向下取整。
+
 **返回值**
 
+- 返回重复指定次数后的新字符串。如果 `$times` 为 0 或负数，则返回空字符串。
+- 如果发生错误，在静默求值时返回 `false`。
+
 **示例**
+
+```hvml
+    <!-- 基本用法 -->
+    {{ $STR.repeat('HVML ', 3) }}  
+    <!-- 结果：'HVML HVML HVML ' -->
+
+    <!-- 创建分隔线 -->
+    {{ $STR.repeat('-', 20) }}
+    <!-- 结果：'--------------------' -->
+
+    <!-- 重复次数为 0 -->
+    {{ $STR.repeat('不会显示', 0) }}
+    <!-- 结果：'' (空字符串) -->
+```
 
 **参见**
 
@@ -5641,14 +5758,33 @@ $STR.repeat(
 ```js
 $STR.reverse(
         <string $string: `The string to reverse.`>
-) string
+) string | false
 ```
 
 **参数**
 
+- `$string`: 需要反转的原始字符串。
+
 **返回值**
 
+- 返回反转后的新字符串，原始字符串不受影响。
+- 如果发生错误，在静默求值时返回 `false`。
+
 **示例**
+
+```hvml
+    <!-- 基本用法 -->
+    {{ $STR.reverse('HVML') }}  
+    <!-- 结果：'LMVH' -->
+
+    <!-- 反转中文 -->
+    {{ $STR.reverse('你好世界') }}
+    <!-- 结果：'界世好你' -->
+
+    <!-- 反转包含特殊字符的字符串 -->
+    {{ $STR.reverse('A-B-C') }}
+    <!-- 结果：'C-B-A' -->
+```
 
 **参见**
 
@@ -5666,14 +5802,30 @@ $STR.tokenize(
     [,
         <string $delimiters = ' \t\n\v\f\r': `The delimiters to seperate the tokens.`>
     ]
-) array
+) array | false
 ```
 
 **参数**
 
+- `$string`: 需要拆分的原始字符串。
+- `$separator`: 分隔符。
+
 **返回值**
 
+- 返回拆分后的字符串数组。当分隔符为空字符串或无效时返回空数组。
+- 如果发生错误，在静默求值时返回 `false`。
+
 **示例**
+
+```hvml
+    <!-- 基本用法 -->
+    {{ $STR.tokenize('Hello, HVML!', ', ') }}
+    <!-- 结果：['Hello', 'HVML!'] -->
+
+    <!-- 基本拆分 -->
+    {{ $STR.tokenize('apple,banana,orange', ',') }}
+    <!-- 结果：['apple', 'banana', 'orange'] -->
+```
 
 **参见**
 
@@ -5697,10 +5849,16 @@ $STR.translate(
     <object $from_to_pairs>,
 ) string
 ```
-
 **参数**
 
+- `$string`: 要转换的字符串。
+- `$from`: 要被替换的字符组成的字符串。
+- `$to`: 用于替换的字符组成的字符串。
+- `$from_to_pairs`: 一个对象，键为要被替换的字符，值为用于替换的字符。
+
 **返回值**
+
+返回转换后的字符串。当使用 `$from` 和 `$to` 参数时，`$from` 中的每个字符将被替换为 `$to` 中对应位置的字符。当使用 `$from_to_pairs` 参数时，该对象中的每个键值对用于指定字符替换规则。
 
 **示例**
 
@@ -5748,7 +5906,17 @@ $STR.htmlentities(!
 
 **参数**
 
+- `$string`: 要转换的输入字符串。
+- `$flags`: 可选参数，用于控制转换行为的标志组合，默认为 'single-quotes double-quotes double-encode'。可取值：
+  + 'single-quotes': 转换单引号。
+  + 'double-quotes': 转换双引号。
+  + 'convert-all': 将所有具有 HTML 字符实体等价形式的字符转换为对应实体；否则只转换在 HTML 中具有特殊含义的字符。
+  + 'double-encode': 转换所有内容；否则保留现有的 HTML 实体。
+
 **返回值**
+
+- 成功时返回转换后的字符串。
+- 如果发生错误，在静默求值时返回 `false`。
 
 **示例**
 
@@ -5798,12 +5966,16 @@ $STR.nl2br(
 ```js
 $STR.rot13(
         <string $string: `The string to convert.`>
-) string
+) string | false
 ```
-
 **参数**
 
+- `$string`: 要转换的字符串。
+
 **返回值**
+
+- 返回经过 ROT13 转换后的字符串。ROT13 是一种简单的字母替换密码，它将字母表中的每个字母替换为其后的第 13 个字母。
+- 如果发生错误，在静默求值时返回 `false`。
 
 **示例**
 
@@ -5831,7 +6003,16 @@ $STR.count_chars(
 
 **参数**
 
+- `$string`: 要检查的字符串。
+- `$mode`: 可选参数，指定返回值的格式，默认为 'object'。可取值:
+  + 'object': 返回一个对象,键为字符,值为每个字符出现的频率。
+  + 'string': 返回一个包含所有唯一字符的字符串。
+
 **返回值**
+
+根据 `$mode` 参数的不同，返回:
+- 对象: 当 `$mode` 为 'object' 时,返回一个对象,键为字符,值为该字符在字符串中出现的次数。
+- 字符串: 当 `$mode` 为 'string' 时,返回一个包含字符串中所有唯一字符的字符串。
 
 **示例**
 
@@ -5862,7 +6043,21 @@ $STR.count_bytes(
 
 **参数**
 
+- `$data`: 要检查的数据，可以是字符串或字节序列。
+- `$mode`: 可选参数，指定返回值的格式，默认为 'tuple-all'。可取值:
+  + 'tuple-all': 返回一个元组，索引为字节值(0~255)，值为每个字节出现的频率。
+  + 'object-all': 返回一个对象，键为字节值(十进制字符串)，值为每个字节出现的频率。
+  + 'object-appeared': 同 'object-all'，但只列出频率大于零的字节值。
+  + 'object-not-appeared': 同 'object-all'，但只列出频率等于零的字节值。
+  + 'bytes-appeared': 返回包含所有出现过的唯一字节的字节序列。
+  + 'bytes-not-appeared': 返回包含所有未出现字节的字节序列。
+
 **返回值**
+
+根据 `$mode` 参数的不同，返回:
+- 元组: 当 `$mode` 为 'tuple-all' 时
+- 对象: 当 `$mode` 为 'object-all'、'object-appeared' 或 'object-not-appeared' 时
+- 字节序列: 当 `$mode` 为 'bytes-appeared' 或 'bytes-not-appeared' 时
 
 **示例**
 
@@ -6090,7 +6285,6 @@ $URL.parse_query(
 #### 3.11.5) `parse` 方法
 
 解析 URL，返回其组成部分。
-
 
 **描述**
 
