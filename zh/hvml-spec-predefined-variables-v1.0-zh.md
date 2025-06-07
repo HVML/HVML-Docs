@@ -5915,14 +5915,15 @@ $STR.tokenize('apple,banana,orange', ',')
 
 ```js
 $STR.translate(
-    <string $string>,
-    <string $from>,
-    <string $to>
+    <string $string: `The string being translated.`>,
+    <string $from: `The characters being translated to.`>,
+    <string $to: `The characters replacing from.`>
 ) string
 
 $STR.translate(
-    <string $string>,
-    <object $from_to_pairs>,
+    <string $string: `The string being translated.`>,
+    <object $from_to_pairs: `All the occurrences of the keys in $string will
+            been replaced by the corresponding values.`>,
 ) string
 ```
 
@@ -5931,7 +5932,7 @@ $STR.translate(
 - `$string`: 要转换的字符串。
 - `$from`: 要被替换的字符组成的字符串。
 - `$to`: 用于替换的字符组成的字符串。
-- `$from_to_pairs`: 一个对象，键为要被替换的字符，值为用于替换的字符。
+- `$from_to_pairs`: 一个对象，键为要被替换的字符串，值为用于替换的字符串。
 
 **返回值**
 
@@ -5942,11 +5943,15 @@ $STR.translate(
 ```js
 $STR.translate('abcd', 'abc', 'xyz')
     // string: 'xyzd'
-$STR.translate('hello world', 'aeiou': '12345')
+
+$STR.translate('hello world', 'aeiou', '12345')
     // string: 'h2ll4 w4rld'
 
 $STR.translate('ABCD-1234', { 'ABCD': 'W', '1234': 'X' })
     // string: 'W-X'
+
+$STR.translate('hi all, I said hello', { "h": "-", "hello": "hi", "hi": "hello"} )
+    // 'hello all, I said hi'
 ```
 
 **参见**
