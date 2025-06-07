@@ -10668,10 +10668,11 @@ $sqliteCursor.connection
 
 #### OR1) 250630
 
-1. 新增 `$DATA.is_container` 方法。
-1. 新增 `$DATA.is_linear_container` 方法。
+1. 新增 `$DATA.is_container()` 方法。
+1. 新增 `$DATA.is_linear_container()` 方法。
 1. 使用 `$STR.htmlentities` 获取器和设置器分别用于编码和解码。
 1. 使用 `$STR.base64` 获取器和设置器分别用于编码和解码。
+1. 移除 `$STR.nl2br()` 方法。
 
 #### OR0) 250428
 
