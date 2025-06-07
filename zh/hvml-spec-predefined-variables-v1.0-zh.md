@@ -6017,39 +6017,7 @@ $STR.htmlentities(!
 - PHP `htmlentities()` 函数：<https://www.php.net/manual/en/function.htmlentities.php>
 - PHP `htmlspecialchars()` 函数：<https://www.php.net/manual/en/function.htmlspecialchars.php>
 
-#### 3.10.33) `nl2br` 方法
-
-（废弃；不计划实现）
-
-在字符串所有换行符之前插入 HTML 换行标记。
-
-**描述**
-
-```js
-$STR.nl2br(
-        < string $string: `The input string.` >
-        [, < boolean $is_xhtml = true:
-            - true: `Use '<br />'.`
-            - false: `Use '<br>'.`
-        ]
-        [, < boolean $lowercases = true:
-            - true: `Use 'br'.`
-            - false: `Use 'BR'.`
-        ]
-) object | bsequence
-```
-
-**参数**
-
-**返回值**
-
-**示例**
-
-**参见**
-
-- PHP `nl2br()` 函数：<https://www.php.net/manual/en/function.nl2br.php>
-
-#### 3.10.34) `rot13` 方法
+#### 3.10.33) `rot13` 方法
 
 对字符串执行 ROT13 转换。
 
@@ -6081,7 +6049,7 @@ $STR.rot13('Uryyb, JBEYQ!')
 
 - PHP `str_rot13()` 函数：<https://www.php.net/manual/en/function.str-rot13.php>
 
-#### 3.10.35) `count_chars` 方法
+#### 3.10.34) `count_chars` 方法
 
 统计字符串中的字符出现次数。
 
@@ -6132,7 +6100,7 @@ $STR.count_chars('A中B国A中B国', 'string')
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
-#### 3.10.36) `count_bytes` 方法
+#### 3.10.35) `count_bytes` 方法
 
 统计字符串或二进制字节序中的各个字节（0...255）出现的次数。
 
@@ -6197,7 +6165,7 @@ $STR.count_bytes(bx2302, 'bytes-appeared')
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
-#### 3.10.37) `codepoints` 方法
+#### 3.10.36) `codepoints` 方法
 
 将字符串中的字符转换为 Unicode 码点（codepoint）构成的数组或元组。
 
