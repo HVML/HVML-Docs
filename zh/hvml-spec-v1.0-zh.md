@@ -1122,7 +1122,6 @@ id:1,name:Tom,age:2,male:true,;id:2,name:Jerry,age:3,male:true,
 - 空值（null）。
 - 真值（true）。
 - 假值（false）。
-- 数值类（number、longint、ulongint、double、longdouble）。
 - 字符串（string）。
 - 字节序列（byte sequence）。
 - 动态值（dynamic value）。
@@ -1132,12 +1131,13 @@ id:1,name:Tom,age:2,male:true,;id:2,name:Jerry,age:3,male:true,
 
 我们将如下数据类型称为可变数据（mutable data）：
 
+- 数值类（number、longint、ulongint、double、longdouble）。
 - 数组（array）。
 - 元组（tuple）。
 - 对象（object）。
 - 集合（set）。
 
-和不可变数据相反，可变数据的含义是，我们可以在运行时改变这个数据的值。本质上，可变数据指数值、字符串、字节序列以及所有的容器类数据（数组、元组、对象和集合）。我们改变这些数据的值，本质上改变的是这些数据所包含的内容，比如删除或者修改其中的一个数据项。
+和不可变数据相反，可变数据的含义是，我们可以在运行时改变这个数据的值。本质上，可变数据指数值以及所有的容器类数据（数组、元组、对象和集合）。我们改变这些容器类可变数据的值，本质上改变的是这些数据所包含的内容，比如删除或者修改其中的一个数据项。
 
 在 HVML 中，我们可以在容器类可变数据上使用 `update`、 `clear`、 `erase` 等标签执行更新、清空或移除操作，这些操作本质上修改的是其中的数据项。我们也可以在非容器类可变数据上使用 `update` 标签执行更新操作，本质上修改的是其中的内容。
 
@@ -2248,7 +2248,7 @@ HVML 定义的异常如下：
     <update on="$DOC.query('#the-user-list > li')" at="attr.class" with="text-info" />
 ```
 
-由于 `update` 标签的 `on` 属性值不允许使用整数、字符串等不可变数据，而 `observe` 标签的 `on` 属性值只能为可观察的原生实体或容器数据，因此，我们也可以在 `update` 和 `observe` 标签的 `on` 属性值中直接使用 CSS 选择器（字符串）。比如：
+由于 `update` 标签的 `on` 属性值不允许使用字符串、字节序列等不可变数据，而 `observe` 标签的 `on` 属性值只能为可观察的原生实体或容器数据，因此，我们也可以在 `update` 和 `observe` 标签的 `on` 属性值中直接使用 CSS 选择器（字符串）。比如：
 
 ```hvml
     <update on="#the-user-list > li" at="attr.class" with="text-info" />
