@@ -5371,13 +5371,15 @@ $STR.substr_compare(
 
 ```js
 // 比较两个字符串的子串
+$STR.substr_compare('abc', 'def', 0)
+    // number: -3
+$STR.substr_compare('def', 'abc', 0)
+    // number: 3
 $STR.substr_compare('abcdef', 'bcd', 1)
     // number: 0
 $STR.substr_compare('abcdef', 'bcd', 1, 3)
     // number: 0
-$STR.substr_compare('abcdef', 'bcd', 1, 2)
-    // number: 1
-$STR.substr_compare('abcdef', 'bcd', 1, 2, true)
+$STR.substr_compare('abcdef', 'BCD', 1, 2, true)
     // number: 0
 ```
 
