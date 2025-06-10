@@ -1,278 +1,284 @@
-# HVML 规范
+# HVML Specification
 
 Subject: HVML Specification  
-Version: 1.0-RC9  
+Version: 1.0-RCb  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Dec. 31, 2022  
+Last Modified Date: Apr. 30, 2023  
 Status: Release Candidate  
 Release Name: 硕鼠  
 Language: Chinese
 
 *Copyright Notice*
 
-版权所有 &copy; 2020, 2021, 2022 魏永明  
-版权所有 &copy; 2021, 2022 北京飞漫软件技术有限公司  
-保留所有权利
+Copyright &copy; 2021, 2022, 2023 Vincent Wei 
+Copyright &copy; 2021, 2022, 2023 Beijing Feynman Software Technology Co., Ltd.
+All rights reserved
 
-此文档不受 HVML 相关软件开源许可证的管辖。
+This document is not governed by the HVML-related software open source license.
 
-版权所有人公开此文档的目标，用于向开发者解释 HVML 相关设计原理或者相关规范。在未获得版权所有人书面许可的情况下，任何人不得复制或者分发本文档的全部或部分内容，或利用本文档描绘的技术思路申请专利、撰写学术论文等。
+The copyright owner discloses the purpose of this document, which is used to explain HVML-related design principles or related specifications to developers. Without the written permission of the copyright owner, no one may reproduce or distribute all or part of this document, or use the technical ideas described in this document to apply for patents, write academic papers, etc.
 
-本文提及的版权所有人相关注册商标或商标之详细列表，请查阅文档末尾。
+For a detailed list of registered trademarks or trademarks of the copyright owners mentioned in this article, please refer to the end of the document.
 
-**目录**
+**Content**
 
 [//]:# (START OF TOC)
 
-- [1) 介绍](#1-介绍)
-   + [1.1) 背景技术](#11-背景技术)
-   + [1.2) 问题](#12-问题)
-   + [1.3) 目的](#13-目的)
-   + [1.4) 应用框架](#14-应用框架)
-- [2) HVML 详解](#2-hvml-详解)
-   + [2.1) 基本原理](#21-基本原理)
-      * [2.1.1) 程序结构](#211-程序结构)
-      * [2.1.2) 基本数据类型](#212-基本数据类型)
-      * [2.1.3) 扩展数据类型](#213-扩展数据类型)
-      * [2.1.4) 任意数据类型的强制转换规则](#214-任意数据类型的强制转换规则)
-         - [2.1.4.1) 数值化](#2141-数值化)
-         - [2.1.4.2) 布尔化](#2142-布尔化)
-         - [2.1.4.3) 字符串化](#2143-字符串化)
-         - [2.1.4.4) 序列化](#2144-序列化)
-         - [2.1.4.5) 键值对象](#2145-键值对象)
-      * [2.1.5) 可变数据和不可变数据](#215-可变数据和不可变数据)
-      * [2.1.6) 变量](#216-变量)
-         - [2.1.6.1) 变量的类型](#2161-变量的类型)
-         - [2.1.6.2) 上下文变量](#2162-上下文变量)
-         - [2.1.6.3) 预定义变量](#2163-预定义变量)
-         - [2.1.6.4) 集合变量](#2164-集合变量)
-         - [2.1.6.5) 变量名约定](#2165-变量名约定)
-      * [2.1.7) 求值表达式及参数化数据](#217-求值表达式及参数化数据)
-         - [2.1.7.1) 复合求值表达式](#2171-复合求值表达式)
-         - [2.1.7.2) 表达式变量和替身表达式](#2172-表达式变量和替身表达式)
-      * [2.1.8) 栈式虚拟机](#218-栈式虚拟机)
-      * [2.1.9) 框架元素](#219-框架元素)
-      * [2.1.10) 模板元素](#2110-模板元素)
-      * [2.1.11) 动作元素](#2111-动作元素)
-         - [2.1.11.1) 用来操作数据的动作元素](#21111-用来操作数据的动作元素)
-         - [2.1.11.2) 用于操控执行栈的动作元素](#21112-用于操控执行栈的动作元素)
-         - [2.1.11.3) 其他动作元素](#21113-其他动作元素)
-      * [2.1.12) 错误和异常的处理](#2112-错误和异常的处理)
-      * [2.1.13) 介词属性](#2113-介词属性)
-      * [2.1.14) 副词属性](#2114-副词属性)
-      * [2.1.15) 引用元素或数据](#2115-引用元素或数据)
-      * [2.1.16) 协程和虚拟机状态](#2116-协程和虚拟机状态)
-      * [2.1.17) 文档片段的结构化数据表达](#2117-文档片段的结构化数据表达)
-      * [2.1.18) MIME 类型](#2118-mime-类型)
-      * [2.1.19) HVML URI 图式](#2119-hvml-uri-图式)
-         - [2.1.19.1) `hvml` 图式](#21191-hvml-图式)
-         - [2.1.19.2) `hvml+run` 图式](#21192-hvmlrun-图式)
-   + [2.2) 规则、表达式及方法的描述语法](#22-规则表达式及方法的描述语法)
-      * [2.2.1) 规则描述语法](#221-规则描述语法)
-      * [2.2.2) 求值表达式的语法](#222-求值表达式的语法)
-      * [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)
-      * [2.2.4) 动态对象方法的描述语法](#224-动态对象方法的描述语法)
-      * [2.2.5) eJSON 语法](#225-ejson-语法)
-   + [2.3) 框架标签详解](#23-框架标签详解)
-      * [2.3.1) `hvml` 标签](#231-hvml-标签)
-      * [2.3.2) `head` 标签](#232-head-标签)
-      * [2.3.3) `body` 标签](#233-body-标签)
-      * [2.3.4) `hvml` 标签的内容](#234-hvml-标签的内容)
-   + [2.4) 模板标签详解](#24-模板标签详解)
-      * [2.4.1) `archetype` 标签](#241-archetype-标签)
-      * [2.4.2) `archedata` 标签](#242-archedata-标签)
-      * [2.4.3) `error` 标签](#243-error-标签)
-      * [2.4.4) `except` 标签](#244-except-标签)
-   + [2.5) 动作标签详解](#25-动作标签详解)
-      * [2.5.1) `init` 标签](#251-init-标签)
-      * [2.5.2) `update` 标签](#252-update-标签)
-         - [2.5.2.1) 指定目标位置](#2521-指定目标位置)
-         - [2.5.2.2) 更新集合](#2522-更新集合)
-      * [2.5.3) `erase` 标签](#253-erase-标签)
-      * [2.5.4) `clear` 标签](#254-clear-标签)
-      * [2.5.5) `test`、 `match` 和 `differ` 标签](#255-test-match-和-differ-标签)
-         - [2.5.5.1) 多分支处理](#2551-多分支处理)
-         - [2.5.5.2) 二选一处理](#2552-二选一处理)
-      * [2.5.6) `choose` 标签](#256-choose-标签)
-      * [2.5.7) `iterate` 标签](#257-iterate-标签)
-         - [2.5.7.1) 使用迭代执行器](#2571-使用迭代执行器)
-         - [2.5.7.2) 不使用迭代执行器](#2572-不使用迭代执行器)
-      * [2.5.8) `reduce` 标签](#258-reduce-标签)
-      * [2.5.9) `sort` 标签](#259-sort-标签)
-      * [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
-      * [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
-      * [2.5.12) `call` 和 `return` 标签](#2512-call-和-return-标签)
-      * [2.5.13) `bind` 标签](#2513-bind-标签)
-      * [2.5.14) `catch` 标签](#2514-catch-标签)
-      * [2.5.15) `back` 标签](#2515-back-标签)
-      * [2.5.16) `request` 标签](#2516-request-标签)
-      * [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
-      * [2.5.18) `inherit` 标签](#2518-inherit-标签)
-      * [2.5.19) `sleep` 标签](#2519-sleep-标签)
-   + [2.6) 执行器](#26-执行器)
-      * [2.6.1) 内建执行器](#261-内建执行器)
-         - [2.6.1.1) `KEY` 执行器](#2611-key-执行器)
-         - [2.6.1.2) `RANGE` 执行器](#2612-range-执行器)
-         - [2.6.1.3) `FILTER` 执行器](#2613-filter-执行器)
-         - [2.6.1.4) 用于字符串的内建执行器](#2614-用于字符串的内建执行器)
-         - [2.6.1.5) 用于数值的内建执行器](#2615-用于数值的内建执行器)
-         - [2.6.1.6) `SQL` 执行器](#2616-sql-执行器)
-         - [2.6.1.7) `TRAVEL` 执行器](#2617-travel-执行器)
-         - [2.6.1.8) 内建执行器的使用](#2618-内建执行器的使用)
-      * [2.6.2) 外部执行器](#262-外部执行器)
-         - [2.6.2.1) 外部函数执行器](#2621-外部函数执行器)
-         - [2.6.2.2) 外部类执行器](#2622-外部类执行器)
-      * [2.6.3) 执行器规则表达式的处理](#263-执行器规则表达式的处理)
-   + [2.7) 响应式更新](#27-响应式更新)
-- [3) HVML 语法](#3-hvml-语法)
-   + [3.1) 书写 HVML 文档](#31-书写-hvml-文档)
-      * [3.1.1) DOCTYPE](#311-doctype)
-      * [3.1.2) 元素](#312-元素)
-         - [3.1.2.1) 起始标签](#3121-起始标签)
-         - [3.1.2.2) 终止标签](#3122-终止标签)
-         - [3.1.2.3) 属性](#3123-属性)
-         - [3.1.2.4) 动作元素属性](#3124-动作元素属性)
-         - [3.1.2.5) 可选标签](#3125-可选标签)
-         - [3.1.2.6) 裸文本元素和可转义裸文本元素的内容限制](#3126-裸文本元素和可转义裸文本元素的内容限制)
-         - [3.1.2.7) 数据内容和数据属性](#3127-数据内容和数据属性)
-      * [3.1.3) 文本](#313-文本)
-         - [3.1.3.1) 新行](#3131-新行)
-      * [3.1.4) 字符引用](#314-字符引用)
-      * [3.1.5) CDATA 段落](#315-cdata-段落)
-      * [3.1.6) 注释](#316-注释)
-   + [3.2) 解析 HVML 文档](#32-解析-hvml-文档)
-- [4) 应用示例](#4-应用示例)
-   + [4.1) 使用 HVML 开发传统 GUI 应用](#41-使用-hvml-开发传统-gui-应用)
-   + [4.2) 云应用](#42-云应用)
-- [5) 总结](#5-总结)
-- [附录](#附录)
-   + [附.1) 修订记录](#附1-修订记录)
-      * [RC9) 221231](#rc9-221231)
-         - [RC9.1) 定义骨架元素属性的响应式处理语法](#rc91-定义骨架元素属性的响应式处理语法)
-         - [RC9.2) 文档片段的结构化数据表达](#rc92-文档片段的结构化数据表达)
-         - [RC9.3) 调整 `update` 元素相关细节](#rc93-调整-update-元素相关细节)
-         - [RC9.4) 调整 `request` 元素相关细节](#rc94-调整-request-元素相关细节)
-      * [RC8) 221130](#rc8-221130)
-         - [RC8.1) 反引号属性值语法](#rc81-反引号属性值语法)
-         - [RC8.2) 新的数据类型别名](#rc82-新的数据类型别名)
-         - [RC8.3) 框架元素中的副词属性](#rc83-框架元素中的副词属性)
-         - [RC8.4) 杂项](#rc84-杂项)
-      * [RC7) 221031](#rc7-221031)
-         - [RC7.1) 替身表达式](#rc71-替身表达式)
-         - [RC7.2) 调整变量一节](#rc72-调整变量一节)
-         - [RC7.3) 调整定义元组的 eJSON 语法](#rc73-调整定义元组的-ejson-语法)
-         - [RC7.4) 调整副词属性的名称](#rc74-调整副词属性的名称)
-         - [RC7.5) 介词属性的增强](#rc75-介词属性的增强)
-      * [RC6) 220901](#rc6-220901)
-         - [RC6.1) 增强变量名](#rc61-增强变量名)
-         - [RC6.2) 增强 `request` 标签](#rc62-增强-request-标签)
-         - [RC6.3) 调整 HVML URI 图式](#rc63-调整-hvml-uri-图式)
-         - [RC6.4) 新增元组容器类型](#rc64-新增元组容器类型)
-         - [RC6.5) 重新求值](#rc65-重新求值)
-      * [RC5) 220701](#rc5-220701)
-         - [RC5.1) 调整对 `include` 标签的描述](#rc51-调整对-include-标签的描述)
-         - [RC5.2) 调整 `request` 标签](#rc52-调整-request-标签)
-         - [RC5.3) 调整 `load` 和 `call` 标签](#rc53-调整-load-和-call-标签)
-         - [RC5.4) HVML URI 图式及协程描述符](#rc54-hvml-uri-图式及协程描述符)
-         - [RC5.5) 增强 `sort` 标签](#rc55-增强-sort-标签)
-         - [RC5.6) 调整 `observe` 标签](#rc56-调整-observe-标签)
-         - [RC5.7) 框架标签的内容](#rc57-框架标签的内容)
-         - [RC5.8) 其他修订](#rc58-其他修订)
-      * [RC4) 220601](#rc4-220601)
-         - [RC4.1) 重构`基本原理`一节](#rc41-重构基本原理一节)
-         - [RC4.2) MIME 类型和数据](#rc42-mime-类型和数据)
-         - [RC4.3) `inherit` 标签](#rc43-inherit-标签)
-         - [RC4.4) `sleep` 标签](#rc44-sleep-标签)
-         - [RC4.5) 调整上下文变量](#rc45-调整上下文变量)
-         - [RC4.6) 元素及属性的调整](#rc46-元素及属性的调整)
-         - [RC4.7) `differ` 标签](#rc47-differ-标签)
-      * [RC3) 220501](#rc3-220501)
-         - [RC3.1) 调整动作标签](#rc31-调整动作标签)
-         - [RC3.2) HVML 程序的运行状态](#rc32-hvml-程序的运行状态)
-         - [RC3.3) 可使用元素的锚点名称定位前置栈帧](#rc33-可使用元素的锚点名称定位前置栈帧)
-         - [RC3.5) eJSON 语法增强](#rc35-ejson-语法增强)
-         - [RC3.6) `$STREAM` 预定义变量](#rc36-stream-预定义变量)
-         - [RC3.7) 调整动态对象方法的描述语法](#rc37-调整动态对象方法的描述语法)
-         - [RC3.8) 事件名称的命名规则](#rc38-事件名称的命名规则)
-         - [RC3.9) 简化外部执行器](#rc39-简化外部执行器)
-         - [RC3.10) 协程及其状态](#rc310-协程及其状态)
-      * [RC2) 220401](#rc2-220401)
-         - [RC2.1) 用户自定义临时变量的初始化和重置方法](#rc21-用户自定义临时变量的初始化和重置方法)
-         - [RC2.2) 调整动态对象方法的描述语法](#rc22-调整动态对象方法的描述语法)
-         - [RC2.3) 上下文变量的增强和调整](#rc23-上下文变量的增强和调整)
-         - [RC2.4) `iterate` 元素的增强](#rc24-iterate-元素的增强)
-         - [RC2.5) 调整第一章的内容](#rc25-调整第一章的内容)
-         - [RC2.6) 异常相关增强](#rc26-异常相关增强)
-         - [RC2.7) 可命名一个 `observe`](#rc27-可命名一个-observe)
-         - [RC2.8) 增强 `request`](#rc28-增强-request)
-         - [RC2.9) 调整介词属性](#rc29-调整介词属性)
-         - [RC2.10) 调整响应式处理的语法](#rc210-调整响应式处理的语法)
-         - [RC2.11) 增强 `bind` 标签](#rc211-增强-bind-标签)
-         - [RC2.12) 复合求值表达式](#rc212-复合求值表达式)
-         - [RC2.13) 调整布尔化规则](#rc213-调整布尔化规则)
-      * [RC1) 220209](#rc1-220209)
-         - [RC1.1) 上下文变量的调整](#rc11-上下文变量的调整)
-         - [RC1.2) `init` 标签的增强](#rc12-init-标签的增强)
-         - [RC1.3) 针对数值执行器的附加说明](#rc13-针对数值执行器的附加说明)
-         - [RC1.4) `observe` 标签的增强](#rc14-observe-标签的增强)
-         - [RC1.5) 骨架元素的增强](#rc15-骨架元素的增强)
-         - [RC1.6) 属性值操作符的增强](#rc16-属性值操作符的增强)
-      * [BRC) 其他](#brc-其他)
-   + [附.2) 待定内容](#附2-待定内容)
-      * [TBD 1) 扩展数据类型](#tbd-1-扩展数据类型)
-         - [TBD 1.1) 扩展数据类型](#tbd-11-扩展数据类型)
-      * [TBD2) 动作元素](#tbd2-动作元素)
-         - [TBD2.1) `pipe` 标签](#tbd21-pipe-标签)
-         - [TBD2.2) `connect`、 `send` 和 `disconnect` 标签](#tbd22-connect-send-和-disconnect-标签)
-         - [TBD2.3) 外部函数更新器](#tbd23-外部函数更新器)
-         - [TBD2.4) 杂项](#tbd24-杂项)
-   + [附.3) 贡献者榜单](#附3-贡献者榜单)
-   + [附.4) 商标声明](#附4-商标声明)
+- [1) Introduction](#1-introduction)
+   + [1.1) Background Technology](#11-background-technology)
+   + [1.2) Questions](#12-questions)
+   + [1.3) Purpose](#13-purpose)
+   + [1.4) Application Framework](#14-application-framework)
+- [2) Detailed Explanation of HVML](#2-detailed-explanation-of-hvml)
+   + [2.1) Fundamental](#21-fundemantal)
+       * [2.1.1) Program Structure](#211-program-structure)
+       * [2.1.2) Basic Data Types](#212-basic-data-types)
+       * [2.1.3) Extend Data Types](#213-extend-data-types)
+       * [2.1.4) Casting Rules for Arbitrary Data Types](#214-casting-rules-for-arbitrary-data-types)
+          - [2.1.4.1) Numericization](#2141-numerization)
+          - [2.1.4.2) Booleanize](#2142-booleanize)
+          - [2.1.4.3) Stringify](#2143-stringify)
+          - [2.1.4.4) Serialize](#2144-serialize)
+          - [2.1.4.5) Key-Value Object](#2145-key-value-object)
+       * [2.1.5) Mutable and Immutable Data](#215-mutable-and-immutable-data)
+       * [2.1.6) Variables](#216-variables)
+          - [2.1.6.1) Types of Variables](#2161-types-of-variables)
+          - [2.1.6.2) Context Variables](#2162-context-variables)
+          - [2.1.6.3) Predefined Variables](#2163-predefined-variables)
+          - [2.1.6.4) Collection Variables](#2164-collection-variables)
+          - [2.1.6.5) Variable Name Convention](#2165-variable-name-convention)
+       * [2.1.7) Evaluated Expressions and Parameterized Data](#217-evaluated-expressions-and-parameterized-data)
+          - [2.1.7.1) Compound Evaluated Expressions](#2171-compound-evaluated-expressions)
+          - [2.1.7.2) Expression Variables and Stand-In Expressions](#2172-expression-variables-and-stand-in-expressions)
+       * [2.1.8) Stack-VM](#218-stack-vm)
+       * [2.1.9) Frame Elements](#219-frame-elements)
+       * [2.1.10) Template-Element](#2110-template-element)
+       * [2.1.11) Action-element](#2111-action-element)
+          - [2.1.11.1) Action Elements Used to Manipulate Data](#21111-action-elements-used-to-manipulate-data)
+          - [2.1.11.2) Action Elements for Manipulating the Execution Stack](#21112-action-elements-for-manipulating-the-execution-stack)
+          - [2.1.11.3) Other Action Elements](#21113-other-action-elements)
+       * [2.1.12) Error and Exception Handling](#2112-error-and-exception-handling)
+       * [2.1.13) Preposition Attribute](#2113-preposition-attribute)
+       * [2.1.14) Adverb Attributes](#2114-adverb-attributes)
+       * [2.1.15) Quoting Elements or Data](#2115-quoting-elements-or-data)
+       * [2.1.16) Coroutines and VM State](#2116-coroutines-and-vm-state)
+       * [2.1.17) Structured Data Representation of Document Fragments](#2117-structured-data-representation-of-document-fragments)
+       * [2.1.18) MIME Type](#2118-mime-types)
+       * [2.1.19) HVML URI Schema](#2119-hvml-uri-schema)
+          - [2.1.19.1) `hvml` Schema](#21191-hvml-schema)
+          - [2.1.19.2) `hvml+run` Schema](#21192-hvmlrun-schema)
+   + [2.2) Description Syntax of Rules, Expressions and Methods](#22-description-syntax-of-regular-expressions-and-methods)
+       * [2.2.1) Rule Description Syntax](#221-rule-description-syntax)
+       * [2.2.2) Evaluation Expressions Syntax](#222-evaluated-expressions-syntax)
+       * [2.2.3) Common Denoted Noun Units](#223-common-denoted-noun-units)
+       * [2.2.4) Description Syntax of Dynamic Object Methods](#224-description-syntax-of-dynamic-object-methods)
+       * [2.2.5) eJSON Syntax](#225-ejson-syntax)
+   + [2.3) Detailed Explanation of Frame Tags](#23-detailed-explanation-of-frame-tags)
+       * [2.3.1) `hvml` Tag](#231-hvml-tag)
+       * [2.3.2) `head` Tag](#232-head-tag)
+       * [2.3.3) `body` Tag](#233-body-tag)
+       * [2.3.4) Content of `hvml` Tag](#234-hvml-tag-content)
+   + [2.4) Detailed Explanation of Template Tags](#24-detailed-explanation-of-template-tags)
+       * [2.4.1) `archetype` Tag](#241-archetype-tag)
+       * [2.4.2) `archedata` Tag](#242-archedata-tag)
+       * [2.4.3) `error` tag](#243-error-tag)
+       * [2.4.4) `except` tag](#244-except-tag)
+   + [2.5) Detailed Explanation of Action Tags](#25-detailed-explanation-of-action-tags)
+       * [2.5.1) `init` tag](#251-init-tag)
+       * [2.5.2) `update` Tag](#252-update-tag)
+          - [2.5.2.1) Specify Target Position](#2521-specify target-position)
+          - [2.5.2.2) Update Collection](#2522-update-collection)
+       * [2.5.3) `erase` Tag](#253-erase-tag)
+       * [2.5.4) `clear` tag](#254-clear-tag)
+       * [2.5.5) `test`, `match` and `differ` Labels](#255-test-match-and-differ-labels)
+          - [2.5.5.1) Multi-Branch Handling](#2551-multi-branch-handling)
+          - [2.5.5.2) Choose One of Two Processing](#2552-choose-one-of-two-processing)
+       * [2.5.6) `choose` Tag](#256-choose-tag)
+       * [2.5.7) `iterate` Tag](#257-iterate-tag)
+          - [2.5.7.1) Use Iterative Executor](#2571-use-iterative-executor)
+          - [2.5.7.2) Nonuse Iterative Executor](#2572-nonuse-iterative-executor)
+       * [2.5.8) `reduce` tag](#258-reduce-tag)
+       * [2.5.9) `sort` Tag](#259-sort-tag)
+       * [2.5.10) `define` and `include` Tags](#2510-define-and-include-tags)
+       * [2.5.11) `observe`, `forget` and `fire` Labels](#2511-observe-forget-and-fire-labels)
+       * [2.5.12) `call` and `return` Labels](#2512-call-and-return-labels)
+       * [2.5.13) `bind` Tag](#2513-bind-tag)
+       * [2.5.14) `catch` Tag](#2514-catch-tag)
+       * [2.5.15) `back` tag](#2515-back-tag)
+       * [2.5.16) `request` Tag](#2516-request-tag)
+       * [2.5.17) `load` and `exit` Labels](#2517-load-and-exit-labels)
+       * [2.5.18) `inherit` Tag](#2518-inherit-tag)
+       * [2.5.19) `sleep` Tag](#2519-sleep-tag)
+   + [2.6) Actuator](#26-Actuator)
+       * [2.6.1) Built-In Executor](#261-built-in-executor)
+          - [2.6.1.1) `KEY` Executor](#2611-key-executor)
+          - [2.6.1.2) `RANGE` Actuator](#2612-range-executor)
+          - [2.6.1.3) `FILTER` Executor](#2613-filter-executor)
+          - [2.6.1.4) Built-In Executor for Strings](#2614-built-in-executor-for-strings)
+          - [2.6.1.5) Built-In Executor for Numeric Values](#2615-built-in-executor-for-numeric-values)
+          - [2.6.1.6) `SQL` Executor](#2616-sql-executor)
+          - [2.6.1.7) `TRAVEL` Actuator](#2617-travel-executor)
+          - [2.6.1.8) Use of Built-In Executor](#2618-use-of-builtin-executor)
+       * [2.6.2) External Actuator](#262-external-actuator)
+          - [2.6.2.1) External Function Executor](#2621-external-function-executor)
+          - [2.6.2.2) External Class Executor](#2622-external-class-executor)
+       * [2.6.3) Handling of Executor Regular Expressions](#263-handling-of-executor-regular-expressions)
+   + [2.7) Responsive Update](#27-responsive-update)
+- [3) HVML Syntax](#3-hvml-syntax)
+   + [3.1) Write HVML Documentation](#31-write-hvml-documentation)
+       * [3.1.1) DOCTYPE](#311-doctype)
+       * [3.1.2) Elements](#312-elements)
+          - [3.1.2.1) Start tag](#3121-start-tag)
+          - [3.1.2.2) Termination tag](#3122-termination-tag)
+          - [3.1.2.3) Attribute](#3123-Attribute)
+          - [3.1.2.4) Action Element Attribute](#3124-action-element-attributes)
+          - [3.1.2.5) Optional Tag](#3125-optional-tags)
+          - [3.1.2.6) Content Restrictions for Baretext Elements and Escapeable Baretext Elements](#3126-content-restrictions-for-baretext-elements-and-escapeable-baretext-elements)
+          - [3.1.2.7) Data Content and Data Attribute](#3127-data-content-and-data-attributes)
+       * [3.1.3) Text](#313-text)
+          - [3.1.3.1) New Line](#3131-newline)
+       * [3.1.4) Character Reference](#314-character-references)
+       * [3.1.5) CDATA Paragraph](#315-cdata-paragraph)
+       * [3.1.6) Comments](#316-comments)
+    + [3.2) Parse HVML Documentation](#32-parse-hvml-documentation)
+- [4) Application Example](#4-application-example)
+   + [4.1) Use HVML to Develop Traditional GUI Apps](#41-use-hvml-to-develop-traditional-gui-apps)
+   + [4.2) Cloud Apps](#42cloud-apps)
+- [5) Summary](#5-summary)
+- [Appendix](#appendix)
+   + [Appendix 1) Revision History](#appendix-1-revision-history)
+       * [RCb) 230430](#rcb-230430)
+          - [RCb.1) Adjust Page and Workspace Name Conventions](#rcb1-adjust-page-and-workspace-name-conventions)
+       * [RCa) 230331](#rca-230331)
+          - [RCa.1) Adjust `SYSTEM` Identifier Rules for `DOCTYPE`](#rca1-adjust-doctype-system-identifier-rules)
+          - [RCa.2) Adjust Result of `catch` Action Element](#rca2-adjust-result-of-catch-action-element)
+          - [RCa.3) Tweak `update` Action Element](#rca3-tweak-update-action-element)
+       * [RC9) 221231](#rc9-221231)
+          - [RC9.1) Reactive Processing Syntax for Defining Skeleton Element Attributes](#rc91-reactive-processing-syntax-for-defining-skeleton-element-attributes)
+          - [RC9.2) Structured Data Representation for Document Fragments](#rc92-structured-data-representation-for-document-fragments)
+          - [RC9.3) Adjust `update` Element Related Details](#rc93-adjust-update-element-related-details)
+          - [RC9.4) Adjust `request` Element Related Details](#rc94-adjust-request-element-related-details)
+       * [RC8) 221130](#rc8-221130)
+          - [RC8.1) Backtick Attribute Value Syntax](#rc81-backtick-attribute-value-syntax)
+          - [RC8.2) New Data Type Aliases](#rc82-new-datatype-aliases)
+          - [RC8.3) Adverb Attributes in Frame Elements](#rc83-adverb-attributes-in-frame-elements)
+          - [RC8.4) Misc](#rc84-misc)
+       * [RC7) 221031](#rc7-221031)
+          - [RC7.1) Stand-In Expression](#rc71-stand-in-expression)
+          - [RC7.2) Adjust Variables Section](#rc72-adjust-variables-section)
+          - [RC7.3) Adjust eJSON Syntax for Defining Tuples](#rc73-adjust-ejson-syntax-for-defining-tuples)
+          - [RC7.4) Adjust the Name of Adverb Attributes](#rc74-adjust-the-name-of-adverb- attributes)
+          - [RC7.5) Preposition Attributes Enhancement](#rc75-preposition- attributes-enhancement)
+       * [RC6) 220901](#rc6-220901)
+          - [RC6.1) Enhance Variable Names](#rc61-enhance-variable-names)
+          - [RC6.2) Enhance `request` Tag](#rc62-enhance-request-tag)
+          - [RC6.3) Adjust HVML URI Schema](#rc63-adjust-hvml-uri-schema)
+          - [RC6.4) Add Tuple Container Type](#rc64-add-tuple-container-type)
+          - [RC6.5) Reevaluation](#rc65-reevaluation)
+       * [RC5) 220701](#rc5-220701)
+          - [RC5.1) Adjust Description of `include` Tag](#rc51-adjust-description-of-include-tag)
+          - [RC5.2) Tweak `request` Tag](#rc52-tweak-request-tag)
+          - [RC5.3) Adjust `load` and `call` Tags](#rc53-adjust-load-and-call-labels)
+          - [RC5.4) HVML URI Schema and Coroutine Descriptor](#rc54-hvml-uri-schema-and-coroutine-descriptor)
+          - [RC5.5) Enhance `sort` Tag](#rc55-enhance-sort-tag)
+          - [RC5.6) Tweak `observe` Tag](#rc56-tweak-observe-tag)
+          - [RC5.7) Frame Tag Content](#rc57-frame-tag-content)
+          - [RC5.8) Other Revision](#rc58-other-revision)
+       * [RC4) 220601](#rc4-220601)
+          - [RC4.1) Refactor `Fundamental` Section](#rc41-refactor-fundamental-section)
+          - [RC4.2) MIME Type and Data](#rc42-mime-type-and-data)
+          - [RC4.3) `inherit` Tag](#rc43-inherit-tag)
+          - [RC4.4) `sleep` Tag](#rc44-sleep-tag)
+          - [RC4.5) Adjust Context Variables](#rc45-adjust-context-variables)
+          - [RC4.6) Adjustment of Elements and Attributes](#rc46-adjustment-of-elements-and-attributes)
+          - [RC4.7) `differ` Tag](#rc47-differ-tag)
+       * [RC3) 220501](#rc3-220501)
+          - [RC3.1) Adjust Action Tags](#rc31-adjust-action-tags)
+          - [RC3.2) HVML Program Running Status](#rc32-hvml-program-running-status)
+          - [RC3.3) Use the Element's Anchor Name to Locate the Front Stack Frame](#rc33-use-the-elements-anchor-name-to-locate -the-front-stack-frame)
+          - [RC3.5) eJSON Syntax Enhancement](#rc35-ejson-syntax-enhancement)
+          - [RC3.6) `$STREAM` Predefined Variable](#rc36-stream-predefined-variable)
+          - [RC3.7) Adjust the Description Syntax of Dynamic Object methods](#rc37-adjust-the-description-syntax-of-dynamic-object-methods)
+          - [RC3.8) Naming Rules for Event Names](#rc38-naming-rules-for-event-names)
+          - [RC3.9) Simplify External Executors](#rc39-simplify-external-executors)
+          - [RC3.10) Coroutines and Their State](#rc310-coroutines-and-their-states)
+       * [RC2) 220401](#rc2-220401)
+          - [RC2.1) Initialization and Reset Method of User-Defined Temporary Variable](#rc21-initialization-and-reset-method-of-user-defined-temporary-variable)
+          - [RC2.2) Adjust the Description Syntax of Dynamic Object Methods](#rc22-adjust-the-description-syntax-of-dynamic-object-methods)
+          - [RC2.3) Context Variable Enhancement and Tweak](#rc23-context-variable-enhancement-and-tweak)
+          - [RC2.4) Enhancement to `iterate` Element](#rc24-iterate-element-enhancements)
+          - [RC2.5) Adjust the Content of the First Chapter](#rc25-adjust-the-content-of-the-first-chapter)
+          - [RC2.6) Anomaly-Related Enhancement](#rc26-anomaly-related-enhancement)
+          - [RC2.7) Could Name an `observe`](#rc27-can-name-an-observe)
+          - [RC2.8) Enhance `request`](#rc28-enhance-request)
+          - [RC2.9) Adjust Preposition Properties](#rc29-adjust-preposition-properties)
+          - [RC2.10) Adjust the Syntax of Reactive Processing](#rc210-adjust-the-syntax-of-reactive-processing)
+          - [RC2.11) Enhance `bind` Tag](#rc211-enhance-bind-tag)
+          - [RC2.12) Composite Evaluation Expressions](#rc212-compound-evaluation-expressions)
+          - [RC2.13) Adjust Booleanization Rules](#rc213-adjust-booleanization-rules)
+       * [RC1) 220209](#rc1-220209)
+          - [RC1.1) Adjustment of Context Variables](#rc11-adjustment-of-context-variables)
+          - [RC1.2) `init` Tag Enhancement](#rc12-init-tag-enhancement)
+          - [RC1.3) Additional Clarifications for Numeric Executors](#rc13-additional-clarifications-for-numeric-executors)
+          - [RC1.4) `observe` Tag Enhancement](#rc14-observe-tag-enhancement)
+          - [RC1.5) Skeleton Element Enhancement](#rc15-skeleton-element-enhancement)
+          - [RC1.6) Enhancement to Attribute Value Operators](#rc16-enhancements-to-attribute-value-operators)
+       * [BRC)Other](#brc-other)
++ [Appendix 2) Undetermined Content](#appendix-2t-undetermined-content)
+       * [TBD 1) Extend Data Types](#tbd-1-extend-data-types)
+          - [TBD 1.1) Extend Data Types](#tbd-11-extend-data-types)
+       * [TBD2) Action Element](#tbd2-action-element)
+          - [TBD2.1) `pipe` tag](#tbd21-pipe-tag)
+          - [TBD2.2) `connect`, `send` and `disconnect` Labels](#tbd22-connect-send-and-disconnect-labels)
+          - [TBD2.3) External Function Updater](#tbd23-wxternal-function-updater)
+          - [TBD2.4) Misc](#tbd24-misc)
+   + [Attachment 3) Contributor List](#attachment-3-contributor-list)
+   + [Appendix 4) Trademark Statement](#appendix-4-trademark-statement)
 
 [//]:# (END OF TOC)
 
-## 1) 介绍
+## 1 Introduction
 
-### 1.1) 背景技术
+### 1.1) Background Technology
 
-本文涉及的背景技术及其最新规范如下：
+The background technologies involved in this article and their latest specifications are as follows:
 
-- HTML 及其规范。HTML 和 CSS 等规范和标准是由 W3C <https://www.w3.org> 组织制定的，用来规范 Web 页面内容的编写和渲染行为。关键规范如下：
-   * HTML：超文本标记语言（HyperText Markup Language），用于表述网页内容结构的标准。HTML 最新规范：<https://html.spec.whatwg.org/>。
-   * CSS：级联样式表（Cascading Style Sheets），用于定义 HTML 页面元素布局、渲染效果等的规范。在 CSS 2.2 <https://www.w3.org/TR/CSS22/> 之后，CSS 规范开始按照模块划分，各模块分头演进，目前普遍支持到 Level 3。在如下网页中可以看到 CSS 各模块的规范进展情况：<https://drafts.csswg.org>。
-   * JavaScript/ECMAScript：一种符合 ECMAScript 规范的脚本编程语言，最初由网景公司设计给浏览器使用，用于操控 HTML 页面中的内容和渲染行为，现在由欧洲计算机制造商协会和国际标准化组织负责制定相关标准，最新的标准为 ECMA-262：<http://www.ecma-international.org/publications/standards/Ecma-262.htm>。
-   * DOM：文档对象模型（Document Object Model），用于 XML/HTML 文档结构的内部表达。一个 XML/HTML 文档，会被 XML/HTML 解析器解析并生成一个 DOM 树，XML/HTML 文档中的每个元素构成 DOM 树上的元素结点，而每个元素的子元素、属性、文本内容等，又构成了这个元素节点的子节点。有关 DOM 的最新的规范可见：<https://dom.spec.whatwg.org/>。
-   * JSON：JavaScript 对象表述法（JavaScript Object Notation）是一种轻量级的信息互换格式。最初被用于 JavaScript 对象的字符串表达，易于被 JavaScript 脚本代码使用，现在被广泛使用在不同编程语言之间的数据交换。有关 JSON 的描述，可见：<https://json.org/>。
-- 用户代理（User Agent）是 HTML 规范的一个术语，用来指代可以解析 HTML、CSS 等 W3C 规范，并对 HTML 文档内容进行渲染，进而呈现给用户并实现用户交互的计算机程序。我们熟知的浏览器就是用户代理。但用户代理不限于浏览器，可以是一个软件组件，也可以是一个应用框架。比如，内嵌到电子邮件客户端程序中，用以解析和渲染 HTML 格式邮件的软件组件，本质上也是 HTML 用户代理。
-- XML：可扩展标记语言（The Extensible Markup Language）是由 W3C 组织制定的，用来表述结构化信息的一种简单文本格式。和 HTML 相比，XML 使用类似的结构，但更加严格且更为通用。XML 是当今共享结构化信息的最广泛使用的格式之一，不论是在程序之间，人与人之间，计算机与人之间，也不论是在本地还是跨网络共享信息。有关 XML 的介绍和规范可参阅：<https://www.w3.org/standards/xml/>。
-- 脚本编程语言。指类似 JavaScript 的计算机编程语言，通常解释执行，具有动态特征。除 JavaScript 之外，常见的脚本语言有 Python、Lua、PHP 等。
-- 高级编程语言。类似 C、C++、Java、C# 的编程语言，通常编译执行，直接运行在计算机硬件之上或者虚拟机之上。
-- SQL：结构化查询语言（Structured Query Language），用于关系型数据库的数据操作语言，目前几乎所有的关系数据库均支持 SQL。和一般的编程语言不同，SQL 具有非过程性特征，基本的 SQL 代码中不包括 if-else 这种流程控制语句。
+- HTML and its specifications. Specifications and standards such as HTML and CSS are developed by the W3C <https://www.w3.org> organization to standardize the writing and rendering behavior of web page content. The key specifications are as follows:
+    * HTML: Hypertext Markup Language, a standard for expressing the content structure of web pages. HTML latest specification: <https://html.spec.whatwg.org/>.
+    * CSS: Cascading Style Sheets, used to define the specifications of HTML page element layout, rendering effects, etc. After CSS 2.2 <https://www.w3.org/TR/CSS22/>, the CSS specification began to be divided into modules, and each module evolved separately. Currently, it generally supports Level 3. The progress of the specification of CSS modules can be seen at the following webpage: <https://drafts.csswg.org>.
+    * JavaScript/ECMAScript: A scripting programming language that conforms to the ECMAScript specification, originally designed by Netscape for browsers to manipulate the content and rendering behavior of HTML pages. And it is now under the responsibility of the European Computer Manufacturers Association and the International Organization for Standardization Develop relevant standards. The latest standard is ECMA-262: <http://www.ecma-international.org/publications/standards/Ecma-262.htm>.
+    * DOM: Document Object Model, used for the internal expression of XML/HTML document structure. An XML/HTML document will be parsed by an XML/HTML parser and generate a DOM tree. Each element in the XML/HTML document constitutes an element node on the DOM tree. And each element's sub-elements, attributes, text content and so on, constitute the child nodes of this element node. The latest specification for DOM can be found at: <https://dom.spec.whatwg.org/>.
+    * JSON: JavaScript Object Notation is a lightweight information interchange format. Originally it is used for string representation of JavaScript objects, which is easy to use by JavaScript script code. And it is now widely used for data exchange between different programming languages or software modules. For a description of JSON, please refer to: <https://json.org/>.
+- User Agent is a term in the HTML specification, which is used to refer to a computer program that can parse W3C specifications such as HTML and CSS, and render the content of HTML documents, then presenting them to users and realize user interaction. The browser we are familiar with is the user agent. But the user agent is not limited to the browser. It can be a software component or an application framework. For example, the software components embedded in email client programs to parse and render HTML-formatted emails are essentially HTML user agents.
+- XML: The Extensible Markup Language is a simple text format developed by the W3C organization to express structured information. Compared to HTML, XML uses a similar structure, but is stricter and more general. XML is one of the most widely used formats today for sharing structured information, whether between programs, between people, between computers and people, locally or across networks. An introduction and specification of XML can be found at: <https://www.w3.org/standards/xml/>.
+- Scripting Programming Language: It refers to a computer programming language similar to JavaScript, usually interpreted and executed, with dynamic features. In addition to JavaScript, common scripting languages include Python, Lua, PHP, etc.
+- Advanced Programming Languages: Programming languages, like C, C++, Java and C#, are usually compiled and executed, running directly on computer hardware or virtual machines.
+- SQL: Structured Query Language, a data manipulation language for relational databases, currently almost all relational databases support SQL. Unlike general programming languages, SQL has non-procedural features, and the basic SQL code does not include flow control statements such as if-else.
 
-### 1.2) 问题
+### 1.2) Questions
 
-随着互联网技术和应用的发展，围绕 HTML/CSS/JavaScript 发展的 Web 前端开发技术发展迅猛，甚至可以用“一日千里”来形容。五年前，基于 jQuery 和 Bootstrap 的前端框架大行其道，而从 2019 年开始，基于虚拟 DOM 技术的框架又受到前端开发者的青睐，比如著名的 [React.js]、[Vue.js] 等。值得注意的是，微信小程序、快应用等，也不约而同使用了这种虚拟 DOM 技术来构建应用框架。
+With the development of Internet technology and applications, the Web front-end development technology developed around HTML/CSS/JavaScript is developing rapidly, and it can even be described as "a thousand miles a day". Five years ago, front-end frameworks based on jQuery and Bootstrap were popular. And since 2019, frameworks based on virtual DOM technology have been favored by front-end developers, such as the famous [React.js], [Vue.js], etc. It is worth noting that WeChat applets, quick apps, etc. also use this virtual DOM technology to build application frameworks.
 
-所谓“虚拟 DOM”是指前端应用程序通过 JavaScript 来创建和维护一个虚拟的文档对象树，程序脚本并不直接操作真实的 DOM 树。在虚拟 DOM 树中，通过一些特别的属性实现了基于数据的一些流程控制，如条件、循环等。
+The so-called "virtual DOM" means that the front-end application creates and maintains a virtual document object tree through JavaScript, and the program script does not directly operate the real DOM tree. In the virtual DOM tree, some process control based on data is realized through some special attributes, such as conditions, loops, etc.
 
-另一方面，大量图形用户界面（GUI）应用，仍然在使用 C、C++、Java、C# 等编程语言开发。这些传统的 GUI 应用，其程序框架无外乎直接调用 C/C++ 或其他编程语言提供的接口，在一个事件循环中完成创建 GUI 元素，响应用户交互的工作。为了方便 GUI 应用的开发，业界存在诸多大同小异的 GUI Toolkit 库，比如早期运行在 Unix 图形工作站上的 Motif，Windows 上的 Win32、MFC，Linux 桌面发展出的 Gtk+，跨平台的 Qt，针对嵌入式的 MiniGUI 等等。
+On the other hand, a large number of graphical user interface (GUI) applications are still being developed in programming languages such as C, C++, Java, and C#. The program framework of these traditional GUI applications is nothing more than directly calling the interface provided by C/C++ or other programming languages, and completing the creation of GUI elements in an event loop to respond to user interaction. In order to facilitate the development of GUI applications, there are many similar GUI Toolkit libraries in the industry, such as Motif running on Unix graphics workstations in the early days, Win32 and MFC on Windows, Gtk+ developed on Linux desktops, cross-platform Qt, for embedded MiniGUI and so on.
 
-这些 GUI Toolkit 库，为提高图形用户界面应用的开发效率提供了一定的帮助，但限于编程语言的表达能力，开发者经常会陷入到操控 GUI 元素及其属性的大量细节当中。就算有可视化的界面设计器帮助开发者，其开发效率也很难和上面提到的 Web 前端技术相比。
+These GUI Toolkit libraries provide some help in improving the development efficiency of graphical user interface applications, but limited to the expressive ability of programming languages, developers often fall into a large number of details of manipulating GUI elements and their attributes. Even if there is a visual interface designer to help developers, its development efficiency is difficult to compare with the web front-end technology mentioned above.
 
-那么，我们能否将 Web 前端技术带到浏览器之外？比如可以让 C、C++、Java 程序，甚至 Python 这类脚本语言也能轻松地使用 Web 前端技术来开发 GUI 应用？
+So, can we take web front-end technology beyond the browser? For example, can C, C++, Java programs, and even scripting languages such as Python easily use Web front-end technology to develop GUI applications?
 
-为了将 Web 前端技术引入到通用的 GUI 应用的开发中，开源社区也做了一些探索性工作，比如 Electron 开源项目，将 Chromium + Node.js 打包在一起，让 Web 后端跑在本机上，从而方便本地 GUI 应用的开发。但 Electron 的软件栈过于复杂，限制了其应用领域。
+In order to introduce Web front-end technology into the development of general GUI applications, the open source community has also done some exploratory work, such as the Electron open source project, which packs Chromium + Node.js together to let the Web backend run on the local machine. This facilitates the development of local GUI applications. But Electron's software stack is too complex, which limits its application areas.
 
-另外，以 React.js、Vue.js 为代表的前端框架取得了巨大成功，但存在如下缺陷和不足：
+In addition, the front-end framework represented by React.js and Vue.js has achieved great success. But there are the following defects and deficiencies:
 
-1. 这些技术建立在已有成熟的 Web 标准之上，需要完整支持相关前端规范的浏览器才能运行（或者说，只能运行在浏览器之内），很难和已有基于 C/C++ 等编程语言开发的功能模块整合。
-1. 由于先天局限性，在网页中使用 JavaScript 语言，一直存在开发者诟病的如下问题：
-   - 安全性差。一方面业务逻辑有关的代码在最终用户的浏览器上执行，任何人都可以看到 JavaScript 程序的源代码，从而可能泄露敏感信息；另一方面，恶意代码可能在最终用户的浏览器上执行，从而导致用户敏感数据的泄露。
-   - 对性能的负面影响。在浏览器中运行大量业务逻辑相关的 JavaScript 代码，会引发页面渲染和业务逻辑竞争处理器资源的问题，这是浏览器页面渲染能力和传统 GUI 开发的界面存在显著差异的一个原因。
-   - 较低的代码可维护性。开发者经常会在网页的不同地方随意嵌入零散的 JavaScript 代码，这降低了整个应用系统代码的可维护性。
-1. 这些技术通过引入 `v-if`、 `v-else`、 `v-for` 等虚拟属性实现了基于数据的条件和循环流程控制，割裂了代码的逻辑，破坏了代码的可读性。如下面的一个示例：
+1. These technologies are based on existing mature Web standards, and require browsers that fully support relevant front-end specifications to run (or, only run in browsers). And it is difficult to integrate with existing C/C++-based Integration of functional modules for programming language development.
+1. Due to inherent limitations, the use of JavaScript language in web pages has always had the following problems criticized by developers:
+    - Poor security: On the one hand, code related to business logic is executed on the end user's browser, and anyone can see the source code of the JavaScript program, which may leak sensitive information; on the other hand, malicious code may be executed on the end user's browser, This leads to the leakage of user sensitive data.
+    - Negative impact on performance: Running a large amount of JavaScript code related to business logic in the browser will cause the problem of page rendering and business logic competing for processor resources, which is one of the reasons why there is a significant difference between the page rendering capability of browsers and the interface developed by traditional GUI.
+    - Lower code maintainability: Developers often randomly embed scattered JavaScript codes in different places on the webpage, which reduces the maintainability of the entire application system code.
+1. These technologies implement data-based conditional and loop flow control by introducing virtual attributes such as `v-if`, `v-else`, `v-for`, which split the logic of the code and destroy the readability of the code . As an example below:
 
 ```html
 <div v-if="Math.random() > 0.5">
@@ -283,136 +289,136 @@ Language: Chinese
 </div>
 ```
 
-### 1.3) 目的
+### 1.3) Purpose
 
-在 [HybridOS]（合璧操作系统）的开发过程中，[魏永明](https://github.com/VincentWei)提出了一套完备、通用、易学的新式编程语言，称为 HVML。HVML 是 Hybrid Virtual Markup Language（混合虚拟标记语言）的缩写，中文名称“呼噜猫”。HVML 读作 /'huːmeil/，音似普通话读“虎妹儿”。
+During the development of [HybridOS] (combined operating system), [Vincent Wei] (https://github.com/VincentWei) proposed a complete, general-purpose, and easy-to-learn new programming language called HVML. HVML is the abbreviation of Hybrid Virtual Markup Language, and the Chinese name is "Hulumao". HVML is pronounced /'huːmeil/, which sounds like "虎妹儿" in Mandarin.
 
-我们将 HVML 定义为一种可编程标记语言（Programmable Markup Language）。和 HTML 类似，HVML 使用标记语言来定义程序的结构和数据，但和 HTML 不同的是，HVML 是可编程的、动态的。HVML 通过有限的几个动作标签以及可用于定义属性和内容的表达式，实现了 XML/HTML 文档的动态生成和更新功能；HVML 还提供了和已有编程语言，如 C/C++、Rust 等进行结合的方法，从而为这些编程语言在浏览器之外利用 Web 前端技术提供了强有力的技术支撑。从这个角度讲，HVML 也可以视作是一种胶水语言。
+We define HVML as a Programmable Markup Language. Like HTML, HVML uses a markup language to define program structure and data. But unlike HTML, HVML is programmable and dynamic. HVML realizes the dynamic generation and updating of XML/HTML documents through a limited number of action tags and expressions that can be used to define attributes and contents. The combined method provides strong technical support for these programming languages to use Web front-end technology outside the browser. From this perspective, HVML can also be regarded as a glue language.
 
-本质上，HVML 提供了一种新的思路来解决前面的那个问题：第一，将 Web 前端技术（主要是 DOM、CSS 等）引入到其他编程语言中，而不是用 JavaScript 替代其他编程语言。第二，采用类似 HTML 的标记语言来操控文档中的元素、属性和样式，而非 JavaScript。另外，在设计 HVML 的过程中，我们有意地使用了数据驱动的概念，使得 HVML 可以非常方便地和其他编程语言以及各种网络连接协议，如数据总线、消息协议等结合在一起。这样，开发者熟悉哪种编程语言，就使用这种编程语言来开发应用的非展现和交互部分，而所有和展现及交互相关的功能，交给 HVML 来完成处理，它们之间，通过模块间流转的数据来驱动，而 HVML 提供了对数据流转过程的抽象处理能力。
+In essence, HVML provides a new idea to solve the previous problem: First, introduce Web front-end technologies (mainly DOM, CSS, etc.) into other programming languages instead of replacing other programming languages with JavaScript. Second, use an HTML-like markup language to manipulate elements, attributes, and styles in your document, rather than JavaScript. In addition, in the process of designing HVML, we intentionally use the concept of data-driven, so that HVML can be very conveniently combined with other programming languages and various network connection protocols, such as data bus, message protocol, etc. In this way, whichever programming language the developer is familiar with, he uses this programming language to develop the non-presentation and interactive parts of the application, and all functions related to presentation and interaction are handed over to HVML for processing. The flow of data is driven, and HVML provides the ability to abstract the data flow process.
 
-尽管设计 HVML 的最初目标是为了提高图形用户界面（GUI）应用程序开发效率，但其实可用于更加通用的场景——只要程序的输出可被抽象为使用一个或者多个树状结构来表达，就可以使用 HVML；甚至我们可以像普通脚本语言那样来使用 HVML，并利用 HTML 和 CSS 来描述面向字符终端（terminal）的命令行应用程序的交互界面。
+Although the original goal of designing HVML is to improve the efficiency of graphical user interface (GUI) application development, it can actually be used in more general scenarios-as long as the output of the program can be abstracted as one or more tree structures. HVML can be used; we can even use HVML like an ordinary scripting language, and use HTML and CSS to describe the interactive interface of a character terminal-oriented command-line application.
 
-HVML 的主要特点有：
+The main features of HVML are:
 
-1. 描述式语法。通过符合自然语言表达习惯的动词标签以及介词属性、副词属性，HVML 让每一行代码都具有清晰的语义，可帮助开发者编写具有更好可读性的程序代码。
-1. 极简设计。HVML 仅仅使用二十多个特有的标签，定义了用于操作文档、数据以及抽象的栈式虚拟机的完备指令。
-1. 更高的抽象层次。开发者可以使用 HVML 以更少的代码完成更多的工作，无需过多关心技术细节。
-1. 数据驱动。一方面，HVML 提供了通过操控数据来实现功能的方法。比如，我们使用更新动作操控定时器数组中的某个字段就可以开启或者关闭一个定时器，而无需调用对应的接口。另一方面，HVML 语言致力于通过统一的数据表达方式将系统中的不同模块串接起来，而不是通过复杂的接口调用来实现模块间的互操作。这两个手段可有效避免传统编程语言存在的接口爆炸问题。为了实现以上目标，HVML 在 JSON 这一广泛使用的抽象数据表达方式之上，提供了扩展的数据类型以及灵活的表达式处理能力。
-1. 事件驱动。和其他编程语言不同，HVML 语言提供了观察特定事件甚至观察一个表达式结果发生变化的语言级机制。在此基础上，开发者无需关心底层的实现细节便可以轻松实现其他编程语言中难以管理的异步或并发编程。与此同时，HVML 支持协程、闭包等现代编程技术。
-1. 灵活的应用框架。通过 HVML，开发者可以将性能关键的数据处理交由外部程序模块或服务器实现，和用户的交互由独立的渲染器负责，HVML 程序则负责粘合这些不同的系统组件。一方面，HVML 解决了使用不同编程语言开发的系统组件之间难以高效互操作的问题，从而可以充分发挥各个组件的优势，保护已有软件资产的价值；另一方面，采用 HVML 提供的应用框架开发应用，可最大程度地解除不同组件之间的耦合问题。
+1. Descriptive syntax: Through verb labels, preposition attributes, and adverb attributes that conform to the natural language expression habits, HVML makes each line of code have clear semantics, which can help developers write program code with better readability.
+1. Minimalist design: HVML defines complete instructions for manipulating documents, data, and an abstract stack virtual machine using just over twenty unique tags.
+1. A higher level of abstraction: Developers can use HVML to accomplish more with less code, without having to worry too much about technical details.
+1. Data-driven: On the one hand, HVML provides methods for manipulating data to implement functions. For example, we can use the update action to manipulate a field in the timer array to turn on or off a timer without calling the corresponding interface. On the other hand, the HVML language is committed to connecting different modules in the system through a unified data expression, rather than through complex interface calls to achieve interoperability between modules. These two methods can effectively avoid the interface explosion problem existing in traditional programming languages. In order to achieve the above goals, HVML provides extended data types and flexible expression processing capabilities based on JSON, a widely used abstract data expression method.
+1. Event-driven: Unlike other programming languages, the HVML language provides language-level mechanisms for observing specific events or even observing changes in the result of an expression. On this basis, developers can easily implement asynchronous or concurrent programming that is difficult to manage in other programming languages without caring about the underlying implementation details. At the same time, HVML supports modern programming techniques such as coroutines and closures.
+1. Flexible application framework: Through HVML, developers can hand over performance-critical data processing to external program modules or servers, interact with users by independent renderers, and HVML programs are responsible for gluing these different system components. On the one hand, HVML solves the problem that it is difficult to efficiently interoperate between system components developed in different programming languages, so that the advantages of each component can be fully utilized and the value of existing software assets can be protected; on the other hand, the application framework provided by HVML is adopted Developing applications can maximize the decoupling between different components.
 
-总之，HVML 提供了不同于传统编程语言的编程模式，在数据驱动的思想基础之上，HVML 提供了更加系统和完备的低代码（low code，指使用更少的代码来编写程序）编程方法。
+In short, HVML provides a programming model different from traditional programming languages. Based on the idea of data-driven, HVML provides a more systematic and complete low-code (low code, refers to using less code to write programs) programming method.
 
-HVML 是 HybridOS（合璧操作系统）的首选应用编程语言。
+HVML is the application programming language of choice for HybridOS.
 
-### 1.4) 应用框架
+### 1.4) Application Framework
 
-围绕 HVML 形成的应用框架，和传统的 GUI 应用框架以及 Web 前端技术都有显著的不同。传统的 GUI 应用，代码设计模式无外乎直接调用 C/C++ 或其他编程语言提供的接口，在一个事件循环中完成创建界面元素、响应用户交互的工作。Web 前端技术和传统 GUI 应用的最大区别在于描述式的 HTML 和 CSS 语言，但程序框架在本质上是一样的——事件循环，而且必须使用 JavaScript 语言。
+The application framework formed around HVML is significantly different from traditional GUI application frameworks and Web front-end technologies. For traditional GUI applications, the code design pattern is nothing more than directly calling the interface provided by C/C++ or other programming languages, and completing the work of creating interface elements and responding to user interaction in an event loop. The biggest difference between Web front-end technology and traditional GUI applications lies in the descriptive HTML and CSS languages, but the program framework is essentially the same-event loop, and JavaScript language must be used.
 
-但 HVML 提供了一个完全不一样的应用框架。
+But HVML provides a completely different application framework.
 
-在完整的基于 HVML 的应用框架中，通常包含一个独立运行的用户界面渲染器（UI renderer）。开发者通过编写 HVML 程序来操控描述用户界面的页面内容，而页面内容最终由渲染器处理并展示到屏幕上。HVML 程序在 HVML 解释器中运行，可以和其他已有的编程语言的运行时环境结合在一起，接收由其他编程语言程序生成的数据，并按照 HVML 程序的指令，将其转换为户界面的描述信息或者变更信息。通过这样的设计，我们将所有涉及到图形用户界面的应用程序分开成两个松散的模块：
+In a complete HVML-based application framework, it usually includes a user interface renderer (UI renderer) that runs independently. Developers write HVML programs to manipulate the page content that describes the user interface, and the page content is finally processed by the renderer and displayed on the screen. The HVML program runs in the HVML interpreter and can be combined with the runtime environment of other existing programming languages to receive data generated by other programming language programs and convert it into a user interface description according to the instructions of the HVML program information or change information. Through this design, we separate all applications related to GUI into two loose modules:
 
-第一，一个和用户界面无关的数据处理模块，开发者可以使用任何其熟悉的编程语言和开发工具开发这个模块。比如，涉及到人工智能处理时，开发者选择 Python；在 Python 代码中，除了装载 HVML 程序之外，开发者无需考虑任何和界面渲染及交互相关的东西，比如创建一个按钮或者点击一个菜单后完成某项工作等的这类工作，开发者只需要在 Python 代码中准备好渲染用户界面所需要的数据即可，而这些数据通常使用 HTML/XML/CSS 等描述式语言来表示。我们将这些数据处理模块统称为“外部程序（external program）”。
+First, a data processing module that has nothing to do with the user interface. Developers can use any familiar programming language and development tools to develop this module. For example, when it comes to artificial intelligence processing, developers choose Python; in Python code, in addition to loading HVML programs, developers do not need to consider anything related to interface rendering and interaction, such as creating a button or clicking a menu to complete For this kind of work such as a certain work, developers only need to prepare the data required to render the user interface in the Python code, and these data are usually expressed in descriptive languages such as HTML/XML/CSS. We collectively refer to these data processing modules as "external programs".
 
-第二，一个或者多个使用 HVML 语言编写的程序（HVML 程序），用来完成对用户界面的操控。HVML 程序根据数据处理模块提供的数据生成用户界面的描述信息，并根据用户的交互或者从数据处理模块中获得的计算结果来更新用户界面，或者根据用户的交互驱动数据处理模块完成某些工作。
+Second, one or more programs written in the HVML language (HVML programs) are used to complete the manipulation of the user interface. The HVML program generates user interface description information based on the data provided by the data processing module, and updates the user interface according to user interaction or calculation results obtained from the data processing module, or drives the data processing module to complete certain tasks according to user interaction.
 
-如此，HVML 应用框架将操控界面元素的代码从原先调用 C、C++、Java、C# 等接口的设计模式中解放了出来，转而使用 HVML 代码来处理。而 HVML 使用类似 HTML 的标签语言来操控界面元素，通过隐藏大量细节，降低了直接使用高级编程语言操控界面元素导致的程序复杂度。
+In this way, the HVML application framework frees the code for manipulating interface elements from the original design mode of calling interfaces such as C, C++, Java, and C#, and uses HVML code to process them instead. HVML uses a tag language similar to HTML to manipulate interface elements. By hiding a large number of details, it reduces the program complexity caused by directly using high-level programming languages to manipulate interface elements.
 
-通常，我们将界面渲染器设计为类似字符控制台的哑设备，这样，我们就可以将 HVML 程序和应用的其他模块从控制界面元素展现行为的细节中解放出来。举个例子。我们在字符终端程序的开发中，可以使用一些转义控制指令来设置字符的颜色、是否闪烁等，而字符终端程序无需包含任何处理字符颜色以及闪烁的代码——因为这些细节字符控制台（可能是硬件，也可能是一个伪终端程序）帮我们默默处理了。HVML 的界面渲染器也遵循同样的设计思路，HVML 程序创建好一个按钮，至于这个按钮显示出来是什么样子的，用户如何跟它交互，这些统统无需 HVML 程序来操心——一切由渲染器在给定的描述式语言（如 HTML、CSS）的控制下运转。这带来另一个好处，由于在界面渲染器中不包含任何的应用运行逻辑代码和敏感的数据，从某种程度上讲，这带来了安全性的提高。
+Usually, we design the interface renderer as a dumb device like a character console, so that we can free the HVML program and other modules of the application from the details of controlling the display behavior of interface elements. For example, in the development of the character terminal program, we can use some escape control instructions to set the color of the character, whether to blink, etc., and the character terminal program does not need to contain any codes to deal with the character color and blinking - because these details The character console (maybe It is hardware, or it may be a pseudo-terminal program) to help us handle it silently. HVML's interface renderer also follows the same design idea. After the HVML program creates a button, as for what the button looks like and how the user interacts with it, all these don't need to be worried about by the HVML program-everything is given by the renderer. It operates under the control of a certain descriptive language (such as HTML, CSS). This brings another benefit, since the interface renderer does not contain any application running logic code and sensitive data, to some extent, this brings about an increase in security.
 
-在 HVML 应用框架中，一个应用可以同时启动多个并行的任务，我们将这些并行的任务称为“行者（runner）”（注：不同的行者可能使用不同的编程语言开发）。使用 HVML 语言开发的行者在一个独立的 HVML 解释器实例中运行。一个解释器实例可以是一个独立运行的系统进程，也可以是解释器进程中的独立线程；这取决于解释器的具体实现方式。但不论解释器如何实现，HVML 要求单个行者可以同时装载多个 HVML 程序运行，而且解释器应该始终以独立的协程（coroutine）形式执行同一行者装载的这些 HVML 程序实例。因此，我们在本文档中使用“协程（coroutine）”一词来指代一个运行中的 HVML 程序实例。
+In the HVML application framework, an application can start multiple parallel tasks at the same time. We call these parallel tasks "runners" (Note: Different runners may be developed using different programming languages). A walker developed in the HVML language runs in a separate instance of the HVML interpreter. An interpreter instance can be a system process running independently, or it can be a separate thread in the interpreter process; this depends on the specific implementation of the interpreter. But no matter how the interpreter is implemented, HVML requires that a single walker can load multiple HVML programs to run at the same time, and the interpreter should always execute these HVML program instances loaded by the same walker in the form of independent coroutines. Therefore, we use the term "coroutine" in this document to refer to a running instance of an HVML program.
 
-这种设计带来了如下好处：
+This design brings the following benefits:
 
-1. 相比线程或进程提供的并发机制，协程提供了一种低成本实现并发的机制。同一行者创建的多个协程属于同一个操作系统任务，在独立的解释器实例中运行；这些协程在解释器的协调下在单个操作系统任务（线程或者进程）中轮换执行，因此协程间的数据交换不需要考虑竞态（race-condition）问题，几乎都是无锁（lock-free）操作，这减低了处理并发的成本，从而提升了整体性能。
-1. 通过将负责不同业务逻辑的代码分离到不同的协程当中实现，我们可以提高整个项目的模块化程度，从而提升项目的可测试性以及可维护性，进而提升整个项目的软件质量。
+1. Compared with the concurrency mechanism provided by threads or processes, coroutines provide a low-cost mechanism for achieving concurrency. Multiple coroutines created by the same walker belong to the same operating system task and run in independent interpreter instances; these coroutines are executed alternately in a single operating system task (thread or process) under the coordination of the interpreter, so coroutines The data exchange between does not need to consider the race-condition problem, almost all lock-free operations, which reduces the cost of processing concurrency, thus improving the overall performance.
+1. By separating the code responsible for different business logic into different coroutines, we can improve the modularity of the entire project, thereby improving the testability and maintainability of the project, and then improving the software quality of the entire project.
 
-有了这样的应用框架设计，HVML 可以让几乎所有的编程语言，不论是 C/C++ 这类传统编程语言，还是 Python 这类脚本语言，都可以使用统一的模式来开发 GUI 应用。
+With such an application framework design, HVML allows almost all programming languages, whether traditional programming languages such as C/C++ or scripting languages such as Python, to use a unified model to develop GUI applications.
 
-## 2) HVML 详解
+## 2) Detailed Explanation of HVML
 
-为方便描述，本文档使用如下术语：
+For convenience of description, this document uses the following terms:
 
-1. `数据（data）`。指可使用 JSON 这类记法描述的数据，可用来描述如文本、数值这类基本的数据，也可以用来描述数组、键值对、树形等抽象的数据。
-1. `数据项（data item 或 datum）`或`数据成员（data member）`。对数组而言，每个数组单元就是一个数据项；对对象数据而言，其中的某个键值对就是一个数据项。为防止混淆，我们避免使用 `元素（element）` 一词来指代数据项或者数据成员。
-1. `标签（tag）`。在 HTML/XML/HVML 文档中，用来定义一个元素节点的元素类型名称。
-1. `目标文档（destination document）`。指 HVML 程序生成的 XML/HTML 文档。
-1. `元素（element）`。指文档对象模型中，使用某个标签（tag）定义的元素节点；一个文档元素可包含一个或多个属性（attribute）以及属性值，还可以包含内容（content）；一个元素可包含文本内容、数据内容或者使用标签定义的单个或多个子元素。
-1. `文档片段（document fragment）`。指 XML/HTML 文档中的一个片段，可作为模板被克隆（clone）到目标文档的指定位置。
-1. `文本内容（text content）`。指使用文本定义的元素内容。
-1. `数据内容（data content）`。指使用抽象数据表达定义的元素内容。
-1. `元素汇集（element collection）`。指使用选择器选择的零个或者多个元素。这里避免使用“集合”这个术语，是为了防止和`集合（set）`数据类型混淆。
-1. `程序（program）`。一段或者一组可执行的代码集合。若无特别说明，本文档中特指 HVML 程序。
-1. `解释器（interpreter）`。若无特别说明，本文档中特指用来解析并执行 HVML 程序的程序。
-1. `协程（coroutine）`。若无特别说明，本文档中特指一个运行中的 HVML 程序实例。
-1. `码点（code point）`。指一个表述为 `U+` 和四到六个 ASCII 大写十六进制数字形式的 Unicode 码点，范围在 U+0000 到 U+10FFFF（含）。有时候，我们会在码点之后包含码点的名称以及包含在小括号中的该码点的渲染形式，且高亮或加粗显示该码点的渲染形式。对无法渲染的码点，本文档会给出其码点名称。有关 Unicode 字符的更多术语解释如下：
-   - 码点的名称由 Unicode 标准定义并以 ASCII 大写形式表述，如 `CR` 指 Carriage Return（回车）。
-   - `替代符（surrogate）`是范围在 U+D800 到 U+DFFF（含）的码点。
-   - 不是替代符的码点被称为`标量值（scalar value）`。
-   - U+FDD0 到 U+FDEF（含）范围内的码点，以及如下码点被称为`非字符（noncharacter）`：
-      + U+FFFE、 U+FFFF
-      + U+1FFFE、 U+1FFFF
-      + U+2FFFE、 U+2FFFF
-      + U+3FFFE、 U+3FFFF
-      + U+4FFFE、 U+4FFFF
-      + U+5FFFE、 U+5FFFF
-      + U+6FFFE、 U+6FFFF
-      + U+7FFFE、 U+7FFFF
-      + U+8FFFE、 U+8FFFF
-      + U+9FFFE、 U+9FFFF
-      + U+AFFFE、 U+AFFFF
-      + U+BFFFE、 U+BFFFF
-      + U+CFFFE、 U+CFFFF
-      + U+DFFFE、 U+DFFFF
-      + U+EFFFE、 U+EFFFF
-      + U+FFFFE、 U+FFFFF
-      + U+10FFFE、 U+10FFFF.
-   - `ASCII 码点`是指范围在 U+0000 NULL 到 U+007F DELETE（含）的码点。
-   - `ASCII 制表符或者新行符`指 U+0009 TAB、 U+000A LF 或 U+000D CR。
-   - `ASCII 空白字符`是指 U+0009 TAB、 U+000A LF、 U+000C FF、 U+000D CR、或 U+0020 SPACE。也常常简称为`空白字符`。
-   - `C0 控制字符`是范围在 U+0000 NULL 到 U+001F INFORMATION SEPARATOR ONE（含）的码点。
-   - `C0 控制字符或空格`指 C0 控制字符或 U+0020 SPACE。
-   - `控制字符`是指一个`C0 控制字符`或者范围在 U+007F DELETE 到 U+009F APPLICATION PROGRAM COMMAND（含）的码点。
-   - `ASCII 数字`是范围在 U+0030（`0`）到 U+0039（`9`）（含）的字符。
-   - `ASCII 大写十六进制数字`要么是一个 ASCII 数字，要么是一个范围在 U+0041（`A`）到 U+0046（`F`）（含）的码点。
-   - `ASCII 小写十六进制数字`要么是一个 ASCII 数字，要么是一个范围在 U+0061（`a`）到 U+0066（`f`）（含）的码点。
-   - `ASCII 十六进制数字`要么是一个 ASCII 大写十六进制数字，要么是一个 ASCII 小写十六进制数字。
-   - `ASCII 大写字母`是一个范围在 U+0041（`A`）到 U+005A（`Z`）（含）的码点。
-   - `ASCII 小写字母`是一个范围在 U+0061（`a`）到 U+007A（`z`）（含）的码点。
-   - `ASCII 字母`要么是一个 ASCII 大写字母，要么是一个 ASCII 小写字母。
-   - `ASCII 字母数字`要么是一个 ASCII 数字，要么是一个 ASCII 字母。
-   - `Unihan 表意字符` 是如下范围的码点：
-      + U+4E00 到 U+9FFC（含）
-      + U+F900 到 U+FAD9（含）
-      + U+3400 到 U+4DBF（含）
-      + U+20000 到 U+2A6DD（含）
-      + U+2A700 到 U+2B734（含）
-      + U+2B740 到 U+2B81D（含）
-      + U+2B820 到 U+2CEA1（含）
-      + U+2CEB0 到 U+2EBE0（含）
-      + U+2F800 到 U+2FA1D（含）
-      + U+30000 到 U+3134A（含）
+1. `data`: Refers to data that can be described using a notation such as JSON. It can be used to describe basic data such as text and values, and can also be used to describe abstract data such as arrays, key-value pairs, and trees.
+1. `data item or datum` or `data member`: For arrays, each array cell is a data item; for object data, a key-value pair is a data item. To prevent confusion, we avoid using the word `element` to refer to data items or data members.
+1. `Tag`: In HTML/XML/HVML documents, the element type name used to define an element node.
+1. `Destination document`: It refers to XML/HTML documents generated by HVML programs.
+1. `Element`. It refers to the element node defined by a tag in the document object model; a document element can contain one or more attributes and attribute values, and can also contain content; an element can contain text content, Data content or single or multiple child elements defined using tags.
+1. `Document fragment`.: It refers to a fragment in an XML/HTML document that can be cloned as a template to a specified location in the target document.
+1. `text content`: It refers to the content of an element defined using text.
+1. `data content`: It refers to the content of an element defined using an abstract data representation.
+1. `Element collection`: It refers to zero or more elements selected using a selector. The term "set" is avoided here to avoid confusion with the `set` data type.
+1. `program`: A section or set of executable code collections. Unless otherwise stated, this document refers specifically to HVML programs.
+1. `Interpreter`: Unless otherwise specified, this document specifically refers to the program used to parse and execute HVML programs.
+1. `coroutine`: Unless otherwise specified, this document specifically refers to a running HVML program instance.
+1. `Code point`: It refers to a Unicode code point represented as `U+` and four to six ASCII uppercase hexadecimal digits in the range U+0000 to U+10FFFF, inclusive. Sometimes, we include the name of the code point and the rendered form of the code point enclosed in parentheses after the code point, and the rendered form of the code point is highlighted or bolded. For code points that cannot be rendered, this document will give their code point names. More terminology related to Unicode characters is explained below:
+    - The name of the code point is defined by the Unicode standard and expressed in ASCII uppercase, such as `CR` for Carriage Return (carriage return).
+    - `surrogate` is a code point in the range U+D800 to U+DFFF, inclusive.
+    - A code point that is not a substitute is called `scalar value`.
+    - Code points in the range U+FDD0 to U+FDEF (inclusive), and the following code points are called `noncharacters`:
+       + U+FFFE, U+FFFF
+       + U+1FFFE, U+1FFFF
+       + U+2FFFE, U+2FFFF
+       + U+3FFFE, U+3FFFF
+       + U+4FFFE, U+4FFFF
+       + U+5FFFE, U+5FFFF
+       + U+6FFFE, U+6FFFF
+       + U+7FFFE, U+7FFFF
+       + U+8FFFE, U+8FFFF
+       + U+9FFFE, U+9FFFF
+       + U+AFFFE, U+AFFFF
+       + U+BFFFE, U+BFFFF
+       + U+CFFFE, U+CFFFF
+       + U+DFFFE, U+DFFFF
+       + U+EFFFE, U+EFFFF
+       + U+FFFFE, U+FFFFF
+       + U+10FFFE, U+10FFFF.
+    - `ASCII codepoints` are codepoints in the range U+0000 NULL to U+007F DELETE (inclusive).
+    - `ASCII tab or newline` means U+0009 TAB, U+000A LF or U+000D CR.
+    - `ASCII white space character` means U+0009 TAB, U+000A LF, U+000C FF, U+000D CR, or U+0020 SPACE. Also often referred to simply as `blank character`.
+    - `C0 control characters` are code points in the range U+0000 NULL to U+001F INFORMATION SEPARATOR ONE, inclusive.
+    - `C0 control character or space` refers to the C0 control character or U+0020 SPACE.
+    - `control character` means a `C0 control character` or a code point in the range U+007F DELETE to U+009F APPLICATION PROGRAM COMMAND (inclusive).
+    - `ASCII digits` are characters in the range U+0030 (`0`) to U+0039 (`9`), inclusive.
+    - `ASCII uppercase hexadecimal digit` is either an ASCII digit or a code point in the range U+0041 (`A`) to U+0046 (`F`), inclusive.
+    - `ASCII lowercase hexadecimal digit` is either an ASCII digit or a code point in the range U+0061 (`a`) to U+0066 (`f`), inclusive.
+    - `ASCII hex digit` is either an ASCII uppercase hex digit or an ASCII lowercase hex digit.
+    - `ASCII uppercase` is a code point in the range U+0041 (`A`) to U+005A (`Z`), inclusive.
+    - `ASCII lowercase letter` is a code point in the range U+0061 (`a`) to U+007A (`z`), inclusive.
+    - `ASCII letter` is either an ASCII uppercase letter or an ASCII lowercase letter.
+    - `ASCII alphanumeric` is either an ASCII number or an ASCII letter.
+    - `Unihan ideographic characters` are code points in the following ranges:
+       + U+4E00 through U+9FFC (inclusive)
+       + U+F900 to U+FAD9 (inclusive)
+       + U+3400 through U+4DBF (inclusive)
+       + U+20000 through U+2A6DD (inclusive)
+       + U+2A700 through U+2B734 (inclusive)
+       + U+2B740 through U+2B81D (inclusive)
+       + U+2B820 through U+2CEA1 (inclusive)
+       + U+2CEB0 to U+2EBE0 (inclusive)
+       + U+2F800 through U+2FA1D (inclusive)
+       + U+30000 through U+3134A (inclusive)
 
-比如，表情符号 🤔 的码点是 U+1F914，可表述为 U+1F914（🤔），也可以表述为 U+1F914 THINKING FACE（🤔）。
+For example, the code point of the emoji 🤔 is U+1F914, which can be expressed as U+1F914 (🤔) or U+1F914 THINKING FACE (🤔).
 
-### 2.1) 基本原理
+### 2.1) Basic Principles
 
-在详细了解 HVML 的设计细节之前，我们通过一些代码片段描述 HVML 的关键技术特征，以期读者可以快速一览其概貌。
+Before understanding the design details of HVML in detail, we describe the key technical features of HVML through some code snippets, so that readers can have a quick overview of it.
 
-第一，描述式（descriptive）语法。
+The First is descriptive syntax.
 
-HVML 使用类似 XML 的语法来定义程序结构和书写代码。HVML 定义了为数不多的十多个动作标签，可用来定义变量，操作数据或者控制程序的执行路径。和这些动作标签配合，HVML 使用介词属性和副词属性来定义动作依赖的源数据、目标数据以及执行条件，从而获得更加贴近自然语言的程序表达和书写效果。这一方面降低了开发者的学习门槛，另一方面提高了代码的可读性。
+HVML uses an XML-like syntax to define program structure and write code. HVML defines a small number of more than ten action tags, which can be used to define variables, manipulate data or control the execution path of the program. In conjunction with these action tags, HVML uses prepositional attributes and adverb attributes to define the source data, target data, and execution conditions that the action depends on, so as to obtain a program expression and writing effect that is closer to natural language. On the one hand, this reduces the learning threshold for developers, and on the other hand, it improves the readability of the code.
 
-比如下面的 HVML 代码片段使用 `init` 标签定义了一个名为 `emptyArray` 的空数组以及一个名为 `emptyObject` 的空对象：
+For example, the following HVML snippet defines an empty array named `emptyArray` and an empty object named `emptyObject` using the `init` tag:
 
 ```hvml
 <init as 'emptyArray' with [] />
 <init as 'emptyObject' with { } />
 ```
 
-下面的 HVML 代码片段仍然使用 `init` 标签，但通过使用额外的属性定义了一个集合，该集合的成员来自由 `init` 元素之内容定义的一个对象数组（JSON 表达），但加入到集合中的成员将保持 `id` 键值的唯一性；也就是说，内容定义的对象数组中，已有的具有重复的 `id` 键值的成员，将被新成员覆盖。这通过副词属性 `uniquely` 和介词属性 `against` 指定的键名 `id` 来实现。
+The following HVML snippet still uses the `init` tag, but by using an additional attribute defines a collection whose members are derived from an array of objects (JSON representation) defined by the content of the `init` element, but added to the collection The members of will maintain the uniqueness of the `id` key value; that is, in the object array defined by the content, existing members with duplicate `id` key values will be overwritten by new members. This is achieved by the key name `id` specified by the adverb attribute `uniquely` and the preposition attribute `against`.
 
 ```hvml
 <init as 'users' uniquely against 'id'>
@@ -427,19 +433,19 @@ HVML 使用类似 XML 的语法来定义程序结构和书写代码。HVML 定�
 </init>
 ```
 
-在上述 `init` 元素中，我们还可以使用 `from` 属性指定一个外部的 URL，从而从外部数据源中获取数据而不是硬编码数据到代码中：
+In the above `init` element, we can also use the `from` attribute to specify an external URL to get data from an external data source instead of hardcoding the data into the code:
 
 ```hvml
 <init as 'users' from 'https://foo.bar.com/users/$SYS.locale' uniquely against 'id' />
 ```
 
-假如开发者希望从外部数据源中装载数据的过程异步完成，我们只需要再增加一个副词属性 `async` 即可：
+If the developer wants the process of loading data from an external data source to be completed asynchronously, we only need to add another adverb attribute `async`:
 
 ```hvml
 <init as 'users' from 'https://foo.bar.com/users/$SYS.locale' uniquely against 'id' async />
 ```
 
-这种语法还允许该我们混合使用外部标签来定义 HVML 程序的结构，这通过赋予未知的非 HVML 标签一个统一的动作而实现。比如下面的代码，通过 `iterate` 元素生成了由 HTML 的 `ul` 和 `li` 标签定义的偶数列表：
+This syntax also allows us to mix external tags to define the structure of HVML programs by assigning a uniform action to unknown non-HVML tags. For example, the following code generates an even-numbered list defined by the HTML `ul` and `li` tags through the `iterate` element:
 
 ```hvml
 <ul>
@@ -451,60 +457,60 @@ HVML 使用类似 XML 的语法来定义程序结构和书写代码。HVML 定�
 </ul>
 ```
 
-第二，灵活的表达式。
+The second is flexible expressions.
 
-在广泛使用的 JSON 表述方法之上，HVML 使其具有了动态处理能力以及参数化表述数据的能力。HVML 扩展了 JSON 表述方法，使之支持更多数据类型，并通过使用动态值和原生实体这两类动态数据，定义了从底层系统获得数据或者实现某种功能的方法，并在此基础上实现了灵活的表达式求值能力。这可以帮助我们利用已有的系统能力，也可以帮助开发者快速扩展 HVML 程序的功能和能力。
+Based on the widely used JSON representation method, HVML enables dynamic processing capabilities and the ability to parameterize data representation. HVML extends the JSON representation method to support more data types, and defines the method of obtaining data from the underlying system or implementing a certain function by using dynamic values and native entities. Flexible expression evaluation capabilities. This can help us take advantage of existing system capabilities, and can also help developers quickly expand the functions and capabilities of HVML programs.
 
-比如下面的 HVML 代码片段，通过表达式 `$STR.substr($SYS.locale, 0, 2)` 取系统区域字符串（如 `zh_CN`）的前两个字符作为结果，设置了 `lang` 这个属性的属性值（`zh`）：
-
-```hvml
-<hvml target="html"
-        lang="$STR.substr($SYS.locale, 0, 2)">
-    ...
-</hvml>
-```
-
-HVML 还支持具有简单逻辑处理能力的复合表达式（使用 `{{ ... }}` 包围）。比如就上面设置目标文档语言属性的功能，若通过请求参数的 `lang` 传入，则优先使用请求参数中指定的语言：
+For example, in the following HVML code snippet, the first two characters of the system locale string (such as `zh_CN`) are taken as the result by the expression `$STR.substr($SYS.locale, 0, 2)`, and `lang` is set Attribute value (`zh`) for this attribute:
 
 ```hvml
 <hvml target="html"
-        lang="{{ $REQ.lang || $STR.substr($SYS.locale, 0, 2) }}" silently>
-    ...
+         lang="$STR.substr($SYS.locale, 0, 2)">
+     ...
 </hvml>
 ```
 
-再比如，如下的代码实现了类似 C 语言 `(x > y) ? big = x : big = y` 语句的功能：
+HVML also supports compound expressions (surrounded by `{{ ... }}`) with simple logical processing capabilities. For example, the above function of setting the language attribute of the target document, if it is passed in through `lang` of the request parameter, the language specified in the request parameter will be used first:
+
+```hvml
+<hvml target="html"
+         lang="{{ $REQ.lang || $STR.substr($SYS.locale, 0, 2) }}" silently>
+     ...
+</hvml>
+```
+
+For another example, the following code implements the function similar to the C language `(x > y) ? big = x : big = y` statement:
 
 ```hvml
 <init as "big" with {{ $L.gt($x, $y) && $x || $y }} temp />
 <init as "small" with {{ $L.lt($x, $y) && $x || $y }} temp />
 ```
 
-第三，数据驱动编程。
+The third is data-driven programming.
 
-在 HVML 中，我们倡导围绕要处理的数据组织程序的结构，比如选择数据，在数据上迭代，执行排序或规约操作，观察数据的变化等等，甚至我们通过更改数据来操控某个功能的实现。比如增加一个定时器，我们不需要调用某个编程接口，而是在一个集合中新增一个数据项。我们将这种编程方式称为数据驱动的编程（data-driven programming）。
+In HVML, we advocate the structure of organizing programs around the data to be processed, such as selecting data, iterating over data, performing sorting or reducing operations, observing changes in data, etc., and even we manipulate the implementation of a function by changing the data . For example, to add a timer, we don't need to call a certain programming interface, but add a new data item in a collection. We call this programming method data-driven programming.
 
-比如下面的 HVML 代码片段，使用 `update` 动作标签，添加了一个激活的定时器，随后使用 `choose` 和 `update` 使之无效：
+For example, the following HVML snippet uses the `update` action tag, adds an active timer, and then uses `choose` and `update` to disable it:
 
 ```hvml
-    <!-- 新增标识符为 `foo` 的定时器，间隔 3000 ms，激活状态 -->
-    <update on "$TIMERS" to "append">
-        { "id" : "foo", "interval" : 3000, "active" : "yes" }
-    </update>
+     <!-- Add a timer with identifier `foo`, interval 3000 ms, active state -->
+     <update on "$TIMERS" to "append">
+         { "id" : "foo", "interval" : 3000, "active" : "yes" }
+     </update>
 
-    ...
+     ...
 
-    <!-- 使标识符为 `foo` 的定时器失效 -->
-    <choose on "$TIMERS" by "FILTER: AS 'foo'">
-        <update on $? at ".active" with "no" />
-    </choose>
+     <!-- invalidate the timer with identifier `foo` -->
+     <choose on "$TIMERS" by "FILTER: AS 'foo'">
+         <update on $? at ".active" with "no" />
+     </choose>
 ```
 
-第四，模板应用和统一的文档或数据表达。
+The Fourth are template application and unified document or data expression.
 
-通过使用参数化的 eJSON 语法描述的模板，用于表述树状结构的目标文档内容可由 HVML 程序生成和更新，这避免了在程序代码中调用特定接口来修改目标文档，HVML 程序只需要关注数据本身的产生和处理即可。这样，就实现了界面和数据的解耦。另外，HVML 对文档和数据的操作提供了一致的操作动作，因此，HVML 用于操作数据的动作元素，不仅可用于操作数据，也可以可用来操作目标文档。
+By using the template described by the parameterized eJSON syntax, the content of the target document used to express the tree structure can be generated and updated by the HVML program, which avoids calling specific interfaces in the program code to modify the target document, and the HVML program only needs to focus on the data itself generation and processing. In this way, the decoupling of interface and data is realized. In addition, HVML provides consistent operation actions for document and data operations. Therefore, the action elements used by HVML for operating data can be used not only for operating data, but also for operating target documents.
 
-比如，下面的 HVML 程序片段，使用 `archetype` 元素定义了一个模板，然后使用 `iterate` 和 `update` 元素，将 `users` 数组中的数据通过模板置换处理为目标文档的片段，然后追加到目标文档中：
+For example, the following HVML program fragment uses the `archetype` element to define a template, and then uses the `iterate` and `update` elements to process the data in the `users` array into a fragment of the target document through template replacement, and then append it to In the target document:
 
 ```hvml
 <init as "users">
@@ -531,100 +537,100 @@ HVML 还支持具有简单逻辑处理能力的复合表达式（使用 `{{ ... 
 </ul>
 ```
 
-第五，独特的栈式虚拟机。
+The fifth is unique stack VM.
 
-HVML 程序在一个抽象的栈式虚拟机上执行。一个 HVML 程序被解析后，会生成代表该程序结构的 vDOM（即虚拟 DOM）树，解释器从根元素开始以深度优先的顺序执行 vDOM 上的每个元素。每执行一个子孙元素，虚拟机的执行栈上会压入（push）一个新的栈帧（stack frame），直到 vDOM 的叶子元素为止，此时，解释器执行完叶子元素之后，会弹出（pop）最后的栈帧，上一个栈帧变为最后的栈帧，然后尝试执行该栈帧对应元素的下个兄弟元素。在 HVML 的栈式虚拟机上，我们可实现高效的数据管理模型，一部分数据在执行操作时作为中间数据存在，将被自动释放，另外一部分数据在栈帧中维护，从而可以自动分配和释放这些数据，只有少部分数据以静态形式存在。通过这样的管理机制，我们不需要在解释器中使用昂贵的垃圾收集器。另外，基于可动态替换的操作组，HVML 提供了就地执行或调用操作组的功能，并实现了类似闭包的特性。
+HVML programs are executed on an abstract stack virtual machine. After an HVML program is parsed, a vDOM (virtual DOM) tree representing the program structure is generated, and the interpreter executes each element on the vDOM in depth-first order starting from the root element. Every time a descendant element is executed, a new stack frame will be pushed on the execution stack of the virtual machine until the leaf element of vDOM. At this time, after the interpreter executes the leaf element, it will pop the last stack frame, the previous stack frame becomes the last stack frame, and then try to execute the next sibling element of the corresponding element of the stack frame. On the stack virtual machine of HVML, we can implement an efficient data management model. Some data exists as intermediate data when performing operations and will be automatically released. The other part of data is maintained in the stack frame, so that these data can be automatically allocated and released. Data, only a small part of it exists in static form. With such a management mechanism, we don't need to use an expensive garbage collector in the interpreter. In addition, based on dynamically replaceable operation groups, HVML provides the function of executing or invoking operation groups in place, and implements closure-like features.
 
-比如下面的 HVML 代码片段，展示了根据当前的目标文档类型就地执行不同操作组的能力：
+For example, the following HVML code snippet demonstrates the ability to perform different groups of operations in-place depending on the current target document type:
 
 ```hvml
-<!-- 该元素定义了一个操作组，该操作组输出 HTML 片段。-->
+<!-- This element defines an action group that outputs an HTML fragment. -->
 <define as "output_html">
-    <h1>HVML</h1>
-    <p>$?</p>
+     <h1>HVML</h1>
+     <p>$?</p>
 </define>
 
-<!-- 该元素定义了一个操作组，该操作组向系统的标准输出打印文本。-->
+<!-- This element defines an action group that prints text to the system's standard output. -->
 <define as "output_void">
-    <inherit>
-        $STREAM.stdout.writelines($?)
-    </inherit>
+     <inherit>
+         $STREAM.stdout.writelines($?)
+     </inherit>
 </define>
 
-<!-- 该元素根据当前 `hvml` 元素的 `target` 属性值就地执行不同的操作组。-->
+<!-- This element performs different groups of operations in-place based on the value of the `target` attribute of the current `hvml` element. -->
 <include with ${output_$CRTN.target} on $T.get('Hello, world!') />
 ```
 
-第六，内置事件驱动。
+The sixth is built-in event-driven.
 
-HVML 在语言层面提供了对数据、变量和表达式的观察能力。只需要一个 `observe` 元素，我们就可以观察一个数据上的特定事件，变量状态的变化，甚至一个表达式值的变化。
+HVML provides visibility into data, variables, and expressions at the language level. With just one `observe` element, we can observe a specific event on a piece of data, a change in the state of a variable, or even a change in the value of an expression.
 
-比如，下面的代码片段观察标识符为 `foo` 的定时器的到期事件：
+For example, the following code snippet observes the expiration event of a timer with identifier `foo`:
 
 ```hvml
-<observe on "$TIMERS" for "expired:foo" >
-    ...
+<observe on "$TIMERS" for "expired:foo">
+     ...
 </observe>
 ```
 
-再比如，下面的代码片段将一个表达式绑定为一个变量，从而可以观察这个表达式值的变化：
+For another example, the following code snippet binds an expression to a variable so that changes in the value of the expression can be observed:
 
 ```hvml
 <bind on $SYS.time as "rtClock" />
 
 <observe on $rtClock for 'change'>
-   ...
+    ...
 </observe>
 ```
 
-由于 `$SYS.time` 返回的是以秒为单位的 Unix 时间戳数值，故而 `observe` 元素定义的操作组，将每秒执行一次。
+Since `$SYS.time` returns a Unix timestamp value in seconds, the group of operations defined by the `observe` element will be executed every second.
 
-第七，轻松实现异步及并发编程。
+The seventh is easy to implement asynchronous and concurrent programming.
 
-如前所述，从外部数据源中装载数据，启动子协程，发起请求等，均可异步进行。发起异步操作，只需要在 `init` 等元素中使用 `async` 副词属性并使用 `observe` 元素观察变量上的事件即可实现。如下面的代码所示：
+As mentioned earlier, loading data from external data sources, starting sub-coroutines, and initiating requests can all be performed asynchronously. To initiate an asynchronous operation, you only need to use the `async` adverb attribute in elements such as `init` and use the `observe` element to observe events on variables. As shown in the code below:
 
 ```hvml
 <init as "users" from "http://foo.bar.com/get_all_users" async />
 
 <archetype name="user_item">
-    <li class="user-item">
-        <img class="avatar" src="" />
-        <span></span>
-    </li>
+     <li class="user-item">
+         <img class="avatar" src="" />
+         <span></span>
+     </li>
 </archetype>
 
 <ul class="user-list">
-    <img src="wait.png" />
+     <img src="wait. png" />
 </ul>
 
-<!-- 当我们在 users 变量上获得 `change:attached` 事件时，
-     说明异步操作已完成，其数据已绑定到 users 变量上了。 -->
+<!-- When we get a `change:attached` event on the users variable,
+      Indicates that the asynchronous operation has completed and its data has been bound to the users variable. -->
 <observe against "users" for "change:attached" in "#user-list">
-    <clear on $@ />
-    <iterate on $users>
-        <update on $@ to 'append' with $user_item />
-    </iterate>
+     <clear on $@ />
+     <iterate on $users>
+         <update on $@ to 'append' with $user_item />
+     </iterate>
 </observe>
 ```
 
-在栈式虚拟机基础上，HVML 允许在一个虚拟机之上同时运行多个 HVML 程序，并要求解释器使用协程管理同一个虚拟机上同时运行的多个 HVML 程序实例。同时，HVML 允许并发调用操作组，从而在另一个虚拟机实例上执行一段代码。这些机制可以帮助开发者轻松实现异步及并发编程，而在其他编程语言中，异步和并发编程通常需要足够的技巧才能良好驾驭。
+Based on the stack virtual machine, HVML allows multiple HVML programs to run simultaneously on a virtual machine, and requires the interpreter to use coroutines to manage multiple instances of HVML programs running simultaneously on the same virtual machine. At the same time, HVML allows concurrent calls to groups of operations to execute a piece of code on another virtual machine instance. These mechanisms can help developers easily implement asynchronous and concurrent programming, while in other programming languages, asynchronous and concurrent programming usually requires sufficient skills to be well controlled.
 
-比如下面的代码片段，异步地并发调用了 `collectAllDirEntriesRecursively` 操作组，该操作组递归遍历指定的目录，收集其下的所有目录项，然后使用 `observe` 来观察这个并发调用的状态。显然，这个操作组是一项耗时操作。在该操作组返回结果之前，调用者可以继续执行完成其他的工作。
+For example, the following code snippet calls the `collectAllDirEntriesRecursively` operation group asynchronously and concurrently. This operation group recursively traverses the specified directory, collects all directory entries under it, and then uses `observe` to observe the status of this concurrent call. Obviously, this group of operations is a time-consuming operation. Before the operation group returns the result, the caller can continue to execute and complete other work.
 
 ```hvml
-    <call as "my_task" on $collectAllDirEntriesRecursively with "/" within "myRunner" concurrently asynchronously />
-    <observe on "$my_task" for "callState:success">
-        <iterate on $? in "#entries" by "RANGE: FROM 0">
-            <update on $@ to "append" with "$dir_entry" />
-        </iterate>
-    </observe>
+     <call as "my_task" on $collectAllDirEntriesRecursively with "/" within "myRunner" concurrently asynchronously />
+     <observe on "$my_task" for "callState:success">
+         <iterate on $? in "#entries" by "RANGE: FROM 0">
+             <update on $@ to "append" with "$dir_entry" />
+         </iterate>
+     </observe>
 ```
 
-HVML 还允许两个协程之间互相发送请求，且两个协程可以处于不同的虚拟机实例，这提供了一种统一和高效的跨协程及虚拟机的通讯机制。
+HVML also allows two coroutines to send requests to each other. And the two coroutines can be in different virtual machine instances, which provides a unified and efficient communication mechanism across coroutines and virtual machines.
 
-除此之外，HVML 要求解释器提供对表达式的重新求值（evaluating again）能力，从而可以在对表达式求值时，可根据需要阻塞当前协程的执行，并在相应的条件到达时唤醒该协程，之后再次对该表达式进行求值，以获得期望的结果。这有助于实现更细粒度的协程调度能力，并提供对通道（channel，类似 Go 语言）等机制的支持，从而可实现简单高效的协程间通讯机制。
+In addition, HVML requires the interpreter to provide the ability to evaluate again, so that when evaluating expressions, the execution of the current coroutine can be blocked as needed. And when the corresponding condition arrives Wake up the coroutine, and then it will evaluate the expression again to obtain the desired result. This helps to achieve a finer-grained coroutine scheduling capability, and provides support for mechanisms such as channels (similar to the Go language), thereby enabling a simple and efficient inter-coroutine communication mechanism.
 
-比如下面的 HVML 程序，在对其中两个复合表达式求值时，`$SYS.sleep` 方法将阻塞当前的协程，从而可让出虚拟机并让其他协程继续执行：
+For example, in the following HVML program, when two compound expressions are evaluated, the `$SYS.sleep` method will block the current coroutine, so that the virtual machine can be released and other coroutines can continue to execute:
 
 ```hvml
 <hvml target="void">
@@ -654,7 +660,7 @@ HVML 还允许两个协程之间互相发送请求，且两个协程可以处于
 </hvml>
 ```
 
-该程序首先会异步装载另一个本体在子协程中执行，该子协程间隔一秒输出一行信息，而主协程则会在输出 `I will sleep 5 seconds` 之后立即被 `$SYS.sleep(5)` 阻塞。当五秒时间到期后，主协程将被调度器唤醒，并继续执行。此时，上述表达式将被重新求值，但会从 `$SYS.sleep(5)` 处继续。因此，上述程序的输出大致为：
+The program first loads another ontology asynchronously and executes it in a sub-coroutine. The sub-coroutine outputs a line of information every second. And the main coroutine will be executed by `$SYS.sleep immediately after outputting `I will sleep 5 seconds`. (5)` Blocking. When the five seconds expire, the main coroutine will be woken up by the scheduler and continue execution. At this point, the above expression will be re-evaluated, but continue from where `$SYS.sleep(5)` is. Thus, the output of the above program is roughly:
 
 ```
 COROUTINE-3: 2022-09-01T14:50:40+0800: I will sleep 5 seconds
@@ -666,50 +672,50 @@ COROUTINE-4: 2022-09-01T14:50:44+0800
 COROUTINE-3: 2022-09-01T14:50:45+0800: I am awake.
 ```
 
-第八，动态性。
+The eighth is dynamics.
 
-在 HVML 程序中，变量名、表达式、操作组、程序等，皆可动态生成，我们甚至可以移除一个变量。
+In HVML programs, variable names, expressions, operation groups, procedures, etc. can be dynamically generated. And we can even remove a variable.
 
-如下的代码，使用 `load` 元素装载了一个动态生成的 HVML 程序：
+The following code loads a dynamically generated HVML program using `load` element:
 
 ```hvml
 <init as 'request'>
-    {
-        hvml: '<hvml target="html"><body><h1>$REQ.text</h1><p>$REQ.hvml</p></body></hvml>',
-        text: "Hello, world!",
-    }
+     {
+         hvml: '<hvml target="html"><body><h1>$REQ.text</h1><p>$REQ.hvml</p></body></hvml>',
+         text: "Hello, world!",
+     }
 </init>
 
-<load on "$request.hvml" onto "hello@main" >
-    $request
+<load on "$request.hvml" onto "hello@main">
+     $request
 </load>
 ```
 
-当我们不需要使用一个变量时，使用 `undefined` 重置该变量即可移除该变量：
+When we don't need to use a variable, it can be removed by resetting the variable with `undefined`:
 
 ```hvml
 <init as 'request' with undefined />
 ```
 
-HVML 还提供一个称为替身表达式的功能，可以让我们将一个表达式（包括复合表达式）定义为一个变量或者其上的一个方法：
+HVML also provides a feature called stand-in expressions, which allow us to define an expression (including compound expressions) as a variable or a method on it:
 
 ```hvml
 <bind on $STREAM.stdout.writelines($_ARGS[0]) as "console" against 'puts' />
 
 <inherit>
-    $console.puts('Hello, world!')
+     $console.puts('Hello, world!')
 </inherit>
 ```
 
-上面 `bind` 元素，将 `on` 属性给定的表达式绑定到了 `console` 变量的 `puts` 方法上。之后，我们可以使用 `$console.puts` 来引用原始的表达式。
+`bind` element above binds the expression given by `on` attribute to `puts` method of `console` variable. Afterwards, we can use `$console.puts` to refer to the original expression.
 
-#### 2.1.1) 程序结构
+#### 2.1.1) Program Structure
 
-下面用一个简单的例子来说明 HVML 的程序结构。这个 HVML 程序生成一个 HTML 页面并根据用户的交互更新这个 HTML 页面；这个 HTML 页面，将在屏幕上展示三组信息：
+The following uses a simple example to illustrate the program structure of HVML. This HVML program generates an HTML page and updates the HTML page based on user interaction. This HTML page will display three sets of information on the screen:
 
-1. 在页面顶端显示的系统状态栏，用于展示当前时间、WiFi 信号强度、电池电量信息等。这些信息将动态更新。
-1. 在页面中间位置展示用户列表，每个用户项包括用户名称、头像等信息。这些信息来自 JSON 表达的一个字典数组。
-1. 在页面底部展示一个搜索引擎连接。具体的搜索引擎根据系统所在的语言地区（locale）信息确定。
+1. Display the system status bar at the top of the page to display the current time, WiFi signal strength, battery power information, etc. This information will be updated dynamically.
+1. Display the user list in the middle of the page. And each user item includes user name, avatar and other information. The information comes from an array of dictionaries expressed in JSON.
+1. Display a search engine link at the bottom of the page. The specific search engine is determined according to the language region (locale) information where the system is located.
 
 ```hvml
 <!DOCTYPE hvml SYSTEM "f: MATH">
@@ -839,433 +845,433 @@ HVML 还提供一个称为替身表达式的功能，可以让我们将一个表
 </hvml>
 ```
 
-首先，HVML 采用了类似 HTML 的标签来定义文档的整体结构：
+First, HVML uses  tags like HTML to define the overall structure of the document:
 
-- 在文档的开头，我们使用 `<!DOCTYPE hvml>` 来标记文档类型为 `hvml`。我们还使用了 `DOCTYPE` 的 `SYSTEM` 标识符来定义该 HVML 文档使用的外部标签前缀以及需要预先装载的外部模块。
-- `hvml` 标签用于定义整个 HVML 文档。可包含如下属性：
-   1. `target`：定义 HVML 文档的目标标记语言，取 `html`、 `xml`、 `void` 等值。
-   1. 其他属性（如 `lang` 属性，用来定义语言，取值如 `en`、 `zh` 等），将被解释器在求值后克隆到目标文档的根元素。
-- `head` 标签用于定义头部信息，其中可包含：
-   1. 可被原样保留到目标文档的标签，如 HTML 文档的 `<meta>`、 `<link>` 标签。
-   1. 全局数据的初始化或重置；使用 `init` 标签定义。
-   1. 全局动态对象；使用 `init` 标签定义。
-   1. 全局模板；使用 `archedata` 或 `archetype` 标签定义。
-- `body` 标签用于定义文档的本体内容。在 HVML 文档中，可以定义零个或多个 `body` 本地内容，使用 `id` 属性区别不同的本体内容。在执行过程中，可通过 `load` 元素装载不同的本体内容。
+- At the beginning of the document, we use `<!DOCTYPE hvml>` to mark the document type as `hvml`. We also use the `SYSTEM` identifier of the `DOCTYPE` to define the external tag prefixes used by this HVML program and the external modules that need to be preloaded.
+- `hvml` tag is used to define an entire HVML program. It can contain the following attributes:
+    1. `target`: defines the target markup language of the HVML program, taking values such as `html`, `xml`, `void`, etc.
+    1. Other attributes (such as the `lang` attribute, used to define the language, such as `en`, `zh`, etc.), will be cloned to the root element of the target document after being evaluated by the interpreter.
+- `head` tag is used to define the header information, which can contain:
+    1. Tags that can be retained to the target document, such as `<meta>`, `<link>` tags of HTML documents.
+    1. Initialization or reset of global data: defines using `init` tag.
+    1. A global dynamic object: defines using `init` tag.
+    1. Global template: defines using `archedata` or `archetype` tags.
+- `body` tag is used to define the body content of the document. In an HVML program, zero or more `body` local contents can be defined, and `id` attribute can be used to distinguish different ontology contents. During execution, different ontology contents can be loaded via `load` element.
 
-其次，从上面的 HVML 程序看出，HVML 使用了类似 HTML 的标签（tag），同时也可混用 HTML 的标签。两者的区别在于：
+Secondly, it can be seen from the above HVML program that HVML uses HTML-like tags, and HTML tags can also be mixed. The difference between them is:
 
-1. HVML 是动态的，表述的是程序，而 HTML 是静态的，表述的是文档。
-1. HVML 的大部分标签用来定义动作元素。每个动作元素执行一个或者一组操作，所以这些标签使用英文中的动词；而 HTML 标准通常使用名词或其简写作为标签名称，如 HTML 的常见标签 `p` 是 paragraph（段落）的简写。
-1. HVML 的其他标签用来定义程序的框架或者一个模板，所以使用名词作为标签名称，如 `head` 和 `archetype`，分别用来定义一个框架元素和模板元素。
-1. HVML 可混合使用 HTML、XML 等目标标记语言的标签，使用非 HVML 的标签用于定义一个外部元素。HVML 赋予所有的外部元素一个统一的操作：克隆该元素的属性和内容到当前的目标文档位置并隐式调整 HVML 程序的上下文数据。
-1. HVML 的标签名称、属性名称、变量名称和规则关键词是区分大小写的，这主要是为了和 XML 相关规范保持一致。
-1. HVML 元素支持如下几类属性：
-   - 通用属性。目前只有 `id` 一个通用属性；该属性用来指定元素的标识符。在 HVML 中，元素的标识符主要用于定位元素或者栈帧的位置。在外部元素中使用该属性时，则该属性及其属性值将被克隆到目标文档中。
-   - 名词属性。如 `name` 等，通常在模板元素中使用。
-   - 介词属性。如 `on`、`with` 等，在动词元素中使用。
-   - 副词属性。如 `uniquely` 等，在动词元素中使用。
+1. HVML is dynamic, which expresses programs； while HTML is static， which expresses documents.
+1. Most tags in HVML are used to define action elements. Each action element performs one or a set of operations, so these tags use verbs in English; while HTML standards usually use nouns or their abbreviations as tag names, such as the common HTML tag `p` is a shorthand for paragraph.
+1. Other tags of HVML are used to define a program framework or a template, so nouns are used as tag names, such as `head` and `archetype`, which are used to define a frame element and a template element respectively.
+1. HVML can mix HTML, XML and other target markup language tags, and use non-HVML tags to define an external element. HVML assigns a uniform operation to all external elements: clone the element's attributes and content to the current target document location and implicitly adjust the context data of the HVML program.
+1. HVML tag names, attribute names, variable names, and rule keywords are case-sensitive. They are mainly for consistency with XML-related specifications.
+1. HVML elements support the following types of attributes:
+    - General properties: Currently there is only one generic attribute `id`. This attribute is used to specify the identifier of the element. In HVML, element identifiers are mainly used to locate elements or stack frames. When the attribute is used in an external element, the attribute and its value will be cloned into the target document.
+    - Noun attribute: Such as `name`and so on, are usually used in template elements.
+    - Prepositional properties. Such as `on`, `with`and so on, are used in verb elements.
+    - Adverb attribute. Such as `uniquely`, etc., are used in verb elements.
 
-现在对照上面的例子介绍 HVML 的一些特点。本文档其他章节也会引用这个例子的片段。
+Now introduce some features of HVML with the above example. Snippets of this example are also referenced in other sections of this document.
 
-首先是数据驱动编程（data-driven programming）。通过基于数据的迭代、插入、更新、清除等操作，开发者不需要编写程序或者只要少量编写程序即可动态生成最终的 XML/HTML 文档。比如上面示例代码中的 `iterate` 标签，就在`$users` 变量代表的数据（在 `head` 中使用 `init` 标签定义）上做迭代，然后在目标文档的 `ul` 元素中插入了若干 `li` 元素。而 `li` 元素的属性（包括子元素）由一个 `archetype` 标签定义，其中使用 `$？` 来指代被迭代的 `$users` 中的一个数据成员。
+The first is data-driven programming. Through operations such as data-based iteration, insertion, update, and clearing, developers can dynamically generate the final XML/HTML document without writing a program or only need to write a small amount of program. For example, `iterate` tag in the sample code above iterates over the data represented by `$users` variable (defined using the `init` tag in `head`), and then inserts `ul` element in the target document A number of `li` elements. Instead, the properties of `li` elements (including child elements) are defined by an `archetype` tag using `$? ` to refer to a data member in `$users` being iterated over.
 
-在上面的示例代码中，我们使用了系统内置变量 `$TIMERS` 来定义定时器，每个定时器有一个全局的标识符、间隔时间以及是否激活的标志。如果要激活一个定时器，我们只需要使用 HVML 的 `update` 标签来修改对应的键值，而不需要调用某个特定的编程接口。这是数据驱动编程的另一个用法——我们不需要为定时器或者其他的类似模块的操作提供额外的应用编程接口（API）。
+In the sample code above, we use the system built-in variable `$TIMERS` to define timers. And each timer has a global identifier, interval time, and a flag whether it is active or not. To activate a timer, we only need to use `update` tag of HVML to modify the corresponding key value without calling a specific programming interface. This is another use of data-driven programming - we don't need to provide additional application programming interfaces (APIs) for timers or other similar module operations.
 
-另外，在上面的示例代码中，我们通过 `observe` 标签观察新的数据或文档本身的变化以及用户交互事件，可实现 XML/HTML 文档或数据的动态更新。比如在最后一个 `observe` 标签中，通过监听用户头像上的点击事件来装载一个新的 `user.hvml` 程序，在新的渲染器页面展示对应用户的详细信息。
+In addition, in the sample code above, we use the `observe` tag to observe new data or changes in the document itself and user interaction events, which can realize dynamic updates of XML/HTML documents or data. For example, in the last `observe` tag, a new `user.hvml` program is loaded by listening to the click event on the user's avatar, and the detailed information of the corresponding user is displayed on the new renderer page.
 
-其次是彻底解除界面、交互和数据之间的耦合。通过 HVML 引入的编程模型和方法，用于表述界面的 XML/HTML 文档内容可完全由 HVML 生成和动态调整，这避免了在程序代码中直接操作文档的数据结构（即文档对象树，或简称 DOM 树），而程序只需要关注数据本身的产生和处理即可。这样，就实现了界面和数据的解耦。比如：
+The second is to completely decouple the interface, interaction, and data. Through the programming model and method introduced by HVML, the XML/HTML document content used to express the interface can be completely generated and dynamically adjusted by HVML, which avoids directly manipulating the data structure of the document (that is, the document object tree, or DOM for short) in the program code. tree), and the program only needs to focus on the generation and processing of the data itself. In this way, the decoupling of interface and data is realized. for example:
 
-- HVML 可在文档片段模板或者数据模板中定义数据和 DOM 元素之间的映射关系（如示例代码中的 `archetype` 或 `archedata` 元素），而无需编写额外的代码完成数据到 DOM 元素属性、内容等的赋值操作。
-- HVML 将错误和异常的展现和程序代码分离了开来，程序只要定义适当的错误或者异常模板（如示例代码中的 `error` 和 `except` 元素），即可定义好错误或者异常情形下要展示的内容，而无需更多的程序处理。
+- HVML can define the mapping relationship between data and DOM elements in the document fragment template or data template (such as `archetype` or `archedata` element in the sample code), without writing additional code to complete the data to DOM element attributes, assignment operations such as content.
+- HVML separates the display of errors and exceptions from the program code. As long as the program defines an appropriate error or exception template (such as `error` and `except` elements in the sample code), the error or exception situation can be defined content to display without further programmatic processing.
 
-再次，HVML 对文档和数据的操作提供了一致的接口，这降低了接口的复杂性，有效避免了接口爆炸。在 HVML 中，我们还提供了对动态对象的支持，我们可以使用外部程序来实现自己的动态对象，且可以在这些动态对象上执行类似函数调用一样的功能。
+Thirdly, HVML provides a consistent interface for document and data operations, which reduces the complexity of the interface and effectively avoids interface explosion. In HVML, we also provide support for dynamic objects. We can use external programs to implement our own dynamic objects, and we can perform functions similar to function calls on these dynamic objects.
 
-最后，HVML 通过动作标签（通常都是一些英文的动词，如 `init`、`update`、`iterate` 等）以及与之配合的介词或副词属性来定义动作标签所依赖的数据、目标操作位置以及执行条件来完成特定的操作。这和常见的编程语言有很大不同，HVML 的描述方式更加贴近自然语言，从而可以大幅降低学习门槛。
+Finally, HVML uses action tags (usually some English verbs, such as `init`, `update`, `iterate`, etc.) and the associated preposition or adverb attributes to define the data on which the action tag depends and the target operation location And execute conditions to complete specific operations. This is very different from common programming languages. The description method of HVML is closer to natural language, which can greatly reduce the learning threshold.
 
-为方便区分，我们将解析 HVML 程序之后生成的 DOM 树称为 vDOM（虚拟 DOM），而目标文档对应的 DOM 树，称为 eDOM（有效 DOM）。
+For the convenience of distinction, we call the DOM tree generated after parsing the HVML program vDOM (virtual DOM), and the DOM tree corresponding to the target document is called eDOM (effective DOM).
 
-#### 2.1.2) 基本数据类型
+#### 2.1.2) Basic Data Types
 
-HVML 定义如下基本数据项（basic datum）类型：
+HVML defines the following basic datum types:
 
-- 空值（null）。
-- 布尔值（boolean）。用于表示真假逻辑值，可取 `true` 或 `false` 两种值。
-- 数值（number）。用于表达整数或浮点数，一般情况下，等价于 C 语言的 `double` 类型（双精度浮点数）。
-- 字符串（string）。用于表达文本，始终使用 UTF-8 编码。
+- Null.
+- Boolean: It is used to represent true and false logical values, which can take `true` or `false` two values.
+- Number: It is used to express integers or floating-point numbers. In general, it is equivalent to the `double` type (double-precision floating-point number) in C language.
+- String: For expressing text, it is always use UTF-8 encoding.
 
-HVML 定义如下基本容器（basic container）类型：
+HVML defines the following basic container types:
 
-- 数组（array）。可使用索引引用的多个数据项，容量可变。
-- 对象（object）。用单个或多个键值对（key-value pair）表示，亦称字典、关联数组等；键值对也常被称作属性（property）。
+- Array: Multiple data items that can be referenced using an index, with variable capacity.
+- Object: Represented by single or multiple key-value pairs, also known as dictionaries, associative arrays, etc.; key-value pairs are also often called properties.
 
-基本数据项类型和基本容器类型统称为基本数据类型，其表达方式兼容 [JSON]。
+Primitive data item types and primitive container types are collectively referred to as primitive data types, and their representations are compatible with [JSON].
 
-#### 2.1.3) 扩展数据类型
+#### 2.1.3) Extend Data Types
 
-本规范要求 HVML 解释器要实现如下扩展的数据类型以及两种特殊数据类型：
+This specification requires HVML interpreter to implement the following extended data types and two special data types:
 
-- 未定义（undefined）。该数据仅在内部使用，用来表示数据尚未就绪，或在更新容器数据时移除一个成员。
-- 异常（exception）。该数据仅在内部使用，用来表示异常。
-- 有符号长整数（longint），应实现为 64 位有符号整数。
-- 无符号长整数（ulongint），应实现为 64 位无符号整数。
-- 长浮点数（longdouble），对应 C 语言 long double 类型。
-- 字节序列（bsequence）。
-- 元组（tuple），可使用索引引用的多个数据项，一旦创建，其容量不可变，其成员不可移除，仅可置空。
-- 集合（set），特殊的数组，其中的成员可根据其值或者对象数组上的唯一性键值确保唯一性。
+- Undefined: This data is used internally only to indicate that the data is not ready, or to remove a member when updating the container's data.
+- Exception: It is used internally only to indicate exceptions.
+- Longint: It shall be implemented as a 64-bit signed integer.
+- Ulongint: It shall be implemented as a 64-bit unsigned integer.
+- Longdouble: It is corresponding to the C language long double type.
+- Bsequence.
+- Tuple: Multiple data items that can be referenced by index, once created, its capacity is immutable, and its members cannot be removed, only empty.
+- Set: A special array in which members are unique based on their values or unique keys on an array of objects.
 
-以上扩展数据类型的表达方式使用本文档定义的 [2.2.5) eJSON 语法](#225-ejson-语法)。在本文中，“eJSON” 是 `extended JSON（扩展 JSON）` 的缩写。
+The representations of the above extended data types use the [2.2.5) eJSON syntax] (#225-ejson-syntax) defined in this document. In this article, "eJSON" is an acronym for `extended JSON`.
 
-HVML 还定义有如下两种特殊数据类型：
+HVML also defines the following two special data types:
 
-- 动态值（dynamic value）。动态值本质上由 `获取器（getter）` 和 `设置器（setter）` 方法构成，读取时，由获取器返回对应的值，设置时，由设置器完成对应的工作。
-- 原生实体（native entity）。由底层实现的原生实体，通常用于代表一些可执行复杂操作的抽象数据，如读写流、长连接等。这些复杂操作包括实现虚拟属性上的获取器或设置器方法，实现对原生对象的观察（observe）等。
+- Dynamic value: It is essentially composed of `getter` and `setter` methods. When reading, the getter returns the corresponding value, and when setting, the setter completes the corresponding work.
+- Native entity: It is implemented by the bottom layer is usually used to represent some abstract data that can perform complex operations, such as read and write streams, long connections, etc. These complex operations include implementing getter or setter methods on virtual properties, implementing observations on native objects, and so on.
 
-上述特殊数据类型属于内部数据类型，仅在运行时有效，在 HVML 代码中可通过变量和表达式访问。
+The special data types mentioned above are intrinsic data types, valid only at runtime, and accessible through variables and expressions in HVML code.
 
-动态值或者原生实体均可以作为对象的属性值存在，从而构成我们常说的动态对象。
+Both dynamic values and native entities can exist as attribute values of objects, thus forming what we often call dynamic objects.
 
-在 HVML 中，我们扩展了对象的属性使之具有动态特性。一个动态属性，通常由 HVML 解释器或者外部程序定义或实现，要么是一个动态值，要么是一个原生实体。
+In HVML, we extend the properties of objects to be dynamic. A dynamic attributes, usually defined or implemented by an HVML interpreter or an external program, is either a dynamic value or a native entity.
 
-从 HVML 文档的角度看，访问一个动态属性的方法和访问一个常规属性的方法并无二致。比如，我们通过访问 `$SYS.time` 可获得当前的 UNIX 时间戳。但是，在不同的时刻访问 `$SYS.time`，获得的值将会不同。这是因为这里的 `time` 就是一个动态属性。
+From the point of view of an HVML program, accessing a dynamic attribute is no different than accessing a regular attribute. For example, we can get the current UNIX timestamp by accessing `$SYS.time`. However, accessing `$SYS.time` at different times will result in different values. This is because `time` here is a dynamic attribute.
 
-作为动态属性的另一个特性，我们可以将某个特定的属性视作对象而在其上提供虚拟的属性，比如当我们访问 `$SYS.uname_prt.default` 时，将获得当前的操作系统内核名称（如 `Linux`）。
+As another feature of dynamic properties, we can treat a specific attribute as an object and provide virtual properties on it. For example, when we access `$SYS.uname_prt.default`, we will get the current operating system kernel name (like `Linux`).
 
-更进一步，我们还可以将某个特定的属性当作函数使用，通过传递参数来获得不同的返回值，或者对该属性设置特定的值。比如在 `$SYS` 对象上，如果我们要获取当前操作系统的内核名称以及发布版本号，则可以使用 `$SYS.uname_prt('kernel-name kernel-release')`，这时，我们将获得类似 `Linux 5.4.0-107-generic` 的字符串。
+Furthermore, we can also use a specific attribute as a function, pass parameters to obtain different return values, or set a specific value for the attribute. For example, on `$SYS` object, if we want to get the kernel name and release version number of the current operating system, we can use `$SYS.uname_prt('kernel-name kernel-release')`, at this time, we will get A string like `Linux 5.4.0-107-generic`.
 
-除了使用 `( )` 这种类似函数调用的方式之外，我们还可以使用 `(! )`，后者用于设置某个属性。比如，使用 `$SYS.cwd` 可以获得当前工作目录，而使用 `$SYS.cwd(! '/tmp' )` 可设置当前工作目录。
+In addition to using `( )`, which is similar to a function call, we can also use `(! )`, which is used to set a attribute. For example, use `$SYS.cwd` to get the current working directory, and use `$SYS.cwd(! '/tmp' )` to set the current working directory.
 
-这里，我们引入了两种运算符：`( )` 和 `(! )`。本质上，前者对应于动态属性的获取器方法，后者对应于动态属性的设置器方法。
+Here, we introduce two operators: `( )` and `(! )`. Essentially, the former corresponds to getter methods for dynamic properties, and the latter corresponds to setter methods for dynamic properties.
 
-除了内置的 `$SYS` 动态对象或者通过 `DOCTYPE` 预先装载的动态对象之外，我们也可以通过外部程序模块实现自定义的动态对象，并通过 `init` 标签将这个动态对象和某个变量绑定在一起，如：
+In addition to the built-in `$SYS` dynamic object or the dynamic object preloaded through `DOCTYPE`, we can also implement a custom dynamic object through an external program module, and pass this dynamic object and a variable through the `init` tag Bind together like:
 
 ```hvml
-    <init as="math" from="purc_dvobj_math" via="LOAD" />
+     <init as="math" from="purc_dvobj_math" via="LOAD" />
 ```
 
-之后，当我们访问 `$math.pi` 时，将返回 PI 的值，如果访问 `$math.sin($math.pi)` 将返回 `0.0`。
+After that, when we access `$math.pi`, it will return the value of PI, and if we access `$math.sin($math.pi)`, it will return `0.0`.
 
-当我们引用一个动态对象上并不存在的动态属性，或者不存在的虚拟子属性，或者无法在该属性上执行函数操作时，HVML 解释器将抛出异常。
+When we refer to a dynamic attribute that does not exist on a dynamic object, or a virtual subproperty that does not exist, or cannot perform a function operation on the attribute, the HVML interpreter will throw an exception.
 
-通过这样的设计，我们可以方便有效地扩展 HVML 的功能，并通过动态对象和外部模块交换数据，或者调用外部模块的功能。
+Through such a design, we can easily and effectively expand the functions of HVML, and exchange data with external modules through dynamic objects, or call the functions of external modules.
 
-#### 2.1.4) 任意数据类型的强制转换规则
+#### 2.1.4) Casting Rules for Arbitrary Data Types
 
-##### 2.1.4.1) 数值化
+##### 2.1.4.1) Numericalization
 
-在需要将任意数据强制转换为数值的情形下，按如下规则转换为数值：
+In the case where arbitrary data needs to be coerced into a numeric value, convert it to a numeric value according to the following rules:
 
-1. `null`、 `undefined`、 `false` 值转换为 0。
-1. `true` 值转换为 1。
-1. 空字符串按 0 处理；非空字符串按照 eJSON 数值的规则进行转换，比如 `123.34` 将转换为实数，`abcd` 转换为 0。
-1. 空字节序列按 0 处理；非空字节序列取最高 64 位（最长 8 字节）按小端字节序转为有符号的长整数，再转为数值。
-1. 动态值，若不存在获取器方法，则按 0 处理；若存在获取器方法，则不传递任何参数调用获取器方法，若返回值为无效值则取 0，若返回值为数值型，则取其数值，若返回值为非数值型，按本规则递归处理。
-1. 原生实体，尝试获取 `__number` 键名的获取器方法。若存在该方法，则不传递任何参数调用这个获取器，参考动态值处理；若不存在该方法，则取 0。
-1. 数组的数值，累加所有数组单元，若数组单元不是数值型，按本规则递归处理。
-1. 元组的数值，累加所有元组单元，若元组单元不是数值型，按本规则递归处理。
-1. 字典的数值，累加所有键值，若某键值不是数值型，按本规则递归处理。
+1. `null`, `undefined`, `false` values are converted to 0.
+1. `true` value is converted to 1.
+1. Empty strings are treated as 0; non-empty strings are converted according to the rules of eJSON values, such as `123.34` will be converted to real numbers, and `abcd` will be converted to 0.
+1. An empty byte sequence is treated as 0; a non-empty byte sequence takes the highest 64 bits (up to 8 bytes) and converts it into a signed long integer in little-endian byte order, and then converts it into a value.
+1. For dynamic values, if there is no getter method, it will be treated as 0; if there is a getter method, no parameter will be passed to call the getter method, if the return value is invalid, it will be 0, if the return value is numeric, Then take its value, if the return value is non-numeric, it will be processed recursively according to this rule.
+1. Native entity, try to get the getter method of `__number` key name. If this method exists, call this getter without passing any parameters, refer to dynamic value processing; if this method does not exist, take 0.
+1. For the value of the array, add up all the array elements. If the array element is not numeric, it will be processed recursively according to this rule.
+1. For the value of the tuple, add up all the tuple units. If the tuple unit is not numeric, it will be processed recursively according to this rule.
+1. For the value of the dictionary, add up all key values. If a key value is not numeric, it will be processed recursively according to this rule.
 
-以上操作称为“数值化（numerify）”。
+The above operation is called "numerify".
 
-##### 2.1.4.2) 布尔化
+##### 2.1.4.2) Booleanize
 
-当需要获得任何数据的布尔逻辑真假值时，按如下规则转换为布尔值：
+When it is necessary to obtain the Boolean logic true or false value of any data, it is converted into a Boolean value according to the following rules:
 
-1. 对如下情形始终视作 `false`：
-   - `null`、 `undefined`、 `false`。
-   - 数值: 0。
-   - 空字符串。
-   - 空数组。
-   - 空元组。
-   - 空对象。
-   - 空集合。
-   - 长度为零的字节序列。
-1. 动态值：若不存在获取器方法，则按 `false` 处理；若存在，则不传递任何参数调用获取器方法，按本规则判断返回值。
-1. 原生实体：尝试获取 `__boolean` 键名的获取器方法，若存在该方法，则不传递任何参数调用这个获取器，按本规则递归判断返回值；若不存在该方法，则取 `false`。
-1. 其他情形始终视作 `true`，包括：
-   - `true`。
-   - 非零数值。
-   - 非空字符串。
-   - 非空数组。
-   - 非空元组。
-   - 非空对象。
-   - 非空集合。
-   - 长度不为零的字节序列。
+1. Always treat `false` for:
+    - `null`, `undefined`, `false`.
+    - Value: 0.
+    - Empty string.
+    - Empty array.
+    - Empty tuple.
+    - Empty object.
+    - Empty collection.
+    - Byte sequence of length zero.
+1. Dynamic value: If there is no getter method, it will be treated as `false`; if it exists, the getter method will be called without passing any parameters, and the return value will be judged according to this rule.
+1. Native entity: Try to get the getter method of the `__boolean` key name, if the method exists, call the getter without passing any parameters, and judge the return value recursively according to this rule; if the method does not exist, take `false `.
+1. Other cases are always considered `true`, including:
+    - `true`.
+    - Non-zero value.
+    - Non-empty string.
+    - Non-empty array.
+    - Non-empty tuple.
+    - Non-null object.
+    - Non-empty collection.
+    - Sequence of bytes with non-zero length.
 
-以上操作称为“布尔化（booleanize）”。
+The above operations are called "booleanize".
 
-##### 2.1.4.3) 字符串化
+##### 2.1.4.3) Stringify
 
-在需要将任意数据强制转换为字符串的情形下，按如下规则转换：
+In the case where any data needs to be forcibly converted to a string, convert according to the following rules:
 
-1. `null`、 `undefined`、 `true`、 `false` 等，使用对应的关键词字符串输出。
-1. 数值（包括长整形等），格式化输出，具体输出形式，由解释器确定。
-1. 字符串，使用 UTF-8 编码输出。
-1. 字节序列，使用字节序列的十六进制表达方式，全大写。
-1. 动态值，统一输出为 `<dynamic: %getter, %setter>`，其中 `%getter` 和 `%setter` 分别表示对动态值两个方法的格式化输出，具体形式，由解释器确定。
-1. 原生实体，统一输出为 `<native: %entity>`，其中 `%entity` 表示对原生实体的格式化输出，具体形式，由解释器确定。
-1. 数组：连接所有成员字符串化之后的字符串，每个成员之后追加分号（+U003B SEMICOLON）字符。
-1. 元组：连接所有成员字符串化之后的字符串，每个成员之后追加分号（+U003B SEMICOLON）字符。
-1. 字典：连接所有属性键名对应的字符传以及键值对应的字符串，两者之间使用冒号（+U003A COLON）分隔，每个属性之后追加逗号（+U002C COMMA）字符。
+1. For `null`, `undefined`, `true`, `false`, etc., use the corresponding keyword string to output.
+1. Numerical values (including long integers, etc.), formatted output, and the specific output format is determined by the interpreter.
+1. String, output using UTF-8 encoding.
+1. Byte sequence, using the hexadecimal representation of the byte sequence, all uppercase.
+1. For dynamic values, the unified output is `<dynamic: %getter, %setter>`, where `%getter` and `%setter` respectively represent the formatted output of the two methods of dynamic values, and the specific form is determined by the interpreter .
+1. For native entities, the unified output is `<native: %entity>`, where `%entity` represents the formatted output of native entities, and the specific form is determined by the interpreter.
+1. Array: Concatenate the character strings of all members, and append a semicolon (+U003B SEMICOLON) character after each member.
+1. Tuple: Concatenate the character strings of all members, and append a semicolon (+U003B SEMICOLON) character after each member.
+1. Dictionary: Connect the character string corresponding to the key name of all attributes and the string corresponding to the key value, separated by a colon (+U003A COLON), and append a comma (+U002C COMMA) character after each attribute.
 
-以上操作称为“字符串化（stringify）”。
+The above operation is called "stringify".
 
-比如，下面的 JSON 数据，
+For example, the following JSON data,
 
 ```json
-    [
-        { "id": "1", "name": "Tom", "age": 2, "male": true },
-        { "id": "2", "name": "Jerry", "age": 3, "male": true }
-    ]
+     [
+         { "id": "1", "name": "Tom", "age": 2, "male": true },
+         { "id": "2", "name": "Jerry", "age": 3, "male": true }
+     ]
 ```
 
-将被字符串化为：
+will be stringified as:
 
 ```
 id:1,name:Tom,age:2,male:true,;id:2,name:Jerry,age:3,male:true,
 
 ```
 
-字符串化数据的目的，是为了按照字符串对多个数据进行对比、排序等操作，亦用于对参数化字符串的求值结果做处理，用于和字符串的其他部分进行串接。
+The purpose of stringifying data is to perform operations such as comparing and sorting multiple data according to strings, and it is also used to process the evaluation results of parameterized strings and to concatenate with other parts of strings.
 
-注意，“字符串化”不同于“序列化”，后者指按照 JSON 或 eJSON 格式化数据。
+Note that "stringify" is different from "serialize", which refers to formatting data according to JSON or eJSON.
 
-##### 2.1.4.4) 序列化
+##### 2.1.4.4) Serialize
 
-“序列化（serialize）”指按照 JSON 或者 eJSON 格式化任意数据。eJSON 格式，可见本文档 [2.2.5) eJSON 语法](#225-ejson-语法)。
+"Serialize" means to format arbitrary data according to JSON or eJSON. eJSON format, see this document [2.2.5) eJSON syntax] (#225-ejson-syntax).
 
-序列化时，若按照 JSON 格式输出，则对 eJSON 扩展类型的数据，应统一输出为 `null` 或特定格式的字符串。
+When serializing, if the output is in JSON format, the data of the eJSON extension type should be uniformly output as `null` or a string in a specific format.
 
-1. `undefined`。
-1. 动态值。
-1. 原生实体。
+1. `undefined`.
+1. Dynamic value.
+1. Primary entity.
 
-##### 2.1.4.5) 键值对象
+##### 2.1.4.5) Key-Value Objects
 
-在 HVML 中，我们可以将对象中的一个键值对，使用一个新的对象表示，如：
-
-```json
-{
-    "nrUsers" : 2,
-    "names" : [ "Tom", "Jerry" ],
-}
-```
-
-这个对象中的键值对 `"nrUsers" : 2` 可表达为一个新的对象：
+In HVML, we can represent a key-value pair in an object as a new object, such as:
 
 ```json
 {
-    "k": "nrUsers",
-    "v": 2
+     "nrUsers" : 2,
+     "names" : [ "Tom", "Jerry" ],
 }
 ```
 
-我们将上面这种对象称为 `键值对象`（key-value object）。
+The key-value pair `"nrUsers" : 2` in this object can be expressed as a new object:
 
-而上面的对象可以转换为一个键值对象数组：
+```json
+{
+     "k": "nrUsers",
+     "v": 2
+}
+```
+
+We refer to the above objects as `key-value objects` (key-value object).
+
+And the above object can be converted to an array of key-value objects:
 
 ```json
 [
-    { "k": "nrUsers", "v": 2 },
-    { "k": "names", "v": [ "Tom", "Jerry" ] }
+     { "k": "nrUsers", "v": 2 },
+     { "k": "names", "v": [ "Tom", "Jerry" ] }
 ]
 ```
 
-键值对象数组本质上形成了一个以 `k` 为唯一性键的集合。
+An array of key-value objects essentially forms a collection with `k` as the unique key.
 
-需要说明的是，HVML 解释器会根据要求隐式地将对象的一个属性转换为键值对象，我们通常不需要显式执行这种转换。
+It should be noted that the HVML interpreter will implicitly convert a attribute of the object to a key-value object on request, and we usually do not need to perform this conversion explicitly.
 
-#### 2.1.5) 可变数据和不可变数据
+#### 2.1.5) Mutable and Immutable Data
 
-在 HVML 中，我们将如下数据类型称为不可变数据（immutable data）：
+In HVML, we refer to the following data types as immutable data:
 
-- 未定义（undefined）。
-- 空值（null）。
-- 真值（true）。
-- 假值（false）。
-- 数值（number）。
-- 字符串（string）。
-- 字节序列（byte sequence）。
-- 动态值（dynamic value）。
-- 原生实体（native entity）。
+- Undefined.
+- Null.
+- True.
+- False.
+- Number.
+- String.
+- Byte sequence.
+- Dynamic value.
+- Native entity.
 
-不可变数据的含义是，我们不能在运行时改变这个数据的值，而只能构造一个新的数据来表示新的值。
+The meaning of immutable data is that we cannot change the value of this data at runtime, but can only construct a new data to represent the new value.
 
-我们将如下数据类型称为可变数据（mutable data）：
+We refer to the following data types as mutable data:
 
-- 数组（array）。
-- 元组（tuple）。
-- 对象（object）。
-- 集合（set）。
+- Array.
+- Tuple.
+- Object.
+- Set.
 
-和不可变数据相反，可变数据的含义是，我们可以在运行时改变这个数据的值。本质上，可变数据都是容器类数据，也就是数组、元组、对象和集合。我们改变这些数据的值，本质上改变的是这些数据所包含的内容，比如删除或者修改其中的一个数据项。
+In contrast to immutable data, the meaning of mutable data is that we can change the value of this data at runtime. Essentially, mutable data is container class data, that is, arrays, tuples, objects, and collections. When we change the value of these data, what we essentially change is the content contained in these data, such as deleting or modifying one of the data items.
 
-在 HVML 中，我们可以在可变数据上使用 `update`、 `clear`、 `erase` 等标签执行更新、清空或移除操作，这些操作本质上修改的是其中的数据项。
+In HVML, we can use tags such as `update`, `clear`, `erase` on mutable data to perform update, clear or remove operations, which essentially modify the data items in it.
 
-我们也可以在原生实体上执行更新、清空或者移除操作，但这种情况下，操作的是原生实体代表的内部数据，而不是原生实体本身。比如，对一个代表目录项的原生实体，在其上执行 `clear` 操作，将清空该目录项中的所有的文件和子目录，而在其上执行 `erase` 操作，将移除这个目录项。
+We can also perform update, clear, or remove operations on native entities, but in this case, the operation is on the internal data represented by the native entity, not the native entity itself. For example, performing a `clear` operation on a native entity representing a directory entry will clear all files and subdirectories in the directory entry, and performing an `erase` operation on it will remove the directory entry.
 
-HVML 不提供任何操作可以用来改变不可变数据，但开发者可以使用 `init` 标签重置一个变量为其他数据。
+HVML does not provide any operations that can be used to change immutable data, but developers can use the `init` tag to reset a variable to other data.
 
-#### 2.1.6) 变量
+#### 2.1.6) Variables
 
-除了上述用于定义文档整体结构的标签外，HVML 提供了如下用于定义数据的标签：
+In addition to the above tags used to define the overall structure of the document, HVML provides the following tags used to define data:
 
-- `init`：该标签初始化一个变量；我们将有名字的数据称为变量。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将默认初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，将定义一个仅在其所在父元素定义的子树中有效的局部变量。我们可以直接将 JSON 数据嵌入到 `init` 标签内，亦可通过 HTTP 等协议加载外部内容而获得。若通过 HTTP 请求时，使用 `from` 属性定义请求的 URL，`with` 属性定义请求的参数，`via` 属性定义请求的方法（如 `GET` 或 `POST`）。
-- `bind`：该标签用于定义一个表达式变量。
+- `init`: This tag initializes a variable; we refer to named data as variables. Using `init` tag at the head of an HVML program (defined by `head` tag) will initialize a global variable by default. Using the `init` tag within the body of an HVML program (defined by `body` tag) will define a local variable that is only valid within the subtree defined by its parent element. We can directly embed JSON data into `init` tag, or get it by loading external content through protocols such as HTTP. When requesting via HTTP, use `from` attribute to define the URL of the request, `with` attribute to define the parameters of the request, and `via` attribute to define the method of the request (such as `GET` or `POST`).
+- `bind`: This tag is used to define an expression variable.
 
-##### 2.1.6.1) 变量的类型
+##### 2.1.6.1) Types of Variables
 
-在 HVML 中，当我们引用变量时，我们使用 `$` 前缀，比如 `$global`、 `$users`、 `$?` 等。当我们要指代普通的 `$` 字符时，我们使用 `\` 做转义字符。
+In HVML, when we refer to variables, we use `$` prefix like `$global`, `$users`, `$?` etc. When we want to refer to the normal `$` character, we use `\` as escape character.
 
-`$global`、 `$users` 这种变量称为命名变量（named variables），又分为静态（static）命名变量和临时（temporary）命名变量；`$?` 这类使用特殊字符的变量称为上下文变量（context variables），根据 HVML 解释器的运行上下文（执行栈）确定其值。需要说明的是，在 HVML 相关文档中，程序的执行栈是从顶向下延伸的，第一个被压入的栈帧（stack frame）称为最顶（topmost）栈帧。
+Variables such as `$global` and `$users` are called named variables, which are divided into static named variables and temporary named variables; `$?` variables that use special characters are called It is a context variable, and its value is determined according to the execution stack of the HVML interpreter. It should be noted that in HVML-related documents, the execution stack of a program extends from top to bottom, and the first stack frame that is pushed is called the topmost stack frame.
 
-在 HVML 中，上下文变量和静态变量的管理机制不同：
+In HVML, context variables and static variables are managed differently:
 
-1. 上下文变量存在于 HVML 程序的执行栈上，随着相应栈帧的弹出而自动销毁，本质上是临时变量。
-1. 静态命名变量是静态的，全局存在的，和 vDOM 树中的某个元素节点关联。除非在 `init` 动作中使用 `undefined` 值重置一个静态命名变量，否则该变量会一直存在。
-1. 临时命名变量本质上就是一个特殊的上下文变量。
-1. 若在程序中不使用上下文变量特有的符号而使用命名变量的名称引用一个变量时，解释器将优先在当前执行栈中查找匹配该名称的临时变量，然后再在当前 vDOM 位置的父元素以及祖先元素中查找匹配该名称的静态变量。
+1. The context variable exists on the execution stack of the HVML program, and is automatically destroyed when the corresponding stack frame is popped up. It is essentially a temporary variable.
+1. Static named variables are static, global, and associated with an element node in the vDOM tree. A statically named variable persists unless it is reset with `undefined` value in `init` action.
+1. Temporary named variable is essentially a special context variable.
+1. If you use the name of a named variable to refer to a variable instead of using the special symbols of the context variable in the program, the interpreter will first look for a temporary variable matching the name in the current execution stack, and then in the parent element of the current vDOM position and ancestor elements to find a static variable matching that name.
 
-##### 2.1.6.2) 上下文变量
+##### 2.1.6.2) Context Variables
 
-HVML 定义的上下文变量罗列如下：
+The context variables defined by HVML are listed as follows:
 
-- `@`：指当前文档操作位置，由 eDOM 元素汇集（target element collection）表达，通常由前置操作中的介词属性 `in` 定义。
-- `?`：指前置操作的结果数据（result data）。
-- `!`：指用户自定义数据（user data），用于定义临时数据。
-- `^`：指前置操作的内容数据（content data），仅针对动作元素和框架元素，其他情形下为未确定。
-- `:`：若前置操作的结果数据是一个键值对象，则该变量表示键名，其他情形下为未确定。
-- `=`：若前置操作的结果数据是一个键值对象，则该变量表示键值，其他情形下为未确定。
+- `@`: Refer to the current document operation position, expressed by the eDOM element collection (target element collection), usually defined by the preposition attribute `in` in the preceding operation.
+- `?`: Refer to the result data of the previous operation.
+- `!`: Refer to user data, which can be used to refer to temporary variables.
+- `^`: Refer to the content data of the pre-operation, only for action elements and frame elements, and undetermined in other cases.
+- `:`: If the result data of the pre-operation is a key-value object, the variable represents the key name, otherwise it is undetermined.
+- `=`: If the result data of the pre-operation is a key-value object, the variable represents the key value, otherwise it is undetermined.
 
-以下上下文变量专用于迭代时（其他情形下为未定义）：
+The following context variables are specific to iteration (undefined otherwise):
 
-- `%`：当前迭代索引值（iteration index），比如第一次迭代，该变量的值为 0，第二次迭代，该变量的值为 1，以此类推。
-- `~` 或 `<`：当前迭代的输入数据（iteration data），初始由介词属性 `on` 定义并可能在每次迭代后更新。
+- `%`: The current iteration index value. For example, the first iteration, the value of this variable is 0, the second iteration, the value of this variable is 1, and so on.
+- `~` or `<`: The iteration data for the current iteration, initially defined by the preposition attribute `on` and possibly updated after each iteration.
 
-我们还可以在上下文变量的符号之前添加一个正整数来引用从当前向上回溯 `<N>` 级的上下文数据：
+We can also prepend a positive integer to the sign of a context variable to refer to context data going back `<N>` levels from the current one:
 
-- `$<N><SYMB>`，如 `$1<`、 `$1?` 等：指从当前上下文向上回溯 `<N>` 级的上下文数据；这里的 `<N>` 必须是零或者正整数。这个上下文变量主要用于访问执行栈上前置栈帧中的上下文数据。当 `<N>` 为零时，指访问当前栈帧中的上下文变量。
+- `$<N><SYMB>`, such as `$1<`, `$1?`, etc.: Refers to the context data of `<N>` level back from the current context; here `<N>` must be zero or positive integer. This context variable is mainly used to access context data in previous stack frames on the execution stack. When `<N>` is zero, it refers to accessing context variables in the current stack frame.
 
-有关当前栈帧中的上下文变量，说明如下：
+The context variables in the current stack frame are described as follows:
 
-1. 所有上下文变量初始定义为未确定。访问未确定的上下文变量，会产生 `NoData` 异常。
-1. 上下文变量的设置和某些属性有关，比如 `$0<` 初始来自 `on` 属性值，`$0@` 来自 `in` 属性值或者继承自前一个栈帧。因此，引用这些上下文变量时，要注意动作元素规定的属性值求值顺序。
+1. All context variables are initially defined as undetermined. Accessing undefined context variables will raise a `NoData` exception.
+1. The setting of context variables is related to certain properties, such as `$0<` initially from `on` attribute value, `$0@` from `in` attribute value or inherited from the previous stack frame. Therefore, when referring to these context variables, attention should be paid to the evaluation order of attribute values stipulated by the action element.
 
-为提高代码的可读性，我们还可以使用元素的 `id` 属性定义的锚点（anchor）来定义要引用的上下文变量：
+To improve the readability of the code, we can also use the anchor defined by `id` attribute of the element to define the context variable to be referenced:
 
-- `$#<ANCHOR><SYMB>`，如 `$#theAnchor~`、 `$#theAnchor?` 等：指从当前栈帧沿执行栈向上回溯并使用 `<ANCHOR>` 匹配对应 vDOM 元素的 `id` 属性值，从而定位到执行栈上某个栈帧的上下文数据。
+- `$#<ANCHOR><SYMB>`, such as `$#theAnchor~`, `$#theAnchor?`, etc.: Refers to backtracking from the current stack frame along the execution stack and using `<ANCHOR>` to match the corresponding vDOM element `id` attribute value to locate the context data of a stack frame on the execution stack.
 
-##### 2.1.6.3) 预定义变量
+##### 2.1.6.3) Predefined Variables
 
-在 HVML 中，我们通常使用 `as` 属性来给数据命名，但 HVML 保留若干变量名称用于预定义场合，我们称为预定义全局变量，习惯上全部使用大写形式。
+In HVML, we usually use `as` attribute to name data, but HVML reserves several variable names for predefined occasions. We call them predefined global variables, and it is customary to use all uppercase.
 
-按是否含有动态对象划分，HVML 的预定义变量可分为：
+According to whether it contains dynamic objects or not, HVML's predefined variables can be divided into:
 
-1. 动态变量，即变量对应的数据提供动态方法。
-1. 非动态变量，即变量对应的数据不提供动态方法。
+1. Dynamic variable, that is, the data corresponding to the variable provides a dynamic method.
+1. Non-dynamic variables, that is, the data corresponding to variables does not provide dynamic methods.
 
-按变量对应数据的作用域，HVML 的预定义变量可分为：
+According to the scope of the variable corresponding to the data, the predefined variables of HVML can be divided into:
 
-1. 行者级变量。指该变量对应的数据对当前解释器实例中的所有 HVML 协程可见。也就是说，同一行者中的不同协程对应同一个数据副本。
-1. 协程级变量。指该变量对应的数据仅对当前解释器实例中的单个 HVML 协程可见。也就是说，不同的 HVML 协程有一个自己的数据副本。
+1. Walker-level variables: It means that the data corresponding to this variable is visible to all HVML coroutines in the current interpreter instance: That is, different coroutines in the same walker correspond to the same data copy.
+1. Coroutine-level variables: Indicate that the data corresponding to this variable is only visible to a single HVML coroutine in the current interpreter instance. That is, different HVML coroutines have their own copy of the data.
 
-按变量是否必须提供，HVML 的预定义变量可分为：
+According to whether the variable must be provided, the predefined variables of HVML can be divided into:
 
-1. 必要（required）变量。解释器必须实现该变量。
-1. 可选（optional）变量。该变量的实现是可选的。
+1. Required variables: The interpreter must implement this variable.
+1. Optional variables: Implementation of this variable is optional.
 
-作为 HVML 规范集合的一部分，文档 [HVML 预定义变量](hvml-spec-predefined-variables-v1.0-zh.md) 详细规定了所有的预定义变量及其接口，解释器应根据规范要求做相应的实现。
+As part of the HVML specification collection, the document [HVML Predefined Variables](hvml-spec-predefined-variables-v1.0-zh.md) specifies all the predefined variables and their interfaces in detail, and the interpreter should do corresponding implementation.
 
-下面简单介绍一些关键的预定义变量。
+Some key predefined variables are briefly described below.
 
 1) `$REQ`
 
-`$REQ`：主要用来表述装载文档时，由其他模块提供的请求数据，一般由 HVML 解释器在装载 HVML 文档时生成。比如下面的 Python 脚本装载一个 HVML 文档，并传递了 `nrUsers` 参数：
+`$REQ`: It is mainly used to describe the request data provided by other modules when loading the program, and is generally generated by the HVML interpreter when loading the HVML program. For example, the following Python script loads an HVML program and passes the `nrUsers` parameter:
 
 ```python
-hvml.load ("a.hvml", { "nrUsers" : 10 })
+hvml. load ("a. hvml", { "nrUsers" : 10 })
 ```
 
-在 HVML 文档中，我们可使用 `$REQ.nrUsers` 来引用上述脚本代码传入的值（`10`）。
+In the HVML program, we can use `$REQ.nrUsers` to refer to the value (`10`) passed in by the above script code.
 
-`$REQ` 变量本质上是一个必要的协程级非动态对象。
+`$REQ` variable is essentially a necessary coroutine-level non-dynamic object.
 
 2) `$SYS`
 
-`$SYS`：一个用于访问系统基本功能的动态对象，可用于提供系统时间、当前语言地区（区域）、时区、随机序列、机器名称等。比如，我们要获得当前的 Unix 时间戳，可直接使用 `$SYS.time`，如果要获得一个随机序列，可使用 `$SYS.random_sequence`，如果我们要获得当前的机器名称，可使用 `$SYS.uname`，如果要获取当前语言地区信息，可使用 `$SYS.locale`。
+`$SYS`: A dynamic object used to access the basic functions of the system, which can be used to provide system time, current locale (region), time zone, random sequence, machine name, etc. For example, if we want to get the current Unix timestamp, we can use `$SYS.time` directly, if we want to get a random sequence, we can use `$SYS.random_sequence`, if we want to get the current machine name, we can use `$ SYS.uname`, if you want to get the current language and region information, you can use `$SYS.locale`.
 
-`$SYS` 变量本质上是一个必要的行者级动态对象。
+`$SYS` variable is essentially a necessary walker-level dynamic object.
 
 3) `$RUNNER`
 
-`$RUNNER` 是一个必要的行者级动态变量，主要用于获取行者相关的信息，并提供给用户在当前行者的不同协程之间共享数据的机制。比如：
+`$RUNNER` is a necessary runner-level dynamic variable, which is mainly used to obtain runner-related information and provide users with a mechanism to share data between different coroutines of the current runner. for example:
 
-1. `$RUNNER.app_name`：获取当前行者的应用名。
-1. `$RUNNER.run_name`：获取当前行者的行者名。
-1. `$RUNNER.rid`：获取当前行者的行者标识符。
-1. `$RUNNER.uri`：获取当前行者的统一资源标识符（URI）。
-1. `$RUNNER.myObj`：静态属性，用户自定义对象。
-1. `$RUNNER.user`：获取或设置 `$RUNNER.myObj` 对象的属性。
-1. `$RUNNER.chan`：创建通道。
+1. `$RUNNER.app_name`: Get the application name of the current runner.
+1. `$RUNNER.run_name`: Get the runner name of the current runner.
+1. `$RUNNER.rid`: Get the runner identifier of the current runner.
+1. `$RUNNER.uri`: Get the URI of the current runner.
+1. `$RUNNER.myObj`: Static attribute, user-defined object.
+1. `$RUNNER.user`: Get or set the properties of `$RUNNER.myObj` object.
+1. `$RUNNER.chan`: Create a channel.
 
-通道（channel）是一项重要的协程间通讯机制。
+Channel is an important inter-coroutine communication mechanism.
 
-通道的运行机制非常简单：当某个协程要从一个没有数据的通道中接收数据时，该协程将被阻塞，而当其他协程向该通道写入数据后，该协程将被自动唤醒。下面的程序创建了两个子协程分别充当发送者和接收者，并通过通道实现了协程间的通讯：
+The operation mechanism of the channel is very simple: When a coroutine wants to receive data from a channel without data, the coroutine will be blocked, and when other coroutines write data to the channel, the coroutine will be automatically blocked. wake. The following program creates two sub-coroutines to act as the sender and receiver respectively, and realizes the communication between the coroutines through the channel:
 
 ```hvml
 <hvml target="void">
-    <body>
+     <body>
 
-        <!-- open a channel named `myChannel` -->
-        <init as chan with $RUNNER.chan(! 'myChannel' ) />
+         <!-- open a channel named `myChannel` -->
+         <init as chan with $RUNNER. chan(! 'myChannel' ) />
 
-        <!-- start the writer coroutine asynchronously -->
-        <load from "#writer" asynchronously />
+         <!-- start the writer coroutine asynchronously -->
+         <load from "#writer" asynchronously />
 
-        <!-- start the reader coroutine and wait for the result -->
-        <load from "#reader">
-            $STREAM.stdout.writelines("The result got from the reader: `$?`")
-        </load>
+         <!-- start the reader coroutine and wait for the result -->
+         <load from "#reader">
+             $STREAM.stdout.writelines("The result got from the reader: `$?`")
+         </load>
 
-    </body>
+     </body>
 
-    <body id="writer">
-        <init as chan with $RUNNER.chan('myChannel') />
+     <body id="writer">
+         <init as chan with $RUNNER. chan('myChannel') />
 
-        <iterate on [ 'H', 'V', 'M', 'L' ]>
-            $chan.send($?)
+         <iterate on [ 'H', 'V', 'M', 'L' ]>
+             $chan. send($?)
 
-            <sleep for '1s' />
+             <sleep for '1s' />
 
-        </iterate>
+         </iterate>
 
-        <!-- close the channel -->
-        <inherit>
-            $RUNNER.chan(! 'myChannel', 0)
-        </inherit>
+         <!-- close the channel -->
+         <inherit>
+             $RUNNER.chan(! 'myChannel', 0)
+         </inherit>
 
-    </body>
+     </body>
 
-    <body id="reader">
-        <choose on $RUNNER.chan('myChannel')>
+     <body id="reader">
+         <choose on $RUNNER. chan('myChannel')>
 
-            <init as result with '' />
+             <init as result with '' />
 
-            <!-- the channel has been closed if $chan.recv() returns false -->
-            <iterate with $?.recv() silently>
-                $STREAM.stdout.writelines("$DATETIME.time_prt: the data received: $?");
+             <!-- the channel has been closed if $chan.recv() returns false -->
+             <iterate with $?. recv() silently>
+                 $STREAM.stdout.writelines("$DATETIME.time_prt: the data received: $?");
 
-                <init as result at '_grandparent' with "$result$?" />
-            </iterate>
+                 <init as result at '_grandparent' with "$result$?" />
+             </iterate>
 
-            <exit with $result />
-        </choose>
+             <exit with $result />
+         </choose>
 
-    </body>
+     </body>
 
 </hvml>
 ```
 
-以上代码，最终会的输出结果将大致如下：
+The above code, the final output will be roughly as follows:
 
 ```
 2022-08-24T12:27:00+08:00: the data received: H
@@ -1277,697 +1283,704 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 4) `$CRTN`
 
-`$CRTN` 是一个动态对象，该对象表述的是当前正在执行的 HVML 程序实例（协程）本身，用以设置当前协程相关的参数。比如：
+`$CRTN` is a dynamic object, which represents the currently executing HVML program instance (coroutine) itself, and is used to set the parameters related to the current coroutine. for example:
 
-1. `$CRTN.base`：获取或设置 HVML 程序的默认 URL 位置（类似 HTML 的 `base` 标签）。
-1. `$CRTN.max_iteration_count`：获取或设置 HVML 程序在执行 `iteration` 元素时的最大迭代次数；用于检测可能的死循环。
-1. `$CRTN.max_recursion_depth`：获取或设置 HVML 程序在递归执行某个功能时的最大递归深度，以防止栈溢出。
-1. `$CRTN.max_embedded_levels`：获取或设置 HVML 程序在解析或者处理嵌套的容器数据时，允许的最大嵌套层级。
-1. `$CRTN.timeout`：获取或设置获取外部数据时的超时值。
-1. `$CRTN.cid`：获取当前协程的协程标识符。
-1. `$CRTN.uri`：获取当前协程的 URI。
-1. `$CRTN.token`：获取或设置当前协程的令牌（token）。
+1. `$CRTN.base`: Get or set the default URL location of the HVML program (similar to the HTML `base` tag).
+1. `$CRTN.max_iteration_count`: Get or set the maximum number of iterations when the HVML program executes the `iteration` element; it is used to detect possible infinite loops.
+1. `$CRTN.max_recursion_depth`: Get or set the maximum recursion depth of the HVML program when recursively executing a function to prevent stack overflow.
+1. `$CRTN.max_embedded_levels`: Get or set the maximum nesting level allowed by the HVML program when parsing or processing nested container data.
+1. `$CRTN.timeout`: Get or set the timeout value when fetching external data.
+1. `$CRTN.cid`: Get the coroutine identifier of the current coroutine.
+1. `$CRTN.uri`: Get the URI of the current coroutine.
+1. `$CRTN.token`: Get or set the token of the current coroutine.
 
-其中，协程令牌是由解释器自动分配的行者内唯一的标识符，可用来标识一个协程。解释器可以取行者维护的新建协程之序号或者协程标志符对应的十进制字符串作为默认的令牌。协程可以通过调用 `$CRTN.token` 属性的设置器来覆盖这个自动分配的令牌。注意，我们保留下划线打头的令牌名称做特殊用途使用。比如 `_main` 表示行者创建的第一个协程。
+Among them, the coroutine token is a unique identifier in the walker automatically assigned by the interpreter, which can be used to identify a coroutine. The interpreter can take the serial number of the new coroutine maintained by the walker or the decimal string corresponding to the coroutine identifier as the default token. A coroutine can override this auto-assigned token by calling the setter of `$CRTN.token` attribute. Note that we reserve token names starting with an underscore for special purposes. For example, `_main` means the first coroutine created by the walker.
 
-另外，我们还可以通过 `$CRTN` 对象观察一些全局事件以及当前协程渲染状态的变化，从而优雅地处理渲染器页面被用户关闭或者渲染器丢失等的情形。这些事件有：
+In addition, we can also observe some global events and changes in the rendering state of the current coroutine through `$CRTN` object, so as to gracefully handle the situation where the renderer page is closed by the user or the renderer is lost. These events are:
 
-- `idle`：当前 HVML 协程正在监听 `$CRTN` 上的 `idle` 事件，且由于未收到任何事件而触发 `idle` 事件。
-- `rdrState:pageClosed`：协程对应的渲染器页面被用户关闭。
-- `rdrState:pageSuppressed`：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
-- `rdrState:pageReload`：当前协程的文档内容重新装载到渲染器，渲染器状态调整为 `regular`。
-- `rdrState:connLost`：协程所在行者丢失渲染器的连接。
+- `idle`: The current HVML coroutine is listening to `idle` event on `$CRTN`, and `idle` event is fired because no event has been received.
+- `rdrState:pageClosed`: The renderer page corresponding to the coroutine is closed by the user.
+- `rdrState:pageSuppressed`: The interaction between the coroutine and the renderer (including updating the page and accepting interaction events from the renderer) is suppressed.
+- `rdrState:pageReload`: The document content of the current coroutine is reloaded to the renderer, and the renderer state is adjusted to `regular`.
+- `rdrState:connLost`: The walker where the coroutine is located has lost the connection to the renderer.
 
-`$CRTN` 变量本质上是一个必要的协程级动态对象。
+`$CRTN` variable is essentially a necessary coroutine-level dynamic object.
 
 5) `$DOC`
 
-`$DOC` 是一个动态对象，该对象表述的是 HVML 生成的目标文档。我们可以使用该对象上的特定键名以及 `query` 方法通过 CSS 选择器获取目标文档上的元素汇集，如：
+`$DOC` is a dynamic object representing the target documentation generated by HVML. We can use specific key names on this object and `query` method to get a collection of elements on the target document through CSS selectors, such as:
 
-1. `$DOC.doctype`：获取该目标文档的 `doctype` 节点内容。
-1. `$DOC.query("#foo")`：获取该目标文档中 `id` 属性值为 `foo` 的元素形成的元素汇集。
-1. `$DOC.query(".bar")`：获取该目标文档中 `class` 属性值为 `bar` 的所有元素形成的元素汇集。
+1. `$DOC.doctype`: Get the content of the `doctype` node of the target document.
+1. `$DOC.query("#foo")`: Get the collection of elements whose `id` attribute value is `foo` in the target document.
+1. `$DOC.query(".bar")`: Obtain the collection of elements formed by all elements whose `class` attribute value is `bar` in the target document.
 
-`$DOC` 变量本质上是一个必要的协程级动态对象。
+`$DOC` variable is essentially a necessary coroutine-level dynamic object.
 
 6) `$TIMERS`
 
-`$TIMERS` 用于当前 HVML 程序的定时器，具有固定的格式，初始为一个空的集合。可使用 `update` 等元素修改它的值，如：
+`$TIMERS` is for the current HVML program, with a fixed format, initially an empty set. Its value can be modified using elements such as `update`, such as:
 
 ```hvml
 <head>
-    <update on="$TIMERS" to="unite">
-        [
-            { "id" : "foo", "interval" : 1000, "active" : "no" },
-            { "id" : "bar", "interval" : 2000, "active" : "no" },
-        ]
-    </update>
+     <update on="$TIMERS" to="unite">
+         [
+             { "id" : "foo", "interval" : 1000, "active" : "no" },
+             { "id" : "bar", "interval" : 2000, "active" : "no" },
+         ]
+     </update>
 </head>
 ```
 
-上述包含在 `head` 元素中的 `update` 元素定义了两个定时器（标识符分别为 `foo` 和 `bar`），间隔分别为 1 秒和 2 秒（使用毫秒为单位定义定时器）。这两个定时器均未激活（`active` 为 `no`）。
+The above `update` element contained in `head` element defines two timers (with identifiers `foo` and `bar`) with intervals of 1 second and 2 seconds respectively (timers are defined in milliseconds) . Neither timer is active (`active` is `no`).
 
-只要在 HVML 中修改某个定时器的 `active` 参数即可激活这个定时器，然后使用 `observe` 标签即可监听定时器到期时间：
+Just modify `active` parameter of a timer in HVML to activate the timer, and then use `observe` tag to monitor the timer expiration time:
 
 ```hvml
-    <choose on="$TIMERS" by="FILTER: AS 'foo'">
-        <update on="$?" at=".active" with="yes" />
-    </choose>
+     <choose on="$TIMERS" by="FILTER: AS 'foo'">
+         <update on="$?" at=".active" with="yes" />
+     </choose>
 
-    ...
+     ...
 
-    <observe on="$TIMERS" for="expired:foo" in="#the-header" >
-        <update on="> span.local-time" at="textContent" with="$SYS.time('%H:%m')" />
-    </observe>
+     <observe on="$TIMERS" for="expired:foo" in="#the-header">
+         <update on="> span.local-time" at="textContent" with="$SYS.time('%H:%m')" />
+     </observe>
 ```
 
-`$TIMERS` 变量本质上是一个必要的协程级非动态对象。
+`$TIMERS` variable is essentially a necessary coroutine-level non-dynamic object.
 
 7) `$L`
 
-`$L` 是一个动态对象，该对象完成数值对比、字符串对比以及逻辑与、或、异或、取反等逻辑操作，比如：
+`$L` is a dynamic object that performs logical operations such as numerical comparison, string comparison, and, or, XOR, negation, etc., such as:
 
-1. `$L.not(<any>)`：用于逻辑取反操作。
-1. `$L.and(<any>, <any>, ...)`：用于逻辑与运算。
-1. `$L.or(<any>, <any>, ...)`：用于逻辑或运算。
-1. `$L.xor(<any>, <any>)`：用于逻辑异或运算。
-1. `$L.eq(<any>, <any>)`：用于比较两个参数是否在数值上相等。
-1. `$L.ne(<any>, <any>)`：用于比较两个参数是否在数值上不相等。
-1. `$L.gt(<any>, <any>)`：用于比较第一个参数在数值上大于第二个参数。
-1. `$L.ge(<any>, <any>)`：用于比较第一个参数在数值上大于或等于第二个参数。
-1. `$L.lt(<any>, <any>)`：用于比较第一个参数在数值上小于第二个参数。
-1. `$L.le(<any>, <any>)`：用于比较第一个参数在数值上小于或等于第二个参数。
-1. `$L.streq(<'caseless | case | wildcard | reg'>, <any>, <any>)`：用于对比两个字符串是否相等；第一个参数用来表示字符串的匹配方式（区分大小写、通配符、正则表达式），其后的两个参数用来传递两个字符串。
+1. `$L.not(<any>)`: Used for logical inversion operation.
+1. `$L.and(<any>, <any>, ...)`: It is used for logical AND operation.
+1. `$L.or(<any>, <any>, ...)`: It is used for logical or operation.
+1. `$L.xor(<any>, <any>)`: It is used for logical XOR operation.
+1. `$L.eq(<any>, <any>)`: It is used to compare whether two parameters are numerically equal.
+1. `$L.ne(<any>, <any>)`: It is used to compare whether two parameters are not equal in value.
+1. `$L.gt(<any>, <any>)`: It is used to compare whether the first parameter is numerically greater than the second parameter.
+1. `$L.ge(<any>, <any>)`: It is used to compare whether the first parameter is numerically greater than or equal to the second parameter.
+1. `$L.lt(<any>, <any>)`: It is used to compare whether the first parameter is numerically smaller than the second parameter.
+1. `$L.le(<any>, <any>)`: It is used to compare whether the first parameter is numerically less than or equal to the second parameter.
+1. `$L.streq(<'caseless | case | wildcard | reg'>, <any>, <any>)`: It is used to compare whether two strings are equal; the first parameter is used to represent the string Matching method (case-sensitive, wildcard, regular expression), and the following two parameters are used to pass two strings.
 
-比如 `$L.not($L.gt(5, 3))` 的结果是假值（`false`）。
+For example, the result of `$L.not($L.gt(5, 3))` is `false`.
 
-`$L` 变量本质上是一个必要的行者级动态对象。
+`$L` variable is essentially a necessary walker-level dynamic object.
 
 8) `$T`
 
-该变量主要用于文本的本地化，包含两个属性：
+This variable is mainly used for localization of text and contains two attributes:
 
-1. `map`：用于保存本地化字符串映射关系的对象，初始为空对象。
-1. `get`：用于字符串的本地化，若未在 `map` 中定义映射关系，则返回原字符串。
+1. `map`: An object used to save the mapping relationship of localized strings, initially an empty object.
+1. `get`: It is used for string localization, if no mapping relationship is defined in `map`, the original string will be returned.
 
-常用用法如下：
+Common usage is as follows:
 
 ```hvml
 <!DOCTYPE hvml>
 <hvml target="html">
-    <head>
-        <update on="$T.map" from="https://foo.bar/messages/$SYS.locale" to="merge" />
+     <head>
+         <update on="$T.map" from="https://foo.bar/messages/$SYS.locale" to="merge" />
 
-        <title>$T.get('Hello, world!')</title>
-    </head>
+         <title>$T. get('Hello, world!')</title>
+     </head>
 
-    <body>
-        <p>$T.get('Hello, HVML!')</p>
-    </body>
+     <body>
+         <p>$T.get('Hello, HVML!')</p>
+     </body>
 
 </hvml>
 ```
 
-在上面的 HVML 代码中，我们在头部使用 `update` 标签设置了 `$T.map`，该变量的内容来自包含有 `$SYS.locale` 的一个 URL。注意其中的 `$SYS.locale` 是一个求值表达式，会返回当前系统的语言地区标识符（如 `zh_CN`），HVML 解释器求值并替代后的最终 URL 为：`https://foo.bar/messages/zh_CN`。从该 URL 获得的文件内容可能为：
+In the above HVML code, we set `$T.map` in the header using the `update` tag, and the content of this variable comes from a URL containing `$SYS.locale`. Note that `$SYS.locale` is an evaluation expression that returns the locale identifier of the current system (such as `zh_CN`). The final URL after evaluation and replacement by the HVML interpreter is: `https:// foo.bar/messages/zh_CN`. The content of the file obtained from this URL might be:
 
 ```json
 {
-    "Hello, world!": "世界，您好！",
-    "Hello, HVML!": "HVML，您好！",
+     "Hello, world!": "Hello, world!",
+     "Hello, HVML!": "Hello, HVML!",
 }
 ```
 
-以上代码最终会被解释为如下的 HTML 文档：
+The above code will eventually be interpreted as the following HTML document:
 
 ```hvml
 <html>
-    <head>
-        <title>世界，您好！</title>
-    </head>
+     <head>
+         <title>Hello world! </title>
+     </head>
 
-    <body>
-        <p>HVML，您好！</p>
-    </body>
+     <body>
+         <p>HVML, Hello! </p>
+     </body>
 </html>
 ```
 
-`$T` 变量本质上是一个必要的协程级动态对象。
+`$T` variable is essentially a necessary coroutine-level dynamic object.
 
 9) `$DATA`
 
-该变量主要用于获得指定数据相关的信息，比如类型、数据项个数，并完成数据的数值化、字符串化、序列化等。
+This variable is mainly used to obtain information related to the specified data, such as the type and number of data items, and to complete the numericalization, stringification, and serialization of the data.
 
-1. `$DATA.type(<any>)`：获取数据的类型，如 `null`、 `boolean`、 `longdouble` 等，返回表示数据类型的字符串。
-1. `$DATA.count(<any>)`：获取给定数据的数据项个数。
-1. `$DATA.numerify(<any>, ["number | longint | ulongint | longdouble": the number subtype to return])`：对给定的数据执行数值化，结果数据的类型为指定的实数类型，默认为 `number`。
-1. `$DATA.stringify(<any>)`：对给定数据执行字符串化，结果数据的类型为字符串。
-1. `$DATA.serilize(<any>, <string: options>)`：对给定数据执行 eJSON 序列化，结果数据的类型为字符串。
-1. `$DATA.arith(<arithmetic operation>, <any: operand>, <any: operand>)`：将给定的两项数据强制转换为 `longint`，然后执行指定的四则运算（加、减等）并返回结果。
-1. `$DATA.bitwise(<bitwise operation>, <any: operand>[, <any: operand>])`：将给定的一项或两项数据强制转换为 `ulongint`，然后执行指定的位运算（与、或等）并返回结果。
-1. `$DATA.select(<container>, <string: selector>[, <boolean: recursively])`：按照给定的选择器返回给定容器数据中符合条件的数据项或一个数据汇集。
+1. `$DATA.type(<any>)`: Get the type of data, such as `null`, `boolean`, `longdouble`, etc., and return a string representing the data type.
+1. `$DATA.count(<any>)`: Get the number of data items of the given data.
+1. `$DATA.numerify(<any>, ["number | longint | ulongint | longdouble": the number subtype to return])`: Perform numericalization on the given data, and the type of the result data is the specified real number type , which defaults to `number`.
+1. `$DATA.stringify(<any>)`: Stringify the given data, and the type of the resulting data is a string.
+1. `$DATA.serilize(<any>, <string: options>)`: Perform eJSON serialization on the given data, and the type of the resulting data is a string.
+1. `$DATA.arith(<arithmetic operation>, <any: operand>, <any: operand>)`: Convert the given two items of data to `longint`, and then perform the specified four arithmetic operations (addition, minus, etc.) and return the result.
+1. `$DATA.bitwise(<bitwise operation>, <any: operand>[, <any: operand>])`: Convert the given item or items of data to `ulongint`, and then execute the specified Bitwise operations (and, or, etc.) and return the result.
+1. `$DATA.select(<container>, <string: selector>[, <boolean: recursively])`: Return qualified data items or a collection of data in the given container data according to the given selector.
 
-各数据类型的数据项个数规则如下：
+The rules for the number of data items of each data type are as follows:
 
-- 数组、元组或集合：数据项个数指数组、元组或集合中的成员数量。
-- 对象：数据项个数指键值对数量。
-- 其他数据类型，如字符串、数值、 `true`、 `false` 或 `null` 等：数据项个数为 1。
-- `undefined`：数据项个数为 0。
+- Array, tuple, or set: The number of data items refers to the number of members in the array, tuple, or set.
+- Object: The number of data items refers to the number of key-value pairs.
+- Other data types, such as strings, numbers, `true`, `false` or `null`, etc.: The number of data items is 1.
+- `undefined`: The number of data items is 0.
 
-在 `select` 方法中，我们对第二个参数（`selector`）使用类似 CSS 选择器的方式来返回某个数据项或者某些数据项的汇集，比如：
+In `select` method, we use a CSS selector-like approach to the second parameter (`selector`) to return a certain data item or a collection of some data items, such as:
 
-- 在针对基于字典数据的树形结构、数组或者元组中：
-   - `[<key_name>]`：表示定义有 `<key_name>` 键名的数据项。
-   - `[<key_name> = <value>]`：表示所有 `<key_name>` 的键值等于 `<value>` 的数据项。
-   - `[<key_name> ~= <value>]`：表示所有 `<key_name>` 的键值包含以 `<value>` 作为空白字符分隔的完整词元的数据项。
-   - `[<key_name> *= <value>]`：表示所有 `<key_name>` 的键值包含以 `<value>` 为子字符串的数据项。
-   - `[<key_name> ^= <value>]`：表示所有 `<key_name>` 的键值以 `<value>` 打头的数据项。
-   - `[<key_name> $= <value>]`：表示所有 `<key_name>` 的键值以 `<value>` 结尾的数据项。
-- 针对数组或者元组：
-   - `:nth-child(<n>)`：表示当前数组或元组中第 `<n>` 个数据项；`<n>` 可以是数字、关键词或者公式。
-   - `<type>:nth-of-type(<n>)`：表示当前数组或元组中所有类型为 `<type>` 的第 `<n>` 个数据项；`<n>` 可以是数字、关键词或者公式。
+- In a tree, array or tuple for dictionary-based data:
+    - `[<key_name>]`: Indicate a data item defined with a `<key_name>` key name.
+    - `[<key_name> = <value>]`: Indicate all data items whose key value of `<key_name>` is equal to `<value>`.
+    - `[<key_name> ~= <value>]`: Indicate that all the key values of `<key_name>` contain data items of complete tokens separated by `<value>` as whitespace characters.
+    - `[<key_name> *= <value>]`: Indicate that all the key values of `<key_name>` contain data items whose substring is `<value>`.
+    - `[<key_name> ^= <value>]`: Indicate all data items whose key value of `<key_name>` starts with `<value>`.
+    - `[<key_name> $= <value>]`: Indicate all data items whose key value of `<key_name>` ends with `<value>`.
+- for arrays or tuples:
+    - `:nth-child(<n>)`: Indicate `<n>`th data item in the current array or tuple; `<n>` can be a number, a keyword or a formula.
+    - `<type>:nth-of-type(<n>)`: Indicate all `<n>`th data items whose type is `<type>` in the current array or tuple; `<n>` can Is a number, keyword or formula.
 
-使用上述选择器之后，相当于对原有的单个数据项做了一些过滤。比如 `<choose on="$users" ... />` 选择了整个 `$users` 数组或元组内容做后续处理，但如果使用 `<choose on="$DATA.select($users, ":nth-child(even)")` 则仅选择下标为偶数的数组或元组成员。
+After using the above selector, it is equivalent to doing some filtering on the original single data item. For example, `<choose on="$users" ... />` selects the entire `$users` array or tuple content for subsequent processing, but if you use `<choose on="$DATA.select($users, " :nth-child(even)")` selects only the array or tuple members whose subscripts are even numbers.
 
-`$DATA` 变量本质上是一个必要的行者级动态对象。
+`$DATA` variable is essentially a necessary walker-level dynamic object.
 
 10) `$STREAM`
 
-`$STREAM` 用于实现基于读写流的操作。和 `$DOC` 变量的 `query` 方法类似，该变量上提供的 `open` 方法返回一个原生实体，在该原生实体上，我们提供用于从流中读取或者向流中写入的接口。
+`$STREAM` is used to implement read and write stream based operations. Similar to the `query` method of the `$DOC` variable, `open` method provided on this variable returns a native entity on which we provide an interface for reading from or writing to the stream .
 
-`$STREAM.open` 方法返回的原生实体，称为“流实体（stream entity）”。流实体提供如下基本接口：
+The native entity returned by `$STREAM.open` method is called a "stream entity". Stream entities provide the following basic interfaces:
 
-- `readbytes` 和 `writebytes` 方法：读写字节序列。
-- `readstruct` 和 `writestruct` 方法：读写二进制数据结构。
-- `readlines` 和 `writelines` 方法：读写文本行。
-- `seek`：在可定位流中重新定位流的读写位置。
+- `readbytes` and `writebytes` methods: Read and write sequences of bytes.
+- `readstruct` and `writestruct` methods: Read and write binary data structures.
+- `readlines` and `writelines` methods: Read and write lines of text.
+- `seek`: within a seekable stream repositions the read and write position of the stream.
 
-为方便使用，我们在 `$STREAM` 变量上提供如下静态属性：
+For convenience, we provide the following static properties on `$STREAM` variable:
 
-- `stdin`、 `stdout` 和 `stderr` 静态属性：C 语言标准输入、标准输出和标准错误的流实体封装。
+- `stdin`, `stdout`, and `stderr` static attributes: Stream entity wrappers for C language standard input, standard output, and standard error.
 
-流实体应该是可被观察的，从而可以监听读取流上是否有数据等待读取，或者是否可向写入流中写入数据。比如，我们可以观察 `$STREAM.stdin`，以便监听用户的输入：
-
-```hvml
-    <observe on="$STREAM.stdin" for="read">
-        <choose on="$?.readlines(1)">
-            ...
-        </choose>
-    </observe>
-```
-
-另外，`STREAM` 变量应使用可扩展的实现，一方面，我们可以扩展流实体的类型，比如从文件、匿名管道、命名管道到 Unix 套接字、TCP 连接，另一方面，我们可以通过支持不同的协议来扩展流实体提供的操作方法，从而在流实体上提供额外的读写方法。比如，当某个解释器实现的 `$STREAM` 方法支持发送 HTTP 协议时，即可实现发送 HTTP 请求以及处理 HTTP 协议的方法：
+The stream entity should be observable, so that it can listen to whether there is data waiting to be read on the read stream, or whether data can be written to the write stream. For example, we can observe `$STREAM.stdin` to listen for user input:
 
 ```hvml
-    <init as="myFetcher" on="$STREAM.open('tcp://foo.com:80','default','http')">
-        <choose on="$myFetcher.http_send_request('GET','/')" />
-        <choose on="$myFetcher.http_read_response_header()" />
-    </init>
+     <observe on="$STREAM.stdin" for="read">
+         <choose on="$?. readlines(1)">
+             ...
+         </choose>
+     </observe>
 ```
 
-作为一个有价值的设计，我们可以将传统 Unix 系统中通过匿名管道管接两个进程的行为抽象为一个流实体，比如，我们将标准输出上的内容管接（pipe）给 `/usr/bin/wc` 命令处理：
+In addition, `STREAM` variable should use an extensible implementation. On the one hand, we can extend the types of stream entities, such as from files, anonymous pipes, and named pipes to Unix sockets and TCP connections. On the other hand, we can support Different protocols extend the operation methods provided by stream entities to provide additional read and write methods on stream entities. For example, when `$STREAM` method implemented by an interpreter supports sending HTTP protocol, the method of sending HTTP request and processing HTTP protocol can be realized:
 
 ```hvml
-    <init as="myStreams">
-        {
-            in: $STREAM.stdin,
-            out: $STREAM.open('pipe:///usr/bin/wc')
-        }
-    </init>
-
-    <observe on="$mySteams.in" for="read">
-        <choose on="$?.out.writelines($myStreams.in.readlines(1))" />
-    </observe>
-
-    <observe on="$mySteams.out" for="read">
-        <choose on="$STREAM.stdout.writelines($myStreams.out.readlines(1))" />
-    </observe>
+     <init as="myFetcher" on="$STREAM.open('tcp://foo.com:80','default','http')">
+         <choose on="$myFetcher.http_send_request('GET','/')" />
+         <choose on="$myFetcher.http_read_response_header()" />
+     </init>
 ```
 
-`$STREAM` 变量本质上是一个必要的行者级动态对象。
-
-11) `$RDR`
-
-`$RDR` 是一个代表当前行者对应的渲染器的原生实体对象，可用于获取当前的渲染器信息，如协议，URI 等。该变量是一个必要的行者级动态对象。
-
-1. `$RDR.state`：通过该属性可获取当前的渲染器状态对象，其中包括通讯方法、渲染器 URI、协议名称、协议版本等。
-1. `$RDR.connect(<comm>, <uri>)`：连接到指定的渲染器；若当前已连接到某个渲染器，则会断开该连接。
-1. `$RDR.disconn()`：断开当前的渲染器连接。
-
-##### 2.1.6.4) 集合变量
-
-在 HVML 中，我们可以使用 JSON 数组来初始化包含在一个集合中的数据，但 JSON 本身并不具有集合的概念。因此，HVML 提供了使用数组来初始化一个集合变量的能力。也就是说，集合是具有某些特征的数组的一种内部表达，我们需要通过变量来访问集合数据。
-
-集合有如下特征：
-
-- 按照指定的数据项唯一性判断条件，具有唯一值的元素在集合中只能有一项。
-- 我们可以在集合上执行合并、相交、相减等集合特有的操作。
-
-当我们需要定义集合时，使用 `init` 标签的 `uniquely` 副词属性，必要时，通过 `against` 属性值指定唯一性判断条件。
-
-我们按如下规则判断两个数据项是否相等：
-
-- `number`、 `longint`、 `ulongint` 和 `longdouble` 视作同一种类型，强制转换为解释器可支持的最高精度实数类型后做对比；当转换后的两个实数的值相等时，这两个数据项相等。
-- 两个布尔值相同时，相等。
-- 两个字符串（可施加是否对大小写敏感的匹配策略）相同时，相等。
-- 两个字节序列逐字节相同时，相等。
-- 两个动态值的获取器和设置器相等时，相等。
-- 两个原生实体指向同一原生实体对象时，相等。
-- 两个不同类型的数据做对比时，执行字符串化后的字符串（可施加是否对大小写敏感的匹配策略）相同时，相等。
-- 两个数组的成员逐次对比，所有成员一对一相同时，相等。
-- 两个元组的成员逐次对比，所有成员一对一相同时，相等。
-- 两个字典字符串化后的字符串相同时，相等。
-
-以上有两种情况使用字符串对比。为此，在使用 `init` 标签初始化集合时，我们可使用 `casesensitively` 或者 `caseinsensitively` 两个副词属性来指定字符串对比是否对大小写敏感；默认对大小写敏感。
-
-比如，我们使用下面的 `init` 标签定义一个字符串集合：
+As a valuable design, we can abstract the behavior of connecting two processes through anonymous pipes in traditional Unix systems into a stream entity, for example, we pipe the content on the standard output to `/usr/bin /wc` command processing:
 
 ```hvml
-    <init as="locales" uniquely>
-        [ "zh_CN", 100, "zh_HK", 90, "zh_TW", 60, "en_US", 50, "en_UK", 50, "en_US", 30 ]
-    </init>
+     <init as="myStreams">
+         {
+             in: $STREAM.stdin,
+             out: $STREAM.open('pipe:///usr/bin/wc')
+         }
+     </init>
+
+     <observe on="$mySteams.in" for="read">
+         <choose on="$?.out.writelines($myStreams.in.readlines(1))" />
+     </observe>
+
+     <observe on="$mySteams.out" for="read">
+         <choose on="$STREAM.stdout.writelines($myStreams.out.readlines(1))" />
+     </observe>
 ```
 
-上述用来初始化字符串集合的数组中包含有重复的 `en_US` 以及 `50`，因此，在最终的结果中只会保留一项：
+`$STREAM` variable is essentially a necessary walker-level dynamic object.
+
+11) `$SOCK`
+
+`$SOCK` is a native entity object used to create stream sockets or datagram sockets. This variable is a necessary walker-level dynamic object.
+
+1. `$SOCK.stream()`: Create a stream socket and listen for connection requests from clients on it. This method returns a stream socket entity, you can observe the `connRequest` event on the stream socket entity, and call the `accept()` method to accept the connection request. The `accept()` method on a stream socket entity will return a stream entity.
+1. `$SOCK.dgram()`: Create a datagram socket.
+
+12) `$RDR`
+
+`$RDR` is a native entity object representing the renderer corresponding to the current walker, which can be used to obtain the current renderer information, such as protocol, URI, etc. This variable is a necessary walker-level dynamic object.
+
+1. `$RDR.state`: Through this attribute, the current renderer state object can be obtained, including communication method, renderer URI, protocol name, protocol version, etc.
+1. `$RDR.connect(<comm>, <uri>)`: Connect to the specified renderer; if currently connected to a renderer, the connection will be disconnected.
+1. `$RDR.disconn()`: Disconnect the current renderer connection.
+
+##### 2.1.6.4) Collection Variables
+
+In HVML, we can use JSON arrays to initialize data contained in a collection, but JSON itself does not have the concept of a collection. Therefore, HVML provides the ability to initialize a collection variable using an array. In other words, a collection is an internal expression of an array with certain characteristics, and we need to access the collection data through variables.
+
+Collections have the following characteristics:
+
+- According to the specified data item uniqueness judgment condition, there can only be one item of elements with unique values in the collection.
+- We can perform collection-specific operations such as merging, intersecting, and subtracting on collections.
+
+When we need to define a collection, use `uniquely` adverb attribute of `init` tag, and if necessary, specify the uniqueness judgment condition through `against` attribute value.
+
+We judge whether two data items are equal according to the following rules:
+
+- `number`, `longint`, `ulongint` and `longdouble` are regarded as the same type, and they are cast to the highest precision real number type supported by the interpreter for comparison; when the values of the converted two real numbers are equal, These two data items are equal.
+- Equal when two Boolean values are the same.
+- Two strings (with or without a case-sensitive matching strategy) are equal when they are the same.
+- Two byte sequences are equal when they are identical byte-for-byte.
+- Equal when the getters and setters of two dynamic values are equal.
+- Two native entities are equal when they point to the same native entity object.
+- When comparing two different types of data, if the strings after stringification (can apply case-sensitive matching strategy) are the same, they are equal.
+- The members of the two arrays are compared one by one. When all members are one-to-one, they are equal.
+- The members of the two tuples are compared one by one, and all members are equal when they are one-to-one.
+- Two dictionaries are equal if their stringified strings are the same.
+
+There are two cases above that use string comparison. To this end, when using `init` tag to initialize the collection, we can use `casesensitively` or `caseinsensitively` two adverb attributes to specify whether the string comparison is case-sensitive; the default is case-sensitive.
+
+For example, we define a collection of strings using the following `init` tag:
+
+```hvml
+     <init as="locales" uniquely>
+         [ "zh_CN", 100, "zh_HK", 90, "zh_TW", 60, "en_US", 50, "en_UK", 50, "en_US", 30 ]
+     </init>
+```
+
+The array used to initialize the string collection above contains repeated `en_US` and `50`, so only one item will be kept in the final result:
 
 ```json
-        [ "zh_CN", 100, "zh_HK", 90, "zh_TW", 60, "en_US", 50, "en_UK", 30 ]
+         [ "zh_CN", 100, "zh_HK", 90, "zh_TW", 60, "en_US", 50, "en_UK", 30 ]
 ```
 
-针对字典，我们可以定义使用某个特定的键值作为唯一性判断条件。比如我们通常使用 `id` 来表示数据项的唯一标识符。这个定义类似关系数据库中的主键（primary key）。
+For dictionaries, we can define and use a specific key value as a unique judgment condition. For example, we usually use `id` to represent the unique identifier of a data item. This definition is similar to the primary key in a relational database.
 
-我们使用 `init` 标签的 `against` 属性值来定义字典的唯一性键名。当使用多个键名作为唯一性条件时，使用空格分隔。比如：
+We use `against` attribute value of `init` tag to define the unique key name of the dictionary. When using multiple keys as uniqueness conditions, separate them with spaces. For example:
 
 ```hvml
-    <init as="users" uniquely against="id">
-        [
-            { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-            { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
-        ]
-    </init>
+     <init as="users" uniquely against="id">
+         [
+             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+         ]
+     </init>
 ```
 
-上面的示例代码定义了一个使用 `id` 键名作为唯一性判断条件的集合。假如用来初始化这个集合的字典数组中多一项 `id` 为 `2` 的数据项，则之前 `id` 为 `2` 的数据项会被后来 `id` 为 `2` 的数据项覆盖。比如，
+The sample code above defines a collection that uses `id` key as a unique criterion. If there is one more data item with `id` as `2` in the dictionary array used to initialize this collection, the previous data item with `id` as `2` will be overwritten by the data item with `id` as `2` later . For example,
 
 ```hvml
-    <init as="users" uniquely against="id">
-        [
-            { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-            { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
-            { "id": "2", "avatar": "/img/avatars/2.png", "name": "David", "region": "zh_CN" }
-        ]
-    </init>
+     <init as="users" uniquely against="id">
+         [
+             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+             { "id": "2", "avatar": "/img/avatars/2.png", "name": "David", "region": "zh_CN" }
+         ]
+     </init>
 ```
 
-上述代码初始化后的 `$users` 中，`id` 为 `2` 的用户姓名将为 `David`。
+In `$users` after the above code is initialized, the name of the user whose `id` is `2` will be `David`.
 
-需要说明的是，必要全局变量 `$TIMERS` 本质上就是一个使用键名 `id` 的键值作为唯一性判断条件的字典集合。
+It should be noted that the necessary global variable `$TIMERS` is essentially a collection of dictionaries that use the key value of the key name `id` as a unique judgment condition.
 
-在向集合中添加新的数据成员时，有如下约定：
+When adding new data members to a collection, there are the following conventions:
 
-1. 不使用唯一性键名时，集合中的数据可以是任意类型，根据上述判断两个数据是否相等的规则确定唯一性。
-1. 使用唯一性键名时，集合中的数据必须是字典，通过对比唯一性键名对应的键值来确定成员的唯一性。当预添加到集合中的字典缺少指定的唯一性键名时，视同其键值为 `undefined`。
+1. When the unique key name is not used, the data in the collection can be of any type, and the uniqueness is determined according to the above rules for judging whether two data are equal.
+1. When using a unique key name, the data in the collection must be a dictionary, and the uniqueness of the member is determined by comparing the key value corresponding to the unique key name. When the dictionary pre-added to the collection lacks the specified unique key name, it is treated as if its key value is `undefined`.
 
-HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并集、交集、差集、异或集等。详情见 `update` 标签的描述。
+HVML provides several abstract data manipulation methods for collection data, such as union, intersection, difference, XOR, etc. See the description of `update` tag for details.
 
-##### 2.1.6.5) 变量名约定
+##### 2.1.6.5) Variable Name Convention
 
-解释器可自行实现一些预定义的行者级变量或者协程级变量，作为约定，解释器自行实现的全局变量，其名称应以 ASCII U+005F LOW LINE（`_`）打头，使用全大写字母并添加解释器前缀。如 `_PURC_VAR`。而一般的变量，使用全小写字母。
+The interpreter can implement some predefined walker-level variables or coroutine-level variables by itself. As a convention, the names of global variables implemented by the interpreter should start with ASCII U+005F LOW LINE (`_`) and use all uppercase letters And add the interpreter prefix, such as `_PURC_VAR`. For general variables, use all lowercase letters.
 
-另外，如下的变量名被保留用于特定场合：
+In addition, the following variable names are reserved for special occasions:
 
-- `_ARGS`：用于指代传入替身表达式的所有参数（通常使用数组或者元组实现）。
+- `_ARGS`: It is used to refer to all arguments passed into the alias expression (usually implemented using an array or tuple).
 
-开发者应该避免在 HVML 程序中使用被保留的变量名。
+Developers should avoid using reserved variable names in HVML programs.
 
-#### 2.1.7) 求值表达式及参数化数据
+#### 2.1.7) Evaluation Expressions and Parameterized Data
 
-在上面的例子中，我们在文档片段模板或者数据模板中使用 `$` 前缀指定一个求值表达式。该求值表达式需要符合如下规则：
+In the above example, we use `$` prefix to specify an evaluation expression in the document fragment template or data template. The evaluation expression needs to conform to the following rules:
 
-- 求值表达式可嵌套使用已绑定的动态对象，如上述示例中使用 `$string` 变量一样。
-- 除上下文变量之外，变量名须符合一般的编程语言所定义的变量名规则；若使用正则表达式表示该规则，可表达为：`/^[A-Za-z_][A-Za-z0-9_]*$/`。
-- 我们还可以使用 ``{{`` 和 ``}}`` 包围多个求值表达式从而构成一个复合表达式（compound hybrid evaluation expression）。在复合表达式中，我们可以利用单个求值表达式的结果来控制后续的求值行为，使之具备简单的逻辑控制功能。
+- Evaluated expressions can be nested using bound dynamic objects, as in the above example using `$string` variable.
+- Except for context variables, variable names must conform to the variable name rules defined by general programming languages; if you use regular expressions to express the rules, it can be expressed as: `/^[A-Za-z_][A-Za- z0-9_]*$/`.
+- We can also use ``{{`` and ``}}`` to surround multiple evaluation expressions to form a compound hybrid evaluation expression. In a compound expression, we can use the result of a single evaluation expression to control the subsequent evaluation behavior, so that it has a simple logic control function.
 
-在本文档中，求值表达式被简称为 `HEE`，是 `Hybrid Evaluation Expression（混合求值表达式）` 的缩写。求值表达式的语法，见本文档 [2.2.2) 求值表达式的语法](#222-求值表达式的语法) 一节。
+In this document, evaluation expressions are referred to simply as `HEE`, short for `Hybrid Evaluation Expression'. For the syntax of evaluated expressions, see [2.2.2) Syntax of evaluated expressions](#222-Syntax of evaluated expressions) section of this document.
 
-- 求值表达式可嵌入到使用 eJSON 语法描述的结构化数据中，从而构成一个参数化数据（parameterized data），如 `[$SYS.time, $SYS.locale, null, true, 2022]`。
-- 求值表达式可嵌入到双引号（或者三双引号）包围的字符串中，从而构成一个参数化字符串（parameterized string），如 `"The system time is: $SYS.time"`。本质上，参数化字符串是参数化数据的一种特例。
-- 在参数化字符串中，可使用一对 `{}` 包围单个求值表达式，防止出现混淆，比如：`"user-$?.id"` 和 `"user-{$?.id}"` 是一样的，但 `"$user_item"` 和 `"{$user}_item"` 是不一样的。
-- 在参数化字符串中，可使用 `\`（反斜杠）字符用于 `$` 、 `{`、 `}`、 `[`、 `]`、 `(`、 `)` 等字符的转义。
-- 在求值表达式的参数中，可使用参数化数据或者参数化字符串，如：`$DATA.count([1, 2, true, $SYS.time, "$user.id"])`
+- Evaluation expressions can be embedded in structured data described using eJSON syntax to form parameterized data, such as `[$SYS.time, $SYS.locale, null, true, 2022]`.
+- The evaluation expression can be embedded in a string surrounded by double quotes (or triple double quotes) to form a parameterized string, such as `"The system time is: $SYS.time"`. Essentially, parameterized strings are a special case of parameterized data.
+- In a parameterized string, a pair of `{}` can be used to surround a single evaluation expression to prevent confusion, such as: `"user-$?.id"` and `"user-{$?.id} "` is the same, but `"$user_item"` and `"{$user}_item"` are not the same.
+- In parameterized strings, `\` (backslash) character can be used for `$`, `{`, `}`, `[`, `]`, `(`, `)`, etc. of the escape.
+- In the parameters of the evaluation expression, you can use parameterized data or parameterized strings, such as: `$DATA.count([1, 2, true, $SYS.time, "$user.id"])`
 
-参数化数据通常用于指定可接受数据的介词属性（`on` 和 `with`）的属性值以及动作元素的数据内容，而参数化字符串通常用于指定属性值以及文档片段模板。有关属性值的指定语法，见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性) 一节。
+Parameterized data is typically used to specify attribute values for prepositional attributes (`on` and `with`) that accept data and the data content of action elements, while parameterized string is typically used to specify attribute values and document fragment templates. See [3.1.2.4) Action Element Attributes] (#3124-Action Element Attributes) section of this document for the syntax for specifying attribute values.
 
-有关 eJSON 语法，见本文档 [2.2.5) eJSON 语法](#225-ejson-语法)。
+For eJSON syntax, see this document [2.2.5) eJSON syntax] (#225-ejson-syntax).
 
-##### 2.1.7.1) 复合求值表达式
+##### 2.1.7.1) Composite Evaluation Expressions
 
-复合求值表达式（compound hybrid evaluation expression，缩写为 CHEE）是一项重要特性。CHEE 本质上由一个或多个 HEE 组成，但带有一定的逻辑控制能力。其效果类似 Unix Shell 命令行中一次执行多条命令时使用分号或者 `&&`、`||` 的效果。如下是一些例子：
+Compound hybrid evaluation expressions (CHEE for short) are an important feature. CHEE essentially consists of one or more HEEs, but with certain logic control capabilities. Its effect is similar to the effect of using semicolon or `&&`, `||` when executing multiple commands at a time in the Unix Shell command line. Here are some examples:
 
 ```js
 {{
-    // 调用 $SYS.cwd 将当前工作路径切换到 `/etc` 目录下，然后调用 $FS.list
-    // 获得所有目录项对象数组。
-    $SYS.cwd(! '/etc'); $FS.list
+     // Call $SYS.cwd to switch the current working path to the `/etc` directory, and then call $FS.list
+     // Get an array of all directory entry objects.
+     $SYS.cwd(! '/etc'); $FS.list
 }}
 
 {{
-    // 尝试改变工作路径到 `/root` 目录下
-    $SYS.cwd(! '/root') &&
-        // 如果成功则调用 $FS.list 获得该目录下的所有目录项对象数组
-        $FS.list ||
-            // 否则向标准输出（$STREAM.stdout）打印提示信息
-            $STREAM.stdout.writelines('Cannot change directory to "/root"');
-            // 并改变工作路径到 `/` 下
-            $SYS.cwd(! '/' ) &&
-                // 若成功，则获得该目录下所有目录项对象数组
-                $FS.list ||
-                    // 否则将 `false` 作为该 CHEE 的最终求值结果
-                    false
+     // Try changing the working path to the `/root` directory
+     $SYS.cwd(! '/root') &&
+         // If successful, call $FS.list to get an array of all directory entry objects in this directory
+         $FS.list ||
+             // Otherwise, print prompt information to standard output ($STREAM.stdout)
+             $STREAM.stdout.writelines('Cannot change directory to "/root"');
+             // and change the working path to `/`
+             $SYS.cwd(! '/' ) &&
+                 // If successful, get an array of all directory item objects in the directory
+                 $FS.list ||
+                     // otherwise use `false` as the final evaluation result of this CHEE
+                     false
 }}
 
 {{
-# 尝试改变工作路径到 `/root` 目录下，如果成功则调用 $FS.list_prt 获得该目录下
-# 所有目录项清单（字符串），否则返回提示信息。最终将目录项清单或者错误信息
-# 输出到标准输出。
-    $STREAM.stdout.writelines({{
-                $SYS.cwd(! '/root') && $FS.list_prt ||
-                    'Cannot change directory to "/root"'
-            }})
+# Try to change the working directory to the `/root` directory, if successful, call $FS.list_prt to get the directory
+# List of all directory items (string), otherwise return a prompt message. Eventually the list of directory items or error messages
+# Output to standard output.
+     $STREAM.stdout.writelines({{
+                 $SYS.cwd(! '/root') && $FS.list_prt ||
+                     'Cannot change directory to "/root"'
+             }})
 }}
 ```
 
-##### 2.1.7.2) 表达式变量和替身表达式
+##### 2.1.7.2) Expression Variables and Stand-In Expressions
 
-HVML 允许使用 `bind` 标签将一个求值表达式（或参数化数据）绑定到一个变量：
+HVML allows binding an evaluated expression (or parameterized data) to a variable using `bind` tag:
 
 ```hvml
-    <bind on $users[$MATH.random(10)] as "me" />
+     <bind on $users[$MATH. random(10)] as "me" />
 ```
 
-这个变量对应的并不是上述标签定义的元素被执行时 `$users[$MATH.random(10)]` 的值，而是 `$users[$MATH.random(10)]` 这个求值表达式；我们将这种变量称为“表达式变量（expression variable）”
+This variable does not correspond to the value of `$users[$MATH.random(10)]` when the element defined by the above tag is executed, but the evaluation expression `$users[$MATH.random(10)]` ; we call such variables "expression variables"
 
-当我们需要对绑定的表达式求值时，使用 `$me.eval`；我们将 `$me.eval` 这类表达式称为替身表达式（substitue expression）。由于上面的示例表达式使用了 `$MATH` 的 `random` 方法，所以每次求值将获得不同的结果。
+When we need to evaluate a bound expression, we use `$me.eval`; we call `$me.eval` such expressions as substitute expressions. Since the example expression above uses `random` method of `$MATH`, it will get different results each time it is evaluated.
 
-我们可以使用 `observe` 标签观察一个绑定了表达式的变量，从而根据变量值的变化做出一些相应的处理。
+We can use `observe` tag to observe a variable bound to an expression, so as to make some corresponding processing according to the change of the variable value.
 
-比如，我们可以将某个目标文档元素的属性或者内容绑定到某个变量上，然后使用 `observe` 元素处理其上的 `change` 事件：
+For example, we can bind the attribute or content of a target document element to a variable, and then use `observe` element to handle `change` event on it:
 
 ```hvml
 <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
 <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name">
-    <observe on $user_name for "change">
-        ...
-    </observe>
+     <observe on $user_name for "change">
+         ...
+     </observe>
 </bind>
 ```
 
-#### 2.1.8) 栈式虚拟机
+#### 2.1.8) Stack VM
 
-理论上看，每个 HVML 程序在一个假想的栈式虚拟机（stack-based virtual machine）上运行。HVML 解释器首先解析 HVML 程序，生成对应的 vDOM 树，然后从 vDOM 的根元素开始，以深度优先的顺序处理每个元素。习惯上，HVML 程序的执行栈从上往下增长，每执行一个子孙元素，执行栈上压入（push）一个新的栈帧（stack frame），直到 vDOM 的叶子元素为止，此时，解释器会弹出（pop）最后的栈帧，然后尝试执行新的最后栈帧对应元素的下个兄弟元素。
+In theory, every HVML program runs on a hypothetical stack-based virtual machine. The HVML interpreter first parses the HVML program, generates the corresponding vDOM tree, and then processes each element in depth-first order starting from the root element of the vDOM. Traditionally, the execution stack of an HVML program grows from top to bottom. Every time a descendant element is executed, a new stack frame is pushed on the execution stack until the leaf element of vDOM. At this time, the interpreter Will pop the last stack frame, and then try to execute the next sibling element of the element corresponding to the new last stack frame.
 
-前述的上下文变量在执行栈中维护，每个栈帧中保留有一份上下文变量对应的值；而静态变量和特定的 vDOM 元素关联，其名字空间就是该元素定义的子树。
+The aforementioned context variables are maintained in the execution stack, and each stack frame retains a value corresponding to the context variables; while static variables are associated with a specific vDOM element, and its namespace is the subtree defined by the element.
 
-比如下面的 HVML 程序，将打印小于 10 的斐波那契数列：
+For example, the following HVML program will print the Fibonacci numbers less than 10:
 
 ```hvml
 <!DOCTYPE hvml>
 <hvml target="void">
-    <head>
-        $STREAM.stdout.writelines("# Fibonacci Numbers")
-    </head>
+     <head>
+         $STREAM.stdout.writelines("# Fibonacci Numbers")
+     </head>
 
-    <body id="theBody">
-        <inherit>
-            {{
-                $STREAM.stdout.writelines("## Fibonacci Numbers less than 10");
-                $STREAM.stdout.writelines('')
-            }}
-        </inherit>
+     <body id="theBody">
+         <inherit>
+             {{
+                 $STREAM.stdout.writelines("## Fibonacci Numbers less than 10");
+                 $STREAM.stdout.writelines('')
+             }}
+         </inherit>
 
-        <init as "count" at "_topmost" with 2 temp />
-        <init as "last_one" with 0L temp />
-        <init as "last_two" with 1L temp />
+         <init as "count" at "_topmost" with 2 temp />
+         <init as "last_one" with 0L temp />
+         <init as "last_two" with 1L temp />
 
-        <inherit>
-            {{
-                $STREAM.stdout.writelines($STR.join('    0: ', $last_one));
-                $STREAM.stdout.writelines($STR.join('    1: ', $last_two));
-            }}
-        </inherit>
+         <inherit>
+             {{
+                 $STREAM.stdout.writelines($STR.join(' 0: ', $last_one));
+                 $STREAM.stdout.writelines($STR.join(' 1: ', $last_two));
+             }}
+         </inherit>
 
-        <iterate on $last_two onlyif $L.lt($0<, 10L) with $DATA.arith('+', $0<, $last_one) nosetotail >
-            <init as "last_one" at "2" with $last_two temp />
-            <init as "last_two" at "2" with $? temp />
+         <iterate on $last_two onlyif $L.lt($0<, 10L) with $DATA.arith('+', $0<, $last_one) nosetotail>
+             <init as "last_one" at "2" with $last_two temp />
+             <init as "last_two" at "2" with $? temp />
 
-            <update on "$3!" at ".count" to "displace" with += 1 />
+             <update on "$3!" at ".count" to "displace" with += 1 />
 
-            <inherit>
-                $STREAM.stdout.writelines(
-                    $STR.join('    ', $DATA.arith('+', $%, 2), ': ', $?))
-            </inherit>
-        </iterate>
+             <inherit>
+                 $STREAM.stdout.writelines(
+                     $STR.join(' ', $DATA.arith('+', $%, 2), ': ', $?))
+             </inherit>
+         </iterate>
 
-        <inherit>
-            {{
-                $STREAM.stdout.writelines('');
-                $STREAM.stdout.writelines($STR.format_c("Totally %d numbers", $count))
-            }}
-        </inherit>
+         <inherit>
+             {{
+                 $STREAM.stdout.writelines('');
+                 $STREAM.stdout.writelines($STR.format_c("Totally %d numbers", $count))
+             }}
+         </inherit>
 
-        <exit with [$count, $last_two] />
-    </body>
+         <exit with [$count, $last_two] />
+     </body>
 
-    $0!.count
+     $0!.count
 </hvml>
 ```
 
-其执行路径描述如下：
+Its execution path is described as follows:
 
-1. 解释器初始化一个执行栈，压入一个表示栈顶的特殊栈帧。
-1. 解释器执行 `hvml` 元素规定的动作，在执行栈压入一个新的栈帧。通常，`hvml` 元素将根据`target` 属性的值创建一个空的目标文档。在本例中，我们设置 `target` 为 `void`，故而将创建一个虚无的目标文档。
-1. 解释器执行 `hvml` 元素的第一个子元素 `head` 元素规定的动作，在执行栈压入一个新的栈帧。对于本例，目标文档类型为虚无，故而除了处理 `head` 元素的属性、内容及其子元素之外，不做其他操作。该 `head` 元素不包含子元素，而定义有内容。其内容是一个求值表达式，对该表达式求值，将在标准输出上打印 `Fibonacci Numbers`。
-1. 由于 `head` 元素不包含子元素，故而解释器在执行完 `head` 元素的动作后，将弹出最下面的栈帧，然后开始执行 `head` 元素的下个兄弟元素。
-1. 解释器执行 `hvml` 元素的第二个子元素 `body` 元素规定的动作，在执行栈上压入一个新的栈帧。对于本例，目标文档类型为虚无，故而除了处理 `body` 元素的属性、内容及其子元素之外，不做其他操作。`body` 元素定义有属性，未定义内容，包含有多个子元素，故而将继续处理其子元素。
-1. 解释器执行 `body` 元素的第一个子元素 `inherit`。该元素将继承上个栈帧中的上下文变量，然后处理其内容及子元素。在本例中，该元素只定义有内容。其内容是一个求值表达式，对该表达式求值，将在标准输出上打印另外两行文本。
-1. 以此类推，解释器将依次执行 `body` 元素其他几个子元素，包括三个 `init` 元素和一个 `inherit` 元素。
-1. 解释器执行 `iterate` 元素，该元素执行迭代操作，故而会多次重复执行其中所有的子孙元素。在本例中，`iterate` 元素将执行 5 次，而其中的三个 `init` 子元素和一个 `inherit` 子元素，也会被执行 5 次。
-1. 解释器执行 `body` 的最后一个 `inherit` 子元素。类似前述的 `inherit` 子元素，该元素的执行效果是输出两行文本。
-1. 解释器弹出 `body` 的最后一个 `inherit` 子元素对应的栈帧。
-1. 解释器弹出 `body` 元素对应的栈帧。
-1. 解释器弹出 `hvml` 元素对应的栈帧，到达栈顶。
-1. 该 HVML 程序的执行结束。
+1. The interpreter initializes an execution stack and pushes a special stack frame representing the top of the stack.
+1. The interpreter executes the action specified by `hvml` element and pushes a new stack frame on the execution stack. Normally, `hvml` element will create an empty target document based on the value of `target` attribute. In this example, we set `target` to `void`, so a void target document will be created.
+1. The interpreter executes the actions specified by `head` element, the first child element of `hvml` element, and pushes a new stack frame into the execution stack. For this example, the target document type is nothing, so it does nothing other than process `head` element's attributes, content, and its children. `head` element does not contain child elements, but defines content. Its content is an evaluated expression that, when evaluated, will print `Fibonacci Numbers` on standard output.
+1. Since `head` element does not contain child elements, the interpreter will pop up the bottom stack frame after executing the actions of `head` element, and then start to execute the next sibling element of `head` element.
+1. The interpreter executes the action specified by the second sub-element `body` element of `hvml` element, and pushes a new stack frame on the execution stack. For this example, the target document type is nothing, so it does nothing other than process `body` element's attributes, content, and its children. `body` element defines attributes, does not define content, and contains multiple child elements, so its child elements will continue to be processed.
+1. The interpreter executes `inherit` of the first child element of `body` element. The element will inherit the context variables from the previous stack frame, and then process its content and child elements. In this example, the element only defines content. Its content is an evaluated expression that, when evaluated, will print two additional lines of text on standard output.
+1. By analogy, the interpreter will execute several other child elements of `body` element in turn, including three `init` elements and `inherit` element.
+1. The interpreter executes `iterate` element, which performs an iterative operation so that all its descendants are repeated multiple times. In this example, `iterate` element will be executed 5 times, and the three `init` sub-elements and one `inherit` sub-element will also be executed 5 times.
+1. The interpreter executes the last `inherit` child element of `body`. Similar to the aforementioned `inherit` child element, the execution effect of this element is to output two lines of text.
+1. The interpreter pops the stack frame corresponding to the last `inherit` child element of `body`.
+1. The interpreter pops the stack frame corresponding to `body` element.
+1. The interpreter pops the stack frame corresponding to `hvml` element and reaches the top of the stack.
+1. Execution of the HVML program ends.
 
-最终该 HVML 程序的输出结果为：
+The final output of the HVML program is:
 
-    # Fibonacci Numbers
-    ## Fibonacci Numbers less than 10
+     #Fibonacci Numbers
+     ## Fibonacci Numbers less than 10
 
-        0: 0
-        1: 1
-        2: 1
-        3: 2
-        4: 3
-        5: 5
-        6: 8
+         0: 0
+         1:1
+         twenty one
+         3: 2
+         4:3
+         5:5
+         6:8
 
-    Totally 7 numbers.
+     Totally 7 numbers.
 
-通常，一个解释器实例对应一个虚拟机实例。理论上，前述虚拟机可同时运行多个 HVML 程序，此时，每个 HVML 程序对应一个执行栈，通过某种机制切换当前执行栈就可以实现多个 HVML 程序的并发执行。这和真实的物理计算实现多任务的机制是类似的。在实践中，解释器通常以独立的协程（coroutine）形式执行同一虚拟机实例中装载的多个 HVML 程序实例，并在如下时机切换协程：
+Typically, one interpreter instance corresponds to one virtual machine instance. Theoretically, the aforementioned virtual machine can run multiple HVML programs at the same time. At this time, each HVML program corresponds to an execution stack, and the concurrent execution of multiple HVML programs can be realized by switching the current execution stack through a certain mechanism. This is similar to how real physical computing implements multitasking. In practice, the interpreter usually executes multiple HVML program instances loaded in the same virtual machine instance in the form of independent coroutines, and switches the coroutines at the following times:
 
-1. 每执行完一次元素动作后，解释器将强制当前协程让出（yield）对虚拟机的使用，使得其他就绪状态的协程可获得执行的机会。
-1. 在调用动态对象的方法时，若对应的方法返回表示重试的错误值，表明该方法阻塞了当前协程，解释器可调度其他就绪状态的协程工作，直到该协程的执行状态被重新设置为就绪状态。此时，解释器将对被阻塞的表达式执行重新求值。
+1. After each element action is executed, the interpreter will force the current coroutine to yield the use of the virtual machine, so that other coroutines in the ready state can get a chance to execute.
+1. When calling a method of a dynamic object, if the corresponding method returns an error value indicating retry, it indicates that the method blocks the current coroutine, and the interpreter can schedule other coroutines in the ready state until the execution state of the coroutine is reset to the ready state. At this point, the interpreter will perform re-evaluation of the blocked expression.
 
-#### 2.1.9) 框架元素
+#### 2.1.9) Frame Elements
 
-在 HVML 中，框架元素用于定义一个 HVML 程序的整体框架。我们可以在框架元素中定义文本内容。
+In HVML, the framework element is used to define the overall framework of an HVML program. We can define text content inside the frame element.
 
-HVML 定义了如下几种框架元素：
+HVML defines the following framework elements:
 
-- `hvml`：该元素定义 HVML 程序的根元素，除 `target` 属性之外，其属性及内容，将被克隆到目标文档的根元素。
-- `head`：该元素定义 HVML 程序中的公共部分，通常用来创建全局静态变量。另外，若目标文档支持 `head` 元素，则其属性和内容将被克隆到目标文档的 `head` 元素中。
-- `body`：该元素定义一个程序本体；HVML 程序中可包含零个或者多个程序本体，但每次执行只会执行一个指定的本体。另外，若目标文档支持 `body` 元素，则其属性和内容将被克隆到目标文档的 `body` 元素中。
+- `hvml`: This element defines the root element of the HVML program. Except for `target` attribute, its attributes and content will be cloned to the root element of the target document.
+- `head`: This element defines the public part of the HVML program, usually used to create global static variables. Additionally, if the target document supports `head` element, its attributes and content will be cloned into `head` element of the target document.
+- `body`: This element defines a program body; an HVML program can contain zero or more program bodies, but each execution will only execute one specified body. Additionally, if the target document supports `body` element, its attributes and content will be cloned into `body` element of the target document.
 
-详情见本文档 [2.3) 框架标签详解](#23-框架标签详解) 小节。
+For details, see the subsection [2.3) Frame Tag Details](#23-Frame Tag Details) in this document.
 
-#### 2.1.10) 模板元素
+#### 2.1.10) Template Elements
 
-在 HVML 中，模板元素用于定义可被置换的文档片段模板或者参数化的数据模板。模板元素使用内容来定义模板，故而不能定义任何子元素。
+In HVML, template elements are used to define templates for document fragments or parameterized data templates that can be replaced. The template element uses content to define the template and therefore cannot define any child elements.
 
-HVML 定义了如下几种模板元素：
+HVML defines the following template elements:
 
-- `archedata`：该元素用于定义一个使用 eJSON 格式描述的数据构造模板。
-- `archetype`：该元素用于定义一个使用目标标记语言定义的文档片段模板。
-- `error`：该元素定义一个用于指定错误类型的文档片段模板。
-- `except`：该元素定义一个用于指定异常类型的文档片段模板。
+- `archedata`: This element is used to define a data construction template described in eJSON format.
+- `archetype`: This element is used to define a document fragment template defined in the target markup language.
+- `error`: This element defines a document fragment template that specifies the type of error.
+- `except`: This element defines a document fragment template that specifies the type of exception.
 
-详情见本文档 [2.4) 模板标签详解](#24-模板标签详解) 小节。
+For details, see the section [2.4) Detailed explanation of template tags] (#24-Detailed explanation of template tags) in this document.
 
-#### 2.1.11) 动作元素
+#### 2.1.11) Action Elements
 
-在 HVML 中，动作元素具有如下的特点：
+In HVML, action elements have the following characteristics:
 
-1. 在动作元素中，我们可使用参数化数据定义内容，为区别目标文档元素的文本内容，我们称动作元素的内容为“数据内容”。通常，一个动作元素的数据内容必须在其任何子元素前定义，且只能定义一项。由动作元素的内容定义的数据，将绑定到对应栈帧的 `$^` 上下文变量上。
-1. 每个动作元素会产生一个执行结果数据，绑定到对应栈帧的 `$?` 上下文变量上。
-1. 每个动作元素对应栈帧中表示目标文档位置的上下文变量 `$@`，可使用 `in` 属性定义，若未定义，则继承自其父元素。
+1. In the action element, we can use parameterized data to define the content. In order to distinguish the text content of the target document element, we call the content of the action element "data content". Usually, the data content of an action element must be defined before any of its child elements, and only one item can be defined. The data defined by the content of the action element will be bound to `$^` context variable of the corresponding stack frame.
+1. Each action element will generate an execution result data, which is bound to `$?` context variable of the corresponding stack frame.
+1. Each action element corresponds to the context variable `$@` representing the location of the target document in the stack frame, which can be defined using `in` attribute. If not defined, it will inherit from its parent element.
 
-我们将动作元素定义的内容视作附加数据。在某些使用 `with` 属性的动作元素中，如 `init` 中，当数据的表述过于复杂不适合通过 `with` 的属性值定义时，我们可使用内容来定义该项数据。
+We consider the content defined by the action element as additional data. In some action elements that use the `with` attribute, such as `init`, when the expression of the data is too complex to be defined by the attribute value of `with`, we can use the content to define the data.
 
-我们将一个动作元素及其子孙（descendant）元素形成的树形结构称为动作子树。
+We call the tree structure formed by an action element and its descendant elements an action subtree.
 
-在 HVML 中使用目标标记语言的标签定义的元素（如示例代码中的 `ul`、 `li` 等），通常形成目标文档的结构骨架（skeleton），因此，我们将这类元素称为 `骨架` 元素。在 HVML 解释器中，我们将骨架元素视作一种特殊的动作元素：
+In HVML, the elements defined by the tags of the target markup language (such as `ul`, `li`, etc. in the sample code) usually form the structural skeleton of the target document, so we call such elements `skeleton ` element. In the HVML interpreter, we treat skeleton elements as a special kind of action element:
 
-- 其默认动作为在当前目标文档位置上插入（追加）该元素的一个克隆。
-- 骨架元素隐含指定了可继承给后继子元素的目标文档位置（对应上下文变量 `$@`），即该骨架元素在 eDOM 树中对应的元素。
-- 除 `$@` 之外，骨架元素对应的其他上下文变量初始均为 `undefined`。
+- The default action is to insert (append) a clone of the element at the current target document position.
+- The skeleton element implicitly specifies the target document position (corresponding to the context variable `$@`) that can be inherited to subsequent child elements, that is, the corresponding element of the skeleton element in the eDOM tree.
+- Except for `$@`, other context variables corresponding to skeleton elements are initially `undefined`.
 
-我们通过 HVML 动作标签定义动作元素，我们将在本文档 [2.5) 动作标签详解](#25-动作标签详解) 中详细讲述这些动作标签。
+We define action elements through HVML action tags, which we will describe in detail in this document [2.5) Action Tag Details](#25-Action Tag Details).
 
-##### 2.1.11.1) 用来操作数据的动作元素
+##### 2.1.11.1) Action Elements Used to manipulate data
 
-HVML 定义有如下几个基本的动作元素，用于操作数据或者元素：
+HVML defines the following basic action elements for manipulating data or elements:
 
-- `init` 元素用来初始化或重置一个变量。
-- `update` 元素用来在指定的元素、元素汇集或者容器数据上执行更新操作。
-- `clear` 元素用来在指定元素或者容器数据上执行清空操作，通常意味者删除当前元素或者数据的所有子元素或者数据项。
-- `erase` 元素用来移除指定的元素、元素属性或容器中的数据项。
-- `choose` 元素用于从给定的数据中选择（或产生）另外一个数据。
-- `reduce` 元素用来定义在一个可迭代数据或者元素上执行归约（reduce）动作。
+-  `init` element is used to initialize or reset a variable.
+- `update` element is used to perform an update operation on the specified element, collection of elements, or container data.
+- `clear` element is used to perform a clear operation on the specified element or container data, which usually means deleting all child elements or data items of the current element or data.
+- `erase` element is used to remove a specified element, element attribute, or data item in a container.
+- `choose` element is used to choose (or generate) another data from the given data.
+- `reduce` element is used to define the reduction action to be performed on an iterable data or elements.
 
-##### 2.1.11.2) 用于操控执行栈的动作元素
+##### 2.1.11.2) Action Elements for Manipulating the Execution Stack
 
-如下动作元素用于操控虚拟机，包括执行栈、事件循环等：
+The following action elements are used to manipulate the virtual machine, including the execution stack, event loop, etc.:
 
-- `test` 元素在一个元素节点或者数据项上执行测试动作，用于实现依赖数据值的条件操作。
-- `match` 元素作为 `test` 元素的直接子元素，定义一个匹配分支。
-- `differ` 元素作为 `test` 元素的直接子元素，定义测试失败时的程序分支。
-- `iterate` 元素用来定义在一个可迭代数据或者元素上的迭代动作，从而实现循环。
-- `define` 元素用来定义一个可供重用的操作组。
-- `return` 元素用来定义一个操作组的返回值。
-- `back` 元素用来弹出栈帧到指定的执行栈位置，相当于打断（break）默认的执行路径。
-- `include` 元素用来就地（in place）执行一个操作组。
-- `call` 元素用来调用一个操作组。
-- `catch` 元素用于捕获一个异常。
+- `test` element performs a test action on an element node or data item, and is used to implement conditional operations that depend on data values.
+- `match` element defines a match branch as a direct child of `test` element.
+- `differ` element, as a direct child of `test` element, defines the program branch when the test fails.
+- `iterate` element is used to define an iterative action on an iterable data or element, thereby implementing a loop.
+- `define` element is used to define a reusable group of operations.
+- `return` element is used to define the return value of an operation group.
+- `back` element is used to pop the stack frame to the specified execution stack position, which is equivalent to breaking the default execution path.
+- `include` element is used to execute a group of operations in place.
+- `call` element is used to call an operation group.
+- `catch` element is used to catch an exception.
 
-##### 2.1.11.3) 其他动作元素
+##### 2.1.11.3) Other Action Elements
 
-HVML 还定义有如下一些动作元素用于操控事件循环、渲染器、操作组等：
+HVML also defines the following action elements for manipulating event loops, renderers, operation groups, etc.:
 
-- `observe` 元素用来定义针对特定数据或者元素上的观察动作。
-- `fire` 元素用来显式激发一个事件。
-- `forget` 元素用来撤销对某个数据或者元素上的观察动作。
-- `request` 标签用于向渲染器、其他协程等发出一个请求并获得结果数据。
-- `load` 元素用来装载并执行一个指定的 HVML 程序（或代码），相当于创建一个新的协程。
-- `exit` 元素用于主动退出一个 HVML 程序的执行，即终止一个 HVML 协程。
-- `sleep` 元素用于主动休眠当前协程。
+- `observe` element is used to define observation actions on specific data or elements.
+- `fire` element is used to explicitly fire an event.
+- `forget` element is used to cancel the observation action on a certain data or element.
+- `request` tag is used to make a request to a renderer, other coroutines, etc. and get the resulting data.
+- `load` element is used to load and execute a specified HVML program (or code), which is equivalent to creating a new coroutine.
+- `exit` element is used to actively exit the execution of an HVML program, that is, terminate an HVML coroutine.
+- `sleep` element is used to actively sleep the current coroutine.
 
-#### 2.1.12) 错误和异常的处理
+#### 2.1.12) Error and Exception Handling
 
-在 HVML 中，错误指无法恢复的致命问题，比如段故障、总线错误等；而异常指可以被捕获或者处理的问题。
+In HVML, errors refer to fatal problems that cannot be recovered, such as segment faults, bus errors, etc.; exceptions refer to problems that can be caught or handled.
 
-为了方便处理错误和异常情形，可使用如下错误或异常模板元素：
+To facilitate error and exception handling, use the following error or exception template elements:
 
-- `error`：出现错误时，尝试用其中包含的内容插入到目标文档的当前位置。`error` 元素支持 `type` 属性，用来指定对应的错误类型。如：
-   - `BusError`：表示总线错误（错误内存访问）。
-   - `SegFault`：表示段故障（无效内存引用）。
-   - `Terminated`：表示解释器实例被人为终止。
-   - `CPUTimeLimitExceeded`：表示达到 CPU 时间上限。
-   - `FileSizeLimitExceeded`：表示达到文件大小上限。
-- `except`：出现未被捕获的异常时，插入其中包含的内容到目标文档的当前位置。`except` 元素支持 `type` 属性，用来指定对应的异常类型。
+- `error`: In case of an error, attempt to insert at the current position of the target document with the content contained within. `error` element supports `type` attribute, which is used to specify the corresponding error type. like:
+    - `BusError`: Indicate a bus error (bad memory access).
+    - `SegFault`: Indicate a segment fault (invalid memory reference).
+    - `Terminated`: Indicate that the interpreter instance was artificially terminated.
+    - `CPUTimeLimitExceeded`: Indicate that the CPU time limit has been reached.
+    - `FileSizeLimitExceeded`: Indicate that the file size limit has been reached.
+- `except`: When an uncaught exception occurs, insert the contained content at the current position in the target document. `except` element supports `type` attribute, which is used to specify the corresponding exception type.
 
-HVML 定义的异常如下：
+The exceptions defined by HVML are as follows:
 
-- 通用：
-   - `Conflict`：表示指定的操作条件互相冲突。
-   - `Gone`：表示指定的数据或实体已消失。
-   - `Incompleted`：表示未完成的调用，比如被信号打断的系统调用。
-   - `MismatchedVersion`：版本不匹配，比如使用低版本的外部执行器或者动态对象。
-   - `NotReady`：表示未就绪，比如指定的命名变量对应的数据尚未就绪。
-   - `NotImplemented`：表示某个特性尚未实现。
-   - `NotFound`：表示未找到，如找不到指定的变量名字空间。
-   - `NotAllowed`：表示不允许的操作，如执行器的数据类型不正确。
-   - `NotAcceptable`：表示不可接受的条件，比如错误的介词属性值。
-   - `Timeout`：超时。
-   - `TooEarly`：表示太早（如指定的数据尚未准备就绪）。
-   - `TooLarge`：表示太大（如数据包大小）。
-   - `TooLong`：表示太长（如路径名称）。
-   - `TooMany`：表示太多（如符号链接）。
-   - `TooSmall`：表示太小（如缓冲区大小）。
-   - `Unauthorized`：表示未经身份验证。
-   - `UnavailableLegally`：由于法律原因而不可用。
-   - `UnmetPrecondition`：未满足前置条件。
-   - `Unsupported`：表示不支持某个特性或者某个要求的信息，比如某些区域（locale）分类。
-- 解析相关：
-   - `BadEncoding`：表示错误的字符编码。
-   - `BadHVMLTag`：表示错误的、不适合的标签，或者不匹配的 HVML 关闭标签。
-   - `BadHVMLAttrName`：表示错误的 HVML 元素属性名称，如未知的属性名称，不符合规范的属性名称等。
-   - `BadHVMLAttrValue`：表示无法解析的 HVML 元素属性值。
-   - `BadHVMLContent`：表示无法解析的 HVML 元素内容。
-   - `BadTargetHTML`：表示解析目标标签文档（HTML）时出现错误。
-   - `BadTargetXGML`：表示解析目标标签文档（XGML）时出现错误。
-   - `BadTargetXML`：表示解析目标标签文档（XML）时出现错误。
-- 解释器相关：
-   - `ArgumentMissed`：缺少必要参数。
-   - `BadExpression`：表示错误的表达式，在对表达式求值时产生。
-   - `BadExecutor`：表示错误的执行器，在解析执行器时产生。
-   - `BadIndex`：索引错误，发生在引用数组或元组元素时，通常指索引值超出了数组或元组范围。
-   - `BadName`：表示错误的变量名称。通常发生在对求值表达式进行求值时，当指定的变量名不符合规范要求的情况。
-   - `ChildTerminated`：子协程被强制终止。
-   - `DuplicateName`：重复名称，当要初始化的变量名称已经被占用时。
-   - `DuplicateKey`：重复键，通常发生在合并对象或集合时。
-   - `eDOMFailure`：表示在构建 eDOM 时遇到问题。
-   - `InternalFailure`：解释器内部错误。
-   - `InvalidValue`：表示错误的、无法接受的值。通常发生在传入了不可接受的数值时。
-   - `LostRenderer`：丢失到渲染器的连接。
-   - `MaxIterationCount`：表示达到最大迭代次数。
-   - `MaxRecursionDepth`：表示达到最大递归深度。
-   - `MemoryFailure`：内存错误，如内部堆太小，内存分配失败。
-   - `NoData`：表示不存在指定的数据，或者指定的变量名未绑定到任何数据。
-   - `NoSuchKey`：字典中的键值错误，通常指引用了一个不存在的键值。
-   - `NotIterable`：表示指定的元素或数据不是可迭代的。
-   - `WrongDataType`：表示错误的数据类型。
-- 浮点数相关：
-   - `InvalidFloat`：表示传入了无效的浮点数。比如在调用 `$MATH.asin` 时，传入了不在 `[-1, 1]` 范围内的实数。
-   - `Overflow`：表示浮点数运算时出现向上溢出错误。
-   - `Underflow`：表示浮点数运算时出现向下溢出错误。
-   - `ZeroDivision`：表示遇到被零除错误。
-- 操作系统相关：
-   - `AccessDenied`：表示拒绝访问或者权限不足。
-   - `BrokenPipe`：管道的另一端已经关闭。
-   - `ConnectionAborted`：连接中断。
-   - `ConnectionRefused`：连接被拒绝。
-   - `ConnectionReset`：连接被重置。
-   - `EntityNotFound`：未找到指定的实体（如文件）。
-   - `EntityExists`：创建新实体（如文件）时，该实体已存在。
-   - `EntityGone`：实体已消失。
-   - `IOFailure`：表示输入输出错误。
-   - `NotDesiredEntity`：表示传递了一个未预期的实体。
-   - `NoStorageSpace`：表示存储空间不足（如写入文件）时。
-   - `NameResolutionFailed`：名称解析失败。该异常应定义额外信息以便应用程序可以知晓解析失败的具体名称。
-   - `OSFailure`：表示遇到未明确定义为异常的一般性操作系统错误。该异常应定义额外信息以便应用程序可以获得具体的错误信息，如 Unix 类系统中的 `errno`。
-   - `RequestFailed`：请求失败。该异常应定义额外信息以便应用程序可以获得具体的请求失败信息，如 HTTP 协议状态码。
-   - `SysFault`：不可恢复的操作系统故障，通常对应系统的 `EFAULT`。
+- General:
+    - `Conflict`: Indicate that the specified operating conditions conflict with each other.
+    - `Gone`: Indicate that the specified data or entity has disappeared.
+    - `Incompleted`: Indicate an incomplete call, such as a system call interrupted by a signal.
+    - `MismatchedVersion`: The version does not match, such as using a lower version of an external executor or a dynamic object.
+    - `NotReady`: Indicate that it is not ready, for example, the data corresponding to the specified named variable is not ready yet.
+    - `NotImplemented`: Indicate that a feature has not yet been implemented.
+    - `NotFound`: Indicate not found, such as the specified variable namespace cannot be found.
+    - `NotAllowed`: Indicate an operation that is not allowed, such as an executor with an incorrect data type.
+    - `NotAcceptable`: Indicate unacceptable conditions, such as wrong prepositional attribute values.
+    - `Timeout`: Timeout.
+    - `TooEarly`: Indicate too early (such as the specified data is not yet ready).
+    - `TooLarge`: Indicate too large (such as packet size).
+    - `TooLong`: Indicate too long (such as path name).
+    - `TooMany`: Indicate too many (such as symbolic links).
+    - `TooSmall`: Indicate too small (such as buffer size).
+    - `Unauthorized`: Indicate unauthenticated.
+    - `UnavailableLegally`: Unavailable for legal reasons.
+    - `UnmetPrecondition`: The precondition was not met.
+    - `Unsupported`: Indicate that a feature or a required information is not supported, such as certain locale classifications.
+- Parsing related:
+    - `BadEncoding`: Indicate bad character encoding.
+    - `BadHVMLTag`: Indicate a bad, unsuitable tag, or mismatched HVML closing tag.
+    - `BadHVMLAttrName`: Indicate a bad HVML element attribute name, such as an unknown attribute name, an attribute name that does not conform to the specification, etc.
+    - `BadHVMLAttrValue`: Indicate an unparseable HVML element attribute value.
+    - `BadHVMLContent`: Indicate unparsable HVML element content.
+    - `BadTargetHTML`: Indicate that there was an error parsing the target tag document (HTML).
+    - `BadTargetXGML`: Indicate that an error occurred while parsing the target markup document (XGML).
+    - `BadTargetXML`: Indicate that an error occurred while parsing the target tag document (XML).
+- Interpreter related:
+    - `ArgumentMissed`: A required argument is missing.
+    - `BadExpression`: Indicate a bad expression, produced when evaluating the expression.
+    - `BadExecutor`: Indicate a bad executor, generated when parsing the executor.
+    - `BadIndex`: Index error, which occurs when referencing an array or tuple element, usually means that the index value exceeds the range of the array or tuple.
+    - `BadName`: Indicate a bad variable name. Usually occurs when the specified variable name does not meet the specification requirements when evaluating the evaluation expression.
+    - `ChildTerminated`: The child coroutine was forcibly terminated.
+    - `DuplicateName`: Duplicate name, when the variable name to be initialized is already taken.
+    - `DuplicateKey`: Duplicate key, usually occurs when merging objects or collections.
+    - `eDOMFailure`: Indicate that a problem was encountered while building the eDOM.
+    - `InternalFailure`: Interpreter internal error.
+    - `InvalidValue`: Indicate an incorrect, unacceptable value. Usually occurs when an unacceptable value is passed in.
+    - `LostRenderer`: Lost connection to the renderer.
+    - `MaxIterationCount`: Indicate that the maximum number of iterations has been reached.
+    - `MaxRecursionDepth`: Indicate that the maximum recursion depth has been reached.
+    - `MemoryFailure`: Memory error, such as internal heap is too small, memory allocation failed.
+    - `NoData`: Indicate that the specified data does not exist, or that the specified variable name is not bound to any data.
+    - `NoSuchKey`: The key value in the dictionary is wrong, usually referring to a key value that does not exist.
+    - `NotIterable`: Indicate that the specified element or data is not iterable.
+    - `WrongDataType`: Indicate wrong data type.
+- Floating point related:
+    - `InvalidFloat`: Indicate that an invalid floating-point number was passed in. For example, when calling `$MATH.asin`, a real number that is not in the range of `[-1, 1]` is passed in.
+    - `Overflow`: Indicate an upward overflow error occurred during floating-point arithmetic.
+    - `Underflow`: Indicate an underflow error in floating-point arithmetic.
+    - `ZeroDivision`: Indicate that a division by zero error was encountered.
+- Operating system related:
+    - `AccessDenied`: Indicate that access is denied or permissions are insufficient.
+    - `BrokenPipe`: The other end of the pipe has been closed.
+    - `ConnectionAborted`: The connection was aborted.
+    - `ConnectionRefused`: Connection refused.
+    - `ConnectionReset`: The connection was reset.
+    - `EntityNotFound`: The specified entity (such as a file) was not found.
+    - `EntityExists`: When creating a new entity (such as a file), the entity already exists.
+    - `EntityGone`: The entity has disappeared.
+    - `IOFailure`: Indicate an input/output error.
+    - `NotDesiredEntity`: Indicate that an unexpected entity was passed.
+    - `NoStorageSpace`: Indicate when there is not enough storage space (such as writing a file).
+    - `NameResolutionFailed`: Name resolution failed. The exception should define additional information so that the application can know the specific name that failed to parse.
+    - `OSFailure`: Indicate that a general operating system error was encountered that was not explicitly defined as an exception. The exception should define additional information so that the application can get specific error information, such as `errno` on Unix-like systems.
+    - `RequestFailed`: The request failed. The exception should define additional information so that the application can get specific request failure information, such as the HTTP protocol status code.
+    - `SysFault`: Unrecoverable operating system failure, usually corresponding to the system's `EFAULT`.
 
-另外，HVML 提供了 `catch` 动作标签，可用来捕获特定的异常并进行处理。
+In addition, HVML provides `catch` action tag, which can be used to catch specific exceptions and handle them.
 
-在 `catch`、`except` 和 `error` 标签中，我们必须使用反引号 U+0060 GRAVE ACCENT 字符（\`）包围异常或者错误的名称。`ANY` 用于任意的错误或异常，是一个保留字。
+In `catch`, `except` and `error` tags, we must surround exception or error names with backticks U+0060 GRAVE ACCENT character (\`). `ANY` is used for any error or exception and is a reserved word.
 
-错误和异常的处理说明如下：
+Error and exception handling instructions are as follows:
 
-1. 在 `error` 和 `except` 标签中，我们一般使用目标标记语言的标签定义一个文档片段，也称为错误和异常模板。
-1. 当发生异常时，首先看当前元素是否含有对应的 `catch` 动作元素。若有，则执行该 `catch` 元素定义的操作组；若没有，则检查是否有对应的 `except` 子元素，若有，则克隆其中定义的文档片段并追加到目标文档的当前位置，弹出当前栈帧继续执行。如果异常未被当前元素处理，则弹出当前栈帧，在前置栈帧中重复该步骤直到栈顶。
-1. 当发生错误时，首先看当前元素是否含有对应的 `error` 子元素。若有，则克隆其中定义的文档片段并追加到目标文档的当前位置，然后直接弹出当前执行栈中的所有栈帧到栈顶。如果错误未被当前元素处理，则弹出当前栈帧，在前置栈帧中重复该步骤直到栈顶。
+1. In `error` and `except` tags, we generally use the tags of the target markup language to define a document fragment, also known as an error and exception template.
+1. When an exception occurs, first check whether the current element contains the corresponding `catch` action element. If there is, execute the operation group defined by `catch` element; if not, check whether there is a corresponding `except` sub-element, if yes, clone the document fragment defined in it and append it to the current position of the target document, and pop up Execution continues on the current stack frame. If the exception is not handled by the current element, the current stack frame is popped, and this step is repeated in the previous stack frame until the top of the stack.
+1. When an error occurs, first check whether the current element contains a corresponding `error` child element. If so, clone the document fragment defined in it and append it to the current position of the target document, and then directly pop all the stack frames in the current execution stack to the top of the stack. If the error is not handled by the current element, the current stack frame is popped, and this step is repeated in the previous stack frame until the top of the stack.
 
-异常和错误通常发生在如下几种情形：
+Exceptions and errors usually occur in the following situations:
 
-1. 对元素的属性值、内容求值，或者调用执行器时。
-1. 执行动作元素对应的操作时遇到的异常，比如非法的属性值，数据一致性错误等。
-1. 其他情形，如分配栈帧、创建新协程失败等。
+1. When evaluating an element's attribute value, content, or calling an executor.
+1. The exception encountered when executing the operation corresponding to the action element, such as illegal attribute value, data consistency error, etc.
+1. Other situations, such as allocation of stack frames, failure to create new coroutines, etc.
 
-通常，当某个动作元素、框架元素或模板元素被设置有 `silently` 副词属性，或者外部元素设置有 `hvml:silently` 属性时，在对其属性值或内容求值时，或调用执行器时，若遇到可忽略的异常，应返回一个合理的返回值，而不抛出异常。比如调用 `$SYS.time(! <number $seconds: seconds since Epoch> )` 设置系统时间时，如果当前用户没有权限修改系统时间，通常应该产生 `AccessDenied` 异常。但如果在调用该方法的元素中，设置有 `silently` 副词属性，则不会产生异常，而是返回 `false` 表明执行错误。
+Typically, when an action element, frame element, or template element is set with `silently` adverb attribute, or an external element is set with `hvml:silently` attribute, when evaluating its attribute value or content, or calling the executor , if an ignorable exception is encountered, a reasonable return value should be returned instead of throwing an exception. For example, when calling `$SYS.time(! <number $seconds: seconds since Epoch> )` to set the system time, if the current user does not have permission to modify the system time, an `AccessDenied` exception should usually be generated. However, if the `silently` adverb attribute is set on the element calling this method, no exception will be raised, but `false` will be returned to indicate an execution error.
 
-`silently` 属性主要作用于以上所指的前两种情形；哪些异常可忽略，哪些异常不可忽略，通常由解释器的实现者确定。第三种情形下产生的异常，会被认为是致命的而不能被忽略，也就是说，`silently` 属性对第三种情形无效，比如因为分配栈帧失败而导致的 `MemoryFailure` 异常。
+`silently` attribute mainly applies to the first two cases referred to above; which exceptions can be ignored and which exceptions cannot be ignored are usually determined by the interpreter implementer. The exception generated in the third case will be considered fatal and cannot be ignored, that is, `silently` attribute is invalid for the third case, such as `MemoryFailure` exception caused by a failure to allocate a stack frame.
 
-下面给出了错误和异常处理的示例代码：
+A sample code for error and exception handling is given below:
 
 ```hvml
     <head>
@@ -2005,399 +2018,399 @@ HVML 定义的异常如下：
     </body>
 ```
 
-#### 2.1.13) 介词属性
+#### 2.1.13) Preposition Properties
 
-针对动作标签，HVML 定义了如下几个介词（如 `on`、 `in`、 `to` 等）属性，用于定义执行动作时依赖的数据（或元素）及其集合。如：
+For action tags, HVML defines the following prepositions (such as `on`, `in`, `to`, etc.) attributes, which are used to define the data (or elements) and their collections that the action depends on. like:
 
-- `in`：该属性适用所有动作元素，用于定义执行操作的目标文档位置。该属性通常使用 CSS 选择器定义目标文档的一个元素汇集，之后的操作会在这个元素汇集上进行。如果没有定义该属性值，则继承前置栈帧的相应值，若前置栈帧对应的元素是骨架元素，则取该骨架元素在目标文档中对应的位置。
-- `on`：在 `choose`、`iterate` 等操作数据的标签中，用于定义执行动作所依赖的数据、元素或元素汇集。
-- `from`：在 `init`、 `update`、 `define`、 `load` 等支持外部资源的元素中，用于定义执行动作所依赖的外部资源，其属性值通常是一个 URL。
-- `via`：和 `from` 属性配合适用，用于指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
-- `for`：在 `observe`、 `forget` 标签中，用于定义观察（observe）或解除观察（forget）操作对应的事件名称；在 `match` 标签中，用于定义匹配条件。
-- `as`：在 `init`、 `define`、 `bind`、 `load` 等元素中定义变量名。
-- `at`：和 `as` 属性配合使用时，用于变量名的作用范围（scope）；在 `update` 元素中指定目标数据上的目标位置。
-- `with`：在 `init`、 `update`、 `define`、 `load` 等支持外部资源的元素中，配合 `from` 属性使用时，用来定义请求参数；在 `request` 元素中定义请求参数；在 `iterate` 元素中定义不使用执行器时迭代结果的求值表达式；在 `include` 元素中定义要引用的操作组；在 `test` 元素中定义测试条件。
-- `to`：在 `update` 标签中定义具体的更新动作，比如表示追加的 `append`，表示替换的 `displace` 等；在 `back` 标签中定义回退到的栈帧。
-- `by`：用于定义执行测试、选择、迭代、归约操作时的选择器、迭代器或归约器，统称为执行器（executor）。HVML 允许解释器支持内建（built-in）执行器。对简单的数据处理，可直接使用内置执行器，在复杂的数据处理情形中，可使用外部程序定义的类或者函数。在 HVML 中，我们使用如下前缀来表示不同的执行器类型：
-   - `CLASS: ` 表示使用外部程序定义的类作为执行器。
-   - `FUNC: ` 表示使用外部程序定义的函数作为执行器。
-   - `KEY: ` 表示使用某个键名或多个指定的键名返回对应的键值数据项，是一种内建的迭代器或选择器。
-   - `RANGE: ` 表示使用指定的索引范围返回数据项，是一种内建的迭代器或选择器。
-   - `TRAVEL: ` 表示使用指定的遍历方式遍历树状结构，是一种内建的迭代器或选择器。
-   - `SQL: ` 表示在结构化数据上执行 SQL 查询，从而实现复杂的选择、迭代以及归约操作。
-   - 其他针对字符串和数值的内建执行器，见本文档 [2.6.1) 内建执行器](#261-内建执行器) 小节。
-- `against`：在 `init` 元素中用于指定集合的唯一性键值；在 `sort` 元素中用于指定排序依据；在 `bind` 元素中用于指定绑定表达式的方法名称。
-- `within`：在 `load` 元素和 `call` 元素中用于指定目标行者的名称。
-- `onto`：在 `load` 元素中用于指定渲染器的窗口或页面名称。
-- `onlyif` 和 `while`：在 `iterate` 中，用于定义在产生迭代结果前和产生迭代结果后判断是否继续迭代的条件表达式。
-- `idd-by`：在动词元素中，用于定义该元素的标识符（作用同名词元素中的 `id` 属性）。
+- `in`: This attribute applies to all action elements and is used to define the target document location for performing the action. This attribute usually uses CSS selectors to define a collection of elements in the target document, and subsequent operations will be performed on this collection of elements. If the attribute value is not defined, the corresponding value of the preceding stack frame will be inherited. If the element corresponding to the preceding stack frame is a skeleton element, the corresponding position of the skeleton element in the target document will be taken.
+- `on`: In the tags of `choose`, `iterate` and other operational data, it is used to define the data, elements or collection of elements that the execution action depends on.
+- `from`: In elements supporting external resources such as `init`, `update`, `define`, `load`, it is used to define the external resources that the execution action depends on, and its attribute value is usually a URL.
+- `via`: It is used in conjunction with `from` attribute to specify the request method (such as `GET`, `POST`, `DELETE`, etc.).
+- `for`: In `observe`, `forget` tags, used to define the event name corresponding to the observe (observe) or unobserve (forget) operation; in `match` tag, used to define the matching conditions.
+- `as`: It is define variable names in `init`, `define`, `bind`, `load`, etc. elements.
+- `at`: When used in conjunction with `as` attribute, it is used for the scope of the variable name; specify the target position on the target data in `update` element.
+- `with`: In `init`, `update`, `define`, `load` and other elements that support external resources, when used with `from` attribute, it is used to define request parameters; defined in `request` element Request parameters; in `iterate` element define the evaluation expression for the iteration result when no executor is used; in the `include` element define the operation group to be referenced; in the `test` element define the test condition.
+- `to`: Define specific update actions in `update` tag, such as `append` for appending, `displace` for replacement, etc.; define the stack frame to fall back to in the `back` tag.
+- `by`: It is used to define selectors, iterators or reducers when performing test, selection, iteration, and reduction operations, collectively referred to as executors. HVML allows interpreters to support built-in executors. For simple data processing, the built-in executor can be used directly, and in complex data processing situations, classes or functions defined by external programs can be used. In HVML, we use the following prefixes to denote different actuator types:
+    - `CLASS:` It means to use the class defined by the external program as the executor.
+    - `FUNC:` It means to use the function defined by the external program as the executor.
+    - `KEY:` It means to use a certain key name or multiple specified key names to return the corresponding key-value data item, which is a built-in iterator or selector.
+    - `RANGE:` It means to use the specified index range to return data items, which is a built-in iterator or selector.
+    - `TRAVEL:` It means to use the specified traversal method to traverse the tree structure, which is a built-in iterator or selector.
+    - `SQL:` It means to execute SQL queries on structured data, enabling complex selection, iteration, and reduction operations.
+    - For other built-in executors for strings and numbers, see [2.6.1) Built-in executors](#261-Built-in executors) subsection of this document.
+- `against`: In the `init` element, it is used to specify the unique key value of the collection; in the `sort` element, it is used to specify the sort basis; in the `bind` element, it is used to specify the method name of the binding expression.
+- `within`: It is used in `load` and `call` elements to specify the name of the target walker.
+- `onto`: The window or page name used in the `load` element to specify the renderer.
+- `onlyif` and `while`: In `iterate`, it is used to define the conditional expression for judging whether to continue iterating before and after generating the iteration result.
+- `idd-by`: In verb elements, the identifier used to define the element (same as the `id` attribute in noun elements).
 
-#### 2.1.14) 副词属性
+#### 2.1.14) Adverb Attributes
 
-针对某些动作标签，HVML 定义了如下副词属性，用于修饰操作行为。如：
+For some action tags, HVML defines the following adverb attributes, which are used to modify the operation behavior. like:
 
-- `synchronously`：在 `init`、 `request`、 `call`、 `load` 等元素中，用于定义从外部数据源（或操作组）获取数据时采用同步请求方式；默认值；可简写为 `sync`。
-- `asynchronously`：在 `init`、 `request`、 `call`、 `load` 等元素中，用于定义从外部数据源（或操作组）获取数据时采用异步请求方式；可简写为 `async`。
-- `exclusively`：在 `match` 元素中，用于定义排他性；具有这一属性时，匹配当前动作时，将不再处理同级其他 `match` 元素；可简写为 `excl`。
-- `uniquely`：在 `init` 元素中，用于定义集合；具有这一属性时，`init` 定义的变量将具有唯一性条件；可简写为 `uniq`。
-- `individually`：在 `update` 元素中，用于定义更新动作作用于数组、元组、对象或者集合的每个数据项上；可简写为 `indv`。
-- `once`：在 `observe` 动作元素中，用于指定仅观察一次，之后该观察将被自动解除。
-- `casesensitively`：在 `init` 动作元素中初始化一个集合时，用于指定唯一性值的对比对大小写敏感，亦可用在 `sort` 元素；可简写为 `case`。
-- `caseinsensitively`：在 `init` 动作元素中初始化一个集合时，用于指定唯一性值的对比对大小写不敏感，亦可用在 `sort` 元素；可简写为 `caseless`。
-- `ascendingly`：在 `sort` 元素中，用于指定数据项的排列顺序为升序；可简写为 `asc`。
-- `descendingly`：在 `sort` 元素中，用于指定数据项的排列顺序为降序；可简写为 `desc`。
-- `silently`：用于指示解释器执行静默求值和操作，以忽略对当前元素属性、内容进行求值，或者执行元素定义的操作时遇到的可忽略异常；在外部元素中使用 `hvml:silently` 这一写法。
-- `temporarily`：在 `init` 等定义变量的动作元素中，用于指定变量是临时的而非静态的；所有临时变量，在上下文变量（`$!`）中维护；可简写为 `temp`。
-- `nosetotail`：在 `iterate` 动作元素中，用于将上次迭代的结果作为下次迭代的输入数据；等价写法：“nose-to-tail”
-- `responsively`：在骨架元素中，用于定义其文本内容是响应式的；可简写为 `resp`。
-- `noreturn`：在 `request` 元素中，用于定义忽略该请求的返回值；等价写法：“no-return”。
-- `concurrently`：在 `call` 元素中，用于定义一个并发调用；可简写为 `conc`。
-- `constantly`：在 `bind` 元素中，用于说明被绑定的表达式将对同一参数返回不变的值；可简写为“const”
-- `must-yield`：表明每执行一次具有该属性的元素，应强制当前协程出让（yield）处理器；在外部元素中使用 `hvml:must-yield` 这一写法。
+- `synchronously`: In `init`, `request`, `call`, `load` and other elements, it is used to define the synchronous request method when obtaining data from an external data source (or operation group); default value; can be abbreviated for `sync`.
+- `asynchronously`: In `init`, `request`, `call`, `load` and other elements, it is used to define the asynchronous request method when obtaining data from an external data source (or operation group); it can be abbreviated as `async `.
+- `exclusively`: In the `match` element, it is used to define exclusivity; with this attribute, when matching the current action, other `match` elements at the same level will not be processed; it can be abbreviated as `excl`.
+- `uniquely`: In the `init` element, it is used to define a collection; with this attribute, the variable defined by `init` will have a unique condition; it can be abbreviated as `uniq`.
+- `individually`: In the `update` element, it is used to define the update action to act on each data item of the array, tuple, object or collection; it can be abbreviated as `indv`.
+- `once`: In the `observe` action element, it is used to specify only one observation, after which the observation will be automatically dismissed.
+- `casesensitively`: When initializing a collection in the `init` action element, the comparison used to specify the unique value is case-sensitive, and can also be used in the `sort` element; can be abbreviated as `case`.
+- `caseinsensitively`: When initializing a collection in the `init` action element, the comparison used to specify the unique value is case-insensitive, and can also be used in the `sort` element; it can be abbreviated as `caseless`.
+- `ascendingly`: In the `sort` element, it is used to specify that the data items are sorted in ascending order; it can be abbreviated as `asc`.
+- `descendingly`: In the `sort` element, it is used to specify that the data items are sorted in descending order; it can be abbreviated as `desc`.
+- `silently`: Used to instruct the interpreter to perform silent evaluations and operations to ignore ignorable exceptions encountered while evaluating the current element's attributes, content, or performing operations defined by the element; use `hvml :silently` This way of writing.
+- `temporarily`: In the action elements that define variables such as `init`, it is used to specify that the variable is temporary rather than static; all temporary variables are maintained in the context variable (`$!`); can be abbreviated as `temp `.
+- `nosetotail`: In `iterate` action element, it is used to use the result of the previous iteration as the input data for the next iteration; equivalent writing: "nose-to-tail"
+- `responsively`: In the skeleton element, it is used to define that its text content is responsive; it can be abbreviated as `resp`.
+- `noreturn`: In `request` element, it is used to define the return value of ignoring the request; equivalent writing: "no-return".
+- `concurrently`: In `call` element, it is used to define a concurrent call; it can be abbreviated as `conc`.
+- `constantly`: In `bind` element, it is used to indicate that the expression being bound will return a constant value for the same parameter; can be abbreviated as "const"
+- `must-yield`: Indicates that every time an element with this attribute is executed, the current coroutine should be forced to yield (yield) the processor; use `hvml:must-yield` in the external element.
 
-注意：在 HVML 中，我们无需为副词属性赋值。
+Note: In HVML, we don't need to assign values to adverb attributes.
 
-#### 2.1.15) 引用元素或数据
+#### 2.1.15) Referencing Elements or Data
 
-当我们需要引用某个元素时，我们使用 CSS 选择器。如：
+When we need to refer to an element, we use CSS selectors. like:
 
-- `.avatar` 表示所有 `class` 属性包含 `avatar` 的元素（集合）。
-- `#the-user-list` 表示 `id` 属性为 `the-user-list` 的元素。
-- `:root` 表示文档的根元素。
-- `*` 表示文档中的所有元素。
+- `.avatar` means all elements (collections) whose `class` attribute contains `avatar`.
+- `#the-user-list` means the element whose `id` attribute is `the-user-list`.
+- `:root` indicates the root element of the document.
+- `*` means all elements in the document.
 
-然后使用 `$DOC.query()` 方法获得对应的元素汇集：
-
-```hvml
-    <update on="$DOC.query('#the-user-list > li')" at="attr.class" with="text-info" />
-```
-
-由于 `update` 标签的 `on` 属性值不允许使用整数、字符串等不可变数据，而 `observe` 标签的 `on` 属性值只能为可观察的原生实体或容器数据，因此，我们也可以在 `update` 和 `observe` 标签的 `on` 属性值中直接使用 CSS 选择器（字符串）。比如：
+Then use the `$DOC.query()` method to get the corresponding collection of elements:
 
 ```hvml
-    <update on="#the-user-list > li" at="attr.class" with="text-info" />
+     <update on="$DOC.query('#the-user-list > li')" at="attr.class" with="text-info" />
 ```
 
-本质上，我们在上述两种标签的 `on` 属性值中使用 CSS 选择器选择目标文档的元素汇集时，解释器实质调用的是 `$DOC.query(<selector>)`方法。
-
-由于通过 CSS 选择器指定的元素汇集通常指目标文档中的单个或者多个位置，故而我们使用“目标文档位置”一词来统称元素或元素汇集。
-
-如果要在 `update` 标签的 `on` 属性中使用参数化数据，则必定使用 `$`、 `[` 或 `{` 作为前导字符：
-
-- `$` 用来定义一个求值表达式，如 `$TIMERS[0]`。
-- `[` 用来定义一个参数化数组，如 `[ $foo, $bar, true, false ]`。
-- `[!` 用来定义一个参数化元组，如 `[! $foo, $bar, true, false ]`。
-- `{` 用来定义一个参数化对象，如 `{ "$foo" : $bar, "foo": "bar" }`。
-
-在其他可能导致混淆的动作标签中，可使用无等号的属性值表述语法，此时可或者使用字面的数值（number）、 `true`、 `false`、 `null` 等关键词：
+Since `on` attribute value of `update` tag does not allow immutable data such as integers and strings, and `on` attribute value of `observe` tag can only be observable native entity or container data, therefore, we also CSS selectors (strings) can be used directly in the `on` attribute value of `update` and `observe` tags. For example:
 
 ```hvml
-    <choose on 12345 by="ADD: LE 9999 BY 1000">
-        ...
-    </choose>
+     <update on="#the-user-list > li" at="attr. class" with="text-info" />
 ```
 
-类似地，动作标签的 `with` 属性也使用这类规则来引用数据。详情见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性) 一节。
+Essentially, when we use the CSS selector to select the element collection of the target document in `on` attribute value of the above two tags, the interpreter essentially calls `$DOC.query(<selector>)` method.
 
-在 HVML 中，`on` 或者 `in` 介词属性在引用目标文档中的元素时，若使用前导字符 `>`，则将被限定在父元素 `in` 介词指定的范围内。如下面例子中，
+Since collections of elements specified via CSS selectors typically refer to single or multiple locations in the target document, we use the term "target document location" to refer to elements or collections of elements collectively.
+
+If you want to use parameterized data in the `on` attribute of `update` tag, you must use `$`, `[` or `{` as leading characters:
+
+- `$` is used to define an evaluation expression, such as `$TIMERS[0]`.
+- `[` is used to define a parameterized array, such as `[ $foo, $bar, true, false ]`.
+- `[!` is used to define a parameterized tuple, such as `[! $foo, $bar, true, false ]`.
+- `{` is used to define a parameterized object, such as `{ "$foo" : $bar, "foo": "bar" }`.
+
+In other action tags that may cause confusion, attribute value expression syntax without an equal sign can be used. In this case, literal values (number), `true`, `false`, `null` and other keywords can be used:
 
 ```hvml
-    <reduce on="$?" in="#the-user-statistics" by="FUNC: StatsUserRegion">
-        <choose on="$?.count" to="update" in="> h2 > span">
-            <update on="$@" at="textContent" with="$?" />
-        </choose>
-        <clear on="#the-user-statistics > dl" />
-        <iterate on="$?.regions" in="> dl" by="CLASS: IUserRegions">
-            <update on="$@" to="append" with="$region_to_users" />
-        </iterate>
-    </reduce>
+     <choose on 12345 by="ADD: LE 9999 BY 1000">
+         ...
+     </choose>
 ```
 
-`choose` 标签的 `in` 属性所指定的 `> h2 > span` 和 `#the-user-statistics > h2 > span` 等价；`iterate` 标签的 `in` 属性 `> dl` 和 `#the-user-statistics > dl` 等价。
+Similarly, `with` attribute of action tags uses these rules for referencing data. See [3.1.2.4) Action Element Attributes] (#3124-Action Element Attributes) section of this document for details.
 
-变量的引用规则如下：
-
-- 在 `archetype` 以及 `archedata` 标签定义的文档片段模板或者数据模板中，我们可以就属性值、文本内容引用上下文变量以及命名变量。此时，上下文变量由引用该模板的动作标签定义。
-- 在 HVML 动作标签中，我们可以就属性值、文本内容引用上下文变量以及命名变量。此时，上下文变量由引用该模板的动作标签定义。
-- 在使用目标标签语言定义的元素中，可以使用命名变量定义其属性值以及文本或数据内容。
-
-#### 2.1.16) 协程和虚拟机状态
-
-一个正确解析并装载的 HVML 程序以协程的形式运行。HVML 定义协程有如下四种执行阶段（execution stage）：
-
-- 已排（scheduled）：已安排阶段。当调度器选择处于该阶段的协程进入就绪状态时，进入首轮执行阶段。
-- 首轮（first-run）：首轮执行阶段。当首轮执行阶段完成后，若该协程没有观察任何事件，则进入清理阶段；若注册有观察者，则进入事件循环执行阶段。
-- 观察（observing）：事件循环执行阶段。
-- 清理（cleanup）：清理阶段。在清理阶段，调度器将协程的退出或终止状态发送给父协程（若有）。
-
-除了协程正常执行进入清理阶段之外，一个 HVML 协程可能由于异常而终止。故而我们使用如下术语区分一个协程的退出或终止状态：
-
-- 退出（exited）：隐式退出或者主动退出；自然执行完所有的元素，且没有注册任何观察者；或者执行 `exit` 动作元素主动退出。协程退出时，最顶栈帧中保存的结果数据将被作为协程的结果数据。
-- 终止（terminated）：由于错误或者未捕获的异常而终止。协程被终止时，结果数据为异常名称。
-
-在正常调度过程中，一个 HVML 协程有如下三种执行状态（execution state）：
-
-- 就绪（ready）：该协程正在等待执行，调度器将按次序选择执行该协程。
-- 执行（running）：该协程正在执行。
-- 暂停（stopped）：该协程被停止等待特定唤醒条件的到来，比如子协程退出、主动休眠到期、异步数据获取器返回数据、并发调用返回结果、调试器要求继续执行等。当设定的唤醒条件到来时，调度器设置该协程的状态为就绪（ready）。
-
-当我们异步装载另外一个 HVML 程序时，就可以在当前 HVML 协程中观察子协程的运行状态变化。和协程运行状态相关的事件具有 `corState:` 前缀，如 `corState:exited` 或 `corState:terminated`；事件附加数据中包含有结果数据。
-
-通常在下面几种情况下，协程将被解释器设置为被暂停状态：
-
-- 采用独立运行的外部资源加载器的情形下，`init`、`load`、`define`、`archetype`、`archedata`、`error`、`except` 等元素在装载外部资源时，解释器可设置该协程进入停止状态。当解释器获得来自外部资源加载器的结果后，唤醒该协程继续处理后续的操作。注意，上述某些元素支持 `asynchronously` 副词属性，若使用该副词属性时，解释器不需要做上述处理。
-- 当 `load`、`call` 等元素同步等待其他协程返回结果时，解释器应设置该协程进入停止状态。当解释器获得来自其他协程的结果后，唤醒该协程继续处理后续操作。
-- 执行 `sleep` 元素时，解释器应设置该协程进入停止状态。当解释器观察到休眠到期，或者有需要该协程处理的事件时，唤醒该协程继续后续处理。
-
-除以上运行状态外，HVML 规定一个协程有如下几种渲染状态：
-
-- 常规（regular）：协程和渲染器进行正常的数据交换。
-- 被关闭（closed）：协程对应的渲染器页面被用户强制关闭。
-- 丢失（lost）：协程所在行者丢失渲染器的连接。
-- 被压制（suppressed）：协程和渲染器的交互（包括页面的更新以及接受来自渲染器的交互事件）被压制。
-
-HVML 协程可通过观察内置 `$CRTN` 变量上的渲染器事件来判断自身渲染状态的变化。渲染状态相关的事件对应的名称具有 `rdrState:` 前缀，如 `rdrState:pageSuppressed`。
-
-每个 HVML 协程运行在特定的 HVML 虚拟机实例上，而每个 HVML 虚拟机实例对应 HVML 应用框架中的一个行者。HVML 行者对应的虚拟机实例有如下状态：
-
-- 启动（boot）：启动中。
-- 空闲（idle）：空闲中；表明其上没有任何协程。
-- 忙（busy）：工作中。
-- 关机（shutdown）：关机中。
-
-#### 2.1.17) 文档片段的结构化数据表达
-
-HVML 解释器按照固定的策略将目标文档子树（文档片段）视作一个结构化数据来访问。比如对下面的 HTML 片段：
+In HVML, when `on` or `in` preposition attribute refers to an element in the target document, if the leading character `>` is used, it will be limited to the scope specified by `in` preposition of the parent element. As in the example below,
 
 ```hvml
-    <li class="user-item">
-        <img class="avatar" src="foo/bar.png" />
-        <span>foo</span>（中国大陆）
-    </li>
+     <reduce on="$?" in="#the-user-statistics" by="FUNC: StatsUserRegion">
+         <choose on="$?.count" to="update" in="> h2 > span">
+             <update on="$@" at="textContent" with="$?" />
+         </choose>
+         <clear on="#the-user-statistics > dl" />
+         <iterate on="$?.regions" in="> dl" by="CLASS: IUserRegions">
+             <update on="$@" to="append" with="$region_to_users" />
+         </iterate>
+     </reduce>
 ```
 
-和下面的 JSON 数据等价：
+`> h2 > span` specified by `in` attribute of `choose` tag is equivalent to `#the-user-statistics > h2 > span`; `in` attribute of `iterate` tag is `> dl` and `# the-user-statistics > dl` Equivalent.
+
+Variable reference rules are as follows:
+
+- In document fragment templates or data templates defined by `archetype` and `archedata` tags, we can refer to context variables and named variables for attribute values, text content. At this point, the context variable is defined by the action tag that references this template.
+- In HVML action tags, we can refer to context variables as well as named variables for attribute values, text content. At this point, the context variable is defined by the action tag that references this template.
+- In an element defined using the target markup language, its attribute values and text or data content can be defined using named variables.
+
+#### 2.1.16) Coroutines and Virtual Machine State
+
+A properly parsed and loaded HVML program runs as a coroutine. HVML defines coroutines with the following four execution stages:
+
+- Scheduled: The stage is scheduled. When the scheduler selects the coroutine in this stage to enter the ready state, it enters the first round of execution stage.
+- First-run: The first-run execution phase. When the first round of execution phase is completed, if the coroutine does not observe any events, it will enter the cleanup phase; if there are observers registered, it will enter the event loop execution phase.
+- Observing: The event loop execution phase.
+- Cleanup: Cleanup phase. During the cleanup phase, the scheduler sends the coroutine's exit or termination status to the parent coroutine (if any).
+
+In addition to the normal execution of coroutines entering the cleanup phase, an HVML coroutine may terminate due to an exception. Therefore, we use the following terms to distinguish the exit or termination status of a coroutine:
+
+- Exited: Implicit exit or voluntary exit; all elements are naturally executed without registering any observers; or the `exit` action element is executed to exit voluntarily. When the coroutine exits, the result data saved in the top stack frame will be used as the result data of the coroutine.
+- Terminated: Terminated due to an error or uncaught exception. When the coroutine is terminated, the result data is the exception name.
+
+In the normal scheduling process, an HVML coroutine has the following three execution states:
+
+- Ready: The coroutine is waiting to be executed, and the scheduler will select and execute the coroutine in order.
+- Running: The coroutine is running.
+- Stopped: The coroutine is stopped waiting for the arrival of specific wake-up conditions, such as sub-coroutine exit, active sleep expiration, asynchronous data fetcher returns data, concurrent call returns results, debugger requests to continue execution, etc. When the set wake-up condition arrives, the scheduler sets the state of the coroutine to ready.
+
+When we load another HVML program asynchronously, we can observe the running status changes of sub-coroutines in the current HVML coroutine. Events related to the running state of the coroutine have a `corState:` prefix, such as `corState:exited` or `corState:terminated`; the event additional data contains the result data.
+
+Usually in the following situations, the coroutine will be set to be suspended by the interpreter:
+
+- In the case of using an external resource loader running independently, when elements such as `init`, `load`, `define`, `archetype`, `archedata`, `error`, `except` load external resources, the interpreter can be set to enter the stop state. When the interpreter obtains the result from the external resource loader, it wakes up the coroutine and continues to process subsequent operations. Note that some of the above elements support `asynchronously` adverb attribute, if this adverb attribute is used, the interpreter does not need to do the above processing.
+- When `load`, `call` and other elements are synchronously waiting for other coroutines to return results, the interpreter should set the coroutine to enter the stop state. When the interpreter gets results from other coroutines, it wakes up the coroutine to continue processing subsequent operations.
+- When a `sleep` element is executed, the interpreter shall set the coroutine to stop. When the interpreter observes that the sleep has expired, or there is an event that needs to be processed by the coroutine, it wakes up the coroutine to continue subsequent processing.
+
+In addition to the above running states, HVML stipulates that a coroutine has the following rendering states:
+
+- Regular: The coroutine and the renderer perform normal data exchange.
+- Closed: The renderer page corresponding to the coroutine is forcibly closed by the user.
+- Lost: The walker where the coroutine is located loses the connection to the renderer.
+- Suppressed: The interaction between the coroutine and the renderer (including updating the page and accepting interaction events from the renderer) is suppressed.
+
+The HVML coroutine can judge the change of its own rendering state by observing the renderer event on the built-in `$CRTN` variable. Render state-related events correspond to names with `rdrState:` prefix, such as `rdrState:pageSuppressed`.
+
+Each HVML coroutine runs on a specific HVML virtual machine instance, and each HVML virtual machine instance corresponds to a walker in the HVML application framework. The virtual machine instance corresponding to the HVML walker has the following status:
+
+- Boot: Booting.
+- Idle: Indicate that there is no coroutine on it.
+- Busy: Working.
+- Shutdown: Shutdown is in progress.
+
+#### 2.1.17) Structured Data Representation of Document Fragments
+
+The HVML interpreter follows a fixed strategy for accessing the target document subtree (document fragment) as a structured data. For example, consider the following HTML fragment:
+
+```hvml
+     <li class="user-item">
+         <img class="avatar" src="foo/bar. png" />
+         <span>foo</span> (Mainland China)
+     </li>
+```
+
+It is equivalent to the following JSON data:
 
 ```json
-    {
-        "tag": "li",
-        "attr": {
-            "class": "user-item",
-            "data-value": "0",
-            "data-region": "zh_CN",
-        },
-        "children": [
-            {
-                "tag": "img",
-                "attr": {
-                    "class": "avatar",
-                    "src": "foo/bar.png",
-                },
-                "children": []
-            },
+     {
+         "tag": "li",
+         "attr": {
+             "class": "user-item",
+             "data-value": "0",
+             "data-region": "zh_CN",
+         },
+         "children": [
+             {
+                 "tag": "img",
+                 "attr": {
+                     "class": "avatar",
+                     "src": "foo/bar.png",
+                 },
+                 "children": []
+             },
 
-            {
-                "tag": "span",
-                "attr": {},
-                "children": [
-                    {
-                         "tag": "txt",
-                         "attr": {},
-                         "content": "foo",
-                         "children": []
-                    }
-                ]
-            },
+             {
+                 "tag": "span",
+                 "attr": {},
+                 "children": [
+                     {
+                          "tag": "txt",
+                          "attr": {},
+                          "content": "foo",
+                          "children": []
+                     }
+                 ]
+             },
 
-            {
-                "tag": "txt",
-                "attr": {},
-                "content": "（中国大陆）",
-                "children": []
-            }
-        ]
-    }
+             {
+                 "tag": "txt",
+                 "attr": {},
+                 "content": "(Mainland China)",
+                 "children": []
+             }
+         ]
+     }
 ```
 
-需要注意的是，将 DOM 文档结构用结构化数据表达时，可以有多种不同的转换策略。但 HVML 解释器会采用固定的结构来进行转换，以方便在其上执行结构化查询。具体来讲：
+It should be noted that when expressing the DOM document structure with structured data, there are many different transformation strategies. However, the HVML interpreter will use a fixed structure for conversion, so that structured queries can be executed on it. Specifically:
 
-1. 每个元素使用一个字典数据来表述，用 `tag` 键值对来描述元素的标签，用 `attr` 键值对来描述元素的属性，用 `children` 键值对来描述该元素的子元素或者内容。
-1. 元素的所有属性构成了一个字典数据。
-1. 所有元素的文本内容被视为一个虚拟的子元素，其标签名为 `txt`，其属性 `content` 定义了真正的文本内容。
-1. 所有元素的数据内容被视为一个虚拟的子元素，其标签名为 `json`，其属性 `content` 使用 eJSON 格式定义了真正的数据内容。
-1. 每个元素的子元素（包括文本内容和数据内容在内），用数组来描述，每个数组单元是一个字典数据，用于定义子元素。
+1. Each element is represented by a dictionary data, using `tag` key-value pair to describe the tag of the element, using `attr` key-value pair to describe the attribute of the element, and using `children` key-value pair to describe the element Child elements or content.
+1. All attributes of an element constitute a dictionary data.
+1. The text content of all elements is regarded as a virtual sub-element, whose tag name is `txt`, and whose attribute `content` defines the real text content.
+1. The data content of all elements is regarded as a virtual sub-element, whose tag name is `json`, and whose attribute `content` uses eJSON format to define the real data content.
+1. The sub-elements (including text content and data content) of each element are described by an array, and each array unit is a dictionary data used to define sub-elements.
 
-在引用元素的属性或者文本内容时，我们使用如下约定：
+When referring to attributes or text content of elements, we use the following conventions:
 
-- 当我们在一个元素上获取 `textContent` 键名的键值时，相当于引用这个元素的文本内容，包括所有子孙元素的文本内容，按照深度优先遍历路径连接起来的字符串。
-- 当我们在一个元素上设置 `textContent` 键值时，相当于移除该元素的所有子孙节点（若有），并设置该元素的文本内容为对应的键值。
-- 当我们在一个元素上获取 `dataContent` 键名的键值时，相当于引用这个元素的所有数据内容，包括所有子孙元素的数据内容按照深度优先遍历路径形成的数组。
-- 当我们在一个元素上设置 `dataContent` 键值时，相当于移除该元素的所有子孙节点（若有），并设置该元素的数据内容为对应的键值。
-- 当我们在一个元素上获得 `content` 键名的键值时，相当于获得这个元素所有子孙节点（包括内容和子孙元素）在内的文档片段的文本表达；在设置该键名的键值时，相当于使用文本表达来创建该元素的子孙节点（替换掉原有子孙节点）。
-- 我们可以使用 `attr.class` 这样的复合键名来引用一个元素的静态属性。引用一个未定义的静态属性时，按属性值为 `undefined` 值对待。
-- 使用 `prop.selectedIndex` 或 `prop.style.width`、`prop.style[width]` 这样的属性名来引用一个元素的动态属性（property）。引用一个未定义的动态属性时，按属性值为 `undefined` 对待。
+- When we get the key value of `textContent` key name on an element, it is equivalent to referencing the text content of this element, including the text content of all descendant elements, and the strings connected according to the depth-first traversal path.
+- When we set `textContent` key value on an element, it is equivalent to removing all descendant nodes (if any) of the element, and setting the text content of the element to the corresponding key value.
+- When we get the key value of `dataContent` key name on an element, it is equivalent to referring to all the data content of this element, including the array formed by the data content of all descendant elements according to the depth-first traversal path.
+- When we set `dataContent` key value on an element, it is equivalent to removing all descendant nodes (if any) of the element, and setting the data content of the element to the corresponding key value.
+- When we get the key value of `content` key name on an element, it is equivalent to getting the text expression of the document fragment of all descendant nodes (including content and descendant elements) of this element; when setting the key value of the key name , it is equivalent to using text expression to create descendant nodes of the element (replacing the original descendant nodes).
+- We can use composite keys like `attr.class` to refer to static attributes of an element. References to an undefined static attribute are treated as if the attribute value were `undefined`.
+- Use attribute names like `prop.selectedIndex` or `prop.style.width`, `prop.style[width]` to refer to dynamic properties of an element. References to an undefined dynamic attribute are treated as if the attribute value were `undefined`.
 
-通常，我们通过 `update` 元素修改元素的静态属性（attribute）和内容（content）；而对动态属性（property），比如 `input` 框中输入的内容，则需要使用 `request` 元素来获取或者设置。
+Usually, we use `update` element to modify the static attribute and content of the element; for dynamic attribute , such as the content entered in the `input` box, we need to use `request` element to obtain or set up.
 
-注：目前只有规划中的 SGML 支持使用数据作为元素的内容，即 `dataContent`。
+Note: Currently only planned SGML supports using data as element content, i.e. `dataContent`.
 
-#### 2.1.18) MIME 类型
+#### 2.1.18) MIME Type
 
-`init` 以及其他从外部资源装载数据的元素，会根据资源的 MIME 来确定装载后的数据类型：
+`init` and other elements that load data from external resources will determine the loaded data type according to MIME of the resource:
 
-- `text/html`：用于代表一个 DOM 文档的原生实体
-- `text/css`：字符串
-- `text/javascript`：字符串
-- `text/plain`：字符串
-- `text/*`：字符串
-- `application/xml`：用于代表一个 DOM 文档的原生实体
-- `application/json`：数据
-- `application/octet-stream`：字节序列
-- `application/*`：字节序列
-- `image/*`：字节序列
-- `audio/*`：字节序列
-- `video/*`：字节序列
-- `font/*`：字节序列
+- `text/html`:  It is used to represent a native entity of DOM document.
+- `text/css`: string
+- `text/javascript`: string
+- `text/plain`: string
+- `text/*`: string
+- `application/xml`: It is used to represent a native entity of DOM document.
+- `application/json`: data
+- `application/octet-stream`: byte sequence
+- `application/*`: byte sequence
+- `image/*`: byte sequence
+- `audio/*`: byte sequence
+- `video/*`: byte sequence
+- `font/*`: byte sequence
 
-#### 2.1.19) HVML URI 图式
+#### 2.1.19) HVML URI Schema
 
-我们引入 `hvml` 和 `hvml+run` 两种 URI 图式（Schema）用于 HVML 应用框架。
+We introduce `hvml` and `hvml+run` two URI schemas for the HVML application framework.
 
-##### 2.1.19.1) `hvml` 图式
+##### 2.1.19.1) `hvml` Schema
 
-该图式主要用于 HVML 渲染器，有两种用途：
+This schema is primarily used by HVML renderers and serves two purposes:
 
-1) 定义 HVML 渲染器中的页面
+1) Define the page in the HVML renderer
 
-和 `http` 图式类似，完整的 `hvml` 图式包括主机名、应用名、行者名、页面组名称和页面名称以及查询（query）组件，如：
+Similar to `http` schema, a complete `hvml` schema includes hostname, application name, traveler name, page group name, page name, and query components, such as:
 
 `hvml://<host_name>/<app_name>/<runner_name/<page_group_name>/<page_name>/?irId=<the_initial_request_identifier>`
 
-如其中各部分的名称所暗示，其中包含了一个 HVML 渲染器页面的如下信息：
+As the names of its parts suggest, it contains the following information for an HVML renderer page:
 
-- 主机名。
-- 应用名称。我们使用 `_renderer` 这一保留名称指代渲染器本身。
-- 行者名称。我们使用 `_builtin` 这一保留名称指代内建资源（assets）。
-- 页面组名称。当页面不属于任何页面组时，我们使用 `-` 这一特殊名称。
-- 页面名称。普通窗口或者页面的名称。
-- `irId` 查询参数。用于传递来自 HVML 解释器的初始请求参数。
+- CPU name.
+- Application Name: We use the reserved name `_renderer` to refer to the renderer itself.
+- Walker name: We use the reserved name `_builtin` to refer to built-in assets.
+- Page group name: We use the special name `-` when the page does not belong to any pagegroup.
+- Page name: The name of a normal window or page.
+- `irId` query parameter: It is used to pass initial request parameters from the HVML interpreter.
 
-2) 定义渲染器可直接访问的公共资源
+2) Define public resources that the renderer can directly access
 
-此时，`hvml` 用来表述一个应用对外提供的公共资源，比如图片和样式文件。此时，我们使用保留的 `_builtin` 来指代行者名，使用 `-` 指代页面组名，然后使用页面名称部分指代正在定位的资源相对于公共资源存储位置的路径：
+At this time, `hvml` is used to describe the public resources provided by an application, such as pictures and style files. At this point, we use the reserved `_builtin` to refer to the walker name, `-` to refer to the page group name, and then use the page name part to refer to the path of the resource being located relative to the public resource storage location:
 
 `hvml://<host_name>/<app_name>/_builtiin/-/<path_to_asset>[?query][#fragment]`
 
-比如：
+For example:
 
 `hvml://localhost/cn.fmsoft.hvml.test/_builtin/-/assets/logo.png`
 
-通常，当主机名为 `localhost` 时，渲染器将尝试在本机装载指定的应用公共资源。对于来自远程主机的情形，渲染器可将 `hvml` 翻译为等价的 `http` 或 `https` 图式。比如：
+Normally, when the host name is `localhost`, the renderer will try to load the specified application common resources locally. The renderer can translate `hvml` to the equivalent `http` or `https` schema for the case from a remote host. For example:
 
 `http://other.host.com/cn.fmsoft.hvml.test/_builtin/-/assets/logo.png`
 
-类似地，我们可使用 `_renderer` 保留名称指代渲染器本身，从而可通过如下 URI 从渲染器的内建资源中装载资源，如，
+Similarly, we can use the `_renderer` reserved name to refer to the renderer itself, so that resources can be loaded from the renderer's built-in resources via a URI such as,
 
 `hvml://localhost/_renderer/_builtin/-/assets/bootstrap-5.1.3-dist/css/bootstrap.min.css`
 
-##### 2.1.19.2) `hvml+run` 图式
+##### 2.1.19.2) `hvml+run` Schema
 
-该图式主要用于定义属于特定行者的协程或者通道，和 `ftp` 图式类似，完整的 `hvml+run` 图式包括主机名、应用名、行者名、资源类型（表示协程的 `CRTN` 或者表示通道的 `CHAN`）及资源标志符，如协程令牌或通道名称，如：
+This schema is mainly used to define a coroutine or channel belonging to a specific walker. It is similar to `ftp` schema. The complete `hvml+run` schema includes the host name, application name, traveler name, resource type (representing the coroutine’s `CRTN` or `CHAN` for channels) and resource identifiers, such as coroutine tokens or channel names, such as:
 
 `hvml+run://localhost/appName/myRunner/CRTN/7`
 
-在 HVML 程序中，我们可以通过 `request` 等动作元素和当前应用的其他行者交互。方便起见，我们无需指定图式名称和主机名称，并可使用 `-` 指代当前应用，这样就可以使用如下简写方式引用当前主机、当前应用中属于指定行者的协程或通道，如：
+In HVML programs, we can interact with other walkers of the current application through action elements such as `request`. For convenience, we don't need to specify the schema name and host name. We can use `-` to refer to the current application. In this way, we can use the following abbreviations to refer to the current host. The coroutine or channel belong to the specified walker in the current application, such as:
 
-- 引用指定协程：`/-/otherRunner/CRTN/7`
-- 引用指定通道：`/-/otherRunner/CHAN/channel0`
+- Reference the specified coroutine: `/-/otherRunner/CRTN/7`
+- Reference the specified channel: `/-/otherRunner/CHAN/channel0`
 
-类似地，我们也可以使用 `-` 指代当前行者，即可引用当前主机、当前应用、当前行者中的指定协程，如：
+Similarly, we can also use `-` to refer to the current walker, which can refer to the specified coroutine in the current host, current application, and current walker, such as:
 
 `/-/-/CRTN/7`
 
-当我们需要引用另外一个主机上的协程时，可使用如下的写法：
+When we need to refer to a coroutine on another host, we can use the following writing method:
 
 `//otherhost/otherAppName/otherRunner/CRTN/dispatcher`
 
-在 `hvml+run` 图式中，我们保留如下的特殊协程令牌（相当于别名）：
+In `hvml+run` schema, we reserve special coroutine tokens (equivalent to aliases) as follows:
 
-- `_main`：表示主协程，即指定行者创建的第一个协程。
-- `_first`：表示现有协程中的第一个协程。注意，当行者创建的第一个协程退出后，`_main` 将不可用，但 `_first` 是始终可用的。
-- `_last`：表示现有协程中的最后一个协程。注意，当协程中只有一个协程时，`_first` 和 `_last` 指向同一个协程。
+- `_main`: Indicate the main coroutine, which is the first coroutine created by the specified walker.
+- `_first`: Indicate the first coroutine among existing coroutines. Note that `_main` will be unavailable after the first coroutine created by the walker exits, but `_first` is always available.
+- `_last`: Indicate the last coroutine among existing coroutines. Note that `_first` and `_last` point to the same coroutine when there is only one coroutine in the coroutine.
 
-### 2.2) 规则、表达式及方法的描述语法
+### 2.2) Description Syntax of Rules, Expressions and Methods
 
-在 HVML 中，我们经常会使用属性中的表达式或者规则字符串来表示一个求值行为，比如：
+In HVML, we often use expressions or rule strings in attributes to represent an evaluation behavior, such as:
 
 ```hvml
-    <init as="locales">
-      {
-          "en_US" : "英语（美国）",
-          "en_UK" : "英语（英国）",
-          "zh_CN" : "中文（中国大陆）",
-          "zh_TW" : "中文（中国台湾）",
-          "zh_HK" : "中文（中国香港）",
-          "zh_MO" : "中文（中国澳门）",
-      }
-    </init>
+     <init as="locales">
+       {
+           "en_US" : "English (United States)",
+           "en_UK" : "English (United Kingdom)",
+           "zh_CN" : "Chinese (Mainland China)",
+           "zh_TW" : "Chinese (Taiwan, China)",
+           "zh_HK" : "Chinese (Hong Kong, China)",
+           "zh_MO" : "Chinese (Macao, China)",
+       }
+     </init>
 
-    <test on="$locales" in='#the-footer' by="KEY: AS '$global.locale' FOR VALUE">
-        <match for="AS '中文（中国大陆）'" exclusively>
-            <update on="$@" to="displace" with="$footer_cn" />
-        </match>
-        <match for="AS '中文（中国台湾）'" exclusively>
-            <update on="$@" to="displace" with="$footer_tw" />
-        </match>
-        <match for="LIKE /^英语/" exclusively>
-            <update on="$@" to="displace" with="$footer_en" />
-        </match>
-        <match for="ANY">
-            <update on="$@" to="displace" with="$footer_def" />
-        </match>
+     <test on="$locales" in='#the-footer' by="KEY: AS '$global.locale' FOR VALUE">
+         <match for="AS 'Chinese (Mainland China)'" exclusively>
+             <update on="$@" to="displace" with="$footer_cn" />
+         </match>
+         <match for="AS 'Chinese (Taiwan,China)'" exclusively>
+             <update on="$@" to="displace" with="$footer_tw" />
+         </match>
+         <match for="LIKE /^English/" exclusively>
+             <update on="$@" to="displace" with="$footer_en" />
+         </match>
+         <match for="ANY">
+             <update on="$@" to="displace" with="$footer_def" />
+         </match>
 
-        <except type=`NoData` raw>
-            <p>You forget to define the $global variable!</p>
-        </except>
-        <except type=`NoSuchKey`>
-            <p>Bad global data!</p>
-        </except>
-    </test>
+         <except type=`NoData` raw>
+             <p>You forget to define the $global variable!</p>
+         </except>
+         <except type=`NoSuchKey`>
+             <p>Bad global data!</p>
+         </except>
+     </test>
 ```
 
-`test` 标签中的 `by` 属性定义了 `KEY` 执行器的规则，而 `match` 标签中的 `for` 属性定义了一个可用来判断字符串是否匹配的逻辑表达式，如 `LIKE /^英语/` 表示前置操作结果数据是否以 `英语` 打头。注意此处使用了正则表达式表示开头的 `^` 符号；如果使用正则表达式中表示结尾的 `$` 符号，则必须转义，以避免被 HVML 解析器将 `$` 作为求值表达式的前导字符处理。
+`by` attribute in `test` tag defines the rules of `KEY` executor. And `for` attribute in `match` tag defines a logical expression that can be used to determine whether a string matches.For example, `LIKE / ^English/` indicates whether the pre-operation result data starts with `English`. Note that the regular expression is used here to represent `^` symbol at the beginning. If `$` symbol at the end of the regular expression is used, it must be escaped to avoid `$` being used as an the leading character processing of an evaluation expression by the HVML parser .
 
-#### 2.2.1) 规则描述语法
+#### 2.2.1) Rule Description Syntax
 
-对此类规则，我们使用统一的描述语法，该语法也用来描述求值表达式：
+For such rules, we use a unified description syntax, which is also used to describe evaluation expressions:
 
-1. 一条规则由单个或者多个词法单元（lexical unit）组成。
-1. 词法单元分如下几类：
-   1. 应原样使用的字面特殊字符（literal special characters），如冒号（`:`）和逗号（`,`）；通常用来分隔不同意义的词法单元（组），使用单引号（`'`）包围。
-   1. 应原样使用的字面标志字符（literal flag characters），一般使用 ASCII 大写或小写字母，使用单引号（`'`）包围。
-   1. 应原样出现的字面关键词（literal key words），使用双引号（`"`）包围。
-   1. 正则表达式，一般使用前后两个斜杠符（`/`）包围。
-   1. 不使用单引号、双引号或斜杠符包围的英文单词或者使用下划线相连的英文短语，如 `ws`、 `literal_integer` 用来表示一个被指名的词法单元。
-   1. `...` 表示重复前一个词法单元。
-1. 若一条规则中包含有被指名的词法单元，将另起一行定义该词法单元的语法，直到所有被指名的词法单元均被完整定义或说明为止。
-1. 定义被指名的词法单元之语法时，在该词法单元名称之后使用冒号（`:`），冒号后可换行，但第二行通常会缩进书写。
-1. 当某个被指名的词法单元之解释有多个缩进的行描述时，每一行表示一种并列（单选）的描述。
-1. 通常使用一行来描述一个词法单元，若太长，可使用反斜杠（`\`）表示续行。
-1. 使用一对尖括号（`< >`）表示一个必须存在的词法单元（组）。
-1. 使用一对中括号（`[ ]`）包围的词法单元（组）表示可选。
-1. 多个词法单元形成词法单元组；使用一对大括号（`{ }`）对多个词法单元进行分组。
-1. 若多个词法单元之间没有空格，表示这些词法单元形成一个不可分隔的词法单元组。
-1. 当某个词法单元由单个或者多个词法单元表示时，或者可从多个词法单元（组）中选择时，我们使用 `||`、 `&&`、 `|` 等符号表示这些单元是否可以同时出现，其规则如下：
-   1. 并置的单元表示所有的词法单元（组）都要以给定的顺序传递。
-   1. `&&` 分隔的两个或多个词法单元（组），表示必须传递所有这些词法单元（组），顺序任意。
-   1. `||` 分隔的两个或多个词法单元（组），表示必须传递这些词法单元（组）的一个或多个，顺序任意。
-   1. `|` 分隔两个或者多个词法单元（组），表示必须传递其中一个。
-1. 井号（`#`）后的文字被视作注释。
-1. 额外说明：
-   1. 规则语法描述中的空格，不代表实际规则中应该包含空格，而仅仅为了分隔不同的词法单元，便于阅读。
-   1. 当某个词法单元由单个或者多个字面标志字符表示时，实际编码时不使用空格分隔这些字符。
-   1. 当某个词法单元由单个或者多个字面关键词表示时，我们用一个或者多个水平空白字符（即空格或水平制表符）分隔这些关键词。
+1. A rule consists of one or more lexical units.
+1. Lexical units are divided into the following categories:
+    1. Literal special characters that should be used as they are. For example, colons (`:`) and commas (`,`) are usually used to separate lexical units (groups) with different meanings, surrounded by single quotes (`'` ) .
+    1. Literal flag characters that should be used as they are, generally use ASCII uppercase or lowercase letters, surrounded by single quotation marks (`'`).
+    1. Literal key words that should appear as they are should be ,which is surrounded by double quotation marks (`"`).
+    1. A regular expression, is generally surrounded by two forward and backward slashes (`/`).
+    1. English words not surrounded by single quotes, double quotes or slashes or English phrases connected by underscores. For example, `ws` and `literal_integer` are used to represent a named lexical unit.
+    1. `...` means to repeat the previous token.
+1. If a rule contains the named tokens, a new line will define the syntax of the tokens until all named tokens are fully defined or specified.
+1. When defining the grammar of the named lexical unit, use a colon (`:`) after the lexical unit name. After the colon, a new line can be used, but the second line is usually indented.
+1. When the interpretation of a named lexical unit has multiple indented line descriptions, each line represents a parallel (single-choice) description.
+1. Usually use one line to describe a lexical unit, if it is too long, you can use a backslash (`\`) to indicate a continuation line.
+1. Use a pair of angle brackets (`< >`) to denote a lexical unit (group) that must exist.
+1. Lexical units (groups) surrounded by square brackets (`[ ]`) are optional.
+1. Multiple tokens form a token group; use a pair of braces (`{ }`) to group multiple tokens.
+1. If there is no space between multiple lexical units, it means that these lexical units form an inseparable lexical unit group.
+1. When a lexical unit is represented by a single or multiple lexical units, or can be selected from multiple lexical units (groups), we use `||`, `&&`, `|` and other symbols to represent these units Whether they can appear at the same time, the rules are as follows:
+    1. Concatenated units indicate that all tokens (groups) are to be delivered in the order given.
+    1. Two or more lexical units (groups) separated by `&&`, indicating that all these lexical units (groups) must be passed, in any order.
+    1. `||` separates two or more lexical units (groups), indicating that one or more of these lexical units (groups) must be passed, in any order.
+    1. `|` separates two or more lexical units (groups), indicating that one of them must be passed.
+1. The text after the pound sign (`#`) is regarded as a comment.
+1. Additional instructions:
+    1. The spaces in the rule syntax description do not mean that the actual rules should contain spaces, but only to separate different lexical units for easy reading.
+    1. When a lexical unit is represented by a single or multiple literal flag characters, spaces are not used to separate these characters during actual encoding.
+    1. When a token is represented by a single or multiple literal keywords, we separate these keywords with one or more horizontal whitespace characters (i.e. spaces or horizontal tabs).
 
-比如，下面是一个假定的规则，其语法描述中，我们经常会使用正则表达式，相关的语法描述为：
+For example, the following is a hypothetical rule. In its grammatical description, we often use regular expressions. The related grammatical description is:
 
 ```
     "FOO" [ws] ':' [ws] "ALL" | { "LIKE" [ws] <pattern_expression> }
@@ -2419,159 +2432,159 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
     hws: /[ \t]+/       # horizontal white space
 ```
 
-根据以上语法，如下的规则字符串是合法的：
+According to the above syntax, the following rule strings are legal:
 
 ```
-    FOO: ALL
-    FOO :ALL
-    FOO: LIKE   'a wildcard card such as *.md'
-    FOO: LIKE "a wildcard card such as *.md"
-    FOO: LIKE /a regular expression like ^[0-9]*[1-9][0-9]*$/
-    FOO: LIKE 'zh_??'i5
-    FOO: LIKE "zh_??"i5
+     FOO: ALL
+     FOO:ALL
+     FOO: LIKE 'a wildcard card such as *.md'
+     FOO: LIKE "a wildcard card such as *.md"
+     FOO: LIKE /a regular expression like ^[0-9]*[1-9][0-9]*$/
+     FOO: LIKE 'zh_??'i5
+     FOO: LIKE "zh_??"i5
 ```
 
-而如下的规则字符串不符合语法要求：
+The following rule string does not meet the syntax requirements:
 
 ```
-    FOO:
-    FOO: ALL 'a literal string'
-    FOO: LIKE
-    FOO: ALL LIKE 'a literal string'
-    FOO: LIKE 'zh_??"i5
+     FOO:
+     FOO: ALL 'a literal string'
+     FOO: LIKE
+     FOO: ALL LIKE 'a literal string'
+     FOO: LIKE 'zh_?? "i5
 ```
 
-另外，我们经常会在规则中使用正则表达式，所以需要注意如下几点：
+In addition, we often use regular expressions in rules, so we need to pay attention to the following points:
 
-- 包含在 `//` 中的正则表达式应符合 POSIX.1-2001 标准。
-- 因使用 `//` 定义一个正则表达式，故而当正则表达式中包含有字面的 `/` 字符时，需转义。
-- 当正则表达式中使用表示结尾的 `$` 字符时，需对该符号转义。
-- 当正则表达式中使用 `\t`、 `\w`、 `\s` 等表达特定字符时，需对 `\` 符号做转义。
+- Regular expressions enclosed in `//` shall conform to the POSIX.1-2001 standard.
+- Because `//` is used to define a regular expression, when the regular expression contains a literal `/` character, it needs to be escaped.
+- When using the trailing `$` character in a regular expression, it needs to be escaped.
+- When using `\t`, `\w`, `\s`, etc. to express specific characters in the regular expression, the `\` symbol needs to be escaped.
 
-正则表达式之后的 `regexp_flags` 指定匹配标志（可选），可选如下标志字符中的单个或者多个：
+`regexp_flags` after the regular expression specifies matching flags (optional), which can be one or more of the following flag characters:
 
-- `g`：全局匹配。
-- `i`：不区分大小写搜索。
-- `m`：多行搜索。
-- `s`：允许 `.` 匹配换行符。
-- `u`：使用 UNICODE。
-- `y`：执行粘性（sticky）搜索，匹配从目标字符串的当前位置开始。
+- `g`: global match.
+- `i`: case-insensitive search.
+- `m`: multi-line search.
+- `s`: Allow `.` to match newlines.
+- `u`: use UNICODE.
+- `y`: Perform a sticky search, matching starts at the current position of the target string.
 
-也就是说，如下的正则表达式表示法是正确的：
+That is, the following regular expression notation is correct:
 
 ```
 /^head/
 /tail\$/im
 ```
 
-而如下的正则表达式是错误的：
+And the following regular expression is wrong:
 
 ```
 /^head/tail/
 /tail\$/ima sf
 ```
 
-更多信息，可参阅：
+For more information, please see:
 
 - `man regex` on Linux
 - Python 3 re module: <https://docs.python.org/3/library/re.html>
 - JavaScript Regular Expressions: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#advanced_searching_with_flags>
 
-在字符串匹配的另外两种模式（一般匹配和通配符匹配下），亦可使用类似正则表达式的标志字符，并额外指定最大的匹配长度。
+In the other two modes of string matching (general matching and wildcard matching), flag characters similar to regular expressions can also be used, and the maximum matching length can be specified additionally.
 
-- `matching_flags`: 表示一般匹配和通配符匹配模式下的标志字符，可取如下关键字符之一或多个：
-   - `i`：忽略大小写。
-   - `s`：将所有空白字符（U+0009 TAB、U+000A LF、U+000C FF、U+000D CR 或 U+0020 SPACE 字符）视作空格（U+0020 SPACE 字符）。
-   - `c`：压缩连续相同空白字符为单个空白字符。
-- `max_matching_length`: 表示最大的匹配长度（字符为单位）。
+- `matching_flags`: Indicate flag characters in general matching and wildcard matching modes, which can be one or more of the following key characters:
+    - `i`: Ignore case.
+    - `s`: Treat all whitespace characters (U+0009 TAB, U+000A LF, U+000C FF, U+000D CR, or U+0020 SPACE characters) as spaces (U+0020 SPACE characters).
+    - `c`: Compress consecutive identical whitespace characters into a single whitespace character.
+- `max_matching_length`: Indicate the maximum matching length (in characters).
 
-如 `LIKE 'zh_??'i5` 表示仅匹配五个字符，不区分大小写。对这个匹配条件，如下这些字符串将正确匹配：
+For example, `LIKE 'zh_??'i5` means to match only five characters, not case-sensitive. For this match condition, the following strings will match correctly:
 
 - `zh_CN`
-- `ZH_TW台湾是中国领土不可分割的一部分`
+- `ZH_TW Taiwan is an inalienable part of Chinese territory`
 - `zH_Hongkong`
 
-而如下字符串无法正确匹配：
+And the following strings cannot be matched correctly:
 
 - `zh-C`
 - `xx_CH`
 
-#### 2.2.2) 求值表达式的语法
+#### 2.2.2) Evaluation Expressions Syntax
 
-一个合法的求值表达式（`hybrid_evaluation_expression`）需要符合如下的语法规则，且可递归使用：
+A legal evaluation expression (`hybrid_evaluation_expression`) needs to conform to the following syntax rules and can be used recursively:
 
 ```
-    <hybrid_evaluation_expression>:
-        '$'<hybrid_variable_addressing_expression>
-        '{$'<hybrid_variable_addressing_expression>'}'
-        '${'<hybrid_variable_name_evaluation_expression>'}'
-        '{{' [ws] <compound_hybrid_evaluation_expression> [ws] '}}'
+     <hybrid_evaluation_expression>:
+         '$' <hybrid_variable_addressing_expression>
+         '{$'<hybrid_variable_addressing_expression>'}'
+         '${'<hybrid_variable_name_evaluation_expression>'}'
+         '{{' [ws] <compound_hybrid_evaluation_expression> [ws] '}}'
 
-    <extended_json>: 见本文档“2.2.5) eJSON 语法”一节，其中的 JSON value 可以是一个求值表达式。
+     <extended_json>: See the section "2.2.5) eJSON Syntax" in this document, where the JSON value can be an evaluation expression.
 
-    <compound_hybrid_evaluation_expression>:
-        <hybrid_evaluation_expression> | <extended_json> [[ws] < ';' | '&&' | '||' > [ws] <hybrid_evaluation_expression> | <extended_json>, ...]
+     <compound_hybrid_evaluation_expression>:
+         <hybrid_evaluation_expression> | <extended_json> [[ws] < ';' | '&&' | '||' > [ws] <hybrid_evaluation_expression> | <extended_json>, ...]
 
-    <hybrid_variable_name_evaluation_expression>:
-        [ <literal_variable_token> ]<hybrid_evaluation_expression>[<literal_variable_token_other_char>, ...]
+     <hybrid_variable_name_evaluation_expression>:
+         [ <literal_variable_token> ]<hybrid_evaluation_expression>[<literal_variable_token_other_char>, ...]
 
-    <hybrid_variable_addressing_expression>: <literal_variable_name>[<hybrid_addressing_expression>, ...]
-       <literal_variable_name>: 用于直接引用一个已命名的数据。
-       <hybrid_addressing_expression>：用于引用一个容器的成员。
+     <hybrid_variable_addressing_expression>: <literal_variable_name>[<hybrid_addressing_expression>, ...]
+        <literal_variable_name>: Used to directly refer to a named data.
+        <hybrid_addressing_expression>: Used to refer to a member of a container.
 
-    <hybrid_expression>: <hybrid_evaluation_expression> | <extended_json>
+     <hybrid_expression>: <hybrid_evaluation_expression> | <extended_json>
 
-    <hybrid_addressing_expression>:
-       '.'<literal_key_name>'(' [ws] <hybrid_expression>[<',' [ws] <hybrid_expression> [ws]>, ...] [ws] ')': 用于在动态对象上调用特定键名的获取器方法。
-       '.'<literal_key_name>'(!' [ws] <hybrid_expression>[<',' [ws] <hybrid_expression> [ws]>, ...] [ws] ')': 用于在动态对象上调用特定键名的设置器方法。
-       '.'<literal_key_name>: 用于引用一个对象的键值。
-       '[' [ws] <hybrid_evaluation_expression> | <quoted_key_name> | <literal_integer> [ws] ']': 用于引用一个数组、元组的特定单元或者用于引用一个对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。
+     <hybrid_addressing_expression>:
+        '.'<literal_key_name>'(' [ws] <hybrid_expression>[<',' [ws] <hybrid_expression> [ws]>, ...] [ws] ')': used to call specific Getter method for the key name.
+        '.'<literal_key_name>'(!' [ws] <hybrid_expression>[<',' [ws] <hybrid_expression> [ws]>, ...] [ws] ')': for calling on dynamic objects A setter method for a specific key name.
+        '.'<literal_key_name>: used to refer to the key value of an object.
+        '[' [ws] <hybrid_evaluation_expression> | <quoted_key_name> | <literal_integer> [ws] ']': used to refer to a specific element of an array, tuple or to refer to a key value of an object, especially when the corresponding key When the name does not conform to the variable name rules mentioned above.
 
-    <literal_variable_name>: ['#' <literal_anchor_name> | <literal_positive_integer> ]< '?' | '@' | '!' | '^' | ':' | '=' | '<' | '%' > | <literal_variable_token>
+     <literal_variable_name>: ['#' <literal_anchor_name> | <literal_positive_integer> ]< '?' | '@' | '!' | '^' | ':' | '=' | '<' | '%' > | <literal_variable_token>
 
-    <literal_anchor_name>: <literal_variable_token>
+     <literal_anchor_name>: <literal_variable_token>
 
-    <literal_key_name>: <literal_variable_token>
+     <literal_key_name>: <literal_variable_token>
 
-    <literal_integer>: /^-?\d+$/
+     <literal_integer>: /^-?\d+$/
 
-    <literal_positive_integer>: /^[0-9]*[1-9][0-9]*$/
+     <literal_positive_integer>: /^[0-9]*[1-9][0-9]*$/
 
-    <literal_variable_token>: <literal_variable_token_first_char>[<literal_variable_token_other_char>, ...]
+     <literal_variable_token>: <literal_variable_token_first_char>[<literal_variable_token_other_char>, ...]
 
-    <literal_variable_token_first_char>: [ '_' | ascii_letter | unihan_ideograph ]
-    <literal_variable_token_other_char>: [ '_' | ascii_letter | ascii_digit | unihan_ideograph]
+     <literal_variable_token_first_char>: [ '_' | ascii_letter | unihan_ideograph ]
+     <literal_variable_token_other_char>: [ '_' | ascii_letter | ascii_digit | unihan_ideograph]
 
-    <quoted_key_name>: '''<literal_char_sequence>''' | '"'<literal_char_sequence>'"'
+     <quoted_key_name>: '''<literal_char_sequence>''' | '"'<literal_char_sequence>'"'
 
-    <ascii_letter>: /A-Za-z/
-    <ascii_digit>: /0-9/
-    <unihan_ideograph>: /\u{4E00}-\u{9FFC}\u{F900}-\u{FAD9}\u{3400}-\u{4DBF}\u{20000}-\u{2A6DD}\u{2A700}-\u{2B734}\u{2B740}-\u{2B81D}\u{2B820}-\u{2CEA1}\u{2CEB0}-\u{2EBE0}\u{2F800}-\u{2FA1D}\u{30000}-\u{3134A}/
+     <ascii_letter>: /A-Za-z/
+     <ascii_digit>: /0-9/
+     <unihan_ideograph>: /\u{4E00}-\u{9FFC}\u{F900}-\u{FAD9}\u{3400}-\u{4DBF}\u{20000}-\u{2A6DD}\ u{2A700}-\u{2B734}\u{2B740}-\u{2B81D}\u{2B820}-\u{2CEA1}\u{2CEB0}-\u{2EBE0}\u{2F800}-\ u{2FA1D}\u{30000}-\u{3134A}/
 
-    <ws>: /[ \t\f\n\r]+/    # white space
-    <hws>: /[ \t]+/         # horinzontal white space
+     <ws>: /[ \t\f\n\r]+/ # white space
+     <hws>: /[ \t]+/ # horinzontal white space
 ```
 
-需要说明的是，我们允许在使用 `[ ]` 引用数组、元组或者集合的成员时，使用负数作为索引值。当使用负数作为索引值时，其范围是 -1 到数组或集合的成员个数，以最后一个成员为起点。
+It should be noted that we allow the use of negative numbers as index values when using `[ ]` to refer to members of arrays, tuples, or sets. When a negative number is used as an index value, it ranges from -1 to the number of members of the array or collection, starting with the last member.
 
-对复合求值表达式，我们定义如下规则：
+For compound evaluation expressions, we define the following rules:
 
-1. 对一个 CHEE 的求值结果，指该 CHEE 中执行求值的最后一个求值表达式的结果；所有中间结果将被废弃。
-1. 一个 CHEE 中可嵌套另一个 CHEE。
-1. 可使用 `//` 或者 `#` 在表达式之间定义行注释。
+1. The evaluation result of a CHEE refers to the result of the last evaluation expression evaluated in the CHEE; all intermediate results will be discarded.
+1. A CHEE can be nested within another CHEE.
+1. You can use `//` or `#` to define line comments between expressions.
 
-处理步骤如下：
+The processing steps are as follows:
 
-1) 将 CHEE 中的第一个 CHEE 设定为当前 HEE。
-2) 对当前 HEE 求值，形成当前求值结果，然后，
-   - 若其后是 `;`，若存在下个 HEE，则将下个 HEE 调整为当前 HEE 并跳转到第二步；若没有下个 HEE，则跳转到第三步。
-   - 若其后是 `&&`，则首先对当前求值结果做布尔化处理，如果是 `true`，则将下个 HEE（若有）调整为当前 HEE 并跳转到第二步；否则跳过下个 HEE（若有）的求值，将下下个 HEE（若有）调整为当前 HEE 并跳转到第二步。在以上过程中，若没有可求值的 HEE，则跳转到第三步。
-   - 若其后是 `||`，则首先对当前求值结果做布尔化处理，如果是 `false`，则将下个 HEE（若有）调整为当前 HEE 并跳转到第二步，否则跳过下个 HEE（若有）的求值 ，将下下个 HEE（若有）调整为当前 HEE 并跳转到第二步。在以上过程中，若没有可求值的 HEE，则跳转到第三步。
-3) 将整个 CHEE 的求值结果设定为最后执行求值的 HEE 的求值结果，废弃其他中间结果。
+1) Set the first CHEE among CHEEs as the current HEE.
+2) Evaluate the current HEE to form the current evaluation result, then,
+    - If it is followed by `;`and there is a next HEE, adjust the next HEE to the current HEE and jump to the second step; if there is no next HEE, then jump to the third step.
+    - If it is followed by `&&`, first do boolean processing on the current evaluation result. If it is `true`, then adjust the next HEE (if any) to the current HEE and jump to the second step. Otherwise, skip After evaluating the next HEE (if any), adjust the next HEE (if any) to the current HEE and jump to step 2. In the above process, if there is no HEE that can be evaluated, then jump to the third step.
+    - If it is followed by `||`, first do boolean processing on the current evaluation result. If it is `false`, adjust the next HEE (if any) to the current HEE and jump to the second step. Otherwise Skip the evaluation of the next HEE (if any) and adjust the next HEE (if any) to the current HEE and jump to step 2. In the above process, if there is no HEE that can be evaluated, then jump to the third step.
+3) Set the evaluation result of the entire CHEE as the evaluation result of the last evaluated HEE, discarding other intermediate results.
 
-#### 2.2.3) 常见的被指名词法单元
+#### 2.2.3) Common Denoted Noun Units
 
-如下被指名的词法单元在后文中不再重复描述：
+The following named lexical units will not be described repeatedly in the following text:
 
 ```
     quoted_literal_char: '''<literal_char>''' | '"'<literal_char>'"'
@@ -2612,952 +2625,954 @@ HVML 解释器按照固定的策略将目标文档子树（文档片段）视作
     hws: /[ \t]/        # horizontal white space
 ```
 
-除此之外，
+Besides,
 
-1. `literal_number` 遵循 [JSON] 语法。
-1. `literal_integer` 本质上同 `literal_number`，只是在执行器的内部实现当中，应转换为最接近的整数使用。
-1. `ip_literal`、 `ipv4_address` 和 `reg_host_name`，参阅 [RFC 3986] 之 `Section 3.2.2`。
+1. `literal_number` follows the [JSON] syntax.
+1. `literal_integer` is essentially the same as `literal_number`. But it should be converted to the nearest integer for use in the internal implementation of the executor.
+1. `ip_literal`, `ipv4_address` and `reg_host_name`, see `Section 3.2.2` of [RFC 3986].
 
-另外，由于执行器的规则字符串通常作为属性值使用，考虑到属性值可使用单引号及双引号包围，因此，规则中的字符串字面值（string literal）可使用单引号（`'`）或双引号（`"`）包围：
+In addition, since the rule string of the executor is usually used as an attribute value, considering that the attribute value can be surrounded by single quotes and double quotes, the string literal in the rule can use single quotes (`'`) or surrounded by double quotes (`"`):
 
-- 当属性值本身使用双引号（`"`）包围时，规则中的字符串应使用单引号（`'`）包围。
-- 当属性值本身使用单引号（`'`）包围时，规则中的字符串应使用双引号（`"`）包围。注意，此种情况下，属性值中的 `$` 将被当做字面值处理，不用于定义一个求值表达式。
+- Strings in rules should be surrounded by single quotes (`'`) when the attribute value itself is surrounded by double quotes (`"`).
+- When the attribute value itself is surrounded by single quotes (`'`), the string in the rule should be surrounded by double quotes (`"`). Note that in this case, `$` in the attribute value will be treated as a literal, not used to define an evaluated expression.
 
-所有规则中的字符串字面值，故而在这些字符串中包含字面的单引号（`'`）或双引号时（`"`）时，需使用转义，其他特殊字符，如 +U0009 TAB 等，参照 [JSON] 语法：
+So string literals in all rules, when these strings contain literal single quotes (`'`) or double quotes (`"`), are required to escape. Other special characters, such as +U0009 TAB, etc. , are refer to [JSON] syntax:
 
-1. 需转义的特殊字符包括：`\\`、 `\/`（非强制）、 `\b`、 `\f`、 `\n`、 `\r`、 `\t`。
-1. 当规则中的字符串使用单引号（`'`）包围时，字符串中包含的字面单引号（`'`）应使用转义表达：`\'`。
-1. 当规则中的字符串使用双引号（`"`）包围时，字符串中包含的字面双引号（`"`）应使用转义表达：`\"`。
-1. 当规则中的字符串使用双引号（`"`）包围时，字符串中包含的字面美元符号（`$`）应使用转义表达：`\$`。
-1. `\uHHHH` 用四个十六进制数字表示一个 Unicode 字符，如 `\uA0A0`；不支持 C 语言十六进制或八进制（如 `\xA0\xA0`）这种写法。
+1. The special characters that need to be escaped include: `\\`, `\/` (not mandatory), `\b`, `\f`, `\n`, `\r`, `\t`.
+1. When the string in the rule is surrounded by single quotes (`'`), the literal single quotes (`'`) contained in the string should be escaped: `\'`.
+1. When the string in the rule is surrounded by double quotes (`"`), the literal double quotes (`"`) contained in the string should be escaped: `\"`.
+1. When the string in the rule is surrounded by double quotes (`"`), the literal dollar sign (`$`) contained in the string should be escaped: `\$`.
+1. `\uHHHH` uses four hexadecimal digits to represent a Unicode character, such as `\uA0A0`; C language hexadecimal or octal (such as `\xA0\xA0`) is not supported.
 
-以上说明适用 `literal_char` 和 `literal_char_sequence`。
+The above instructions apply to `literal_char` and `literal_char_sequence`.
 
-注意，因 HVML 要求使用 UTF-8 编码，`literal_char` 本质上是一个多字节序列，对应字符串类型。当实际的 `literal_char` 中包含多个 Unicode 字符时，仅第一个字符生效。
+Note that since HVML requires UTF-8 encoding, `literal_char` is essentially a multibyte sequence corresponding to the string type. When the actual `literal_char` contains multiple Unicode characters, only the first character takes effect.
 
-#### 2.2.4) 动态对象方法的描述语法
+#### 2.2.4) Description Syntax of Dynamic Object Methods
 
-在描述动态对象的获取器、设置器方法的参数及返回值时，我们使用如下语法：
+When describing the parameters and return values of the getter and setter methods of dynamic objects, we use the following syntax:
 
-1. 描述参数时，必须指定参数的类型，外加可选的形参名称；若参数是可选的，则可使用 `=` 给出该形参的默认值。如：
-   - `number $seconds`。
-   - `boolean $case_insensitivity = false`。
-   - `string`。
-   - `string = 'auto'`。
-1. 可选地，在参数类型（及形参名称）之后添加冒号 U+003A（`:`）并在反引号 U+0060（\`）包围中（或使用 C 语言注释符号）描述其用途。如：
-   - number $seconds: /\* seconds since epoch \*/
-   - boolean $case\_insensitivity = false: \`performs a case-sensitive (@false) or a case-insensitive (@true) check.\`
-   - string: locale category
-1. 若在描述中包含 `true`、`null`、`undefined` 等关键词，使用 U+0040（@ ）前导符号。
-1. 使用 `native/<entityName>` 的形式描述原生实体类型，其中 `<entityName>` 是这种原生实体类型的名称。
-1. 可使用如下类型别名：
-   1. `any`：任意类型。
-   1. `real`：任意实数类型，即 `number`、 `longint`、 `ulongint` 或 `longdouble` 之一。
-   1. `linctnr`：线性容器，即 `array`、 `tuple` 或 `set`。
-   1. `container`：容器，即 `array`、 `tuple`、 `object` 或 `set`。
-1. 参数可传递多个类型时，使用 `|` 分隔，如：`string | number`。
-1. 当字符串参数中使用多个或者单个关键词表示单个或者多个选项时，我们用空格分隔这些关键词，使用 `||` `&&` 等符号表示这些关键词是否可以同时出现，然后将整个字符串参数用单引号（`'`）或双引号（`"`）包围，如 `"kernel-name || machine"` 或 `'kernel-name && machine'`。具体规则描述如下：
-   1. 并置的关键词表示所有的关键词（组）都要以给定的顺序传递。
-   1. `&&` 分隔的两个或多个关键词（组），表示必须传递所有这些关键词，顺序任意。
-   1. `||` 分隔的两个或多个关键词（组），表示必须传递这些关键词中的一个或多个，顺序任意。
-   1. `|` 分隔两个或者多个关键词（组），表示必须传递其中一个。
-   1. 使用一对中括号（`[ ]`）对多个关键词进行分组。
-   1. 不使用前置的参数类型 `string`。
-1. 参数中使用的关键词由不包含空格和控制字符的可打印字符组成；参数中需要传递多个关键词时，使用单个或者多个 ASCII 空白字符分隔。
-1. 枚举说明关键词用途时，一行描述一个关键词，并使用前导字符 `-`。
-1. 方法的返回值类型，在右括号 U+0029（`)`）之后描述；可能返回多种类型时，使用 `|` 符号分隔。可选地，在类型名称后添加冒号（`:`）以及对返回值的简要描述信息。
-1. 可选地，我们对必须包含的参数或语法单元，包含在一对尖括号（`< >`）中描述；对可选的参数或语法单元，包含在一对中括号（`[ ]`）中描述。
+1. When describing a parameter, the type of the parameter must be specified, plus an optional formal parameter name; if the parameter is optional, you can use `=` to give the default value of the formal parameter. For example:
+    - `number $seconds`.
+    - `boolean $case_insensitivity = false`.
+    - `string`.
+    - `string = 'auto'`.
+1. Optionally, add a colon U+003A (`:`) after the parameter type (and formal parameter name) and describe its purpose surrounded by backticks U+0060 (\`) (or use C language comment symbols) . For example:
+    - number $seconds: /\* seconds since epoch \*/
+    - boolean $case\_insensitivity = false: \`performs a case-sensitive (@false) or a case-insensitive (@true) check.\`
+    - string: locale category
+1. If keywords such as `true`, `null`, `undefined` are included in the description, use U+0040 (@) leading symbol.
+1. Use `native/<entityName>` to describe native entity types, where `<entityName>` is the name of this native entity type.
+1. The following type aliases can be used:
+    1. `any`: Any type.
+    1. `real`: Any real number type, ie one of `number`, `longint`, `ulongint` or `longdouble`.
+    1. `linctnr`: Linear container, ie `array`, `tuple` or `set`.
+    1. `container`: container, namely `array`, `tuple`, `object` or `set`.
+1. When parameters can pass multiple types, use `|` to separate them, such as: `string | number`.
+1. When multiple or single keywords are used in the string parameter to indicate single or multiple options, we separate these keywords with spaces, and use symbols such as `||` `&&` to indicate whether these keywords can appear at the same time, and then Surround the entire string parameter with single quotes (`'`) or double quotes (`"`), such as `"kernel-name || machine"` or `'kernel-name && machine'`. The specific rules are described as follows:
+    1. Concatenated keywords indicate that all keywords (groups) are to be passed in the given order.
+    1. Two or more keywords (groups) separated by `&&`, indicating that all these keywords must be passed, in any order.
+    1. Two or more keywords (groups) separated by `||`, indicating that one or more of these keywords must be passed, in any order.
+    1. `|` separates two or more keywords (groups), indicating that one of them must be passed.
+    1. Use a pair of square brackets (`[ ]`) to group multiple keywords.
+    1. Do not use the preceding parameter type `string`.
+1. The keywords used in the parameters are composed of printable characters that do not contain spaces and control characters; when multiple keywords need to be passed in the parameters, use single or multiple ASCII blank characters to separate them.
+1. When enumerating and describing the use of keywords, describe a keyword in one line and use the leading character `-`.
+1. The return value type of the method is described after the closing bracket U+0029 (`)`); when multiple types may be returned, use the `|` symbol to separate. Optionally, add a colon (`:`) after the type name and a brief description of the return value.
+1. Optionally, we describe the parameters or syntax units that must be included in a pair of angle brackets (`< >`); for optional parameters or syntax units, include them in a pair of square brackets (`[ ] `) described in.
 
-上述语法中使用关键词表示选项的情形，示例如下：
+The situation where keywords are used in the above syntax to indicate options, examples are as follows:
 
-- `'kernel-name | kernel-release | kernel-version | machine | all'`：表示只能传递这些关键词中的一个。
-- `'[kernel-name || kernel-release || kernel-version || machine] | all'`：表示要么传递 `all` 要么传递前面可选关键词中一个或多个，顺序任意。
+- `'kernel-name | kernel-release | kernel-version | machine | all'`: Indicates that only one of these keywords can be passed.
+- `'[kernel-name || kernel-release || kernel-version || machine] | all'`: means to either pass `all` or pass one or more of the preceding optional keywords, in any order.
 
-比如我们使用如下的语法描述 `$DATA.numerify` 方法的接口：
+For example, we use the following syntax to describe the interface of `$DATA.numerify` method:
 
 ```javascript
-// 对给定的数据做数值化，返回指定的实数类型，默认为 `number`。
+// Numericize the given data and return the specified real number type, which defaults to `number`.
 $DATA.numerify(
-        any $data,
-        'number | longint | ulongint | longdouble' $subtype = 'number': `the number subtype to return.`
+         any $data,
+         'number | longint | ulongint | longdouble' $subtype = 'number': `the number subtype to return.`
 ) number | longint | ulongint | longdouble : `the numberified data.`
 ```
 
-或，
+or,
 
 ```javascript
-// 对给定的数据做数值化，返回指定的实数类型，默认为 `number`。
+// Numericize the given data and return the specified real number type, which defaults to `number`.
 $DATA.numerify(
-        <any $data>
-        [,
-            <'number | longint | ulongint | longdouble' $subtype = 'number': `the number subtype to return.`>
-        ]
+         <any $data>
+         [,
+             <'number | longint | ulongint | longdouble' $subtype = 'number': `the number subtype to return.`>
+         ]
 ) number | longint | ulongint | longdouble : `the numberified data.`
 ```
 
-以上语法亦可用于描述对象的属性，如：
+The above syntax can also be used to describe the properties of objects, such as:
 
 ```javascript
-    {
-        "messageType": <string: `the type of this message, such as 'event', 'result', 'change', and an implementation defined message type.`>,
-        "messageSubType": <string: `the sub type of this message, optional`>,
-        "source": <any: `the variant generating this message`>,
-        "time": <number: `the time when this message fired`>,
-        "signature": <string: `optional signature`>,
-        "payload" : <object: `the payload of this message`>
-    }
+     {
+         "messageType": <string: `the type of this message, such as 'event', 'result', 'change', and an implementation defined message type.`>,
+         "messageSubType": <string: `the sub type of this message, optional`>,
+         "source": <any: `the variant generating this message`>,
+         "time": <number: `the time when this message fired`>,
+         "signature": <string: `optional signature`>,
+         "payload" : <object: `the payload of this message`>
+     }
 ```
 
-#### 2.2.5) eJSON 语法
+#### 2.2.5) eJSON Syntax
 
-当 HVML 元素的内容是数据内容时，我们可混合使用扩展的 JSON 语法来描述某个结构化的数据，并嵌套使用求值表达式。本节描述扩展 JSON 语法。
+When the content of the HVML element is data content, we can mix extended JSON syntax to describe a certain structured data, and nested evaluation expressions. This section describes the extended JSON syntax.
 
-1) 当内容不以换行字符（U+000A LF 或 U+000D CR 字符）开头时，则按普通 HTML 元素的文本内容进行解析，并支持 HTML 字符引用，否则将按照扩展 JSON 语法处理。如：
+1) When the content does not start with a newline character (U+000A LF or U+000D CR character), it will be parsed as the text content of an ordinary HTML element and HTML character references are supported, otherwise it will be processed according to the extended JSON syntax. like:
 
 ```hvml
-<foo id=text> 123456&amp;</foo>
+<foo id=text>123456&amp;</foo>
 
 <foo id=number>
 123456
 </foo>
 ```
 
-`id` 为 `text` 的 `foo` 元素，其内容为字符串 ` 123456&`；另一个 `foo` 元素的内容为数值 `123456`。
+ `foo` element with  `id` of `text` has the content of the string `123456&`. Another `foo` element has the content of the numeric value `123456`.
 
-2) 当对象（object）的键名由 ASCII 字母打头，且仅包含 ASCII 字母、数字、减号、下划线时，可省略键名两边的双引号，其他情形，必须使用双引号包围。如：
-
-```javascript
-{
-    width: "device-width",
-    initial-scale: 1.0,
-    minimum-scale: 0.5,
-    maximum-scale: 2.0,
-    user-scalable: true,
-    "地区": "zh-CN"
-}
-```
-
-3) 对象（object）中的最后一个键值对，数组（array）的最后一个单元之后，可包含逗号 (,)。如：
+2) When the key name of an object starts with an ASCII letter and only contains ASCII letters, numbers, minus signs, and underscores, the double quotes around the key name can be omitted. In other cases, double quotes must be used. like:
 
 ```javascript
 {
-    age: 10,
-    weight: 30,
-    height: 150,
+     width: "device-width",
+     initial-scale: 1.0,
+     minimum-scale: 0.5,
+     maximum-scale: 2.0,
+     user-scalable: true,
+     "Region": "zh-CN"
 }
 ```
 
-或，
+3) The last key-value pair in an object, after the last unit of an array, may contain a comma (,). like:
+
+```javascript
+{
+     age: 10,
+     weight: 30,
+     height: 150,
+}
+```
+
+or,
 
 ```javascript
 [
-        { age: 10, weight: 30, height: 150, },
-        { age: 11, weight: 32, height: 145, },
+         { age: 10, weight: 30, height: 150, },
+         { age: 11, weight: 32, height: 145, },
 ]
 ```
 
-4) 使用如下后缀来明确表示数值（number）的类型：
-   - 有符号长整型（64 位）：1234567890L
-   - 无符号长整型（64 位）：1234567890UL
-   - 可使用 `0x` 前缀表示十六进制表达的有符号长整型，此时可忽略 `L` 后缀：0x1122AABBCCDDEEFF
-   - 可使用 `0x` 前缀表示十六进制表达的有符号长整型，此时可忽略 `L` 后缀：0x8899AABBCCDDEEFFU
-   - 长双精度浮点数：1234567890FL
+4) Use the following suffix to clearly indicate the type of number:
+    - Signed long (64-bit): 1234567890L
+    - Unsigned long (64-bit): 1234567890UL
+    - `0x` prefix can be used to represent the signed long integer in hexadecimal representation, and `L` suffix can be ignored in this case: 0x1122AABBCCDDEEFF
+    - You can use `0x` prefix to represent the signed long integer in hexadecimal representation, and `L` suffix can be ignored in this case: 0x8899AABBCCDDDEEFFU
+    - Long double precision floating point number: 1234567890FL
 
-未显式指定类型的数值，全部视作双精度浮点数处理。
+Value that do not explicitly specify a type are all treated as double-precision floating-point numbers.
 
-5) 对象键名或字符串，可使用单引号（`'`）或者双引号（`"`）包围。单引号和双引号的区别在于，使用双引号时，其中的单引号不需要做转义处理，并对包含其中的表达式进行求值，将求值结果字符串化之后和其他部分串接在一起作为最终结果使用；当使用单引号时，其中的双引号不需要做转义处理，且忽略其中可能存在的表达式。如：
+5) The object key name or string can be surrounded by single quotes (`'`) or double quotes (`"`). The difference between single quotes and double quotes is that when using double quotes, the single quotes do not need to be converted Definition processing. They evaluate the expression contained in it, and stringize the evaluation result and concatenate it with other parts as the final result. When using single quotes, the double quotes do not need to be escaped , which ignore expressions that may exist in it. For example:
 
 ```js
 {
-    'Title': "David's Book",
-    "Description": 'Daivd says: "This is my book"',
+     'Title': "David's Book",
+     "Description": 'Daivd says: "This is my book"',
 }
 ```
 
-注意，在双引号和单引号定义的字符串中，不允许出现未经转义的 C0 控制字符。
+Note that unescaped C0 control characters are not allowed in strings defined by double quotes and single quotes.
 
-6) 可使用 `"""`（三双引号，triple-double-quote）定义多行文本字符串，将原样保留其中的 ASCII 制表符或者新行符（U+0009 TAB、U+000A LF、U+000D CR），单引号（`'`）以及不连续出现三次的双引号（`"`）无需使用转义符号。类似地，可使用 `'''`（三单引号，triple-single-quote）定义多行文本字符串，将原样保留其中的 ASCII 制表符或者新行符，双引号（`"`）以及不连续出现三次的单引号（`'`）无需使用转义符号。
+6) You can use `"""` (triple-double-quote) to define a multi-line text string, and keep the ASCII tab or newline character (U+0009 TAB, U+000A LF) , U+000D CR), single quotes (`'`), and double quotes (`"`) that do not appear three times in a row do not need to use escape symbols. Similarly, `'''` (triple-single-quote) can be used to define a multi-line text string, and ASCII tabs or newlines, double quotes (`"`) and Single quotation marks (`'`) that do not appear three times in a row do not need to use escape symbols.
 
-如：
+For example:
 
 ```js
 {
-    id:         1234567890UL,
-    nickname:   "David",
-    signature:
+     id: 1234567890UL,
+     nickname: "David",
+     signature:
 """
-一个
+one
 
-    被'程序'耽误的
+     Delayed by 'program'
 
-        "文艺"青年。
+         "Young artists.
 """,
 }
 ```
 
-三单引号和三双引号的区别在于，使用三双引号时，将对包含其中的表达式进行求值，并将结果做字符串化之后和其他部分串接在一起作为最终结果，当使用三单引号时，将忽略其中的求值表达式。
+The difference between triple single quotes and triple double quotes is that when using triple double quotes, the expression contained in it will be evaluated.And the result will be stringified and concatenated with other parts as the final result. When using triple When single quotes are used, evaluated expressions within them are ignored.
 
-注意，在三双引号和三单引号定义的字符串中，不允许出现未经转义的除了 ASCII 制表符或者新行符（U+0007 TAB、U+000A LF、U+000D CR）之外的 C0 控制字符。
+Note that in strings defined by triple double quotes and triple single quotes, unescaped characters, except ASCII tabs or newline characters (U+0007 TAB, U+000A LF, U+000D CR)  outside the C0 control character.
 
-7) 对字节序列类型，使用 `bx`、 `bb`、 `b64` 等前缀，分别表示十六进制表达、二进制表达和 Base64 编码。如：
+7) For byte sequence types, prefixes such as `bx`, `bb`, `b64` are used to represent hexadecimal representation, binary representation and Base64 encoding respectively. For example:
 
 ```js
 {
-    hex:     bx00112233445566778899AABBCCDDEEFF,
-    binary:  bb0011.1100.0011.0011,
-    base64:  b64UHVyQyBpcyBhbiBIVk1MIHBhcnNlciBhbmQgaW50ZXJwcmV0ZXIuCiA=,
+     hex: bx00112233445566778899AABBCCDDEEFF,
+     binary: bb0011.1100.0011.0011,
+     base64: b64UHVyQyBpcyBhbiBIVk1MIHBhcnNlciBhbmQgaW50ZXJwcmV0ZXIuCiA=,
 }
 ```
 
-若 `bx`、`bb`、`b64` 前缀之后不跟任何字符，则表示一个空的字节序列。
+If no characters follow `bx`, `bb`, `b64` prefix, it means an empty sequence of bytes.
 
-使用二进制表达时，中间的句点是可选的，只用于方便阅读，解析时忽略。
+When using binary expression, the period in the middle is optional, it is only used for convenience of reading, and it is ignored during parsing.
 
-8) 使用 `[!` 和 `]` 包围定义元组。如：
+8) Surround definition tuples with `[!` and `]`. For example:
 
 ```js
 [! 'Title', "David's Book", "Description", 'Daivd says: "This is my book"' ]
 ```
 
-### 2.3) 框架标签详解
+### 2.3) Frame Tag Details
 
-框架标签用于定义一个 HVML 程序的框架结构，有 `hvml`、`head` 和 `body` 三个标签。
+Frame tags are used to define the frame structure of an HVML program, there are three tags: `hvml`, `head` and `body`.
 
-注意，在框架标签中，我们可以使用 HVML 定义的副词属性，比如 `silently`，表示在对其属性值和内容求值时，执行静默求值。
+Note that in frame tags, we can use HVML-defined adverb attributes, such as `silently`, to indicate that silent evaluation is performed when evaluating its attribute value and content.
 
-除副词属性以及指定的属性外，在框架标签中定义的其他属性（比如 `hvml` 标签中定义的 `lang` 属性），将在被求值后被克隆（clone）到目标文档的对应元素中。
+In addition to the adverb attribute and the specified attribute, other attributes defined in the frame tag (such as `lang` attribute defined in `hvml` tag) will be cloned into the corresponding element of the target document after being evaluated .
 
-#### 2.3.1) `hvml` 标签
+#### 2.3.1) `hvml` Tag
 
-`hvml` 标签定义一个 HVML 程序（或 HVML 文档）。`hvml` 标签支持如下属性：
+`hvml` tag defines an HVML program (or HVML document). `hvml` tag supports the following attributes:
 
-- `target`：定义 HVML 文档的目标标记语言，取 `void`、 `html`、 `xml` 等值，通常是某种目标标记语言（或目标文档类型）的名称。HVML 解释器应至少支持 `void` 这一特殊的目标标记语言；顾名思义，`void` 类型不产生任何实际的目标文档内容，故而无需渲染器即可正常运行，此时，HVML 程序和一般的脚本程序并无本质区别。当目标标记语言定义为 `void` 时，解释器将维护一个特殊的 eDOM 树，对这个 eDOM 树的任何更新都将被完全忽略，而在其上执行 `$DOC.query` 将始终返回空的元素汇集。
+- `target`: Define the target markup language of the HVML program, take the value of `void`, `html`, `xml` and so on, usually the name of a target markup language (or target document type). The HVML interpreter should at least support the special object markup language `void`. As the name implies, `void` type does not produce any actual object document content, so it can run normally without a renderer. At this time, HVML programs and general scripts The procedures are not fundamentally different. When the target markup language is defined as `void`. The interpreter will maintain a special eDOM tree. Any updates to this eDOM tree will be completely ignored. And executing `$DOC.query` on it will always return empty Elements collection.
 
-注意，`target` 属性和所有 HVML 副词属性，都不应该被克隆到目标文档的根元素中。
+Note that `target` attribute and all HVML adverb attributes should not be cloned into the root element of the target document.
 
-除了注释之外，`hvml` 元素中可包含如下两种标签定义的子元素：
+In addition to comments, `hvml` element can contain sub-elements defined by the following two tags:
 
-- 零个或一个由 `head` 标签定义的头部元素，若有则必须定义为 `hvml` 元素的第一个子元素。
-- 零个或多个由 `body` 标签定义的本体元素。
+- Zero or one head element defined by the `head` tag, if any, must be defined as the first child element of `hvml` element.
+- Zero or more body elements defined by the `body` tag.
 
-#### 2.3.2) `head` 标签
+#### 2.3.2) `head` Tag
 
-`head` 标签用于定义 HVML 代码的头部信息，其中可包含如下标签定义的子元素：
+`head` tag is used to define the header information of the HVML code, which can contain sub-elements defined by the following tags:
 
-- 可被原样保留到目标文档的标签，如 HTML 文档的 `<meta>`、 `<link>` 等标签。
-- 全局数据的初始化；使用 `init` 标签定义。
-- 全局动态对象；使用 `init` 标签定义。
-- 全局长连接数据源；使用 `init` 标签和 `$STREAM` 预定义变量初始化。
-- 全局模板；使用 `archedata`、 `archetype`、 `error`、 `except` 等标签定义。
+- Tags that can be left unchanged in the target document, such as `<meta>`, `<link>`, etc. tags of HTML documents.
+- Initialization of global data, which is defined using `init` tag.
+- Global dynamic object, which is defined using `init` tag.
+- Global persistent connection data source, which is initialized with `init` tag and `$STREAM` predefined variable.
+- Global templates, which is defined using `archedata`, `archetype`, `error`, `except`, etc. tags.
 
-HVML 程序中，`head` 标签是可选的，无预定义属性。
+In HVML programs, `head` tag is optional and has no predefined attributes.
 
-当目标标记语言支持 `head` 标签时，其属性和内容以及所有使用非 HVML 标签定义的元素将被克隆到目标文档的 `head` 元素中。当目标标记语言不支持 `head` 标签时，其属性将被丢弃，而其内容以及所有使用非 HVML 标签定义的子元素将被置于目标文档的根元素之下。
+When the target markup language supports `head` tag, its attributes and content as well as all elements defined using non-HVML tags, will be cloned into the `head` element of the target document. When the target markup language does not support the `head` tag, its attributes will be discarded, and its content and all child elements defined using non-HVML tags will be placed under the root element of the target document.
 
-#### 2.3.3) `body` 标签
+#### 2.3.3) `body` Tag
 
-`body` 标签用于定义 HVML 程序的本体内容。在 HVML 程序中，可以定义多个 `body` 本地内容，使用 `id` 属性区别不同的本体内容。在执行过程中，可通过 `load` 元素装载不同的本体内容。
+`body` tag is used to define the body content of the HVML program. In an HVML program, multiple `body` local contents can be defined, and `id` attribute can be used to distinguish different ontology contents. During execution, different ontology contents can be loaded via `load` element.
 
-当目标标记语言支持 `body` 标签时，其属性将被克隆到目标文档的 `body` 元素中。若目标标记语言不支持 `body`，其属性将被丢弃。
+When the target markup language supports `body` tag, its attributes will be cloned into `body` element of the target document. If the target markup language does not support `body`, its attributes will be discarded.
 
-#### 2.3.4) `hvml` 标签的内容
+#### 2.3.4) Content of `hvml` Tag
 
-在 `hvml` 标签内部，我们可使用求值表达式，这些表达式将在执行过程中被求值，其结果将被设置为 `hvml` 元素的执行结果，而 `hvml` 元素对应的栈帧始终为最顶栈帧，因此，`hvml` 元素的结果数据也将作为整个 HVML 协程的执行结果。在 `hvml` 标签内，我们可以定义多个表达式，后一个表达式的求值结果将覆盖 `hvml` 元素的结果数据。如：
+Inside `hvml` tag, we can use evaluation expressions, which will be evaluated during execution. And the result will be set as the execution result of `hvml` element. And the stack frame corresponding to `hvml` element is always the topmost stack frame.Therefore, the result data of `hvml` element will also be the execution result of the entire HVML coroutine. Inside `hvml` tag, we can define multiple expressions, and the evaluation result of the latter expression will overwrite the result data of `hvml` element. For example:
 
 ```hvml
 <hvml target="void" lang="$STR.substr($SYS.locale, 0, 2)">
-    {{
-        $STREAM.stdout.writelines('Start of `Hello, world!`');
-        $STREAM.stdout.writelines("$DATETIME.fmttime('%H:%m')")
-    }}
+     {{
+         $STREAM.stdout.writelines('Start of `Hello, world!`');
+         $STREAM.stdout.writelines("$DATETIME.fmttime('%H:%m')")
+     }}
 
-    <head>
-        <title>$T.get('Hello, world!')</title>
-    </head>
+     <head>
+         <title>$T. get('Hello, world!')</title>
+     </head>
 
-    <body>
-        <p>$T.get('Hello, HVML!')</p>
-    </body>
+     <body>
+         <p>$T.get('Hello, HVML!')</p>
+     </body>
 
-    {{
-        $STREAM.stdout.writelines('End of `Hello, world!`');
-        $STREAM.stdout.writelines("$DATETIME.fmttime('%H:%M')")
-    }}
+     {{
+         $STREAM.stdout.writelines('End of `Hello, world!`');
+         $STREAM.stdout.writelines("$DATETIME.fmttime('%H:%M')")
+     }}
 </hvml>
 ```
 
-就上述 HVML 程序，`hvml` 元素的结果数据将作为整个 HVML 协程的执行结果。因此，以上程序的正常执行结果为最后一个求值表达式的求值结果：6（写入 "11:00" 字符串以及额外的新行符到标准输入的字节数）。
+As for the above HVML program, the result data of `hvml` element will be the execution result of the entire HVML coroutine. Thus, normal execution of the above program evaluates to the result of the last evaluated expression: 6 (the number of bytes written to standard input with the string "11:00" plus an extra newline).
 
-### 2.4) 模板标签详解
+### 2.4) Template tag Details
 
-模板标签本质上定义的是一个文档片段模板或者数据模板，可视作一个包含参数化字符串或者参数化数据，因此，我们实际上可以使用 `init` 标签来获得和模板标签一样的功能。
+The template tag essentially defines a document fragment template or data template, which can be regarded as a parameterized string or parameterized data. Therefore, we can actually use `init` tag to obtain the same function as the template tag.
 
-所有模板标签可使用其内容来定义一个模板，也可以使用 `src` 属性定义的 URL 从外部数据源中获得模板数据。当同时使用 `src` 属性和内容来定义模板数据时，将尝试装载指定的外部资源作为模板数据，如果装载失败，则转而使用内容。如：
-
-```hvml
-    <archetype name="user_item" src="foo:///nonexistent_dir/templates/user_item">
-        <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
-            <img class="avatar" src="$?.avatar" />
-            <span>$?.name</span>
-        </li>
-    </archetype>
-```
-
-上述代码指定的 `src` 属性值使用了错误的协议名称，请求将失败，因此，最终将使用内容定义的模板数据。
-
-当我们从外部 URL 中获得模板数据时，可使用如下属性：
-
-- `src`：用于指定外部数据源 URL。
-- `param`：形如 `a=10&b=20` 的请求参数，需按照 [RFC3986](https://datatracker.ietf.org/doc/html/rfc3986) 进行编码。
-- `method`：方法，如 `GET`、`POST` 等。
-
-所有模板标签支持如下属性：
-
-- `silently` 属性。当定义有这个属性时，对属性值的求值将执行静默求值。
-- `raw` 属性。当定义有这个属性时，模板数据中 `$` 将被视作一个字面字符，而不执行表达式的求值处理。
-
-#### 2.4.1) `archetype` 标签
-
-`archetype` 标签用于定义一个文档片段模板。
+All template tags can use their content to define a template, or use the URL defined by `src` attribute to get template data from an external data source. When using both `src` attribute and content to define template data, an attempt will be made to load the specified external resource as template data, and if that fails, the content will be used instead. For example:
 
 ```hvml
-    <archetype name="user_item">
-        <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
-            <img class="avatar" src="$?.avatar" />
-            <span>$?.name</span>
-        </li>
-    </archetype>
-
-    <archetype name="unknown_user_item" raw>
-        <li class="user-item">
-            <img class="avatar" src="/def-avatar.png">
-            <span>Unknown</span>
-        </li>
-    </archetype>
+     <archetype name="user_item" src="foo:///nonexistent_dir/templates/user_item">
+         <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
+             <img class="avatar" src="$?.avatar" />
+             <span>$?.name</span>
+         </li>
+     </archetype>
 ```
 
-在上面的例子中，第一个 `archetype` 标签定义了一个文档片段模板，可用于生成最终的目标文档片段并插入到目标文档的指定位置。HVML 解释器在将该模板克隆并插入到真实的文档时，会将当前上下文中的数据按照给定的映射关系进行替换。在 HVML 中，`$?` 是一个特殊的上下文变量，用来指代动作标签执行时的前置操作结果数据。类似 `$?.id`、 `$?.name` 这样的字符串将被视为求值表达式进行求值，最终使用当前上下文的数据来替代。
+The above code specifies the wrong protocol name for `src` attribute value. The request will fail, therefore, the content-defined template data will end up being used.
 
-在上面的例子中，第二个 `archetype` 标签定义了一个裸文本模板，其中包含一段 XML/HTML 文档片段，可克隆到目标位置，但不做任何求值表达式的处理，即使包含合法的求值表达式。
+When we get template data from an external URL, we can use the following attributes:
 
-另外，在 `archetype` 标签中，我们还可以使用 `type` 属性定义模板片段的文本类型，可以取如下值：
+- `src`: It is used to specify the external data source URL.
+- `param`: Request parameters in the form of `a=10&b=20`, which need to be encoded according to [RFC3986](https://datatracker.ietf.org/doc/html/rfc3986).
+- `method`: Such as `GET`, `POST`, etc.
 
-- `plain`：视作普通文本。
-- `html`：视作 HTML 片段。
-- `svg`：视作 SVG 片段。
-- `mathml`：视作 MathML 片段。
-- `xgml`：视作 XGML 片段。
-- `xml`：视作通用 XML 片段。
+All template tags support the following attributes:
 
-如果不指定 `type` 属性值，则取目标文档的默认文本类型。比如当目标文档类型为 `html` 时，`archetype` 标签定义的文档片段将默认按照 HTML 片段处理。
+- `silently` attribute: When this attribute is defined, evaluation of the attribute's value will perform silent evaluation.
+- `raw` attribute: When this attribute is defined, `$` in the template data will be treated as a literal character, and expression evaluation processing will not be performed.
 
-本质上，`archetype` 定义的模板内容是一个字符串变量，其变量名由 `name` 属性定义。
+#### 2.4.1) `archetype` Tag
 
-注意，用于引用特定的 `archetype` 模板的变量名，和 HTML/XML 不同，HVML 不要求该标识符是全局唯一的，而只要求在 HVML 的同一级兄弟元素中唯一，这带来了一定的便利。比如：
+`archetype` tag is used to define a document fragment template.
 
 ```hvml
-    <body>
-        <archetype name="user_item">
-            <p>$?</p>
-        </archetype>
+     <archetype name="user_item">
+         <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
+             <img class="avatar" src="$?.avatar" />
+             <span>$?.name</span>
+         </li>
+     </archetype>
 
-        <ul>
-            <archetype name="user_item">
-                <li>$?</li>
-            </archetype>
-
-            ...
-        </ul>
-    </body>
+     <archetype name="unknown_user_item" raw>
+         <li class="user-item">
+             <img class="avatar" src="/def-avatar.png">
+             <span>Unknown</span>
+         </li>
+     </archetype>
 ```
 
-在上述 HVML 代码中，当我们在 `ul` 元素中引用 `$user_item` 时，对应的文档模板是 `<li>$?</li>`，而在 `ul` 元素之外引用 `$user_item` 时，得到的文档模板是 `<p>$?</p>`。
+In the above example, the first `archetype` tag defines a document fragment template that can be used to generate the final target document fragment and insert it into the specified position of the target document. When the HVML interpreter clones the template and inserts it into the real document, it will replace the data in the current context according to the given mapping relationship. In HVML, `$?` is a special context variable used to refer to the pre-operation result data when the action tag is executed. Strings like `$?.id`, `$?.name` will be evaluated as evaluation expressions, and finally replaced with data from the current context.
 
-#### 2.4.2) `archedata` 标签
+In the example above, the second `archetype` tag defines a bare-text template containing a fragment of an XML/HTML document that is cloned to the target location without any evaluation of the expression, even if it contains a valid Evaluation expression.
 
-`archedata` 标签用于定义一个数据模板。
+In addition, in the `archetype` tag, we can also use `type` attribute to define the text type of the template fragment, which can take the following values:
+
+- `plain`: Treat as plain text.
+- `html`: Treat as an HTML fragment.
+- `svg`: Treat as an SVG fragment.
+- `mathml`: Treat as a MathML fragment.
+- `xgml`: Treat as an XGML fragment.
+- `xml`: Treat as a generic XML fragment.
+
+If no `type` attribute value is specified, the default text type of the target document is taken. For example, when the target document type is `html`, the document fragments defined by `archetype` tag will be processed as HTML fragments by default.
+
+Essentially, the template content defined by `archetype` is a string variable whose variable name is defined by `name` attribute.
+
+Note that the variable name used to refer to a specific `archetype` template, unlike HTML/XML, HVML does not require the identifier to be globally unique, but only required to be unique among sibling elements of the same level in HVML, which brings certain convenience. for example:
 
 ```hvml
-    <archedata name="item_user">
-        {
-            "id": "$?.attr[data-value]", "avatar": "$?.children[0].attr.src",
-            "name": "$?.children[1].children[0].textContent", "region": "$?.attr[data-region]"
-        }
-    </archedata>
+     <body>
+         <archetype name="user_item">
+             <p>$?</p>
+         </archetype>
+
+         <ul>
+             <archetype name="user_item">
+                 <li>$?</li>
+             </archetype>
+
+             ...
+         </ul>
+     </body>
 ```
 
-在上面的例子中，`archedata` 标签定义了一个数据模板，其处理类似 `archetype`，但通常用于将一个数据映射到另一个结构不同的数据。
+In the above HVML code, when we refer to `$user_item` in the `ul` element, the corresponding document template is `<li>$?</li>`, and `$user_item` is referenced outside the `ul` element `, the resulting document template is `<p>$?</p>`.
 
-本质上，`archedata` 定义了一个参数化数据，可通过 `name` 属性定义的变量名引用。
+#### 2.4.2) `archedata` Tag
 
-#### 2.4.3) `error` 标签
-
-`error` 标签用于定义一个针对错误的文档片段模板，可使用 `type` 属性指定对应的错误名称，但无需指定 `name` 属性。定义错误名称时，必须使用反引号属性值语法。
-
-当未指定 `type` 属性时，或使用 `ANY` 值时，表示默认的错误模板，可匹配任意错误。
-
-本质上，`error` 标签定义的内容设置了 `ERROR` 变量对应 `type` 键名的键值，故而如下两个标签的功能是一样的：
+`archedata` tag is used to define a data template.
 
 ```hvml
-    <error type="SegFault">
-        <p>Out of memory!</p>
-    </error>
-
-    <update on="$ERROR" at=".SegFault">
-        "<p>Out of memory!</p>"
-    </update>
+     <archedata name="item_user">
+         {
+             "id": "$?.attr[data-value]", "avatar": "$?.children[0].attr.src",
+             "name": "$?.children[1].children[0].textContent", "region": "$?.attr[data-region]"
+         }
+     </archedata>
 ```
 
-#### 2.4.4) `except` 标签
+In the example above, `archedata` tag defines a data template that is handled like an `archetype`, but is generally used to map one piece of data to another that is structured differently.
 
-`except` 标签用于定义一个针对异常的文档片段模板，可使用 `type` 属性指定对应的异常名称，但无需指定 `name` 属性。定义异常名称时，必须使用反引号属性值语法。
+Essentially, `archedata` defines a parameterized data that can be referenced by a variable name defined by the `name` attribute.
 
-当未指定 `type` 属性时，或使用 `ANY` 值时，表示默认的异常模板，可匹配任意异常。
+#### 2.4.3) `error` Tag
 
-本质上，`except` 标签定义的内容设置了 `EXCEPT` 变量对应 `type` 键名的键值，故而如下两个标签的功能是一样的：
+`error` tag is used to define an error-specific document fragment template. `type` attribute can be used to specify the corresponding error name. But `name` attribute does not need to be specified. When defining error names, you must use the backtick attribute value syntax.
+
+When `type` attribute is not specified, or when the `ANY` value is used, it means the default error template, which can match any error.
+
+Essentially, the content defined by `error` tag sets the key value of `ERROR` variable corresponding to `type` key name, so the functions of the following two tags are the same:
 
 ```hvml
-    <except>
-        <p>There is an uncaught exception.</p>
-    </except>
+     <error type=`SegFault`>
+         <p>Memory error!</p>
+     </error>
 
-    <update on="$EXCEPT" at=".ANY">
-        "<p>There is an uncaught exception.</p>"
-    </update>
+     <update on="$ERROR" at=".SegFault">
+         "<p>Out of memory!</p>"
+     </update>
 ```
 
-注意在上面定义异常模板时，我们未指定 `type` 属性，表示默认的异常模板。在 `update` 标签，我们改变的是 `$EXCEPT` 数据上的键名 `ANY` 的键值，这表示我们使用 `ANY` 键名保存默认的异常模板。
+#### 2.4.4) `except` Tag
 
-### 2.5) 动作标签详解
+`except` tag is used to define a document fragment template for exceptions. `type` attribute can be used to specify the corresponding exception name, but `name` attribute does not need to be specified. When defining exception names, you must use the backtick attribute value syntax.
 
-#### 2.5.1) `init` 标签
+When `type` attribute is not specified, or when `ANY` value is used, it means the default exception template, which can match any exception.
 
-`init` 标签定义一个执行初始化或者重置变量操作的元素。在 HVML 文档的头部（由 `head` 标签定义）使用 `init` 标签，将初始化一个全局变量。在 HVML 文档的正文（由 `body` 标签定义）内使用 `init` 标签，默认将定义一个仅在其所在父元素定义的子树中有效的局部变量。
-
-默认情况下，我们使用 `init` 标签初始化或者覆盖一个静态变量，但如果我们在 `init` 标签中使用 `temporarily` 副词属性，则会创建一个临时变量。
-
-通常，我们使用 `as` 属性指定要初始化的变量之名称，我们可使用 `at` 属性指定变量的名字空间（name space）或者在创建临时变量的情况下，指定变量所在的栈帧：
-
-- 若初始化静态变量，当我们使用下划线（\_）打头的预定义名称 `_parent`、`_grandparent`、 `_root` 时，将分别在父元素、祖父元素或根元素上定义变量。
-- 若初始化静态变量，当我们使用下划线（\_）打头的预定义名称 `_runner` 时，将创建行者级变量，该变量将对本行者所有的协程可见。
-- 若初始化临时变量，当我们使用下划线（\_）打头的预定义名称 `_last`、`_nexttolast`、 `_topmost` 时，则分别在上一个栈帧、上上一个栈帧和最顶栈帧上定义临时变量。
-- 使用井号（#）打头的元素标识符，如 `#myAnchor`，将在其祖先元素（或前置栈帧）中搜索指定的元素标识符（由元素的 `id` 属性指定），将在第一个匹配的祖先元素（或前置栈帧）上初始化变量。
-- 使用正整数 N（如 `2`、`3`）时，若初始化静态变量，将沿 vDOM 树向祖先元素方向回溯 N 个祖先元素，在该祖先元素上初始化变量；若初始化临时变量，将沿执行栈向上回溯 N 个栈帧，在该栈帧上初始化变量。
-- 静默求值情形下，若未找到匹配的祖先元素或者前置栈帧，则按未定义 `at` 属性做默认处理。
-
-我们通常使用 `with` 属性定义一个求值表达式（或参数化数据）来指定变量的值。我们也可以直接将求值表达式嵌入到 `init` 标签内，从而使用其数据内容来定义这个变量的值。我们还可通过 HTTP 等协议加载外部资源而获得，比如通过 HTTP 请求，此时，使用 `from` 属性定义该请求的 URL，使用 `with` 参数定义请求参数，使用 `via` 属性定义请求方法（如 `GET`、 `POST`、 `DELETE` 等）。
-
-我们也可以使用 `init` 标签从共享库中初始化一个自定义的动态对象，此时，给定 `via` 的属性值为 `LOAD`，表示装载一个外部程序模块。使用 `init` 元素装载动态对象时，我们通过 `from` 属性指定的是要装载的外部程序模块的名称。根据该模块名称确定具体的文件名以及模块文件的存储位置，取决于具体的解释器实现。若外部程序模块（如 C/C++ 语言共享库）中定义有多个动态对象，使用 `for` 属性指定要装载的动态对象名称。
-
-当我们在 `init` 标签中使用 `from` 属性，`via` 属性不为 `LOAD`，且使用 `asynchronously` 副词属性时，将异步地从外部资源中获取数据作为变量的值。程序可通过观察变量上的 `change:attached` 做进一步的处理。具体可参阅 [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签) 一节。
-
-需要注意的是，当使用异步加载方式初始化一个变量时，当外部资源的数据返回时，程序已经脱离了 `init` 元素所在的上下文（执行栈），故而无法处理数据中含有上下文变量的情形。解释器可以限制此种情况下的数据只能是原始的数据（raw data）。
-
-在一个已经初始化的变量上使用 `init` 标签时，将使用新的数据重置这个变量，而如果使用 `undefine` 重置变量，其效果相当于删除这个变量。
-
-解释器按如下规则确定使用哪个数据来初始化或重置变量：
-
-1. 指定 `from` 属性且未指定 `asynchronously` 副词属性时，将同步地从指定的外部资源获取数据。此种情况下，`with` 属性值用于指定请求参数；当同步请求失败时（注：此时可能抛出异常），若定义有内容，则使用内容数据作为源数据。
-1. 指定 `from` 属性且未指定 `asynchronously` 副词属性时，将异步地从指定的外部资源获取数据。此种情况下，若定义有内容，则会首先使用内容数据作为源数据，当异步装载成功后，该变量的值重置为装载后的数据。
-1. 未指定 `from` 属性时，若定义有 `with` 属性，则优先使用 `with` 属性值初始化或重置变量，这种情况下忽略内容；若没有定义 `with` 属性但定义有内容，则使用内容作为初始化或重置变量；若两者皆未定义，则抛出 `NoData` 异常。
-
-在使用 `init` 标签初始化集合时，我们可使用 `casesensitively` 或者 `caseinsensitively` 两个副词属性来指定字符串对比是否对大小写敏感；默认对大小写敏感。
-
-该标签的常见用法如下：
+Essentially, the content defined by `except` tag sets the key value of `EXCEPT` variable corresponding to `type` key name. So the functions of the following two tags are the same:
 
 ```hvml
-    <!-- 使用对象数组初始化一个集合 -->
-    <init as="users" uniquely against="id">
-        [
-            { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-            { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
-        ]
-    </init>
+     <except>
+         <p>There is an uncaught exception.</p>
+     </except>
 
-    <!-- 使用字符串（大小写不敏感）数组初始化一个集合 -->
-    <init as="locales" uniquely caseinsensitively>
-        [ "zh_CN", "zh_HK", "zh_TW", "en_US", "en_UK", "en_us" ]
-    </init>
-    <!-- 结果为：
-        [ "zh_CN", "zh_HK", "zh_TW", "en_US", "en_UK" ]
-    -->
-
-    <!-- 从共享库中装载动态对象 $math  -->
-    <init as="math" from="purc_dvobj_math" via="LOAD" />
-
-    <!-- 使用 POST 方法以及 from=foo 查询参数从 http://foo.bar.com/locales 获取数据并初始化 $locales  -->
-    <init as="locales" from="http://foo.bar.com/locales" with="{ from: 'foo' }" via="POST" />
-
-    <!-- 覆盖 $users 变量 -->
-    <init as="users">
-        [
-            { "id": "1", "avatar": "/img/avatars/101.png", "name": "Jerry", "region": "en_US" }
-            { "id": "2", "avatar": "/img/avatars/102.png", "name": "Tom", "region": "en_US" }
-            { "id": "3", "avatar": "/img/avatars/103.png", "name": "Mike", "region": "en_US" }
-        ]
-    </init>
-
-    <!-- 使用空数组重置 `users` 变量 -->
-    <init as="users" with="[]" />
+     <update on="$EXCEPT" at=".ANY">
+         "<p>There is an uncaught exception.</p>"
+     </update>
 ```
 
-我们也可以在 `init` 标签中使用 `at` 属性指定变量名所在的元素位置。如：
+Note that when defining the exception template above, we did not specify `type` attribute, indicating the default exception template. In `update` tag, what we change is the key value of the key name `ANY` on `$EXCEPT` data, which means that we use `ANY` key name to save the default exception template.
+
+### 2.5) Action Tag Details
+
+#### 2.5.1) `init` tag
+
+`init` tag defines an element that performs initialization or reset of variables. Using `init` tag at the head of an HVML program (defined by `head` tag), will initialize a global variable. Using `init` tag within the body of an HVML program (defined by `body` tag) will by default define a local variable that is only valid within the subtree defined by its parent element.
+
+By default, we use `init` tag to initialize or override a static variable, but if we use `temporarily` adverb attribute in `init` tag, a temporary variable will be created.
+
+Usually, we use `as` attribute to specify the name of the variable to be initialized, we can use `at` attribute to specify the name space of the variable (name space) or in the case of creating a temporary variable, specify the stack frame where the variable is located:
+
+- If you initialize a static variable, when we use the predefined names `_parent`, `_grandparent`, `_root` starting with an underscore (\_), the variable will be defined on the parent element, grandparent element or root element respectively.
+- If you initialize a static variable, when we use the predefined name `_runner` starting with an underscore (\_), a runner-level variable will be created, which will be visible to all coroutines of this runner.
+- If initializing a temporary variable, when we use the predefined names `_last`, `_nexttolast`, and `_topmost` starting with an underscore (\_), they will be in the previous stack frame, the previous stack frame and the topmost stack frame respectively Define temporary variables above.
+- Element identifiers starting with a pound sign (#), such as `#myAnchor`, will search for the specified element identifier (specified by `id` attribute of the element) in its ancestor elements (or previous stack frames), and will Initializes the variable on the first matching ancestor element (or preceding stack frame).
+- When using a positive integer N (such as `2`, `3`), if a static variable is initialized, N ancestor elements will be traced back along the vDOM tree to the ancestor element, and the variable will be initialized on the ancestor element; if a temporary variable is initialized, it will be Backtrack N stack frames along the execution stack, and initialize variables on the stack frame.
+- In the case of silent evaluation, if no matching ancestor element or previous stack frame is found, it will be treated as if `at` attribute is not defined.
+
+We usually use `with` attribute to define an evaluation expression (or parameterized data) to specify the value of the variable. We can also directly embed the evaluation expression inside `init` tag, thus using its data content to define the value of this variable. We can also load external resources through protocols such as HTTP, such as HTTP requests. At this time, use `from` attribute to define the URL of the request, use `with` parameter to define the request parameters, and use `via` attribute to define the request method ( such as `GET`, `POST`, `DELETE`, etc.).
+
+We can also use `init` tag to initialize a custom dynamic object from the shared library. At this time, the attribute value of the given `via` is `LOAD`, which means loading an external program module. When using the `init` element to load a dynamic object, we specify the name of the external program module to be loaded through the `from` attribute. Determining the specific file name and the storage location of the module file according to the module name depends on the specific interpreter implementation. If there are multiple dynamic objects defined in the external program module (such as C/C++ language shared library), use the `for` attribute to specify the name of the dynamic object to be loaded.
+
+When we use the `from` attribute in `init` tag, `via` attribute is not `LOAD`, and `asynchronously` adverb attribute is used. The data will be asynchronously fetched from the external resource as the value of the variable. The program can do further processing by observing `change:attached` on the variable. See [2.5.11) `observe`, `forget` and `fire` labels](#2511-observe-forget-and-fire-labels) for details.
+
+It should be noted that when using the asynchronous loading method to initialize a variable, when the data of the external resource is returned, the program has already left the context (execution stack) where `init` element is located, so it cannot handle the situation where the data contains context variables. The interpreter can restrict the data in this case to be only the original data (raw data).
+
+Using `init` tag on an already initialized variable will reset the variable with new data, while using `undefine` to reset the variable has the same effect as deleting the variable.
+
+The interpreter determines which data to use to initialize or reset a variable according to the following rules:
+
+1. When `from` attribute is specified and `asynchronously` adverb attribute is not specified, the data will be fetched from the specified external resource synchronously. In this case, `with` attribute value is used to specify the request parameters; when the synchronous request fails (note: an exception may be thrown at this time), if there is content defined, the content data will be used as the source data.
+1. When `from` attribute is specified and `asynchronously` adverb attribute is not specified, the data will be fetched from the specified external resource asynchronously. In this case, if there is content defined, the content data will be used as the source data first, and when the asynchronous loading is successful, the value of this variable will be reset to the loaded data.
+1. When `from` attribute is not specified, if `with` attribute is defined, the value of the `with` attribute is used to initialize or reset the variable. In this case, the content is ignored. If `with` attribute is not defined but the definition has content , then use the content as the initialized or reset variable. If neither is defined, a `NoData` exception is thrown.
+
+When using `init` tag to initialize a collection, we can use `casesensitively` or `caseinsensitively` adverb attributes to specify whether the string comparison is case-sensitive. The default is case-sensitive.
+
+Common uses of this tag are as follows:
+
+```hvml
+     <!-- Initialize a collection with an array of objects -->
+     <init as="users" uniquely against="id">
+         [
+             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+         ]
+     </init>
+
+     <!-- Initialize a collection with an array of strings (case-insensitive) -->
+     <init as="locales" uniquely case insensitively>
+         [ "zh_CN", "zh_HK", "zh_TW", "en_US", "en_UK", "en_us" ]
+     </init>
+     <!-- The result is:
+         [ "zh_CN", "zh_HK", "zh_TW", "en_US", "en_UK" ]
+     -->
+
+     <!-- Load the dynamic object $math from the shared library -->
+     <init as="math" from="purc_dvobj_math" via="LOAD" />
+
+     <!-- Get data from http://foo.bar.com/locales using POST method with from=foo query parameter and initialize $locales -->
+     <init as="locales" from="http://foo.bar.com/locales" with="{ from: 'foo' }" via="POST" />
+
+     <!-- override $users variable -->
+     <init as="users">
+         [
+             { "id": "1", "avatar": "/img/avatars/101.png", "name": "Jerry", "region": "en_US" }
+             { "id": "2", "avatar": "/img/avatars/102.png", "name": "Tom", "region": "en_US" }
+             { "id": "3", "avatar": "/img/avatars/103.png", "name": "Mike", "region": "en_US" }
+         ]
+     </init>
+
+     <!-- reset the `users` variable with an empty array -->
+     <init as="users" with="[]" />
+```
+
+We can also use `at` attribute in `init` tag to specify the element position where the variable name is located. For example:
 
 ```hvml
 <body>
-    <!-- 在 `body` 元素上使用对象数组初始化一个集合（唯一性键名是 id） -->
-    <init as="users" uniquely against="id">
-        [
-            { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-            { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
-        ]
-    </init>
+     <!-- Initialize a collection with an array of objects on the `body` element (unique key is id) -->
+     <init as="users" uniquely against="id">
+         [
+             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+         ]
+     </init>
 
-    <div>
-        <!-- 使用 `at` 属性覆盖 `body` 元素上的 `users` 变量 -->
-        <init as="users" at="_grandparent">
-            [
-                { "id": "3", "avatar": "/img/avatars/3.png", "name": "Vincent", "region": "zh_CN" },
-                { "id": "4", "avatar": "/img/avatars/4.png", "name": "David", "region": "en_US" }
-            ]
-        </init>
+     <div>
+         <!-- Use the `at` attribute to override the `users` variable on the `body` element -->
+         <init as="users" at="_grandparent">
+             [
+                 { "id": "3", "avatar": "/img/avatars/3.png", "name": "Vincent", "region": "zh_CN" },
+                 { "id": "4", "avatar": "/img/avatars/4.png", "name": "David", "region": "en_US" }
+             ]
+         </init>
 
-        <!-- 在 `div` 元素上创建一个 `users` 变量，初始化为空数组 -->
-        <init as="users" with="[]" />
+         <!-- Create a `users` variable on the `div` element, initialized to an empty array -->
+         <init as="users" with="[]" />
 
-        <section id="myAnchor">
-            <div>
-                <!-- 在 `section` 元素上创建一个 `users` 变量，初始化为空数组 -->
-                <init as="users" with="[]" at="#myAnchor" />
+         <section id="myAnchor">
+             <div>
+                 <!-- Create a `users` variable on the `section` element, initialized to an empty array -->
+                 <init as="users" with="[]" at="#myAnchor" />
 
-                <!-- 在 `section` 元素上创建一个 `emptyUser` 变量，初始化为空对象 -->
-                <init as="emptyUser" with="{}" at="_grandparent" />
-            </div>
-        </section>
-    </div>
+                 <!-- Create an `emptyUser` variable on the `section` element, initialized to an empty object -->
+                 <init as="emptyUser" with="{}" at="_grandparent" />
+             </div>
+         </section>
+     </div>
 
-    <!-- 移除 `body` 元素上的 users 变量 -->
-    <init as="users" with=undefined />
+     <!-- remove the users variable from the `body` element -->
+     <init as="users" with=undefined />
 </body>
 ```
 
-`init` 元素的执行结果（`$?`），同变量对应的数据。
+The execution result (`$?`) of the `init` element is the data corresponding to the variable.
 
-我们也可以不指定 `init` 的 `as` 属性，从而仅仅利用 `init` 标签初始化一项数据，然后使用 `init` 元素的结果数据（$?）来完成相应的工作。此种情况下，我们通常不使用异步初始化模式。
-
-```hvml
-    <init from="http://foo.bar.com/locales" with="{ from: 'foo' }" via="POST" >
-
-        <!-- do something here by using `$?` -->
-    </init>
-```
-
-`init` 元素可能抛出的异常有：
-
-- 当 `as` 属性指定的变量名不符合要求时，将抛出 `BadName` 异常。
-- 当 `at` 属性指定的祖先元素或前置栈帧名称不符合要求或者不存在时，将分别抛出 `BadName` 异常或 `EntityNotFound` 异常。
-
-当我们在 `init` 标签中使用 `temporarily` 副词属性时，将操作或者前置栈帧中用户自定义的上下文变量 `$!`，从而创建一个临时变量：
-
-- 初始时，`$!` 应被定义一个空对象。新增用户自定义的临时变量，意味着在这个对象中增加一个新的键值对，键名为该临时变量的名称，而键值为该临时变量的值。
-- 使用 `as` 属性时，默认将初始化或覆盖中用户自定义的上下文变量 `$!` 中指定的键值对，但我们可以使用 `at` 属性通过元素标识符等指定目标栈帧。
-- 访问当前或者前置栈帧中的临时变量时，可使用 `$[N]!.<name of the temp. variable>` 表达式。
-- 为使用方便，也可以用 `$<name of the temp. variable>` 表达式来访问临时变量。
-- 作为一个限制，临时变量不能异步初始化，也就是说，`temporarily` 副词属性不能和 `asynchronously` 副词属性同时使用。若同时指定这两个副词属性，应忽略 `asynchronously`。
-
-当我们仅仅基于名称查找命名变量时，则按如下规则处理：
-
-1. 基于名称查询命名变量时，将执行栈向上遍历前置栈帧，找到第一个匹配的临时变量；
-1. 若没有找到，从当前栈帧对应的 vDOM 元素位置的父元素开始，在祖先元素节点中查找对应的静态命名变量。
-
-#### 2.5.2) `update` 标签
-
-`update` 标签定义一个执行数据更新操作的动作元素，该元素可使用一个源数据（source data）修改一个目标数据（destination data）。目标数据应该是可变数据或者一个可在其上执行更新动作的原生实体数据，比如一个数组、一个元组、一个对象，或者一个数组、元组或对象的一个特定数据项，一个集合或者一个目标文档位置（即一个元素汇集）。
-
-该标签支持如下属性：
-
-1. `on` 属性用于指定要修改的数组、元组、对象、集合或者目标文档位置，即目标数据。
-1. `at` 属性指定在目标数据上做修改的具体位置，比如键名、索引值等，称为目标位置（destination position）。目标数据在目标位置上的数据，称为最终数据（ultimate data）。当要修改的数据是目标数据本身时，不指定此属性，此时最终数据就是目标数据本身。
-1. `to` 属性指定具体的修改动作（action），可取如下值之一：
-   - `displace`：表示整个替换目标位置上的数据，是默认动作。
-   - `append`：表示在目标数据或目标位置中执行追加操作；最终数据必须是数组或者目标文档位置。
-   - `prepend`：表示在目标数据或目标位置中执行前置操作；最终数据必须是数组或者目标文档位置。
-   - `insertBefore`：表示在目标数据或者目标位置之前插入一个数据；最终数据必须是数组或者目标文档位置。
-   - `insertAfter`：表示在目标数据或者目标位置之后插入一个数据；最终数据必须是数组或者目标文档位置。
-   - `add`：当最终数据是数组或者目标文档位置时，等同于 `append` 操作。当最终数据是集合时，将源数据添加到给定的集合中。
-   - `remove`：当最终数据是数组或者目标文档位置时，表示移除目标位置上的数据。当最终数据是集合时，表示从集合中移除一个和源数据匹配的数据项。
-   - `overwrite`：表示在目标数据或目标位置上执行对象或集合的覆盖操作。当最终数据为对象时，源数据必须为对象；该动作将使用源数据中的键值对替代最终数据对象中具有相同键名的键值对。当最终数据为集合时，则最终数据必须为基于唯一性键值的对象集合，源数据可以是单个对象或线性容器（数组、元组或集合），该动作将覆盖最终数据中匹配源数据数据项的对象。
-   - `merge` 或 `unite`：表示在目标数据或目标位置上执行对象或集合的合并操作。当最终数据为对象时，源数据必须为对象；合并后的最终数据（对象）中包含原始键值对以及源数据中的键值对，对重复的键名，使用源数据中的值替代。当最终数据为集合时，源数据必须为线性容器（数组、元组或集合），该动作将把源数据（数组、元组或集合）中的数据项合并到最终数据（集合）中，当出现唯一性条件冲突时，使用源数据替代。
-   - `intersect`：表示在目标数据或目标位置上执行对象或集合的求交操作。当最终数据为对象时，源数据必须为对象；操作后的最终数据（对象）中仅保留最终数据和源数据中均存在的键对应的键值对，移除其他键值对。当最终数据为集合时，源数据必须为线性容器（数组、元组或集合）；该动作将在最终数据中仅保留在最终集合和源数据均存在的数据项（使用集合的唯一性条件确定）。
-   - `subtract`：表示在目标数据或目标位置上执行对象或集合的求差操作。当最终数据为对象时，源数据必须为对象；操作后的最终数据（对象）中移除源数据中存在的键对应的键值对。当最终数据为集合时，源数据必须为线性容器（数组、元组或集合）；该动作将在最终数据中移除源数据根据集合的唯一性条件确定的数据项。
-   - `xor`：表示在目标数据或目标位置上执行对象或集合的亦或操作。当最终数据为对象时，源数据必须为对象；操作后的最终数据（对象）中保留只在最终数据或者源数据中存在的键对应的键值对。当最终数据为集合时，源数据必须为线性容器（数组、元组或集合）；该动作相当于求并集和交集之差。
-1. `from` 属性指定修改操作源数据的外部数据源，如 URL；此时，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法。
-1. 当未定义 `from` 属性时，`with` 属性指定修改操作使用的源数据；当定义有 `from` 属性时，`with` 属性指定请求参数。
-1. `via` 属性指定获得外部数据源的方法，如 `GET`、`POST` 等，仅在指定 `from` 时有效。
-
-在指定源数据时，除了 `with` 属性和 `from` 属性之外，我们还可以使用 `update` 元素的内容数据。三种源数据指定方式的优先级为：
-
-1. 指定 `from` 属性时，将尝试同步地从指定的外部资源获取数据。此种情况下，`with` 属性值用于指定请求参数；当同步请求失败时（注：此时可能抛出异常），若定义有内容，则使用内容数据作为源数据。
-1. 未指定 `from` 属性时，若定义有 `with` 属性，则优先使用 `with` 属性值作为源数据，这种情况下忽略内容；若没有定义 `with` 属性但定义有内容，则使用内容作为源数据；若两者皆未定义，则抛出 `NoData` 异常。
-
-当执行成功时，`update` 元素的结果数据为修改后的目标数据。
-
-##### 2.5.2.1) 指定目标位置
-
-对下面的文档片段：
+We can also not specify `as` attribute of `init`, so that we only use the `init` tag to initialize a piece of data, and then use the result data ($?) of `init` element to complete the corresponding work. In this case, we usually do not use the asynchronous initialization mode.
 
 ```hvml
-    <div id="the-user-statistics">
-        <h2>User regions (totally <span class="none">0</span> users):</h2>
-    </div>
+     <init from="http://foo.bar.com/locales" with="{ from: 'foo' }" via="POST">
+
+         <!-- do something here by using `$?` -->
+     </init>
 ```
 
-我们通过下面的 `update` 标签来设置用户数量并修改其 `class` 属性：
+The exceptions that may be thrown by `init` element are:
+
+- When the variable name specified by `as` attribute does not meet the requirements, `BadName` exception will be thrown.
+- When the ancestor element or the preceding stack frame name specified by the `at` attribute does not meet the requirements or does not exist, `BadName` exception or `EntityNotFound` exception will be thrown respectively.
+
+When we use `temporarily` adverb attribute in `init` tag, it will manipulate or prepend the user-defined context variable `$!` in the stack frame, thereby creating a temporary variable:
+
+- Initially, `$!` shall be defined as an empty object. Adding a user-defined temporary variable means adding a new key-value pair to this object, the key name is the name of the temporary variable, and the key value is the value of the temporary variable.
+- When using the `as` attribute, the key-value pair specified in the user-defined context variable `$!` will be initialized or overwritten by default, but we can use `at` attribute to specify the target stack frame through element identifiers, etc.
+- When accessing a temporary variable in the current or previous stack frame, `$[N]!.<name of the temp. variable>` expression can be used.
+- For convenience, you can also use `$<name of the temp. variable>` expressions to access temporary variables.
+- As a restriction, temporary variables cannot be initialized asynchronously, that is, the `temporarily` adverb attribute cannot be used at the same time as the `asynchronously` adverb attribute. If both adverb attributes are specified, `asynchronously` should be ignored.
+
+When we only look up named variables based on the name, it is processed according to the following rules:
+
+1. When naming a variable based on a name query, the execution stack will traverse the previous stack frame upwards to find the first matching temporary variable;
+1. If not found, start from the parent element of the vDOM element position corresponding to the current stack frame, and search for the corresponding static named variable in the ancestor element node.
+
+#### 2.5.2) `update` Tag
+
+ `update` tag defines an action element that performs a data update operation that modifies a destination data using a source data. The target data should be mutable data or a native entity data on which an update action can be performed, such as an array, a tuple, an object, or a specific data item of an array, tuple or object, a collection or a target document location (i.e. a collection of elements).
+
+This tag supports the following attributes:
+
+1. `on` attribute is used to specify the array, tuple, object, collection or target document location to be modified, that is, the target data.
+1. `at` attribute specifies the specific location to modify on the target data, such as key name, index value, etc., which is called the destination position. The data of the target data at the target position is called ultimate data. When the data to be modified is the target data itself, this attribute is not specified, and the final data is the target data itself.
+1. `to` attribute specifies a specific modification action, which can take one of the following values:
+    - `displace`: Indicates that the data at the entire replacement target position is the default action.
+    - `append`: means to perform an append operation in the target data or target location; the final data must be an array or target document location.
+    - `prepend`: Indicates that the prepend operation is performed in the target data or the target location; the final data must be an array or the target document location.
+    - `insertBefore`: Indicate inserting a data before the target data or target position; the final data must be an array or target document position.
+    - `insertAfter`: means to insert a data after the target data or the target position; the final data must be an array or the target document position.
+    - `add`: When the final data is an array or the target document location, it is equivalent to `append` operation. When the final data is a collection, adds the source data to the given collection.
+    - `remove`: When the final data is an array or the target document position, it means to remove the data at the target position. When the final data is a collection, it means to remove a data item that matches the source data from the collection.
+    - `overwrite`: Indicate that an object or collection overwrite operation is performed on the target data or target location. When the final data is an object, the source data must be an object. This action will replace the key-value pair with the same key name in the final data object with the key-value pair in the source data. When the final data is a collection, the final data must be a collection of objects based on unique key values. The source data can be a single object or a linear container (array, tuple or collection). This action will overwrite the matching source data in the final data Item object.
+    - `merge` or `unite`: Indicate to perform the merge operation of objects or collections on the target data or target location. When the final data is an object, the source data must be an object; the merged final data (object) contains the original key-value pairs and the key-value pairs in the source data, and for duplicate key names, replace them with the values in the source data. When the final data is a collection, the source data must be a linear container (array, tuple or collection), this action will merge the data items in the source data (array, tuple or collection) into the final data (collection), when When a uniqueness condition conflicts, the source data is used instead.
+    - `intersect`: Indicate to perform the intersection operation of the object or collection on the target data or target position. When the final data is an object, the source data must be an object; only key-value pairs corresponding to keys that exist in both the final data and the source data are kept in the final data (object) after operation, and other key-value pairs are removed. When the final data is a set, the source data must be a linear container (array, tuple, or set); the action will only keep in the final data items that exist in both the final set and the source data (determined using the uniqueness condition of the set ).
+    - `subtract`: Indicate to perform the subtraction operation of the object or set on the target data or target position. When the final data is an object, the source data must be an object; the key-value pair corresponding to the key existing in the source data is removed from the final data (object) after the operation. When the final data is a collection, the source data can be a linear container (array, tuple or collection); this action will remove the data items determined by the source data according to the uniqueness condition of the collection in the final data.
+    - `xor`: Indicate the OR operation of an object or collection on the target data or target location. When the final data is an object, the source data must be an object; the final data (object) after the operation retains key-value pairs corresponding to keys that only exist in the final data or the source data. When the final data is a set, the source data must be a linear container (array, tuple, or set); this action is equivalent to finding the difference between the union and the intersection.
+1. `from` attribute specifies the external data source for modifying the operation source data, such as URL; at this time, use `with` attribute to specify the request parameters, and use `via` attribute to specify the request method.
+1. When `from` attribute is not defined, `with` attribute specifies the source data used by the modification operation; when `from` attribute is defined, `with` attribute specifies the request parameters.
+1. `via` attribute specifies the method of obtaining the external data source, such as `GET`, `POST`, etc., and is only valid when `from` is specified.
+
+When specifying the source data, when the source data must be a linear container (array, tuple or set), a single data can also be treated as an array containing only one member to facilitate programming.
+
+When specifying the source data, in addition to `with` attribute and `from` attribute, we can also use the content data of `update` element. The priorities of the three source data specification methods are:
+
+1. When `from` attribute is specified, it will try to get data from the specified external resource synchronously. In this case, `with` attribute value is used to specify the request parameters; when the synchronous request fails (note: an exception may be thrown at this time), if there is content defined, the content data will be used as the source data.
+1. When `from` attribute is not specified, if `with` attribute is defined, the value of `with` attribute will be used as the source data first. And the content will be ignored in this case. If `with` attribute is not defined but the content is defined, then use content as source data and throw `NoData` exception if neither is defined.
+
+When executed successfully, the result data of `update` element is the modified target data.
+
+##### 2.5.2.1) Specify Target Location
+
+For the following document snippet:
 
 ```hvml
-    <update on="#the-user-stats > h2 > span" at="textContent" with="10" />
-    <update on="#the-user-stats > h2 > span" at="attr.class" with="text-warning" />
+     <div id="the-user-statistics">
+         <h2>User regions (totally <span class="none">0</span> users):</h2>
+     </div>
 ```
 
-执行上述 `update` 动作后，上面的 HTML 代码片段将变为：
+We set the number of users and modify their `class` attribute through `update` tag below:
 
 ```hvml
-    <div id="the-user-statistics">
-        <h2>User regions (totally <span class="text-warning">10</span> users):</h2>
-    </div>
+     <update on="#the-user-stats > h2 > span" at="textContent" with="10" />
+     <update on="#the-user-stats > h2 > span" at="attr. class" with="text-warning" />
 ```
 
-类似地，我们在数组、元组、对象等数据上执行 `update` 动作。比如更新 `$users` 的第二个用户的名称（`name`）：
+After executing the above `update` action, the above HTML snippet will become:
 
 ```hvml
-    <init as="users">
-        [
-            { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US", "age": 2 },
-            { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN", "age": 3 }
-        ]
-    </init>
-
-    ...
-
-    <update on="$users[1]" at=".name" with="Richard" />
+     <div id="the-user-statistics">
+         <h2>User regions (totally <span class="text-warning">10</span> users):</h2>
+     </div>
 ```
 
-当目标数据是目标文档位置（元素或者元素汇集）、数组、元组或对象时，我们使用 `at` 的属性值指定要更改的数据成员位置或名称，如上面的 `textContent`、 `attr.class` 以及 `.name` 等。其规则如下：
-
-- 如果目标数据是元素，我们使用 `textContent` 这一虚拟数据成员名称来表示元素的文本内容。
-- 如果目标数据是元素，我们使用 `dataContent` 这一虚拟数据成员名称来表示元素的数据内容。
-- 如果目标数据是元素，我们使用 `content` 来表示使用目标文档的片段来作为其内容（这可能改变 DOM 子树的结构）。
-- 如果目标数据是元素，我们使用 `attr.<attr_name>`、 `attr[attr_name]` 来表示元素的静态属性名称，如 `attr.value` 或 `attr[value]` 表示元素的 `value` 属性值。
-- 如果目标数据是对象，我们使用 `.<key_name>` 或 `[<key_name>]` 来表示数据项的键名。
-- 如果目标数据是数组，我们使用 `[<index_num>]` 来表示数组中的第 `<index_num>` 个数据项。
-- 如果目标数据是元组，我们使用 `[<index_num>]` 来表示元组中的第 `<index_num>` 个数据项。
-
-我们可以使用不含等号的介词属性值指定语法，如：
+Similarly, we perform `update` actions on arrays, tuples, objects, etc. For example to update the name (`name`) of the second user in `$users`:
 
 ```hvml
-    <update on $users[0] at '.age' with 3 >
-        <update on $users[1] at '.age' with $math.add($?.age, 1) />
-    </update>
+     <init as="users">
+         [
+             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US", "age": 2 },
+             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN", "age": 3 }
+         ]
+     </init>
+
+     ...
+
+     <update on="$users[1]" at=".name" with="Richard" />
 ```
 
-上例中，我们针对目标数据 `$users[0]` 和 `$users[1]` 的 `age` 属性，使用了不含等号的属性值指定语法。第一个 `update` 元素使用了常数 `3`；第二个 `update` 元素使用了求值表达式和上下文变量 `$?`（即前一个 `update` 的结果，也就是 `$users[0]`），因此其求值结果为 `4`。
+When the target data is the target document location (element or element collection), array, tuple or object, we use the attribute value of `at` to specify the location or name of the data member to be changed, such as `textContent`, `attr. class` and `.name` etc. Its rules are as follows:
 
-当我们使用 `undefined` 赋值给数组或者对象的某个数据项时，该数值项将被删除（同 `erase` 标签的效果），如：
+- If the target data is an element, we use the virtual data member name `textContent` to represent the text content of the element.
+- If the target data is an element, we use `dataContent` virtual data member name to represent the element's data content.
+- If the target data is an element, we use `content` to indicate that the fragment of the target document is used as its content (this may change the structure of the DOM subtree).
+- If the target data is an element, we use `attr.<attr_name>`, `attr[attr_name]` to represent the static attribute name of the element, such as `attr.value` or `attr[value]` to represent the `value` of the element attribute value.
+- If the target data is an object, we use `.<key_name>` or `[<key_name>]` to represent the key name of the data item.
+- If the target data is an array, we use `[<index_num>]` to represent the `<index_num>`th data item in the array.
+- If the target data is a tuple, we use `[<index_num>]` to represent the `<index_num>`th data item in the tuple.
+
+We can use the preposition attribute value specification syntax without the equal sign, such as:
 
 ```hvml
-    <update on $users[1] at=".age" with undefined />
+     <update on $users[0] at '.age' with 3 >
+         <update on $users[1] at '.age' with $math.add($?.age, 1) />
+     </update>
 ```
 
-亦可用 `remove` 动作：
+In the above example, for `age` attribute of the target data `$users[0]` and `$users[1]`, we use the attribute value specification syntax without the equal sign. The first `update` element uses the constant `3`; the second `update` element uses the evaluated expression and the context variable `$?` (that is, the result of the previous `update`, which is `$users[ 0]`), so it evaluates to `4`.
+
+When we use `undefined` to assign a value to a data item of an array or object, the value item will be deleted (same as the effect of the `erase` tag), such as:
 
 ```hvml
-    <update on $users[1] at=".age" to="remove" />
+     <update on $users[1] at=".age" with undefined />
 ```
 
-当上述 `update` 标签作用于上面的 `$users` 之后，结果为：
+You can also use the `remove` action:
+
+```hvml
+     <update on $users[1] at=".age" to="remove" />
+```
+
+When the above `update` tag acts on the above `$users`, the result is:
 
 ```json
-    [
-        { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US", "age": 2 },
-        { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
-    ]
+     [
+         { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US", "age": 2 },
+         { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+     ]
 ```
 
-当我们需要在一个 `update` 标签中同时修改多个数据项时，我们在 `at` 属性值中使用空格表示多个数据项位置，在 `with` 属性值中使用数组对应这些位置上要做的修改。如下面的三个 `update` 标签：
+When we need to modify multiple data items in an `update` tag at the same time, we use spaces in the `at` attribute value to represent multiple data item positions, and use arrays in the `with` attribute value to correspond to these positions. Modifications. Such as the following three `update` tags:
 
 ```hvml
-    <update on="p > a" at="textContent" with="$?.se_name" />
-    <update on="p > a" at="attr.href" with="$?.se_url" />
-    <update on="p > a" at="attr.title" with="$?.se_title" />
+     <update on="p > a" at="textContent" with="$?.se_name" />
+     <update on="p > a" at="attr.href" with="$?.se_url" />
+     <update on="p > a" at="attr.title" with="$?.se_title" />
 ```
 
-可组合成一个 `update` 标签：
+They can be combined into an `update` tag:
 
 ```
-    <update on="p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
+     <update on="p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
 ```
 
-当 `at` 指定多个目标位置，其数量和 `with` 属性值的数组数据项数量不匹配时，未指定值的位置，取 `with` 属性最后一个值。
+When `at` specifies multiple target positions, and the number of them does not match the number of array data items of `with` attribute value, the position where no value is specified takes the last value of `with` attribute.
 
-当 `at` 指定多个目标位置，而 `with` 属性值不是一个数组时，`with` 属性值作用于所有的目标位置。
+When `at` specifies multiple target locations and `with` attribute value is not an array, `with` attribute value acts on all target locations.
 
-当我们直接在目标数据上执行更新动作时，我们不指定 `at` 属性：
+When we perform an update action directly on the target data, we don't specify `at` attribute:
 
 ```hvml
-    <init as="newUser">
-        { "id": "0", "avatar": "/img/avatars/0.png", "name": "Annoymous", "region": "en_US", "age": 2 },
-    </init>
+     <init as="newUser">
+         { "id": "0", "avatar": "/img/avatars/0.png", "name": "Annoymous", "region": "en_US", "age": 2 },
+     </init>
 
-    <update on="$users" to="prepend" with $newUser />
+     <update on="$users" to="prepend" with $newUser />
 ```
 
-以上代码将把 `$newUser` 追加到 `$users` 的开头，从而成为用户数组的第一个成员。
+The above code will append `$newUser` to the beginning of `$users`, thus becoming the first member of the users array.
 
-另外，当属性值的求值结果为字符串时，我们还可以使用除 `=` 之外的属性修改操作符修改最终数据，详情见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性)。
+In addition, when the evaluation result of the attribute value is a string, we can also use attribute modification operators other than `=` to modify the final data. For details, see this document [3.1.2.4) Action element attributes] (#3124- action element attribute).
 
-除此之外，当属性值是数值型数据，我们还可以使用除 `=` 之外的属性修改操作符修改最终数据，详情见本文档 [3.1.2.4) 动作元素属性](#3124-动作元素属性)。
+In addition, when the attribute value is numeric data, we can also use attribute modification operators other than `=` to modify the final data. For details, see this document [3.1.2.4) Action element attributes] (#3124-Action element attribute).
 
-当目标数据是元素汇集时，`update` 标签设定的更新动作，将作用于汇集中所有的元素在指定位置上的数据。比如，
+When the target data is a collection of elements, the update action set by `update` tag will act on the data of all elements in the collection at the specified position. For example,
 
 ```hvml
     <update on="span" at="attr.class" with="text-danger" />
 ```
 
-将修改目标文档中所有类型为 `span` 的元素之类名为 `text-danger`。
+It will modify all elements of type `span` in the target document named `text-danger`.
 
-当目标数据是对象、元组、数组、集合，且具有 `individually` 副词属性时，`update` 标签设定的更新动作，将作用于数组中所有的数据项在指定位置上的数据。如，
+When the target data is an object, tuple, array, or set, and has `individually` adverb attribute, the update action set by `update` tag will act on the data at the specified position of all data items in the array. like,
 
 ```hvml
-    <init as="users" uniquely against="id">
-        [
-            { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-            { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
-        ]
-    </init>
+     <init as="users" uniquely against="id">
+         [
+             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+         ]
+     </init>
 
-    <update on="$users" at=".region" with="zh_CN" individually />
+     <update on="$users" at=".region" with="zh_CN" individually />
 
-    <init as="localeNames">
-        {
-            "locales": [ "zh_CN", "zh_TW", "en_US" ],
-            "nameEN": [ "Chines (mainland of China)", "Chinese (Taiwan, China)", "English (USA)"],
-            "nameZH": [ "中文（中国大陆）", "中文（中国台湾）", "英文（美国）"],
-        }
-    </init>
+     <init as="localeNames">
+         {
+             "locales": [ "zh_CN", "zh_TW", "en_US" ],
+             "nameEN": [ "Chinese (mainland of China)", "Chinese (Taiwan, China)", "English (USA)"],
+             "nameZH": [ "Chinese (Mainland China)", "Chinese (Taiwan, China)", "English (US)"],
+         }
+     </init>
 
-    <update on="$localeNames" at="[2]" to="remove" individually />
+     <update on="$localeNames" at="[2]" to="remove" individually />
 ```
 
-上述代码中的第一个 `update` 标签把 `$users` 集合中所有用户的 `region` 更改为 `zh_CN`；第二个 `update` 标签把 `$localeNames` 中所有键值的第二个数据项删除。分别得到如下结果：
+The first `update` tag in the above code changes the `region` of all users in the `$users` collection to `zh_CN`; the second `update` tag changes the second `region` of all key values in `$localeNames` Data item deletion. The following results are obtained respectively:
 
 ```json
-    [
-        { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "zh_CN" },
-        { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" },
-    ]
+     [
+         { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "zh_CN" },
+         { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" },
+     ]
 ```
 
-和
+and
 
 ```json
-    {
-        "locales": [ "zh_CN", "zh_TW" ],
-        "nameEN": [ "Chines (mainland of China)", "Chinese (Taiwan, China)"],
-        "nameZH": [ "中文（中国大陆）", "中文（中国台湾）"],
-    }
+     {
+         "locales": [ "zh_CN", "zh_TW" ],
+         "nameEN": [ "Chinese (mainland of China)", "Chinese (Taiwan, China)"],
+         "nameZH": [ "Chinese (Mainland China)", "Chinese (Taiwan)"],
+     }
 ```
 
-如果更新操作破坏了集合的唯一性条件，将抛出异常。
+An exception will be thrown if the update operation breaks the uniqueness condition of the collection.
 
-##### 2.5.2.2) 更新集合
+##### 2.5.2.2) Update collection
 
-当目标数据是集合时，将忽略 `at` 属性值，且只能执行针对集合的 `unite` 等动作。如果更新操作破坏了集合的唯一性条件，将抛出异常。
+When the target data is a collection, `at` attribute value will be ignored, and only actions such as `unite` for collections can be performed. An exception will be thrown if the update operation breaks the uniqueness condition of the collection.
 
-下面的代码定义了一个 `$users` 变量作为集合（使用 `id` 作为唯一性键名），并定义了一个 `$new_users` 对象数组：
+The following code defines a `$users` variable as a collection (using `id` as the unique key), and defines an array of `$new_users` objects:
 
 ```hvml
-    <init as="users" uniquely against="id">
-        [
-            { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-            { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
-        ]
-    </init>
+     <init as="users" uniquely against="id">
+         [
+             { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+             { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+         ]
+     </init>
 
-    <init as="new_users">
-        [
-            { "id": "3", "avatar": "/img/avatars/3.png", "name": "David", "region": "zh_CN" }
-        ]
-    </init>
+     <init as="new_users">
+         [
+             { "id": "3", "avatar": "/img/avatars/3.png", "name": "David", "region": "zh_CN" }
+         ]
+     </init>
 ```
 
-注意，我们使用 `id` 作为唯一性键名，故而该键名对应的值，在集合中将保持唯一。
+Note that we use `id` as the unique key name, so the value corresponding to the key name will remain unique in the collection.
 
-我们使用如下的 `update` 标签以 `$new_users` 作为源数据，使用 `unite` 动作：
+We use the following `update` tag with `$new_users` as the source data, using the `unite` action:
 
 ```hvml
-    <update on="$users" to="unite" with="$new_users" />
+     <update on="$users" to="unite" with="$new_users" />
 ```
 
-得到如下结果：
+The following results are obtained:
 
 ```json
-    [
-        { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-        { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" },
-        { "id": "3", "avatar": "/img/avatars/3.png", "name": "David", "region": "zh_CN" }
-    ]
+     [
+         { "id": "1", "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+         { "id": "2", "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" },
+         { "id": "3", "avatar": "/img/avatars/3.png", "name": "David", "region": "zh_CN" }
+     ]
 ```
 
-类似地，我们要添加一个新的定时器时，使用如下的 `update` 标签修改 `$TIMERS`：
+Similarly, when we want to add a new timer, modify `$TIMERS` using the `update` tag as follows:
 
 ```hvml
-    <update on="$TIMERS" to="unite">
-        [
-            { "id" : "foobar", "interval" : 3000, "active" : "yes" },
-        ]
-    </update>
+     <update on="$TIMERS" to="unite">
+         [
+             { "id" : "foobar", "interval" : 3000, "active" : "yes" },
+         ]
+     </update>
 ```
 
-又如，当我们需要覆盖全局定时器中某个特定的数据项时，我们可以使用 `overwrite` 动作：
+As another example, when we need to overwrite a specific data item in the global timer, we can use the `overwrite` action:
 
 ```hvml
-    <update on="$TIMERS" to="overwrite">
-        { "id" : "foo", "active" : "yes" }
-    </update>
+     <update on="$TIMERS" to="overwrite">
+         { "id" : "foo", "active" : "yes" }
+     </update>
 ```
 
-当我们要删除定时器 `foo` 时，可使用 `subtract` 动作：
+When we want to delete timer `foo`, we can use `subtract` action:
 
 ```hvml
-    <update on="$TIMERS" to="subtract">
-        { "id" : "foo" }
-    </update>
+     <update on="$TIMERS" to="subtract">
+         { "id" : "foo" }
+     </update>
 ```
 
-#### 2.5.3) `erase` 标签
+#### 2.5.3) `erase` Tag
 
-`erase` 标签定义一个执行移除操作的动作元素，用于从目标数据移除一个指定的数据项，支持 `on` 和 `at` 介词属性。`on` 属性用于指定目标数据，可以是数组、元组、对象、元素汇集或者支持移除操作的原生实体；`at` 用于要移除的数据子项，不指定时表示所有数据项。`erase` 元素的结果数据为移除的数据项个数。
+`erase` tag defines an action element that performs a removal operation, used to remove a specified data item from the target data, and supports `on` and `at` preposition attributes. `on` attribute is used to specify the target data, which can be an array, a tuple, an object, a collection of elements, or a native entity that supports removal operations. `at` is used for the data sub-item to be removed, and if not specified, it means all data items . The result data of the `erase` element is the number of items removed.
 
-如针对如下的 HTML 代码片段：
+For example, for the following HTML code snippet:
 
 ```hvml
-    <div id="the-user-statistics">
-        <h2 class="text-info">User regions (totally <span class="none"></span> users):</h2>
-    </div>
+     <div id="the-user-statistics">
+         <h2 class="text-info">User regions (totally <span class="none"></span> users):</h2>
+     </div>
 ```
 
-我们通过下面的 `erase` 标签来删除 `h2` 元素：
+We delete the `h2` element with the following `erase` tag:
 
 ```hvml
-    <erase on="#the-user-stats > h2" />
+     <erase on="#the-user-stats > h2" />
 ```
 
-执行上述 `erase` 动作后，上面的 HTML 代码片段将变为：
+After performing the above `erase` action, the above HTML snippet will become:
 
 ```hvml
-    <div id="the-user-statistics">
-    </div>
+     <div id="the-user-statistics">
+     </div>
 ```
 
-我们通过下面的 `erase` 标签来删除 `h2` 元素中的 `class` 属性：
+We delete the `class` attribute in the `h2` element with the following `erase` tag:
 
 ```hvml
-    <erase on="#the-user-stats > h2" at="attr.class" />
+     <erase on="#the-user-stats > h2" at="attr.class" />
 ```
 
-执行上述 `erase` 动作后，上面的 HTML 代码片段将变为：
+After performing the above `erase` action, the above HTML snippet will become:
 
 ```hvml
-    <div id="the-user-statistics">
-        <h2>User regions (totally <span class="none"></span> users):</h2>
-    </div>
+     <div id="the-user-statistics">
+         <h2>User regions (totally <span class="none"></span> users):</h2>
+     </div>
 ```
 
-注意，当 `on` 属性值指定的是一个元素汇集时，`erase` 标签将移除该集合中所有的元素，或者所有元素的指定属性或内容。
+Note that when `on` attribute value specifies a collection of elements, `erase` tag will remove all elements in the collection, or the specified attributes or content of all elements.
 
-类似地，我们也可以在数组上执行 `erase` 动作。比如清除 `$users` 的第二个成员：
+Similarly, we can also perform `erase` action on arrays. For example to clear the second member of `$users`:
 
 ```hvml
-    <erase on="$users" at="[1]" />
+     <erase on="$users" at="[1]" />
 ```
 
-注意，当我们在元组上执行 `erase` 动作时，对应的成员将被置为空值。
+Note that when we execute the `erase` action on a tuple, the corresponding member will be set to null.
 
-我们也可以在对象上执行 `erase` 动作。比如清除 `$users[0]` 的 `name` 属性：
+We can also perform the `erase` action on objects. For example, clear the `name` attribute of `$users[0]`:
 
 ```hvml
-    <erase on="$users[0]" at=".name" />
+     <erase on="$users[0]" at=".name" />
 ```
 
-`at` 属性值可以是数组的索引值或者对象的属性名称（可指定多个，用空格分割）：
+`at` attribute value can be the index value of the array or the attribute name of the object (multiple can be specified, separated by spaces):
 
 ```hvml
-    <erase on="$users[0]" at=".name .age" />
+     <erase on="$users[0]" at=".name .age" />
 ```
 
-作为示例，下面的代码在 `iterate` 标签中使用 `erase` 标签，间隔删除数组中成员：
+As an example, the following code uses `erase` tag in `iterate` tag to delete the members of the array at intervals:
 
 ```hvml
-    <iterate on="$DATA.count($users)" by="SUB: GE 0 BY 2">
-        <erase on="$users" at="[$?]" />
-    </iterate>
+     <iterate on="$DATA.count($users)" by="SUB: GE 0 BY 2">
+         <erase on="$users" at="[$?]" />
+     </iterate>
 ```
 
-#### 2.5.4) `clear` 标签
+#### 2.5.4) `clear` Tag
 
-`clear` 标签定义一个执行清空操作的元素，该元素清空一个数组、对象、元素汇集或者一个支持清空操作的原生实体对象。该元素仅支持 `on` 介词属性，用于指定目标数据，产生 `true` 或 `false` 两种结果数据，分别表示成功或失败。
+`clear` tag defines an element that performs a clear operation, which clears an array, object, collection of elements, or a native entity object that supports clear operations. This element only supports `on` preposition attribute, which is used to specify the target data and produce `true` or `false` two result data, indicating success or failure respectively.
 
-如针对如下的 HTML 代码片段：
+For example, for the following HTML code snippet:
 
 ```hvml
-    <div id="the-user-statistics">
-        <h2>User regions (totally <span class="none"></span> users):</h2>
-        <dl>
-            <dt>zh_CN</dt>
-            <dd>1</dd>
-            <dt>en_US</dt>
-            <dd>2</dd>
-        </dl>
-    </div>
+     <div id="the-user-statistics">
+         <h2>User regions (totally <span class="none"></span> users):</h2>
+         <dl>
+             <dt>zh_CN</dt>
+             <dd>1</dd>
+             <dt>en_US</dt>
+             <dd>2</dd>
+         </dl>
+     </div>
 ```
 
-我们通过下面的 `clear` 标签来清空用来 `dl` 节点的所有子节点：
+We clear all child nodes of `dl` node with the following `clear` tag:
 
 ```hvml
-    <clear on="#the-user-stats > dl" />
+     <clear on="#the-user-stats > dl" />
 ```
 
-执行上述 `clear` 动作后，上面的 HTML 代码片段将变为：
+After executing the above `clear` action, the above HTML code snippet will become:
 
 ```hvml
-    <div id="the-user-statistics">
-        <h2>User regions (totally <span class="none"></span> users):</h2>
-        <dl>
-        </dl>
-    </div>
+     <div id="the-user-statistics">
+         <h2>User regions (totally <span class="none"></span> users):</h2>
+         <dl>
+         </dl>
+     </div>
 ```
 
-类似地，我们也可以在数据项上执行 `clear` 动作。比如清空 `$users` 第二个用户信息：
+Similarly, we can perform `clear` actions on data items as well. For example, clear the second user information in `$users`:
 
 ```hvml
-    <clear on="$users[1]" />
+     <clear on="$users[1]" />
 ```
 
-执行上述清空指令后，`$users` 的第二个用户数据项仍然存在，但该数据项将变为空值。
+After executing the above clear command, the second user data item of `$users` still exists, but the data item will become empty.
 
-注意，当 `on` 属性值指定的是一个元素汇集时，`clear` 标签将对中的每个元素执行清空操作。
+Note that when `on` attribute value specifies a collection of elements, `clear` tag will perform a clear operation on each element in it.
 
-#### 2.5.5) `test`、 `match` 和 `differ` 标签
+#### 2.5.5) `test`, `match` and `differ` Tags
 
-##### 2.5.5.1) 多分支处理
+##### 2.5.5.1) Multi-Branch Processing
 
-`test` 标签和 `match` 标签配合使用，主要用于实现分支处理。`test` 元素通过 `on` 属性定义在哪个数据项上执行测试，而 `match` 作为 `test` 元素的子元素，每个 `match` 子元素定义一个匹配分支。
+`test` tag is used in conjunction with `match` tag, and is mainly used to implement branch processing. `test` element defines which data item to perform the test on through `on` attribute, and `match` is used as a sub-element of `test` element, and each `match` sub-element defines a matching branch.
 
-`test` 元素可支持 `by` 属性，通过该属性指定的执行器来获得一个执行结果。如果没有定义 `by` 属性，其结果数据就是 `on` 属性值；而 `match` 元素始终产生真值（`true`）作为其结果数据。注意，不满足匹配条件的 `match` 元素定义的分支是不会被执行的。
+`test` element can support `by` attribute, and an execution result can be obtained through the executor specified by this attribute. If no `by` attribute is defined, its result data is the `on` attribute value. Whereas a `match` element always yields a true value (`true`) as its result data. Note that branches defined by `match` elements that do not meet the matching conditions will not be executed.
 
-注意，当使用 `by` 属性时，`test` 元素对执行器的处理同 `choose` 元素。
+Note that `test` element treats the executor the same as `choose` element when `by` attribute is used.
 
-看如下的示例代码：
+Please see the sample code below:
 
 ```hvml
     <archetype name="footer_cn">
@@ -3598,31 +3613,31 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </footer>
 ```
 
-上面的示例在 `$global.locale` 数据项（由 `on` 属性指定）上执行测试，操作被限定在 `#the-footer`（由 `in` 属性指定）所在的目标文档位置。在 `test` 标签定义的元素内，使用 `match` 标签定义了若干子元素，分别用来定义匹配条件 `AS 'zh_CN'`、 `AS 'zh_TW'` 以及 `LIKE '*'` 情况下的动作。
+The above example performs the test on `$global.locale` data item (specified by the `on` attribute). And the operation is restricted to the target document location where `#the-footer` (specified by `in` attribute) is located. In the element defined by the `test` tag, use `match` tag to define several sub-elements, which are used to define the matching conditions `AS 'zh_CN'`, `AS 'zh_TW'` and `LIKE '*'` respectively action.
 
-解释器在选择了某个匹配的 `match` 子元素后，若该 `match` 子元素定义了 `exclusively` 副词属性，则将不再检查其他 `match` 子元素定义的分支。另外，除 `catch` 子元素之外，`test` 元素中的其他非 `match` 子元素（包括外部元素）将被忽略。
+After the interpreter selects a matching `match` sub-element, if the `match` sub-element defines `exclusively` adverb attribute, it will no longer check the branches defined by other `match` sub-elements. Also, except for the `catch` sub-element, other non-`match` sub-elements (including outer elements) within the `test` element will be ignored.
 
-就上述示例代码而言，假定 `$global` 所指代的数据之 `locale` 定义为 `zh_CN`，则最终生成的 HTML 片段如下：
+As far as the above sample code is concerned, assuming that the `locale` of the data referred to by `$global` is defined as `zh_CN`, the resulting HTML fragment is as follows:
 
 ```hvml
 <footer id="the-footer">
-    <p><a href="http://www.baidu.com" title="百度">Baidu</a></p>
+     <p><a href="http://www.baidu.com" title="Baidu">Baidu</a></p>
 </footer>
 ```
 
-需要注意的是，`test` 动作始终确定一个动作结果，将成为子元素的上下文变量 `$?` 之值，该值一般是一个字符串或数值。使用 `by` 属性时，可通过该属性指定的内置执行器或者外部执行器从 `on` 指定的数据中获得一个可供匹配的数据，此种情况下，执行器的工作方式和 `choose` 元素相同。
+It should be noted that `test` action always determines an action result, which will become the value of the context variable `$?` of the child element, which is generally a string or a number. When the `by` attribute is used, the built-in executor or external executor specified by this attribute can be used to obtain a matching data from the data specified by `on`. In this case, the working method of the executor is the same as that of `choose` The elements are the same.
 
-对于匹配条件，我们可以在 `match` 元素中使用 `on` 介词属性来定义一个表达式，通过对该表达式求值的结果做布尔化处理来判断是否匹配，也可以使用 `for` 介词属性定义基于 `test` 元素执行结果的匹配条件，两者选一，但 `for` 属性具有更高优先级。
+For matching conditions, we can use `on` preposition attribute in `match` element to define an expression, and judge whether it matches by booleanizing the result of evaluating the expression, or use `for` preposition attribute Defines a matching condition based on the execution result of `test` element, either, but `for` attribute has higher priority.
 
-使用 `on` 介词属性时，我们可以使用一个求值表达式来确定匹配条件；当求值结果做布尔化处理后，若结果为 `true`，则视作匹配，反之视作不匹配。比如就上述 HVML 代码中的匹配 `zh_CN` 的 `match` 元素，可以如下书写：
+When using `on` preposition attribute, we can use an evaluation expression to determine the matching condition; when the evaluation result is Booleanized, if the result is `true`, it is considered a match, otherwise it is regarded as a mismatch. For example, `match` element that matches `zh_CN` in the above HVML code can be written as follows:
 
 ```hvml
-        <match on="$L.streq('case', 'zh_CN', $?)" exclusively>
-            <update on="$@" to="displace" with="$footer_cn" />
-        </match>
+         <match on="$L. streq('case', 'zh_CN', $?)" exclusively>
+             <update on="$@" to="displace" with="$footer_cn" />
+         </match>
 ```
 
-使用 `for` 介词属性时，可以使用简单的逻辑表达式来定义匹配条件。其规则描述如下：
+When using `for` preposition attribute, simple logical expressions can be used to define matching conditions. Its rules are described as follows:
 
 ```
     "ANY" | <number_comparing_logical_expression>  | <string_matching_logical_expression>
@@ -3652,93 +3667,93 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     max_matching_length: <literal_positive_integer>
 ```
 
-比如，我们可以如下书写一个匹配规则：
+For example, we can write a matching rule as follows:
 
 ```hvml
-    <match for="GT 10 AND LT 100">
-        ...
-    </match>
+     <match for="GT 10 AND LT 100">
+         ...
+     </match>
 ```
 
-需要说明的是，`match` 标签的 `for` 属性指定的匹配规则不是 `ANY` 时：
+It should be noted that when the matching rule specified by `for` attribute of `match` tag is not `ANY`:
 
-1. 若 `match` 元素的 `for` 属性指定的匹配规则是数值比较表达式（如 `GT`、`LT`），则对 `test` 元素的结果数据做数值化处理后再行匹配。
-1. 若 `match` 元素的 `for` 属性指定的匹配规则是字符串匹配表达式（如 `AS`、`LIKE`），则对 `test` 元素的结果数据做字符串化处理后再行匹配。
-1. ~~若其父元素（即 `test`）元素的结果数据是实数类型时，`match` 标签的 `for` 属性指定的匹配规则按数值比较逻辑表达式处理，此时在逻辑表达式中使用字符串匹配表达式（如 `AS`、`LIKE`）是无效的。~~
-1. ~~若其父标签（即 `test`）标签的结果数据是其他类型时，`match` 标签的 `for` 属性指定的匹配规则按字符串比较逻辑表达式处理，此时在逻辑表达式中使用数值比较表达式（如 `GT`、`LT`）是无效的。当结果数据不是字符串类型时，应做字符串化处理。~~
+1. If the matching rule specified by `for` attribute of `match` element is a numerical comparison expression (such as `GT`, `LT`), perform numerical processing on the result data of `test` element before matching.
+1. If the matching rule specified by `for` attribute of `match` element is a string matching expression (such as `AS`, `LIKE`), then perform string processing on the result data of `test` element before proceeding match.
+1. ~~If the result data of its parent element (that is, `test`) is a real number type, the matching rule specified by the `for` attribute of `match` tag is processed as a numerical comparison logical expression. At this time, the logical expression It is invalid to use string matching expressions (such as `AS`, `LIKE`) in . ~~
+1. ~~If the result data of its parent tag (that is, `test`) is of other types, the matching rule specified by `for` attribute of `match` tag is processed as a string comparison logical expression. At this time, the logical expression It is invalid to use numerical comparison expressions (such as `GT`, `LT`) in the formula. When the result data is not a string type, it should be stringified. ~~
 
-##### 2.5.5.2) 二选一处理
+##### 2.5.5.2) Choose One of the Two
 
-作为一种简化处理方案，我们可以使用 `test` 元素的 `with` 属性的值来确定如何处理 `test` 元素定义的操作子树：
+As a simplification, we can use the value of `with` attribute of `test` element to determine how to handle the subtree of operations defined by `test` element:
 
 ```hvml
-    <test with="$STR.stars_with($CRTN.app, 'cn.fmsoft.hvml')">
-        ...
+     <test with="$STR.stars_with($CRTN.app, 'cn.fmsoft.hvml')">
+         ...
 
-        <!-- when the value of `with` attribute of `test` element is false -->
-        <differ>
-            ...
-        </differ>
-    </test>
+         <!-- when the value of `with` attribute of `test` element is false -->
+         <differ>
+             ...
+         </differ>
+     </test>
 ```
 
-以上的代码，当 `with` 属性的值为 `true` 时，继续执行该元素的操作子树，但忽略 `differ` 子元素定义的操作子树；如果属性值求值后的结果为 `false`，则仅处理 `differ` 子元素定义的操作子树。这种场景下，`differ` 元素是可选的。`differ` 元素不使用除 `in` 之外的任何介词属性和副词属性。和 `inherit` 类似，该元素会默认继承前置操作的上下文变量，若定义有数据内容，则使用数据内容覆盖对应栈帧的 `$^` 上下文变量。
+The above code, when the value of `with` attribute is `true`, continue to execute the operation subtree of the element, but ignore the operation subtree defined by `differ` sub-element; if the result of the evaluation of the attribute value is `false `, only the operation subtree defined by `differ` sub-element is processed. In this case, `differ` element is optional. `differ` element does not use any prepositional and adverbial attributes other than `in`. Similar to `inherit`, this element will inherit the context variable of the previous operation by default. If there is data content defined, `$^` context variable of the corresponding stack frame will be overwritten with the data content.
 
-当同时指定 `with` 和 `on` 属性时，优先按 `on` 属性处理。也就是说，要采用这一简化方案，就不能指定 `on` 属性。
+When `with` and `on` attributes are specified at the same time, `on` attribute will be prioritized. That is, to use this simplification, `on` attribute cannot be specified.
 
-#### 2.5.6) `choose` 标签
+#### 2.5.6) `choose` Tag
 
-`choose` 标签定义一个执行选择操作的动作元素，该元素在 `on` 属性指定的数据上产生一个可供后续动作元素处理的数据项。
+`choose` tag defines an action element that performs a selection operation that produces a data item on the data specified by `on` attribute that can be processed by subsequent action elements.
 
-`choose` 元素可支持 `by` 属性，通过该属性指定的执行器来获得一个执行结果数据。如果没有定义 `by` 属性，其结果数据就是 `on` 属性值。
+`choose` element can support `by` attribute, and an execution result data can be obtained through the executor specified by this attribute. If no `by` attribute is defined, the resulting data is the value of `on` attribute.
 
-比如要实现根据当前 `locale` 动态生成搜索链接的功能，我们也可以使用嵌套在 `choose` 元素中的 `update` 元素完成相关功能，如：
+For example, to realize the function of dynamically generating search links according to the current `locale`, we can also use the `update` element nested in `choose` element to complete related functions, such as:
 
 ```hvml
-  <head>
-      ...
-  </head>
+   <head>
+       ...
+   </head>
 
-  <body>
-    <init as="global">
-        { "locale" : "zh_CN" }
-    </init>
+   <body>
+     <init as="global">
+         { "locale" : "zh_CN" }
+     </init>
 
-    <init as="locales">
-      {
-          "zh_CN" : {"se_name" : "Baidu", "se_url": "https://www.baidu.com", "se_title": "百度" },
-          "zh_TW" : {"se_name" : "Bing", "se_url": "https://www.bing.com", "se_title": "必应" }
-      }
-    </init>
+     <init as="locales">
+       {
+           "zh_CN" : {"se_name" : "Baidu", "se_url": "https://www.baidu.com", "se_title": "百度" },
+           "zh_TW" : {"se_name" : "Bing", "se_url": "https://www.bing.com", "se_title": "必应" }
+       }
+     </init>
 
-    <footer id="the-footer">
-        <p><a href="" title=""></a></p>
-    </footer>
+     <footer id="the-footer">
+         <p><a href="" title=""></a></p>
+     </footer>
 
-    <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
-        <update on="p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
-        <catch for `NoData`>
-            <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
-        </catch>
-        <catch for `NoSuchKey`>
-            <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
-        </catch>
-        <catch for `ANY`>
-            <update on="p" at="textContent" with='Bad $locales/$global data!' />
-        </catch>
-    </choose>
-  </body>
+     <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
+         <update on="p > a" at "textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
+         <catch for `NoData`>
+             <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
+         </catch>
+         <catch for `NoSuchKey`>
+             <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
+         </catch>
+         <catch for `ANY`>
+             <update on="p" at="textContent" with='Bad $locales/$global data!' />
+         </catch>
+     </choose>
+   </body>
 ```
 
-在上面的例子中，我们在 `choose` 元素的 `by` 介词属性中指定了一个内置的 KEY 执行器，该执行器将 `$global.locale` 的值作为键名，返回了 `on` 介词属性指定的 `$locales` 字典数组上对应的键值，使用该键值通过其后的 `update` 子元素实现了 `in` 介词属性指定的目标文档片段中的元素更新操作。
+In the above example, we specified a built-in KEY executor in `by` preposition attribute of `choose` element, which takes the value of `$global.locale` as the key name and returns `on` preposition The corresponding key value on `$locales` dictionary array specified by the attribute, using the key value to implement the element update operation in the target document fragment specified by the `in` preposition attribute through the subsequent `update` sub-element.
 
-在复杂情形下，我们也可以在 `by` 属性中指定外部执行器来完成选择动作。详情可见本文 [2.6.2) 外部执行器](#262-外部执行器)。
+In complex situations, we can also specify an external executor in `by` attribute to complete the selection action. See this article [2.6.2) External actuators] (#262-External actuators) for details.
 
-#### 2.5.7) `iterate` 标签
+#### 2.5.7) `iterate` Tag
 
-##### 2.5.7.1) 使用迭代执行器
+##### 2.5.7.1) Using Iterative Executors
 
-`iterate` 标签用于定义一个执行迭代操作的动作元素，该元素在指定的可迭代数据上执行迭代操作。比如我们可以迭代处理一个数组，将迭代得到的每个数据项使用 `update` 子元素将指定的文档片段模板使用迭代得到的数据项置换后插入到目标文档。如下面的 HVML 代码片段：
+The `iterate` tag is used to define an action element that performs an iterative operation, which performs an iterative operation on the specified iterable data. For example, we can iteratively process an array, use the `update` sub-element for each data item obtained through iteration, replace the specified document fragment template with the data item obtained through iteration, and insert it into the target document. Such as the following HVML code snippet:
 
 ```hvml
     <head>
@@ -3777,64 +3792,64 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </body>
 ```
 
-上述 HVML 代码在 `head` 元素中定义了 `users` 数据，是一个由字典结构组成的数组。在 `body` 元素中，该程序迭代 `$users` 数组，并克隆 `$user_item` 这一模板定义的文档片段并追加（`append`）到 `#the-user-list` 所在的位置。在迭代过程中，该标签使用外部程序定义的 `IUser` 类来获取每次迭代得到的数据项。
+The above HVML code defines the `users` data in the `head` element, which is an array of dictionary structures. In the `body` element, the program iterates over the `$users` array and clones the `$user_item` template-defined document fragment and appends (`append`) it to where `#the-user-list` is located. During iteration, the tag uses the `IUser` class defined by the external program to obtain the data items obtained by each iteration.
 
-使用外部执行器定义的类，可用于实现较为复杂的迭代逻辑和操作。但在一些简单的场合，我们也可以使用内置执行器完成迭代操作：
+Classes defined using external executors can be used to implement more complex iteration logic and operations. But in some simple cases, we can also use the built-in executor to complete the iterative operation:
 
 ```
-    <iterate on="$users" in="#the-user-list" by="RANGE: FROM 0 ADVANCE 2">
-        <update on="> [id=user-$?.id] span" at="attr.class" with ~= "text-* text-info" />
-    </iterate>
+     <iterate on="$users" in="#the-user-list" by="RANGE: FROM 0 ADVANCE 2">
+         <update on="> [id=user-$?.id] span" at="attr.class" with ~= "text-* text-info" />
+     </iterate>
 ```
 
-上述 HVML 代码，在 `$users` 数据上执行迭代，但未使用外部执行器，而使用了 `RANGE` 关键词来定义迭代范围。`RANGE: FROM 0 ADVANCE 2` 表示取 `$users` 数组中索引下标为偶数的所有数组项，之后，针对这些数据项执行 `update` 标签定义的更新操作。在 `update` 标签中，首先使用 `on` 介词属性定义了目标元素：`[id=user-$?.id] span`。该表达式使用了 CSS 选择器在 `#the-user-list` 定义的 eDOM 子树中查找子元素，其中 `$?.id` 表示的是当前迭代得到的用户标识符。若存在这个子元素，则将其 `class` 属性设置为 `text-info`。这样，所有索引值为偶数的用户条目将使用由 `text-info` 类定义的样式来展现。
+The above HVML code performs iteration over the `$users` data, but without using an external executor, the `RANGE` keyword is used to define the iteration range. `RANGE: FROM 0 ADVANCE 2` means to fetch all array items whose index subscripts are even numbers in the `$users` array, and then perform the update operation defined by the `update` tag for these data items. In the `update` tag, the target element is first defined using the `on` preposition attribute: `[id=user-$?.id] span`. This expression uses a CSS selector to find child elements in the eDOM subtree defined by `#the-user-list`, where `$?.id` represents the user identifier obtained by the current iteration. If present, set its `class` attribute to `text-info`. This way, all user entries with an even index value will be rendered using the styles defined by the `text-info` class.
 
-##### 2.5.7.2) 不使用迭代执行器
+##### 2.5.7.2) Does not use iterative executor
 
-我们也可以使用 `with` 属性直接定义迭代结果的求值表达式，而不使用 `by` 属性定义的迭代执行器。此时，我们可使用 `onlyif` 属性和/或 `while` 属性定义在获得迭代结果之前判断是否开始新的迭代的条件表达式，或者在获得迭代结果后判断是否终止迭代的条件表达式。
+We can also use the `with` attribute to directly define the evaluation expression of the iteration result, instead of using the iteration executor defined by the `by` attribute. At this point, we can use the `onlyif` attribute and/or `while` attribute to define a conditional expression that determines whether to start a new iteration before obtaining the iteration result, or a conditional expression that determines whether to terminate the iteration after obtaining the iteration result.
 
-在不使用迭代执行器时，`iterate` 元素的属性或者上下文变量，应该按照如下步骤处理。
+When not using the iterative executor, the attributes or context variables of the `iterate` element should be processed according to the following steps.
 
-当定义有 `on` 属性时，我们将 `on` 属性的值视作每次迭代的输入值，后用 `with` 属性求下一个值：
+When the `on` attribute is defined, we treat the value of the `on` attribute as the input value for each iteration, and then use the `with` attribute to find the next value:
 
-1. 第一次迭代前：
-   - 使用 0 初始化 `$0%` 。
-   - 使用 `on` 属性值初始化 `$0<`。
-   - 使用 `in` 属性值或者继承 `$@` 初始化 `$0@`。
-1. 每次迭代前：
-   - 对 `onlyif` 属性定义的表达式求值，若对结果做布尔化处理后为 `false`，则终止迭代，否则继续迭代。若未定义 `onlyif`，视其值为 `true`。
-1. 每次迭代中：
-   - 将 `$0<` 设置到 `$0?` 上；对内容表达式求值（结果设置到 `$0^`）；处理子元素。
-1. 每次迭代后：
-   - 对 `with` 属性定义的表达式求值，若求值结果为 `false`、`null` 或者 `undefined` 之一（此处不做布尔化处理），则终止迭代，否则，若具有副词属性 `nosetotail`，则使用 `with` 属性的求值结果重置 `$0<`。若未定义 `with`，视其值为 `undefined`。
-   - 若定义有 `while` 属性，则对 `while` 属性定义的表达式求值，若对结果做布尔化处理后为 `false`，则终止迭代。若未定义 `while` 属性，视其值为 `true`。
-   - 若以上步骤未导致迭代终止，则 `$0%` 增加 1，开始新的迭代。
+1. Before the first iteration:
+    - Initialize `$0%` with 0.
+    - Initialize `$0<` with the value of the `on` attribute.
+    - Initialize `$0@` with `in` attribute value or inherit from `$@`.
+1. Before each iteration:
+    - Evaluates the expression defined by the `onlyif` attribute, and if the booleanized result is `false`, then terminate the iteration, otherwise continue the iteration. If `onlyif` is not defined, it is considered to be `true`.
+1. In each iteration:
+    - Set `$0<` to `$0?`; evaluate content expression (result is set to `$0^`); process child elements.
+1. After each iteration:
+    - Evaluate the expression defined by the `with` attribute, if the result of the evaluation is one of `false`, `null` or `undefined` (boolean processing is not done here), then terminate the iteration, otherwise, if there is an adverb attribute `nosetotail`, reset `$0<` using the evaluation result of the `with` attribute. If `with` is not defined, it is treated as `undefined`.
+    - If a `while` attribute is defined, the expression defined by the `while` attribute is evaluated, and if the result is booleaned to `false`, the iteration is terminated. If the `while` attribute is not defined, its value is considered to be `true`.
+    - If the above steps do not cause the iteration to terminate, then `$0%` is incremented by 1 and a new iteration is started.
 
-如下示例生成小于 100 的偶数数列：
+The following example generates a column of even numbers less than 100:
 
 ```hvml
-    <init as "evenNumbers" with [] >
-        <iterate on 0 onlyif $L.lt($0<, 100L) with $DATA.arith('+', $0<, 2) nosetotail>
-            <update on="$evenNumbers" to="append" with="$?" />
-        </iterate>
-    </init>
+     <init as "evenNumbers" with []>
+         <iterate on 0 onlyif $L.lt($0<, 100L) with $DATA.arith('+', $0<, 2) nosetotail>
+             <update on="$evenNumbers" to="append" with="$?" />
+         </iterate>
+     </init>
 ```
 
-当未定义 `on` 属性时，我们将 `with` 属性作为输入及迭代结果：
+When the `on` attribute is not defined, we take the `with` attribute as input and iterate over the result:
 
-1. 第一次迭代前：
-   - 使用 0 初始化 `$0%` 。
-   - 使用 `in` 属性值或者继承 `$@` 初始化 `$0@`。
-1. 每次迭代前：
-   - 对 `onlyif` 属性定义的表达式求值，若对结果做布尔化处理后为 `false`，则终止迭代，否则继续迭代。若未定义 `onlyif`，视其值为 `true`。
-1. 每次迭代中：
-   - 对 `with` 属性定义的表达式求值，若求值结果为 `false`、`null` 或者 `undefined` 之一（此处不做布尔化处理），则终止迭代，否则，则使用 `with` 属性的求值结果重置 `$0<`。若未定义 `with`，视其值为 `undefined`。
-   - 将 `$0<` 设置到 `$0?` 上；对内容表达式求值（结果设置到 `$0^`）；处理子元素。
-1. 每次迭代后：
-   - 若定义有 `while` 属性，则对 `while` 属性定义的表达式求值，若对结果做布尔化处理后为 `false`，则终止迭代。若未定义 `while` 属性，视其值为 `true`。
-   - 若以上步骤未导致迭代终止，则 `$0%` 增加 1，开始新的迭代。
+1. Before the first iteration:
+    - Initialize `$0%` with 0.
+    - Initialize `$0@` with `in` attribute value or inherit from `$@`.
+1. Before each iteration:
+    - Evaluates the expression defined by the `onlyif` attribute, and if the booleanized result is `false`, then terminate the iteration, otherwise continue the iteration. If `onlyif` is not defined, it is considered to be `true`.
+1. In each iteration:
+    - Evaluate the expression defined by the `with` attribute. If the evaluation result is one of `false`, `null` or `undefined` (boolean processing is not done here), then terminate the iteration, otherwise, use ` The evaluation of the with attribute resets `$0<`. If `with` is not defined, it is treated as `undefined`.
+    - Set `$0<` to `$0?`; evaluate content expression (result is set to `$0^`); process child elements.
+1. After each iteration:
+    - If a `while` attribute is defined, the expression defined by the `while` attribute is evaluated, and if the result is booleaned to `false`, the iteration is terminated. If the `while` attribute is not defined, its value is considered to be `true`.
+    - If the above steps do not cause the iteration to terminate, then `$0%` is incremented by 1 and a new iteration is started.
 
-如下示例读取特定目录下的全部目录项：
+The following example reads all directory entries under a specific directory:
 
 ```hvml
     <choose on $FS.opendir($REQ.dir) >
@@ -3849,43 +3864,43 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </choose>
 ```
 
-#### 2.5.8) `reduce` 标签
+#### 2.5.8) `reduce` Tag
 
-`reduce` 标签定义一个执行归约（Reduce）操作的元素。和 `choose` 元素类似，`reduce` 元素支持 `on` 属性和 `by` 属性，其结果数据为规约操作的结果。
+`reduce` tag defines an element that performs a Reduce operation. Similar to `choose` element, `reduce` element supports `on` attribute and `by` attribute, and its result data is the result of the reduction operation.
 
-我们可以在 `reduce` 标签中使用 `by` 属性指定一个内建执行器，则将在内建执行器生成的数据基础上执行隐含的规约操作。比如，如下的代码：
+We can use `by` attribute in `reduce` tag to specify a built-in executor, and the implicit reduction operation will be performed based on the data generated by the built-in executor. For example, the following code:
 
 ```hvml
-    <init as="regionStats">
-        { "zh_CN" : 100, "zh_TW" : 90，"zh_HK": 90, "zh_SG": 90, "zh_MO": 80, "en_US": 70, "en_UK": 80 }
-    </init>
+     <init as="regionStats">
+         { "zh_CN": 100, "zh_TW": 90,"zh_HK": 90, "zh_SG": 90, "zh_MO": 80, "en_US": 70, "en_UK": 80}
+     </init>
 
-    <reduce on=$regionStats by="KEY: ALL">
-        ...
-    </reduce>
+     <reduce on=$regionStats by="KEY: ALL">
+         ...
+     </reduce>
 ```
 
-将在如下数组基础上执行隐含的规约计算：
+The implicit reduction calculation will be performed on the following array basis:
 
 ```json
 [ 100, 90, 90, 90, 80, 70, 80 ]
 ```
 
-规约结果为：
+The result of the statute is:
 
 ```json
 {
-    "count": 7,
-    "sum": 600,
-    "avg": 85.71,
-    "max": 100,
-    "min": 70,
+     "count": 7,
+     "sum": 600,
+     "avg": 85.71,
+     "max": 100,
+     "min": 70,
 }
 ```
 
-有关隐含的规约操作，详情可见本规范 [2.6.1.8) 内建执行器的使用](#2618-内建执行器的使用)。
+See [2.6.1.8) Use of built-in executors] (#2618-Use of built-in executors) in this specification for details on the implicit specification operations.
 
-当隐含规约操作无法满足我们的要求时，我们可通过外部执行器实现需要的规约操作。比如，上面的例子中我们使用外部的函数执行器（`StatsUserRegion`）统计来自不同区域用户的人数，最终形成一个类似下面这样的数据：
+When the implicit protocol operation cannot meet our requirements, we can implement the required protocol operation through an external executor. For example, in the above example, we use the external function executor (`StatsUserRegion`) to count the number of users from different regions, and finally form a data similar to the following:
 
 ```json
     {
@@ -3894,44 +3909,44 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     }
 ```
 
-通常 `reduce` 元素会形成另外一个可迭代数据，然后我们可以嵌套 `iterate` 等元素执行后续动作。比如下面的 HVML 代码片段：
+Usually `reduce` element will form another iterable data, and then we can nest `iterate` and other elements to perform subsequent actions. For example, the following HVML code snippet:
 
 ```hvml
-    <div id="the-user-statistics">
-        <h2>User regions (totally <span></span> users):</h2>
-        <dl>
-        </dl>
-    </div>
+     <div id="the-user-statistics">
+         <h2>User regions (totally <span></span> users):</h2>
+         <dl>
+         </dl>
+     </div>
 
-    <archetype name="region_to_users">
-        <div>
-            <dt>$?.k</dt>
-            <dd>$?.v</dd>
-        </div>
-    </archetype>
+     <archetype name="region_to_users">
+         <div>
+             <dt>$?.k</dt>
+             <dd>$?.v</dd>
+         </div>
+     </archetype>
 
-    <reduce on="$users" in="#the-user-statistics" by="FUNC: StatsUserRegion">
-        <update on="> h2 > span" at="textContent" with="$?.count" />
-        <clear on="> dl" />
-        <choose on="$?.regions" by="KEY: ALL FOR KV">
-            <sort on="$?" against="v" descendingly>
-                <iterate on="$?" in="> dl" by="RANGE: ALL">
-                    <update on="$@" to="append" with="$region_to_users" />
-                </iterate>
-            </sort>
-        </choose>
-    </reduce>
+     <reduce on="$users" in="#the-user-statistics" by="FUNC: StatsUserRegion">
+         <update on="> h2 > span" at="textContent" with="$?.count" />
+         <clear on="> dl" />
+         <choose on="$?.regions" by="KEY: ALL FOR KV">
+             <sort on="$?" against="v" descendingly>
+                 <iterate on="$?" in="> dl" by="RANGE: ALL">
+                     <update on="$@" to="append" with="$region_to_users" />
+                 </iterate>
+             </sort>
+         </choose>
+     </reduce>
 ```
 
-上述代码使用外部函数执行器 `StatsUserRegion` 在 `$users` 上执行归约操作，之后形成一个如上面 JSON 格式描述的统计结果，其中包括整个用户的个数，以及所有区域的用户个数。然后使用了 `update` 标签、 `clear` 标签以及 `iterate` 标签执行了三个后续动作：
+The above code uses the external function executor `StatsUserRegion` to perform the reduction operation on `$users`, and then forms a statistical result as described in the JSON format above, including the number of the entire user and the number of users in all regions. Then use `update` tag, `clear` tag, `iterate` tag to perform three follow-up actions:
 
-- `update` 标签：用于更新 `#the-user-statistics > h2 > span` 元素的内容为用户总数。
-- `clear` 标签：用于清除 `#the-user-statistics > dl` 元素的所有子元素。
-- `choose` 标签：用于将 `$?.regions` 对象转换为键值对象数组。
-- `sort` 标签：用于将 `choose` 动作的结果（键值对象数组）按照 `v`（区域人数）执行降序排序操作。
-- `iterate` 标签：用于在 `#the-user-statistics > dl` 元素中追加用户按区域统计的信息。
+- `update` tag: It is used to update the content of the `#the-user-statistics > h2 > span` element to the total number of users.
+- `clear` tag: It is used to clear all child elements of the `#the-user-statistics > dl` element.
+- The `choose` tag: It is used to convert `$?.regions` object to an array of key-value objects.
+- `sort` tag: It is used to sort the results of `choose` action (array of key-value objects) in descending order by `v` (the number of people in the area).
+- `iterate` tag: Used to append user statistics by region to the `#the-user-statistics > dl` element.
 
-假设执行归约操作后的结果同前述 JSON 格式给出的数据，则执行上述操作后获得的文档片段为：
+Assuming that the result after performing the reduction operation is the same as the data given in the aforementioned JSON format, the document fragment obtained after performing the above operation is:
 
 ```hvml
     <div id="the-user-statistics">
@@ -3947,54 +3962,54 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </div>
 ```
 
-#### 2.5.9) `sort` 标签
+#### 2.5.9) `sort` Tag
 
-`sort` 标签定义一个执行排序操作的动作元素，该元素对指定的数组执行排序操作。该元素支持如下属性：
+`sort` tag defines an action element that performs a sort operation on the specified array. This element supports the following attributes:
 
-- `on` 属性指定要排序的数据。
-- `by` 属性指定一个可将 `on` 数据转换成数组的内建执行器，或者一个可对 `on` 数据直接进行排序的外部函数执行器。若未指定，则执行默认排序；此时，将 `on` 属性指定的数据必须为数组或者集合。
-- `with` 属性指定使用外部执行器时的额外参数。
-- `against` 属性指定排序的依据；当要排序的数组由对象组成时，该属性指定参与排序的单个或者多个键名。
-- 使用 `ascendingly`（默认） 和 `descendingly` 副词属性指定使用升序还是降序排列。
-- 使用 `casesensitively`（默认） 和 `caseinsensitively` 副词属性指定按照字符串排序时是否对大小写敏感。
+- `on` attribute specifies which data to sort.
+- `by` attribute specifies a built-in executor that converts `on` data into an array, or an external function executor that sorts `on` data directly. If not specified, the default sorting is performed; at this time, the data specified by `on` attribute must be an array or a collection.
+- `with` attribute specifies additional parameters when using an external executor.
+- `against` attribute specifies the basis for sorting; when the array to be sorted is composed of objects, this attribute specifies a single or multiple key names participating in the sorting.
+- Use the `ascendingly` (default) and `descendingly` adverb attributes to specify whether to use ascending or descending order.
+- Use the `casesensitively` (default) and `caseinsensitively` adverb attributes to specify whether to sort strings case-sensitively or not.
 
-如下代码对 `$users` 执行排序：
+The following code performs a sort on `$users`:
 
 ```hvml
-    <init as="users">
-        [
-            { "id": 3, "avatar": "/img/avatars/3.png", "name": "David", "region": "en_US" }
-            { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-            { "id": 2, "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
-        ]
-    </init>
+     <init as="users">
+         [
+             { "id": 3, "avatar": "/img/avatars/3.png", "name": "David", "region": "en_US" }
+             { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+             { "id": 2, "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+         ]
+     </init>
 
-    <sort on="$users" ascendingly against="id" />
+     <sort on="$users" ascendingly against="id" />
 ```
 
-结果为：
+The result is:
 
 ```json
-    [
-        { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
-        { "id": 2, "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
-        { "id": 3, "avatar": "/img/avatars/3.png", "name": "David", "region": "en_US" }
-    ]
+     [
+         { "id": 1, "avatar": "/img/avatars/1.png", "name": "Tom", "region": "en_US" },
+         { "id": 2, "avatar": "/img/avatars/2.png", "name": "Jerry", "region": "zh_CN" }
+         { "id": 3, "avatar": "/img/avatars/3.png", "name": "David", "region": "en_US" }
+     ]
 ```
 
-`sort` 动作元素支持按照字符串或数值两种类型执行排序，这取决于从数组中获得的第一个排序数据的类型。若第一个参与排序的数据类型是 `number`、 `longint`、 `ulongint` 或者 `longdouble` 时，使用数值排序，否则使用字符串排序。当使用数值时，所有数据数值化之后进行排序，而使用字符串时，所有数据字符串化之后进行排序。
+`sort` action element supports sorting by either string or numeric types, depending on the type of the first sorted data obtained from the array. If the first data type involved in sorting is `number`, `longint`, `ulongint` or `longdouble`, use numeric sorting, otherwise use string sorting. When using numeric values, all data is sorted after being numeric, and when using strings, all data is sorted after stringing.
 
-当使用 `against` 指定了键名，但数组成员并不是对象，或者不存在指定的键名时，则按对应的键值为 `undefined` 处理。
+When `against` is used to specify a key name, but the array member is not an object, or the specified key name does not exist, the corresponding key value is `undefined`.
 
-我们可以用 `by` 属性指定一个执行排序的外部函数执行器。如：
+We can use `by` attribute to specify an external function executor that performs the sorting. like:
 
 ```hvml
-    <sort on="$?.regions" by="FUNC: mySort">
-        ...
-    </sort>
+     <sort on="$?.regions" by="FUNC: mySort">
+         ...
+     </sort>
 ```
 
-我们还可以使用内建执行器，首先在 `on` 属性指定的数据生成一个对象，然后再对结果数据执行默认排序。比如如下代码：
+We can also use the built-in executor to first generate an object on the data specified by `on` attribute, and then perform the default sort on the resulting data. For example, the following code:
 
 ```hvml
     <init as="regions">
@@ -4008,7 +4023,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </sort>
 ```
 
-首先用 by 指定的内建执行器完成了对象到键值对象数组的转换，转换结果为：
+First, the built-in executor specified by by is used to complete the conversion from the object to the key-value object array, and the conversion result is:
 
 ```json
     [
@@ -4018,7 +4033,7 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     ]
 ```
 
-之后对以上数组针对 `v` 键值进行降序排序，其结果为：
+Then sort the above array in descending order for `v` key value, and the result is:
 
 ```json
     [
@@ -4028,25 +4043,25 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     ]
 ```
 
-本质上，以上 HVML 代码和下面使用 `choose` 然后使用 `sort` 的结果一致：
+Essentially, the above HVML code is the same as the following using `choose` followed by `sort`:
 
 ```hvml
-    <choose on="$regions" by="KEY: ALL FOR KV">
-        <sort on="$?" against="v" descendingly>
-            <iterate on="$?" in="> dl" by="RANGE: ALL">
-                <update on="$@" to="append" with="$region_to_users" />
-            </iterate>
-        </sort>
-    </choose>
+     <choose on="$regions" by="KEY: ALL FOR KV">
+         <sort on="$?" against="v" descendingly>
+             <iterate on="$?" in="> dl" by="RANGE: ALL">
+                 <update on="$@" to="append" with="$region_to_users" />
+             </iterate>
+         </sort>
+     </choose>
 ```
 
-当我们不使用外置执行器时，`on` 属性或者 `by` 属性指定的内建执行器，必须给出一个数组供排序使用；而当使用外置执行器时，`on` 属性指定的数据类型由外部执行器确定。比如，我们可以对一个字符串执行排序操作，执行的结果可能是，将字符串中所有的单词按照字典顺序排列。
+When we do not use an external executor, `on` attribute or the built-in executor specified by `by` attribute must provide an array for sorting. When using an external executor, `on` attribute specified The data type is determined by the external executor. For example, we can perform a sort operation on a string, and the result of the execution may be to arrange all the words in the string in lexicographical order.
 
-#### 2.5.10) `define` 和 `include` 标签
+#### 2.5.10) `define` and `include` Tags
 
-`define` 标签用于定义一组可重用的操作组。我们可以通过 `define` 定义一组操作，然后在代码的其他位置通过 `include` 标签包含这组操作，或者通过 `call` 标签调用这组操作并期待返回一个结果。在 HVML 中，我们将 `define` 标签定义的一组操作简称为操作组（operation group）。
+`define` tag is used to define a set of reusable groups of operations. We can define a set of operations through `define`, and then include this set of operations through `include` tag elsewhere in the code, or call this set of operations through `call` tag and expect to return a result. In HVML, we refer to a group of operations defined by `define` tag as an operation group for short.
 
-`define` 元素通过 `as` 属性定义操作组的名称，其中包含了一组动作标签定义的子元素。`include` 元素将切换执行上下文到 `with` 属性指定的操作组中，`on` 属性传入的参数将作为结果数据（即 `$?` 变量的值）供操作组使用，而 `include` 元素通过内容定义的数据，将成为 `$^` 变量的值。如：
+`define` element defines the name of the action group through `as` attribute, which contains a set of child elements defined by the action tag. `include` element will switch the execution context to the operation group specified by the `with` attribute. The parameters passed in by `on` attribute will be used as the result data (ie the value of `$?` variable) for the operation group, and `include` The data defined by the element through its content will become the value of the `$^` variable. For example:
 
 ```hvml
         <archetype name="dir_entry">
@@ -4084,9 +4099,9 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         </observe>
 ```
 
-上面的 HVML 代码，在初始化 `listbox` 时，以及用户点击了 `#goRoot` 或者 `#goHome` 按钮时，使用了 `$fillDirEntries` 定义的操作组。注意，在使用 `include` 标签的三处地方，通过 `on` 属性传入了不同的参数，并使用 `in` 属性指定了目标文档位置。
+The above HVML code uses the action group defined by `$fillDirEntries` when `listbox` is initialized, and when the user clicks `#goRoot` or `#goHome` button. Note that in the three places where `include` tag is used, different parameters are passed in through `on` attribute, and the target document location is specified using `in` attribute.
 
-本质上，`include` 元素完成的工作相当于复制指定的操作组到当前的位置执行，我们称之为就地执行（execute in place）。比如以上代码，若不使用 `define` 和 `include`，则相当于：
+Essentially, the work done by `include` element is equivalent to copying the specified operation group to the current location for execution, which we call execute in place. For example, if the above code does not use `define` and `include`, it is equivalent to:
 
 ```hvml
         <archetype name="dir_entry">
@@ -4134,148 +4149,148 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         </observe>
 ```
 
-`include` 就地执行操作组的效果类似于其他编程语言的闭包（closure）。比如以上的 `fillDirEntries` 操作组中使用了 `dir_entry` 这个模板，而该模板只定义了一次。但如果稍作修改，就可以在包含操作组之前，通过定义一个新的名为 `dir_entry` 的模板，即可覆盖默认的 `dir_entry` 模板。请注意其中的注释：
+`include` performs groups of operations in-place similarly to closures in other programming languages. For example, `dir_entry` template is used in the above `fillDirEntries` operation group, and this template is only defined once. But with a little modification, you can override the default `dir_entry` template by defining a new one called `dir_entry` before including the action group. Note the note in it:
 
 ```hvml
-        <archetype name="dir_entry">
-            <item class="$?.type">Name: $?.name</item>
-        </archetype>
+         <archetype name="dir_entry">
+             <item class="$?.type">Name: $?.name</item>
+         </archetype>
 
-        <define as="fillDirEntries">
-            <choose on="$?" by="CLASS: CDirEntries">
-                <iterate on="$?" by="RANGE: FROM 0">
-                    <update on="$@" to="append" with="$dir_entry" />
-                </iterate>
-            </choose>
-        </define>
+         <define as="fillDirEntries">
+             <choose on="$?" by="CLASS: CDirEntries">
+                 <iterate on="$?" by="RANGE: FROM 0">
+                     <update on="$@" to="append" with="$dir_entry" />
+                 </iterate>
+             </choose>
+         </define>
 
-        <listbox id="entries">
-            <!-- 定义一个新的 `dir_entry` 模板，该模板在文件名之前显示 `/home/`（路径）前缀 -->
-            <archetype name="dir_entry">
-                <item class="$?.type">/home/$?.name</item>
-            </archetype>
+         <listbox id="entries">
+             <!-- Defines a new `dir_entry` template that displays a `/home/` (path) prefix before filenames -->
+             <archetype name="dir_entry">
+                 <item class="$?.type">/home/$?.name</item>
+             </archetype>
 
-            <!-- `fillDirEntries` 操作组将使用上面这个新的 `dir_entry` 模板 -->
-            <include with="$fillDirEntries" on="/home" in="#entries" />
-        </listbox>
+             <!-- `fillDirEntries` action group will use the new `dir_entry` template above -->
+             <include with="$fillDirEntries" on="/home" in="#entries" />
+         </listbox>
 
-        <button id="goRoot">
-            Root
-        </button>
+         <button id="goRoot">
+             root
+         </button>
 
-        <button id="goHome">
-            Home
-        </button>
+         <button id="goHome">
+             Home
+         </button>
 
-        <observe on="#goRoot" for="click">
-            <clear on="#entries" />
-            <include with="$fillDirEntries" on="/" in="#entries" />
-        </observe>
+         <observe on="#goRoot" for="click">
+             <clear on="#entries" />
+             <include with="$fillDirEntries" on="/" in="#entries" />
+         </observe>
 
-        <observe on="#goHome" for="click">
-            <clear on="#entries" />
-            <include with="$fillDirEntries" on="/home" in="#entries" />
-        </observe>
+         <observe on="#goHome" for="click">
+             <clear on="#entries" />
+             <include with="$fillDirEntries" on="/home" in="#entries" />
+         </observe>
 ```
 
-`define` 元素可使用 `from` 属性从指定的 URL 中装载 HVML 片段。借助此功能，我们可以将具有不同功能的操作组作为公共模块供不同的 HTML 程序使用。另外，当同时使用 `define` 元素的内容和 `from` 属性指定的 HVML 片段定义一个操作组时，该操作组将首先使用内容定义，当正确装载由 `from` 属性定义的 HVML 片段后，使用装载后的 HVML 片段绑定到操作组名称上。
+`define` element can load an HVML snippet from a specified URL using `from` attribute. With this feature, we can use groups of operations with different functions as common modules for different HTML programs to use. In addition, when using the content of `define` element and the HVML fragment specified by `from` attribute to define an operation group, the operation group will first use the content definition, and when the HVML fragment defined by `from` attribute is correctly loaded, use The loaded HVML fragment is bound to the operation group name.
 
-比如，我们在 `/module/html/listitems.hvml` 中定义了一个展示数组成员的操作组：
+For example, we define an action group in `/module/html/listitems.hvml` to display array items:
 
 ```hvml
-    <ol>
-        <iterate on="$?" by="RANGE: FROM 0">
-            <li>$?</li>
-        </iterate>
-    </ol>
+     <ol>
+         <iterate on="$?" by="RANGE: FROM 0">
+             <li>$?</li>
+         </iterate>
+     </ol>
 ```
 
-而默认的操作组向标准输出流写入数组成员：
+And the default operator group writes the array members to the standard output stream:
 
 ```hvml
-    <define as="listitems" from="/module/$CRTN.target/listitems.hvml">
-        <inherit>
-            $STREAM.stdout.writelines($?)
-        </inherit>
-    </define>
+     <define as="listitems" from="/module/$CRTN.target/listitems.hvml">
+         <inherit>
+             $STREAM.stdout.writelines($?)
+         </inherit>
+     </define>
 
-    <include with="$listitems" on=['Line #1', 'Line #2'] />
+     <include with="$listitems" on=['Line #1', 'Line #2'] />
 ```
 
-以上代码，当 `define` 元素的 `from` 属性指定的 HVML 片段装载或解析失败时，程序仍然可以正常运行，只是实际的操作效果有所不同。这一能力为我们提供了一项非常灵活的特性：
+In the above code, when the loading or parsing of the HVML fragment specified by `from` attribute of `define` element fails, the program can still run normally, but the actual operation effect is different. This capability gives us a very flexible feature:
 
-1. HVML 程序的正常运行，可不依赖于特定的目标文档类型。
-1. 我们可以根据不同的目标文档类型让同一 HVML 程序生成不同的目标文档片段。
+1. The normal operation of an HVML program may not depend on a specific target document type.
+1. We can make the same HVML program generate different target document fragments according to different target document types.
 
-当使用 `from` 属性时，`define` 的行为如下：
+When using `from` attribute, `define` behaves as follows:
 
-1. 尝试同步装载 `from` 指定的 HVML 片段，若不成功，则停止装载，抛出异常，保留内容定义的操作组。若成功，则，
-1. 尝试解析已装载的 HVML 片段，若不成功，则停止装载，抛出异常，保留内容定义的操作组。若成功，则，
-1. 若解析后的 vDOM 片段树不包含任何有效子元素，则停止装载，抛出异常，保留内容定义的操作组。若成功，则，
-1. 对应的变量（由 `as` 属性值指定）指向解析后的 vDOM 片段树。
+1. Attempt to load the HVML fragment specified by `from` synchronously, if unsuccessful, stops loading, throws an exception, and retains the operation group defined by the content. If successful, then,
+1. Attempt to parse the loaded HVML fragment, if unsuccessful, stops loading, throws an exception, and preserves the operation group defined by the content. If successful, then,
+1. If the parsed vDOM fragment tree does not contain any valid child elements, stop loading, throw an exception, and keep the operation group defined by the content. If successful, then,
+1. The corresponding variable (specified by `as` attribute value) points to the parsed vDOM fragment tree.
 
-和 `init` 标签类似，使用 `define` 标签从外部资源装载 HVML 片段时，可使用 `with` 和 `via` 等属性指定查询参数和请求方法。
+Similar to `init` tag, when using `define` tag to load HVML fragments from external resources, you can use attributes such as `with` and `via` to specify query parameters and request methods.
 
-本质上，我们可以将操作组视为一种特殊的数据，使用 `define` 定义一个命名操作组和使用 `init` 初始化一个变量并无本质区别。因此，我们也可以使用 `at` 属性指定操作组名称的作用域，也可以使用 `async` 副词属性异步装载和解析操作组，并使用 `observe` 元素观察变量的状态。
+In essence, we can treat operation groups as a special kind of data, and there is no essential difference between using `define` to define a named operation group and using `init` to initialize a variable. Therefore, we can also use the `at` attribute to specify the scope of the action group name, and the `async` adverb attribute to asynchronously load and parse the action group, and use the `observe` element to observe the state of variables.
 
-下面的代码通过 `iterate` 动作元素装载多个 HVML 片段：
+The following code loads multiple HVML fragments via the `iterate` action element:
 
 ```hvml
 <hvml target="html" lang="en">
-    <head>
-        <base href="$CRTN.base(! 'file:///' )" />
+     <head>
+         <base href="$CRTN. base(! 'file:///' )" />
 
-        <iterate on=$FS.list_prt('/module/$CRTN.target/','*.hvml','name') by="RANGE: 0">
-            <define as="ops$FS.basename($?,'hvml')" from="/module/$CRTN.target/$?">
-                <choose on=true />
-            </define>
-        </iterate>
-    </head>
+         <iterate on=$FS.list_prt('/module/$CRTN.target/','*.hvml','name') by="RANGE: 0">
+             <define as="ops$FS.basename($?,'hvml')" from="/module/$CRTN.target/$?">
+                 <choose on=true />
+             </define>
+         </iterate>
+     </head>
 
-    <body>
+     <body>
 
-        ...
+         ...
 
-    </body>
+     </body>
 
 </hvml>
 ```
 
-以上代码，若在 `/module/html/` 目录下存在两个 HVML 片段文件：`A.hvml` 和 `B.hvml`，则会创建两个操作组：`opsA` 和 `opsB`，分别指向两个独立的 vDOM 片段树。当我们在 HVML 程序中使用 `include`、`call` 或者 `observe` 引用 `opsA` 和 `opsB` 时，将执行对应的 vDOM 片段树，而非原始的默认值操作组。
+For the above code, if there are two HVML fragment files in  `/module/html/` directory: `A.hvml` and `B.hvml`, two operation groups will be created: `opsA` and `opsB`, respectively Points to two separate vDOM fragment trees. When we use `include`, `call` or `observe` to refer to `opsA` and `opsB` in an HVML program, the corresponding vDOM fragment tree will be executed instead of the original default value operation group.
 
-和 `init` 类似，在 `head` 元素定义的 `define`，将创建全局可见的操作组，也就是说，上述代码中定义的 `opsA` 和 `opsB` 的操作组是全局可见的。在 `body` 中使用 `define`，默认将在其父元素上绑定操作组名称，从而让该操作组在父元素为根的 vDOM 子树中可见。但我们可使用 `at` 属性指定操作组的名字空间（name space）：
+Similar to `init`, the `define` defined in `head` element will create a globally visible operation group, that is, the operation groups of `opsA` and `opsB` defined in the above code are globally visible. Using `define` in `body` will bind the action group name on its parent element by default, thus making the action group visible in the vDOM subtree rooted at the parent element. But we can use the `at` attribute to specify the name space of the operation group:
 
-- 使用下划线（\_）打头的预定义名称 `_parent`、`_grandparent`、 `_root`，将分别在父元素、祖父元素、根元素上定义操作组的名称。
-- 使用井号（#）打头的元素标识符，如 `#myAnchor`，将在其祖先元素中搜索指定的元素标识符（由 `id` 属性指定），将在第一个匹配的祖先元素上定义操作组的名称。
-- 使用正整数 N（如 `2`、`3`）时，将沿 vDOM 树向祖先元素方向回溯 N 个祖先元素，在该祖先元素上定义操作组名称。
-- 静默求值情况下，若未找到匹配的祖先元素，则按未定义 `at` 属性做默认处理；否则应该抛出 `EntityNotFound` 异常。
+- The predefined names `_parent`, `_grandparent`, `_root` starting with an underscore (\_) will define the name of the operation group on the parent element, grandparent element, and root element respectively.
+- Element identifiers starting with a pound sign (#), such as `#myAnchor`, will search for the specified element identifier (specified by `id` attribute) in its ancestor elements, and will be on the first matching ancestor element Defines the name of the action group.
+- When using a positive integer N (such as `2`, `3`), it will backtrack N ancestor elements along the vDOM tree in the direction of the ancestor element on which the action group name is defined.
+- In the case of silent evaluation, if no matching ancestor element is found, it will be treated as if `at` attribute is not defined; otherwise, `EntityNotFound` exception should be thrown.
 
-按照以上规则，上述定义多个操作组的方法，亦可按以下方式编码：
+According to the above rules, the above method of defining multiple operation groups can also be coded as follows:
 
 ```hvml
 <hvml target="html" lang="en">
-    <head>
-        <base href="$CRTN.base(! 'file:///' )" />
-    </head>
+     <head>
+         <base href="$CRTN. base(! 'file:///' )" />
+     </head>
 
-    <body>
+     <body>
 
-        <iterate on=$FS.list_prt('/module/$CRTN.target/','*.hvml','name') by="RANGE: 0">
-            <define as="ops$FS.basename($?,'hvml')" at="_grandparent" from="/module/$CRTN.target/$?" >
-                <choose on=true />
-            </define>
-        </iterate>
+         <iterate on=$FS.list_prt('/module/$CRTN.target/','*.hvml','name') by="RANGE: 0">
+             <define as="ops$FS.basename($?,'hvml')" at="_grandparent" from="/module/$CRTN.target/$?" >
+                 <choose on=true />
+             </define>
+         </iterate>
 
-        ...
+         ...
 
-    </body>
+     </body>
 
 </hvml>
 ```
 
-若 `define` 定义的操作组为空，则使用 `include` 或者 `call` 元素引用该操作组时，应抛出 `NoData` 异常。
+If the operation group defined by `define` is empty, `NoData` exception should be thrown when using the `include` or `call` element to refer to the operation group.
 
-`include` 元素的 `on` 属性定义的值，将成为 `define` 对应栈帧的结果数据；类似地，`call` 元素的 `with` 属性定义的值，将成为 `define` 对应栈帧的果数据。为书写方便，当传递给操作组的数据是 `object` 时，解释器应将该对象中所有键名符合 HVML `literal_variable_token` 词法单元的属性，设置为 `define` 对应栈帧中的临时命名变量，从而获得类似函数形参的效果。比如如下代码计算两个正整数的最大公约数（greatest common divisor）：
+The value defined by `on` attribute of `include` element will become the result data of the stack frame corresponding to `define`; similarly, the value defined by `with` attribute of `call` element will become the result data of the stack frame corresponding to `define` fruit data. For the convenience of writing, when the data passed to the operation group is `object`, the interpreter should conform to the attributes of the HVML `literal_variable_token` lexical unit for all key names in the object, and set it to `define` to correspond to the temporary named variable in the stack frame , so as to obtain the effect similar to the function parameter. For example, the following code calculates the greatest common divisor of two positive integers:
 
 ```hvml
     <define as "calcGreatestCommonDivisor">
@@ -4312,63 +4327,63 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </include>
 ```
 
-另外，我们可以在 `include` 元素或者 `call` 元素中使用 `in` 属性定义目标文档的位置，因此，该属性值将影响操作组的行为。
+In addition, we can use `in` attribute in `include` element or `call` element to define the location of the target document, so the attribute value will affect the behavior of the operation group.
 
-我们可以在 `include` 元素中定义子元素，这些子元素会在 `define` 定义的操作组执行完毕后执行。
+We can define sub-elements in `include` element, and these sub-elements will be executed after the operation group defined by `define` has been executed.
 
-#### 2.5.11) `observe`、 `forget` 和 `fire` 标签
+#### 2.5.11) `observe`, `forget` and `fire` Tags
 
-`observe` 标签用于定义一个执行观察操作的动作元素，该元素将观察特定变量或数据上的状态变化，并在指定的事件到来时，若其 `with` 属性指定了有效的操作组，则执行该操作组，否则执行该标签定义的操作组。
+`observe` tag is used to define an action element that performs an observation operation. This element will observe a state change on a specific variable or data, and when the specified event arrives, if its `with` attribute specifies a valid operation group, then Execute the operation group, otherwise execute the operation group defined by the tag.
 
-我们使用 `observe` 的 `against` 属性指定一个要观察的静态命名变量之名称，使用 `on` 属性指定一项要观察的数据。`against` 属性的优先级高于 `on` 属性。注意，我们不能观察一个临时命名变量或上下文变量。
+We use `against` attribute of `observe` to specify the name of a statically named variable to observe, and the `on` attribute to specify a piece of data to observe. `against` attribute takes precedence over `on` attribute. Note that we cannot observe a temporary named variable or context variable.
 
-当我们观察一个静态命名变量时，我们可以观察这个命名变量对应的数据是否已经就绪，或者在获取数据的过程是否发生了错误，或者这个命名变量上的数据是否已经被销毁等等。
+When we observe a static named variable, we can observe whether the data corresponding to the named variable is ready, or whether an error occurs in the process of obtaining the data, or whether the data on the named variable has been destroyed, etc.
 
-下面的代码从远程服务器上获得当前的用户信息，但使用异步请求：
+The following code gets the current user information from a remote server, but using an asynchronous request:
 
 ```hvml
-    <init as="users" from="http://foo.bar.com/get_all_users" async />
+     <init as="users" from="http://foo.bar.com/get_all_users" async />
 
-    <archetype name="user_item">
-        <li class="user-item">
-            <img class="avatar" src="" />
-            <span></span>
-        </li>
-    </archetype>
+     <archetype name="user_item">
+         <li class="user-item">
+             <img class="avatar" src="" />
+             <span></span>
+         </li>
+     </archetype>
 
-    <ul class="user-list">
-        <img src="wait.png" />
-    </ul>
+     <ul class="user-list">
+         <img src="wait. png" />
+     </ul>
 
-    <observe against="users" for="change:attached" in="#user-list">
-        <clear on="$@" />
-        <iterate on="$users" by="RANGE: FROM 0">
-            <update on="$@" to="append" with="$user_item" />
-        </iterate>
-    </observe>
+     <observe against="users" for="change:attached" in="#user-list">
+         <clear on="$@" />
+         <iterate on="$users" by="RANGE: FROM 0">
+             <update on="$@" to="append" with="$user_item" />
+         </iterate>
+     </observe>
 ```
 
-当我们观察到 `users` 变量上的 `change:attached` 事件之后，表明数据已经就绪，此时，即可执行 `observe` 定义的操作组：清空 `#user-list` 中的内容，然后迭代 `$users` 数组的成员，使用模板 `$user_item` 生成文档片段追加到 `#user-list` 当中。
+When we observe `change:attached` event on `users` variable, it indicates that the data is ready. At this point, we can execute the operation group defined by `observe`: clear the contents of `#user-list`, and then iterate Members of the `$users` array, use the template `$user_item` to generate document fragments that are appended to `#user-list`.
 
-我们可以跟踪处理静态命名变量上的如下事件：
+We can track and handle the following events on statically named variables:
 
-- `change:progress`：表示为静态命名变量异步地获取数据时，进度有更新。
-- `change:attached`：表示静态命名变量上的数据从初始的 `undefined` 变化为有效数据。
-- `change:displaced`：表示先前关联到该变量上的数据被置换为新的数据，比如使用 `init` 重置该变量，或者先前发起的异步请求操作成功获得了有效数据。
-- `change:detached`：表示先前关联到该变量上的有效数据被取消关联，其值被重置为 `undefined`，比如先前发起的异步请求操作失败，未能获得有效数据的情形。
-- `except:<exceptionName>`：表示在获取该变量对应的数据时出现异常，可能是请求出错，也可能是解析出错。具体信息，由事件的子类型给出。
+- `change:progress`: Indicate that progress is updated when fetching data asynchronously as a static named variable.
+- `change:attached`: Indicate that the data on the static named variable has changed from the initial `undefined` to valid data.
+- `change:displaced`: Indicate that the data previously associated with the variable has been replaced with new data, such as using `init` to reset the variable, or the previously initiated asynchronous request operation successfully obtained valid data.
+- `change:detached`: Indicate that the valid data previously associated with the variable has been disassociated, and its value is reset to `undefined`, such as the case where the previously initiated asynchronous request operation failed and failed to obtain valid data.
+- `except:<exceptionName>`: Indicate that an exception occurred when obtaining the data corresponding to the variable, which may be a request error or a parsing error. Specific information, is given by the subtype of the event.
 
-当 `observe` 观察的事件到来时，解释器应切换到 `observe` 自身定义的操作组或者其 `with` 属性引用的由 `define` 定义的操作组中执行 HVML 程序。此时，对应操作组的前置栈帧中，应定义如下的上下文变量：
+When the event observed by `observe` arrives, the interpreter should switch to the operation group defined by `observe` itself or the operation group defined by `define` referenced by its `with` attribute to execute the HVML program. At this point, in the front stack frame corresponding to the operation group, the following context variables should be defined:
 
-- `$?`：事件的负载（payload）数据；若被观察的是变量，则就是被观察变量对应的数据。
-- `$!`：在用户数据中，预定义两个临时变量，用于表示完整的事件名称和事件源，名称分别为 `_eventName` 和 `_eventSource`。
-- `$@`：`observe` 的 `in` 属性定义的目标文档位置，或者 `observe` 继承自其的目标文档位置。
+- `$?`: The payload data of the event. If the observed variable is a variable, it is the data corresponding to the observed variable.
+- `$!`: In user data, two temporary variables are predefined to represent the complete event name and event source, named `_eventName` and `_eventSource` respectively.
+- `$@`: The target document location defined by the `in` attribute of `observe`, or the target document location from which `observe` inherits.
 
-当我们在 `observe` 元素中使用 `with` 属性定义要引用的操作组时，HVML 程序的执行效果等同于 `include` 动作元素的效果，也就是说，应做就地执行而不是调用由 `with` 属性指定的操作组。
+When we use `with` attribute in `observe` element to define the operation group to be referenced, the execution effect of the HVML program is equivalent to the effect of `include` action element, that is, it should be executed in place instead of called by ` The group of operations specified by the with` attribute.
 
-当我们观察一项数据时，我们可获得该数据产生的事件或者数据本身上的变化。比如，我们可监听来自长连接的事件，异步请求的返回值，或者获得长连接上调用远程过程后返回的结果，亦可用来监听某些内部数据产生的事件，比如 `$TIMERS` 数据产生的定时器到期事件，等等。
+When we observe a piece of data, we can obtain the events produced by the data or changes in the data itself. For example, we can monitor events from long connections, the return value of asynchronous requests, or obtain the results returned after calling remote procedures on long connections, and can also be used to monitor events generated by some internal data, such as those generated by `$TIMERS` data Timer expiration events, etc.
 
-假设文档通过本地总线机制（本例中是 `hiBus`）监听来自系统的状态改变事件，如电池电量、WiFi 信号强度、移动网络信号强度等信息，并在文档使用相应的图标来表示这些状态的改变。为此，我们可以编写如下的 HVML 程序：
+Assume that the document listens to state change events from the system through a local bus mechanism (`hiBus` in this example), such as battery level, WiFi signal strength, mobile network signal strength, etc., and uses corresponding icons in the document to represent these states Change. To do this, we can write the following HVML program:
 
 ```hvml
 <hvml>
@@ -4417,60 +4432,60 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </body>
 ```
 
-在上例中，我们使用 `define` 定义的 `onBatteryChanged` 操作组实现了目标文档的更新操作。
+In the above example, we use the `onBatteryChanged` operation group defined by `define` to implement the update operation of the target document.
 
-另外一个 `observe` 标签的使用例子描述如下。
+Another example usage of `observe` tag is described below.
 
-在 `head` 元素中，我们通过 `init` 标签，使用 `$STREAM` 预定义变量连接到了 `unix:///var/run/hibus.sock`。`$STREAM` 的 `open` 方法返回一个流实体，并被命名为 `databus`（`as` 属性）。然后在 `body` 元素中，我们使用 `choose` 标签通过 `$databus.subscribe` 方法订阅（`subscribe`）指定的事件，然后用 `observe` 元素定义了对 `$databus` 上特定事件的观察。每当电池状态发生变化时，就会从这个数据源获得相应的数据包。为方便说明，我们假定数据包以 JSON 格式描述：
+In `head` element, we connect to `unix:///var/run/hibus.sock` via  `init` tag, using `$STREAM` predefined variable. `open` method of `$STREAM` returns a stream entity named `databus` (`as` attribute). Then in the `body` element, we use `choose` tag to subscribe to (`subscribe`) the specified event through `$databus.subscribe` method, and then use `observe` element to define the observation of a specific event on `$databus` . Whenever the state of the battery changes, a corresponding data packet is obtained from this data source. For the sake of illustration, we assume that the packets are described in JSON format:
 
 ```json
-    {
-        "messageType": "event",
-        "eventName": "XXXXXX",
-        "source": <source data>,
-        "time": 20200616100207.567,
-        "signature": "XXXXX",
-        "payload" : {
-            "level": 80,
-            "charging": false,
-        },
-    }
+     {
+         "messageType": "event",
+         "eventName": "XXXXXX",
+         "source": <source data>,
+         "time": 20200616100207.567,
+         "signature": "XXXXX",
+         "payload": {
+             "level": 80,
+             "charging": false,
+         },
+     }
 ```
 
-其中，`messageType` 字段表示数据包类型；`eventName` 字段表示事件名称；`source` 表示产生此事件的来源数据；`time` 表示此事件产生的系统时间；`signature` 是此事件的内容的签名，可用来验证数据来源的合法性；`payload` 中包含事件关联的数据。在上面这个例子中，事件包含两个信息，一个信息用来表示当前电量百分比，另一个信息表示是否在充电状态。
+Among them, `messageType` field indicates the data packet type. `eventName` field indicates the event name. `source` indicates the source data that generated the event. `time` indicates the system time when the event was generated. `signature` is the content of the event signature, which can be used to verify the legitimacy of the data source. `payload` contains event-related data. In the above example, the event contains two messages. One message is used to indicate the current battery percentage, and the other message indicates whether it is in the charging state.
 
-事件名称必须符合本规范定义的 `event_name` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法事件名称的样例：
+The event name must conform to `event_name` lexical unit requirements defined in this specification. See [2.2.3) Common referred to lexical units] (#223-Common referred to lexical units) for details. Here are some examples of legal event names:
 
 - `click`
 - `change:attached`
 - `event:3cc8f9e2ff74f872f09518ffd3db6f29`
 - `corState:except/BadName`
 
-当 HVML 代理观察到来自 `$databus` 上的电池变化事件数据包之后，将根据 `observe` 标签定义的观察动作执行相应的操作。在上面的例子中，`observe` 标签所定义的操作及条件解释如下：
+When the HVML agent observes the battery change event packets from `$databus`, it will perform corresponding operations according to the observation actions defined by the `observe` tag. In the above example, the operations and conditions defined by `observe` tag are interpreted as follows:
 
-- 当来自`$databus`（由 `on` 属性值指定）上的数据包类型为 `event:$?`（由 `for` 属性值指定），这里的 `$?` 是 `choose` 元素的执行结果，表示被订阅事件的唯一性标识字符串（相当于事件标识符），执行 `observe` 定义的操作组。
-- `observe` 元素的 `with` 属性指定了执行更新操作的操作组（`$onBatteryChanged`），其中的更新操作限定在 `in` 介词属性定义的 `#the-header` 目标元素中。
+- When the packet type from `$databus` (specified by the `on` attribute value) is `event:$?` (specified by the `for` attribute value). Here, `$?` is the execution result of `choose` element, which represents the unique identification string of the subscribed event (equivalent to the event identifier), and executes the operation group defined by `observe`.
+- `with` attribute of the `observe` element specifies the group of operations (`$onBatteryChanged`) that perform the update operation, where the update operation is limited to the `#the-header` target element defined by the `in` preposition attribute.
 
-注意，当 `observe` 观察到了来自特定数据源上的数据包时，其结果数据为该事件数据包中的 `payload` 数据。
+Note that when `observe` observes a packet from a specific data source, the resulting data is `payload` data in the event packet.
 
-类似地，我们要在状态栏上显示当前的 WiFi 名称或者移动网络的运营商名称时：
+Similarly, when we want to display the current WiFi name or mobile network operator name on the status bar:
 
 ```hvml
-    <choose on=$databus.subscribe('@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED')>
-        <observe on="$databus" for="event:$?" in="#the-header">
-            <update on="span.mobile-operator" at="textContent" with="$?.name">
-                <except>
-                    <p>Failed to update mobile operator</p>
-                </except>
-            </update>
-        </observe>
-    </choose>
+     <choose on=$databus.subscribe('@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED')>
+         <observe on="$databus" for="event:$?" in="#the-header">
+             <update on="span.mobile-operator" at="textContent" with="$?.name">
+                 <except>
+                     <p>Failed to update mobile operator</p>
+                 </except>
+             </update>
+         </observe>
+     </choose>
 ```
 
-我们还可以使用 `observe` 标签观察文档某个节点上的变化或者用户交互事件。下面的例子展示了 `observe` 的多种用法：
+We can also use `observe` tag to observe changes on a node in the document or user interaction events. The following examples show various uses of `observe`:
 
-- 通过监听 `MQTT` 数据包获得后台用户的新增或者删除时间，从而动态更改用户列表。
-- 通过监听用户列表的父元素（容器元素）上的变化事件，动态更新用户统计信息。
+- By listening to `MQTT` packet to obtain the time of adding or deleting background users, so as to dynamically change the user list.
+- Dynamically update user statistics by listening to change events on the parent element (container element) of the user list.
 
 ```hvml
 <hvml lang="en">
@@ -4547,85 +4562,85 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 </hvml>
 ```
 
-在上面的例子中，我们使用 `define` 标签定义了一个操作组，然后在 `observe` 标签中使用 `with` 属性指定了这个操作组，当 `change:content` 事件到达时，将执行 `$onChangeContent` 操作组。我们还使用 `observe` 标签的 `in` 属性指定了执行 `$onChangeContent` 操作组时的目标文档位置。
+In the above example, we use `define` tag to define an operation group, and then use `with` attribute in `observe` tag to specify this operation group. When `change:content` event arrives, `$ onChangeContent` action group will be executed. We also use `in` attribute of `observe` tag to specify the target document location when executing `$onChangeContent` action group.
 
-当我们要解除在某个特定数据或者元素之上对某个事件的观察时，使用 `forget` 标签。也就是说，`forget` 是 `observe` 的反操作。
-
-```hvml
-    <forget on="#the-user-list" for="change:content" />
-```
-
-需要注意的是，我们可以在 HVML 程序多个不同位置使用 `observe` 观察同一事件，而 `forget` 将移除所有匹配的观察。
-
-在 HVML 代码中，除了被动等待事件的发生之外，代码也可以直接使用 `fire` 标签主动地激发一个事件：
+`forget` tag is used when we want to unobserve an event on a particular piece of data or element. That is, `forget` is the inverse of `observe`.
 
 ```hvml
-    <init as="new_user">
-        { "id": "5", "avatar": "/img/avatars/5.png", "name": "Vincent", "region": "zh_CN" }
-    </init>
-
-    <fire on="#user-list" for="newUser" with="$new_user" />
-
-    ...
-
-    <observe on="#user-list" for="newUser">
-        ...
-    </observe>
+     <forget on="#the-user-list" for="change:content" />
 ```
 
-`fire` 元素将把 `with` 属性指定的数据作为事件数据包的 `payload` 进行处理，并根据 `on` 属性指定的元素或者数据确定事件的源，`for` 属性值作为事件名称打包事件数据包，并将事件加入到事件队列中。
+It should be noted that we can use `observe` to observe the same event in multiple different places in the HVML program, and `forget` will remove all matching observations.
 
-对同一个事件，我们可以在 HVML 程序的多个地方进行观察并执行不同的动作。当我们需要撤销特定的观察时，可以在 `observe` 标签中使用 `as` 属性为这个观察命名，之后使用 `init` 将该变量重置为 `undefine` 即可移除这个观察：
+In HVML code, in addition to passively waiting for an event to occur, the code can also directly use the `fire` tag to actively fire an event:
 
 ```hvml
-    <choose on="$TIMERS" by="FILTER: AS 'foo'">
-        <update on="$?" at=".active" with="yes" />
-    </choose>
+     <init as="new_user">
+         { "id": "5", "avatar": "/img/avatars/5.png", "name": "Vincent", "region": "zh_CN" }
+     </init>
 
-    ...
+     <fire on="#user-list" for="newUser" with="$new_user" />
 
-    <init as="updateTimes">
-        0
-    </init>
+     ...
 
-    <observe as="opsPerSecond" on="$TIMERS" for="expired:foo" in="#the-header" >
-        <update on="$updateTimes" with+="1" />
-        <test on="$updateTimes">
-            <match for="GE 10">
-                <!-- remove the observer -->
-                <init as="opsPerSecond" with="undefined" />
-
-                <!-- remove the variable -->
-                <init as="updateTimes" with="undefined" />
-            </match>
-
-            <match for="ANY">
-                <update on="> span.local-time" at="textContent" with="$SYS.time('%H:%m')" />
-            </match>
-        </test>
-    </observe>
+     <observe on="#user-list" for="newUser">
+         ...
+     </observe>
 ```
 
-和 `init` 类似，在 `observe` 元素中使用 `as` 属性命名一个观察时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
+`fire` element will process the data specified by `with` attribute as `payload` of the event packet, and determine the source of the event according to the element or data specified by `on` attribute. And the value of `for` attribute will be used as the event name to package the event packet and add the event to the event queue.
 
-我们可以使用 `observe` 和 `forget` 的 `for` 属性指定一个要观察的确切的事件名称，也可以使用通配符或者正则表达式来表示一组符合条件的事件：
-
-- 当 `for` 属性值中包含有 `?` 或者 `*` 时，表示一个通配符匹配。
-- 当 `for` 属性值以 `/` 打头时，表示一个正则表达式匹配。
-
-比如：
+For the same event, we can observe and perform different actions in multiple places in the HVML program. When we need to undo a specific observation, we can use `as` attribute in `observe` tag to name the observation, and then use `init` to reset the variable to `undefine` to remove the observation:
 
 ```hvml
-    <forget on="$TIMERS" for="expired:*" />
+     <choose on="$TIMERS" by="FILTER: AS 'foo'">
+         <update on="$?" at=".active" with="yes" />
+     </choose>
+
+     ...
+
+     <init as="updateTimes">
+         0
+     </init>
+
+     <observe as="opsPerSecond" on="$TIMERS" for="expired:foo" in="#the-header">
+         <update on="$updateTimes" with+="1" />
+         <test on="$updateTimes">
+             <match for="GE 10">
+                 <!-- remove the observer -->
+                 <init as="opsPerSecond" with="undefined" />
+
+                 <!-- remove the variable -->
+                 <init as="updateTimes" with="undefined" />
+             </match>
+
+             <match for="ANY">
+                 <update on="> span.local-time" at="textContent" with="$SYS.time('%H:%m')" />
+             </match>
+         </test>
+     </observe>
 ```
 
-将移除对所有定时器的到期事件观察。
+Similar to `init`, when using `as` attribute in `observe` element to name an observation, we can also use `at` attribute to specify where the name is bound (i.e.namespace).
 
-最后，`observe` 支持 `once` 副词属性，具有该副词属性的观察，将在执行一次后由解释器自动解除。
+We can use `for` attribute of `observe` and `forget` to specify an exact event name to observe, or use wildcards or regular expressions to represent a set of eligible events:
 
-#### 2.5.12) `call` 和 `return` 标签
+- When `for` attribute value contains `?` or `*`, it means a wildcard match.
+- When `for` attribute value starts with `/`, it means a regular expression match.
 
-`include` 元素完成的工作相当于复制指定的操作组到当前的位置执行（就地执行，execute in place），所以和传统编程语言中的函数调用并不相同。如果要获得和函数调用相同的效果，使用 `call` 和 `return` 标签：
+For example:
+
+```hvml
+     <forget on="$TIMERS" for="expired:*" />
+```
+
+It will remove expiry event observations for all timers.
+
+Finally, `observe` supports `once` adverb attribute. And the observation with this adverb attribute will be automatically dismissed by the interpreter after being executed once.
+
+#### 2.5.12) `call` and `return` Labels
+
+The work done by `include` element is equivalent to copying the specified operation group to the current location for execution (execute in place). So it is different from the function call in traditional programming languages. To achieve the same effect as a function call, use `call` and `return` labels:
 
 ```hvml
         <define as="fillDirEntries">
@@ -4660,16 +4675,16 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
         </observe>
 ```
 
-在上述 HVML 代码中，`fillDirEntries` 使用 `return` 元素的 `with` 属性返回了目录项的个数，使之从一个操作组变成了一个带有返回值的函数。在使用这个函数时，使用 `call` 标签定义一个执行调用操作的动作元素，以便获得结果数据。
+In the above HVML code, `fillDirEntries` uses the `with` attribute of the `return` element to return the number of directory entries, turning it from an operation group into a function with a return value. When using this function, use `call` tag to define an action element that performs the call operation in order to obtain the result data.
 
-`call` 元素和 `include` 元素有如下不同：
+`call` element differs from `include` element as follows:
 
-- `call` 元素对应栈帧中的结果数据可被操作组中的 `return` 元素或者操作组中的 `back` 元素覆盖。若操作组中没有 `return` 或者 `back` 元素来修改结果数据，则 `call` 元素对应栈帧中的结果数据将保持为 `undefined` 不变。
-- `include` 元素对应的栈帧中，初始的结果数据由其本身的 `on` 属性值或内容确定，可被操作组中的 `back` 元素覆盖，而操作组中的 `return` 元素仅用于回退到最近一个 `include` 所在栈帧，而不修改该 `include` 对应栈帧中的结果数据。
+- The result data in the stack frame corresponding to `call` element can be overwritten by `return` element in the operation group or `back` element in the operation group. If there is no `return` or `back` element in the operation group to modify the result data, the result data in the stack frame corresponding to the `call` element will remain `undefined` unchanged.
+- In the stack frame corresponding to `include` element, the initial result data is determined by its own `on` attribute value or content, which can be overwritten by `back` element in the operation group. And `return` element in the operation group   is only used to fall back to the stack frame where the last `include` is located,without modifying the result data in the stack frame corresponding to `include`.
 
-也就是说，`call` 和 `include` 的主要区别在于如何处理操作组中 `return` 元素定义的返回值：前者关心返回值，后者不关心返回值。在实践当中，`include` 一般用于操作目标文档，`call` 一般用作获取一个结果数据。
+That is, the main difference between `call` and `include` is how to handle the return value defined by `return` element in the operation group: The former cares about the return value, and the latter does not. In practice, `include` is generally used to manipulate the target document, and `call` is generally used to obtain a result data.
 
-我们可以在 `call` 元素中使用 `within` 属性指定不同于当前行者的名称。此时，我们可在另一个行者中执行指定的操作组。由于每个 HVML 行者对应有自己的虚拟机实例，而不同的虚拟机实例通常运行在操作系统的不同线程或者不同进程当中，故而我们可通过这种方式实现基于线程或进程的并发处理。当我们在当前行者使用 `concurrently` 属性，则会在当前虚拟机实例中创建一个新的协程来执行指定的操作组。我们将上述两种调用行为称之为 `并发调用（call concurrently）`。此时，如果使用 `asynchronously` 副词属性，`call` 元素将在创建新的协程（以及可能的新虚拟机实例）之后立即返回，然后使用 `observe` 观察其结果，否则将等待并发调用的结果返回。如：
+We can use `within` attribute on `call` element to specify a different name than the current walker. At this point, we can perform the specified group of operations in another walker. Since each HVML walker has its own virtual machine instance, and different virtual machine instances usually run in different threads or different processes of the operating system. In this way, we can achieve concurrent processing based on thread or process. When we use `concurrently` attribute on the current worker, a new coroutine will be created in the current virtual machine instance to execute the specified operation group. We call the above two calling behaviors `call concurrently`. At this point, if `asynchronously` adverb attribute is used, `call` element will return immediately after creating the new coroutine (and possibly a new virtual machine instance), then use `observe` to observe its result. Otherwise it will wait for the concurrent call The result is returned. For example:
 
 ```hvml
     <define as="collectAllDirEntriesRecursively">
@@ -4713,100 +4728,100 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </listbox>
 ```
 
-在上面的 HVML 代码中，我们并发调用了 `collectAllDirEntriesRecursively` 操作组，该操作组递归获取当前路径下的所有文件系统目录项（这是一个典型的耗时操作）。HVML 解释器应在 `within` 属性指定的行者中创建一个新的协程来执行该操作组；如果指定的行者不存在，则创建一个新的行者，而新的行者意味着一个新的虚拟机实例。使用 `asynchronously` 副词属性时，`as` 属性用于指定跟踪该任务的变量名称（`my_task`），之后，代码使用 `observe` 元素来观察 `my_task` 变量的 `callState:success` 事件，并做后续的处理。
+In the above HVML code, we concurrently call `collectAllDirEntriesRecursively` operation group, which recursively gets all the file system directory entries under the current path (this is a typical time-consuming operation). The HVML interpreter shall create a new coroutine within the walker specified by `within` attribute to execute the group of operations. If the specified walker does not exist, a new walker is created. And the new walker means a new virtual machine instance. When using `asynchronously` adverb attribute, `as` attribute is used to specify the name of the variable that tracks the task (`my_task`). After this, the code uses `observe` element to observe `callState:success` event of `my_task` variable, and do follow-up processing.
 
-注意上述副词属性的使用：
+Note the use of the adverb attributes above:
 
-- 当我们在 `within` 属性中指定了不同于当前行者的行者名称时，必定会执行并发调用；而如果未指定 `within` 属性或者在 `within` 属性中指定了 `_self` 时，如果不使用 `concurrently` 副词属性，则 `call` 元素的行为和普通的函数调用没有任何差别，且忽略 `asynchronously` 或 `synchronously` 副词属性。
-- 使用 `concurrently` 时，`call` 元素将在指定的行者中创建新的协程执行指定的操作组，默认会同步等待执行的结果，相当于指定了 `synchronously` 副词属性；如果指定 `asynchronously` 副词属性，则会立即返回，此时，需要使用一个变量来观察并发调用相关的事件。
+- When we specify a walker name different from the current walker in `within` attribute, concurrent calls must be performed. And if `within` attribute is not specified or `_self` is specified in the `within` attribute, if we don't use `concurrently` adverb attribute, `call` element behaves like a normal function call. And `asynchronously` or `synchronously` adverb attribute is ignored.
+- When using `concurrently`, `call` element will create a new coroutine in the specified walker to execute the specified operation group. By default, it will wait for the execution result synchronously, which is equivalent to specifying `synchronously` adverb attribute. If `asynchronously' is specified ` adverb attribute, it will return immediately. At this time, you need to use a variable to observe events related to concurrent calls.
 
-并发调用一个操作组时，解释器在指定的行者中创建一个新的协程来执行操作组定义的 vDOM 子树。解释器可参考如下步骤做相应的实现：
+When an action group is invoked concurrently, the interpreter creates a new coroutine in the specified walker to execute the vDOM subtree defined by the action group. The interpreter can refer to the following steps for corresponding implementation:
 
-1. 若指定的行者名称就是当前行者，设定当前行者为目标行者，跳转到第 4 步。
-2. 若指定的行者已存在，设定该行者为目标行者，跳转到第 4 步。
-3. 若指定的行者不存在，则创建一个新行者及其对应的虚拟机实例，创建当前虚拟机实例中所有必要的行者级全局变量（如 `$SYS`、 `$RUNNER`、 `$DATA`、 `$STREAM`、 `$RDR` 等）。设定新行者为目标行者，跳转到第 4 步。
-4. 克隆当前 vDOM 的 `DOCTYPE` 节点并构建一个空的 `hvml` 根节点，设置其 `target` 属性为 `void`，然后克隆操作组定义的 vDOM 子树并将其作为 `hvml` 根元素的子树，并构建一个 `call` 元素调用该操作组，构成一个完整的 vDOM 树。
-5. 在目标行者对应的虚拟机实例上创建一个协程，构建所有必要的协程级全局变量，如 `$T`、 `$TIMERS`、 `$CRTN` 等，并关联到 vDOM 树上。
-6. 调度执行新构建的 vDOM 树，将 `call` 元素的 `with` 属性定义的值以及 `call` 元素的内容数据通过请求数据传递，分别为：`$REQ._args` 和 `$REQ._content`。
-7. 当该协程正常退出时，或者遇到错误或未捕获的异常时，将结果或异常信息通过 `callState` 事件返回给调用者。
+1. If the specified walker name is the current walker, set the current walker as the target walker and skip to step 4.
+2. If the specified walker already exists, set the walker as the target walker and skip to step 4.
+3. If the specified walker does not exist, create a new walker and its corresponding virtual machine instance, create all necessary walker-level global variables in the current virtual machine instance (such as `$SYS`, `$RUNNER`, `$DATA `, `$STREAM`, `$RDR`, etc.). Set the new walker as the target walker, skip to step 4.
+4. Clone the `DOCTYPE` node of the current vDOM and build an empty `hvml` root node, set its `target` attribute to `void`, then clone the vDOM subtree defined by the operation group and use it as the `hvml` root element and build a `call` element to invoke the operation group, forming a complete vDOM tree.
+5. Create a coroutine on the virtual machine instance corresponding to the target walker, build all necessary coroutine-level global variables, such as `$T`, `$TIMERS`, `$CRTN`, etc., and associate them with the vDOM tree.
+6. Schedule the execution of the newly constructed vDOM tree, and pass the value defined by the `with` attribute of the `call` element and the content data of the `call` element through the request data, respectively: `$REQ._args` and `$REQ. _content`.
+7. When the coroutine exits normally, or when an error or uncaught exception is encountered, the result or exception information is returned to the caller through the `callState` event.
 
-按上述步骤，相当于动态构建一个下面的 HVML 程序，并在新行者或新协程中运行该程序：
+Following the above steps is equivalent to dynamically constructing the following HVML program and running the program in a new walker or a new coroutine:
 
 ```
 <!DOCTYPE hvml SYSTEM "f: FILE:FS">
 <hvml target="void">
-    <!-- this is the cloned operation group -->
-    <define as "theOpGroup">
-        ...
-    </define>
+     <!-- this is the cloned operation group -->
+     <define as "theOpGroup">
+         ...
+     </define>
 
-    <call on $theOpGroup with $REQ._args >
-        $REQ._content
+     <call on $theOpGroup with $REQ._args>
+         $REQ._content
 
-        <exit with $? />
-    </call>
+         <exit with $? />
+     </call>
 </hvml>
 ```
 
-由于并发调用通常用来执行一些耗时的计算任务，故而我们将对应协程的目标文档类型设定为 `void`，从而可避免新创建的行者以及协程关联到渲染器上。但通过并发调用操作组，我们也可用来创建一个关联到渲染器的普通行者。比如：
+Since concurrent calls are usually used to perform some time-consuming calculation tasks, we set the target document type of the corresponding coroutine to `void`, so as to prevent newly created walkers and coroutines from being associated with the renderer. But by calling the action group concurrently, we can also use it to create a normal walker associated with the renderer. For example:
 
 ```hvml
-        <define as="newRunner">
-            <test with="$RDR.connect('socket', 'unix:///var/tmp/purcmc.sock')" >
+         <define as="newRunner">
+             <test with="$RDR.connect('socket', 'unix:///var/tmp/purcmc.sock')" >
 
-                <request on="$RDR" to="setPageGroups">
-                    '...'
-                </request>
+                 <request on="$RDR" to="setPageGroups">
+                     '...'
+                 </request>
 
-                <load from="new_user.hvml" onto="user@main" asynchronously >
-                    $2^
-                </load>
+                 <load from="new_user.hvml" onto="user@main" asynchronously>
+                     $2^
+                 </load>
 
-                <return with="ok">
+                 <return with="ok">
 
-                <differ>
-                    <return with="Failed to connect to the renderer.">
-                </differ>
-            </test>
-        </define>
+                 <differ>
+                     <return with="Failed to connect to the renderer.">
+                 </differ>
+             </test>
+         </define>
 
-        <call as="my_task" on="$newRunner"
-                within="newRunner" concurrently asynchronously>
-            { ... }
-        </call>
+         <call as="my_task" on="$newRunner"
+                 within="newRunner" concurrently asynchronously>
+             { ... }
+         </call>
 
-        <observe on="$my_task" for="callState:success">
-            ...
-        </observe>
+         <observe on="$my_task" for="callState:success">
+             ...
+         </observe>
 ```
 
-以上的代码在并发执行的操作组中异步装载了一个 HVML 程序，这将在该虚拟机实例中创建一个新的协程。当前协程退出时，新创建的协程仍然在执行，故而对应的虚拟机实例也将继续运行。
+The above code asynchronously loads an HVML program in a concurrently executing operation group, which will create a new coroutine in the virtual machine instance. When the current coroutine exits, the newly created coroutine is still executing, so the corresponding virtual machine instance will also continue to run.
 
-如前所述，我们将并发执行的操作组的目标文档类型限制成了 `void`，从而无需将对应的协程关联到渲染器，但可以在操作组中使用 `load` 标签装载其他需要渲染器的 HVML 程序。针对这种情况，上述代码使用了 `request` 元素向渲染器发送请求，比如连接到渲染器，启动新的渲染器会话并做相应设置等。此时，我们可以使用 `call` 元素的内容数据将相关参数传递给渲染器。
+As mentioned earlier, we limit the target document type of the concurrently executed operation group to `void`, so that there is no need to associate the corresponding coroutine to the renderer. But you can use `load` tag in the operation group to load other objects that need to be rendered HVML program for the compiler. In this case, the above code uses `request` element to send requests to the renderer, such as connecting to the renderer, starting a new renderer session and making corresponding settings, etc. At this point, we can use the content data of `call` element to pass the relevant parameters to the renderer.
 
-异步地并发调用操作组时，`call` 元素的结果数据是代表新协程的原生实体，该原生实体应该至少提供一个 `id` 属性，用来返回新协程的标识符。
+When the operation group is called concurrently asynchronously, the result data of `call` element is a native entity representing the new coroutine. The native entity should provide at least one `id` attribute, which is used to return the identifier of the new coroutine.
 
-协程标识符的格式为 `[//hostname]/<appName>/<runnerName>/CRTN/<coroutineToken>`，必须符合本规范定义的 `coroutine_identifier` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法的协程标识符样例：
+The format of the coroutine identifier is `[//hostname]/<appName>/<runnerName>/CRTN/<coroutineToken>`, which must meet the `coroutine_identifier` lexical unit requirements defined in this specification. For details, see [2.2.3) Common denoted nouns] (#223 - common denoted nouns). Here are some examples of valid coroutine identifiers:
 
 - `//localhost/cn.fmsoft.hvml.sample/Runner0/CRTN/7`
 - `/cn.fmsoft.hvml.sample/Runner0/CRTN/foo`
 - `/cn.fmsoft.hvml.sample/myRunner/CRTN/3cc8f`
 
-这里，我们使用协程令牌来标识一个协程。我们不使用协程名称这一术语，是因为通过 `load` 元素，我们可以创建单个 HVML 程序的多个协程实例。另外，我们可以一些预定义协程令牌（通常使用下划线打头）来指定一个协程， 比如：
+Here, we use a coroutine token to identify a coroutine. We don't use the term coroutine name because with `load` element we can create multiple coroutine instances of a single HVML program. In addition, we can specify a coroutine with some predefined coroutine tokens (usually starting with an underscore), such as:
 
-- `_main`：表示主协程，即指定行者创建的第一个协程。
-- `_first`：表示现有协程中的第一个协程。注意，当行者创建的第一个协程退出后，`_main` 将不可用，但 `_first` 是始终可用的。
-- `_last`：表示现有协程中的最后一个协程。注意，当协程中只有一个协程时，`_first` 和 `_last` 指向同一个协程。
+- `_main`: Indicate the main coroutine, which is the first coroutine created by the specified walker.
+- `_first`: Indicate the first coroutine among existing coroutines. Note that `_main` will be unavailable after the first coroutine created by the walker exits, but `_first` is always available.
+- `_last`: Indicate the last coroutine among existing coroutines. Note that `_first` and `_last` point to the same coroutine when there is only one coroutine in the coroutine.
 
-针对 `within` 的属性值，我们保留 `_self` 作为预定义行者名称，特指当前行者。
+For the attribute value of `within`, we reserve `_self` as the name of the predefined walker, specifically referring to the current walker.
 
-并发调用操作组对应的事件有：
+The events corresponding to the concurrent call operation group are:
 
-- `callState:success`：操作组对应的协程成功返回数据。
-- `callState:error/<errorName>`：操作组对应的协程出现错误。
-- `callState:except/<exceptName>`：操作组对应的协程遇到未捕获的异常。
+- `callState:success`: The coroutine corresponding to the operation group returns data successfully.
+- `callState:error/<errorName>`: The coroutine corresponding to the operation group has an error.
+- `callState:except/<exceptName>`: The coroutine corresponding to the operation group encountered an uncaught exception.
 
-并发调用操作组时，由于我们将对应的 HVML 程序限制在了一个 vDOM 子树上，故而无法访问在原 HVML 程序中操作组所在闭包中的变量。这点和常规的调用存在较大的差别。比如如下的代码：
+When the operation group is called concurrently, as we limit the corresponding HVML program to a vDOM subtree, we cannot access the variables in the closure of the operation group in the original HVML program. This is quite different from conventional calls. For example, the following code:
 
 ```hvml
     <body>
@@ -4847,102 +4862,102 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </body>
 ```
 
-定义了一个操作组，该操作组使用了其所在闭包中的静态变量 `$allEntries`。因此，如果不使用并发调用，该操作组可正常工作：
+An action group is defined, which uses the static variable `$allEntries` in its closure. So this operation group works fine without using concurrent calls:
 
 ```hvml
-        <call on="$collectAllDirEntriesRecursively" with="/" />
+         <call on="$collectAllDirEntriesRecursively" with="/" />
 ```
 
-但如果使用并发调用，则该操作组将因为找不到 `$allEntries` 变量而抛出异常：
+But if concurrent calls are used, the action group will throw an exception because the `$allEntries` variable cannot be found:
 
 ```hvml
-        <call on="$collectAllDirEntriesRecursively" with="/"
-                within="newRunner" concurrently asynchronously />
+         <call on="$collectAllDirEntriesRecursively" with="/"
+                 within="newRunner" concurrently asynchronously />
 ```
 
-因此，我们需要使用局部变量，并在最后返回局部变量：
+Therefore, we need to use a local variable, and return the local variable at the end:
 
 ```hvml
-    <define as="collectAllDirEntriesRecursively">
-        <init as="allEntries" with=[] temporarily />
+     <define as="collectAllDirEntriesRecursively">
+         <init as="allEntries" with=[] temporarily />
 
-        <define as="collectAllDirEntries" >
-            ...
-        </define>
+         <define as="collectAllDirEntries">
+             ...
+         </define>
 
-        <call on="$collectAllDirEntries" with="$?" />
-        <return with="$allEntries" />
-    </define>
+         <call on="$collectAllDirEntries" with="$?" />
+         <return with="$allEntries" />
+     </define>
 
-    ...
+     ...
 
-    <call as="my_task" on="$collectAllDirEntriesRecursively" with="/"
-            within="newRunner" concurrently asynchronously />
+     <call as="my_task" on="$collectAllDirEntriesRecursively" with="/"
+             within="newRunner" concurrently asynchronously />
 
 ```
 
-上面的代码，也展示了递归调用操作组的功能。
+The above code also shows the function of recursively calling the operation group.
 
-#### 2.5.13) `bind` 标签
+#### 2.5.13) `bind` Tag
 
-`bind` 标签定义一个执行绑定表达式操作的动作元素，该元素会创建一个表达式变量，故而可使用 `as` 属性和 `at` 属性指定该变量的名称以及变量作用域。通常，表达式变量对应的是一个可求值的表达式，该表达式可使用 `on` 属性指定，也可以使用 `bind` 元素的内容来定义。如：
+`bind` tag defines an action element that performs a binding expression operation. This element creates an expression variable, so `as` attribute and `at` attribute can be used to specify the name of the variable and the variable scope. In general, an expression variable corresponds to an evaluable expression that can be specified using `on` attribute, or defined using the contents of `bind` element. For example:
 
 ```hvml
-    <bind on="$users[0]" as="me" />
+     <bind on="$users[0]" as="me" />
 ```
 
-或，
+or,
 
 ```hvml
-    <bind as="me">
-        {
-            "id": "$currUser.id",
-            "avatar": "/img/avatars/{$currUser.id}.png",
-            "name": "$currUser.name",
-            "region": "$currUser.locale"
-        }
-    </bind>
+     <bind as="me">
+         {
+             "id": "$currUser.id",
+             "avatar": "/img/avatars/{$currUser.id}.png",
+             "name": "$currUser.name",
+             "region": "$currUser.locale"
+         }
+     </bind>
 
-    <bind as="greeting" >Hello, $user_name</bind>
+     <bind as="greeting" >Hello, $user_name</bind>
 
-    <bind as="greeting" >
-        "Hello, $user_name"
-    </bind>
+     <bind as="greeting">
+         "Hello, $user_name"
+     </bind>
 ```
 
-当我们使用这个变量时，我们调用其上的 `eval` 方法获得该表达式对应的具体数据。因此，下面的 `init` 和 `bind` 元素的执行效果是不一样的：
+When we use this variable, we call `eval` method on it to get the specific data corresponding to the expression. Therefore, the following `init` and `bind` elements perform differently:
 
 ```hvml
-    <init as="sysClock">
-        $SYS.time
-    </init>
+     <init as="sysClock">
+         $SYS.time
+     </init>
 
-    ...
+     ...
 
-    <bind on="$SYS.time" as="rtClock" />
+     <bind on="$SYS.time" as="rtClock" />
 
-    <p>The initial system time: $sysClock</p>
+     <p>The initial system time: $sysClock</p>
 
-    ...
+     ...
 
-    <p>The current system time: $rtClock.eval</p>
+     <p>The current system time: $rtClock.eval</p>
 ```
 
-另外，若在该变量上执行 `observe` 动作，将在 HVML 程序运行进入消息循环时该变量对应的表达式将被重新求值，若前后发生变化，则将产生一个 `change` 消息，从而可以在 `observe` 动作元素定义的操作组中做相应的处理：
+In addition, if `observe` action is executed on the variable, the expression corresponding to the variable will be re-evaluated when the HVML program enters the message loop. If there is a change, `change` message will be generated, so that Do the corresponding processing in the operation group defined by `observe` action element:
 
-比如，
+For example,
 
 ```hvml
-    <bind on $SYS.time as 'rtClock' />
+     <bind on $SYS.time as 'rtClock' />
 
-    <observe on $rtClock for "change">
-       ...
-    </observe>
+     <observe on $rtClock for "change">
+        ...
+     </observe>
 ```
 
-上述代码中 `observe` 元素定义的操作组，将每一秒钟执行一次。
+The operation group defined by `observe` element in the above code will be executed every second.
 
-另外，我们可以将某个目标文档元素的属性或者内容绑定到某个变量上，然后使用 `observe` 元素处理其上的 `change` 事件：
+In addition, we can bind the attribute or content of a target document element to a variable, and then use `observe` element to handle `change` event on it:
 
 ```hvml
     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="" />
@@ -4954,76 +4969,89 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </bind>
 ```
 
-我们还可以在被绑定变量的 `eval` 方法中使用参数，并在原始表达式中使用变量名 `$_ARGS` 来引用传入的参数，从而实现替身表达式（substitue expression）的功能。其中，`$_ARGS` 表示传入 `eval` 的所有参数之列表（使用元组或数组表达），而使用 `$_ARGS[<N>]` 可引用参数列表的第 `<N>` 个参数。
+We can also use parameters in `eval` method of the bound variable, and use the variable name `$_ARGS` in the original expression to refer to the incoming parameters, thus realizing the function of substitute expression. Among them, `$_ARGS` represents the list of all parameters passed into `eval` (expressed in tuples or arrays), and `$_ARGS[<N>]` can refer to the `<N>`th parameter of the parameter list .
 
-更进一步，我们还可以将一个表达式绑定到表达式变量不同于 `eval` 的方法上，此时我们使用 `against` 属性指定方法名称；若不使用 `against` 属性，则使用默认的 `eval` 方法名称。
+Furthermore, we can also bind an expression to a method whose expression variable is different from `eval`. At this time we use `against` attribute to specify the method name. If `against` attribute is not used, the default ` eval` method name will be used.
 
-比如在下面的代码片段中，我们将输出字符串到标准输出的表达式，绑定为一个表达式变量 `console`，并使用 `against` 属性指定了对应的方法名称 `puts`：
-
-```hvml
-    <bind on "$STREAM.stdout.writelines($_ARGS[0])" as "console" against 'puts' />
-    <inherit>
-        $console.puts('Hello, world!')
-    </inherit>
-```
-
-当我们使用 `$console.puts('Hello, world!')` 这个替身表达式时，对应的最终表达式为 `$STREAM.stdout.writelines('Hello, world!')`。如此，我们可以为一些常用的表达式创建对应的简洁别名，从而方便我们的使用。
-
-注意，当表达式在不同的上下文环境中执行时，由于所引用变量的作用域发生了变化，所得到的结果可能会出现不同。另外，当我们使用 `observe` 元素观察某个表达式变量的变化时，将无法传递参数。
-
-在实现时，解释器可将被绑定的表达式使用一个原生实体来表示，并在其上提供 `eval` 属性或者通过 `against` 属性指定的替代属性名称之获取器。在调用该原生实体的 `eval` 获取器时，可在当前求值栈帧中创建临时变量 `_ARGS`，对应一个由所有传入的参数构建成的元组，之后对该原生实体对应的表达式执行正常的求值，求值结束后移除这些临时变量。
-
-当我们在绑定一个表达式时使用 `constantly` 副词属性，则说明被绑定的表达式将对同一参数返回始终不变的值。这种情况下，解释器应额外实现一个带有 `_const` 后缀的方法，该方法对相同的参数只求值一次，其后使用相同的参数调用时将返回第一次求值的结果。在实际应用中，该方法可以用来定义一个特定表达式产生的常量。
-
-若不指定方法名称，解释器应实现 `eval` 方法，对应的常量方法名称为 `eval_const`。
-
-下面的代码绑定了一个可产生恒定结果的表达式：
+For example, in the following code snippet, we bind the output string to the standard output expression as an expression variable `console`, and use `against` attribute to specify the corresponding method name `puts`:
 
 ```hvml
-    <bind on $MATH.div(1.0, $MATH.sqrt($_ARGS[0])) as 'myConst' against 'reciprocal_of_sqrt' constantly />
+     <bind on "$STREAM.stdout.writelines($_ARGS[0])" as "console" against 'puts' />
+     <inherit>
+         $console.puts('Hello, world!')
+     </inherit>
 ```
 
-之后，我们就可以使用 `$myConst.reciprocal_of_sqrt_const(2.0)` 这一替身表达式来获得 2.0 的平方根之倒数。当我们使用这个替身表达式时，只有第一次调用会执行真正的求值过程，其后对该表达式以及参数 2.0 的求值将直接返回第一次求值的结果，而无需执行重复的真实求值过程。
+When we use the stand-in expression `$console.puts('Hello, world!')`, the corresponding final expression is `$STREAM.stdout.writelines('Hello, world!')`. In this way, we can create corresponding concise aliases for some commonly used expressions, which is convenient for our use.
 
-#### 2.5.14) `catch` 标签
+Note that when an expression is executed in a different context, the result may appear different due to the change in the scope of the referenced variable. In addition, when we use `observe` element to observe the change of an expression variable, we will not be able to pass parameters.
 
-`catch` 标签定义一个执行异常捕获操作的动作元素，该元素可作为任意动作元素的子元素，定义该执行该动作的过程中出现异常时要执行的操作。和 `except` 元素不同，`catch` 元素定义了出现异常时的程序分支。如：
+When implemented, the interpreter can represent the bound expression as a native entity and provide `eval` attribute on it or a getter for an alternative attribute name specified by `against` attribute. When calling `eval` getter of the native entity, a temporary variable `_ARGS` can be created in the current evaluation stack frame, corresponding to a tuple constructed from all the incoming parameters. And then the expression corresponding to the native entity will perform normal evaluation, and these temporary variables are removed after the evaluation is complete.
+
+When we use `constantly` adverb attribute when binding an expression, it means that the bound expression will always return a constant value for the same parameter. In this case, the interpreter should additionally implement a method suffixed with `_const`, which evaluates to the same argument only once, and returns the result of the first evaluation when called with the same argument. In practice, this method can be used to define constants generated by a particular expression.
+
+If no method name is specified, the interpreter should implement `eval` method, and the corresponding constant method name is `eval_const`.
+
+The following code binds an expression that produces a constant result:
 
 ```hvml
-    <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
-        <update on="p > a" at="textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
-        <catch for `NoData` raw>
-            <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
-        </catch>
-        <catch for `NoSuchKey`>
-            <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
-        </catch>
-        <catch>
-            <update on="p" at="textContent" with='Bad $locales/$global data!' />
-        </catch>
-    </choose>
+     <bind on $MATH.div(1.0, $MATH.sqrt($_ARGS[0])) as 'myConst' against 'reciprocal_of_sqrt' constantly />
 ```
 
-我们使用 `for` 介词属性来定义要捕获的异常具体名称，必须使用反引号属性值语法。
+We can then use the stand-in expression `$myConst.reciprocal_of_sqrt_const(2.0)` to get the reciprocal of the square root of 2.0. When we use this stand-in expression, only the first call will perform the real evaluation process. And the subsequent evaluation of the expression and parameter 2.0 will directly return the result of the first evaluation without performing repeated The real evaluation process.
 
-`for` 属性值的取值有如下规则：
+#### 2.5.14) `catch` Tag
 
-- 若未定义 `for` 属性，或 `for` 的属性值为 `ANY`，则相当于匹配任意异常。
-- 多个异常，可使用空白字符分隔。
+`catch` tag defines an action element that performs an exception capture operation. This element can be used as a sub-element of any action element, and defines the operation to be performed when an exception occurs during the execution of the action. Unlike `except` element, `catch` element defines a program branch when an exception occurs. For example:
 
-#### 2.5.15) `back` 标签
+```hvml
+     <choose on="$locales" in="#the-footer" by="KEY: AS '$global.locale'">
+         <update on="p > a" at="textContent attr.href attr.title" with ["$?.se_name", "$?.se_url", "$?.se_title"] />
+         <catch for `NoData` raw>
+             <update on="p" at="textContent" with='You forget to define the $locales/$global variables!' />
+         </catch>
+         <catch for `NoSuchKey`>
+             <update on="p > a" at="textContent attr.href attr.title" with ["Google", "https://www.google.com", "Google"] />
+         </catch>
+         <catch>
+             <update on="p" at="textContent" with='Bad $locales/$global data!' />
+         </catch>
+     </choose>
+```
 
-`back` 标签定义一个回退执行栈操作的动作元素，该元素用于控制当前的执行栈，以便回退到指定的前置栈帧。回退后，将从目标栈帧定义的下个执行位置开始执行程序。
+We use `for` preposition attribute to define the specific name of the exception to catch, and must use the backtick attribute value syntax.
 
-`back` 元素只支持如下两种介词属性：
+The value of `for` attribute value has the following rules:
 
-- `to`：用于指定回退位置，支持三种指定方式：
-   - 以下划线（U+005F `_` ）打头的三个预定义相对栈帧名称：`_last`、`_nexttolast` 和 `_topmost`，分别表示上一个栈帧、上上一个栈帧和最顶栈帧。
-   - 以井字符（U+0023 `#` ）打头的目标栈帧对应元素的标识符，如 `#myAnchor`。
-   - 正整数表示的回退栈帧数量。
-- `with`：用于指定一个值，这个值将取代回退后的上下文变量对应的结果数据。我们也可以使用该元素的内容来定义这个数据。
+- If `for` attribute is not defined, or `for` attribute value is `ANY`, it is equivalent to matching any exception.
+- Multiple exceptions may be separated by whitespace.
 
-比如我们使用 `iterate` 生成小于 100 的偶数数列时，如果使用 `back` 标签，则可如下编码：
+The original execution result of the action defined by `catch` tag should be an object representing exception information, which must contain the following necessary attributes:
+
+- `name`: Indicate the exception name, a string.
+- `info`: Additional information about the exception, a string.
+
+Other attributes can be determined by the interpreter. Usage is as follows:
+
+```hvml
+     <catch for `ANY`>
+         <exit with "Exception raised: $?.name" />
+     </catch>
+```
+
+#### 2.5.15) `back` Tag
+
+`back` tag defines an action element that rolls back the execution stack operation, which is used to control the current execution stack so as to roll back to the specified front stack frame. After the rollback, the program will be executed from the next execution position defined by the target stack frame.
+
+`back` element only supports the following two prepositional attributes:
+
+- `to`: It is used to specify the fallback position, and supports three specifying methods:
+    - Three predefined relative stack frame names starting with an underscore (U+005F `_`): `_last`, `_nexttolast` and `_topmost`, which represent the previous stack frame, the previous stack frame and the topmost stack respectively frame.
+    - The identifier of the corresponding element of the target stack frame starting with the hash character (U+0023 `#`), such as `#myAnchor`.
+    - The number of back stack frames represented by a positive integer.
+- `with`: It is used to specify a value that will replace the result data corresponding to the context variable after the fallback. We can also use the content of this element to define this data.
+
+For example, when we use `iterate` to generate an even number column less than 100. If we use the `back` tag, we can code it as follows:
 
 ```hvml
     <init as="evenNumbers" with=[0,] >
@@ -5047,15 +5075,15 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
     </init>
 ```
 
-以上的代码，当计算出来的偶数大于 `100` 时，将回退到第四个栈帧，到达 `init` 元素对应的栈帧，然后从该栈帧对应元素的下个子动作元素开始执行，亦即，`ol` 外部元素定义的动作。
+The above code, when the calculated even number is greater than `100`, it will fall back to the fourth stack frame and reach the stack frame corresponding to `init` element, and then start execution from the next sub-action element of the element corresponding to the stack frame, That is, the actions defined by `ol` outer element.
 
-`back` 元素使用 `silently` 副词属性时，将不产生任何异常，按如下规则处理：
+When `back` element uses `silently` adverb attribute, no exception will be generated. And it will be processed according to the following rules:
 
-- 不可识别的 `to` 属性值或者求值失败或者无效的栈帧，一律按回退到最顶栈帧处理。
-- 未指定 `with` 属性值时，按 `undefined` 处理，不改变回退后的上下文变量。
-- 若 `with` 属性求值失败，按 `undefined` 处理。
+- Unrecognized `to` attribute value or fail to evaluate or stack frames, will be treated as falling back to the top stack frame.
+- When `with` attribute value is not specified, it will be treated as `undefined`, and the context variable after fallback will not be changed.
+- If `with` attribute fails to evaluate, treat it as `undefined`.
 
-使用 `with` 属性值定义可替代回退后上下文变量之结果数据的操作，给程序控制执行逻辑带来了帮助。比如，捕捉到异常时：
+Use `with` attribute value to define an operation that can replace the result data of the context variable after the fallback, which helps the program control the execution logic. For example, when an exception is caught:
 
 ```hvml
 <body>
@@ -5092,116 +5120,116 @@ HVML 程序中，`head` 标签是可选的，无预定义属性。
 </body>
 ```
 
-上述代码读取指定目录下的目录项，并捕获可能的异常。当发生异常时，使用 `back` 标签回退到`ul` 对应的栈帧，并修改 `ul` 栈帧的结果数据（`$?`）为一个字符串。回退后，程序开始执行 `test` 标签，判断结果数据的类型。注意 `ul` 作为外部元素，其最初的结果数据为 `undefined`。如果其类型为 `string` 则说明发生了异常，其后的操作将一个 `li` 元素插入目标文档，其中包含异常信息。
+The above code reads the directory entries under the specified directory and catches possible exceptions. When an exception occurs, use the `back` tag to return to the stack frame corresponding to `ul`, and modify the result data (`$?`) of the `ul` stack frame to a string. After the rollback, the program starts to execute the `test` tag to determine the type of the result data. Note that `ul` acts as an outer element, and its initial result data is `undefined`. If its type is `string`, it means that an exception occurred, and subsequent operations will insert a `li` element into the target document, which contains the exception information.
 
-#### 2.5.16) `request` 标签
+#### 2.5.16) `request` tag
 
-`request` 标签定义一个执行文档请求、行者请求或者渲染器请求操作的动作元素。
+The `request` tag defines an action element that performs a document request, walker request, or renderer request operation.
 
-我们可以使用 `request` 元素在一个目标文档位置上发起一个方法调用请求，比如，操控 HTML 的 `video` 元素快速跳转到指定的位置：
-
-```hvml
-    <video id="my-video" width="320" height="240" autoplay muted>
-        <source src="movie.mp4" type="video/mp4">
-        <source src="movie.ogg" type="video/ogg">
-        Your browser does not support the video tag.
-    </video>
-
-    <!-- request on="$DOC.query('#my-video')" to="fastSeek" with="5.30" -->
-    <request on="#my-video" to="fastSeek" with="5.30" />
-```
-
-此时，我们使用如下三个属性：
-
-- `on` 属性，指定目标文档位置。
-- `to` 属性，指定要调用的方法或函数。
-- `with` 属性，指定调用参数。我们也可以使用 `request` 的内容来定义调用参数。
-
-为了异步观察请求的执行结果，我们可使用 `as` 属性为该请求定义一个静态命名变量，并使用 `observe` 标签观察其结果。因此，我们在该标签中可使用如下副词属性：
-
-- `synchronously` 属性，用来指定同步等待请求的执行结果，是默认值，一般无需显式指定。
-- `asynchronously` 属性，用来指定异步等待执行结果。
-- `noreturn` 属性，用来指定不要求请求的处理侧发送对应的响应消息。
-
-和 `init` 类似，在 `request` 标签中使用 `as` 属性命名一个请求时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
-
-当我们使用 `to` 属性指定一个简单的方法时，`with` 属性的值将作为参数传递给这个方法。如下面的例子：
+We can use the `request` element to initiate a method call request at a target document location, for example, to manipulate the HTML `video` element to quickly jump to a specified location:
 
 ```hvml
-    <request on="#my-video" to="doSomething" with="['value for foo', 'value for bar']" />
+     <video id="my-video" width="320" height="240" autoplay muted>
+         <source src="movie.mp4" type="video/mp4" />
+         <source src="movie.ogg" type="video/ogg" />
+         Your browser does not support the video tag.
+     </video>
+
+     <!-- request on="$DOC.query('#my-video')" to="fastSeek" with="5.30" -->
+     <request on="#my-video" to="fastSeek" with="5.30" />
 ```
 
-在支持 JavaScript 的渲染器中，以上请求将最终解释为如下 JavaScript 代码：
+At this point, we use the following three attributes:
+
+- `on` attribute specifies the target document location.
+- `to` attribute specifyies the method or function to call.
+- `with` attribute specifies the call parameters. We can also use the content of `request` to define call parameters.
+
+In order to observe the execution result of the request asynchronously, we can use `as` attribute to define a static named variable for the request, and use `observe` tag to observe its result. Therefore, we can use the following adverb attributes in this tag:
+
+- `synchronously` attribute is used to specify the execution result of the synchronous waiting request. It is the default value and generally does not need to be explicitly specified.
+- `asynchronously` attribute is used to specify asynchronously wait for the execution result.
+- `noreturn` attribute is used to specify that the processing side of the request is not required to send the corresponding response message.
+
+Similar to `init`, when using `as` attribute in `request` tag to name a request, we can also use `at` attribute to specify the binding location of the name (i.e. the namespace).
+
+When we specify a simple method with `to` attribute, the value of `with` attribute will be passed as an argument to the method. As in the following example:
+
+```hvml
+     <request on="#my-video" to="doSomething" with="['value for foo', 'value for bar']" />
+```
+
+In a renderer that supports JavaScript, the above request will eventually be interpreted as the following JavaScript code:
 
 ```js
-    document.getElementById('#my-video').doSomething(['value for foo', 'value for bar']);
+     document.getElementById('#my-video').doSomething(['value for foo', 'value for bar']);
 ```
 
-我们在 `to` 属性中使用具有 `get:` 或者 `set:` 前缀的方法名，可用来获取或者设置特定文档元素的动态属性值。比如下面的代码将 `#myInput` 元素设置为禁止，并使用 `noreturn` 副词属性，忽略响应。
+We use method names prefixed with `get:` or `set:` in the `to` attribute, which can be used to get or set the dynamic attribute value of a specific document element. For example, the following code sets the `#myInput` element to be disabled, and uses the `noreturn` adverb attribute, ignoring the response.
 
 ```hvml
-    <request on="#myInput" to="set:disabled" with=true noreturn />
+     <request on="#myInput" to="set:disabled" with=true noreturn />
 ```
 
-下面的代码获取输入框中的内容：
+The following code gets the content of the input box:
 
 ```hvml
-    <request on="#myInput" to="get:value" />
+     <request on="#myInput" to="get:value" />
 ```
 
 
-我们还可以使用 `request` 在指定的元素上执行一段渲染器支持的函数调用代码，并在函数调用代码中使用渲染器设定的如下预定义变量：
+We can also use `request` to execute a function call code supported by the renderer on the specified element, and use the following predefined variables set by the renderer in the function call code:
 
-- `ELEMENT`：由 `on` 属性指定的目标文档元素汇集中的每个元素。
-- `ARG`：由 `with` 属性或者内容定义的参数。
+- `ELEMENT`: Each element in the collection of target document elements specified by the `on` attribute.
+- `ARG`: Arguments defined by `with` attribute or content.
 
-此时，我们在 `to` 属性值中使用 `call:` 前缀：
+At this point, we use `call:` prefix in `to` attribute value:
 
 ```hvml
-    <request on="#myModal" to="call:bootstrap.Carousel.getInstance(ELEMENT).to(ARG)" with=0 />
+     <request on="#myModal" to="call:bootstrap.Carousel.getInstance(ELEMENT).to(ARG)" with=0 />
 ```
 
-在上面的 `to` 属性值中，我们使用了 `ELEMENT` 和 `ARG` 指代当前元素对象以及通过 `with` 属性或者内容传递给方法的参数。这些特殊关键词由渲染器处理并替代。比如上面的函数调用，最终会被渲染器解释为如下 JavaScript 代码：
+In the above `to` attribute value, we use `ELEMENT` and `ARG` to refer to the current element object and the parameters passed to the method through `with` attribute or content. These special keywords are handled and replaced by the renderer. For example, the above function call will eventually be interpreted by the renderer as the following JavaScript code:
 
 ```js
-const method = new Function('ELEMENT', 'ARG', 'return bootstrap.Carousel.getInstance(ELEMENT).to(ARG)');
-const result = method(document.getElementByHVMLHandle('4567834'), 0);
+const method = new Function('ELEMENT', 'ARG', 'return bootstrap. Carousel. getInstance(ELEMENT).to(ARG)');
+const result = method(document. getElementByHVMLHandle('4567834'), 0);
 ```
 
-使用这种方法时，当参数为数组时，可使用渲染器脚本语言支持的方式引用其中的成员，如 `ARG[0]`、`ARG[1]`。
+When using this method, when the parameter is an array, you can use the methods supported by the renderer scripting language to refer to its members, such as `ARG[0]`, `ARG[1]`.
 
-我们也可以使用上面这种方法获取或者设置特定文档元素的动态属性值。比如下面的代码将 `#myInput` 元素设置为禁止，并使用 `noreturn` 副词属性，忽略响应。
+We can also use the above method to get or set the dynamic attribute value of a specific document element. For example, the following code sets `#myInput` element to be disabled, and uses `noreturn` adverb attribute, ignoring the response.
 
 ```hvml
-    <request on "#myInput" to "call:ELEMENT.disabled=true" with 0 noreturn />
+     <request on "#myInput" to "call:ELEMENT.disabled=true" with 0 noreturn />
 ```
 
-我们使用 `request` 标签，可以向本行者中的另一个协程发送一个请求，此时，我们指定 `on` 属性值为目标协程的标识符或者代表目标协程的原生实体，`to` 属性值构成请求的操作名称，`with` 属性或者元素内容为请求的参数。通过 `request` 标签提供的这一功能，我们可以让目标协程在它的执行上下文环境中调用指定的操作组，然后返回结果给调用者。由于该请求可以跨行者发送，故而相当于执行远程过程调用。
+We use `request` tag to send a request to another coroutine in this walker. At this time, we specify `on` attribute value as the identifier of the target coroutine or the native entity representing the target coroutine, and `to` attribute value constitutes the operation name of the request. And the `with` attribute or element content is the parameter of the request. Through the function provided by `request` tag, we can let the target coroutine call the specified operation group in its execution context, and then return the result to the caller. Since the request can be sent across peers, it is equivalent to executing a remote procedure call.
 
-注意，我们不能使用 `request` 向当前协程发送请求，也不允许跨应用发送请求。但我们可以向当前应用的另一个行者发送请求。
+Note that we cannot use `request` to send a request to the current coroutine, nor is it allowed to send requests across applications. But we can send a request to another walker of the current application.
 
-比如，我们也可以向当前应用的另一个行者创建的通道发送数据，此时，我们使用目标通道标识符：`[//hostName]/appName/<runnerName>/CHAN/<channelName>`。对应本规范定义的被指名词法单元 `channel_identifier`，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。此处，我们可以使用 `-` 指代当前主机或当前应用，如：
+For example, we can also send data to a channel created by another runner of the current application. In this case, we use the target channel identifier: `[//hostName]/appName/<runnerName>/CHAN/<channelName>`. Corresponds to the designated noun unit `channel_identifier` defined in this specification, see [2.2.3) Common designated noun units] (#223-Common designated noun unit) for details. Here, we can use `-` to refer to the current host or the current application, such as:
 
-- `//-/-/AnotherRunner/CHAN/channel0`：指当前主机、当前应用中名为 `AnotherRunner` 行者的 `channel0` 通道。
-- `/-/AnotherRunner/CHAN/channel1`：指当前主机、当前应用中名为 `AnotherRunner` 行者的 `channel1` 通道。
+- `//-/-/AnotherRunner/CHAN/channel0`: It refers to the `channel0` channel of the runner named `AnotherRunner` in the current host and current application.
+- `/-/AnotherRunner/CHAN/channel1`: It refers to the `channel1` channel of the runner named `AnotherRunner` in the current host and current application.
 
-向另一个行者的通道发送请求时，我们只能执行 `post` 操作，该操作会在目标通道满时立即返回一个错误响应，如：
+When sending a request to another walker's channel, we can only perform `post` operation, which will immediately return an error response when the target channel is full, such as:
 
 ```hvml
-    <request on "/-/AnotherRunner/CHAN/channel0" to "post" with { data: 'I am here', channel: 'got' } noreturn />
+     <request on "/-/AnotherRunner/CHAN/channel0" to "post" with { data: 'I am here', channel: 'got' } noreturn />
 ```
 
-另外，我们也可以向当前应用的另一个行者创建的指定协程发送请求。通常的应用场景下，作为请求处理的行者会在主协程中接收请求并分发给其他协程处理，然后将子协程的处理结果作为响应转发给请求方。这种情况下，发起请求的一方无需知悉具体的协程令牌，而使用 `_main` 作为协程令牌即可。
+In addition, we can also send a request to a specified coroutine created by another walker of the current application. In a typical application scenario, the worker who handles the request will receive the request in the main coroutine and distribute it to other coroutines for processing, and then forward the processing result of the sub-coroutine as a response to the requester. In this case, the requesting party does not need to know the specific coroutine token, but uses `_main` as the coroutine token.
 
-目标协程的标识符格式为 `[//hostName]/appName/<runnerName>/CRTN/<coroutineToken>`。对应本规范定义的被指名词法单元 `coroutine_identifier`，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。此处，我们可以使用 `-` 指代当前主机或当前应用，如：
+The target coroutine identifier format is `[//hostName]/appName/<runnerName>/CRTN/<coroutineToken>`. Coroutine_identifier corresponds to the referred noun defined in this specification, see [2.2.3) Common referred nouns] (#223-Common referred nouns) for details. Here, we can use `-` to refer to the current host or the current application, such as:
 
-- `//-/-/AnotherRunner/CRTN/3dfedf`：指当前主机、当前应用中名为 `AnotherRunner` 行者的 `3dfedf` 号协程。
-- `/-/AnotherRunner/CRTN/3dfedf`：指当前主机、当前应用中名为 `AnotherRunner` 行者的 `3dfedf` 号协程。
-- `/-/AnotherRunner/CRTN/_main`：指当前主机、当前应用中名为 `AnotherRunner` 行者的主协程。
+- `//-/-/AnotherRunner/CRTN/3dfedf`: It refers to the `3dfedf` coroutine of the runner named `AnotherRunner` in the current host and application.
+- `/-/AnotherRunner/CRTN/3dfedf`: It refers to the `3dfedf` coroutine of the runner named `AnotherRunner` in the current host and current application.
+- `/-/AnotherRunner/CRTN/_main`: It refers to the main coroutine of the runner named `AnotherRunner` in the current host and current application.
 
-通常，用于完成请求的目标协程的运行状态在进入到事件轮询阶段之后，才能响应来自其他协程的请求并在执行对应的操作组后返回结果给发起请求的协程。为此，协程应在 `$CRTN` 变量上观察 `request:<operationName>` 事件。
+Usually, the running state of the target coroutine which is used to complete the request enters the event polling phase before it can respond to requests from other coroutines and return the result to the requesting coroutine after executing the corresponding operation group. To do this, the coroutine should observe `request:<operationName>` event on `$CRTN` variable.
 
-如下面的代码所示，一个协程定义了一个操作组 `echo`，将传入的参数追加一个前缀后原样返回：
+As shown in the following code, a coroutine defines an operation group `echo`, which appends a prefix to the incoming parameters and returns them as they are:
 
 ```hvml
 <!DOCTYPE hvml>
@@ -5225,82 +5253,107 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 </hvml>
 ```
 
-假如保存该 HVML 程序的文件名为 `myrepeater.hvml`。我们在某个协程（父协程）中通过 `load` 元素在指定的行者中创建一个新协程（子协程）执行这个 HVML 程序，并在父协程中向子协程发送请求。当父协程收到来自子协程的 `corState:observing` 事件后，我们向子协程发送 `echo1` 请求：
+Suppose the file name to save the HVML program is `myrepeater.hvml`. In a coroutine (parent coroutine), we create a new coroutine (child coroutine) in the specified walker through the `load` element to execute the HVML program, and send a request to the child coroutine in the parent coroutine. When the parent coroutine receives the `corState:observing` event from the child coroutine, we send an `echo1` request to the child coroutine:
 
 ```
-    <load as="myRepeater" from="myrepeater.hvml" within="myRunner" asynchronously>
-        <observe on="$myRepeater" for="corState:observing">
-            <request on="$myRepeater.uri" to="echo1" >
-                "How are you?"
-            </request>
-        </observe>
-    </load>
+     <load as="myRepeater" from="myrepeater.hvml" within="myRunner" asynchronously>
+         <observe on="$myRepeater" for="corState:observing">
+             <request on="$myRepeater.uri" to="echo1">
+                 "How are you?"
+             </request>
+         </observe>
+     </load>
 ```
 
-显然，子协程在使用 `observe` 标签定义的针对 `request:echo1` 事件的观察者中处理针对 `echo1` 的请求。当子协程创建有多个针对 `echo1` 请求的观察者时，所有的观察者都将被安排执行，其结果将形成一个数组作为响应发送回请求者。
+Apparently, the child coroutine handles the request for `echo1` in the observer for `request:echo1` event defined with `observe` tag. When the child coroutine creates multiple observers for `echo1` request, all observers will be scheduled for execution, and the results will form an array and be sent back to the requester as a response.
 
-需要说明是，在上面的例子中，如果父协程指定的请求名称为 `echo1`，则得到结果为：`foo: How are you?`；而如果请求名称为 `echo2`，则结果应该为：`bar: How are you?`。
+It should be noted that, in the above example, if the request name specified by the parent coroutine is `echo1`, the result is: `foo: How are you?`.    And if the request name is `echo2`, the result should be : `bar: How are you?`.
 
-我们使用 `request` 标签，还可以向渲染器发送一个请求，比如新建窗口组，移除一个窗口组等。此时，指定 `on` 属性值为预定义变量 `$RDR`。至于具体要执行的请求操作以及参数，通过 `to` 属性和 `with` 属性传递，其含义和要求和具体的渲染器协议有关。比如在使用 PURCMC 协议时，我们可以向渲染器发送如下的请求向指定的工作区添加窗口组：
+When we use `request` tag, we can also send a request to the renderer, such as creating a new window group, removing a window group, etc. At this point, specify `on` attribute value as the predefined variable `$RDR`. As for the specific request operation and parameters to be executed, they are passed through `to` attribute and `with` attribute, and their meaning and requirements are related to the specific renderer protocol. For example, when using the PURCMC protocol, we can send the following request to the renderer to add a window group to the specified workspace:
 
 ```hvml
-    <request on="$RDR" to="addWindowGroups" >
-        {
-             workspace: 'main',
-             dataHtml: '<section id="newGroup1"></section><section id="newGroup2"><article id="newGroupBody2" class="tabbedwindow"></article></section>'
-        }
-    </request>
+     <request on '$RDR' to 'addPageGroups'>
+         {
+              dataType: 'html',
+              data: '<section id="newGroup1"></section><section id="newGroup2"><article id="newGroupBody2" class="tabbedwindow"></article></section>'
+         }
+     </request>
 ```
 
-#### 2.5.17) `load` 和 `exit` 标签
-
-`load` 标签定义一个执行装载程序操作的动作元素，该元素在指定的行者（虚拟机实例）中启动一个新的协程装载并执行指定的 HVML 程序。由 `load` 装载的新 HVML 代码或者程序实例，称为子协程（child coroutine），执行 `load` 元素动作的协程称为父协程（parent coroutine）。
-
-`load` 元素用来装载并执行一个由 `on` 属性指定的 HVML 代码（字符串）或者 `from` 属性指定的新 HVML 程序，并可将 `with` 属性指定的对象数据作为参数（对应 `$REQ` 变量）传递给子协程。如：
+As another example, when we request the renderer to dump the page content created by the coroutine to which the current walker belongs:
 
 ```hvml
-    <load from="b.hvml" as="userProfile" onto="user@main" />
-        $user
-    </load>
+     <request on $RDR to 'callMethod'>
+         {
+              element: "main",
+              attribute: "plainwin:hello@main",
+              data: {
+                     method: 'dumpContents',
+                     arg: 'screenshot.png'
+              },
+         }
+     </request>
 ```
 
-`load` 元素支持如下介词属性：
+#### 2.5.17) `load` and `exit` Labels
 
-- `on`：指定 HVML 代码（字符串）。
-- `from`：指定的 HVML 程序的 URL（`$CRTN.base` 起效）。若 URL 使用 `#` 指定了定位锚（anchor），则用于指定作为程序入口的 `body` 标识符。若为空，表示使用和当前 HVML 协程相同的 HVML 程序来启动新协程；若以 `#` 打头，则表示使用和当前协程相同的 HVML 程序启动新协程，但通过 `#` 指定了作为入口的 `body` 标识符。
-- `with`：若 `from` 属性指定了一个合法的 URL 字符串，指定从外部资源中装载 HVML 程序时的请求参数。
-- `via`：若 `from` 属性指定了一个合法的 URL 字符串，则该属性指定从外部资源中装载 HVML 程序时的请求方法，默认为 `GET`。
-- `as`：当我们异步装载新的 HVML 程序时，我们使用该属性将新的 HVML 协程和一个变量名称绑定，从而可观察该协程的状态。
-- `at`：和 `init` 类似，在 `load` 标签中使用 `as` 属性命名一个 HVML 程序时，我们也可以使用 `at` 属性指定名称的绑定位置（也就是名字空间）。
-- `within` 属性指定行者名称。不指定该属性或者使用保留字 `_self` 作为行者名称，表示当前行者。和 `call` 元素不同，`load` 元素指定的行者必须已经存在，也就是说，`load` 元素不会主动创建新的行者。
-- `onto`：指定用于渲染目标文档的渲染器页面标识符，使用 `[<page_type>:]<page_name>[@[<workspace_name>/]<group_name>]` 这样的形式，用于指定页面名称和所在的页面组。其中 `<page_type>` 指定页面的类型，可使用 `plainwin`（默认） 或 `widget`，分别表示创建小构件作为页面或创建一个普通窗口作为页面；`workspace_name` 和 `group_name` 分别表示页面所在的工作区名称以及页面组名称，`page_name` 是页面在指定页面组中的唯一性名称。指定页面名称时，我们可以使用如下保留名称（保留名称通常以下划线打头）指代特定的页面（使用保留名称时，不需要指定页面组和页面类型）：
-   - `_null`：表示空页面。此时，新创建的协程所生成的文档内容及其变更信息将不会同步到渲染器。当不指定 `onto` 属性时，视作创建空页面。
-   - `_inherit`：若新创建的子协程和当前协程属于同一行者，则表示该协程将继承父协程的文档内容，且使用相同的渲染器页面。
-   - `_self`：表示当前页面。在当前页面中渲染新的 HVML 程序，通常意味着当前页面对应的 HVML 协程将被压制（suppressed），页面中的文档内容将被新 HVML 协程覆盖。但当子协程继承父协程的目标文档时，子协程和父协程可同时更新该文档，且其更新将同时反映到当前页面上。使用该页面名称时，将忽略页面分组以及页面类型信息。
-   - `_active`：表示当前 HVML 程序对应分组中的当前活动页面；当前活动页面对应的 HVML 协程将被压制。
-   - `_first`：表示当前 HVML 程序对应分组中的第一个页面；第一个页面对应的 HVML 协程将被压制。
-   - `_last`：表示当前 HVML 程序对应分组中的最后一个页面；最后一个页面对应的 HVML 协程将被压制。
+`load` tag defines an action element that performs a loader operation, which starts a new coroutine in the specified worker (virtual machine instance) that loads and executes the specified HVML program. The new HVML code or program instance loaded by `load` is called child coroutine. And the coroutine that executes the action of `load` element is called parent coroutine.
 
-当 `from` 属性值指定的 URL 定义有片段（使用 `#` 符号）时，`load` 元素将尝试执行该 HVML 程序中的指定的本体，即另一个 `body` 子树定义的操作组。
+`load` element is used to load and execute an HVML code (string) specified by `on` attribute or a new HVML program specified by `from` attribute. And it can use the object data specified by `with` attribute as a parameter (corresponding to ` $REQ` variable) to the child coroutine. For example:
 
-当同时指定 `on` 属性和 `from` 属性时，按如下规则处理：
+```hvml
+     <load from="b.hvml" as="userProfile" onto="user@main" />
+         $user
+     </load>
+```
 
-1. 若未指定 `from` 属性或者 `from` 属性值不是一个合法的 URL 字符串，则尝试装载 `on` 属性指定的字符串，称为字符串内容。
-1. 若 `from` 属性指定了一个合法的 URL 字符串，则优先从外部资源中装载 HVML 程序。此时，使用 `with` 属性值用来指定请求参数，`via` 属性值指定请求方法。
-1. 同时使用字符串内容和外部资源时，若装载和解析外部资源的过程中出现异常，且设置有 `silently` 属性时，则转而使用字符串内容作为 HVML 程序；若一切正常，则使用外部资源。也就是说，字符串内容作为垫底（fallback）程序使用。
-1. 若字符串内容或者外部资源均不可用，则抛出异常 `NoData`。
+`load` element supports the following prepositional attributes:
 
-除保留名称之外，`onto` 属性指定的页面标识符必须符合本规范定义的 `page_identifier` 词法单元要求，详情见 [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)。如下是一些合法的页面标识符样例：
+- `on`: Specify HVML code (string).
+- `from`: the URL of the specified HVML program (`$CRTN.base` works). If the URL uses `#` to specify an anchor. It is used to specify `body` identifier as the program entry. If it is empty, it means to start the new coroutine with the same HVML program as the current HVML coroutine. If it starts with `#`, it means to start the new coroutine with the same HVML program as the current coroutine, but specified `body` identifier used as an entry by `#`.
+- `with`: If `from` attribute specifies a valid URL string, specify the request parameters when loading the HVML program from an external resource.
+- `via`: If `from` attribute specifies a valid URL string, then this attribute specifies the request method when loading the HVML program from an external resource, and the default is `GET`.
+- `as`: When we asynchronously load a new HVML program, we use this attribute to bind the new HVML coroutine to a variable name so that the state of the coroutine can be observed.
+- `at`: Similar to `init`, when using the `as` attribute in `load` tag to name an HVML program, we can also use `at` attribute to specify the binding location of the name (that is, the namespace).
+- `within` attribute specifies the walker name. Do not specify this attribute or use the reserved word `_self` as the walker name to indicate the current walker. Unlike `call` element, the walker specified by `load` element must already exist, that is, `load` element will not actively create a new walker.
+- `onto`: Specify the renderer page identifier used to render the target document, using the form `[<page_type>:]<page_name>[@[<workspace_name>/]<group_name>]` to specify the page name and the page group it is in. Among them, `<page_type>` specifies the type of the page, and `plainwin` (default) or `widget` can be used, which means to create a normal window or widget as a page. `workspace_name` and `group_name` respectively represent the workspace where the page is located Name and page group name, `page_name` is the unique name of the page in the specified page group.
 
-- `user`：创建一个名为 `user` 的普通窗口。
-- `user@Users`：在默认工作区的 `Users` 页面组中创建一个名为 `user` 的普通窗口。
-- `user@main/Users`：在 `main` 工作区的 `Users` 页面组中创建一个名为 `user` 的普通窗口。
-- `plainwin:user@main/Users`：在 `main` 工作区的 `Users` 页面组中创建一个名为 `user` 的普通窗口。
-- `widget:user@main/Users`：在 `main` 工作区的 `Users` 页面组中创建一个名为 `user` 的构件。
+When specifying a page name, we can use the following reserved names (reserved names usually start with an underscore) to refer to specific pages (when using reserved names, you do not need to specify the page group and page type):
 
-当给定的页面名称不存在时，意味着在指定分组中创建一个新的页面，并赋予该页面给定的名称；若指定的页面分组不存在时，将使用第一个分组。当我们创建一个新的渲染器页面时，可通过其 `with` 属性值的 `_renderer` 键名指定传递给渲染器的页面参数，如类名、标题和样式等。
+- `_null`: Indicate an empty page. At this point, the document content and its change information generated by the newly created coroutine will not be synchronized to the renderer. When `onto` attribute is not specified, it is considered to create an empty page.
+- `_inherit`: If the newly created child coroutine belongs to the same liner as the current coroutine, it means that the coroutine will inherit the document content of the parent coroutine and use the same renderer page. At this point, the child coroutine and the parent coroutine can update the document at the same time, and their updates will be reflected on the current page at the same time.
+- `_self`: Indicate the current page. Rendering a new HVML program in the current page usually means that the HVML coroutine corresponding to the current page will be suppressed. And the document content in the page will be overwritten by the new HVML coroutine. When using this page name, page grouping and page type information are ignored.
+- `_active`: Indicate the current active page in the group corresponding to the current HVML program. The HVML coroutine corresponding to the current active page will be suppressed.
+- `_first`: Indicate the first page in the group corresponding to the current HVML program. The HVML coroutine corresponding to the first page will be suppressed.
+- `_last`: Indicate the last page in the group corresponding to the current HVML program. The HVML coroutine corresponding to the last page will be suppressed.
 
-`load` 元素的内容数据，将作为参数传递给新的协程，在新的协程中，可使用 `$REQ` 变量访问。
+When specifying a workspace name, we can use the following reserved names (reserved names usually start with an underscore) to refer to a specific workspace:
+
+- `_default`: Indicate the default workspace.
+- `_active`: Indicate the currently active workspace.
+- `_first`: Indicate the first workspace.
+- `_last`: Indicate the last workspace.
+
+When the URL specified by the value of `from` attribute defines a fragment (using the `#` symbol), `load` element will attempt to execute the specified ontology in the HVML program, that is, the group of operations defined by another `body` subtree.
+
+When `on` attribute and `from` attribute are specified at the same time, the rules are as follows:
+
+1. If `from` attribute is not specified or the value of `from` attribute is not a valid URL string, then try to load the string specified by `on` attribute, which is called the string content.
+1. If `from` attribute specifies a valid URL string, the HVML program will be loaded from external resources first. At this point, use `with` attribute value to specify the request parameters, and `via` attribute value to specify the request method.
+1. When using string content and external resources at the same time, if an exception occurs during the process of loading and parsing external resources, and `silently` attribute is set, then use the string content as the HVML program. If everything is normal, use External Resources. That is, the string content is used as a fallback program.
+1. If neither the string content nor the external resource is available, an exception `NoData` is thrown.
+
+In addition to reserved names, the page identifier specified by `onto` attribute must conform to `page_identifier` lexical unit requirements defined in this specification, see [2.2.3) Common named lexical units](#223-Common named Lexical unit). Here are some examples of legal page identifiers:
+
+- `user`: Create a normal window named `user`.
+- `user@Users`: Create a normal window named `user` in `Users` page group of the default workspace.
+- `user@main/Users`: Create a normal window named `user` in `Users` page group of `main` workspace.
+- `plainwin:user@main/Users`: Create a plain window named `user` in `Users` page group of `main` workspace.
+- `widget:user@main/Users`: Create a widget called `user` in `Users` page group of `main` workspace.
+
+When the given page name does not exist, it means to create a new page in the specified group and give the page the given name. If the specified page group does not exist, the first group will be used. When we create a new renderer page, we can specify the page parameters passed to the renderer, such as class name, title and style, through `_renderer` key name of its `with` attribute value.
+
+The content data of `load` element will be passed as a parameter to the new coroutine. And in the new coroutine, it can be accessed using `$REQ` variable.
 
 ```hvml
     <init as="request">
@@ -5310,7 +5363,8 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
             _renderer: {
                 title: 'Hello, world!',
                 class: 'hello',
-                style: 'with:200px;height:100px',
+                layoutStyle: 'with:200px;height:100px',
+                toolkitStyle: { 'darkMode': false, 'fullScreen': false, 'backgroundColor': 0xFF0000 },
             },
         }
     </init>
@@ -5320,93 +5374,94 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     </load>
 ```
 
-上面的代码，使用 `on` 属性指定了一段要装载执行的 HVML 程序（`$request.hvml`），并将 `$request` 数据作为该程序的请求数据传递给新的协程。注意 `on` 属性指定的 HVML 程序，该程序使用了 `$REQ` 预定义变量的 `text` 作为 `h1` 元素的内容，将程序代码本身作为 `p` 元素的内容。同时，该程序使用 `_renderer` 键名定义了需要传递给渲染器的参数，其中包括页面的类名及样式信息。
+The above code uses `on` attribute to specify an HVML program (`$request.hvml`) to be loaded and executed, and passes `$request` data as the request data of the program to the new coroutine. Note that the HVML program specified by `on` attribute uses the `text` of `$REQ` predefined variable as the content of `h1` element, and the program code itself as the content of the `p` element. At the same time, the program uses `_renderer` key name to define the parameters that need to be passed to the renderer, including the class name and style information of the page.
 
-该程序最终生成的 HTML 文档内容如下：
+The final HTML document generated by the program is as follows:
 
 ```hvml
 <html>
-    <body>
-        <h1>Hello, world!</h1>
-        <p>&lt;hvml target="html"&gt;&lt;body&gt;&lt;h1&gt;$REQ.text&lt;/h1&gt;&lt;p&gt;$REQ.hvml&lt;/p&gt;&lt;/body>&lt;/hvml&gt;</p>
-    </body>
+     <body>
+         <h1>Hello, world!</h1>
+         <p>&lt;hvml target="html"&gt;&lt;body&gt;&lt;h1&gt;$REQ.text&lt;/h1&gt;&lt;p&gt;$REQ.hvml&lt;/p&gt;&lt;/body>&lt;/hvml&gt ;</p>
+     </body>
 </html>
 ```
 
-`load` 标签支持如下副词属性：
+`load` tag supports the following adverb attributes:
 
-- `synchronously`：同步装载，默认行为。`load` 元素将同步等待子协程退出。
-- `asynchronously`：异步装载。`load` 元素不等待子协程退出。
+- `synchronously`: Load synchronously and default behavior. `load` element will synchronously wait for the child coroutine to exit.
+- `asynchronously`: Load asynchronously. `load` element does not wait for the child coroutine to exit.
 
-假定我们使用 `load` 标签装载一个用来创建新用户的 HVML 程序，如果使用同步装载方式：
-
-```hvml
-    <load from="new_user.hvml" onto="newUser@mainBody" synchronously>
-        <update on="#the-user-list" to="append" with="$?" />
-
-        <!-- 对子协程非正常退出的情形，通过捕获相应的异常进行处理 -->
-        <catch for `ChildTerminated`>
-        </catch>
-    </load>
-```
-
-如果使用异步装载方式，则需要 `as` 属性并使用 `observe` 标签创建一个观察者，用于观察子协程的 `corState:exited`（退出）事件：
+Suppose we use `load` tag to load an HVML program for creating new users, if using the synchronous loading method:
 
 ```hvml
-    <load from="new_user.hvml" as="newUser" onto="newUser@mainBody" asynchronously>
-        <observe on="$newUser" for="corState:exited">
-            <update on="#the-user-list" to="append" with="$user_item" />
-        </observe>
-    </load>
+     <load from="new_user.hvml" onto="newUser@mainBody" synchronously>
+         <update on="#the-user-list" to="append" with="$?" />
+
+         <!-- For the abnormal exit of the sub-coroutine, handle it by catching the corresponding exception -->
+         <catch for `ChildTerminated`>
+             ...
+         </catch>
+     </load>
 ```
 
-以上两种实现方式，均会在当前目标文档的 `#the-user-list` 中插入一条新的用户条目。
-
-使用异步装载方式时，`load` 元素的正常结果数据应该是一个用来标识新协程的原生实体，该原生实体至少应该提供一个 `id` 属性，可用来返回新协程的标识符。
-
-和 `load` 元素配合，我们通常在被装载的程序中使用 `exit` 标签主动退出协程的运行并定义协程的返回数据。如：
+If you use the asynchronous loading method, you need the `as` attribute and use the `observe` tag to create an observer to observe the `corState:exited` (exit) event of the child coroutine:
 
 ```hvml
-    <init as="user_info">
-        { "id": "5", "avatar": "/img/avatars/5.png", "name": "Vincent", "region": "en_US" },
-    </init>
-
-    <exit with="$user_info" />
+     <load from="new_user.hvml" as="newUser" onto="newUser@mainBody" asynchronously>
+         <observe on="$newUser" for="corState:exited">
+             <update on="#the-user-list" to="append" with="$user_item" />
+         </observe>
+     </load>
 ```
 
-上面的代码，使用 `exit` 标签的 `with` 属性定义了一项数据，解释器应将该数据作为当前 HVML 协程的结果数据处理。
+Both of the above implementations will insert a new user entry into `#the-user-list` of the current target document.
 
-当我们在当前行者中创建子协程，并在一个已有的渲染器页面（比如将 `onto` 属性值设置为 `_self`）中渲染子协程的文档内容时，该页面对应的协程之渲染状态将因为渲染器页面被占用而被设置为被压制（suppressed）。如下面的代码：
+When using the asynchronous loading method, the normal result data of `load` element should be a native entity used to identify the new coroutine. The native entity should provide at least one `id` attribute, which can be used to return the identifier of the new coroutine.
+
+In conjunction with `load` element, we usually use `exit` tag in the loaded program to actively exit the execution of the coroutine and define the return data of the coroutine. For example:
+
+```hvml
+     <init as="user_info">
+         { "id": "5", "avatar": "/img/avatars/5.png", "name": "Vincent", "region": "en_US" },
+     </init>
+
+     <exit with="$user_info" />
+```
+
+The above code uses `with` attribute of `exit` tag to define a piece of data that the interpreter should process as the result data of the current HVML coroutine.
+
+When we create a sub-coroutine in the current walker and render the document content of the sub-coroutine in an existing renderer page (such as setting `onto` attribute value to `_self`), the corresponding coroutine of the page The render state will be set to suppressed because the renderer page is occupied. Such as the following code:
 
 ```hvml
 <hvml>
-    <body>
-        ...
+     <body>
+         ...
 
-        <load from="#errorPage" onto="_self" asynchronously />
+         <load from="#errorPage" onto="_self" asynchronously />
 
-        ...
-    </body>
+         ...
+     </body>
 
-    <body id="errorPage">
-        <p>We encountered a fatal error!</p>
-    </body>
+     <body id="errorPage">
+         <p>We encountered a fatal error!</p>
+     </body>
 </hvml>
 ```
 
-上述代码中的 `load` 元素对应如下几个步骤：
+`load` element in the above code corresponds to the following steps:
 
-1. 装载 HVML 程序（或者克隆当前程序的 vDOM）并在新建的新子协程中执行该程序，其入口为 `#errorPage` 本体。
-1. 子协程将使用其父协程使用的渲染器页面（由 `onto` 属性值 `_self` 指定），故父协程将被解释器压制（渲染状态为 `suppressed`）。由于使用了 `asynchronously` 副词属性，故父协程会继续运行，但不会和渲染器做任何数据交换。
-1. 子协程清空父协程使用的渲染器页面并装载自己的目标文档内容。
-1. 子协程终止运行后释放渲染器页面，解释器设置父协程的渲染状态为 `regular`，并使用其完整的目标文档内容覆盖渲染器页面内容。
-1. 父协程恢复正常的渲染器数据交换。
+1. Load the HVML program (or clone the vDOM of the current program) and execute the program in a newly created sub-coroutine, whose entry is the body of `#errorPage`.
+1. The child coroutine will use the renderer page used by its parent coroutine (specified by `onto` attribute value `_self`), so the parent coroutine will be suppressed by the interpreter (rendering state is `suppressed`). Due to `asynchronously` adverb attribute, the parent coroutine will continue to run, but will not do any data exchange with the renderer.
+1. The child coroutine clears the renderer page used by the parent coroutine and loads its own target document content.
+1. Release the renderer page after the child coroutine terminates, and the interpreter sets the rendering state of the parent coroutine to `regular`, and overwrites the renderer page content with its complete target document content.
+1. The parent coroutine resumes normal renderer data exchange.
 
-#### 2.5.18) `inherit` 标签
+#### 2.5.18) `inherit` Tag
 
-`inherit` 标签用于定义一个执行继承操作的动作元素，除 `in` 之外，该元素不使用任何介词和副词属性，默认继承其前置栈帧的上下文变量。若定义有数据内容，则使用数据内容覆盖对应栈帧的 `$^` 上下文变量。
+`inherit` tag is used to define an action element that performs an inheritance operation. Except for `in`, this element does not use any preposition and adverb attributes, and inherits the context variables of its front stack frame by default. If there is data content defined, use the data content to overwrite `$^` context variable of the corresponding stack frame.
 
-通常，我们使用 `inherit` 元素分隔具有不同逻辑功能的代码，也经常利用其内容来执行由动态对象提供的功能。下面的代码展示了 `inherit` 标签的多种使用场景：
+Usually, we use `inherit` element to separate code with different logical functions. And we often use its content to perform functions provided by dynamic objects. The following code shows various usage scenarios of `inherit` tag:
 
 ```hvml
 <!DOCTYPE hvml>
@@ -5466,76 +5521,76 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
 </hvml>
 ```
 
-#### 2.5.19) `sleep` 标签
+#### 2.5.19) `sleep` Tag
 
-`sleep` 标签用于定义一个执行休眠操作的动作元素，该元素可让当前协程进入停止状态，从而休眠指定的时间。
+`sleep` tag is used to define an action element that performs a sleep operation, which allows the current coroutine to enter the stop state, thereby sleeping for the specified time.
 
-该元素使用如下属性：
+This element uses the following attributes:
 
-- `with`：指定休眠秒数（注：小数有效）。
-- `for`：使用时间单位来指定要休眠的时间，比如 `1m` 表示一分钟，支持如下单位：
-   - `ns`：纳秒。
-   - `us`：微秒。
-   - `ms`：毫秒。
-   - `s`：秒。
-   - `m`：分。
-   - `h`：时。
-   - `d`：天。
+- `with`: Specify the number of seconds to sleep (note: decimals are valid).
+- `for`: Use the time unit to specify the time to sleep. For example, `1m` means one minute, the following units are supported:
+    - `ns`: nanosecond.
+    - `us`: microsecond.
+    - `ms`: millisecond.
+    - `s`: second.
+    - `m`: point.
+    - `h`: hour.
+    - `d`: day.
 
-同时指定 `with` 和 `for` 属性时，`with` 优先。
+When both `with` and `for` attributes are specified, `with` takes precedence.
 
-如下面的示例代码：
-
-```hvml
-    <!-- 休眠 0 ~ 10.0 秒中的随机时间 -->
-    <sleep with="$SYS.random(10.0)" />
-
-    <!-- 休眠 0.5 秒 -->
-    <sleep for="0.5s" />
-
-    <!-- 休眠 1 天 12 小时 -->
-    <sleep for="1d 12h" />
-```
-
-解释器在执行 `sleep` 元素时，应将当前协程设置为停止状态，并在休眠时间到期后，唤醒当前协程。在因 `sleep` 元素休眠某协程期间，解释器检查到发送给该协程的任何事件，则解释器应立即唤醒该协程。
-
-`sleep` 的结果数据是剩余的休眠时间（秒数，数值类型），若未被打断，则为 0。
-
-### 2.6) 执行器
-
-在 `choose`、 `iterate` 以及 `reduce` 等动作标签中，我们通常要使用 `by` 介词属性来定义如何执行选择、迭代或者归约操作，我们称之为规则，而实现相应的规则的代码或者功能模块被称为选择器、迭代器或归约器，统称为执行器（executor）。HVML 解释器可实现内置（built-in）执行器，通过简单的语法来指定在选择、迭代、归约数据时遵循什么样的规则。在复杂情形下，HVML 允许文档作者调用外部程序（比如可动态加载的模块）来实现执行器。HVML 使用 `CLASS` 或 `FUNC` 前缀来表示使用外部定义的执行器。
-
-需要说明的是，在 `test` 和 `sort` 标签中也可以使用执行器。`test` 标签中使用执行器的情形同 `choose` 标签。`sort` 标签中使用内建执行器时，将对内建执行器返回的结果执行排序操作，而使用外部执行器时，直接在 `on` 属性指定的数据基础上执行排序操作。
-
-#### 2.6.1) 内建执行器
-
-在 HVML 代码中，内置执行器的规则中可包含求值表达式（本质上属于参数化字符串）。但在调用执行器之前，HVML 解释器会完成求值表达式的求值，将最终的规则字符串传递给执行器，因此，我们在描述内建执行器的规则时，假定已完成相应的求值。
-
-##### 2.6.1.1) `KEY` 执行器
-
-该执行器作用于字典数据上，使用给定的键名或键名列表返回键名、键值或键值对象列表，或者使用匹配某个规则的键名列表，返回键名、键值或者键值对象列表。比如对下面的数据：
+As in the sample code below:
 
 ```hvml
-    <init as="regionStats">
-        { "zh_CN" : 100, "zh_TW" : 90，"zh_HK": 90, "zh_SG": 90, "zh_MO": 80, "en_US": 70, "en_UK": 80 }
-    </init>
+     <!-- Sleep for a random time from 0 to 10.0 seconds -->
+     <sleep with="$SYS. random(10.0)" />
+
+     <!-- Sleep for 0.5 seconds -->
+     <sleep for="0.5s" />
+
+     <!-- sleep 1 day 12 hours -->
+     <sleep for="1d 12h" />
 ```
 
-上面字典数据使用语言地区信息（locale）作为键名，一个整数作为对应的键值。
+When the interpreter executes `sleep` element, it should set the current coroutine to stop state, and wake up the current coroutine after the sleep time expires. During the sleep of a coroutine due to `sleep` element, the interpreter detects any event sent to the coroutine, then the interpreter should wake up the coroutine immediately.
 
-如果我们要获得所有的键值，则使用 `KEY: ALL`。
+The result data of `sleep` is the remaining sleep time (number of seconds, numeric type), or 0 if not interrupted.
 
-如果我们要获得其中几个键名对应的键值，则使用 `KEY: AS 'zh_CN', 'zh_HK'`。
+### 2.6) Actuator
 
-如果我们要获得所有汉语地区的键值，则使用模式匹配 `KEY: LIKE 'zh_*'`，或使用正则表达式 `KEY: LIKE /zh_[A-Z][A-Z]/i`。
+In action tags such as `choose`, `iterate` and `reduce`, we usually use the `by` preposition attribute to define how to perform selection, iteration or reduction operations, which we call rules, and implement the corresponding rules Code or functional modules are called selectors, iterators or reducers, collectively called executors. The HVML interpreter can implement a built-in executor, specifying what rules to follow when selecting, iterating, and reducing data through a simple syntax. In complex cases, HVML allows document authors to call external programs (such as dynamically loadable modules) to implement executors. HVML uses `CLASS` or `FUNC` prefixes to indicate the use of externally defined executors.
 
-如果我们要获得所有中国大陆地区和所有英语地区对应的键值对，可使用 `KEY: AS 'zh_CN' LIKE 'zh_*'`。
+It should be noted that executors are also available in `test` and `sort` tags. The executor used in `test` tag is the same as `choose` tag. When the built-in executor is used in `sort` tag, the sorting operation will be performed on the results returned by the built-in executor. While when using an external executor, the sorting operation will be performed directly on the basis of the data specified by `on` attribute.
 
-我们还可以使用逻辑运算符描述更加复杂的键名匹配条件，如：`KEY: AS 'zh_CN', 'zh_TW' OR NOT LIKE 'en_*'`
+#### 2.6.1) Built-In Executor
 
-当给定的键名不存在匹配项时，则结果中不包含对应的信息。
+In HVML code, rules for built-in executor can contain evaluated expressions (essentially parameterized strings). But before calling the executor, the HVML interpreter will complete the evaluation of the evaluation expression and pass the final rule string to the executor. Therefore, when we describe the rules of the built-in executor, we assume that the corresponding evaluation value has been completed.
 
-`KEY` 执行器的语法如下：
+##### 2.6.1.1) `KEY` Executor
+
+This executor acts on dictionary data, using the given key name or key name list to return the key name, key value or key value object list, or using the key name list matching a certain rule, returning the key name, key value or key A list of value objects. For example for the following data:
+
+```hvml
+     <init as="regionStats">
+         { "zh_CN": 100, "zh_TW": 90,"zh_HK": 90, "zh_SG": 90, "zh_MO": 80, "en_US": 70, "en_UK": 80}
+     </init>
+```
+
+The above dictionary data uses language and locale as the key name, and an integer as the corresponding key value.
+
+If we want to get all key values, use `KEY: ALL`.
+
+If we want to get the key values corresponding to several key names, use `KEY: AS 'zh_CN', 'zh_HK'`.
+
+If we want to get the key values of all Chinese regions, use pattern matching `KEY: LIKE 'zh_*'`, or use regular expression `KEY: LIKE /zh_[A-Z][A-Z]/i`.
+
+If we want to get the key-value pairs corresponding to all mainland China regions and all English regions, we can use `KEY: AS 'zh_CN' LIKE 'zh_*'`.
+
+We can also use logical operators to describe more complex key name matching conditions, such as: `KEY: AS 'zh_CN', 'zh_TW' OR NOT LIKE 'en_*'`
+
+When there is no match for the given key name, the corresponding information is not included in the result.
+
+The syntax of the `KEY` executor is as follows:
 
 ```
     "KEY" [ws] ':' [ws] { "ALL" | <string_matching_logical_expression> } [ <ws> "FOR" <ws> < "VALUE" | "KEY" | "KV" > ]
@@ -5556,92 +5611,92 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     max_matching_length: <literal_positive_integer>
 ```
 
-`KEY` 执行器中的 `FOR` 分句指定了数据的返回形式：
+`FOR` clause in `KEY` executor specifies how the data is returned:
 
-- 取 `VALUE` 时，返回键值（默认行为）。
-- 取 `KEY` 时，返回键名。
-- 取 `KV` 时，会将键值对转换为一个含有两个属性的对象，其中属性 `k` 表示键名，属性 `v` 表示键值，即键值对象。如针对上面的数据，规则 `KEY: AS 'zh_CN', 'zh_HK' FOR KV` 对应的结果数据为：
+- When taking `VALUE`, return the key value (default behavior).
+- When fetching `KEY`, return the key name.
+- When taking `KV`, the key-value pair will be converted into an object with two attributes, where the attribute `k` represents the key name. And the attribute `v` represents the key value, that is, the key-value object. For the above data, the result data corresponding to the rule `KEY: AS 'zh_CN', 'zh_HK' FOR KV` is:
 
 ```json
-    [ { "k": "zh_CN", "v": 100 }, { "k": "zh_TW", "v": 90 } ]
+     [ { "k": "zh_CN", "v": 100 }, { "k": "zh_TW", "v": 90 } ]
 ```
 
-对于字典数据，不指定 `by` 属性时，默认使用 `KEY: ALL` 执行器。
+For dictionary data, when `by` attribute is not specified, `KEY: ALL` executor is used by default.
 
-##### 2.6.1.2) `RANGE` 执行器
+##### 2.6.1.2) `RANGE` Executor
 
-该执行器作用于数组和集合数据上，使用下标范围来返回对应的数组单元列表（集合可视为不包含重复数据单元的数组）。比如对下面的数据：
+This executor acts on array and collection data, and uses the subscript range to return the corresponding list of array elements (a collection can be regarded as an array that does not contain repeated data elements). For example for the following data:
 
 ```hvml
-    <init as="regionStats">
-        [ "zh_CN", 100, "zh_TW", 90, "zh_HK", 90, "zh_SG", 90, "zh_MO", 80, "en_US", 30, "en_UK", 20 ]
-    </init>
+     <init as="regionStats">
+         [ "zh_CN", 100, "zh_TW", 90, "zh_HK", 90, "zh_SG", 90, "zh_MO", 80, "en_US", 30, "en_UK", 20 ]
+     </init>
 ```
 
-如果我们要获得所有的数组单元，则使用 `RANGE: FROM 0`。
+If we want to get all array elements, use `RANGE: FROM 0`.
 
-如果我们要获得前四个数组单元，则使用 `RANGE: FROM 0 TO 3`，返回的数据为：
+If we want to get the first four array cells, use `RANGE: FROM 0 TO 3`, the returned data is:
 
 ```json
-    [ "zh_CN", 100, "zh_TW", 90 ]
+     [ "zh_CN", 100, "zh_TW", 90 ]
 ```
 
-如果我们要获得索引下标为偶数的数组单元，则使用 `RANGE: FROM 0 ADVANCE 2`，返回的数据为：
+If we want to get the array unit whose index subscript is even, then use `RANGE: FROM 0 ADVANCE 2`, the returned data is:
 
 ```json
-    [ "zh_CN", "zh_TW", "zh_HK", "zh_SG", "zh_MO", "en_US", "en_UK" ]
+     [ "zh_CN", "zh_TW", "zh_HK", "zh_SG", "zh_MO", "en_US", "en_UK" ]
 ```
 
-如果我们要获得索引下标为奇数的数组单元，则使用 `RANGE: FROM 1 ADVANCE 2`，返回的数据为：
+If we want to get the array unit whose index subscript is odd, then use `RANGE: FROM 1 ADVANCE 2`, the returned data is:
 
 ```json
-    [ 100, 90, 90, 90, 80, 30, 20 ]
+     [ 100, 90, 90, 90, 80, 30, 20 ]
 ```
 
-`RANGE` 执行器的语法如下：
+The syntax of the `RANGE` executor is as follows:
 
 ```
-    "RANGE" [ws] ':' [ws] "FROM" <ws> <integer_expression> ["TO" <ws> <integer_expression>][ <ws> "ADVANCE" <ws> <integer_expression>]
+     "RANGE" [ws] ':' [ws] "FROM" <ws> <integer_expression> ["TO" <ws> <integer_expression>][ <ws> "ADVANCE" <ws> <integer_expression>]
 
-    integer_expression: <literal_integer> | <integer_evaluation_expression>
-    integer_evaluation_expression: <four_arithmetic_expressions>
-    four_arithmetic_expressions: a four arithmetic expressions like C language, such as `(3.14 * 6 * 6) / 5`
+     integer_expression: <literal_integer> | <integer_evaluation_expression>
+     integer_evaluation_expression: <four_arithmetic_expressions>
+     four_arithmetic_expressions: a four arithmetic expressions like C language, such as `(3.14 * 6 * 6) / 5`
 
 ```
 
-对于数组数据，不指定 `by` 属性时，默认使用 `RANGE: FROM 0` 执行器。
+For array data, when `by` attribute is not specified, `RANGE: FROM 0` executor is used by default.
 
-注意，执行器应检查无效索引值。
+Note that the executor should check for invalid index values.
 
-##### 2.6.1.3) `FILTER` 执行器
+##### 2.6.1.3) `FILTER` Executor
 
-该执行器作用于数组、对象和集合上，使用特定的条件过滤容器中的元素。比如对下面的数据：
+This executor works on arrays, objects, and collections, filtering the elements in the container using specific conditions. For example for the following data:
 
 ```hvml
-    <init as="myArray" uniquely>
-        [ 100, 95, 95, 95, 80, 30, 55, 20 ]
-    </init>
+     <init as="myArray" uniquely>
+         [ 100, 95, 95, 95, 80, 30, 55, 20 ]
+     </init>
 ```
 
-如果我们要获得所有的集合元素，则使用 `FILTER: ALL`，返回的数据为：
+If we want to get all collection elements, use `FILTER: ALL`, the returned data is:
 
 ```json
-    [ 100, 95, 80, 30, 55, 20 ]
+     [ 100, 95, 80, 30, 55, 20 ]
 ```
 
-如果我们要获得数值大于 30 的元素，则使用 `FILTER: GT 30`，返回的数据为：
+If we want to get elements whose value is greater than 30, use `FILTER: GT 30`, the returned data is:
 
 ```json
-    [ 100, 95, 80, 55 ]
+     [ 100, 95, 80, 55 ]
 ```
 
-如果我们要获得以 0 结尾的元素，则使用 `FILTER: LIKE /0\$/`，返回的数据为：
+If we want to get elements ending with 0, use `FILTER: LIKE /0\$/`, the returned data is:
 
 ```json
-    [ 100, 80, 30, 20 ]
+     [ 100, 80, 30, 20 ]
 ```
 
-`FILTER` 执行器的语法如下：
+The syntax of the `FILTER` executor is as follows:
 
 ```
     "FILTER" [ws] ':' [ws] { "ALL" | <number_comparing_logical_expression>  | <string_matching_logical_expression> } \
@@ -5672,43 +5727,43 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     max_matching_length: <literal_positive_integer>
 ```
 
-注意：
+Notice:
 
-1. 当使用数值对比分句时，则数据将被强制转换为数值进行处理。
-1. 当使用字符串匹配分句时，则数据会首先被序列化为字符串，然后进行匹配处理。
-1. 当集合中的元素使用额外的唯一性键名来判断唯一性时，`FILTER` 指定的匹配条件，仅和唯一性键名对应的值相关。
-1. 当该执行器用于集合时，使用键值做过滤条件，并可使用类似 `KEY` 执行器一样的 `FOR` 分句指定返回的数据形式。
+1. When using the numeric value comparison clause, the data will be converted into numeric values for processing.
+1. When using a string to match a clause, the data will be serialized into a string first, and then matched.
+1. When the elements in the collection use an additional unique key name to determine the uniqueness, the matching condition specified by `FILTER` is only related to the value corresponding to the unique key name.
+1. When this executor is used in a collection, use the key value as the filter condition, and use `FOR` clause similar to `KEY` executor to specify the returned data format.
 
-对于集合数据，不指定 `by` 属性时，默认使用 `FILTER: ALL` 执行器。
+For collection data, when `by` attribute is not specified, `FILTER: ALL` executor is used by default.
 
-作为示例，本文档 [2.1.6.3) 预定义变量](#2163-预定义变量) 小节中激活某个特定定时器时使用了 `FILTER` 执行器。
+As an example, `FILTER` executor is used when activating a specific timer in section [2.1.6.3) Predefined variables](#2163-Predefined variables) of this document.
 
-##### 2.6.1.4) 用于字符串的内建执行器
+##### 2.6.1.4) Built-In Executor for Strings
 
-针对字符串数据，HVML 提供如下内建执行器，可分别用于遍历字符串中的字符列表和词元（token）列表：
+For string data, HVML provides the following built-in executors, which can be used to traverse the character list and token list in the string respectively:
 
-- `CHAR:`：将字符串分割为字符列表。语法和 `RANGE` 执行器类似。
-- `TOKEN:`：将字符串按照指定的分隔符分割为词元列表。
+- `CHAR:`: Split the string into a list of characters. The syntax is similar to the `RANGE` executor.
+- `TOKEN:`: Split the string into a list of tokens according to the specified delimiter.
 
-`CHAR` 执行器的语法如下：
+The syntax of `CHAR` executor is as follows:
 
 ```
-    "CHAR" [ws] ':' [ws] "FROM" <ws> <integer_expression> [ <ws> "TO" <ws> <integer_expression>] \
-        [ <ws> "ADVANCE" <ws> <integer_expression>] \
-        [ <ws> "UNTIL" <ws> <quoted_literal_char>]
+     "CHAR" [ws] ':' [ws] "FROM" <ws> <integer_expression> [ <ws> "TO" <ws> <integer_expression>] \
+         [ <ws> "ADVANCE" <ws> <integer_expression>] \
+         [ <ws> "UNTIL" <ws> <quoted_literal_char>]
 
-    integer_expression: <literal_integer> | <integer_evaluation_expression>
-    integer_evaluation_expression: <four_arithmetic_expressions>
-    four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
+     integer_expression: <literal_integer> | <integer_evaluation_expression>
+     integer_evaluation_expression: <four_arithmetic_expressions>
+     four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 ```
 
-比如，当我们使用 `CHAR: FROM 0 TO 10 ADVANCE 2 UNTIL 'f'` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
+For example, when we use `CHAR: FROM 0 TO 10 ADVANCE 2 UNTIL 'f'` actuator to act on the string `A brown fox jumps over a lazy cat`, the returned data is:
 
 ```json
-    [ "A", "b", "o", "n" ]
+     [ "A", "b", "o", "n" ]
 ```
 
-`TOKEN` 执行器的语法如下：
+The syntax of `TOKEN` executor is as follows:
 
 ```
     "TOKEN" [ws] ':' [ws] "FROM" <ws> <integer_expression> [<ws> "TO" <ws> <integer_expression>] \
@@ -5736,53 +5791,53 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     max_matching_length: <literal_positive_integer>
 ```
 
-比如，当我们使用 `TOKEN: FROM 0 TO 2 DELIMETERS ' '` 执行器作用于字符串 `A brown fox jumps over a lazy cat` 时，返回的数据为：
+For example, when we use `TOKEN: FROM 0 TO 2 DELIMETERS ' '` executor to act on the string `A brown fox jumps over a lazy cat`, the returned data is:
 
 ```json
-    [ "A", "brown", "fox" ]
+     [ "A", "brown", "fox" ]
 ```
 
-对于字符串数据，若不指定 `by` 属性时，默认使用 `CHAR: FROM 0` 执行器。
+For string data, if `by` attribute is not specified, `CHAR: FROM 0` executor is used by default.
 
-更进一步，HVML 解释器可提供基于特定自然语言的单词和句子执行器：`WORD` 和 `SENTENCE`。
+Going a step further, the HVML interpreter provides specific natural language-based word and sentence executors: `WORD` and `SENTENCE`.
 
-##### 2.6.1.5) 用于数值的内建执行器
+##### 2.6.1.5) Built-In Executor for Numeric Values
 
-针对数值数据，HVML 提供如下内建执行器，可用于产生数值列表或简称“数列”：
+For numeric data, HVML provides the following built-in executors that can be used to generate lists of numbers, or "sequences" for short:
 
-- `ADD`：满足给定条件时，在给定数值基础上执行加法操作。
-- `SUB`：满足给定条件时，在给定数值基础上执行减法操作。
-- `MUL`：满足给定条件时，在给定数值基础上执行乘法操作。
-- `DIV:`：满足给定条件时，在给定的数值基础上执行除法操作。
-- `FORMULA:`：满足给定条件时，使用给定的迭代公式求值。
-- `OBJFORMULA:`：满足给定条件时，使用给定的多个迭代公式在对象上求值。
+- `ADD`: When the given condition is satisfied, the addition operation is performed on the basis of the given value.
+- `SUB`: When a given condition is met, perform a subtraction operation based on a given value.
+- `MUL`: Perform a multiplication operation based on the given value when the given condition is met.
+- `DIV:`: When the given condition is met, the division operation is performed based on the given value.
+- `FORMULA:`: Use the given iterative formula to evaluate when the given condition is met.
+- `OBJFORMULA:`: Evaluate the formula on the object using the given number of iterations when the given condition is met.
 
-`ADD`、 `SUB`、 `MUL`、 `DIV` 执行器的语法如下：
+The syntax of `ADD`, `SUB`, `MUL`, `DIV` executors is as follows:
 
 ```
-    < "ADD" | "SUB" | "MUL" | "DIV" > [ws] ':' [ws] <number_comparing_logical_expression> <ws> "BY" <ws> <number_expression>
+     < "ADD" | "SUB" | "MUL" | "DIV" > [ws] ':' [ws] <number_comparing_logical_expression> <ws> "BY" <ws> <number_expression>
 
-    number_comparing_logical_expression: a logical expression using `NOT`, `AND`, `OR`, `XOR` as the logical operators, \
-        `( )` as the precedence operators, and <number_comparing_condition> as the basic/minimal logical expression \
-        which can be evaluated as `true` or `false`.
+     number_comparing_logical_expression: a logical expression using `NOT`, `AND`, `OR`, `XOR` as the logical operators, \
+         `( )` as the precedence operators, and <number_comparing_condition> as the basic/minimal logical expression \
+         which can be evaluated as `true` or `false`.
 
-    number_comparing_condition: < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression>
-    number_expression: <literal_number> | <number_evaluation_expression>
-    number_evaluation_expression: <four_arithmetic_expressions>
-    four_arithmetic_expressions: a four arithmetic expressions composed of literal real numbers, such as `(3.14 * 6 * 6) / 5`
+     number_comparing_condition: < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression>
+     number_expression: <literal_number> | <number_evaluation_expression>
+     number_evaluation_expression: <four_arithmetic_expressions>
+     four_arithmetic_expressions: a four arithmetic expressions composed of literal real numbers, such as `(3.14 * 6 * 6) / 5`
 
-    number_expression: <literal_number> | <number_evaluation_expression>
-    number_evaluation_expression: <four_arithmetic_expressions>
-    four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
+     number_expression: <literal_number> | <number_evaluation_expression>
+     number_evaluation_expression: <four_arithmetic_expressions>
+     four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 ```
 
-比如，当我们使用 `ADD: GT 90 BY -3` 执行器作用于数值 `100` 时，返回的数列为：
+For example, when we use `ADD: GT 90 BY -3` actuator to act on the value `100`, the returned sequence is:
 
 ```json
-    [ 100, 97, 94, 91 ]
+     [ 100, 97, 94, 91 ]
 ```
 
-`FORMULA` 执行器的语法如下：
+The syntax of `FORMULA` executor is as follows:
 
 ```
     "FORMULA" [ws] ':' [ws] <number_comparing_logical_expression> <ws> "BY" <ws> <iterative_formula_expression>
@@ -5802,60 +5857,60 @@ const result = method(document.getElementByHVMLHandle('4567834'), 0);
     iterative_formula_expression: a four arithmetic expressions containing `X` as the iterative value, such as `(3.14 * X * X) / 5`
 ```
 
-比如，当我们使用 `FORMULA: LT 500 BY (X * 2 - 50)` 执行器作用于数值 `100` 时，返回的数列为：
+For example, when we use the `FORMULA: LT 500 BY (X * 2 - 50)` actuator to act on the value `100`, the returned sequence is:
 
 ```json
-    [ 100, 150, 250, 450 ]
+     [ 100, 150, 250, 450 ]
 ```
 
-对于数值数据，若不指定 `by` 属性时，默认使用 `ADD: LE $? BY 1` 执行器；该执行器将产生只包含一个数值的数列，这个数值就是当前操作数据。
+For numeric data, if `by` attribute is not specified, `ADD: LE $? BY 1` executor will be used by default; this executor will generate an array containing only one value, which is the current operation data.
 
-`OBJFORMULA` 执行器的语法如下：
+The syntax of `OBJFORMULA` executor is as follows:
 
 ```
-    "OBJFORMULA" [ws] ':' [ws] <value_number_comparing_logical_expression> <ws> "BY" <ws> <iterative_assignment_list>
+     "OBJFORMULA" [ws] ':' [ws] <value_number_comparing_logical_expression> <ws> "BY" <ws> <iterative_assignment_list>
 
-    value_number_comparing_logical_expression: a logical expression using `NOT`, `AND`, `OR`, `XOR` as the logical operators, \
-        `( )` as the precedence operators, and <value_number_comparing_condition> as the basic/minimal logical expression \
-        which can be evaluated as `true` or `false`.
+     value_number_comparing_logical_expression: a logical expression using `NOT`, `AND`, `OR`, `XOR` as the logical operators, \
+         `( )` as the precedence operators, and <value_number_comparing_condition> as the basic/minimal logical expression \
+         which can be evaluated as `true` or `false`.
 
-    value_number_comparing_condition: <key_name> <ws> < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression>
+     value_number_comparing_condition: <key_name> <ws> < "LE" | "LT" | "GT" | "GE" | "NE" | "EQ" > <ws> <number_expression>
 
-    key_name: /^[A-Za-z_][A-Za-z0-9_]*$/
+     key_name: /^[A-Za-z_][A-Za-z0-9_]*$/
 
-    number_expression: <literal_number> | <number_evaluation_expression>
-    number_evaluation_expression: <four_arithmetic_expressions>
-    four_arithmetic_expressions: a four arithmetic expressions composed of literal real numbers, such as `(3.14 * 6 * 6) / 5`
+     number_expression: <literal_number> | <number_evaluation_expression>
+     number_evaluation_expression: <four_arithmetic_expressions>
+     four_arithmetic_expressions: a four arithmetic expressions composed of literal real numbers, such as `(3.14 * 6 * 6) / 5`
 
-    number_expression: <literal_number> | <number_evaluation_expression>
-    number_evaluation_expression: <four_arithmetic_expressions>
-    four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
+     number_expression: <literal_number> | <number_evaluation_expression>
+     number_evaluation_expression: <four_arithmetic_expressions>
+     four_arithmetic_expressions: a four arithmetic expressions, such as `(3.14 * 6 * 6) / 5`
 
-    iterative_assignment_list: <iterative_assignment_expression>[ [ws] ',' [ws] <iterative_assignment_expression>[ [ws] ',' [ws] ...]]
-    iterative_assignment_expression: an assignment expression using `=` as the operator, the left operand is one of the key name of \
-        the current object and the right operand is a four arithmetic expressions containing the key names as the iterative values, \
-        such as `x = (3.14 * y * y) / 5`
+     iterative_assignment_list: <iterative_assignment_expression>[ [ws] ',' [ws] <iterative_assignment_expression>[ [ws] ',' [ws] ...]]
+     iterative_assignment_expression: an assignment expression using `=` as the operator, the left operand is one of the key name of \
+         the current object and the right operand is a four arithmetic expressions containing the key names as the iterative values, \
+         such as `x = (3.14 * y * y) / 5`
 ```
 
-比如，当我们使用 `OBJFORMULA: x LT 500 AND y LT 600 BY x = (x * 2 - 50), y = y + x` 执行器作用于对象 `{ x: 100, y: 0 }` 时，返回的数列为：
+For example, when we use `OBJFORMULA: x LT 500 AND y LT 600 BY x = (x * 2 - 50), y = y + x` and the actuator acts on the object `{ x: 100, y: 0 }`, The returned array is:
 
 ```json
-    [
-        { "x": 100, "y", 100 },
-        { "x": 150, "y", 250 },
-        { "x": 250, "y", 500 },
-    ]
+     [
+         { "x": 100, "y", 100 },
+         { "x": 150, "y", 250 },
+         { "x": 250, "y", 500 },
+     ]
 ```
 
-注意，使用数值执行器用于迭代时：
+Note, when using numeric executors for iteration:
 
-1. 初始迭代数据（也就是上下文变量 `$<` 的值）来自 `on` 属性，而在执行下次迭代之前，上下文变量 `$<` 的值将会用上次迭代的结果数据替代。
-1. 数值执行器的 `by` 属性定义的规则字符串，应在每次迭代时重新求值。
-1. 当迭代次数超出最大设置值时，会抛出 `MaxIterationCount` 异常。
+1. The initial iteration data (that is, the value of the context variable `$<`) comes from `on` attribute, and before the next iteration is executed, the value of the context variable `$<` will be replaced by the result data of the previous iteration.
+1. The rule string defined by `by` attribute of the numeric executor should be re-evaluated on each iteration.
+1. When the number of iterations exceeds the maximum setting value `MaxIterationCount` exception will be thrown.
 
-##### 2.6.1.6) `SQL` 执行器
+##### 2.6.1.6) `SQL` Executor
 
-SQL（structured query language）是关系型数据库管理系统用来查询结构化数据的语言。考虑到 HVML 中大部分数据使用字典数据形成的数组表达，所以，HVML 引入了内建的 SQL 执行器。通过 SQL 执行器，我们可以非常方便地从 `on` 属性指定的数据集中查询获得特定的数据子集，且能够很容易地指定查询的匹配条件。比如针对下面的数据：
+SQL (structured query language) is a language used by relational database management systems to query structured data. Considering that most of the data in HVML is represented by arrays formed by dictionary data, HVML introduces a built-in SQL executor. Through the SQL executor, we can easily query a specific subset of data from the dataset specified by `on` attribute, and can easily specify the matching conditions of the query. For example for the following data:
 
 ```hvml
     <init as="regionStats">
@@ -5871,32 +5926,32 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
     </init>
 ```
 
-我们可以直接使用 `SQL` 执行器来获得上述数据的子集，比如：
+We can directly use `SQL` executor to obtain a subset of the above data, for example:
 
-- 如果我们要获得所有汉语地区的数据子集，则使用 `SQL: SELECT * WHERE locale LIKE 'zh_*'`。
-- 如果我们要获得其中几个特定地区的数据子集，则使用 `SQL: SELECT * WHERE locale IN ('zh_CN', 'zh_TW')`。
-- 如果我们要获得其中 `rank` 键值大于 70 的记录，则使用 `SQL: SELECT locale WHERE rank > 70`。
-- 如果我们要获得其中 `rank` 键值大于 70 汉语地区记录，则使用 `SQL: SELECT locale WHERE locale LIKE 'zh_*' AND rank > 70`。
+- If we want to get the data subset of all Chinese regions, use `SQL: SELECT * WHERE locale LIKE 'zh_*'`.
+- If we want to obtain data subsets of several specific regions, use `SQL: SELECT * WHERE locale IN ('zh_CN', 'zh_TW')`.
+- If we want to get records where the `rank` key value is greater than 70, use `SQL: SELECT locale WHERE rank > 70`.
+- If we want to get the Chinese region records where `rank` key value is greater than 70, then use `SQL: SELECT locale WHERE locale LIKE 'zh_*' AND rank > 70`.
 
-和用于数据库的 SQL 语言不同，我们并没有使用标准 SQL 语句的 `FROM` 分句来指定数据库表，因为在 HVML 中我们已经使用了`on` 介词属性来指定了数据集。因此，可以说 HVML 的 SQL 执行器是一种简化的 SQL 实现，主要借助 SQL 的 `SELECT` 语句实现了选择、迭代和归约操作。具体而言，HVML 的 SQL 语句主要支持如下分句（不同的 HVML 解释器实现可以支持更多的 SQL 分句）。
+Unlike the SQL language used for databases, we do not use `FROM` clause of standard SQL statements to specify database tables, because in HVML we already use the `on` preposition attribute to specify datasets. Therefore, it can be said that HVML's SQL executor is a simplified SQL implementation, which mainly implements selection, iteration and reduction operations with the help of SQL's `SELECT` statement. Specifically, HVML's SQL statements mainly support the following clauses (different HVML interpreter implementations can support more SQL clauses).
 
-- `WHERE`: 用于指定筛选条件。
-- `GROUP BY`：用于指定分组（归约）条件。
-- `ORDER BY`：用于指定排序操作。
+- `WHERE`: It is used to specify filter conditions.
+- `GROUP BY`: It is used  to specify grouping (reduction) conditions.
+- `ORDER BY`: It is used to specify the sort operation.
 
-另外，在 HVML 内置 SQL 解释器的 `SELECT` 语句中，除了使用 `*` 表示返回所有可能字段之外，还可以使用 `&` 返回符合给定条件的整个数据；当数据是数组、字典或者原生实体对象时，可使用 `update` 语句操作修改其内容。如：
+Besides, in `SELECT` statement of HVML’s built-in SQL interpreter, in addition to using `*` to return all possible fields, you can also use `&` to return the entire data that meets the given conditions. When the data is an array, dictionary or When using a native entity object, you can use `update` statement to modify its content. For example:
 
 ```hvml
-    <choose on="$TIMERS" by="SQL: SELECT & WHERE id = 'foo'">
-        <update on="$?" at=".active" with="yes" />
-    </choose>
+     <choose on="$TIMERS" by="SQL: SELECT & WHERE id = 'foo'">
+         <update on="$?" at=".active" with="yes" />
+     </choose>
 ```
 
-在 HVML 中，SQL 执行器也可以作用于 DOM 文档子树或者嵌套结构化字典数据。为此，我们引入了一个新的 SQL SELECT 分句 `TRAVEL IN`，可选 `SLIBLINGS`、 `DEPTH`、 `BREADTH` 或者 `LEAVES`，分别表示使用兄弟节点遍历、深度优先（depth-first）遍历、广度优先（breadth-first）遍历和叶子节点遍历，其语法为：
+In HVML, SQL executors can also operate on DOM document subtrees or nested structured dictionary data. To this end, we introduce a new SQL SELECT clause `TRAVEL IN`, which can choose `SLIBLINGS`, `DEPTH`, `BREADTH` or `LEAVES`. They respectively represent the use of sibling node traversal and depth-first Traversal, breadth-first traversal and leaf node traversal. The syntax is:
 
-- `"TRAVEL" <ws> "IN" <ws> [ "SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES" ]`：用于指定在树形数据上的遍历方式。
+- `"TRAVEL" <ws> "IN" <ws> [ "SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES" ]`: It is used to specify the traversal method on the tree data.
 
-如针对下面的 DOM 树：
+For example, for the following DOM tree:
 
 ```hvml
 <ul>
@@ -5911,7 +5966,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 </ul>
 ```
 
-按本文档 [2.1.17) 文档片段的结构化数据表达](#2117-文档片段的结构化数据表达) 小节中描述的规则，上述 DOM 文档片段对应的结构化数据表达为：
+According to the rules described in this document [2.1.17) Structured data representation of document fragments](#2117-Structured data representation of document fragments), the structured data representation corresponding to the above DOM document fragments is:
 
 ```json
 {
@@ -6000,7 +6055,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 }
 ```
 
-如果我们在上述 DOM 文档片段（或等价的结构化数据）上执行深度优先遍历，则 `SELECT tag, attr.id, textContent TRAVEL IN DEPTH` 语句的执行结果为：
+If we perform a depth-first traversal on the above DOM document fragment (or equivalent structured data), the result of `SELECT tag, attr.id, textContent TRAVEL IN DEPTH` statement is:
 
 ```json
 [
@@ -6019,7 +6074,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 ]
 ```
 
-如果我们在上述 DOM 文档片段（或等价的结构化数据）上执行广度优先遍历，则 `SELECT tag, attr.id, textContent TRAVEL IN BREADTH` 语句的执行结果为：
+If we perform a breadth-first traversal on the above DOM document fragment (or equivalent structured data), the result of the `SELECT tag, attr.id, textContent TRAVEL IN BREADTH` statement is:
 
 ```json
 [
@@ -6040,7 +6095,7 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 ]
 ```
 
-如果我们在上述 DOM 文档片段（或等价的结构化数据）上执行叶子节点遍历，则 `SELECT tag, attr.id, textContent TRAVEL IN LEAVES` 语句的执行结果为：
+If we perform leaf node traversal on the above DOM document fragment (or equivalent structured data), the execution result of `SELECT tag, attr.id, textContent TRAVEL IN LEAVES` statement is:
 
 ```json
 [
@@ -6054,167 +6109,167 @@ SQL（structured query language）是关系型数据库管理系统用来查询�
 ]
 ```
 
-注意，在基于字典数据的数组或者树状结构上执行 SQL 语句时，可选的字段（如 `tag`、 `attr.id` 等）为所有字典数据的键名之并集。对所有未定义的键值对，相应的键值为 `null`。
+Note that when executing SQL statements on an array or tree structure based on dictionary data, the optional fields (such as `tag`, `attr.id`, etc.) are the union of the keys of all dictionary data. For all undefined key-value pairs, the corresponding key value is `null`.
 
-在使用 `TRAVEL IN` 分句时，可使用内置变量，如 `@__depth` 作为当前的遍历深度，`@__index` 作为在当前深度上的索引值，从而可以复用 `WHERE` 条件分句来限定遍历的深度或者数量。如 `SELECT tag, attr.id, textContent WHERE @__depth > 0 AND @__depth < 3 TRAVEL IN DEPTH` 将给出如下结果：
+When using `TRAVEL IN` clause, you can use built-in variables, such as `@__depth` as the current traversal depth, and `@__index` as the index value at the current depth. So you can reuse `WHERE` conditional clause to Limit the depth or amount of traversal. For example `SELECT tag, attr.id, textContent WHERE @__depth > 0 AND @__depth < 3 TRAVEL IN DEPTH` will give the following result:
 
 ```json
 [
-    { "tag": "li", "attr.id": "user-1", "textContent": null },
-    { "tag": "li", "attr.id": "user-2", "textContent": null },
+     { "tag": "li", "attr.id": "user-1", "textContent": null },
+     { "tag": "li", "attr.id": "user-2", "textContent": null },
 ]
 ```
 
-##### 2.6.1.7) `TRAVEL` 执行器
+##### 2.6.1.7) `TRAVEL` Executor
 
-作为一种对 `SQL` 执行器的简单替代，我们可以在树状结构上使用 `TRAVEL` 执行器。
+As a simple alternative to `SQL` executor, we can use `TRAVEL` executor on the tree structure.
 
-`TRAVEL` 执行器的语法如下：
+The syntax of `TRAVEL` actuator is as follows:
 
 ```
-    "TRAVEL" [ws] ':' [ws] <"SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES">
+     "TRAVEL" [ws] ':' [ws] <"SIBLINGS" | "DEPTH" | "BREADTH" | "LEAVES">
 ```
 
-说明如下：
+Described as follows:
 
-- 使用 `TRAVEL: SIBLINGS` 时，遍历和当前节点同级的所有兄弟节点。
-- 使用 `TRAVEL: DEPTH` 时，从第一级子节点开始执行一次深度遍历，直到叶子节点为止。
-- 使用 `TRAVEL: BREADTH` 时，在第一级子节点中执行一次广度遍历，直到遍历完所有第一级子节点为止。
-- 使用 `TRAVEL: LEAVES` 时，遍历所有的叶子节点。
+- When using `TRAVEL: SIBLINGS`, traverse all sibling nodes at the same level as the current node.
+- When using `TRAVEL: DEPTH`, perform a depth traversal from the first level child nodes until the leaf nodes.
+- When `TRAVEL: BREADTH` is used, a breadth traversal is performed in the first-level child nodes until all first-level child nodes are traversed.
+- When using `TRAVEL: LEAVES`, traverse all leaf nodes.
 
-当我们需要将 DOM 子树中的部分元素之属性或内容映射到目标数据或者目标元素时，我们使用这一内建执行器。如：
+We use this built-in executor when we need to map the attributes or content of some elements in the DOM subtree to target data or target elements. like:
 
 ```hvml
-        <archedata name="item_user">
-            {
-                "id": "$?.attr[data-value]", "avatar": "$?.content[0].attr.src",
-                "name": "$?.content[1].textContent", "region": "$?.attr[data-region]"
-            },
-        </archedata>
+         <archedata name="item_user">
+             {
+                 "id": "$?.attr[data-value]", "avatar": "$?.content[0].attr.src",
+                 "name": "$?.content[1].textContent", "region": "$?.attr[data-region]"
+             },
+         </archedata>
 
-        <observe on="#the-user-list" for="change">
+         <observe on="#the-user-list" for="change">
 
-            <init as="users">
-                [ ]
-            </init>
+             <init as="users">
+                 [ ]
+             </init>
 
-            <iterate on="$@" by="TRAVEL: BREADTH">
-                <update on="$users" to="append" with="$item_user" />
-            </iterate>
-        </observe>
+             <iterate on="$@" by="TRAVEL: BREADTH">
+                 <update on="$users" to="append" with="$item_user" />
+             </iterate>
+         </observe>
 ```
 
-上述 HVML 代码在用户清单列表上遍历用户，使用 `item_user` 作为数据模板进行映射，然后将其追加到 `$users` 所在的数组中。
+The above HVML code iterates over the users on the user manifest list, maps using `item_user` as the data template, and appends it to the array in `$users`.
 
-##### 2.6.1.8) 内建执行器的使用
+##### 2.6.1.8) Use of Built-In Executor
 
-以上描述的内建执行器主要用于选择和迭代。
+The built-in executors described above are mainly used for selection and iteration.
 
-当内建执行器不生成任何数据项时，
-- 用于选择时，结果数据为 `undefined`；
-- 用于迭代时，将当前迭代操作出栈。
+When the built-in executor does not generate any data items,
+- When used for selection, the resulting data is `undefined`;
+- When used for iteration, pop the current iteration operation off the stack.
 
-用于选择时，
-- 若执行器仅返回单个数据项，则结果为该数据项；
-- 若执行器返回多个数据项，则结果为数组。
+When used to select,
+- if the executor returns only a single data item, the result is that data item;
+- If the executor returns multiple data items, the result is an array.
 
-SQL 执行器通过 `GROUP BY` 分句，可用于归约。
+The SQL executor can be used for reductions via the `GROUP BY` clause.
 
-当我们在归约操作中使用不直接实现归约操作的内建执行器时，通过返回一些隐含的归约信息来应对归约操作。比如，
+When we use a built-in executor in a reduce operation that does not directly implement the reduce operation, it responds to the reduce operation by returning some implicit reduction information. for example,
 
-1. 计数：符合执行语句条件的数据项数目，对应键名为 `count`。
-1. 总和：符合执行语句条件的数据项之和），对应键名为 `sum`。
-1. 均值：符合执行语句条件的数据项之均值（所有数据项强制转换为数值型数据，数组和字典数据取 0），对应键名为 `avg`。
-1. 最大值：符合执行语句条件的数据项之最大值（所有数据项强制转换为数值型数据，数组和字典数据取 0），对应键名为 `max`。
-1. 最小值：符合执行语句条件的数据项之最小值（所有数据项强制转换为数值型数据，数组和字典数据取 0），对应键名为 `min`。
+1. Count: The number of data items that meet the conditions for executing the statement, and the corresponding key name is `count`.
+1. Sum: The sum of data items that meet the execution statement conditions), and the corresponding key name is `sum`.
+1. Average value: The average value of the data items that meet the execution statement conditions (all data items are forced to be converted to numeric data, and array and dictionary data are set to 0), and the corresponding key name is `avg`.
+1. Maximum value: The maximum value of data items that meet the conditions for executing the statement (all data items are forcibly converted to numerical data, and array and dictionary data are set to 0), and the corresponding key name is `max`.
+1. Minimum value: The minimum value of data items that meet the conditions for executing the statement (all data items are forcibly converted to numeric data, and array and dictionary data take 0), and the corresponding key name is `min`.
 
-此种情况下，归约操作的返回数据将形如：
+In this case, the return data of the reduce operation will look like:
 
 ```json
 {
-    "count": 5,
-    "sum": 400,
-    "avg": 90,
-    "max": 100,
-    "min": 80,
+     "count": 5,
+     "sum": 400,
+     "avg": 90,
+     "max": 100,
+     "min": 80,
 }
 ```
 
-#### 2.6.2) 外部执行器
+#### 2.6.2) External Executor
 
-外部执行器是由外部程序实现的符合所在动作标签要求的类或者函数，通常用于执行复杂的选择、迭代、归约和排序操作，尤其是无法通过内建执行器实现的某些特殊选择、过滤、归约和排序操作时。
+An external executor is a class or function implemented by an external program that meets the requirements of the action tag. It is usually used to perform complex selection, iteration, reduction, and sorting operations, especially some special selections that cannot be implemented through the built-in executor. When filtering, reducing, and sorting operations.
 
-使用外部执行器时，HVML 解释器将根据执行器的类型前缀和当前的动作标签来动态调用对应的函数或者创建对应的类对象来执行相应的操作。HVML 解释器至少应支持如下两类外部执行器：
+When using an external executor, the HVML interpreter will dynamically call the corresponding function or create the corresponding class object to perform the corresponding operation according to the type prefix of the executor and the current action tag. The HVML interpreter should support at least the following two types of external executors:
 
-- `CLASS: <className>@[<moduleName>]`：表示使用模块 `<moduleName>` 中的 `<className>` 类作为执行器，主要用于 `iterate` 动作元素。
-- `FUNC: <funcName>@[<moduleName>]`：表示使用模块 `<moduleName>` 中的 `<funcName>` 函数作为执行器，可用于 `choose`、 `iterate`、 `reduce`、 `sort` 和 `update` 动作元素。
+- `CLASS: <className>@[<moduleName>]`: means to use the `<className>` class in the module `<moduleName>` as the executor, mainly used for `iterate` action elements.
+- `FUNC: <funcName>@[<moduleName>]`: means to use the `<funcName>` function in the module `<moduleName>` as the executor, which can be used for `choose`, `iterate`, `reduce`, ` sort` and `update` action elements.
 
-HVML 解释器可自行定义上述外部执行器的接口规范，比如对 C/C++ 语言来讲，`<moduleName>` 指共享库，对 Python 语言来讲，`<moduleName>` 指一个可装载模块名。
+The HVML interpreter can define the interface specifications of the above-mentioned external executors. For example, for C/C++ language, `<moduleName>` refers to a shared library, and for Python language, `<moduleName>` refers to a loadable module name.
 
-另外，使用外部执行器时，可使用 `with` 属性指定一个额外的参数。
+Alternatively, when using an external executor, an additional parameter can be specified using the `with` attribute.
 
-使用外部执行器时，应用需要在主程序或者外部模块中实现相应的类或者函数。本文档以 Python 语言为例，说明各个外部执行器的实现方法。对于不同于 Python 的脚本语言，比如 C/C++、JavaScript、Lua 等，可参考 Python 的实现进行处理。
+When using an external executor, the application needs to implement the corresponding class or function in the main program or external module. This document uses the Python language as an example to illustrate the implementation methods of each external executor. For scripting languages other than Python, such as C/C++, JavaScript, Lua, etc., you can refer to the implementation of Python for processing.
 
-##### 2.6.2.1) 外部函数执行器
+##### 2.6.2.1) External Function Executor
 
-我们可以使用函数实现所有的外部执行器。以 `Python` 为例，当使用 `by` 介词属性指定一个外部的函数执行器作为选择器、迭代器或规约器时，该执行器必须实现为具有如下原型的函数：
+We can implement all external executors using functions. Taking `Python` as an example, when using `by` preposition attribute to specify an external function executor as a selector, iterator or reducer, the executor must be implemented as a function with the following prototype:
 
 ```python
 def chooser(on_value, with_value):
 ```
 
-对应的功能如下所述：
+The corresponding functions are as follows:
 
-- 作为选择器，源数据（`on` 属性值）应该是一个容器，该函数应该返回源数据中的某项数据。
-- 作为迭代器，该函数应该返回基于源数据生成的一个数组，之后的迭代发生在这个数组上。
-- 作为规约器，源数据应该是一个容器，该函数应该返回对源数据经过特定的规约处理后的数据，通常是一个对象。
+- As a selector, the source data (`on` attribute value) should be a container. And the function should return an item in the source data.
+- As an iterator, this function should return an array generated based on the source data. And subsequent iterations occur on this array.
+- As a reducer, the source data should be a container. And this function should return the data after specific reduction processing on the source data, usually an object.
 
-当使用 `by` 介词属性指定一个外部的函数执行器作为排序器时，该执行器必须实现为具有如下原型的函数：
+When using `by` preposition attribute to specify an external function executor as the sorter. The executor must be implemented as a function with the following prototype:
 
 ```python
 def sorter(on_value, with_value,
-        against_value = None, desc = False, caseless = False):
+         against_value = None, desc = False, caseless = False):
 ```
 
-也就说，`sort` 元素指定的 `against` 属性之以及 `ascendingly`/`descendingly`、 `casesensitively`/`caseinsensitively` 等副词属性值，通过 `against_value`、`desc` 和 `caseless` 参数传递。
+That is to say, `against` attribute specified by `sort` element and the adverb attribute values such as `ascendingly`/`descendingly`, `casesensitively`/`caseinsensitively` are passed through `against_value`, `desc` and `caseless` parameters .
 
-当作为排序器，源数据应该是一个数组或集合，该函数对源数据进行特定的排序处理并返回源数据本身。
+When used as a sorter, the source data should be an array or collection. This function performs specific sorting processing on the source data and returns the source data itself.
 
-比如我们要从全局 `$TIMERS` 变量定义的数据中选择指定的定时器，我们可以使用内建的 SQL 执行器，也可以使用一个外部执行器 `FUNC: ChooseTimer`。
+For example, if we want to select a specified timer from the data defined by the global `$TIMERS` variable, we can use the built-in SQL executor, or an external executor `FUNC: ChooseTimer`.
 
 ```hvml
-    <head>
-        <update on="$TIMERS" to="unite">
-            [
-                { "id" : "foo", "interval" : 1000, "active" : "no" },
-                { "id" : "bar", "interval" : 2000, "active" : "no" },
-            ]
-        </update>
-    </head>
+     <head>
+         <update on="$TIMERS" to="unite">
+             [
+                 { "id" : "foo", "interval" : 1000, "active" : "no" },
+                 { "id" : "bar", "interval" : 2000, "active" : "no" },
+             ]
+         </update>
+     </head>
 
-    <body>
-        ...
+     <body>
+         ...
 
-        <choose on='$TIMERS' by="FUNC:ChooseTimer" with="foo">
-            <update on="$?" at=".active" with="yes" />
-        </choose>
+         <choose on='$TIMERS' by="FUNC:ChooseTimer" with="foo">
+             <update on="$?" at=".active" with="yes" />
+         </choose>
 
-        ...
+         ...
 
-    </body>
+     </body>
 ```
 
-则 `ChooseTimer` 的实现非常简单——从 `on` 属性指定的数组中查找 `id` 为 `with` 属性值（这里是 `foo`）数组单元，若有，则返回这个数组单元，否则返回 `None`。
+Then the implementation of `ChooseTimer` is very simple - find the `id` from the array specified by the `on` attribute as the array element of the `with` attribute value (here `foo`), if there is, return this array element, otherwise return `None`.
 
 ```python
 def ChooseTimer(on_value, with_value):
-    for t in on_value:
-        if with_value == t['id']
-            return t
-    return None
+     for t in on_value:
+         if with_value == t['id']
+             return t
+     return None
 ```
 
-再如使用 `reduce` 统计用户分布的示例，对应的外部 `StatsUser` 函数实现如下：
+As another example of using `reduce` to count user distribution, the corresponding external `StatsUser` function is implemented as follows:
 
 ```python
 def StatsUser(on_value, with_value):
@@ -6235,137 +6290,137 @@ def StatsUser(on_value, with_value):
    return stats
 ```
 
-##### 2.6.2.2) 外部类执行器
+##### 2.6.2.2) External Class Executor
 
-在 `iterate` 动作标签中，除了使用外部函数作为迭代器之外，我们也可以使用由外部类定义的迭代执行器。函数实现的迭代器，需要一次性返回所有待迭代的数据，而类实现的迭代器在每次迭代时被调用获得当前迭代的数据，因此具有更好的灵活性，且在待迭代数据较多时，占用更小的系统资源。
+In `iterate` action tag, in addition to using external functions as iterators, we can also use iteration executors defined by external classes. The iterator implemented by the function needs to return all the data to be iterated at one time. While the iterator implemented by the class is called to obtain the data of the current iteration at each iteration. So it has better flexibility. And when there are many data to be iterated, taking up less system resources.
 
-以 Python 语言为例，使用类作为外部迭代器时，必须实现为 `HVMLIterator` 的子类，该类的实现如下：
-
-```python
-class HVMLIterator:
-    def __init__ (self, on_value, with_value):
-        pass
-
-    # implement this method to iterate the data.
-    def iterate (self):
-        return None
-
-    # implement this method to filter an item.
-    def filter (self, curr_item):
-        return True
-```
-
-`HVMLIterator` 定义了两个方法：
-
-- `iterate`：用于迭代数据，子类必须重载该方法。第一次调用时，该方法返回第一个数据项，之后每调用一次，该方法返回下一个数据项，直到返回 `None` 为止。
-- `filter`：用于过滤某些数据项；当 `iterate` 方法产生一个数据项之后，会调用该方法，若返回 `False`，则丢弃当前数据，继续获取下个数据项。子类可不用实现该方法。
-
-比如对下面迭代并克隆模板插入到指定位置的操作：
-
-```hvml
-    <archetype name="user_item">
-        <li class="user-item">
-            <img class="avatar" />
-            <span></span>
-        </li>
-    </archetype>
-
-    ...
-
-        <ul id="the-user-list" class="user-list">
-            <iterate on="$users" in="#the-user-list" by="CLASS: IUser">
-                <update on="$@" to="append" with="$user_item" />
-                <except type=`BadData`>
-                    <img src="wait.gif" />
-                </except>
-                <except type=`NotIterable`>
-                    <p>Bad user data!</p>
-                </except>
-            </iterate>
-        </ul>
-
-    ...
-```
-
-我们可以如下实现 `IUser` 类：
+Taking the Python language as an example, when using a class as an external iterator, it must be implemented as a subclass of `HVMLIterator`. The implementation of this class is as follows:
 
 ```python
-class IUser (HVMLIterator):
-    def __init__ (self, on_data, with_value):
-        self.on_data = on_data
-        self.i = 0;
-        self.n = len (on_data)
-        pass
+class HVMLIerator:
+     def __init__(self, on_value, with_value):
+         pass
 
-    # implement this method to return the next item.
-    def iterate (self):
-        if self.i < self.n:
-            item = self.on_data[i]
-            i++
-        else:
-            item = None
+     # implement this method to iterate the data.
+     def iterate(self):
+         return None
 
-        return item
-
-    # implement this method to filter an item.
-    def filter (self, item):
-        return True
+     # implement this method to filter an item.
+     def filter(self, curr_item):
+         return True
 ```
 
-#### 2.6.3) 执行器规则表达式的处理
+`HVMLIterator` defines two methods:
 
-根据以上描述，我们可以在执行器的规则表达式中使用变量，如下所示：
+- `iterate`: It is used to iterate data, and subclasses must override this method. The first time this method is called, the method returns the first data item, and each subsequent call returns the next data item until `None` is returned.
+- `filter`: It is used to filter certain data items. When `iterate` method generates a data item, this method will be called. If it returns `False`, the current data will be discarded and the next data item will be obtained. Subclasses do not need to implement this method.
+
+For example, for the following operation of iterating and inserting the clone template into the specified position:
 
 ```hvml
-        <init as="fibonacci">
-            [0, 1, ]
-        </init>
+     <archetype name="user_item">
+         <li class="user-item">
+             <img class="avatar" />
+             <span></span>
+         </li>
+     </archetype>
 
-        <iterate on="1" by="ADD: LT 20 BY $fibonacci[-2]">
-            <update on="$fibonacci" to="append" with="$?" />
-        </iterate>
+     ...
+
+         <ul id="the-user-list" class="user-list">
+             <iterate on="$users" in="#the-user-list" by="CLASS: IUser">
+                 <update on="$@" to="append" with="$user_item" />
+                 <except type=`BadData`>
+                     <img src="wait.gif" />
+                 </except>
+                 <except type=`NotIterable`>
+                     <p>Bad user data!</p>
+                 </except>
+             </iterate>
+         </ul>
+
+     ...
 ```
 
-以上 HVML 代码将获得一个斐波那契（Fibonacci）数列：
+We can implement `IUser` class as follows:
+
+```python
+class IUser (HVMLI Iterator):
+     def __init__(self, on_data, with_value):
+         self.on_data = on_data
+         self.i = 0;
+         self.n = len(on_data)
+         pass
+
+     # implement this method to return the next item.
+     def iterate(self):
+         if self.i < self.n:
+             item = self.on_data[i]
+             i++
+         else:
+             item = None
+
+         return item
+
+     # implement this method to filter an item.
+     def filter(self, item):
+         return True
+```
+
+#### 2.6.3) Processing of Executor Regular Expressions
+
+According to the above description, we can use variables in the regular expression of the executor as follows:
+
+```hvml
+         <init as="fibonacci">
+             [0, 1, ]
+         </init>
+
+         <iterate on="1" by="ADD: LT 20 BY $fibonacci[-2]">
+             <update on="$fibonacci" to="append" with="$?" />
+         </iterate>
+```
+
+The above HVML code will get a Fibonacci sequence:
 
 ```json
 [0, 1, 1, 2, 3, 5, 8, 13]
 ```
 
-解释如下：
+The explanation is as follows:
 
-1. 第一次迭代时，`$fibonacci` 只有初始的两个数值，`$fibonacci[-2]` 的值为 0，所以 `ADD` 执行器的规则为：`LT 20 BY 0`。由于迭代结果的初始值为 1（`on` 属性指定），所以本次迭代的结果为 1。之后，该结果被追加到了 `$fibonacci` 数组中。
-1. 第二次迭代时，`$fibonacci` 中有三个数值，`$fibonacci[-2]` 的值为 1，所以 `ADD` 执行器的规则为：`LT 20 BY 1`，由于上次迭代的结果是 1，所以求值后的结果为 2。之后，该结果被追加到了 `$fibonacci` 数组中。
-1. 第三次迭代时，`$fibonacci` 中有四个数值，`$fibonacci[-2]` 的值为 1，所以 `ADD` 执行器的规则为：`LT 20 BY 1`，由于上次的结果是 2，所以求值后的结果为 3。之后，该结果被追加到了 `$fibonacci` 数组中。
-1. 第四次迭代时，`$fibonacci` 中有五个数值，`$fibonacci[-2]` 的值为 2，所以 `ADD` 执行器的规则为：`LT 20 BY 2`，由于上次的结果是 3，所以求值后的结果为 5。之后，该结果被追加到了 `$fibonacci` 数组中。
-1. 第五次迭代时，`$fibonacci` 中有六个数值，`$fibonacci[-2]` 的值为 3，所以 `ADD` 执行器的规则为：`LT 20 BY 3`，由于上次的结果是 5，所以求值后的结果为 8。之后，该结果被追加到了 `$fibonacci` 数组中。
-1. 第六次迭代时，`$fibonacci` 中有七个数值，`$fibonacci[-1]` 的值为 5，所以 `ADD` 执行器的规则为：`LT 20 BY 5`，由于上次的结果是 8，所以求值后的结果为 13。之后，该结果被追加到了 `$fibonacci` 数组中。
-1. 第七次迭代时，`$fibonacci` 中有八个数值，`$fibonacci[-1]` 的值为 8，所以 `ADD` 执行器的规则为：`LT 20 BY 8`，由于上次的结果是 13，所以求值后的结果为 21。由于该结果不满足 `LT 20` 的条件，所以迭代终止。
+1. In the first iteration, `$fibonacci` only has two initial values. And the value of `$fibonacci[-2]` is 0. So the rule of `ADD` actuator is: `LT 20 BY 0`. Since the initial value of the iteration result is 1 (specified by the `on` attribute), the result of this iteration is 1. Afterwards. The result is appended to `$fibonacci` array.
+1. In the second iteration, there are three values in `$fibonacci`, and the value of `$fibonacci[-2]` is 1. So the rule of `ADD` actuator is: `LT 20 BY 1`. Since the last result of the iteration is 1, so the result of the evaluation is 2. Afterwards, the result is appended to `$fibonacci` array.
+1. In the third iteration, there are four values in `$fibonacci`, and the value of `$fibonacci[-2]` is 1. So the rule of `ADD` actuator is: `LT 20 BY 1`. Due to the above result is 2, so the result of the evaluation is 3. Afterwards, the result is appended to `$fibonacci` array.
+1. In the fourth iteration, there are five values in `$fibonacci`, and the value of `$fibonacci[-2]` is 2. So the rule of `ADD` actuator is: `LT 20 BY 2`. Due to the above result is 3, so the result of the evaluation is 5. Afterwards, the result is appended to the `$fibonacci` array.
+1. At the fifth iteration, there are six values in `$fibonacci`, and the value of `$fibonacci[-2]` is 3, so the rule of the `ADD` actuator is: `LT 20 BY 3`. Due to the above result is 5, so the result of the evaluation is 8. Afterwards, the result is appended to the `$fibonacci` array.
+1. At the sixth iteration, there are seven values in `$fibonacci`, and the value of `$fibonacci[-1]` is 5, so the rule of `ADD` actuator is: `LT 20 BY 5`. Due to the above result is 8, so the result of the evaluation is 13. Afterwards, the result is appended to the `$fibonacci` array.
+1. At the seventh iteration, there are eight values in `$fibonacci`, and the value of `$fibonacci[-1]` is 8, so the rule of `ADD` actuator is: `LT 20 BY 8`. Due to the above result is 13, so the result of the evaluation is 21. The iteration terminates because the result does not satisfy the condition of `LT 20`.
 
-需要注意的是，对执行器规则字符串的处理，大致有如下两个阶段：
+It should be noted that the processing of executor rule strings generally has the following two stages:
 
-1. 若规则字符串中包含有求值表达式，则由 HVML 解释器在将规则字符串传递给执行器之前做处理。也就是说，规则字符串中不会包含任何变量信息，但仍然可能包含规则支持的表达式，如四则运算表达式。
-1. 执行器要根据情况处理可能的规则变化情况，如上述例子中的规则字符串在不同的迭代中有不一样的值。
+1. If the rule string contains an evaluation expression, it will be processed by the HVML interpreter before passing the rule string to the executor. That is to say, the rule string will not contain any variable information, but may still contain expressions supported by the rule, such as four arithmetic operation expressions.
+1. The executor should handle possible rule changes according to the situation. For example, the rule string in the above example has different values in different iterations.
 
-另外，某些执行器无法处理规则动态变化的情形，比如 SQL 和 TRAVEL 执行器。
+In addition, some executors cannot handle dynamic changes in rules, such as SQL and TRAVEL executors.
 
-### 2.7) 响应式更新
+### 2.7) Responsive Update
 
-所谓响应式（responsive）更新，是指对如下的 HVML 代码：
+The so-called responsive update refers to the following HVML code:
 
 ```hvml
-    <init as="message">
-        "hello, world"
-    </init>
+     <init as="message">
+         "hello, world"
+     </init>
 
-    <p>
-        $message
-    </p>
+     <p>
+         $message
+     </p>
 ```
 
-当变量 `$message` 的值被其他 HVML 代码修改时，对应的 HTML 文档将自动更新，而无需使用 `observe` 等元素。
+When the value of the variable `$message` is modified by other HVML code, the corresponding HTML document will be updated automatically without using elements such as `observe`.
 
-在 HVML 提供的表达式绑定能力支持下，响应式处理的支持变得异常简单。我们只需在外部标签中使用 `hvml:responsively` 副词属性，即可标记该元素的文本内容是响应式的：
+With the support of expression binding capabilities provided by HVML, the support of reactive processing becomes extremely simple. We can mark the element's text content as responsive simply by using the `hvml:responsively` adverb attribute in the outer tag:
 
 ```hvml
     <init as="user_name">
@@ -6387,86 +6442,86 @@ class IUser (HVMLIterator):
     </observe>
 ```
 
-以上 HVML 代码在运行时，只要用户修改输入框中的内容，将：
+When the above HVML code is running, as long as the user modifies the content in the input box, it will:
 
-1. 输入框中的内容将自动同步到 `$user_name` 变量。
-1. `$user_name` 的内容变化，将自动触发输入框之上段落内容的变化。
+1. The content in the input box will be automatically synchronized to `$user_name` variable.
+1. The content change of `$user_name` will automatically trigger the change of the content of the paragraph above the input box.
 
-HVML 解释器通过为需要响应式处理的表达式隐式添加绑定关系，并观察绑定后的变量来实现。比如，以上代码相当于：
-
-```hvml
-    <p>
-        $hello$user_name
-
-        <bind as="__p_textContent">$hello$user_name</bind>
-        <observe on="$__p_textContent" for="change">
-            <update on="$@" at="textContent" with="$__p_textContent.eval">
-        </observe>
-    </p>
-
-    <input type="text" name="user-name" placeholder="Your Name" value="$user_name" />
-
-    <observe on="input[name='user-name']" for="change">
-        <init as="user_name" with="$?.attr.value" />
-    </observe>
-```
-
-使用响应式处理后，开发者不需要显式书写 `bind` 和 `observe` 标签即可获得相同的响应式处理效果，只需要在外部标签中增加 `hvml:responsively` 副词属性即可。
-
-下面的例子，将用户名称和输入框中输入的姓名绑定在一起；通过响应式处理，当用户改变输入框中的内容时，`p` 元素的文本内容将自动改变。
+The HVML interpreter does this by implicitly adding bindings to expressions that require reactive processing, and observing bound variables. For example, the above code is equivalent to:
 
 ```hvml
-    <init as="user_name">
-        "Tom"
-    </init>
+     <p>
+         $hello $user_name
 
-    <p hvml:responsively>
-        Hello, $user_name
-    </p>
+         <bind as="__p_textContent">$hello $user_name</bind>
+         <observe on="$__p_textContent" for="change">
+             <update on="$@" at="textContent" with="$__p_textContent.eval">
+         </observe>
+     </p>
 
-    <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="$user_name" />
-    <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name" />
+     <input type="text" name="user-name" placeholder="Your Name" value="$user_name" />
+
+     <observe on="input[name='user-name']" for="change">
+         <init as="user_name" with="$?.attr.value" />
+     </observe>
 ```
 
-当我们需要针对骨架元素的属性使用响应式更新时，我们使用 `&=` 运算符。如：
+After using responsive processing, developers don't need to explicitly write `bind` and `observe` tags to get the same responsive processing effect, just add `hvml:responsively` adverb attribute to the external tag.
+
+The following example binds the user name to the name entered in the input box; through responsive processing, when the user changes the content in the input box, the text content of `p` element will automatically change.
 
 ```hvml
-    <p style &= 'display:$display' hvml:responsively>
-        Hello, $user_name
-    </p>
+     <init as="user_name">
+         "Tom"
+     </init>
+
+     <p hvml:responsively>
+         Hello, $user_name
+     </p>
+
+     <input type="text" name="user-name" id="the-user-name" placeholder="Your Name" value="$user_name" />
+     <bind on="$DOC.query('#the-user-name')[0].attr.value" as="user_name" />
 ```
 
-## 3) HVML 语法
+We use the `&=` operator when we need to use reactive updates for properties of skeleton elements. like:
 
-注：本小节内容参考了 HTML 规范：<https://html.spec.whatwg.org/#syntax>。
+```hvml
+     <p style &= 'display:$display' hvml:responsively>
+         Hello, $user_name
+     </p>
+```
 
-### 3.1) 书写 HVML 文档
+## 3) HVML Syntax
 
-HVML 本质上采用 XML 语法描述程序中的各个元素。HVML 文档的书写需满足如下要点：
+Note: This section refers to the HTML specification: <https://html.spec.whatwg.org/#syntax>.
 
-1. 始终使用 UTF-8 编码。
-1. 使用 XML 语法。
-1. 区分大小写。
-1. 使用 XHTML 语法书写 HTML 片段或模板。
+### 3.1) Write HVML Documentation
 
-一个 HVML 程序由如下几个部分组成：
+HVML essentially uses XML syntax to describe individual elements in a program. The writing of HVML documents needs to meet the following points:
 
-1. 任意数量的注释和 ASCII 空白字符。
-1. 一个 `DOCTYPE`。
-1. 任意数量的注释和 ASCII 空白字符。
-1. 一个以 `hvml` 元素形式定义的文档元素。
-1. 任意数量的注释和 ASCII 空白字符。
+1. Always use UTF-8 encoding.
+1. Use XML syntax.
+1. Case sensitive.
+1. Write HTML fragments or templates using XHTML syntax.
 
-HVML 程序中的注释有两种形式，一种是 `<!-- 注释内容 -->` 形式的常规注释，一种是脚本语言常用的井号（`#` ）注释。其区别在于：
+An HVML program consists of the following parts:
 
-1. 解析器会解析常规注释，并在最终的 vDOM 树中构造出一个注释节点。
-1. 井号注释只能出现在常规注释或者 `DOCTYPE` 之前。任意数量的空白字符加 `#` 字符可定义一个井号注释行，注释行中的所有字符（包括行尾），将被解析器整个忽略。因此，井号注释的内容不会出现在 vDOM 树中。
+1. Any number of comments and ASCII whitespace characters.
+1. A `DOCTYPE`.
+1. Any number of comments and ASCII whitespace characters.
+1. A document element defined as an `hvml` element.
+1. Any number of comments and ASCII whitespace characters.
+
+There are two forms of comments in HVML programs, one is a regular comment in the form of `<!-- comment content -->`, and the other is a pound sign (`#`) comment commonly used in scripting languages. The difference is:
+
+1. The parser parses regular comments and constructs a comment node in the final vDOM tree.
+1. Hashmark comments can only appear before regular comments or `DOCTYPE`. Any number of whitespace characters plus the `#` character defines a pound comment line, all characters in a comment line, including the end of the line, will be completely ignored by the parser. Therefore, the content of the hashtag will not appear in the vDOM tree.
 
 ```
 #!/usr/bin/purc
 # The above line makes the HVML program can be marked as an executable to
 # run it directly on the command line if you installed a correct
-# HVML interpreter, e.g., `/bin/purc` in you system.
+# HVML interpreter, e.g., `/usr/bin/purc` in you system.
 
 # This is a comment line
     # This is another comment line
@@ -6504,55 +6559,35 @@ HVML 程序中的注释有两种形式，一种是 `<!-- 注释内容 -->` 形�
 
 #### 3.1.1) DOCTYPE
 
-DOCTYPE 定义了文档格式以及 HVML 标签使用的前缀。
+DOCTYPE defines the document format and prefixes used by HVML tags.
 
 ```hvml
 <!DOCTYPE hvml>
 ```
 
-一个 `DOCTYPE` 必须按顺序由如下几个部分组成：
+A `DOCTYPE` must consist of the following parts, in order:
 
-> A DOCTYPE must consist of the following components, in this order:
+1. A string of ASCII characters matching `<!DOCTYPE`, case-sensitive.
+1. One or more ASCII whitespace characters.
+1. A case-sensitive string of ASCII characters matching `hvml`.
+1. An optional DOCTYPE system information string.
+1. Zero or more ASCII whitespace characters.
+1. A U+003E GREATER-THAN SIGN character (`>`).
 
-1. 一个由 ASCII 字符组成，且匹配 `<!DOCTYPE` 的字符串，大小写敏感。
-1. 一个或多个 ASCII 空白字符。
-1. 一个由 ASCII 字符组成，且匹配 `hvml` 的字符串，大小写敏感。
-1. 一个可选的 DOCTYPE 系统信息字符串。
-1. 零个或多个 ASCII 空白字符。
-1. 一个 U+003E GREATER-THAN SIGN 字符（`>`）。
+Usually written as `<!DOCTYPE hvml>`, case sensitive.
 
-> 1. A string that is an ASCII case-sensitive match for the string `"<!DOCTYPE"`.
-> 1. One or more ASCII whitespace.
-> 1. A string that is an ASCII case-sensitive match for the string `"hvml"`.
-> 1. Optionally, a DOCTYPE system information string.
-> 1. Zero or more ASCII whitespace.
-> 1. A U+003E GREATER-THAN SIGN character (`>`).
+In the HVML document, when the HVML tag may conflict with a target markup language tag, we can use a predefined prefix to mark the HVML tag. By default, `v:` is used as the prefix, but we can also customize it in DOCTYPE this prefix. The prefix string must start with a letter and end with a colon (`:`).
 
-通常书写为`<!DOCTYPE hvml>`，大小写敏感。
+The format of the SYSTEM identifier string is as follows:
 
-> In other words, `<!DOCTYPE hvml>`, case-sensitively.
+1. One or more ASCII whitespace characters.
+1. A case-sensitive string of ASCII characters matching `SYSTEM`.
+1. One or more ASCII whitespace characters.
+1. A U+0022 QUOTATION MARK character (double quote, `"`) or U+0027 APOSTROPHE character (single quote, `'`).
+1. A literal string specifying a system identifier consisting of one or more tokens separated by U+0020 SPACE characters (space, ` `), such as `f: MATH`. The first token must start with an ASCII letter and end with U+003A COLON MARK (colon, `:`); this token defines a prefix for external tags used in the current HVML document. Other tokens define global variables that should be loaded and bound for the current document, such as `MATH`, `FILE.FS`, `FILE.FILE:F`, etc.
+1. A U+0022 QUOTATION MARK character (double quotation mark) or a U+0027 APOSTROPHE character (single quotation mark), matching a previously used quotation mark.
 
-在 HVML 文档中，当某个 HVML 标签可能和目标标记语言的标签冲突时，我们可以使用预定义前缀来标记 HVML 的标签，默认使用 `v:` 作为前缀，但我们也可以在 DOCTYPE 中自定义这个前缀。前缀字符串必须以字母打头，以冒号（`:`）结尾。
-
-SYSTEM 标识符字符串的格式如下：
-
-1. 一个或多个 ASCII 空白字符。
-1. 一个由 ASCII 字符组成，且匹配 `SYSTEM` 的字符串，大小写敏感。
-1. 一个或多个 ASCII 空白字符。
-1. 一个 U+0022 QUOTATION MARK 字符（双引号，`"`）或 U+0027 APOSTROPHE 字符（单引号，`'`）。
-1. 一个指定系统标识符的字面字符串，由一个或者多个被 U+0020 SPACE 字符（空格，` `）分隔的词元组成，比如 `f: MATH`。第一个词元必须由 ASCII 字母打头并以 U+003A COLON MARK（冒号，`:`）结尾；该词元定义了当前 HVML 文档中使用的外部标签的前缀。其他的词元定义了应该为当前文档装载并绑定的全局变量，比如 `MATH`、 `FILE.FS`、 `FILE.FILE:F` 等。
-1. 一个 U+0022 QUOTATION MARK 字符（双引号）或 U+0027 APOSTROPHE 字符（单引号），需匹配先前使用的引号。
-
-> 1. One or more ASCII whitespace.
-> 1. A string that is an ASCII case-sensitive match for the string "SYSTEM".
-> 1. One or more ASCII whitespace.
-> 1. A U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (the quote mark).
-> 1. A literal string specified the system information, which consists one or multiple tokens delimited by a U+0020 SPACE (` `), such as "v: MATH". The first token must be started with an ASCII alpha and ended with `:` (U+003A COLON MARK); it defines the prefix of HVML tag. The other tokens defines the variables should be bound for this document, such as `MATH`, `FILE.FS`, `FILE.FILE:F`, and so on.
-> 1. A matching U+0022 QUOTATION MARK or U+0027 APOSTROPHE character (i.e. the same character as in the earlier step labeled quote mark).
-
-比如，如果 DOCTYPE 元素被书写为 `<!DOCTYPE hvml SYSTEM "ext: MATH FILE.FS FILE.FILE:F">`，则可在外部标签之前添加指定的前缀，以免和 HVML 标签名称发生冲突：
-
-> For example, if you write the DOCTYPE element as `<!DOCTYPE hvml SYSTEM "ext: MATH FILE.FS FILE.FILE:F">`, you can add the specific prefix to some HVML tags:
+For example, if the DOCTYPE element is written as `<!DOCTYPE hvml SYSTEM "ext: MATH FILE.FS FILE.FILE:F">`, the specified prefix can be added before the outer tags to avoid conflicts with HVML tag names:
 
 ```hvml
 <!DOCTYPE hvml SYSTEM "ext: MATH FILE:FS FILE:FILE">
@@ -6597,504 +6632,438 @@ SYSTEM 标识符字符串的格式如下：
 </hvml>
 ```
 
-注意，我们通常在目标标记语言定义的标签和 HVML 标签冲突时才使用前缀。
+Note that we usually only use prefixes when the tags defined by the target markup language conflict with HVML tags.
 
-当我们使用 `DOCTYPE` 的 `SYSTEM` 标志符定义需要预先装载的全局动态对象时，使用 `<pkg_name>`、 `<pkg_name>:<var_name>`、 `<pkg_name>.<obj_name>` 或者 `<pkg_name>.<obj_name>:<var_name>` 这样的表示法。以上四种表示法的含义分别解释如下：
+When we use `SYSTEM` flag of `DOCTYPE` to define a walker-level dynamic object that needs to be preloaded, use `<pkg_name>`, `<pkg_name>:<var_name>`, `<pkg_name>.<obj_name>` or Notation like `<pkg_name>.<obj_name>:<var_name>`. The meanings of the above four representations are explained as follows:
 
-1. 表示从 `<pkg_name>` 对应的共享库中装载名称同包名 `<pkg_name>` 的动态对象，并绑定为名称是 `<pkg_name>` 的变量。
-1. 表示从 `<pkg_name>` 对应的共享库中装载名称同包名 `<pkg_name>` 的动态对象，并绑定为名称是 `<var_name>` 的变量。
-1. 表示从 `<pkg_name>` 对应的共享库中装载名称为 `<obj_name>` 的动态对象，并绑定为名称是 `<obj_name>` 的变量。
-1. 表示从 `<pkg_name>` 对应的共享库中装载名称为 `<obj_name>` 的动态对象，并绑定为变量 `<var_name>`。
+1. Indicate loading the dynamic object with the same package name `<pkg_name>` from the shared library corresponding to `<pkg_name>`, and binding it as a walker-level variable named `<pkg_name>`.
+1. Indicate loading the dynamic object with the same package name `<pkg_name>` from the shared library corresponding to `<pkg_name>`, and binding it as a walker-level variable named `<var_name>`.
+1. Indicate loading the dynamic object named `<obj_name>` from the shared library corresponding to `<pkg_name>`, and binding it as a walker-level variable named `<obj_name>`.
+1. Indicate that the dynamic object named `<obj_name>` is loaded from the shared library corresponding to `<pkg_name>`, and bound as a traveler-level variable `<var_name>`.
 
-如 `DATETIME math:MATH FILE.FS FILE.FILE:F`，表示从：
+Such as `DATETIME math:MATH FILE.FS FILE.FILE:F` means from:
 
-1. 从 `DATETIME` 库中装载动态对象 `DATETIME` 并绑定到全局 `DATETIME` 变量。
-1. 从 `math` 库中装载动态对象 `MATH` 并绑定到全局 `MATH` 变量。
-1. 从 `FILE` 库中装载动态对象 `FS` 并绑定到全局 `FS` 变量。
-1. 从 `FILE` 库中装载动态对象 `FILE` 并绑定到全局 `F` 变量。
+1. Load the dynamic object `DATETIME` from the `DATETIME` library and bind it to the traveler-level `DATETIME` variable.
+1. Load the dynamic object `MATH` from the `math` library and bind it to the walker-level `MATH` variable.
+1. Load the dynamic object `FS` from the `FILE` library and bind to the traveler-level `FS` variable.
+1. Load the dynamic object `FILE` from the `FILE` library and bind it to the walker-level `F` variable.
 
-#### 3.1.2) 元素
+#### 3.1.2) Elements
 
-根据其功能及用途，HVML 元素可划分为如下几类：
+According to their functions and uses, HVML elements can be divided into the following categories:
 
-1. 框架元素（framework elements）  
-`hvml`、 `head` 和 `body` 元素。此类元素用于定义 HVML 文档的框架结构。
-2. 普通元素（normal elements）  
-除框架元素之外的其他 HVML 元素，被称为普通元素。普通元素可进一步划分为如下子类：
-   1. 数据动作元素（data operation elements）  
-      `init` 和 `update` 元素。其内容必须是一个合法的参数化数据。
-   1. 一般动作元素（ordinary operation elements）  
-       `erase`、 `clear`、 `test`、 `match`、 `choose`、 `iterate`、 `reduce`、 `observe`、 `fire`、 `load`、 `back`、 `define`、 `include`、 `call`、 `return` 和 `catch` 元素。
-   1. 片段模板元素（fragment template elements）  
-      `archetype`、 `error` 和 `except` 元素。片段模板元素的内容通常是使用目标标记语言书写的文档片段。简称模板元素（template elements）。
-   1. 数据模板元素（data template elements）  
-      `archedata` 元素。其内容必须是一个合法的参数化数据。
-3. 外部元素（foreign elements）  
-所有不属于 HVML 标签定义的元素，被视为外部元素。所有可合法插入到 HVML 文档树中的外部元素，可被称为骨架元素（skeleton element）。此类元素中可包含文本内容、其他外部元素以及其他 HVML 普通元素。
+1. Framework elements
+`hvml`, `head` and `body` elements. These elements are used to define the skeleton structure of an HVML document.
+2. Normal elements
+HVML elements other than frame elements are called normal elements. Common elements can be further divided into the following subclasses:
+    1. Data operation elements
+       `init` and `update` elements. Its content must be a valid parameterized data.
+    1. Ordinary operation elements
+        `erase`, `clear`, `test`, `match`, `choose`, `iterate`, `reduce`, `observe`, `fire`, `load`, `back`, `define`, `include` `, `call`, `return` and `catch` elements.
+    1. Fragment template elements
+       `archetype`, `error` and `except` elements. The content of a fragment template element is typically a document fragment written in the target markup language. Referred to as template elements (template elements).
+    1. Data template elements
+       The `archedata` element. Its content must be a valid parameterized data.
+3. Foreign elements
+All elements not defined by HVML tags are considered external elements. All external elements that can legally be inserted into the HVML document tree can be called skeleton elements. Such elements can contain text content, other external elements, and other normal HVML elements.
 
-根据其语法特点，HVML 元素可划分为如下两类：
+According to its grammatical characteristics, HVML elements can be divided into the following two categories:
 
-1. 名词元素（noun elements）  
-包括框架元素、模板元素和数据模板元素。
-2. 动作元素（operation elements）  
-包括一般动作元素、骨架元素和数据动作元素。
+1. Noun elements
+Includes frame elements, template elements, and data template elements.
+2. Operation elements
+Including general action elements, skeleton elements and data action elements.
 
-一般动作元素用于定义对数据或文档的操作，可包含其他普通元素以及可作为骨架元素使用的外部元素，但不能定义其文本内容。
+General action elements are used to define operations on data or documents, and can contain other common elements and external elements that can be used as skeleton elements, but cannot define their text content.
 
-数据动作元素用于定义数据内容，可包含其他普通元素以及可作为骨架元素使用的外部元素。当包含有子元素时，其数据内容只能出现一次，且前置于任何子元素之前。如下例所示：
-
-```hvml
-        <init as="breakingNews" from="assets/breaking-news-{$SYS.locale}.json" async>
-            {
-                "title": "This is an absolute breaking news!",
-                "shortDesc": "The Zhang family's rooster has laid eggs!",
-                "longDesc": 'Yesterday, the second son of the Zhang family came to me and said, "My rooster has laid eggs!"',
-                "detailedUrl": "#",
-                "time": $SYS.time.iso8601
-            }
-
-            <update on="#breaking-news" to="displace" with="$realCardBody" />
-
-            <observe against="breakingNews" for="change:displaced" in="#breaking-news">
-                <update on="$@" to="displace" with="$realCardBody" />
-            </observe>
-        </init>
-```
-
-一个模板元素的内容位于该模板元素的起始标签之后，终止标签之前，可包含任意的文本、字符引用、外部元素以及注释，但文本不能包含 U+003C LESS-THAN SIGN (`<`) 或者含糊的 `＆` 符号。
-
-> The markup for the template contents of a template element is placed just after the template element's start tag and just before template element's end tag (as with other elements), and may consist of any text, character references, foreign elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
-
-数据模板元素用于定义一个 eJSON 格式的数据模板，其内容定义在该元素的起始标签之后，终止标签之前。
-
-外部元素必须要么同时包含起始标签和终止标签，要么起始标签被标记为自终止。后者情形下，不能包含终止标签。
-
-> Foreign elements must either have a start tag and an end tag, or a start tag that is marked as self-closing, in which case they must not have an end tag. 
-
-比如，HTML 的 `<br>` 元素，在 HVML 中作为外部元素使用时，必须书写为：`<br />`。
-
-当一个外部元素的起始标签被标记为自终止时，该元素不能包含任何内容（显然，没有终止标签就无法在起始标签和终止标签之间放置任何内容）。当一个外部元素的起始标签没有被标记为自终止时，该元素中可包含文本、字符引用、HEE、CDATA 段、注释以及其他外部元素或动作元素，但文本中不可包含 U+003C LESS-THAN SIGN (`<`) 或含糊的 & 符号。
-
-> Foreign elements whose start tag is marked as self-closing can't have any contents (since, again, as there's no end tag, no content can be put between the start tag and the end tag). Foreign elements whose start tag is not marked as self-closing can have text, character references, CDATA sections, other foreign elements or operation elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
-
-当一个外部元素包含 `hvml:raw` 属性时，该外部元素中只能包含可转义裸文本，此类元素统称为可转移文本元素（escapable raw text elements）。
-
-可转义裸文本元素中可包含文本和字符引用，但文本中不可包含任何含糊的 & 符号，另有后面所述之限制。
-
-> Escapable raw text elements can have text and character references, but the text must not contain an ambiguous ampersand. There are also further restrictions described below.
-
-框架和外部元素可包含文本、字符引用、其他普通元素或外部元素以及注释，但文本中不可包含 U+003C LESS-THAN SIGN (`<`) 或含糊的 & 符号。
-
-> Framework and foreign elements can have text, character references, other elements, and comments, but the text must not contain the character U+003C LESS-THAN SIGN (<) or an ambiguous ampersand.
-
-标签包含标签名称，给定了元素的名称。HVML 元素允许使用指定的前缀来避免出现标签名称的冲突。除该前缀中包含的冒号（:）字符之外，标签名称中仅使用 ASCII 字母及数字，且仅使用字母开头。
-
-> Tags contain a tag name, giving the element's name. HVML allows use a prefix for the tag of a HVML-only element. Except for the colon character as the end of the prefix, HVML elements all have names that only use ASCII alphanumerics. 
-
-注意，HVML 标签名称区别大小写。对于外部元素的标签，将保留其大小写形式。
-
-##### 3.1.2.1) 起始标签
-
-起始标签必须具有如下格式：
-
-> Start tags must have the following format:
-
-1. 一个起始标签的第一个字符必须是 U+003C LESS-THAN SIGN 字符（`<`）。
-1. 该起始标签其后的几个字符必须是该元素的标签名称。
-1. 如果在接下来的步骤中存在任意一个属性，则必须有一个或多个 ASCII 空白字符。
-1. 然后，起始标签中可包括一些属性，属性的语法会在后面描述。属性之间必须使用一个或者多个 ASCII 空白字符分隔。
-1. 在属性之后，或者没有属性的情况下在标签名称之后，可以包含一个或者多个 ASCII 空白字符。（某些属性要求必须跟随一个空白字符；见后面的属性小节。）
-1. 然后，如果该元素是一个空白（void）元素，或者该元素是一个外部元素，则可包含一个 U+002F SOLIDUS 字符（`/`）。该字符对空白元素无效，但对外部元素来讲，表明该起始标签是自关闭的（self-closing）。
-1. 最后，起始标签必须由一个 U+003E GREATER-THAN SIGN 字符（`>`）关闭.
-
-> 1. The first character of a start tag must be a U+003C LESS-THAN SIGN character (<).
-> 1. The next few characters of a start tag must be the element's tag name.
-> 1. If there are to be any attributes in the next step, there must first be one or more ASCII whitespace.
-> 1. Then, the start tag may have a number of attributes, the syntax for which is described below. Attributes must be separated from each other by one or more ASCII whitespace.
-> 1. After the attributes, or after the tag name if there are no attributes, there may be one or more ASCII whitespace. (Some attributes are required to be followed by a space. See the attributes section below.)
-> 1. Then, if the element is one of the void elements, or if the element is a foreign element, then there may be a single U+002F SOLIDUS character (/). This character has no effect on void elements, but on foreign elements it marks the start tag as self-closing.
-> 1. Finally, start tags must be closed by a U+003E GREATER-THAN SIGN character (>).
-
-##### 3.1.2.2) 终止标签
-
-终止标签必须具有如下格式：
-
-> End tags must have the following format:
-
-1. 一个终止标签的第一个字符必须是 U+003C LESS-THAN SIGN 字符（`<`）。
-1. 一个终止标签的第二个字符必须是 U+002F SOLIDUS 字符（`/`）。
-1. 该起始标签其后的几个字符必须是该元素的标签名称。
-1. 在标签名称之后，可以有一个或多个 ASCII 空白字符。
-1. 最后，终止标签必须由一个 U+003E GREATER-THAN SIGN 字符（`>`）关闭.
-
-> 1. The first character of an end tag must be a U+003C LESS-THAN SIGN character (<).
-> 1. The second character of an end tag must be a U+002F SOLIDUS character (/).
-> 1. The next few characters of an end tag must be the element's tag name.
-> 1. After the tag name, there may be one or more ASCII whitespace.
-> 1. Finally, end tags must be closed by a U+003E GREATER-THAN SIGN character (>).
-
-##### 3.1.2.3) 属性
-
-> 一个元素的属性在元素的起始标签中表达。
-
-> Attributes for an element are expressed inside the element's start tag.
-
-> 属性有一个名称和一个值。属性名称必须由一个或者多个不是控制字符、U+0020 SPACE、 U+0022（`"`）、 U+0027（`'`）、 U+003E（`>`）、 U+002F（`/`）、  U+003D（`=`）以及非字符（noncharacter）的字符组成。
-
-> Attributes have a name and a value. Attribute names must consist of one or more characters other than controls, U+0020 SPACE, U+0022 ("), U+0027 ('), U+003E (>), U+002F (/), U+003D (=), and noncharacters. In the HVML syntax, attribute names, even those for foreign elements, may be written with any mix of ASCII lower and ASCII upper alphas.
-
-属性值一般是文本和字符引用的混合体，且具有额外限制：文本中不能包含含糊的 `&` 符号。
-
-> Attribute values are a mixture of text and character references, except with the additional restriction that the text cannot contain an ambiguous ampersand.
-
-属性可以如下五种方式指定：
-
-> Attributes can be specified in five different ways:
-
-1) 空属性语法/Empty attribute syntax
-
-仅仅一个属性名，属性值被隐式指定为空字符串。
-
-> Just the attribute name. The value is implicitly the empty string.
-
-在下面的例子中，`uniquely` 属性以空属性语法的形式给定：
-
-> In the following example, the `uniquely` attribute is given with the empty attribute syntax:
+Data action elements are used to define data content, and can contain other common elements and external elements that can be used as skeleton elements. When it contains child elements, its data content can only appear once, and it precedes any child elements. As shown in the following example:
 
 ```hvml
-    <init as="foo" uniquely against="id">
+    <init as="breakingNews" from="assets/breaking-news-{$SYS.locale}.json" async>
+        {
+            "title": "This is an absolute breaking news!",
+            "shortDesc": "The Zhang family's rooster has laid eggs!",
+            "longDesc": 'Yesterday, the second son of the Zhang family came to me and said, "My rooster has laid eggs!"',
+            "detailedUrl": "#",
+            "time": $SYS.time.iso8601
+        }
+
+        <update on="#breaking-news" to="displace" with="$realCardBody" />
+
+        <observe against="breakingNews" for="change:displaced" in="#breaking-news">
+            <update on="$@" to="displace" with="$realCardBody" />
+        </observe>
+    </init>
 ```
 
-如果一个使用空属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
+The content of a template element is located after the start tag of the template element and before the end tag, and can contain any text, character references, external elements, and comments, but the text cannot contain U+003C LESS-THAN SIGN (`<`) or Ambiguous `&` symbol.
 
-> If an attribute using the empty attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
+The data template element is used to define a data template in eJSON format, and its content is defined after the start tag of the element and before the end tag.
 
-2) 无引号属性值语法/Unquoted attribute value syntax
+The outer element must either contain both start and end tags, or the start tag must be marked as self-terminating. In the latter case, the terminating tag cannot be included.
 
-属性名之后跟随有零个或多个 ASCII 空白字符，随后是 U+003D EQUALS SIGN 字符（`=`），随后是零个或者多个 ASCII 空白字符，随后是属性值，而这里的属性值，除了需满足上面提到的属性值要求之外，还不能包含任何字面的 ASCII 空白字符、 U+0022 QUOTATION MARK 字符（`"`）、 U+0027 APOSTROPHE 字符（`'`）、 U+003D EQUALS SIGN 字符（`=`）、 U+003C LESS-THAN SIGN 字符（`<`）、 U+003E GREATER-THAN SIGN 字符（`>`）或者 U+0060 GRAVE ACCENT 字符（`\``），而且不能是一个空字符串。
+For example, when the HTML `<br>` element is used as an external element in HVML, it must be written as: `<br />`.
 
-> The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal ASCII whitespace, any U+0022 QUOTATION MARK characters ("), U+0027 APOSTROPHE characters ('), U+003D EQUALS SIGN characters (=), U+003C LESS-THAN SIGN characters (<), U+003E GREATER-THAN SIGN characters (>), or U+0060 GRAVE ACCENT characters (`), and must not be the empty string.
+When an outer element's start tag is marked as self-terminating, that element cannot contain any content (obviously, you can't put anything between the start and end tags without the end tag). When the start tag of an external element is not marked as self-terminating, the element can contain text, character references, HEE, CDATA sections, comments and other external elements or action elements, but the text cannot contain U+003C LESS- THAN SIGN (`<`) or an ambiguous ampersand.
 
-在下面的例子中，属性由无引号属性值语法的形式给定：
+When an external element contains the `hvml:raw` attribute, only escapable raw text can be included in the external element, and such elements are collectively called escapable raw text elements.
 
-> In the following example, the value attribute is given with the unquoted attribute value syntax:
+Escapeable baretext elements may contain text and character references, but the text must not contain any ambiguous ampersands, subject to the restrictions described below.
+
+Frames and external elements may contain text, character references, other normal elements or external elements, and comments, but text may not contain U+003C LESS-THAN SIGN (`<`) or ambiguous ampersands.
+
+Tags contain a tag name, giving the name of the element. HVML elements allow the use of specified prefixes to avoid tag name collisions. Except for the colon (:) character included in this prefix, use only ASCII letters and numbers in tag names and only start with a letter.
+
+Note that HVML tag names are case sensitive. For tags of external elements, their case will be preserved.
+
+##### 3.1.2.1) Start Tag
+
+The start tag must have the following format:
+
+1. The first character of a start tag must be the U+003C LESS-THAN SIGN character (`<`).
+1. The first few characters following the start tag must be the tag name of the element.
+1. If any of the attributes are present in the next steps, there must be one or more ASCII whitespace characters.
+1. Then, some attributes can be included in the start tag, and the syntax of attributes will be described later. Attributes must be separated by one or more ASCII whitespace characters.
+1. One or more ASCII whitespace characters may be included after the attribute, or after the tag name if there is no attribute. (Some attributes require a whitespace to follow; see the Attributes section below.)
+1. Then, if the element is a void element, or if the element is an external element, it can contain a U+002F SOLIDUS character (`/`). This character is invalid for blank elements, but for external elements, it indicates that the start tag is self-closing (self-closing).
+1. Finally, the start tag must be closed by a U+003E GREATER-THAN SIGN character (`>`).
+
+##### 3.1.2.2) End Tag
+
+Termination tags must have the following format:
+
+1. The first character of a terminating tag must be the U+003C LESS-THAN SIGN character (`<`).
+1. The second character of a terminating tag must be the U+002F SOLIDUS character (`/`).
+1. The first few characters following the start tag must be the tag name of the element.
+1. After the tag name, there can be one or more ASCII whitespace characters.
+1. Finally, the terminating tag must be closed by a U+003E GREATER-THAN SIGN character (`>`).
+
+##### 3.1.2.3) Attribute
+
+The attribute of an element is expressed in the element's start tag.
+
+Attribute has a name and a value. Attribute names must consist of one or more characters that are not control characters, U+0020 SPACE, U+0022 (`"`), U+0027 (`'`), U+003E (`>`), U+002F (`/ `), U+003D (`=`), and noncharacter (noncharacter) characters.
+
+Attribute values are typically a mixture of text and character references, with an additional restriction: text cannot contain ambiguous `&` symbols.
+
+Attribute can be specified in five ways:
+
+1) Empty attribute syntax/Empty attribute syntax
+
+Just a attribute name, the attribute value is implicitly specified as the empty string.
+
+In the following example, the `uniquely` attribute is given with the empty attribute syntax:
 
 ```hvml
-    <init as=foo uniquely against=id>
+     <init as="foo" uniquely against="id">
 ```
 
-如果一个使用无引号属性语法的属性之后跟随另一个属性，或者随后是起始标签语法第 6 步中提到的可选 U+002F SOLIDUS 字符（`/`），则必须使用 ASCII 空白字符来分隔这两个东西。
+If an attribute using the empty attribute syntax is followed by another attribute, the two attributes must be separated by an ASCII whitespace character.
 
-> If an attribute using the unquoted attribute syntax is to be followed by another attribute or by the optional U+002F SOLIDUS character (/) allowed in step 6 of the start tag syntax above, then there must be ASCII whitespace separating the two.
+2) Unquoted attribute value syntax/Unquoted attribute value syntax
 
-3) 单引号属性值语法/Single-quoted attribute value syntax
+The attribute name is followed by zero or more ASCII blank characters, followed by the U+003D EQUALS SIGN character (`=`), followed by zero or more ASCII blank characters, followed by the attribute value, and the attribute value here, In addition to meeting the attribute value requirements mentioned above, it cannot contain any literal ASCII whitespace characters, U+0022 QUOTATION MARK characters (`"`), U+0027 APOSTROPHE characters (`'`), U+003D EQUALS SIGN character (`=`), U+003C LESS-THAN SIGN character (`<`), U+003E GREATER-THAN SIGN character (`>`), or U+0060 GRAVE ACCENT character (`\``), and Cannot be an empty string.
 
-属性名之后跟随有零个或多个 ASCII 空白字符，随后是 U+003D EQUALS SIGN 字符（`=`），随后是零个或者多个 ASCII 空白字符，随后是单个 U+0027 APOSTROPHE 字符（`'`），随后是属性值，而这里的属性值，除了需满足上面提到的属性值要求之外，还不能包含任何字面的 U+0027 APOSTROPHE 字符（`'`），最后由第二个单独的 U+0027 APOSTROPHE 字符（`'`）结尾。
-
->The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by a single U+0027 APOSTROPHE character ('), followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal U+0027 APOSTROPHE characters ('), and finally followed by a second single U+0027 APOSTROPHE character (').
-
-在下面的例子中，属性由单引号属性值语法的形式给定：
-
-> In the following example, the type attribute is given with the single-quoted attribute value syntax:
+In the following example, attributes are given in the form of the unquoted attribute value syntax:
 
 ```hvml
-    <init as='foo' uniquely against='id'>
+     <init as=foo uniquely against=id>
 ```
 
-如果一个使用单引号属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
+If an attribute using the unquoted attribute syntax is followed by another attribute, or followed by the optional U+002F SOLIDUS character (`/`) mentioned in step 6 of the start tag syntax, it must be separated by an ASCII whitespace character These two things.
 
-If an attribute using the single-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
+3) Single-quoted attribute value syntax/Single-quoted attribute value syntax
 
-4) 双引号属性值语法/Double-quoted attribute value syntax
+The attribute name is followed by zero or more ASCII whitespace characters, followed by a U+003D EQUALS SIGN character (`=`), followed by zero or more ASCII whitespace characters, followed by a single U+0027 APOSTROPHE character (`' `), followed by the attribute value, and the attribute value here, in addition to meeting the attribute value requirements mentioned above, cannot contain any literal U+0027 APOSTROPHE characters (`'`), and finally the second separate End of U+0027 APOSTROPHE character (`'`).
 
-属性名之后跟随有零个或多个 ASCII 空白字符，随后是 U+003D EQUALS SIGN 字符（`=`），随后是零个或者多个 ASCII 空白字符，随后是单个 U+0022 QUOTATION MARK 字符（`"`），随后是属性值，而这里的属性值，除了需满足上面提到的属性值要求之外，还不能包含任何字面的 U+0022 QUOTATION MARK 字符（`"`），最后由第二个单独的 U+0022 QUOTATION MARK 字符（`"`）结尾。
-
-> The attribute name, followed by zero or more ASCII whitespace, followed by a single U+003D EQUALS SIGN character, followed by zero or more ASCII whitespace, followed by a single U+0022 QUOTATION MARK character ("), followed by the attribute value, which, in addition to the requirements given above for attribute values, must not contain any literal U+0022 QUOTATION MARK characters ("), and finally followed by a second single U+0022 QUOTATION MARK character (").
-
-在下面的例子中，属性由双引号属性值语法的形式给定：
-
-> In the following example, the name attribute is given with the double-quoted attribute value syntax:
+In the following example, attributes are given in the form of single-quoted attribute-value syntax:
 
 ```hvml
-    <choose on="$2.payload" in="#the-user-list" with="$user_item">
+     <init as='foo' uniquely against='id'>
 ```
 
-如果一个使用双引号属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
+If an attribute using the single-quote attribute syntax is followed by another attribute, the two attributes must be separated by an ASCII whitespace character.
 
-If an attribute using the double-quoted attribute syntax is to be followed by another attribute, then there must be ASCII whitespace separating the two.
+4) Double-quoted attribute value syntax/Double-quoted attribute value syntax
 
-5) 反引号属性值语法/Grave-quoted attribute value syntax
+The attribute name is followed by zero or more ASCII whitespace characters, followed by a U+003D EQUALS SIGN character (`=`), followed by zero or more ASCII whitespace characters, followed by a single U+0022 QUOTATION MARK character (` "`), followed by the attribute value, and the attribute value here, in addition to meeting the above-mentioned attribute value requirements, cannot contain any literal U+0022 QUOTATION MARK characters (`"`), and finally by the second single U+0022 QUOTATION MARK characters (`"`).
 
-反引号属性值语法，通常用于必须使用系统预定义关键词的场合，比如引用某个错误或者异常的名称。此时，
-
-属性名之后跟随有零个或多个 ASCII 空白字符，随后是 U+003D EQUALS SIGN 字符（`=`），随后是零个或者多个 ASCII 空白字符，随后是单个 U+0060 GRAVE ACCENT 字符（\`），随后是属性值，而这里的属性值，除了需满足上面提到的属性值要求之外，还不能包含任何字面的 U+0060 GRAVE ACCENT 字符（\`），最后由第二个单独的 U+0060 GRAVE ACCENT 字符（\`）结尾。
-
-在动词标签中，介词属性名之后的 U+003D EQUALS SIGN 字符（`=`）可以省略。
-
-在下面的例子中，属性由反引号属性值语法的形式给定：
+In the following example, attributes are given in the form of double-quoted attribute-value syntax:
 
 ```hvml
-    <catch for `NoData`>
-        ...
-    </catch>
-
-    <except type=`NoData`>
-        ...
-    </except>
+     <choose on="$2.payload" in="#the-user-list" with="$user_item">
 ```
 
-注意，当使用反引号定义属性值时，必须使用字面的预定义常量，且不做任何求值处理。
+If an attribute using the double-quote attribute syntax is followed by another attribute, the two attributes must be separated by an ASCII whitespace character.
 
-如果一个使用反引号属性语法的属性之后跟随另一个属性，则必须使用 ASCII 空白字符来分隔这两个属性。
+5) Grave-quoted attribute value syntax/Grave-quoted attribute value syntax
+
+The backtick attribute value syntax is usually used in occasions where system-predefined keywords must be used, such as quoting the name of an error or exception. at this time,
+
+The attribute name is followed by zero or more ASCII whitespace characters, followed by a U+003D EQUALS SIGN character (`=`), followed by zero or more ASCII whitespace characters, followed by a single U+0060 GRAVE ACCENT character (\ `), followed by the attribute value, and the attribute value here, in addition to meeting the attribute value requirements mentioned above, cannot contain any literal U+0060 GRAVE ACCENT characters (\`), and finally the second separate U+0060 GRAVE ACCENT character (\`) at the end.
+
+In verb tags, the U+003D EQUALS SIGN character (`=`) after the attribute name of the preposition can be omitted.
+
+In the following example, attributes are given in the form of backticked attribute-value syntax:
+
+```hvml
+     <catch for `NoData`>
+         ...
+     </catch>
+
+     <except type=`NoData`>
+         ...
+     </except>
+```
+
+Note that when using backticks to define attribute values, literal predefined constants must be used without any evaluation.
+
+If an attribute using the backtick attribute syntax is followed by another attribute, the two attributes must be separated by an ASCII whitespace character.
 
 ---
 
-注意，在动词标签中，介词属性名之后的 U+003D EQUALS SIGN 字符（`=`）可以省略。
+Note that in verb tags, the U+003D EQUALS SIGN character (`=`) after the prepositional attribute name can be omitted.
 
-在同一起始标签内，不能有两个或更多属性具有相同的属性名。
+Within the same start tag, no two or more attributes can have the same attribute name.
 
-> There must never be two or more attributes on the same start tag whose names are an ASCII case-sensitive match for each other.
+##### 3.1.2.4) Action Element Attribute
 
-##### 3.1.2.4) 动作元素属性
+In HVML, the attribute values of action elements have the following special features:
 
-在 HVML 中，动作元素的属性值存在如下特殊之处：
+1. The attribute values of action elements can be divided into preposition attribute and adverb attribute, which are inherent attributes.
+1. All preposition attributes need to define corresponding attribute values, and their assignment operators (U+003D EQUALS SIGN `=`) can be omitted.
+1. All adverb attributes are described above (Empty attribute syntax/empty attribute syntax).
+1. In addition to the inherent preposition and adverb attributes, the `with` attribute of `update` tag can use additional assignment operators.
 
-1. 动作元素的属性值可分为介词属性（preposition attribute）和副词属性（adverb attribute），这些属性是固有属性。
-1. 所有介词属性均需定义对应的属性值，可省略其赋值操作符（U+003D EQUALS SIGN `=`）。
-1. 所有副词属性按上述（Empty attribute syntax/空属性语法）表述。
-1. 除固有的介词属性及副词属性之外，`update` 标签的 `with` 属性可使用额外的赋值运算符。
+The assignment operator (`=`) of all prepositional attributes (only in action elements) can be ignored:
 
-所有介词属性（仅在动作元素中）的赋值操作符（`=`）可以被忽略：
-
-```
-    <choose on "$2.payload" to "append update" in "#the-user-list" with "$user_item">
-        <update at = "textContent" with = "foo" />
-    </choose>
+```hvml
+     <choose on "$2.payload" to "append update" in "#the-user-list" with "$user_item">
+         <update at = "textContent" with = "foo" />
+     </choose>
 ```
 
-除了上面所述无引号属性值语法之外，我们还可以在如下情形下省略介词属性值周围的单引号（U+0027 APOSTROPHE `'`）或者双引号（U+0022 QUOTATION MARK `"`）：
+In addition to the unquoted attribute value syntax described above, we can omit single quotes (U+0027 APOSTROPHE `'`) or double quotes (U+0022 QUOTATION MARK `"`) around prepositional attribute values in the following cases:
 
-1. 当使用参数化数据定义数组或对象作为介词属性值时。如，
+1. When using parameterized data definition arrays or objects as preposition attribute values. like,
 
-```
-    <choose on ["zh_CN", "en_US"] to "append update" in #the-user-list with $user_item>
-    </choose>
-```
-
-或，
-
-```
-    <choose on {"zh_CN": 100, "en_US": 50} to "append update" in #the-user-list with $user_item>
-    </choose>
+```hvml
+     <choose on ["zh_CN", "en_US"] to "append update" in #the-user-list with $user_item>
+     </choose>
 ```
 
-另外，当使用单引号时，将忽略整个属性值字符串中的所有求值表达式，当做普通字符串处理。
+or,
 
-在 `update` 元素中，我们可以针对 `with` 属性使用除 `=` 之外的属性值操作符来改变最终数据：
-
-1. 当 `with` 属性的属性值是字符串类型，且修改动作为 `displace` 时：
-   - `+=`：在最终数据中添加一个新的词元（token），若已有该词元，则不做修改。比如，原有的 `attr.class` 的属性值为 `foo`，使用 `at="attr.class" with += "text-warning"` 后，将修改为：`foo text-warning`；若原有属性值为 `foo text-warning`，则会保持不变。
-   - `-=`：在最终数据中移除一个词元，若没有该词元，则不做修改。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with -= "text-warning"` 后，将修改为 `foo`。
-   - `*=`：在最终数据的每个词元之后（默认）或之前（使用 `^` 前缀字符）追加指定的子字符串。比如，原有的 `attr.class` 的属性值为 `info warning`，使用 `at="attr.class" with *= "^text-"` 后，将修改为：`text-info text-warning`。
-   - `/=`：在最终数据中按正则表达式匹配一个词元，并使用第二个词元替换。原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with /= "/^text/ text-info"` 后，将修改为 `foo text-info`。
-   - `%=`：在最终数据中精确匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with %= "text-warning text-info"` 后，将修改为 `foo text-info`。
-   - `~=`：在最终数据中按指定的通配符模式匹配一个词元，并使用第二个词元替换。比如，原有的 `attr.class` 属性值为 `foo text-warning`，则使用 `at="attr.class" with ~= "text-* text-info"` 后，将修改为 `foo text-info`。
-   - `^=`：在最终数据的头部添加指定的属性值。比如，原有的 `attr[data-value]` 的属性值为 `ab`，使用 `at="attr[data-value]" with ^= "C"` 后，将修改为：`Cab`。
-   - `$=`：在最终数据的尾部添加指定的属性值。比如，原有的 `attr[data-value]` 的属性值为 `ab`，使用 `at="attr[data-value]" with $= "C"` 后，将修改为：`abC`。
-1. 当 `with` 属性的属性值是数值型数据，且修改动作为 `displace` 时：
-   - `+=`：将初始的最终数据做数值化处理，然后加上指定的属性值并用结果替代最终数据。
-   - `-=`：将初始的最终数据做数值化处理，然后减去指定的属性值并用结果替代最终数据。
-   - `*=`：将初始的最终数据做数值化处理，然后乘以指定的属性值并用结果替代最终数据。
-   - `/=`：将初始的最终数据做数值化处理，然后除以指定的属性值并用结果替代最终数据。
-   - `%=`：将指定的属性值强制转换为无符号整数：若值为零，用零取代最终数据；若值不为零，则将初始的最终数据做数值化处理，然后用该无符号整数值对最终数据作取模操作并用结果替代最终数据。
-   - `~=`：将初始的最终数据（x）做数值化处理，对指定的属性值（y）做数值化处理，对 x 做四舍五入处理，保留 y 位小数，用结果替代最终数据。当 y 是零或者负数时，相当于浮点数的 `round` 操作。
-   - `^=`：对初始最终数据（x）和指定的属性值（y）做数值化处理，求 x 的 y 次幂，用结果替代最终数据。
-   - `$=`：对初始最终数据（x）和指定的属性值（y）做数值化处理，求 x / y 的余数，用结果替代最终数据。
-
-上述说明中所指词元（token），通常指一个长度不为零的字符序列，其中的字符为 ASCII 字母、ASCII 数字、或者减号（`-`）、连字符（`_`），词元之间由一个或多个空白字符分隔。但在具体的实现中，不包含任何空白字符的可打印字符串视作一个完整的词元。
-
-如，
-
+```hvml
+     <choose on {"zh_CN": 100, "en_US": 50} to "append update" in #the-user-list with $user_item>
+     </choose>
 ```
+
+In addition, when single quotes are used, all evaluation expressions in the entire attribute value string will be ignored and treated as ordinary strings.
+
+In `update` element, we can use attribute value operators other than `=` for the `with` attribute to change the final data:
+
+1. When the attribute value of the `with` attribute is a string type, and the modification action is `displace`:
+    - `+=`: Add a new token (token) to the final data. If the token already exists, it will not be modified. For example, the original attribute value of `attr.class` is `foo`, after using `at="attr.class" with += "text-warning"`, it will be changed to: `foo text-warning`; if the original If there is an attribute value of `foo text-warning`, it will remain unchanged.
+    - `-=`: Remove a token in the final data, if there is no token, do not modify it. For example, the original attribute value of `attr.class` is `foo text-warning`, after using `at="attr.class" with -= "text-warning"`, it will be changed to `foo`.
+    - `*=`: Append the specified substring after (default) or before (using the `^` prefix character) each token of the final data. For example, the original attribute value of `attr.class` is `info warning`, after using `at="attr.class" with *= "^text-"`, it will be changed to: `text-info text-warning `.
+    - `/=`: Match one token by regular expression in the final data and replace it with the second token. The original `attr.class` attribute value is `foo text-warning`, then after using `at="attr.class" with /= "/^text/ text-info"`, it will be changed to `foo text- info`.
+    - `%=`: Exactly match a token in the final data and replace it with the second token. For example, if the original attribute value of `attr.class` is `foo text-warning`, after using `at="attr.class" with %= "text-warning text-info"`, it will be changed to `foo text -info`.
+    - `~=`: Match one token against the specified wildcard pattern in the final data and replace it with the second token. For example, if the original attribute value of `attr.class` is `foo text-warning`, after using `at="attr.class" with ~= "text-* text-info"`, it will be changed to `foo text -info`.
+    - `^=`: Add the specified attribute value at the head of the final data. For example, the original attribute value of `attr[data-value]` is `ab`, after using `at="attr[data-value]" with ^= "C"`, it will be changed to `Cab`.
+    - `$=`: Add the specified attribute value at the end of the final data. For example, the original attribute value of `attr[data-value]` is `ab`, after using `at="attr[data-value]" with $= "C"`, it will be changed to `abC`.
+1. When the attribute value of the `with` attribute is numeric data, and the modification action is `displace`:
+    - `+=`: Numericize the initial final data, then add the specified attribute value and replace the final data with the result.
+    - `-=`: Numericize the initial final data, then subtracts the specified attribute value and replaces the final data with the result.
+    - `*=`: Numericize the initial final data, multiplies it by the specified attribute value and replaces the final data with the result.
+    - `/=`: Numericize the initial final data, divides by the specified attribute value and replaces the final data with the result.
+    - `%=`: Convert the specified attribute value to an unsigned integer: if the value is zero, replace the final data with zero; if the value is not zero, numericalize the initial final data, and then use the Signed integer values modulo the final data and replace the final data with the result.
+    - `~=`: Numericize the initial final data (x), digitize the specified attribute value (y), round x, keep y to decimal places, and replace the final data with the result. When y is zero or negative, it is equivalent to the `round` operation of floating point numbers.
+    - `^=`: Perform numerical processing on the initial final data (x) and the specified attribute value (y), find x raised to the power of y, and replace the final data with the result.
+    - `$=`: Numericize the initial final data (x) and the specified attribute value (y), find the remainder of x / y, and replace the final data with the result.
+
+The word (token) mentioned in the above description usually refers to a sequence of characters whose length is not zero, and the characters in it are ASCII letters, ASCII numbers, or minus signs (`-`), hyphens (`_`). Elements are separated by one or more whitespace characters. However, in a specific implementation, a printable string that does not contain any whitespace characters is considered a complete token.
+
+For example,
+
+```hvml
     <choose on "$2.payload" to "append update" in "#the-user-list" with "$user_item">
         <update at="attr.class" with %= "text-* text-info" />
     </choose>
 ```
 
-注意，动作元素的介词属性，通常会被解释器视作字符串或参数化字符串并在求值后使用，但存在如下例外：
+Note that the preposition attribute of an action element is usually treated as a string or parameterized string by the interpreter and used after evaluation, with the following exceptions:
 
-- 所有动作元素的 `on` 和 `with` 属性，若赋值操作符（=）被忽略且使用无引号属性值语法时，或者使用其他语法情形下且以 `[`、 `{` 或以求值表达式打头时，将被视作一个参数化数据处理；否则按字符串或参数化字符串处理。
-- `iterate` 元素的 `onlyif` 和 `while` 属性，若赋值操作符（=）被忽略且使用无引号属性值语法时，或者使用其他语法情形下，以 `[`、 `{` 或以求值表达式打头时，将被视作一个参数化数据处理；否则按字符串或参数化字符串处理。
+- `on` and `with` attributes of all action elements, if the assignment operator (=) is omitted and the unquoted attribute value syntax is used, or if the other syntax is used and the `[`, `{` or When the value expression begins, it will be treated as a parameterized data; otherwise, it will be treated as a string or a parameterized string.
+- `onlyif` and `while` attributes of `iterate` element start with `[`, `{`, or When the evaluation expression begins, it will be treated as a parameterized data; otherwise, it will be treated as a string or a parameterized string.
 
-如下是省略赋值操作符的情形：
-
-```hvml
-    <!-- 将 $i 初始化为布尔值 true -->
-    <init as i with true />
-
-    <!-- 将 $i 初始化为长整型 100L -->
-    <init as i with 100L />
-
-    <!-- 将 $i 初始化为字符串 `false` -->
-    <init as i with 'false' />
-
-    <!-- 将 $i 初始化为字符串 "100L-zh_CN" -->
-    <init as i with "100L-$SYS.locale" />
-
-    <!-- 使用复合求值表达式的结果初始化 $i，如字符串 "zh_CN" -->
-    <init as i with {{ $REQ.locale || $SYS.locale }} />
-
-    <!-- 使用复合求值表达式的结果初始化 $i，如字符串 "zh_CN" -->
-    <init as i with "{{ $REQ.locale || $SYS.locale }}" />
-
-    <!-- 使用参数化数据，将 $i 初始化为数组 -->
-    <init as i with [0, 1, true, false] />
-
-    <!-- 使用参数化数据，将 $i 初始化为数组 -->
-    <init as i with "[0, 1, true, false]" />
-
-    <!-- 使用参数化数据，将 $i 初始化为对象 -->
-    <init as i with '{ a: 1, b: 2 }' />
-
-    <!-- 使用参数化数据，将 $i 初始化为对象 -->
-    <init as i with { a: 1, b: 2 } />
-
-    <!-- 非指定字符打头，将 $i 初始化为参数化字符串，结果为 " [0, 1, true, false]" -->
-    <init as i with " [0, 1, true, false]" />
-```
-
-如下是不省略赋值操作符的情形：
+Here's what happens when the assignment operator is omitted:
 
 ```hvml
-    <!-- 将 $i 初始化为字符串 "true" -->
-    <init as i with=true />
+     <!-- initialize $i to boolean true -->
+     <init as i with true />
 
-    <!-- 将 $i 初始化为字符串 "100L" -->
-    <init as i with=100L />
+     <!-- initialize $i to a long integer 100L -->
+     <init as i with 100L />
 
-    <!-- 将 $i 初始化为字符串 `false` -->
-    <init as i with='false' />
+     <!-- initialize $i to the string `false` -->
+     <init as i with 'false' />
 
-    <!-- 将 $i 初始化为字符串 "100L-zh_CN" -->
-    <init as i with="100L-$SYS.locale" />
+     <!-- Initialize $i to the string "100L-zh_CN" -->
+     <init as i with "100L-$SYS.locale" />
 
-    <!-- 使用参数化数据，将 $i 初始化为数组 -->
-    <init as i with=[0, 1, true, false] />
+     <!-- Initialize $i with the result of a compound evaluation expression, such as the string "zh_CN" -->
+     <init as i with {{ $REQ.locale || $SYS.locale }} />
 
-    <!-- 使用参数化数据，将 $i 初始化为数组 -->
-    <init as i with="[0, 1, true, false]" />
+     <!-- Initialize $i with the result of a compound evaluation expression, such as the string "zh_CN" -->
+     <init as i with "{{ $REQ.locale || $SYS.locale }}" />
 
-    <!-- 使用参数化数据，将 $i 初始化为对象 -->
-    <init as i with='{ a: 1, b: 2 }' />
+     <!-- Use parameterized data, initialize $i as an array -->
+     <init as i with [0, 1, true, false] />
 
-    <!-- 使用参数化数据，将 $i 初始化为对象 -->
-    <init as i with={ a: 1, b: 2 } />
+     <!-- Use parameterized data, initialize $i as an array -->
+     <init as i with "[0, 1, true, false]" />
 
-    <!-- 非指定字符打头，将 $i 初始化为参数化字符串，结果为 " [0, 1, true, false]" -->
-    <init as i with=" [0, 1, true, false]" />
+     <!-- Using parameterized data, initialize $i to an object -->
+     <init as i with '{ a: 1, b: 2 }' />
+
+     <!-- Using parameterized data, initialize $i to an object -->
+     <init as i with { a: 1, b: 2 } />
+
+     <!-- start with a non-specified character, initialize $i to a parameterized string, the result is " [0, 1, true, false]" -->
+     <init as i with " [0, 1, true, false]" />
 ```
 
-注意，所有动作元素的一般属性（既非介词属性，也非副词属性），均被解释器视作字符串或参数化字符串；所有名词元素和外部元素的属性，均被解释器视作字符串或参数化字符串。
+Here are the cases where the assignment operator is not omitted:
 
-##### 3.1.2.5) 可选标签
+```hvml
+     <!-- initialize $i to the string "true" -->
+     <init as i with=true />
 
-要求使用严格的 XML 语法，所以，原则上不能省略任何标签，但有如下所述的特殊情形。
+     <!-- initialize $i to the string "100L" -->
+     <init as i with=100L />
 
-1) 整个省略 `DOCTYPE`
+     <!-- initialize $i to the string `false` -->
+     <init as i with='false' />
 
-我们可以整个省略 `DOCTYPE` 元素。此种情况下，解析器按如下默认的 `DOCTYPE` 处理：
+     <!-- Initialize $i to the string "100L-zh_CN" -->
+     <init as i with="100L-$SYS.locale" />
+
+     <!-- Use parameterized data, initialize $i as an array -->
+     <init as i with=[0, 1, true, false] />
+
+     <!-- Use parameterized data, initialize $i as an array -->
+     <init as i with="[0, 1, true, false]" />
+
+     <!-- Using parameterized data, initialize $i to an object -->
+     <init as i with='{ a: 1, b: 2 }' />
+
+     <!-- Using parameterized data, initialize $i to an object -->
+     <init as i with={ a: 1, b: 2 } />
+
+     <!-- start with a non-specified character, initialize $i to a parameterized string, the result is " [0, 1, true, false]" -->
+     <init as i with=" [0, 1, true, false]" />
+```
+
+Note that all general attributes of action elements (neither prepositional nor adverbial attributes) are treated as strings or parameterized strings by the interpreter; all attributes of noun elements and external elements are treated as characters by the interpreter string or parameterized string.
+
+##### 3.1.2.5) Optional Tag
+
+Strict XML syntax is required, so, in principle, no tags can be omitted, but there are special cases as described below.
+
+1) Omit `DOCTYPE` entirely
+
+We can omit `DOCTYPE` element entirely. In this case, the parser handles the default `DOCTYPE` as follows:
 
 ```
 <!DOCTYPE hvml SYSTEM "f:">
 ```
 
-2) 整个省略 `head` 元素
+2) Omit `head` element entirely
 
-我们可以整个省略 `head` 元素。此种情况下，若目标文档支持 `head` 元素，将在目标文档中创建一个空的 `head` 元素。
+We can omit `head` element entirely. In this case, if the target document supports a `head` element, an empty `head` element will be created in the target document.
 
 ```hvml
 <!DOCTYPE hvml>
 <hvml target="html">
-    <body>
-        ...
-    </body>
+     <body>
+         ...
+     </body>
 </hvml>
 ```
 
-3) 整个省略 `body` 元素
+3) Omit `body` element entirely
 
-我们可以整个省略 `body` 元素。此种情况下，我们无法通过指定 `body` 的 `id` 属性来执行不同的本体代码。若目标文档支持 `body` 元素，则将在目标文档中创建一个空的 `body` 元素，且 HVML 程序生成的目标文档内容，将插入到 `body` 元素内。若目标文档不支持 `body` 元素，则生成的内容将插入到目标文档的根元素内。
+We can omit the `body` element entirely. In this case, we cannot execute different body codes by specifying the `id` attribute of `body`. If the target document supports the `body` element, an empty `body` element will be created in the target document, and the content of the target document generated by the HVML program will be inserted into the `body` element. If the target document does not support a `body` element, the generated content will be inserted into the root element of the target document.
 
 ```hvml
 <!DOCTYPE hvml SYSTEM 'f: MATH'>
 <hvml target="void">
-    <iterate on 0 onlyif $L.lt($0<, 10) with $MATH.add($0<, 1) >
-        $STREAM.stdout.writelines(
-                $STR.join($0<, ") Hello, world! --from COROUTINE-", $CRTN.cid))
-    </iterate>
+     <iterate on 0 only if $L.lt($0<, 10) with $MATH.add($0<, 1)>
+         $STREAM.stdout.writelines(
+                 $STR.join($0<, ") Hello, world! --from COROUTINE-", $CRTN.cid))
+     </iterate>
 </hvml>
 ```
 
-4) 自动关闭外部元素
+4) Auto-closing outer elements
 
-如下所示由外部元素定义的 HVML 片段：
-
-```hvml
-    <div>
-        <p>台湾是中国领土<strong>不可分割的一部分！
-    </div>
-```
-
-我们省略了 `</strong>` 和 `</p>` 终止标签，上述片段将被解析为：
-
+An HVML fragment defined by an outer element looks like this:
 
 ```hvml
-    <div>
-        <p>台湾是中国领土<strong>不可分割的一部分！</strong></p>
-    </div>
+     <div>
+         <p>Taiwan is an inalienable part of Chinese territory<strong>!
+     </div>
 ```
 
-注意，HVML 解析器不能处理 HTML 规范定义的可选标签处理规则。如：
+We omitted `</strong>` and `</p>` terminating tags, the above fragment would be parsed as:
+
 
 ```hvml
-    <ul>
-        <li>苹果
-        <li>菠萝
-        <li>香蕉
-    </ul>
+     <div>
+         <p>Taiwan is an inalienable part of Chinese territory<strong>! </strong></p>
+     </div>
 ```
 
-按照 HTML 规范，应被解析为：
+Note that HVML parsers cannot handle the optional tag handling rules defined by the HTML specification. like:
 
 ```hvml
-    <ul>
-        <li>苹果</li>
-        <li>菠萝</li>
-        <li>香蕉</li>
-    </ul>
+     <ul>
+         <li>Apple
+         <li>Pineapple
+         <li>banana
+     </ul>
 ```
 
-但会被 HVML 解析器解析为：
+According to the HTML specification, it should be parsed as:
 
 ```hvml
-    <ul>
-        <li>苹果
-            <li>菠萝
-                <li>香蕉</li>
-            </li>
-        </li>
-    </ul>
+     <ul>
+         <li>Apple</li>
+         <li>Pineapple</li>
+         <li>Banana</li>
+     </ul>
 ```
 
-##### 3.1.2.6) 裸文本元素和可转义裸文本元素的内容限制
+but would be parsed by the HVML parser as:
 
-裸文本元素和可转义裸文本元素中的文本不能包含任何以 `</`（U+003C LESS-THAN SIGN, U+002F SOLIDUS）打头，且跟随以 ASCII 字母打头的标签名称以及 U+0009 CHARACTER TABULATION (tab)、U+000A LINE FEED (LF)、U+000C FORM FEED (FF)、U+000D CARRIAGE RETURN (CR)、U+0020 SPACE、U+003E GREATER-THAN SIGN (`>`)，或者 U+002F SOLIDUS (`/`) 字符之一的字符串。
+```hvml
+     <ul>
+         <li>Apple
+             <li>Pineapple
+                 <li>Banana</li>
+             </li>
+         </li>
+     </ul>
+```
 
-> The text in raw text and escapable raw text elements must not contain any occurrences of the string `</` (U+003C LESS-THAN SIGN, U+002F SOLIDUS) followed by a tag name started with an ASCII alpha letter and followed by one of U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), U+0020 SPACE, U+003E GREATER-THAN SIGN (`>`), or U+002F SOLIDUS (`/`).
+##### 3.1.2.6) Content Restrictions for Baretext Elements and Escapable Baretext Elements
 
-##### 3.1.2.7) 数据内容和数据属性
+The text in bare text elements and escapable bare text elements cannot contain any tags starting with `</` (U+003C LESS-THAN SIGN, U+002F SOLIDUS) followed by tag names starting with ASCII letters and U+0009 CHARACTER TABULATION (tab), U+000A LINE FEED (LF), U+000C FORM FEED (FF), U+000D CARRIAGE RETURN (CR), U+0020 SPACE, U+003E GREATER-THAN SIGN (`>`) , or a string of one of the U+002F SOLIDUS (`/`) characters.
 
-HVML 的 `init` 和 `archedata` 元素中包含的文本内容必须为一个合法的参数化数据。如：
+##### 3.1.2.7) Data Content and Data Attribute
+
+The text content contained in `init` and `archedata` elements of HVML must be a valid parameterized data. like:
 
 ```hvml
 <init as="foo">
@@ -7105,169 +7074,135 @@ HVML 的 `init` 和 `archedata` 元素中包含的文本内容必须为一个合
 </init>
 ```
 
-对这类元素的内容，我们称为数据内容。需要说明的是，我们需要使用自包含的语法来描述数据内容，不会像裸文本那么随意，故而可包含 `</` 等字符，因为这些字符通常包含在引号包裹的字符串中，而不会出现在其他位置。
+The content of such elements is called data content. It should be noted that we need to use a self-contained syntax to describe the data content, which is not as random as naked text, so characters such as `</` can be included, because these characters are usually included in the string wrapped in quotation marks, not appear elsewhere.
 
-另外，在动作元素的 `on`、 `with` 等属性值中指定操作数据时，我们也可直接使用参数化数据，如：
+In addition, when specifying operation data in attribute values such as `on` and `with` of action elements, we can also directly use parameterized data, such as:
 
 ```hvml
 <choose on='[$foo, $bar, true, false, null]'>
 </choose>
 ```
 
-对这类属性，我们称为数据属性，数据属性的值使用合法的参数化数据表述。
+For this type of attribute, we call it a data attribute, and the value of the data attribute is represented by legal parameterized data.
 
-在其他的属性值中，使用参数化字符串，如：
+In other attribute values, use parameterized strings, such as:
 
 ```hvml
 <init as='foo' with="foo-$bar" />
 ```
 
-在定义文档片段模板时，其内容将被整个视作一个参数化字符串，如：
+When defining a document fragment template, its content will be treated as a parameterized string as a whole, such as:
 
 ```hvml
 <archetype name="foo">
-    <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
-        <img class="avatar" src="$?.avatar" />
-        <span>$?.name</span>
-    </li>
+     <li class="user-item" id="user-$?.id" data-value="$?.id" data-region="$?.region">
+         <img class="avatar" src="$?.avatar" />
+         <span>$?.name</span>
+     </li>
 </archetype>
 ```
 
-#### 3.1.3) 文本
+#### 3.1.3) Text
 
-在元素内部、属性值和注释中允许使用文本。有关文本使用的限制和使用文本的地方有关，并在其他小节中描述。
+Text is allowed inside elements, in attribute values, and in comments. Restrictions on the use of the text depend on where the text is used and are described in other subsections.
 
-> Text is allowed inside elements, attribute values, and comments. Extra constraints are placed on what is and what is not allowed in text based on where the text is to be put, as described in the other sections.
+##### 3.1.3.1) New Line
 
-##### 3.1.3.1) 新行
+A new line in HVML must be expressed as a U+000D CARRIAGE RETURN (CR) character, a U+000A LINE FEED (LF) character, or a pair of U+000D CARRIAGE RETURN (CR) and U+000A LINE FEED (LF) character.
 
-HVML 中的新行必须表达为 U+000D CARRIAGE RETURN（CR）字符、U+000A LINE FEED（LF）字符，或者成对出现的 U+000D CARRIAGE RETURN（CR）和 U+000A LINE FEED（LF）字符。
+A character reference of the U+000A LINE FEED character (but not the U+000D CARRIAGE RETURN character) also expresses a new line, where character references are allowed.
 
-> Newlines in HVML may be represented either as U+000D CARRIAGE RETURN (CR) characters, U+000A LINE FEED (LF) characters, or pairs of U+000D CARRIAGE RETURN (CR), U+000A LINE FEED (LF) characters in that order.
+#### 3.1.4) Character Reference
 
-在允许字符引用的情况下，U+000A LINE FEED 字符（但非 U+000D CARRIAGE RETURN 字符）的字符引用亦可表达一个新行。
+Text may be mixed with character applications in certain cases described in other subsections. Character references can be used for escaping when certain characters cannot legally be contained in the text.
 
-> Where character references are allowed, a character reference of a U+000A LINE FEED (LF) character (but not a U+000D CARRIAGE RETURN (CR) character) also represents a newline.
+A character reference must begin with a U+0026 AMPERSAND character (`&`), followed by the three possible types of character references:
 
-#### 3.1.4) 字符引用
+1) Named character references/Named character references
 
-在其他小节描述的特定情况下，文本中可混有字符应用。当文本中不能合法地包含某些字符时，字符引用可用于转义。
+The `&` character must be followed by the name given in the "Named Character References" section of the [HTML Specification], and must use the same case. Names must be terminated by a U+003B SEMICOLON character (`;`).
 
-> In certain cases described in other sections, text may be mixed with character references. These can be used to escape characters that couldn't otherwise legally be included in text.
+2) Decimal numbered character reference/Decimal numeric character reference
 
-字符引用必须由一个 U+0026 AMPERSAND 字符（`&`）起始，之后是三种可能的字符引用类型：
+The `&` character must be followed by a U+0023 NUMBER SIGN character (`#`), followed by one or more ASCII digits representing a decimal integer corresponding to the allowed code points defined below. Numbers must be terminated by a U+003B SEMICOLON character (`;`).
 
-> Character references must start with a U+0026 AMPERSAND character (&). Following this, there are three possible kinds of character references:
+3) Hexadecimal numeric character reference
 
-1) 被指名的字符引用/Named character references
+The `&` character must be followed by a U+0023 NUMBER SIGN character (`#`), followed by a U+0078 LATIN SMALL LETTER X character (`x`) or a U+0058 LATIN CAPITAL LETTER X character (`X` ), followed by one or more ASCII hexadecimal digits representing a hexadecimal integer corresponding to the allowed code points defined below. Numbers must be terminated by a U+003B SEMICOLON character (`;`).
 
-`&` 字符之后必须跟随 [HTML Specification] 中“被指名的字符引用”一节中给定的名称，且必须使用相同的大小写形式。名称必须是被 U+003B SEMICOLON 字符（`;`）终止的。
+The two numbered character reference forms described above do not allow references to U+000D CR, noncharacters (noncharacter), and control characters other than ASCII whitespace characters, and any other code point can be referenced.
 
-> The ampersand must be followed by one of the names given in the named character references section in [HTML Specification], using the same case. The name must be one that is terminated by a U+003B SEMICOLON character (;).
+An ambiguous `&` character is a U+0026 AMPERSAND character (`&`) followed by one or more ASCII letters and digits, followed by a U+003B SEMICOLON character (`;`), but these characters do not Cannot match a name given in the "Named Character References" section of the [HTML Specification].
 
-2) 十进制编号的字符引用/Decimal numeric character reference
+#### 3.1.5) CDATA Paragraph
 
-`&` 字符之后必须跟随一个 U+0023 NUMBER SIGN 字符（`#`），随后是一个或者多个 ASCII 数字，这些数字表示一个十进制的整数，对应于 下面的定义被允许的码点。数字之后必须由一个 U+003B SEMICOLON 字符（`;`）终止。
+A CDATA section must contain the following components in the order given:
 
-> The ampersand must be followed by a U+0023 NUMBER SIGN character (#), followed by one or more ASCII digits, representing a base-ten integer that corresponds to a code point that is allowed according to the definition below. The digits must then be followed by a U+003B SEMICOLON character (;).
+1. The string `<![CDATA[`.
+1. Optional text, but the text cannot contain the string `]]>`.
+1. The string `]]>`.
 
-3) 十六进制编号的字符引用/Hexadecimal numeric character reference
-
-`&` 字符之后必须跟随一个 U+0023 NUMBER SIGN 字符（`#`），随后是一个 U+0078 LATIN SMALL LETTER X 字符（`x`）或一个 U+0058 LATIN CAPITAL LETTER X 字符（`X`），随后是一个或多个 ASCII 十六进制数字，这些数字表示一个十六进制的整数，对应于 下面的定义被允许的码点。数字之后必须由一个 U+003B SEMICOLON 字符（`;`）终止。
-
-> The ampersand must be followed by a U+0023 NUMBER SIGN character (#), which must be followed by either a U+0078 LATIN SMALL LETTER X character (x) or a U+0058 LATIN CAPITAL LETTER X character (X), which must then be followed by one or more ASCII hex digits, representing a hexadecimal integer that corresponds to a code point that is allowed according to the definition below. The digits must then be followed by a U+003B SEMICOLON character (;).
-
-上面描述的两种编号的字符引用形式，不允许引用 U+000D CR、非字符（noncharacter）以及除 ASCII 空白字符之外的控制字符，其他任意码点均可引用。
-
-> The numeric character reference forms described above are allowed to reference any code point excluding U+000D CR, noncharacters, and controls other than ASCII whitespace.
-
-一个含糊的 `&` 字符是指，一个 U+0026 AMPERSAND 字符（`&`）之后跟随一个或多个 ASCII 字母及数字，随后是一个 U+003B SEMICOLON 字符（`;`），但这些字符并不能匹配 [HTML Specification] “被指名的字符引用”一节中给定的名称。
-
-> An ambiguous ampersand is a U+0026 AMPERSAND character (&) that is followed by one or more ASCII alphanumerics, followed by a U+003B SEMICOLON character (;), where these characters do not match any of the names given in the named character references section.
-
-#### 3.1.5) CDATA 段落
-
-CDATA 段落必须按给定的顺序包含如下组件：
-
-> CDATA sections must consist of the following components, in this order:
-
-1. 字符串 `<![CDATA[`。
-1. 可选的文本，但文本中不能包含字符串 `]]>`。
-1. 字符串 `]]>`。
-
-> 1. The string `<![CDATA[`.
-> 1. Optionally, text, with the additional restriction that the text must not contain the string `]]>`.
-> 1. The string `]]>`.
-
-CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被用于转义 MathML `ms` 元素的内容：
-
-> CDATA sections can only be used in foreign content. In this example, a CDATA section is used to escape the contents of a MathML ms element:
+CDATA sections can only be used for external content. In the following example, a CDATA section is used to escape the content of the MathML `ms` element:
 
 ```hvml
-<p>You can add a string to a number, but this stringifies the number:</p>
+<p>You can add a string to a number, but this string qualifies the number:</p>
 <math>
- <ms><![CDATA[x<y]]></ms>
- <mo>+</mo>
- <mn>3</mn>
- <mo>=</mo>
- <ms><![CDATA[x<y3]]></ms>
+  <ms><![CDATA[x<y]]></ms>
+  <mo>+</mo>
+  <mn>3</mn>
+  <mo>=</mo>
+  <ms><![CDATA[x<y3]]></ms>
 </math>
 ```
 
-#### 3.1.6) 注释
+#### 3.1.6) Comments
 
-注释必须具有如下的格式：
+Comments must have the following format:
 
-> Comments must have the following format:
+1. The string `<!--`.
+1. Optional text, but the text cannot start with the string `>`, nor can it start with the string `->`, nor can it contain `<!--`, `-->` or `--!> ` string, and cannot end with the string `<!-`.
+1. The string `-->`.
 
-1. 字符串 `<!--`。
-1. 可选文本，但文本中不能以字符串 `>` 打头，也不能以字符串 `->` 打头，也不能包含 `<!--`、 `-->` 或者 `--!>` 字符串，也不能以字符串 `<!-` 结尾。
-1. 字符串 `-->`。
+### 3.2) Parse HVML Documentation
 
-> 1. The string `<!--`.
-> 1. Optionally, text, with the additional restriction that the text must not start with the string `>`, nor start with the string `->`, nor contain the strings `<!--`, `-->`, or `--!>`, nor end with the string `<!-`.
-> 1. The string `-->`.
+(documentation pending).
 
-### 3.2) 解析 HVML 文档
+## 4) Application Example
 
-（待公开文档）。
+All examples in this document are for web applications. In this application scenario, we can use Python or any other script program instead of JavaScript to develop web front-end applications. In this section we introduce some other application scenarios of HVML.
 
-## 4) 应用示例
+### 4.1) Using HVML to Develop Traditional GUI Applications
 
-本文档所有示例是针对 Web 应用的。在这种应用场景中，我们可以使用 Python 或者其他任意的脚本程序来替代 JavaScript 开发 Web 前端应用。本节我们介绍 HVML 的其他一些应用场景。
+We assume a GUI system that uses XML to describe the components (widgets) on the interface. Now, we want to use this GUI system to develop a simple file open dialog box. The general interface requirements are as follows:
 
-### 4.1) 使用 HVML 开发传统 GUI 应用
+1. There is a list box (Listbox), which lists the directories and files under the current path (collectively referred to as directory items). The user can use the mouse or keyboard to switch the currently selected item in the list box, and generate an event that the selected item changes.
+1. At the top of the list box, there is a text tag (tag), which shows the current path.
+1. When the user clicks the "Open" button (Button) below the list box, if the currently selected item in the list box is a directory, enter this directory, modify the content of the text tag used to display the current path, and use the new path Directory items populate the list box, if the currently selected item is a file, returns the selected file.
 
-我们假设有一个 GUI 系统，使用 XML 来描述界面上的构件（widget）。现在，我们要使用这个 GUI 系统开发一个简单的文件打开对话框，大致的界面需求如下：
-
-1. 有一个列表框（Listbox），其中列出了当前路径下的目录及文件（统称为目录项）。用户可使用鼠标或者键盘切换列表框中的当前选中项，并产生一个选中项改变的事件。
-1. 在该列表框的顶部，有一个文本标签（Label），其中显示了当前的路径。
-1. 当用户点击列表框下面的“Open"按钮（Button）时，若列表框的当前选中项是目录，则进入这个目录，修改用于显示当前路径的文本标签内容，并使用新路径下的目录项填充列表框，若当前选中项是一个文件，则返回选中的这个文件。
-
-对上述界面和交互需求，我们通常可以使用如下的 XML 文件描述：
+For the above interface and interaction requirements, we can usually use the following XML file description:
 
 ```xml
 <ui>
-    <label id="path">
-        /home
-    </label>
+     <tag id="path">
+         /home
+     </tag>
 
-    <listbox id="entries">
-        <item class="dir">..</item>
-        <item class="dir">vincent</item>
-        <item class="dir">david</item>
-        <item class="file">README.txt</item>
-    </listbox>
+     <listbox id="entries">
+         <item class="dir">..</item>
+         <item class="dir">vincent</item>
+         <item class="dir">david</item>
+         <item class="file">README.txt</item>
+     </listbox>
 
-    <button id="open">
-        Open
-    </button>
+     <button id="open">
+         open
+     </button>
 </ui>
 ```
 
-注意，为简单起见，我们没有引入有关构件布局的描述信息。
+Note that for simplicity, we do not introduce descriptive information about the component layout.
 
-为满足以上的交互处理需求，我们使用 HVML 来描述这个界面的动态生成以及交互过程：
+In order to meet the above interaction processing requirements, we use HVML to describe the dynamic generation and interaction process of this interface:
 
 ```hvml
 <!DOCTYPE hvml>
@@ -7282,9 +7217,9 @@ CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被�
             }
         </init>
 
-        <label id="path">
+        <tag id="path">
             $fileInfo.curr_path
-        </label>
+        </tag>
 
         <archetype name="dir_entry">
             <item class="$?.type">$?.name</item>
@@ -7331,59 +7266,59 @@ CDATA 段落只能用于外部内容。在下面的例子中，CDATA 段落被�
 </hvml>
 ```
 
-下面对上述 HVML 代码的重点部分做一些说明。
+Let's make some explanations for the key parts of the above HVML code.
 
-首先，该代码使用了一个全局的 `$fileInfo` 变量来记录当前路径（初始为 `/home/`）以及当前选中目录项的类型（初始为 `dir`）和名称（初始为 `..`）。当用户在列表框中选择新的目录项时，会观察到 `selected-item-changed` 事件，并更新 `$fileInfo` 中的 `selected_type` 和 `selected_name` 键值。该事件的 `payload` 键值示例如下：
-
-```json
-    {
-        "type": "dir",
-        "name": "david",
-    }
-```
-
-其次，该代码使用了 `choose` 元素以及一个外部执行器（`CLASS: CDirEntries`）来获得当前路径中的所有目录项。返回的结果数据大致为：
+First, the code uses a global `$fileInfo` variable to record the current path (initially `/home/`) and the type (initially `dir`) and name (initially `..` ). When the user selects a new directory item in the listbox, the `selected-item-changed` event is observed and the `selected_type` and `selected_name` keys in `$fileInfo` are updated. An example of the `payload` key value for this event is as follows:
 
 ```json
-    [
-        { "type": "dir", "name": "david" },
-        { "type": "dir", "name": "vincent" },
-        { "type": "file", "name": "README.txt" },
-    ]
+     {
+         "type": "dir",
+         "name": "david",
+     }
 ```
 
-在上述结果之上，使用 `iterate` 元素填充列表框。
+Second, the code uses the `choose` element and an external executor (`CLASS: CDirEntries`) to get all directory entries in the current path. The returned result data is approximately:
 
-最后，当用户点击 `Open` 按钮时，上述代码会观察到 `clicked` 事件。在处理该事件时，通过检查 `$fileInfo.selected_type` 来完成相应的工作：
+```json
+     [
+         { "type": "dir", "name": "david" },
+         { "type": "dir", "name": "vincent" },
+         { "type": "file", "name": "README.txt" },
+     ]
+```
 
-- 如果当前选中的目录项类型是目录，则切换到该目录。此时，会首先清空列表框，然后再使用新路径下的目录项填充列表框。
-- 如果当前选中的目录项类型是文件，则使用 `back` 标签返回上个 HVML 程序，同时返回 `fileInfo` 数据。
+On top of the above results, populate the listbox with `iterate` elements.
 
-在上述代码中，外部选择器 `CDirEntries` 的实现非常简单，就是列出给定路径下的目录项，并按照要求返回一个字典数组。使用 Python 实现时非常简单，所以这里略去不谈。
+Finally, the above code observes the `clicked` event when the user clicks the `Open` button. When handling the event, do the work by checking `$fileInfo.selected_type`:
 
-如果我们使用 HybridOS 中提到的直接执行本地系统命令的扩展图式（lcmd），我们甚至都不需要编写任何代码，而只需要使用 `init`：
+- If the currently selected directory item type is a directory, switch to that directory. In this case, the list box is first emptied and then populated with the directory items under the new path.
+- If the currently selected directory entry type is a file, use the `back` tag to return to the previous HVML program and return `fileInfo` data.
+
+In the above code, the implementation of the external selector `CDirEntries` is very simple, which is to list the directory entries under the given path and return an array of dictionaries as required. It is very simple to implement in Python, so I will omit it here.
+
+If we use the extended schema (lcmd) mentioned in HybridOS to directly execute local system commands, we don't even need to write any code, but just use `init`:
 
 ```hvml
-        <init as="lcmdParams">
-            { "cmdLine": "ls $fileInfo.curr_path" }
-        <init>
+     <init as="lcmdParams">
+         { "cmdLine": "ls $fileInfo. curr_path" }
+     <init>
 
-        <init from="lcmd:///bin/ls" with="$lcmdParams" via="GET" as="files" temporarily>
-            <iterate on="$files" in="#entries" by="RANGE: 0">
-                <update on="$@" to="append" with="$dir_entry" />
-            </iterate>
-        </init>
+     <init from="lcmd:///bin/ls" with="$lcmdParams" via="GET" as="files" temporarily>
+         <iterate on="$files" in="#entries" by="RANGE: 0">
+             <update on="$@" to="append" with="$dir_entry" />
+         </iterate>
+     </init>
 ```
 
-如此，开发者不需要做编写任何程序，即可实现一个简单的文件浏览和打开对话框。
+In this way, developers can implement a simple file browsing and opening dialog box without writing any programs.
 
-### 4.2) 云应用
+### 4.2) Cloud Apps
 
-HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至可以将 HVML 代码运行在云端，通过云端控制设备上的界面显示，从而形成一个新的云应用解决方案。
+HVML has more potential than the above examples suggest. In the future, we can even run the HVML code on the cloud, and control the interface display on the device through the cloud, thus forming a new cloud application solution.
 
-我们假设一个智能手环上显示当前时间、当地气温、佩戴者的心跳信息和步数信息等信息，而这个智能手环通过 MQTT（一种轻量级消息通讯协议）和云端服务器交换信息，比如向云端服务器发送佩戴者的心跳和步数信息、地理位置信息，获得时间以及当前位置的气象条件等信息。在传统的实现方式中，我们一般需要开发一个在智能手环上运行的 GUI 系统，然后和云端通讯获得数据，界面的修改完全由设备端代码负责。如果要改变界面的样式，大部分情况下需要升级整个智能手环的固件（firmware）。
+We assume that a smart bracelet displays information such as the current time, local temperature, wearer's heartbeat information and step information, and this smart bracelet exchanges information with the cloud server through MQTT (a lightweight message communication protocol), such as Send the wearer's heartbeat and step information, geographic location information to the cloud server, and obtain information such as time and weather conditions at the current location. In the traditional implementation method, we generally need to develop a GUI system running on the smart bracelet, and then communicate with the cloud to obtain data, and the modification of the interface is completely in charge of the device-side code. If you want to change the style of the interface, in most cases, you need to upgrade the firmware of the entire smart bracelet.
 
-但如果我们使用 HVML，则可以通过云端来控制设备的界面显示。运行在云端的 HVML 代码如下所示：
+But if we use HVML, we can control the interface display of the device through the cloud. The HVML code running on the cloud looks like this:
 
 ```hvml
 <!DOCTYPE hvml>
@@ -7438,899 +7373,945 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 </hvml>
 ```
 
-其要点如下：
+The main points are as follows:
 
-1. 该代码生成的 HTML 文档或者对 HTML 文档的改变，将通过类似 WebSocket 的长连接发送给设备，设备根据此信息重新渲染用户界面。
-1. 该代码监听智能手环（设备）通过 MQTT 发送给云端的数据，包括心跳、气温、步数等信息，并更新相应的标签内容。
-1. 该代码设定了一个定时器，每隔 1 秒运行一次，并更新时钟对应的标签内容。
-1. 该代码使用了一个外部选择执行器 `CDumpEvent` 将所有来自 `mqtt` 的事件转储到了云端数据库中。
+1. The HTML document generated by the code or the changes to the HTML document will be sent to the device through a long connection similar to WebSocket, and the device will re-render the user interface based on this information.
+1. The code monitors the data sent by the smart bracelet (device) to the cloud through MQTT, including heartbeat, temperature, steps and other information, and updates the corresponding tag content.
+1. The code sets a timer, runs every 1 second, and updates the tag content corresponding to the clock.
+1. The code uses an external selection executor `CDumpEvent` to dump all events from `mqtt` to the cloud database.
 
-这带来了如下显著的改变：
+This brings about the following notable changes:
 
-1. 复杂的逻辑代码将全部运行在云端，设备端只要有一个足够功能的 HTML/XML 用户代理即可，通常只需要包含一个根据 DOM 树和 CSS 来渲染最终用户界面的渲染器。
-1. 当我们需要调整设备端的显示效果或者功能时，我们只需要修改 HVML 代码，而不需要更新设备端的固件。
-1. 我们还可以通过外部程序，将运行在云端的其他功能，如数据库存储、数据的分析以及人工智能等要素有机整合在一起。
+1. The complex logic code will all run on the cloud, and the device only needs to have an HTML/XML user agent with sufficient functions, and usually only needs to include a renderer to render the final user interface according to the DOM tree and CSS.
+1. When we need to adjust the display effect or function of the device, we only need to modify the HVML code without updating the firmware of the device.
+1. We can also organically integrate other functions running on the cloud, such as database storage, data analysis, and artificial intelligence, through external programs.
 
-## 5) 总结
+## 5) Summary
 
-本文所描述的 HVML，是一种通用、完备、优雅的数据驱动动态标记语言。其主要优点可总结如下：
+The HVML described in this article is a general, complete, and elegant data-driven dynamic markup language. Its main advantages can be summarized as follows:
 
-1. 通过为数不多的动作标签定义了数据驱动的 HTML/XML 文档生成规则，避免使用基于流程控制的传统编程方法，开启了一种新的低代码编程模式。
-1. 通过动作标签的介词属性和副词属性，规定了执行动作所需要的数据和动作类型以及规则，便于开发者理解和掌握，从而降低了学习门槛。
-1. 为除了 JavaScript 脚本语言之外的其他脚本语言（或编程语言），提供了利用 Web 技术（HTML、CSS、HTTP、WebSocket 等）开发应用程序的框架和设施。
-1. 通过丰富的内建执行器，通过诸如 KEY、RANGE、TRAVEL、SQL 等语句在元素和数据上执行迭代、过滤、排序、归约等操作，使开发者可以专心于业务逻辑的实现，而非具体的算法。
-1. 通过外部执行器，为复杂数据的处理提供了使用外部程序实现相应功能的方法，提高了可扩展性。
-1. 通过绑定外部程序模块，提供了可扩展、灵活的动态对象实现方法，结合本文定义的参数化数据表达方法，可用于满足各种基于函数调用的计算需求。
-1. 解决了构建在现有 Web 技术之上的虚拟 DOM 技术存在的打补丁式解决方案引入的问题，比如代码的可读性降低，结构不清晰等问题。
+1. Defines data-driven HTML/XML document generation rules through a small number of action tags, avoids the traditional programming method based on process control, and opens a new low-code programming mode.
+1. Through the preposition attribute and adverb attribute of the action tag, the data and action types and rules required to execute the action are specified, which is easy for developers to understand and master, thereby reducing the learning threshold.
+1. For scripting languages (or programming languages) other than the JavaScript scripting language, frameworks and facilities for developing applications using Web technologies (HTML, CSS, HTTP, WebSocket, etc.) are provided.
+1. Through rich built-in executors, such as KEY, RANGE, TRAVEL, SQL and other statements to perform iteration, filtering, sorting, reduction and other operations on elements and data, so that developers can concentrate on the realization of business logic, while non-specific algorithm.
+1. Through the external executor, it provides a method for using external programs to realize the corresponding functions for the processing of complex data, which improves the scalability.
+1. By binding external program modules, a scalable and flexible dynamic object implementation method is provided. Combined with the parameterized data expression method defined in this paper, it can be used to meet various computing needs based on function calls.
+1. Solve the problems introduced by the patch solution of the virtual DOM technology built on the existing web technology, such as the reduced readability of the code and the unclear structure.
 
-## 附录
+## Appendix
 
-### 附.1) 修订记录
+### Appendix 1) Revision History
 
-发布历史：
+Release history:
 
-- 2022 年 12 月 31 日：发布 V1.0 RC9，标记为 'v1.0-rc9-221231'。
-- 2022 年 11 月 30 日：发布 V1.0 RC8，标记为 'v1.0-rc8-221130'。
-- 2022 年 10 月 31 日：发布 V1.0 RC7，标记为 'v1.0-rc7-221031'。
-- 2022 年 09 月 01 日：发布 V1.0 RC6，标记为 'v1.0-rc6-220901'。
-- 2022 年 07 月 01 日：发布 V1.0 RC5，标记为 'v1.0-rc5-220701'。
-- 2022 年 06 月 01 日：发布 V1.0 RC4，标记为 'v1.0-rc4-220601'。
-- 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
-- 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
-- 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
+- March 31, 2023: Release V1.0 RCa, tagged 'v1.0-rca-230331'.
+- 31 December 2022: Release V1.0 RC9, tagged 'v1.0-rc9-221231'.
+- November 30, 2022: Release V1.0 RC8, tagged 'v1.0-rc8-221130'.
+- October 31, 2022: Release V1.0 RC7, tagged 'v1.0-rc7-221031'.
+- 01 Sep 2022: Release V1.0 RC6, tagged as 'v1.0-rc6-220901'.
+- July 01, 2022: Release V1.0 RC5, tagged as 'v1.0-rc5-220701'.
+- 01 Jun 2022: Release V1.0 RC4, tagged as 'v1.0-rc4-220601'.
+- 01 May 2022: Release V1.0 RC3, tagged as 'v1.0-rc3-220501'.
+- April 01, 2022: Release V1.0 RC2, tagged as 'v1.0-rc2-220401'.
+- February 09, 2022: Release V1.0 RC1, tagged 'v1.0-rc1-220209'.
+
+#### RCb) 230430
+
+##### RCb.1) Adjust Page and Workspace Name Conventions 
+
+The main revisions are as follows:
+
+1. Add reserved names for workspaces such as `_default`, `_active`.
+
+Related chapters:
+
+- [2.5.17) `load` and `exit` labels] (#2517-load-and-exit-labels)
+
+#### RCa) 230331
+
+##### RCa.1) Adjust `SYSTEM` Identifier Rules for `DOCTYPE`
+
+The main revisions are as follows:
+
+1. When loading an external module using the `SYSTEM` identifier rule of `DOCTYPE`, bind the corresponding dynamic object to the walker-level variable.
+
+Related chapters:
+
+- [3.1.1) DOCTYPE] (#311-doctype)
+
+##### RCa.2) Adjust Result of `catch` Action Element
+
+The main revisions are as follows:
+
+1. The result of `catch` action element needs to be defined as an object describing the exception information.
+
+Related chapters:
+
+- [2.5.14) `catch` tag] (#2514-catch-tag)
+
+##### RCa.3) Tweak `update` action Element
+
+The main revisions are as follows:
+
+When specifying the source data, when the source data must be a linear container (array, tuple or set), a single data can also be treated as an array containing only one member to facilitate programming.
+
+Related chapters:
+
+- [2.5.2) `update` tag] (#252-update-tag)
 
 #### RC9) 221231
 
-##### RC9.1) 定义骨架元素属性的响应式处理语法
+##### RC9.1) Reactive Processing Syntax for Defining Skeleton Element Attributes
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 使用 `&=` 运算符，用于指定骨架元素的特定属性是响应式的。
+1. Use `&=` operator to specify that a particular attribute of a skeleton element is responsive.
 
-相关章节：
+Related chapters:
 
-- [2.7) 响应式更新](#27-响应式更新)
+- [2.7) Reactive update] (#27-Reactive update)
 
-##### RC9.2) 文档片段的结构化数据表达
+##### RC9.2) Structured Data Representation of Document Fragments
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 使用 `dataContent` 替代 `jsonContent`。
-1. 移除 `style.width` 这类虚拟键名。
-1. 移除 `content[<index>]` 这类虚拟键名。
+1. Use `dataContent` instead of `jsonContent`.
+1. Remove virtual keys like `style.width`.
+1. Remove virtual key names like `content[<index>]`.
 
-相关章节：
+Related chapters:
 
-- [2.1.17) 文档片段的结构化数据表达](#2117-文档片段的结构化数据表达)
+- [2.1.17) Structured data representation of document fragments] (#2117 - Structured data representation of document fragments)
 
-##### RC9.3) 调整 `update` 元素相关细节
+##### RC9.3) Adjust `update` Element Related Details  
 
-主要修订内容如下：
 
-1. 增加了 `add` 动作，可用于集合。
-1. 调整 `remove` 动作，可用于集合。
-1. 调整 `merge`、`unite`、`overwrite`、`intersect`、`subtract`、`xor` 等动作，可用于对象。
+The main revisions are as follows:
 
-相关章节：
+1. `add` action has been added, which can be used in collections.
+1. Adjust  `remove` action, which can be used for collections.
+1. Adjust operations such as `merge`, `unite`, `overwrite`, `intersect`, `subtract`, `xor`, which can be used for objects.
 
-- [2.5.2) `update` 标签](#252-update-标签)
+Related chapters:
 
-##### RC9.4) 调整 `request` 元素相关细节
+- [2.5.2) `update` tag] (#252-update-tag)
 
-主要修订内容如下：
+##### RC9.4) Adjust `request` Element Related Details  
 
-1. 调整了协程令牌相关的描述。
-1. 调整了 `$RDR` 预定义变量的描述。
+The main revisions are as follows:
 
-相关章节：
+1. Adjust the description of coroutine tokens.
+1. Adjust the description of `$RDR` predefined variable.
 
-- [2.5.16) `request` 标签](#2516-request-标签)
-- [2.1.6.3) 预定义变量](#2163-预定义变量)
+Related chapters:
+
+- [2.5.16) `request` tag] (#2516-request-tag)
+- [2.1.6.3) Predefined variables] (#2163-predefined variables)
 
 #### RC8) 221130
 
-##### RC8.1) 反引号属性值语法
+##### RC8.1) Backtick Attribute Value Syntax
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 使用反引号属性值语法定义异常或错误名称。
+1. Define the exception or error name using the backtick attribute value syntax.
 
-相关章节：
+Related chapters:
 
-- [2.1.12) 错误和异常的处理](#2112-错误和异常的处理)
-- [2.4.3) `error` 标签](#243-error-标签)
-- [2.4.4) `except` 标签](#244-except-标签)
-- [2.5.14) `catch` 标签](#2514-catch-标签)
-- [3.1.2.3) 属性](#3123-属性)
+- [2.1.12) Error and exception handling] (#2112-Error and exception handling)
+- [2.4.3) `error` tag] (#243-error-tag)
+- [2.4.4) `except` tag] (#244-except-tag)
+- [2.5.14) `catch` tag] (#2514-catch-tag)
+- [3.1.2.3) Properties] (#3123-properties)
 
-##### RC8.2) 新的数据类型别名
+##### RC8.2) New Data Type Aliases
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 新增 `linctnr` 作为线性容器类型的别名。
+1. Add `linctnr` as an alias for the linear container type.
 
-相关章节：
+Related chapters:
 
-- [2.2.4) 动态对象方法的描述语法](#224-动态对象方法的描述语法)
+- [2.2.4) Description syntax for dynamic object methods] (#224-Dynamic object method description syntax)
 
-##### RC8.3) 框架元素中的副词属性
+##### RC8.3) Adverb Attributes in Frame Elements
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 框架元素（`hvml`、`head`、`body`）中使用的所有 HVML 副词属性，均不应该克隆到目标文档中。
-1. `hvml` 标签中的 `target` 属性，也不应该克隆到目标文档中。
+1. All HVML adverb attributes used in framework elements (`hvml`, `head`, `body`), should not be cloned into the target document.
+1. `target` attribute in `hvml` tag should also not be cloned into the target document.
 
-相关章节：
+Related chapters:
 
-- [2.3) 框架标签详解](#23-框架标签详解)
+- [2.3) Detailed explanation of frame tags](#23-Detailed explanation of frame tags)
 
-##### RC8.4) 杂项
+##### RC8.4) Misc
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 扩展 JSON 语法，支持三单引号（`'''`）。
-1. 微调字符串化处理规则，避免使用新行符，转而使用逗号和分号。
-1. 规范术语：
-   - 求值表达式：Hybrid evaluation expression (HEE)。
-   - 复合求值表达式：Compound hybrid evaluation expression（CHEE）。
-   - 参数化数据：Parameterized Data。
-   - 参数化字符串：Parameterized String。
-1. `$EJSON` 重命名为 `$DATA`。
-1. `$DATA.numberify` 重命名为 `$DATA.numerify`。
-1. 调整有关求值表达式语法、eJSON 语法的章节。
+1. Extend JSON syntax to support triple single quotes (`'''`).
+1. Fine-tune the stringification rules to avoid newline characters and use commas and semicolons instead.
+1. Normative terms:
+    - Hybrid evaluation expression (HEE).
+    - Compound hybrid evaluation expression (CHEE).
+    - Parameterized Data.
+    - Parameterized String.
+1. `$EJSON` is renamed to `$DATA`.
+1. `$DATA.numberify` is renamed to `$DATA.numerify`.
+1. Adjust the chapters about evaluation expression syntax, eJSON syntax.
 
-相关章节：
+Related chapters:
 
-- [2.1.4.3) 字符串化](#2143-字符串化)
-- [2.2.5) eJSON 语法](#225-ejson-语法)
+- [2.1.4.3) stringify] (#2143-stringify)
+- [2.2.5) eJSON syntax] (#225-ejson-syntax)
 
 #### RC7) 221031
 
-##### RC7.1) 替身表达式
+##### RC7.1) Stand-In Expression
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 引入替身表达式（substitute expression）术语
-1. 增强 `bind` 标签以支持替身表达式
-1. 新增 `constantly` 副词属性
-1. 新增变量名约定一节
+1. Introducing the term substitute expression
+1. Enhance the `bind` tag to support alias expressions
+1. Add `constantly` adverb attribute
+1. Add a new variable name convention section
 
-相关章节：
+Related chapters:
 
-- [2.1.6.13) 表达式变量和替身表达式](#21613-表达式变量和替身表达式)
-- [2.1.6.14) 变量名约定](#21614-变量名约定)
-- [2.5.13) `bind` 标签](#2513-bind-标签)
-- [2.1.14) 副词属性](#2114-副词属性)
+- [2.1.6.13) Expression variables and alias expressions] (#21613 - Expression variables and alias expressions)
+- [2.1.6.14) Variable name convention] (#21614-Variable name convention)
+- [2.5.13) `bind` tag] (#2513-bind-tag)
+- [2.1.14) Adverb attributes] (#2114-adverb attributes)
 
-##### RC7.2) 调整变量一节
+##### RC7.2) Tuning Variables Section
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 重新划分子小节内容。
-1. 允许在需要避免使用尖括号作为上下文变量的情形下，可使用 `$~` 替代 `$<`。
-1. 使用术语 `未确定`（取代`未定义`），用于说明上下文变量未被赋值时的初始状态。
+1. Re-divide the content of subsections.
+1. Allow `$~` to be used instead of `$<` when it is necessary to avoid using angle brackets as context variables.
+1. Use the term `undetermined` (replacing `undefined`) to describe the initial state of a context variable when it is not assigned a value.
 
-相关章节：
+Related chapters:
 
-- [2.1.6) 变量](#216-变量)
+- [2.1.6) Variables] (#216-Variables)
 
-##### RC7.3) 调整定义元组的 eJSON 语法
+##### RC7.3) Adjust the eJSON Syntax for Defining Tuples
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 使用 `[!` 和 `]` 包围定义元组；保留 `( ... )` 用于定义常见的数学或者逻辑表达式。
+1. Use `[!` and `]` to surround definition tuples; reserve `( ... )` for defining common mathematical or logical expressions.
 
-相关章节：
+Related chapters:
 
-- [2.1.15) 引用元素或数据](#2115-引用元素或数据)
-- [2.2.5) eJSON 语法](#225-ejson-语法)
+- [2.1.15) Quoting elements or data] (#2115 - Quoting elements or data)
+- [2.2.5) eJSON syntax] (#225-ejson-syntax)
 
-##### RC7.4) 调整副词属性的名称
+##### RC7.4) Adjust the Name of the Adverb Attribute
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 增加了 `constantly`、`concurrently`、`responsively` 等副词属性的简写形式。
-1. 增加了 `noreturn`、`nosetotail` 的等价书写形式。
+1. Add shorthand forms of adverb attributes such as `constantly`, `concurrently`, `responsively`.
+1. Add the equivalent writing forms of `noreturn` and `nosetotail`.
 
-相关章节：
+Related chapters:
 
-- [2.1.14) 副词属性](#2114-副词属性)
+- [2.1.14) Adverb attributes] (#2114-adverb attributes)
 
-##### RC7.5) 介词属性的增强
+##### RC7.5) Preposition Attributes Enhancement 
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 增加了 `idd-by` 介词属性，用于设定动词元素的标识符，以避免在动词元素中使用名词属性 `id`。
+1. `idd-by` preposition attribute is added to set the identifier of the verb element to avoid using the noun attribute `id` in the verb element.
 
-相关章节：
+Related chapters:
 
-- [2.1.13) 介词属性](#2113-介词属性)
+- [2.1.13) Prepositional properties] (#2113-prepositional properties)
 
 #### RC6) 220901
 
-##### RC6.1) 增强变量名
+##### RC6.1) Enhance Variable Names
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 允许在变量名中使用 Unihan 表意字符
+1. Allow Unihan ideographic characters in variable names
 
-相关章节：
+Related chapters:
 
-- [2.2.2) 求值表达式的语法](#222-求值表达式的语法)
+- [2.2.2) Syntax of evaluated expressions] (#222 - Syntax of evaluated expressions)
 
-##### RC6.2) 增强 `request` 标签
+##### RC6.2) Enhance `request` Tag
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 增强 `request` 标签，允许向其他行者的主协程发送请求。
-1. 增强 `request` 标签，允许向其他行者的指定通道发送数据。
+1. Enhance the `request` tag to allow sending requests to other walkers' main coroutines.
+1. Enhance the `request` tag to allow sending data to the specified channel of other walkers.
 
-相关章节：
+Related chapters:
 
-- [2.5.16) `request` 标签](#2516-request-标签)
+- [2.5.16) `request` tag] (#2516-request-tag)
 
-##### RC6.3) 调整 HVML URI 图式
+##### RC6.3) Adjust HVML URI Schema
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 调整 `hvml+cor` 图式为 `hvml+run` 图式。
-1. 增强 `hvml+run` 图式，使之可以用来指定协程或者通道。
+1. Adjust `hvml+cor` schema to `hvml+run` schema.
+1. Enhance the `hvml+run` schema so that it can be used to specify coroutines or channels.
 
-相关章节：
+Related chapters:
 
-- [2.1.19.2) `hvml+run` 图式](#21192-hvmlrun-图式)
-- [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)
+- [2.1.19.2) `hvml+run` schema] (#21192-hvmlrun-schema)
+- [2.2.3) Common denoted nouns] (#223-Common denoted nouns)
 
-##### RC6.4) 新增元组容器类型
+##### RC6.4) Add Tuple Container Type
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 使用元组定义容量固定的线性容器。
+1. Use tuples to define a fixed-capacity linear container.
 
-相关章节：
+Related chapters:
 
-- [2.1.3) 扩展数据类型](#213-扩展数据类型)
-- [2.2.5) eJSON 语法](#225-ejson-语法)
+- [2.1.3) Extended data types] (#213-Extended data types)
+- [2.2.5) eJSON syntax] (#225-ejson-syntax)
 
-##### RC6.5) 重新求值
+##### RC6.5) Reevaluation
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 增加对重新求值的描述
-1. 增加对协程调度时机的描述
+1. Increase the description of re-evaluation
+1. Add a description of the timing of coroutine scheduling
 
-相关章节：
+Related chapters:
 
-- [2.1) 基本原理](#21-基本原理)
-- [2.1.8) 栈式虚拟机](#218-栈式虚拟机)
-- [2.1.6.3) 预定义变量](#2163-预定义变量)
+- [2.1) Rationale] (#21-Rationale)
+- [2.1.8) Stacked virtual machine] (#218-stacked virtual machine)
+- [2.1.6.3) Predefined variables] (#2163-predefined variables)
 
 #### RC5) 220701
 
-##### RC5.1) 调整对 `include` 标签的描述
+##### RC5.1) Adjust the Description of `include` Tag
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 补充针对就地执行的描述。
+1. Supplement the description for in-place execution.
 
-相关章节：
+Related chapters:
 
-- [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
+- [2.5.10) `define` and `include` tags] (#2510-define-and-include-tags)
 
-##### RC5.2) 调整 `request` 标签
+##### RC5.2) Adjust `request` Tag
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 调整了使用 `request` 标签向其他协程发送请求的处理模型。
-1. 在 `to` 属性值中，可使用 `get:` 和 `set:` 前缀用来获取或者设置元素的动态属性值。
-1. 向渲染器发送请求时，使用预定义变量 `$RDR`。
+1. Adjusted the processing model of using the `request` tag to send requests to other coroutines.
+1. In the `to` attribute value, you can use `get:` and `set:` prefixes to get or set the dynamic attribute value of the element.
+1. When sending a request to the renderer, use the predefined variable `$RDR`.
 
-相关章节：
+Related chapters:
 
-- [2.5.16) `request` 标签](#2516-request-标签)
-- [2.1.6.3) 预定义变量](#2163-预定义变量)
+- [2.5.16) `request` tag] (#2516-request-tag)
+- [2.1.6.3) Predefined variables] (#2163-predefined variables)
 
-##### RC5.3) 调整 `load` 和 `call` 标签
+##### RC5.3) Adjust `load` and `call` Tags
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. `load` 支持在指定的行者中创建新的协程来执行指定的 HVML 程序。
-1. `load` 和 `call` 标签统一使用 `within` 属性指定新的行者名称。
-1. `load` 标签中，使用新增的 `onto` 属性指定渲染器页面信息。
-1. `$CRTN` 预定义变量上的 `idle` 以及渲染器事件。
-1. `load` 和 `call` 异步执行时，返回值为代表新协程的原生实体，该原生实体应提供 `id` 属性，用于返回新协程的标识符。
+1. `load` supports creating a new coroutine in the specified worker to execute the specified HVML program.
+1. `load` and `call` tags use `within` attribute to specify the new traveler name.
+1. In `load` tag, use the new `onto` attribute to specify the renderer page information.
+1. `idle` and renderer events on `$CRTN` predefined variable.
+1. When `load` and `call` are executed asynchronously, the return value is a native entity representing the new coroutine. The native entity should provide the `id` attribute to return the identifier of the new coroutine.
 
-相关章节：
+Related chapters:
 
-- [2.1.13) 介词属性](#2113-介词属性)
-- [2.5.12) `call` 和 `return` 标签](#2512-call-和-return-标签)
-- [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
-- [2.1.6.3) 预定义变量](#2163-预定义变量)
+- [2.1.13) Prepositional properties] (#2113-prepositional properties)
+- [2.5.12) `call` and `return` labels] (#2512-call-and-return-labels)
+- [2.5.17) `load` and `exit` labels] (#2517-load-and-exit-labels)
+- [2.1.6.3) Predefined variables] (#2163-predefined variables)
 
-##### RC5.4) HVML URI 图式及协程描述符
+##### RC5.4) HVML URI Schema and Coroutine Descriptor
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. `hvml` 图式
-1. `hvml+cor` 图式
-1. 协程描述符
+1. `hvml` schema
+1. `hvml+cor` schema
+1. Coroutine descriptor
 
-相关章节：
+Related chapters:
 
-- [2.1.19) HVML URI 图式](#2119-hvml-uri-图式)
-- [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)
+- [2.1.19) HVML URI schema] (#2119-hvml-uri-schema)
+- [2.2.3) Common denoted nouns] (#223-Common denoted nouns)
 
-##### RC5.5) 增强 `sort` 标签
+##### RC5.5) Enhance `sort` Tag
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 可使用内建执行器将 `on` 属性指定的数据转换为数组。
+1. You can use the built-in executor to convert the data specified by the `on` attribute into an array.
 
-相关章节：
+Related chapters:
 
-- [2.5.9) `sort` 标签](#259-sort-标签)
+- [2.5.9) `sort` tag] (#259-sort-tag)
 
-##### RC5.6) 调整 `observe` 标签
+##### RC5.6) Adjust the `observe` Tag
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 使用 `against` 介词属性定义针对变量的观察，而不是 `at` 属性。
+1. Use the `against` preposition attribute to define observations against variables instead of the `at` attribute.
 
-相关章节：
+Related chapters:
 
-- [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
+- [2.5.11) `observe`, `forget` and `fire` labels] (#2511-observe-forget-and-fire-labels)
 
-##### RC5.7) 框架标签的内容
+##### RC5.7) Frame Tag Content
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. `hvml` 标签中定义的内容被视作表达式进行求值，并设置为对应栈帧的结果数据。
+1. The content defined in the `hvml` tag is evaluated as an expression and set as the result data of the corresponding stack frame.
 
-相关章节：
+Related chapters:
 
-- [2.3.4) `hvml` 标签的内容](#234-hvml-标签的内容)
+- [2.3.4) `hvml` tag content](#234-hvml-tag content)
 
-##### RC5.8) 其他修订
+##### RC5.8) Other Revision
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. `load` 标签支持预定义页面类型 `_inherit`，表示继承父协程的文档及渲染器页面（仅同一行者）。
-1. 调整普通窗口前缀为 `plainwin:`。
-1. 允许井号注释。
-1. 允许 `head` 和 `body` 为可选标签。
-1. 允许 `init` 标签不绑定变量而仅仅初始化数据作为 `init` 元素的执行结果。
-1. 允许 `init` 标签 `_runner` 作为 `at` 属性值，以便初始化一个行者级变量。
-1. 使用“行者”替代“会话”。
-1. `$SESSION` 更名为 `$RUNNER`；`$HVML` 更名为 `$CRTN`；`$SYSTEM` 更名为 `$SYS`；`$REQUEST` 更名为 `$REQ`。
-1. 调整 `iterate` 不使用迭代执行器时的处理规则。
-1. `archetype` 标签增加 `type` 属性用于定义文本类型。
-1. `include` 或者 `call` 元素应用操作组时，若传递的实参为对象，可利用临时变量处理为多个形参，方便代码书写。
-1. 增加对表达式 `${...}` 的描述：用于构建一个有效变量名。
-1. 修正 DOCTYPE 中 SYSTEM 标识符所定义的前缀的用途：用在可能和 HVML 标签冲突的外部标签上，而不是 HVML 标签上。
+1. `load` tag supports the predefined page type `_inherit`, which means inheriting the document and renderer pages of the parent coroutine (only those in the same line).
+1. Adjust the common window prefix to `plainwin:`.
+1. Allow hashtag comments.
+1. Allow `head` and `body` to be optional tags.
+1. Allow the `init` tag to not bind variables but only initialize data as the execution result of the `init` element.
+1. Allow `init` tag `_runner` as `at` attribute value to initialize a runner-level variable.
+1. Use "walker" instead of "session".
+1. `$SESSION` is renamed to `$RUNNER`; `$HVML` is renamed to `$CRTN`; `$SYSTEM` is renamed to `$SYS`; `$REQUEST` is renamed to `$REQ`.
+1. Adjust the processing rules when `iterate` does not use the iterative executor.
+1. `archetype` tag adds the `type` attribute to define the text type.
+1. When `include` or `call` element is applied to an operation group, if the actual parameter passed is an object, it can be processed into multiple formal parameters by using a temporary variable, which is convenient for code writing.
+1. Add the description of the expression `${...}`: used to construct a valid variable name.
+1. Correct the use of the prefix defined by the SYSTEM identifier in DOCTYPE: it is used on external tags that may conflict with HVML tags, instead of HVML tags.
 
-相关章节：
+Related chapters:
 
-- [2.3.4) `hvml` 标签的内容](#234-hvml-标签的内容)
-- [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
-- [3.1) 书写 HVML 文档](#31-书写-hvml-文档)
-- [3.1.2.5) 可选标签](#3125-可选标签)
-- [2.5.1) `init` 标签](#251-init-标签)
-- [2.5.7.2) 不使用迭代执行器](#2572-不使用迭代执行器)
-- [2.4.1) `archetype` 标签](#241-archetype-标签)
-- [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
-- [2.2.2) 求值表达式的语法](#222-求值表达式的语法)
-- [3.1.1) DOCTYPE](#311-doctype)
+- [2.3.4) `hvml` tag content](#234-hvml-tag content)
+- [2.5.17) `load` and `exit` labels] (#2517-load-and-exit-labels)
+- [3.1) Writing HVML documentation] (#31-writing-hvml-documentation)
+- [3.1.2.5) OPTIONAL-TAGS] (#3125-OPTIONAL-TAGS)
+- [2.5.1) `init` tag] (#251-init-tag)
+- [2.5.7.2) don't use iterative executor] (#2572 - don't use iterative executor)
+- [2.4.1) `archetype` tag] (#241-archetype-tag)
+- [2.5.10) `define` and `include` tags] (#2510-define-and-include-tags)
+- [2.2.2) Syntax of evaluated expressions] (#222 - Syntax of evaluated expressions)
+- [3.1.1) DOCTYPE] (#311-doctype)
 
 #### RC4) 220601
 
-##### RC4.1) 重构`基本原理`一节
+##### RC4.1) Refactor `Fundamental` Section
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 增加若干术语。
-1. 增加对 HVML 栈式虚拟机的描述。
-1. 增加对各类元素的概要介绍，补充了各种元素和虚拟机栈帧及上下文变量的关系。
-1. 增加对协程状态的描述。
+1. Add several terms.
+1. Add the description of HVML stack virtual machine.
+1. Add an overview of various elements, supplemented the relationship between various elements and virtual machine stack frames and context variables.
+1. Add a description of the state of the coroutine.
 
-相关章节：
+Related chapters:
 
-- [2.1) 基本原理](#21-基本原理)
-- [2.1.16) HVML 协程状态](#2116-hvml-协程状态)
+- [2.1) Rationale] (#21-Rationale)
+- [2.1.16) HVML coroutine state] (#2116-hvml-coroutine state)
 
-##### RC4.2) MIME 类型和数据
+##### RC4.2) MIME Types and Data
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 阐述了从外部资源装载数据时，如何根据资源的 MIME 类型来确定装载后的数据类型。
+1. Explain how to determine the loaded data type according to the MIME type of the resource when loading data from an external resource.
 
-相关章节：
+Related chapters:
 
-- [2.1.18) MIME 类型](#2118-mime-类型)
+- [2.1.18) MIME-types] (#2118-mime-types)
 
-##### RC4.3) `inherit` 标签
+##### RC4.3) `inherit` Tag
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 为方便代码块的分组书写，新增 `inherit` 标签。`inherit` 标签创建的动作元素不使用任何介词和副词属性，继承前置栈帧的上下文变量。
+1. In order to facilitate group writing of code blocks, the `inherit` tag is added. The action element created by the `inherit` tag does not use any preposition and adverb attributes, and inherits the context variables of the previous stack frame.
 
-相关章节：
+Related chapters:
 
-- [2.5.18) `inherit` 标签](#2518-inherit-标签)
+- [2.5.18) `inherit` tag] (#2518-inherit-tag)
 
-##### RC4.4) `sleep` 标签
+##### RC4.4) `sleep` Tag
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 新增 `sleep` 标签用于休眠当前协程。
+1. Add `sleep` tag to sleep the current coroutine.
 
-相关章节：
+Related chapters:
 
-- [2.5.19) `sleep` 标签](#2519-sleep-标签)
+- [2.5.19) `sleep` tag] (#2519-sleep-tag)
 
-##### RC4.5) 调整上下文变量
+##### RC4.5) Adjust Context Variables
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 新增 `$^` 上下文变量，用于表示动作元素中使用内容定义的数据。
-1. 调整 `$<` 的用途，仅用于迭代，名称为迭代数据。
-1. 当被观察的事件来临而执行 `observe` 定义的操作组时，对应操作组的前置栈帧中，使用用户数据传递事件名称、事件源等信息：
-   - `$!`：在用户数据中，预定义两个临时变量，用于表示完整的事件名称和事件源，名称分别为 `_eventName` 和 `_eventSource`。
+1. Add `$^` context variable, which is used to represent the data defined by the content in the action element.
+1. Adjust the purpose of `$<`, only used for iteration, named iterative data.
+1. When the observed event comes and the operation group defined by `observe` is executed, the user data is used to pass the event name, event source and other information in the front stack frame of the corresponding operation group:
+    - `$!`: In user data, two temporary variables are predefined to represent the complete event name and event source, named `_eventName` and `_eventSource` respectively.
 
-相关章节：
+Related chapters:
 
-- [2.1.6) 变量](#216-变量)
-- [2.5.7.2) 不使用迭代执行器](#2572-不使用迭代执行器)
-- [2.6.1.5) 用于数值的内建执行器](#2615-用于数值的内建执行器)
-- [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
+- [2.1.6) Variables] (#216-Variables)
+- [2.5.7.2) don't use iterative executor] (#2572 - don't use iterative executor)
+- [2.6.1.5) Builtin executor for numeric values] (#2615 - Builtin executor for numeric values)
+- [2.5.11) `observe`, `forget` and `fire` labels] (#2511-observe-forget-and-fire-labels)
 
-##### RC4.6) 元素及属性的调整
+##### RC4.6) Adjustment of Elements and Attributes
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 详细描述了 `call` 元素并发调用操作组的实现机制，并使用 `concurrently` 副词属性表示并发调用，使用 `within` 属性设定行者名称。
-1. 新增 `within` 属性，用于在 `load` 元素中指定渲染器页面信息，在 `call` 中指定行者名称，以避免使用 `in` 属性。
-1. 增强 `request` 元素，使之可用于发送事件到其他协程。
-1. 补充 `load` 和 `call` 元素异步执行情况下的结果数据：协程标识符。
+1. Describe in detail the implementation mechanism of the `call` element to call the operation group concurrently, and use the `concurrently` adverb attribute to indicate concurrent calls, and use the `within` attribute to set the traveler name.
+1. Add the `within` attribute, which is used to specify the renderer page information in the `load` element, and specify the traveler name in the `call` to avoid using the `in` attribute.
+1. Enhance the `request` element so that it can be used to send events to other coroutines.
+1. Supplement the result data in the case of asynchronous execution of `load` and `call` elements: coroutine identifier.
 
-相关章节：
+Related chapters:
 
-- [2.1.13) 介词属性](#2113-介词属性)
-- [2.1.14) 副词属性](#2114-副词属性)
-- [2.5.12) `call` 和 `return` 标签](#2512-call-和-return-标签)
-- [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
-- [2.5.16) `request` 标签](#2516-request-标签)
+- [2.1.13) Prepositional properties] (#2113-prepositional properties)
+- [2.1.14) Adverb attributes] (#2114-adverb attributes)
+- [2.5.12) `call` and `return` labels] (#2512-call-and-return-labels)
+- [2.5.17) `load` and `exit` labels] (#2517-load-and-exit-labels)
+- [2.5.16) `request` tag] (#2516-request-tag)
 
-##### RC4.7) `differ` 标签
+##### RC4.7) `differ` Tag
 
-主要修订内容如下：
+The main revisions are as follows:
 
-1. 增强 `test` 标签使用 `with` 属性简化分支处理。
-1. 新增 `differ` 标签定义其他分支。
+1. Enhance `test` tag to use `with` attribute to simplify branch handling.
+1. Add `differ` tag to define other branches.
 
-相关章节：
+Related chapters:
 
-- [2.5.5) `test`、 `match` 和 `differ` 标签](#255-test-match-和-differ-标签)
+- [2.5.5) `test`, `match` and `differ` labels] (#255-test-match-and-differ-labels)
 
 #### RC3) 220501
 
-##### RC3.1) 调整动作标签
+##### RC3.1) Adjust Action Tags
 
-移除 `connect`、`send` 和 `disconnect` 标签，相关功能调整为使用 `$STREAM` 实现。
+Remove `connect`, `send` and `disconnect` labels, and adjust related functions to use `$STREAM`.
 
-使用 `exit` 标签退出程序的执行，并定义程序的返回数据。
+Use the `exit` tag to exit the execution of the program and define the return data of the program.
 
-调整 `back` 标签的功能，用于回退栈帧。
+Adjust the functionality of the `back` tag, used to unwind stack frames.
 
-补充了 `define` 元素的 `from` 属性的处理细节。
+Add handling details of the `from` attribute of the `define` element.
 
-`observe` 标签中可使用 `with` 属性指定操作组。
+`with` attribute can be used to specify the operation group in the `observe` tag.
 
-`request` 标签仅用于向渲染器发出请求。
+`request` tag is only used to make a request to the renderer.
 
-在上下文变量中维护的命名变量，称为“临时变量”，不再和“局部变量”混淆使用。使用 `temporarily` 副词属性（可简写为 `temp`）定义临时变量，不再使用 `locally` 属性。
+Name variables maintained in context variables, called "temporary variables", are no longer confused with "local variables". Use the `temporarily` adverb attribute (which can be abbreviated as `temp`) to define temporary variables instead of the `locally` attribute.
 
-调整 `init` 和 `define` 标签中 `at` 属性的作用：`at` 属性现在用于定义变量或者操作组名称的名字空间。
+Adjuste the role of `at` attribute in `init` and `define` tags: `at` attribute is now used to define the namespace of variable or operation group names.
 
-`request`、 `bind` 和 `load` 标签中，异步执行情况下，若使用 `as` 属性命名，则可使用 `at` 属性定义名称的名字空间。
+In the `request`, `bind` and `load` tags, in the case of asynchronous execution, if you use the `as` attribute to name, you can use the `at` attribute to define the namespace of the name.
 
-`observe` 和 `forget` 标签的 `for` 属性值中，可使用通配符或者正则表达式。
+Wildcards or regular expressions can be used in the `for` attribute value of the `observe` and `forget` tags.
 
-定义了 `observe` 操作组的上下文变量之内容。
+Define the contents of the context variable for the `observe` action group.
 
-调整了动作标签的描述顺序。
+Adjuste the description order of action tags.
 
-相关章节：
+Related chapters:
 
-- [2.5.10) `define` 和 `include` 标签](#2510-define-和-include-标签)
-- [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
-- [2.5.15) `back` 标签](#2515-back-标签)
-- [2.5.16) `request` 标签](#2516-request-标签)
-- [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
+- [2.5.10) `define` and `include` tags] (#2510-define-and-include-tags)
+- [2.5.11) `observe`, `forget` and `fire` labels] (#2511-observe-forget-and-fire-labels)
+- [2.5.15) `back` tag] (#2515-back-tag)
+- [2.5.16) `request` tag] (#2516-request-tag)
+- [2.5.17) `load` and `exit` labels] (#2517-load-and-exit-labels)
 
-##### RC3.2) HVML 程序的运行状态
+##### RC3.2) HVML Program Running Status
 
-定义了 HVML 程序的运行状态：
+Define the running state of an HVML program:
 
-相关章节：
+Related chapters:
 
-- [2.1.16) HVML 程序的运行状态](#2116-hvml-程序的运行状态)
+- [2.1.16) HVML program running status] (#2116-hvml-program running status)
 
-##### RC3.3) 可使用元素的锚点名称定位前置栈帧
+##### RC3.3) Use the Element's Anchor Name to Locate the Front Stack Frame
 
-可使用元素的锚点名称定位前置栈帧，从而可在求值表达式中指定前置栈帧中的上下文变量。
+The preceding stack frame can be located using the element's anchor name, allowing context variables in the preceding stack frame to be specified in the evaluation expression.
 
-相关章节：
+Related chapters:
 
-- [2.1.6) 变量](#216-变量)
-- [2.2.2) 求值表达式的语法](#222-求值表达式的语法)
+- [2.1.6) Variables] (#216-Variables)
+- [2.2.2) Syntax of evaluated expressions] (#222 - Syntax of evaluated expressions)
 
-##### RC3.5) eJSON 语法增强
+##### RC3.5) eJSON Syntax Enhancement
 
-可使用 `0x` 前缀，用十六进制表达有符号长整数和无符号长整数。
+Sign longs and unsigned longs can be expressed in hexadecimal using the `0x` prefix.
 
-可定义空字节序列。
+An empty sequence of bytes can be defined.
 
-相关章节：
+Related chapters:
 
-- [2.2.5) eJSON 语法](#225-ejson-语法)
+- [2.2.5) eJSON syntax] (#225-ejson-syntax)
 
-##### RC3.6) `$STREAM` 预定义变量
+##### RC3.6) `$STREAM` Predefined Variable
 
-对内置动态变量 `$STREAM` 的基本描述。
+A basic description of the built-in dynamic variable `$STREAM`.
 
-相关章节：
+Related chapters:
 
-- [2.1.6.3) 预定义变量](#2163-预定义变量)
+- [2.1.6.3) Predefined variables] (#2163-predefined variables)
 
-##### RC3.7) 调整动态对象方法的描述语法
+##### RC3.7) Adjust the Description Syntax of Dynamic Object Methods
 
-使用 `native/<entityName>` 的形式描述原生实体类型，其中 `<entityName>` 是这种原生实体类型的名称。不再使用 `specific` 的别名。
+Native entity types are described using the form `native/<entityName>`, where `<entityName>` is the name of this native entity type. No longer use `specific` aliases.
 
-相关章节：
+Related chapters:
 
-- [2.2.4) 动态对象方法的描述语法](#224-动态对象方法的描述语法)
+- [2.2.4) Description syntax for dynamic object methods] (#224-Dynamic object method description syntax)
 
-##### RC3.8) 事件名称的命名规则
+##### RC3.8) Naming Rules for Event Names
 
-定义了事件名称的词法单元。
+The token that defines the name of the event.
 
-相关章节：
+Related chapters:
 
-- [2.2.3) 常见的被指名词法单元](#223-常见的被指名词法单元)
-- [2.5.11) `observe`、 `forget` 和 `fire` 标签](#2511-observe-forget-和-fire-标签)
+- [2.2.3) Common denoted nouns] (#223-Common denoted nouns)
+- [2.5.11) `observe`, `forget` and `fire` labels] (#2511-observe-forget-and-fire-labels)
 
-##### RC3.9) 简化外部执行器
+##### RC3.9) Simplify external executors
 
-`init`、`update` 等标签不再支持外部执行器。
+Labels such as `init`, `update` no longer support external executors.
 
-仅 `iterate` 标签支持基于类的外部执行器。
+Only `iterate` tag supports class-based external executors.
 
-`sort` 标签支持外部函数作为排序器。
+`sort` tag supports external functions as sorters.
 
-相关章节：
+Related chapters:
 
-- [2.5.9) `sort` 标签](#259-sort-标签)
-- [2.6.2) 外部执行器](#262-外部执行器)
+- [2.5.9) `sort` tag] (#259-sort-tag)
+- [2.6.2) External Actuator] (#262-External Actuator)
 
-##### RC3.10) 协程及其状态
+##### RC3.10) Coroutines and Their States
 
-补充了解释器实例、渲染器会话、应用及行者之间的关系，并定义了协程相关的运行状态和渲染状态。
+Supplements the relationship between interpreter instance, renderer session, application and walker, and defines the running state and rendering state related to coroutines.
 
-相关章节：
+Related chapters:
 
-- [1.4) 应用框架](#14-应用框架)
-- [2.1.16) HVML 协程状态](#2116-hvml-协程状态)
-- [2.5.17) `load` 和 `exit` 标签](#2517-load-和-exit-标签)
+- [1.4) Application Framework] (#14-Application Framework)
+- [2.1.16) HVML coroutine state] (#2116-hvml-coroutine state)
+- [2.5.17) `load` and `exit` labels] (#2517-load-and-exit-labels)
 
 #### RC2) 220401
 
-##### RC2.1) 用户自定义临时变量的初始化和重置方法
+##### RC2.1) Initialization and Reset Methods of User-Defined Temporary Variables
 
-使用 `temporarily` 表示创建或重置一个临时变量。
+Use `temporarily` to create or reset a temporary variable.
 
-可在 `init` 标签的 `as` 或者 `at` 中指定临时变量的名称。
+The name of the temporary variable can be specified in `as` or `at` of the `init` tag.
 
-局部命名变量可直接使用其名称来引用，相比静态变量，具有较高的名称查找优先级。
+Locally name variables can be referenced directly using their names, and have a higher name lookup priority than static variables.
 
-明确区分静态命名变量和局部命名变量。
+Clearly distinguish static named variables from locally named variables.
 
-相关章节：
+Related chapters:
 
-- [2.1.6) 变量](#216-变量)
-- [2.5.1) `init` 标签](#251-init-标签)
-- [2.1.14) 副词属性](#2114-副词属性)
+- [2.1.6) Variables] (#216-Variables)
+- [2.5.1) `init` tag] (#251-init-tag)
+- [2.1.14) Adverb attributes] (#2114-adverb attributes)
 
-##### RC2.2) 调整动态对象方法的描述语法
+##### RC2.2) Adjust the Description Syntax of Dynamic Object Methods
 
-调整了动态对象方法的描述语法，使之更加严谨。
+Adjust the description syntax of dynamic object methods to be more rigorous.
 
-相关章节：
+Related chapters:
 
-- [2.2.4) 动态对象方法的描述语法](#224-动态对象方法的描述语法)
+- [2.2.4) Description syntax for dynamic object methods] (#224-Dynamic object method description syntax)
 
-##### RC2.3) 上下文变量的增强和调整
+##### RC2.3) Context variable enhancements and tweaks
 
-移除 `$&`：指前置操作的辅助数据（auxiliary data），初始就是对介词属性 with 的属性值求值后的数据；迭代执行器可能会修改这个数据。
+Remove `$&`: It refers to the auxiliary data (auxiliary data) of the pre-operation, which is initially the data after evaluating the attribute value of the preposition attribute with; the iterative executor may modify this data.
 
-上下文变量 `$^` 更改为 `$<`，更易识别：
+Context variable `$^` changed to `$<` for better recognition:
 
-可使用 0 作为前缀访问当前栈帧中的上下文变量，如 `$0<`、`$0%` 等。
+You can use 0 as a prefix to access context variables in the current stack frame, such as `$0<`, `$0%`, etc.
 
-相关章节：
+Related chapters:
 
-- [2.1.6) 变量](#216-变量)
-- [2.2.2) 求值表达式的语法](#222-求值表达式的语法)
+- [2.1.6) Variables] (#216-Variables)
+- [2.2.2) Syntax of evaluated expressions] (#222 - Syntax of evaluated expressions)
 
-##### RC2.4) `iterate` 元素的增强
+##### RC2.4) Enhancement to `iterate` Element
 
-支持直接使用 `with` 属性定义产生迭代结果的表达式。
+Support directly using the `with` attribute to define expressions that produce iteration results.
 
-支持使用 `onlyif` 和 `while` 属性分别在产生迭代结果前和产生迭代结果后判断是否终止迭代。这两个属性的属性值处理，类似 `on` 和 `with` 属性，亦即，优先按表达式处理。
+Support using the `onlyif` and `while` attributes to determine whether to terminate the iteration before and after generating the iteration result respectively. The attribute value processing of these two attributes is similar to the `on` and `with` attributes, that is, expressions are prioritized.
 
-支持使用 `nosetotail` 副词属性，将上次迭代的结果作为下次迭代的输入。
+Support the use of the `nosetotail` adverb attribute to use the result of the previous iteration as the input for the next iteration.
 
-相关章节：
+Related chapters:
 
-- [2.1.13) 介词属性](#2113-介词属性)
-- [2.1.14) 副词属性](#2114-副词属性)
-- [2.5.7.2) 不使用迭代执行器](#2572-不使用迭代执行器)
-- [3.1.2.4) 动作元素属性](#3124-动作元素属性)
+- [2.1.13) Prepositional properties] (#2113-prepositional properties)
+- [2.1.14) Adverb attributes] (#2114-adverb attributes)
+- [2.5.7.2) don't use iterative executor] (#2572 - don't use iterative executor)
+- [3.1.2.4) Action element attributes] (#3124 - Action element attributes)
 
-##### RC2.5) 调整第一章的内容
+##### RC2.5) Adjust the Content of the First Chapter
 
-将第一章标题从“背景”调整为“介绍”，并重新整理了其中的内容。
+Adjusted the first chapter title from "Background" to "Introduction" and reorganized the content.
 
-相关章节：
+Related chapters:
 
-- [1) 介绍](#1-介绍)
+- [1) Introduction] (#1-Introduction)
 
-##### RC2.6) 异常相关增强
+##### RC2.6) Exception related Enhancement
 
-新增 `Unsupported` 异常。
+Add `Unsupported` exception.
 
-明确了可忽略异常和不可忽略异常，以及如何处理 `silently` 副词属性。
+Clarify ignorable and non-ignorable exceptions, and how to handle the `silently` adverb attribute.
 
-相关章节：
+Related chapters:
 
-- [2.1.12) 错误和异常的处理](#2112-错误和异常的处理)
+- [2.1.12) Error and exception handling] (#2112-Error and exception handling)
 
-##### RC2.7) 可命名一个 `observe`
+##### RC2.7) Name an `observe`
 
-可使用 `observe` 命名一个观察，以便可以移除一个特定的观察。
+An observation can be named using `observe` so that a specific observation can be removed.
 
-相关章节：
+Related chapters:
 
-- [2.5.10) `observe`、 `forget` 和 `fire` 标签](#2510-observe-forget-和-fire-标签)
+- [2.5.10) `observe`, `forget` and `fire` labels] (#2510-observe-forget-and-fire-labels)
 
-##### RC2.8) 增强 `request`
+##### RC2.8) Enhance `request`
 
-可使用 `request` 要求目标文档位置（元素汇集）执行一个方法。
+A target document location (a collection of elements) can be asked to execute a method using `request`.
 
-相关章节：
+Related chapters:
 
-- [2.5.11) `request` 标签](#2511-request-标签)
+- [2.5.11) `request` tag] (#2511-request-tag)
 
-##### RC2.9) 调整介词属性
+##### RC2.9) Adjust Preposition Attributes
 
-使用 `against` 定义 `init` 中集合的唯一性键值以及 `sort` 中的排序依据。`via` 属性只用于定义请求的方法。
+Use `against` to define unique keys for collections in `init` and sort by in `sort`. The `via` attribute is only used to define the method of the request.
 
-使用 `with` 属性定义针对外部执行器的过滤数据，不再使用 `via` 属性。
+Use `with` attribute to define filtering data for external executors, no longer use the `via` attribute.
 
-相关章节：
+Related chapters:
 
-- [2.1.13) 介词属性](#2113-介词属性)
-- [2.5.1) `init` 标签](#251-init-标签)
-- [2.5.9) `sort` 标签](#259-sort-标签)
-- [2.6.2) 外部执行器](#262-外部执行器)
+- [2.1.13) Prepositional properties] (#2113-prepositional properties)
+- [2.5.1) `init` tag] (#251-init-tag)
+- [2.5.9) `sort` tag] (#259-sort-tag)
+- [2.6.2) External Actuator] (#262-External Actuator)
 
-##### RC2.10) 调整响应式处理的语法
+##### RC2.10) Adjust the Syntax of Reactive processing
 
-使用 `responsively` 副词属性定义骨架元素的文本内容为响应式的，不再使用 `{{$...}}` 语法。
+Use the `responsively` adverb attribute to define the text content of skeleton elements as responsive, no longer use `{{$...}}` syntax.
 
-使用 `<p style &= 'display: $display;' >` 定义骨架元素的属性为响应式的。
+Use `<p style &= 'display: $display;' >` to define properties on skeleton elements to be responsive.
 
-相关章节：
+Related chapters:
 
-- [2.7) 响应式处理](#27-响应式处理)
-- [2.1.14) 副词属性](#2114-副词属性)
+- [2.7) Reactive processing] (#27-Reactive processing)
+- [2.1.14) Adverb attributes] (#2114-adverb attributes)
 
-##### RC2.11) 增强 `bind` 标签
+##### RC2.11) Enhance `bind` Tag
 
-增强 `bind` 标签，使之支持使用内容来定义要绑定的表达式。
+Enhance `bind` tag to support using content to define the expression to bind.
 
-相关章节：
+Related chapters:
 
-- [2.5.13) `bind` 标签](#2513-bind-标签)
+- [2.5.13) `bind` tag] (#2513-bind-tag)
 
-##### RC2.12) 复合求值表达式
+##### RC2.12) Compound Evaluation Expressions
 
-支持复合求值表达式（CHEE，compound evaluation expression）。
+Support compound evaluation expression (CHEE, compound evaluation expression).
 
-相关章节：
+Related chapters:
 
-- [2.2.2) 求值表达式的语法](#222-求值表达式的语法)
+- [2.2.2) Syntax of evaluated expressions] (#222 - Syntax of evaluated expressions)
 
-##### RC2.13) 调整布尔化规则
+##### RC2.13) Adjust Booleanization Rules
 
-布尔化时，不再执行数值化处理。
+When booleanizing, the numerical processing is no longer performed.
 
-相关章节：
+Related chapters:
 
-- [2.1.4.2) 布尔化](#2142-布尔化)
+- [2.1.4.2) Boolean] (#2142-boolean)
 
 #### RC1) 220209
 
-##### RC1.1) 上下文变量的调整
+##### RC1.1) Adjustment of Context Variables
 
-移除如下上下文变量：
+Remove the following context variables:
 
-- `$*`：指前置操作结果数据的类型，用字符串表示，同 `$DATA.type($?)` 的返回值。
-- `$#`：指前置操作结果数据所包含的数据项个数，同 `$DATA.count($?)` 的返回值。
-- `$&`：作为当前迭代的迭代子（iterator），本质上是迭代子对应的原生实体。
+- `$*`: It refers to the type of the pre-operation result data, represented by a string, the same as the return value of `$DATA.type($?)`.
+- `$#`: It refers to the number of data items contained in the pre-operation result data, same as the return value of `$DATA.count($?)`.
+- `$&`: As the iterator of the current iteration, it is essentially the native entity corresponding to the iterator.
 
-上下文变量 `$~` 更改为 `$^`，更易识别：
+Context variable `$~` changed to `$^` for better recognition:
 
-- `$^`：指前置操作的输入数据，初始就是对介词属性 `on` 的属性值求值后的数据；迭代执行器可能会修改这个值。
+- `$^`: It refers to the input data of the pre-operation, which is initially the data after evaluating the attribute value of the preposition attribute `on`; the iterative executor may modify this value.
 
-新增如下上下文变量：
+Add the following context variables:
 
-- `$&`：指前置操作的辅助数据，初始就是对介词属性 `with` 的属性值求值后的数据；迭代执行器可能会修改这个值。
-- `$!`：前置操作执行栈中保存的用户自定义数据，用于定义临时数据。
+- `$&`: It refers to the auxiliary data of the preceding operation, which is initially the data after evaluating the attribute value of the preposition attribute `with`; the iterative executor may modify this value.
+- `$!`: User-defined data saved in the pre-operation execution stack, used to define temporary data.
 
-新增描述：命名变量和上下文变量的不同。
+Added description: The difference between named variables and context variables.
 
-相关章节：
+Related chapters:
 
-- [2.1.6) 变量](#216-变量)
-- [2.2.2) 求值表达式的语法](#222-求值表达式的语法)
+- [2.1.6) Variables] (#216-Variables)
+- [2.2.2) Syntax of evaluated expressions] (#222 - Syntax of evaluated expressions)
 
-##### RC1.2) `init` 标签的增强
+##### RC1.2) `init` Tag Enhancement
 
-在 `init` 标签中使用 `at` 属性，用于覆盖当前命名空间中已有的命名变量。
+Use `at` attribute in `init` tag to overwrite named variables already in the current namespace.
 
-在 `init` 标签中不指定 `as` 或者 `at` 属性时，则定义或者覆盖中的用户自定义数据。
+When `as` or `at` attribute is not specified in `init` tag, the user-defined data in the definition or override.
 
-相关章节：
+Related chapters:
 
-- [2.5.1) `init` 标签](#251-init-标签)
+- [2.5.1) `init` tag] (#251-init-tag)
 
-##### RC1.3) 针对数值执行器的附加说明
+##### RC1.3) Additional Clarifications for Numeric Executors
 
-增加针对数值执行器初始数据的说明。
+Added a description for the initial data of the numerical actuator.
 
-相关章节：
+Related chapters:
 
-- [2.6.1.5) 用于数值的内建执行器](#2615-用于数值的内建执行器)
+- [2.6.1.5) Builtin executor for numeric values] (#2615 - Builtin executor for numeric values)
 
-##### RC1.4) `observe` 标签的增强
+##### RC1.4)`observe` Tag Enhancement 
 
-在 `observe` 标签中使用 `at` 属性，可观察命名变量对应的数据变化。
+Use `at` attribute in `observe` tag to observe the data changes corresponding to the named variables.
 
-为观察异步初始化命名变量时的异常状态，新增异常数据类型。
+In order to observe the abnormal state when the named variable is initialized asynchronously, the exception data type is added.
 
-相关章节：
+Related chapters:
 
-- [2.5.10) `observe`、 `forget` 和 `fire` 标签](#2510-observe-forget-和-fire-标签)
-- [2.1.3) 扩展数据类型](#213-扩展数据类型)
+- [2.5.10) `observe`, `forget` and `fire` labels] (#2510-observe-forget-and-fire-labels)
+- [2.1.3) Extended data types] (#213-Extended data types)
 
-##### RC1.5) 骨架元素的增强
+##### RC1.5) Skeleton Element Enhancement
 
-骨架元素被定义为具有默认动作的一般动作元素，因而可以和 HVML 动作元素互相嵌套。
+Skeleton elements are defined as generic action elements with default actions, and thus can be nested with HVML action elements.
 
-相关章节：
+Related chapters:
 
-- [2.1.11.1) 用来操作数据的动作元素](#21111-用来操作数据的动作元素)
-- [3.1.2) 元素](#312-元素)
+- [2.1.11.1) Action elements used to manipulate data] (#21111 - Action elements used to manipulate data)
+- [3.1.2) Elements] (#312-Elements)
 
-##### RC1.6) 属性值操作符的增强
+##### RC1.6) Enhancement to Attribute Value Operators
 
-在 `update` 动作元素中，当 `with` 属性指定的数据是字符串类型，且修改动作为 `displace` 时，增加了 `*=` 属性值操作符。
+In `update` action element, when the data specified by `with` attribute is a string type and the modification action is `displace`, the `*=` attribute value operator is added.
 
-在 `update` 动作元素中，当 `with` 属性指定的数据是数值型数据，且修改动作为 `displace` 时，可使用 `+=`、`-=`、`*=`、`/=`、`%=` 等属性值操作符。
+In `update` action element, when the data specified by `with` attribute is numeric data and the modification action is `displace`, you can use `+=`, `-=`, `*=`, `/= `, `%=` and other attribute value operators.
 
-相关章节：
+Related chapters:
 
-- [3.1.2.4) 动作元素属性](#3124-动作元素属性)
+- [3.1.2.4) Action element attributes] (#3124 - Action element attributes)
 
-#### BRC) 其他
+#### BRC) Other
 
-老的匹配规则：
+Old matching rules:
 
-- 若 `for` 属性值为 `*` 或空字符串，则相当于匹配任意值。
-- 若属性值未使用后面描述的前缀，或前缀为 `\` 字符，则执行精确匹配。若当前值为字符串，则将 `for` 属性值视作字符串执行字符串的匹配；若当前值为数值，则将 `for` 属性值视作数值执行匹配。
+- If `for` attribute value is `*` or an empty string, it is equivalent to matching any value.
+- If the attribute value does not use the prefix described below, or is prefixed with the `\` character, an exact match is performed. If the current value is a string, the `for` attribute value is treated as a string to perform string matching; if the current value is a number, the `for` attribute value is treated as a number to perform matching.
 
-若当前值是字符串，可使用如下前缀表示精确匹配之外的匹配条件：
+If the current value is a string, the following prefixes can be used to indicate matching conditions other than exact matching:
 
-- `~`：表示一个字符串的通配符（wildcard）匹配，可支持通配符并忽略大小写；如 `~zh*`，表示匹配所有使用 `zh` 打头的字符串。
-- `/`：表示一个字符串的正则表达式匹配。比如 `/[1-9][0-9]?/`，表示匹配 11 ～ 99 的正整数形式的字符串。
+- `~`: Indicates a wildcard (wildcard) match of a string, which supports wildcards and ignores case; such as `~zh*`, means to match all strings starting with `zh`.
+- `/`: Indicates a regular expression match for a string. For example, `/[1-9][0-9]?/` means to match a string of positive integers from 11 to 99.
 
-若当前值是数值，可使用如下前缀表示精确匹配之外的匹配条件：
+If the current value is a number, the following prefixes can be used to indicate matching conditions other than exact matching:
 
-- `>`：表示当前值大于前缀之后给定的数值，如 `> 30`。
-- `>=`：表示当前值大于或等于前缀之后给定的数值，如 `>= 30`。
-- `<=`：表示当前值小于等于前缀之后给定的数值，如 `<= 30`。
-- `<`：表示当前值小于前缀之后给定的数值，如 `< 30`。
-- `!`：表示当前值不等于前缀之后给定的数值，如 `! 30`。
+- `>`: Indicates that the current value is greater than the value given after the prefix, such as `> 30`.
+- `>=`: Indicates that the current value is greater than or equal to the value given after the prefix, such as `>= 30`.
+- `<=`: Indicates that the current value is less than or equal to the value given after the prefix, such as `<= 30`.
+- `<`: Indicates that the current value is less than the value given after the prefix, such as `< 30`.
+- `!`: Indicates that the current value is not equal to the value given after the prefix, such as `! 30`.
 
-### 附.2) 待定内容
+### Attachment 2) Undetermined Content
 
-#### TBD 1) 扩展数据类型
+#### TBD 1) Extended Data Types
 
-##### TBD 1.1) 扩展数据类型
+##### TBD 1.1) Extended Data Types
 
-1) 复数及其运算
+1) Complex numbers and their operations
 
-2) 矩阵及其运算
+2) Matrix and its operations
 
-#### TBD2) 动作元素
+#### TBD2) Action Element
 
-##### TBD2.1) `pipe` 标签
+##### TBD2.1) `pipe` Tag
 
-`pipe` 标签用于将一个字节序列、字符串或者输出流管接（pipe）到另外一个可接收输入流的东西上。
+The `pipe` tag is used to pipe a byte sequence, string, or output stream to another thing that accepts an input stream.
 
-比如，如下代码的实际效果是将文件 `src.txt` 中的内容追加到 `dst.txt` 中。
-
-```hvml
-    <pipe   on="$STREAM.open('file://src.txt', 'read')"
-            with="$STREAM.open('file://dst.txt', 'write append')">
-    </pipe>
-```
-
-我们还可以将输出流管接到一个执行特定程序的子进程上，然后再将子进程的输出流管接到标准输出上：
+For example, the actual effect of the following code is to append the contents of the file `src.txt` to `dst.txt`.
 
 ```hvml
-    <pipe   on="HVML" with="$STREAM.open('exe:///usr/bin/wc')">
-        <pipe on="$?" with="$STREAM.stdout" />
-    </pipe>
+     <pipe on="$STREAM.open('file://src.txt', 'read')"
+             with="$STREAM.open('file://dst.txt', 'write append')">
+     </pipe>
 ```
 
-`pipe` 标签将一直从 `on` 属性指定的流实体中读取数据，并将结果写入到 `with` 属性指定的流实体中。默认情况下，当 `on` 属性指定的流实体被关闭时，`pipe` 结束执行，其结果数据为 `with` 属性指定的流实体。
-
-当 `on` 属性指定的数据是字节序列或者字符串时，将对应一个虚拟的流实体，该实体的内容就是指定的字节序列或者字符串，并在读取完这些内容后收到文件尾的标志，表示该流实体已被关闭。
-
-我们可以使用 `asynchronously` 副词属性，从而异步执行 `pipe` 操作：
+We can also pipe the output stream to a subprocess that executes a specific program, and then pipe the output stream of the subprocess to standard output:
 
 ```hvml
-    <pipe   on="$STREAM.in" with="$STREAM.open('exe:///usr/bin/wc')"
-            as="myPipe" async>
-        <observe on="myPipe" for="pipe:done" >
-            <choose on="$STREAM.stdout.writelines($myPipe.out.readlines(1))" />
-        </observe>
-    </pipe>
+     <pipe on="HVML" with="$STREAM.open('exe:///usr/bin/wc')">
+         <pipe on="$?" with="$STREAM.stdout" />
+     </pipe>
 ```
 
-##### TBD2.2) `connect`、 `send` 和 `disconnect` 标签
+`pipe` tag will always read data from the stream entity specified by `on` attribute, and write the result to the stream entity specified by the `with` attribute. By default, when the stream entity specified by the `on` attribute is closed, `pipe` ends execution, and its result data is the stream entity specified by the `with` attribute.
 
-如前所述，`connect` 标签定义一个对外部数据源的长连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包；而 `disconnect` 标签关闭先前建立的一个长连接数据源。
+When the data specified by `on` attribute is a byte sequence or a string, it will correspond to a virtual stream entity, the content of which is the specified byte sequence or string, and the file will be received after reading these contents Tail flag indicating that the stream entity has been closed.
 
-`send` 标签用于在一个已连接的长连接数据源上发出一个同步或者异步的消息。比如在通过 MQTT 或者本地数据总线发送请求到外部模块或者远程计算机时，我们使用 `send` 元素发出一个异步消息，然后在另外一个 `observe` 标签定义的 HVML 元素中做相应的处理。比如，我们要通过 hiDataBus 协议向系统守护进程发出一个获得当前可用 WiFi 热点列表的远程过程调用：
+We can use `asynchronously` adverb attribute to execute `pipe` operations asynchronously:
+
+```hvml
+     <pipe on="$STREAM.in" with="$STREAM.open('exe:///usr/bin/wc')"
+             as="myPipe" async>
+         <observe on="myPipe" for="pipe:done">
+             <choose on="$STREAM.stdout.writelines($myPipe.out.readlines(1))" />
+         </observe>
+     </pipe>
+```
+
+##### TBD2.2) `connect`, `send` and `disconnect` Tags
+
+As mentioned earlier, `connect` tag defines a persistent connection to an external data source, such as packets from MQTT or a local data bus (such as the data bus dBus commonly used in Linux desktop systems); while the `disconnect` tag closes a previously established connection. A long connection data source.
+
+`send` tag is used to send a synchronous or asynchronous message on a connected persistent connection data source. For example, when sending a request to an external module or a remote computer through MQTT or a local data bus. We use `send` element to send an asynchronous message, and then do corresponding processing in another HVML element defined by `observe` tag. For example, we want to issue a remote procedure call to the system daemon to get the list of currently available WiFi hotspots through the hiDataBus protocol:
 
 ```hvml
 </hvml>
-    <head>
-        <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus"/>
-    </head>
+     <head>
+         <connect at="unix:///var/run/hibus.sock" as="hibus" for="hiBus"/>
+     </head>
 
-    <body>
-        ...
+     <body>
+         ...
 
-        <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiGetHotspots" as="wifilist" asynchronously>
-            <observe on="$hibus" for="result:$wifilist">
-                ...
-            </observe>
-        </send>
+         <send on="$hibus" to="call" at="@localhost/cn.fmsoft.hybridos.settings/inetd/wifiGetHotspots" as="wifilist" asynchronously>
+             <observe on="$hibus" for="result:$wifilist">
+                 ...
+             </observe>
+         </send>
 
-        <send on="$hibus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED" as="networkchanged">
-            <observe on="$hibus" for="event:$networkchanged">
-                ...
-            </observe>
-        </send>
-        ...
-    </body>
+         <send on="$hibus" to="subscribe" at="@localhost/cn.fmsoft.hybridos.settings/inetd/NETWORKCHANGED" as="networkchanged">
+             <observe on="$hibus" for="event:$networkchanged">
+                 ...
+             </observe>
+         </send>
+         ...
+     </body>
 </hvml>
 ```
 
-正常情况下，使用同步请求时，`send` 元素的执行结果数据就是请求的返回结果；如果使用异步请求，`send` 元素的操作结果数据为字符串 `ok`。异步请求时，一般应该在对应的 `observe` 元素中做后续处理。
+Normally, when a synchronous request is used, the execution result data of `send` element is the return result of the request. If an asynchronous request is used, the operation result data of `send` element is the string `ok`. When making an asynchronous request, generally follow-up processing should be done in the corresponding `observe` element.
 
 ```hvml
     <body>
@@ -8367,115 +8348,115 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
     </body>
 ```
 
-##### TBD2.3) 外部函数更新器
+##### TBD2.3) External Function Updater
 
-在 `update` 标签中，`by` 指定一个外部函数执行器；当 `to` 属性给定的修改动作无法完成预期的修改操作时，可使用外部函数执行器。指定 `by` 属性时，将忽略 `to` 属性值。
+In `update` tag, `by` specifies an external function executor; when the modification action given by the `to` attribute cannot complete the expected modification operation, the external function executor can be used. When the `by` attribute is specified, the `to` attribute value is ignored.
 
-外部函数主要用于 `update` 标签以完成复杂的更新操作，所有的事件处理函数之原型为：
+External functions are mainly used in `update` tag to complete complex update operations. The prototypes of all event handlers are:
 
 ```python
 def event_handler (on_value, with_value, root_in_scope):
 ```
 
-其中，
+in,
 
-- `on_value` 是 `update` 元素之 `on` 属性的值。
-- `with_value` 是 `update` 元素之 `with` 属性的值。
-- `root_in_scope` 是 `update` 元素之 `in` 属性确定的当前操作范围。
+- `on_value` is the value of `on` attribute of `update` element.
+- `with_value` is the value of `with` attribute of `update` element.
+- `root_in_scope` is the current operating scope determined by `in` attribute of `update` element.
 
-比如针对电池电量的改变事件，其 `payload` 如 2.8) 所示包含 `level` 和 `charging` 两个键值对，分别表示当前电量百分比以及是否在充电中。因此，其对应的执行器可实现为：
+For example, for the change event of battery power, its `payload` contains two key-value pairs `level` and `charging` as shown in 2.8), which respectively indicate the current power percentage and whether it is charging. Therefore, its corresponding executor can be implemented as:
 
 ```python
-def on_battery_changed (on_value, with_value, root_in_scope):
-    if on_value.level == 100:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-full.png'
-    elif on_value.level > 90:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-90.png'
-    elif on_value.level > 70:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-70.png'
-    elif on_value.level > 50:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-50.png'
-    elif on_value.level > 30:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-30.png'
-    elif on_value.level > 10:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-10.png'
-    else:
-        root_in_scope.find ('img.battery-status').attr('src') = '/battery-level-low.png'
+def on_battery_changed(on_value, with_value, root_in_scope):
+     if on_value.level == 100:
+         root_in_scope.find('img.battery-status').attr('src') = '/battery-level-full.png'
+     elif on_value.level > 90:
+         root_in_scope.find('img.battery-status').attr('src') = '/battery-level-90.png'
+     elif on_value.level > 70:
+         root_in_scope.find('img.battery-status').attr('src') = '/battery-level-70.png'
+     elif on_value.level > 50:
+         root_in_scope.find('img.battery-status').attr('src') = '/battery-level-50.png'
+     elif on_value.level > 30:
+         root_in_scope.find('img.battery-status').attr('src') = '/battery-level-30.png'
+     elif on_value.level > 10:
+         root_in_scope.find('img.battery-status').attr('src') = '/battery-level-10.png'
+     else:
+         root_in_scope.find('img.battery-status').attr('src') = '/battery-level-low.png'
 ```
 
-上面的脚本，针对不同的电量范围设置了不同的电池图标，从而向用户展示了当前电池的剩余电量信息。
+The above script sets different battery icons for different power ranges, so as to show the user the remaining power information of the current battery.
 
-##### TBD2.4) 杂项
+##### TBD2.4) Misc
 
-虚拟 DOM 技术提供如下一些好处：
+Virtual DOM technology provides some benefits as follows:
 
-1. 由于脚本程序并不直接操作真实的 DOM 树，故而一方面通过现有的框架简化了前端开发的复杂性，另一方面通过优化对真实 DOM 树的操作而减少了由于动态修改页面内容而对 DOM 树的频繁操作，从而提高页面的渲染效率和用户体验。
-1. 通过虚拟 DOM 技术，程序对某个数据的修改，可以直接反应到该数据绑定的页面内容上，开发者无需主动或直接地调用相关接口来操作 DOM 树。这种技术提供了所谓的“响应式”编程，极大降低了开发者的工作量。
+1. Since the script program does not directly operate the real DOM tree, on the one hand, the complexity of the front-end development is simplified through the existing framework; Frequent operations on the DOM tree improve page rendering efficiency and user experience.
+1. Through the virtual DOM technology, the modification of a certain data by the program can be directly reflected on the page content bound to the data, and the developer does not need to actively or directly call the relevant interface to operate the DOM tree. This technique provides so-called "reactive" programming, which greatly reduces the developer's workload.
 
-另外，我们还可以使用 `init` 元素的 `by` 属性指定用于对比两个数据是否相等的外部执行器。
+Alternatively, we can use the `by` attribute of the `init` element to specify an external executor for comparing two values for equality.
 
-- `connect`：该标签定义对一个外部数据源的连接，比如来自 MQTT 或者本地数据总线（如 Linux 桌面系统中常用的数据总线 dBus）的数据包。
-- `disconnect`：该标签关闭先前建立的外部数据源连接。
+- `connect`: This tag defines a connection to an external data source, such as packets from MQTT or a local data bus (such as the data bus dBus commonly used in Linux desktop systems).
+- `disconnect`: This tag closes a previously established connection to an external data source.
 
-- `connect` 标签用于连接到一个指定的外部数据源，并绑定一个变量名。
-- `send` 标签用来在指定的长连接上发出一个消息。
-- `disconnect` 标签用于显式关闭一个先前建立的外部数据源连接。
+- `connect` tag is used to connect to a specified external data source and bind a variable name.
+- `send` tag is used to send a message on the specified persistent connection.
+- `disconnect` tag is used to explicitly close a previously established connection to an external data source.
 
-- `at`：在 `connect` 动作元素中，用于定义执行动作所依赖的外部数据源，其属性值通常是一个 URL，如 `tcp://foo.com:2345`、 `unix:///var/run/hibus.sock`。
-- `for`：在 `connect` 标签中，用于定义协议或用途。
-- `with`：在 `send` 元素中定义发送请求或消息时的参数。
+- `at`: In `connect` action element, it is used to define the external data source that the action depends on, and its attribute value is usually a URL, such as `tcp://foo.com:2345`, `unix:/ //var/run/hibus.sock`.
+- `for`: In `connect` tag, it is used to define the protocol or purpose.
+- `with`: Define the parameters when sending the request or message in `send` element.
 
-`request` 标签在外部数据源上发出一个同步或者异步的请求。
+`request` tag makes a synchronous or asynchronous request on an external data source.
 
-从外部数据源中获取数据时，我们使用 `at` 属性指定 URL，使用 `with` 属性指定请求参数，使用 `via` 属性指定请求方法（如 `GET`、 `POST`、 `DELETE` 等）：
+When getting data from an external data source, we use `at` attribute to specify the URL, `with` attribute to specify the request parameters, and `via` attribute to specify the request method (such as `GET`, `POST`, `DELETE`, etc.) :
 
 ```hvml
-    <request at="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
-        <observe on="$foo" for="result:success">
-            ...
-        </observe>
-    </request>
+     <request at="http://foo.bar.com/foo" with="$params" via="POST" as="foo" async>
+         <observe on="$foo" for="result:success">
+             ...
+         </observe>
+     </request>
 ```
 
-以上用法和 `init` 类似，但 `request` 可以通过 `to` 属性指定请求结果的处理方法，比如将请求结果保存到指定的文件当中：
+The above usage is similar to `init`, but `request` can specify the processing method of the request result through the `to` attribute, such as saving the request result to the specified file:
 
 ```hvml
-    <request at="http://foo.bar.com/foo" with="$params" via="POST" to="save:/tmp/foo.tmp" as="foo" async>
-        <observe on="$foo" for="result:success">
-            ...
-        </observe>
-    </request>
+     <request at="http://foo.bar.com/foo" with="$params" via="POST" to="save:/tmp/foo.tmp" as="foo" async>
+         <observe on="$foo" for="result:success">
+             ...
+         </observe>
+     </request>
 ```
 
-此种情况下，我们可以使用如下几种结果处理方法：
+In this case, we can use the following result processing methods:
 
-- `save:` 保存到本地文件。该操作的执行结果是保存后的完整文件路径。
-- `filter:` 创建子进程和管道并将管道作为子进程的标准输入，然后在子进程中执行指定的程序，将请求结果写入管道。该操作的执行结果是子进程的标准输出（字节序列）。
+- `save:` Save to a local file. The execution result of this operation is the full file path after saving.
+- `filter:` Create a subprocess and a pipe and uses the pipe as the standard input of the subprocess, then executes the specified program in the subprocess, and writes the request result to the pipe. The result of this operation is the standard output (sequence of bytes) of the child process.
 
-当前 HVML 程序在模态窗口中渲染时，可观察该程序的 `terminated:success` 事件，然后进行处理。如果当前 HVML 程序不在模态对话框中渲染，则该数据将做为请求数据（对应 `$REQ` 内置全局变量）提供给目标返回对应的 HVML 程序，此时，该 HVML 程序会执行一次重新装载操作（类似浏览器刷新页面的功能）。
+When the current HVML program is rendered in a modal window, `terminated:success` event of the program can be observed and then processed. If the current HVML program is not rendered in the modal dialog box, the data will be provided as request data (corresponding to `$REQ` built-in global variable) to the target to return the corresponding HVML program. At this time, the HVML program will perform a reload Operation (similar to the browser's function of refreshing the page).
 
-`exit` 元素不产生任何结果数据，故而不能包含子动作元素。
+`exit` element does not produce any result data and therefore cannot contain child action elements.
 
-正常情况下，`load` 元素装载一个 HVML 程序在一个模态窗口中渲染时，其执行结果数据就是新 HVML 程序中 `exit` 元素的 `with` 属性值；如果在一个新建的普通窗口中渲染，则正常情况下 `load` 元素的操作结果数据为字符串 `ok`；如果在其他已有的窗口中渲染，则将终止该窗口中运行的 HVML 程序，并在当前窗口中渲染新的 HVML 程序内容。
+Under normal circumstances, when `load` element loads an HVML program and renders it in a modal window, the execution result data is the value of `with` attribute of  `exit` element in the new HVML program; if it is rendered in a new normal window , the operation result data of `load` element is the string `ok` under normal circumstances; if it is rendered in another existing window, the HVML program running in this window will be terminated and a new HVML will be rendered in the current window program content.
 
-`exit` 标签用于终止当前的 HVML 程序，并将返回值返回到指定的目标 HVML 程序。
+`exit` tag is used to terminate the current HVML program and return the return value to the specified target HVML program.
 
-`load` 标签支持如下副词属性：
+`load` tag supports the following adverb attributes:
 
-- `synchronously`：同步装载，默认行为。`load` 元素将等待新的 HVML 程序退出，相当于创建一个模态窗口。
-- `asynchronously`：异步装载。`load` 元素不等待新的 HVML 程序退出。
-- `concurrently`：并行执行 HVML 程序。若解释器支持行者（runner），则 `as` 属性的值用于标识一个行者。
+- `synchronously`: Load synchronously and default behavior. The `load` element will wait for the new HVML program to exit, equivalent to creating a modal window.
+- `asynchronously`: Load asynchronously. `load` element does not wait for the new HVML program to exit.
+- `concurrently`: Execute HVML programs in parallel. If the interpreter supports runners, the value of `as` attribute is used to identify a runner.
 
-### 附.3) 贡献者榜单
+### Appendix 3) Contributor List
 
-本榜单顺序按贡献时间由早到晚排列：
+The order of this list is arranged from early to late according to the contribution time:
 
-1. Tian Siyuan：资深软件工程师；一些文档细节的建议。
-1. Hax：Web 前端技术专家；一些文档细节的建议。
+1. Tian Siyuan: Senior software engineer; some suggestions for document details.
+1. Hax: Web front-end technology expert; some suggestions for document details.
 
-### 附.4) 商标声明
+### Appendix 4) Trademark Statement
 
-本文提到的产品、技术或者术语名称，涉及北京飞漫软件技术有限公司在中国或其他地区注册的如下商标：
+The product, technology or term names mentioned in this article involve the following trademarks registered by Beijing Feynman Software Technology Co., Ltd. in China or other regions:
 
 1) 飛漫
 
@@ -8543,4 +8524,3 @@ def on_battery_changed (on_value, with_value, root_in_scope):
 
 [React.js]: https://reactjs.org
 [Vue.js]: https://cn.vuejs.org
-
