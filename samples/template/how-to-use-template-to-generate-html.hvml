@@ -1,7 +1,7 @@
 # This HVML program demonstrates how to use templates to generate HTML content
 #
 # Key features:
-# 1. Uses an external HTML template file (news-list-zh.html)
+# 1. Uses an external HTML template file (news-list.html)
 # 2. Loads and merges localized messages from a JSON file
 # 3. Demonstrates template inheritance with <inherit> elements
 # 4. Shows dynamic content updates using placeholders
@@ -15,7 +15,7 @@
 # - Updates the copyright year dynamically
 # - Outputs the final HTML document to stdout
 <!DOCTYPE hvml>
-<hvml target="html" lang="en" template="template/news-list-zh.html">
+<hvml target="html" lang="en" template="template/news-list.html">
     <head>
         <update on $T.map from "assets/messages-{$SYS.locale}\.json" to 'merge' silently />
         <title>$T.get('Sample - Template')</title>
@@ -63,3 +63,4 @@
         <inherit on $STREAM.stdout.writelines($DOC.serialize('loose')) />
     </body>
 </hvml>
+
