@@ -1,0 +1,51 @@
+<!DOCTYPE hvml>
+<hvml target="html" lang="en" template="template/news-list-zh.html">
+    <head>
+        <update on $T.map from "assets/messages-{$SYS.locale}\.json" to 'merge' silently />
+        <title>$T.get('Sample - Template')</title>
+    </head>
+
+    <body>
+        <inherit in '#hdrPageTitle'>
+            <h1>$T.get('Sample - Loading')</h1>
+            <p>$T.get('Initializing named variable synchronously')</p>
+        </inherit>
+
+        <inherit in '#ulNewsTitleList'>
+            <li>Foo</li>
+            <li>Bar</li>
+            <li>Foobar</li>
+        </inherit>
+
+        <inherit in '#mainContent'>
+            <div class="card text-center">
+                <div class="card-header">
+                    $T.get('Breaking News!')
+                </div>
+                <div id="breaking-news" class="card-body">
+                    <h5 class="card-title placeholder-glow">
+                        <span class="placeholder col-6"></span>
+                    </h5>
+                    <p class="card-text placeholder-glow">
+                        <span class="placeholder col-7"></span>
+                        <span class="placeholder col-4"></span>
+                        <span class="placeholder col-4"></span>
+                        <span class="placeholder col-6"></span>
+                        <span class="placeholder col-8"></span>
+                    </p>
+
+                    <a href="#" tabindex="-1" class="btn btn-primary disabled placeholder col-6"></a>
+                </div>
+
+                <div class="card-footer text-muted">
+                    $T.get('5 minutes ago')
+                </div>
+            </div>
+        </inherit>
+
+        <update on '#spanCopyingYear' at 'textContent' with '2025' />
+
+        <inherit on $STREAM.stdout.writelines($DOC.serialize('loose')) />
+    </body>
+</hvml>
+
