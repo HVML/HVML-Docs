@@ -7,7 +7,7 @@
     <body>
         <header>
             <h1>Fibonacci Numbers less than 2000</h1>
-            <p hvml:raw>Using temporary variables and while and with attributes</p>
+            <p hvml:raw>Using temporary variables and while/with attributes</p>
         </header>
 
         <init as="count" with=2 temp />

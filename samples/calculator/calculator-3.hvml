@@ -3,9 +3,9 @@
     <head>
         <base href="$CRTN.base(! 'https://gitlab.fmsoft.cn/hvml/hvml-docs/raw/master/samples/calculator/' )" />
 
-        <update on="$T.map" from="assets/{$SYS.locale}.json" to="merge" />
+        <update on="$T.map" from="assets/{$SYS.locale}\.json" to="merge" />
 
-        <init as="buttons" from="assets/buttons.json" />
+        <init as="buttons" from='assets/buttons.json' />
 
         <title>$T.get('HVML Calculator')</title>
 
