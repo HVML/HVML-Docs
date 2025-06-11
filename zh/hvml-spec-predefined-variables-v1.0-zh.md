@@ -2277,7 +2277,7 @@ $DOC.query(
 
 #### 3.4.4) `serialize` 方法
 
-该方法串行化文档对象，字符串。
+该方法串行化文档对象。该方法有两种形式。
 
 ```js
 $DOC.serialize(
@@ -2289,13 +2289,45 @@ $DOC.serialize(
 ) string | false: `The serialized document, such as '<html><body></body></html>'`
 ```
 
-该方法串行化目标文档；结果为字符串，如 `<html><body></body></html>`。
+这一形式串行化目标文档，以字符串形式返回，如 `<html><body></body></html>`。
+
+```js
+$DOC.serialize(
+    < stream $stream: `The stream to write the serialized document to.` >
+    [, < 'compact | loose' $method = `compact`:
+        - 'compact':    `Serialize the document compactly.`
+        - 'loose':      `Serialize the document loosely with line-breaks and indents.`
+       >
+    ]
+) boolean
+```
+
+这一形式串行化目标文档，并将结果写入指定的流中。
+
+**异常**
+
+该方法可能产生的异常：
+
+- `ArgumentMissed`：未指定参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：错误的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `false`。
+- `AccessDenied`：当前行者的所有者没有权限写入数据；可忽略异常，静默求值时返回 `false`。
+- `NoStorageSpace`：表示存储空间不足；可忽略异常，静默求值时返回 `false`。
+- `TooLarge`：写入大小大小超过(文件)限制；可忽略异常，静默求值时返回 `false`。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `false`。
 
 **示例**
 
 ```js
 $DOC.serialize
     // '<html><body></body></html>'
+
+$DOC.serailize($STREAM.stdout, 'loose')
+    // true
+
+$DOC.serialize($STREAM.stdout)
+    // true
 ```
 
 #### 3.4.5) 元素汇集实体
