@@ -4967,7 +4967,7 @@ $STR.replace(
 - `replace`  
 `search` 的替换值。一个数组可以被用来指定多重替换。
 - `case_insensitivity`  
-指定是否忽略大小写（可选）；默认为忽略大小写。
+指定是否忽略大小写（可选）；默认为区分大小写。
 
 **返回值**
 
@@ -5038,7 +5038,7 @@ $STR.format_c('Tom is 0x%02A years old, while Jerry is 0x%02X years old.', [10, 
 根据给定的格式解析指定的字符串，格式字符串使用类似 C 语言的修饰符（specifier）。
 
 ```js
-$STR.scanf(
+$STR.scan_c(
         <string $string: `The input string being parsed.`>,
         <string $format: `The interpreted format for string`>
 ) array
