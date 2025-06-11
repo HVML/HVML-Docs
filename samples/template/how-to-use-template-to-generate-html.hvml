@@ -1,3 +1,19 @@
+# This HVML program demonstrates how to use templates to generate HTML content
+#
+# Key features:
+# 1. Uses an external HTML template file (news-list-zh.html)
+# 2. Loads and merges localized messages from a JSON file
+# 3. Demonstrates template inheritance with <inherit> elements
+# 4. Shows dynamic content updates using placeholders
+# 5. Implements a news list layout with Bootstrap styling
+#
+# The program:
+# - Loads localized strings from a JSON file based on system locale
+# - Populates a page header with title and description
+# - Creates a news title list with sample items
+# - Renders news cards with images, descriptions and detail links
+# - Updates the copyright year dynamically
+# - Outputs the final HTML document to stdout
 <!DOCTYPE hvml>
 <hvml target="html" lang="en" template="template/news-list-zh.html">
     <head>
@@ -7,45 +23,43 @@
 
     <body>
         <inherit in '#hdrPageTitle'>
-            <h1>$T.get('Sample - Loading')</h1>
-            <p>$T.get('Initializing named variable synchronously')</p>
+            <h1>$T.get('Sample - Template')</h1>
+            <p>$T.get('Generating HTML contents by using a template file.')</p>
         </inherit>
 
-        <inherit in '#ulNewsTitleList'>
-            <li>Foo</li>
-            <li>Bar</li>
-            <li>Foobar</li>
-        </inherit>
+        <init as 'newsInfo'>
+            [
+                { title: '中国成功发射遥感三十九号卫星', description: '2024年3月，中国在酒泉卫星发射中心成功发射遥感三十九号卫星，卫星顺利进入预定轨道。', link: 'https://news.example.com/satellite-launch', img: 'https://news.example.com/images/satellite-launch.jpg'},
+                { title: '中国成功研制新型量子计算机', description: '2024年2月，中国科学家宣布成功研制出新型量子计算机，实现了重要技术突破。', link: 'https://news.example.com/quantum-computer', img: 'https://news.example.com/images/quantum-computer.jpg'},
+                { title: '美国洛杉矶发生大规模示威动乱', description: '2024年3月，洛杉矶市中心爆发大规模示威活动，造成多处设施损坏，当地警方已加强治安管控。', link: 'https://news.example.com/la-protests', img: 'https://news.example.com/images/la-protests.jpg'},
+            ]
+        </init>
 
-        <inherit in '#mainContent'>
-            <div class="card text-center">
-                <div class="card-header">
-                    $T.get('Breaking News!')
-                </div>
-                <div id="breaking-news" class="card-body">
-                    <h5 class="card-title placeholder-glow">
-                        <span class="placeholder col-6"></span>
-                    </h5>
-                    <p class="card-text placeholder-glow">
-                        <span class="placeholder col-7"></span>
-                        <span class="placeholder col-4"></span>
-                        <span class="placeholder col-4"></span>
-                        <span class="placeholder col-6"></span>
-                        <span class="placeholder col-8"></span>
-                    </p>
+        <archetype name='newsTitleItem'>
+            <li>$?.title</li>
+        </archetype>
 
-                    <a href="#" tabindex="-1" class="btn btn-primary disabled placeholder col-6"></a>
-                </div>
+        <iterate on $newsInfo in '#ulNewsTitleList'>
+            <update on $@ to append with $newsTitleItem />
+        </iterate>
 
-                <div class="card-footer text-muted">
-                    $T.get('5 minutes ago')
+        <archetype name='newsCard'>
+            <div class="card">
+                <img src="$?.img" class="card-img-top" alt="$?.title">
+                <div class="card-body">
+                    <h5 class="card-title">$?.title</h5>
+                    <p class="card-text">$?.description</p>
+                    <a href="$?.link" class="btn btn-primary">$T.get('Go for details')</a>
                 </div>
             </div>
-        </inherit>
+        </archetype>
 
-        <update on '#spanCopyingYear' at 'textContent' with '2025' />
+        <iterate on $newsInfo in '#mainContent'>
+            <update on $@ to append with $newsCard />
+        </iterate>
+
+        <update on '#spanCopyingYear' at 'textContent' with $DATETIME.fmttime('%G') />
 
         <inherit on $STREAM.stdout.writelines($DOC.serialize('loose')) />
     </body>
 </hvml>
-
