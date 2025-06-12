@@ -7,7 +7,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <base href="$CRTN.base(! 'https://gitlab.fmsoft.cn/hvml/hvml-docs/raw/master/samples/bootstrap/' )" />
+        <base href=$CRTN.base(! "file://$SYS.cwd" ) />
 
         <update on="$T.map" from="assets/messages-{$SYS.locale}.json" to="merge" />
 
@@ -68,12 +68,14 @@
                 "detailedUrl": "#",
                 "time": $DATETIME.time_prt
             }
-
-            <observe against="breakingNews" for="change:attached" in="#exampleModal">
-                <update on="#exampleModal" to="displace" with="$newsModal" />
-                <update on="#btnShowModal" at="attr.disabled" to="remove" />
-            </observe>
         </init>
+
+        <observe against="breakingNews" for="change:attached" in="#exampleModal">
+            <choose on $breakingNews>
+                <update on="#exampleModal" to="displace" with="$newsModal" />
+            </choose>
+            <update on="#btnShowModal" at="attr.disabled" to="remove" />
+        </observe>
 
         <footer>
             <p>$T.get('Copyright &copy; FMSoft')</p>
