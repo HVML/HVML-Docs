@@ -5473,27 +5473,25 @@ $STR.substr_count('abcdefabc', 'abc', 3, 3)
 
 ```js
 $STR.substr_replace(
-    <array | string $string: `The input string.`>,
-    <array | string $replace: `The replacement string.`>,
-    <array | real $offset: `If $offset is non-negative, the replacing will begin at the $offset'th offset into string. If offset is negative, the replacing will begin at the $offset'th character from the end of string.`>
+    < array | string $string: `The input string or the array which is consist of input strings.` >,
+    < array | string $replace: `The replacement string.` >,
+    < array | real $offset: `If $offset is non-negative, the replacing will begin at the $offset'th offset into string. If offset is negative, the replacing will begin at the $offset'th character from the end of string.` >
     [,
-        <array | real $length: `If given and is positive, it represents the length of the portion of string which is to be replaced. If it is negative, it represents the number of characters from the end of string at which to stop replacing. If it is not given, then it will default to strlen( string ); i.e. end the replacing at the end of string. Of course, if length is zero then this function will have the effect of inserting replace into string at the given offset offset.`>
+        < array | real $length: `If given and is positive, it represents the length of the portion of string which is to be replaced. If it is negative, it represents the number of characters from the end of string at which to stop replacing. If it is not given, then it will default to strlen( string ); i.e. end the replacing at the end of string. Of course, if length is zero then this function will have the effect of inserting replace into string at the given offset offset.` >
     ]
-) string | array
+) array | string | false
 ```
 
 **参数**
 
-**参数**
-
-- `$string`：输入字符串或字符串数组。
+- `$string`：输入字符串或字符串数组。当 `$string` 以数组形式给出时，会依次替换其中的字符串。在这种情况下，`$replace`、`$offset` 和 `$length` 参数可以作为标量值作用于每个输入字符串，或者作为数组提供；后一种情况下，数组元素将会相应作用于对应的输入字符串。
 - `$replace`：用于替换的字符串或字符串数组。
 - `$offset`：指定替换的起始位置。如果为非负数，则从字符串开头的第 `$offset` 个位置开始替换；如果为负数，则从字符串末尾的第 `$offset` 个位置开始替换。可以是单个数值或数值数组。
 - `$length`：可选参数，指定要替换的长度。如果为正数，表示从起始位置开始替换的字符数；如果为负数，表示从字符串末尾倒数第几个字符停止替换；如果未指定，则默认替换到字符串末尾；如果为零，则表示在指定位置插入替换字符串。可以是单个数值或数值数组。
 
 **返回值**
 
-如果输入参数都是标量（非数组），则返回替换后的字符串；如果任一输入参数是数组，则返回替换后的字符串数组。
+如果输入参数都是标量（非数组），则返回替换后的字符串；如果 `$string` 是数组，则返回替换后的字符串数组。
 
 **示例**
 
@@ -5803,10 +5801,10 @@ $STR.pad(
 
 **参数**
 
-- $string : 需要填充的原始字符串。
-- $length : 目标字符串长度（必须大于或等于原字符串长度）。
-- $pad_string (可选): 填充使用的字符串（默认空格），可接受多字符组合。
-- $pad_type (可选): 填充方向（`left` 仅左侧填充，`right` 仅右侧填充，`both` 两端均匀填充）。
+- `$string`: 需要填充的原始字符串。
+- `$length`: 目标字符串长度（必须大于或等于原字符串长度）。
+- `$pad_string` (可选): 填充使用的字符串（默认空格），可接受多字符组合。
+- `$pad_type` (可选): 填充方向（`left` 仅左侧填充，`right` 仅右侧填充，`both` 两端均匀填充）。
 
 **返回值**
 
@@ -6003,7 +6001,7 @@ $STR.htmlentities(
     <string $string: `The input string.`>
     [,
        <'[single-quotes || double-quotes || convert-all || double-encode'
-            $flags = 'single-quotes double-quotes double-encode':
+            $encode_flags = 'single-quotes double-quotes double-encode':
         - 'single-quotes':  `Convert single-quotes.`
         - 'double-quotes':  `Convert double quotes.`
         - 'convert-all':    `All characters which have HTML character entity
@@ -6022,7 +6020,7 @@ $STR.htmlentities(
 $STR.htmlentities(!
     <string $string: `The input string.`>
     [,
-        <'keep-double-quotes || keep-single-quotes || substitute-invalid ]' $flags = 'substitute-invalid':
+        <'keep-double-quotes || keep-single-quotes || substitute-invalid ]' $decode_flags = 'substitute-invalid':
             - 'keep-single-quotes': `Keep single-quotes unconverted.`
             - 'keep-double-quotes': `Keep double-quotes unconverted.`
             - 'substitute-invalid': `Replace invalid HTML entity with a Unicode Replacement Character U+FFFD; or ignore it.` >
@@ -6033,11 +6031,15 @@ $STR.htmlentities(!
 **参数**
 
 - `$string`: 要转换的输入字符串。
-- `$flags`: 可选参数，用于控制转换行为的标志组合，默认为 'single-quotes double-quotes double-encode'。可取值：
-  + 'single-quotes': 转换单引号。
-  + 'double-quotes': 转换双引号。
-  + 'convert-all': 将所有具有 HTML 字符实体等价形式的字符转换为对应实体；否则只转换在 HTML 中具有特殊含义的字符。
-  + 'double-encode': 转换所有内容；否则保留现有的 HTML 实体。
+- `$encode_flags`: 可选参数，用于控制编码行为的标志组合，默认为 `'single-quotes double-quotes double-encode'`。可取值：
+   + `'single-quotes'`: 转换单引号。
+   + `'double-quotes'`: 转换双引号。
+   + `'convert-all'`: 将所有具有 HTML 字符实体等价形式的字符转换为对应实体；否则只转换在 HTML 中具有特殊含义的字符。
+   + `'double-encode'`: 转换所有内容；否则保留现有的 HTML 实体。
+- `$decode_flags`: 可选参数，用于控制解码行为的标志组合，默认为 `'substitute-invalid'`。可取值：
+   + `'keep-single-quotes'`: 保持单引号不做转换。
+   + `'keep-double-quotes'`: 保持双引号不做转换。
+   + `'substitute-invalid'`: 将无效的 HTML 实体替换为 Unicode 替换字符 U+FFFD; 或者忽略它。
 
 **返回值**
 
@@ -6251,7 +6253,7 @@ $URL.encode(
           - 'rfc1738': `Encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
           - 'rfc3986': `Encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).`
         ]
-) string
+) string | false
 ```
 
 该方法用于将字符串或者字节序列中的字节执行 URL 编码，默认遵循 RFC 1738 和 'application/x-www-form-urlencoded' 媒体类型编码方式。
@@ -6265,8 +6267,8 @@ URL 编码以字节为单位字节处理字符串或者字节序列中的字符�
 该方法可能产生如下异常：
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回空字符串。
-- `WrongDataType`：传入了不是字符串类型也不是字节序列类型的数据；可忽略异常，静默求值时返回空字符串。
+- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：传入了不是字符串类型也不是字节序列类型的数据；可忽略异常，静默求值时返回 `false`。
 
 **示例**
 
@@ -6303,7 +6305,7 @@ $URL.decode(
               - 'rfc3986':  `Decoding is performed according to RFC 3986, and spaces are expected being percent encoded (%20).`
             ]
         ]
-) string | bseqence
+) string | bseqence | false
 ```
 
 该方法将使用 URL 编码的字符串解码为字符串或者字节序列。
@@ -6315,9 +6317,9 @@ URL 编码以字节为单位字节处理字符串或者字节序列中的字符�
 该方法可能产生如下异常：
 
 - `MemoryFailure`：内存分配失败；不可忽略异常。
-- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回空字符串或者空字节序列。
-- `WrongDataType`：传入了不是字符串类型的数据；可忽略异常，静默求值时返回空字符串或者空字节序列。
-- `BadEncoding`：当 `$type` 为 `string` 时产生，表示解码后的数据不是合法的 UTF-8 编码字符；可忽略异常，静默求值时返回已解码的字符串。
+- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：传入了不是字符串类型的数据；可忽略异常，静默求值时返回 `false`。
+- `BadEncoding`：当 `$type` 为 `string` 时产生，表示解码后的数据不是合法的 UTF-8 编码字符；可忽略异常，静默求值时 `false`。
 
 **示例**
 
@@ -6347,33 +6349,50 @@ $URL.decode('HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7
 $URL.build_query(
     < object | array $query_data >
     [, < string $numeric_prefix = '': `The numeric prefix for the argument names if $query_data is an array.` >
-        [, <string $arg_separator = '&': `The character used to separate the arguments. `>
-            [, <'[real-json | real-ejson] || [rfc1738 | rfc3986]' $opts = 'real-json rfc1738':
-              - 'real-json':    `Use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
-              - 'real-ejson':   `Use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
-              - 'rfc1738':      `Encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
-              - 'rfc3986':      `Encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).`
+        [, <'[real-json | real-ejson] || [rfc1738 | rfc3986]' $opts = 'real-json rfc1738':
+        - 'real-json':    `Use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
+        - 'real-ejson':   `Use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
+        - 'rfc1738':      `Encoding is performed per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
+        - 'rfc3986':      `Encoding is performed according to RFC 3986, and spaces will be percent encoded (%20).`
+            [, <string $arg_separator = '&': `The character used to separate the arguments. `>
             ]
         ]
     ]
-) string
+) string | false
 ```
 
 该方法构造一个可用于 URL 查询部分的字符串，如 `foo=bar&text=HVML%E6%98%AF%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80`。
 
-如果第一个参数是数组，则数组成员会用来指定查询字符串中各参数的键值，对应的键名默认使用数组成员序号，因而最终会生成 `0=bar&1=foo` 这样查询字符串。
+如果第一个参数是数组，则数组成员会用来指定查询字符串中各参数的键值，对应的键名默认使用数组成员序号，因而最终会生成 `0=bar&1=foo` 这样的查询字符串。`$numeric_prefix` 可用于指定数组键名的前缀，默认为空字符串。
 
 如果第一个参数是对象，则使用对象键值对来组成查询字符串中各参数的键名和键值，因而最终会生成 `foo=fou&bar=buz` 这样的查询字符串。
 
-使用 `$arg_separator` 可指定分隔参数时使用的字符，默认为 `&`；必须为一个 ASCII 字符。
+我们可通过 `$opts` 指定如何处理实数类数据，还可以通过该参数指定编码方法。
+
+使用 `$arg_separator` 可指定分隔参数时使用的字符，默认为 `&`；必须为一个 ASCII 可打印字符。
 
 当参数为容器数据时，将使用类似 PHP `http_build_query()` 函数的处理方法。
 
-另外，我们可通过 `$opts` 指定如何处理实数类数据，还可以通过该参数指定编码方法。
-
 **异常**
 
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：传入了不正确的数据类型；可忽略异常，静默求值时返回 `false`。
+
 **示例**
+
+```js
+$URL.build_query( {'foo': 'bar', 'text': 'HVML 是全球首款可编程标记语言！'} )
+    // string: 'foo=bar&text=HVML%E6%98%AF%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21'
+$URL.build_query( ['foo', 'bar'])
+    // string: '0=foo&1=bar'
+$URL.build_query( ['foo', 'bar'], 'arg', 'rfc1738' )
+    // string: 'arg0=foo&arg1=bar'
+$URL.build_query( ['foo bar'], 'arg', 'rfc1738' )
+    // string: 'arg0=foo%20bar'
+$URL.build_query( ['foo bar', 'baz'], 'arg', 'rfc3986', '^' )
+    // string: 'arg0=foo+bar^arg1=baz'
+```
 
 **参见**
 
@@ -6390,25 +6409,43 @@ $URL.build_query(
 ```js
 $URL.parse_query(
     < string $query_string >
-    [, <string $arg_separator = '&': `The character used to separate the arguments. >
-        [, <'[array | object] || [string | binary | auto] || [rfc1738 | rfc3986]' $opts = 'object auto rfc1738':
-          - 'array':    `construct an array with the query string; this will ignore the argument names in the query string.`
-          - 'object':   `construct an object with the query string.`
-          - 'auto':     `The argument values will be decoded as strings first; if failed, decoded into binary sequences.`
-          - 'binary':   `The argument values will be decoded as binary sequences.`
-          - 'string':   `The argument values will be decoded as strings.` >
-          - 'rfc1738':  `The query string is encoded per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
-          - 'rfc3986':  `The query string is encoded according to RFC 3986, and spaces will be percent encoded (%20).`
-        ]
+    [, <'[array | object] || [string | binary | auto] || [rfc1738 | rfc3986]' $opts = 'object auto rfc1738':
+        - 'array':    `construct an array with the query string; this will ignore the argument names in the query string.`
+        - 'object':   `construct an object with the query string.`
+        - 'auto':     `The argument values will be decoded as strings first; if failed, decoded into binary sequences.`
+        - 'binary':   `The argument values will be decoded as binary sequences.`
+        - 'string':   `The argument values will be decoded as strings.` >
+        - 'rfc1738':  `The query string is encoded per RFC 1738 and the 'application/x-www-form-urlencoded' media type, which implies that spaces are encoded as plus (+) signs.`
+        - 'rfc3986':  `The query string is encoded according to RFC 3986, and spaces will be percent encoded (%20).`
+        [, <string $arg_separator = '&': `The character used to separate the arguments. >]
     ]
-) object
+) object | array | false
 ```
 
 该方法解析一个 URL 查询部分字符串，并使用该字符串中的参数构造一个数组或者对象。
 
 **异常**
 
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：传入了不正确的数据类型；可忽略异常，静默求值时返回 `false`。
+
 **示例**
+
+```js
+$URL.parse_query('foo=bar&text=HVML%E6%98%AF%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21')
+// object: {'foo': 'bar', 'text': 'HVML 是全球首款可编程标记语言！'}
+$URL.parse_query('')
+// object: {}
+$URL.parse_query('foo=bar&foo=baz')
+// object: {'foo': 'baz'}
+$URL.parse_query('foo=bar&bar=baz', 'object rfc1738')
+// object: {'foo': 'bar', 'bar': 'baz'}
+$URL.parse_query('foo=bar^bar=baz', 'object rfc3986', '^')
+// object: {'foo': 'bar', 'bar': 'baz'}
+$URL.parse_query('foo=bar&foo=baz', 'rfc1738 array', '&')
+// array: ['bar', 'baz']
+```
 
 **参见**
 
@@ -6424,19 +6461,43 @@ $URL.parse_query(
 
 ```js
 $URL.parse(
-        <string $url: `The URL to parse.>,
-        [,
-            <'all | [scheme || host || port || user || password || path || query || fragment]' $components = 'all': `The components want to parse.>
-        ]
-) object | string
+    < string $url: `The URL to parse.` >,
+    [,
+            < 'all | [scheme || host || port || user || password || path || query || fragment]' $components = 'all': `The components want to parse.` >
+    ]
+) object | string | false
 ```
-
 
 **参数**
 
+- `$url`：要解析的 URL 字符串。
+- `$components`：要解析的 URL 组件。
+
 **返回值**
 
+解析后的 URL 组件对象。当仅解析单个 URL 组件时，返回字符串。
+
+**异常**
+
+- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：传入了不正确的数据类型；可忽略异常，静默求值时返回 `false`。
+
 **示例**
+
+```js
+$URL.parse('https://www.hvml.org/zh/')
+    // object: {'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/'}
+$URL.parse('https://www.hvml.org/zh/', 'scheme')
+    // string: 'https'
+$URL.parse('https://www.hvml.org/zh/', 'host')
+    // string: 'www.hvml.org'
+$URL.parse('https://www.hvml.org/zh/', 'path')
+    // string: '/zh/'
+$URL.parse('https://www.hvml.org/zh/', 'query')
+    // string: ''
+$URL.parse('https://www.hvml.org/zh/', 'fragment')
+    // string: ''
+```
 
 **参见**
 
@@ -6446,20 +6507,41 @@ $URL.parse(
 
 根据分解 URL 对象组装一个完整的 URL。
 
-
 **描述**
 
 ```js
 $URL.assemble(
-        <object $broken_down_url: `The broken-down URL object.`>
-) string
+        < object $broken_down_url: `The broken-down URL object.` >
+) string | false
 ```
+
+该方法根据分解 URL 对象组装一个完整的 URL。
 
 **参数**
 
+- `$broken_down_url`：分解 URL 对象。
+
 **返回值**
 
+返回组装后的 URL（字符串）。
+
+**异常**
+
+- `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：传入了不正确的数据类型；可忽略异常，静默求值时返回 `false`。
+
 **示例**
+
+```js
+$URL.assemble({'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/'})
+    // string: 'https://www.hvml.org/zh/'
+$URL.assemble({'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar'})
+    // string: 'https://www.hvml.org/zh/?foo=bar'
+$URL.assemble({'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/', 'fragment': 'foo'})
+    // string: 'https://www.hvml.org/zh/#foo'
+$URL.assemble({'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar', 'fragment': 'foo'})
+    // string: 'https://www.hvml.org/zh/?foo=bar#foo'
+```
 
 **参见**
 
@@ -6700,7 +6782,7 @@ $STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
 
 **示例**
 
-```
+```js
 // 将内核名称（如 `Linux`）输出到标准输出。
 $STREAM.stdout.writelines($SYS.uname_prt('kernel-name'))
 ```
