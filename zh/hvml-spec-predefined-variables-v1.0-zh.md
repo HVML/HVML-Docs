@@ -6371,7 +6371,7 @@ $URL.build_query(
 
 使用 `$arg_separator` 可指定分隔参数时使用的字符，默认为 `&`；必须为一个 ASCII 可打印字符。
 
-当参数为容器数据时，将使用类似 PHP `http_build_query()` 函数的处理方法。
+当第一个参数为负载容器数据（如嵌套的容器）时，将使用类似 PHP `http_build_query()` 函数的处理方法。
 
 **异常**
 
@@ -6451,7 +6451,6 @@ $URL.parse_query('foo=bar&foo=baz', 'rfc1738 array', '&')
 
 - [RFC 1738](http://www.faqs.org/rfcs/rfc1738)
 - [RFC 3986](http://www.faqs.org/rfcs/rfc3986)
-- PHP `http_build_query()` 函数：<https://www.php.net/manual/en/function.http-build-query.php>
 
 #### 3.11.5) `parse` 方法
 
@@ -6463,7 +6462,7 @@ $URL.parse_query('foo=bar&foo=baz', 'rfc1738 array', '&')
 $URL.parse(
     < string $url: `The URL to parse.` >,
     [,
-            < 'all | [scheme || host || port || user || password || path || query || fragment]' $components = 'all': `The components want to parse.` >
+        < 'all | [scheme || host || port || user || password || path || query || fragment]' $components = 'all': `The components want to parse.` >
     ]
 ) object | string | false
 ```
@@ -6511,7 +6510,7 @@ $URL.parse('https://www.hvml.org/zh/', 'fragment')
 
 ```js
 $URL.assemble(
-        < object $broken_down_url: `The broken-down URL object.` >
+    < object $broken_down_url: `The broken-down URL object.` >
 ) string | false
 ```
 
@@ -10789,6 +10788,7 @@ $sqliteCursor.connection
 1. 使用 `$STR.htmlentities` 获取器和设置器分别用于编码和解码。
 1. 使用 `$STR.base64` 获取器和设置器分别用于编码和解码。
 1. 移除 `$STR.nl2br()` 方法。
+1. 调整了 `$URL.build_query()` 和 `$URL.parse_query()` 方法的参数顺序。
 
 #### OR0) 250428
 
