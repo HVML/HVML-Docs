@@ -1,7 +1,7 @@
 <!DOCTYPE hvml SYSTEM 'f: MATH'>
 <hvml target="html" lang="en">
     <head>
-        <base href="$CRTN.base(! 'https://gitlab.fmsoft.cn/hvml/hvml-docs/raw/master/samples/calculator/' )" />
+        <base href=$CRTN.base(! "file://$SYS.cwd" ) />
 
         <update on="$T.map" from="assets/{$SYS.locale}\.json" to="merge" />
 
@@ -16,7 +16,7 @@
             ]
         </update>
 
-        <link rel="stylesheet" type="text/css" href="assets/calculator.css" />
+        <link rel="stylesheet" type="text/css" href="file://$SYS.cwd/assets/calculator.css" />
     </head>
 
     <body>
