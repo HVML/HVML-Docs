@@ -6001,7 +6001,7 @@ $STR.htmlentities(
     <string $string: `The input string.`>
     [,
        <'[single-quotes || double-quotes || convert-all || double-encode'
-            $flags = 'single-quotes double-quotes double-encode':
+            $encode_flags = 'single-quotes double-quotes double-encode':
         - 'single-quotes':  `Convert single-quotes.`
         - 'double-quotes':  `Convert double quotes.`
         - 'convert-all':    `All characters which have HTML character entity
@@ -6020,7 +6020,7 @@ $STR.htmlentities(
 $STR.htmlentities(!
     <string $string: `The input string.`>
     [,
-        <'keep-double-quotes || keep-single-quotes || substitute-invalid ]' $flags = 'substitute-invalid':
+        <'keep-double-quotes || keep-single-quotes || substitute-invalid ]' $decode_flags = 'substitute-invalid':
             - 'keep-single-quotes': `Keep single-quotes unconverted.`
             - 'keep-double-quotes': `Keep double-quotes unconverted.`
             - 'substitute-invalid': `Replace invalid HTML entity with a Unicode Replacement Character U+FFFD; or ignore it.` >
@@ -6031,11 +6031,15 @@ $STR.htmlentities(!
 **参数**
 
 - `$string`: 要转换的输入字符串。
-- `$flags`: 可选参数，用于控制转换行为的标志组合，默认为 'single-quotes double-quotes double-encode'。可取值：
-  + 'single-quotes': 转换单引号。
-  + 'double-quotes': 转换双引号。
-  + 'convert-all': 将所有具有 HTML 字符实体等价形式的字符转换为对应实体；否则只转换在 HTML 中具有特殊含义的字符。
-  + 'double-encode': 转换所有内容；否则保留现有的 HTML 实体。
+- `$encode_flags`: 可选参数，用于控制编码行为的标志组合，默认为 `'single-quotes double-quotes double-encode'`。可取值：
+   + `'single-quotes'`: 转换单引号。
+   + `'double-quotes'`: 转换双引号。
+   + `'convert-all'`: 将所有具有 HTML 字符实体等价形式的字符转换为对应实体；否则只转换在 HTML 中具有特殊含义的字符。
+   + `'double-encode'`: 转换所有内容；否则保留现有的 HTML 实体。
+- `$decode_flags`: 可选参数，用于控制解码行为的标志组合，默认为 `'substitute-invalid'`。可取值：
+   + `'keep-single-quotes'`: 保持单引号不做转换。
+   + `'keep-double-quotes'`: 保持双引号不做转换。
+   + `'substitute-invalid'`: 将无效的 HTML 实体替换为 Unicode 替换字符 U+FFFD; 或者忽略它。
 
 **返回值**
 
@@ -6778,7 +6782,7 @@ $STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
 
 **示例**
 
-```
+```js
 // 将内核名称（如 `Linux`）输出到标准输出。
 $STREAM.stdout.writelines($SYS.uname_prt('kernel-name'))
 ```
