@@ -5062,8 +5062,11 @@ $STR.scan_c('Tom is 9 years old, while Jerry is 7 years old.',
 
 ```js
 $STR.format_p(
-        <string $format: `string contains placeholders.`>,
-        <array | object $data>
+        < string $format: `The format string contains placeholders.` >,
+        < array | object | any $data0: `The data to serialize.` >
+        [,
+            <any $data1: `The data to serialize.` >, ...
+        ]
 ) string
 ```
 
@@ -5071,7 +5074,7 @@ $STR.format_p(
 
 使用对象表达要格式化的数据时，占位符用 `{name}`、`{id}` 等表示。
 
-要使用多个参数表达要格式化的数据时，占位符用 `#1`、`#2` 等表示；注意序号从 `1` 开始。
+要使用多个参数表达要格式化的数据时，占位符用 `#0`、`#1` 等表示。
 
 前置 `\` 符号表示对 `[`、`{`、`#` 等字符执行转义。
 
