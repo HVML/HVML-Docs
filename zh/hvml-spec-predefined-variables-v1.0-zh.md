@@ -5058,7 +5058,7 @@ $STR.scan_c('Tom is 9 years old, while Jerry is 7 years old.',
 
 #### 3.10.10) `format_p` 方法
 
-使用占位符格式化任意数据，对非字符串数据，使用序列化后的字符串。
+使用占位符格式化任意数据，按照 eJSON 格式序列化各项数据。
 
 ```js
 $STR.format_p(
@@ -5073,24 +5073,27 @@ $STR.format_p(
 
 要使用多个参数表达要格式化的数据时，占位符用 `#1`、`#2` 等表示；注意序号从 `1` 开始。
 
-前置 `\` 符号表示转义。
+前置 `\` 符号表示对 `[`、`{`、`#` 等字符执行转义。
 
 **示例**
 
 ```js
 $STR.format_p('There are two boys: [0] and [1]', ['Tom', 'Jerry'])
-    // string: There are two boys: Tom and Jerry'
+    // string: There are two boys: "Tom" and "Jerry"'
 
-$STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry' })
-    // string: There are two boys: Tom and Jerry'
+$STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom Bean', name1: 'Jerry Right' })
+    // string: There are two boys: "Tom Bean" and "Jerry Right"'
 
 $STR.format_p('There are two boys: #0 and #1', 'Tom', 'Jerry')
-    // string: There are two boys: Tom and Jerry'
+    // string: There are two boys: "Tom" and "Jerry"'
+
+$STR.scan_p('The object is #0', { foo: 'bar', bar: 'baz'})
+    // string: "The object is { foo: 'bar', bar: 'baz'}"
 ```
 
 #### 3.10.11) `scan_p` 方法
 
-根据给定的格式解析指定的字符串，格式字符串使用占位符。
+扫描指定的字符串，使用 eJSON 格式解析格式化字符串标记出的占位部分并返回对应的数据。
 
 ```js
 $STR.scan_p(
@@ -5099,27 +5102,30 @@ $STR.scan_p(
 ) array | object | any
 ```
 
-要返回数组，占位符用 `[]` 表示，中括号内的字符将被忽略。
+要返回数组，占位符用 `[...]` 表示，`[]` 内的字符将被忽略。
 
 要返回对象，占位符用 `{name}`、`{id}` 等表示。
 
 要返回单个数据，占位符用 `#?` 表示。
 
-前置 `\` 符号表示转义。
+前置 `\` 符号表示对 `[`、`{`、`#` 等字符执行转义。
 
 **示例**
 
 ```js
-$STR.scan_p('There are two boys: Tom and Jerry',
+$STR.scan_p('There are two boys: "Tom Bean" and "Jerry Right"',
         'There are two boys: [0] and [1]')
-    // array: ['Tom', 'Jerry']
+    // array: ['Tom Bean', 'Jerry Right']
 
-$STR.scan_p('There are two boys: Tom and Jerry',
+$STR.scan_p('There are two boys: "Tom Bean" and "Jerry Right"',
         'There are two boys: {name0} and {name1}')
-    // object: { name0: 'Tom', name1: 'Jerry' }
+    // object: { name0: 'Tom Bean', name1: 'Jerry Right' }
 
-$STR.scan_p('My name is Tom', 'My name is #?')
+$STR.scan_p('My name is "Tom"', 'My name is #?')
     // string: 'Tom'
+
+$STR.scan_p('The object is { foo: 'bar', bar: 'baz'}', 'The object is #?')
+    // object: { foo: 'bar', bar: 'baz'}
 ```
 
 #### 3.10.12) `join` 方法
