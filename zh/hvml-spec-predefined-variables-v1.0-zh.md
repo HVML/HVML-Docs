@@ -6502,14 +6502,14 @@ $URL.parse('https://www.hvml.org/zh/', 'fragment')
 
 - PHP `parse_url()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
-#### 3.11.6) `assemble` 方法
+#### 3.11.6) `assembly` 方法
 
 根据分解 URL 对象组装一个完整的 URL。
 
 **描述**
 
 ```js
-$URL.assemble(
+$URL.assembly(
     < object $broken_down_url: `The broken-down URL object.` >
 ) string | false
 ```
@@ -6518,7 +6518,20 @@ $URL.assemble(
 
 **参数**
 
-- `$broken_down_url`：分解 URL 对象。
+- `$broken_down_url`：分解 URL 对象，可包含如下键值对：
+
+```js
+{
+    'scheme':       < string: `The URL scheme.` >,
+    'hostname':     < string: `The host name.` >,
+    'username':     < string: `The user name.` >,
+    'password':     < string: `The password.` >,
+    'port':         < number: `The port value.` >,
+    'path':         < string: `The path.` >,
+    'query':        < string: `The query string.` >,
+    'fragment':     < string: `The fragment identifier.` >,
+}
+```
 
 **返回值**
 
@@ -6532,13 +6545,13 @@ $URL.assemble(
 **示例**
 
 ```js
-$URL.assemble({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/'})
+$URL.assembly({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/'})
     // string: 'https://www.hvml.org/zh/'
-$URL.assemble({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar'})
+$URL.assembly({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar'})
     // string: 'https://www.hvml.org/zh/?foo=bar'
-$URL.assemble({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'fragment': 'foo'})
+$URL.assembly({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'fragment': 'foo'})
     // string: 'https://www.hvml.org/zh/#foo'
-$URL.assemble({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar', 'fragment': 'foo'})
+$URL.assembly({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar', 'fragment': 'foo'})
     // string: 'https://www.hvml.org/zh/?foo=bar#foo'
 ```
 
@@ -10789,6 +10802,7 @@ $sqliteCursor.connection
 1. 使用 `$STR.base64` 获取器和设置器分别用于编码和解码。
 1. 移除 `$STR.nl2br()` 方法。
 1. 调整了 `$URL.build_query()` 和 `$URL.parse_query()` 方法的参数顺序。
+1. 重命名 `$URL.assemble()` 为 `$URL.assembly()`。
 
 #### OR0) 250428
 
