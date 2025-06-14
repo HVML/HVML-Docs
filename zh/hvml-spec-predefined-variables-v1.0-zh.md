@@ -5071,7 +5071,7 @@ $STR.format_p(
 
 使用对象表达要格式化的数据时，占位符用 `{name}`、`{id}` 等表示。
 
-要使用多个参数表达要格式化的数据时，占位符用 `#0`、`#1` 等表示。
+要使用多个参数表达要格式化的数据时，占位符用 `#1`、`#2` 等表示；注意序号从 `1` 开始。
 
 前置 `\` 符号表示转义。
 
@@ -5079,13 +5079,13 @@ $STR.format_p(
 
 ```js
 $STR.format_p('There are two boys: [0] and [1]', ['Tom', 'Jerry'])
-    // string: There are two boys: "Tom" and "Jerry"'
+    // string: There are two boys: Tom and Jerry'
 
 $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry' })
-    // string: There are two boys: "Tom" and "Jerry"'
+    // string: There are two boys: Tom and Jerry'
 
 $STR.format_p('There are two boys: #0 and #1', 'Tom', 'Jerry')
-    // string: There are two boys: "Tom" and "Jerry"'
+    // string: There are two boys: Tom and Jerry'
 ```
 
 #### 3.10.11) `scan_p` 方法
@@ -5099,7 +5099,7 @@ $STR.scan_p(
 ) array | object | any
 ```
 
-要返回数组，占位符用 `[0]`、`[1]` 等表示。
+要返回数组，占位符用 `[]` 表示，中括号内的字符将被忽略。
 
 要返回对象，占位符用 `{name}`、`{id}` 等表示。
 
@@ -5110,15 +5110,15 @@ $STR.scan_p(
 **示例**
 
 ```js
-$STR.scan_p('There are two boys: "Tom" and "Jerry"',
+$STR.scan_p('There are two boys: Tom and Jerry',
         'There are two boys: [0] and [1]')
     // array: ['Tom', 'Jerry']
 
-$STR.scan_p('There are two boys: "Tom" and "Jerry"',
+$STR.scan_p('There are two boys: Tom and Jerry',
         'There are two boys: {name0} and {name1}')
     // object: { name0: 'Tom', name1: 'Jerry' }
 
-$STR.scan_p('My name is "Tom"', 'My name is #?')
+$STR.scan_p('My name is Tom', 'My name is #?')
     // string: 'Tom'
 ```
 
