@@ -6462,9 +6462,9 @@ $URL.parse_query('foo=bar&foo=baz', 'rfc1738 array', '&')
 $URL.parse(
     < string $url: `The URL to parse.` >,
     [,
-        < 'all | [scheme || host || port || user || password || path || query || fragment]' $components = 'all': `The components want to parse.` >
+        < 'all | [scheme || hostname || port || username || password || path || query || fragment]' $components = 'all': `The components want to parse.` >
     ]
-) object | string | false
+) object | string | null | false
 ```
 
 **参数**
@@ -6474,7 +6474,7 @@ $URL.parse(
 
 **返回值**
 
-解析后的 URL 组件对象。当仅解析单个 URL 组件时，返回字符串。
+解析后的 URL 组件对象。当仅解析单个 URL 组件时，返回字符串或 `null`。
 
 **异常**
 
@@ -6485,10 +6485,10 @@ $URL.parse(
 
 ```js
 $URL.parse('https://www.hvml.org/zh/')
-    // object: {'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/'}
+    // object: {'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/'}
 $URL.parse('https://www.hvml.org/zh/', 'scheme')
     // string: 'https'
-$URL.parse('https://www.hvml.org/zh/', 'host')
+$URL.parse('https://www.hvml.org/zh/', 'hostname')
     // string: 'www.hvml.org'
 $URL.parse('https://www.hvml.org/zh/', 'path')
     // string: '/zh/'
@@ -6532,13 +6532,13 @@ $URL.assemble(
 **示例**
 
 ```js
-$URL.assemble({'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/'})
+$URL.assemble({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/'})
     // string: 'https://www.hvml.org/zh/'
-$URL.assemble({'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar'})
+$URL.assemble({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar'})
     // string: 'https://www.hvml.org/zh/?foo=bar'
-$URL.assemble({'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/', 'fragment': 'foo'})
+$URL.assemble({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'fragment': 'foo'})
     // string: 'https://www.hvml.org/zh/#foo'
-$URL.assemble({'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar', 'fragment': 'foo'})
+$URL.assemble({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar', 'fragment': 'foo'})
     // string: 'https://www.hvml.org/zh/?foo=bar#foo'
 ```
 
