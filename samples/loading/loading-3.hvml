@@ -58,8 +58,9 @@
         <choose on $breakingNews>
             <update on="#breaking-news" to="append" with="$realCardBody" />
         </choose>
-        <observe on="$breakingNews" for="change:displaced" in="#breaking-news">
+        <observe against="breakingNews" for="change:displaced" in="#breaking-news">
             <choose on $breakingNews>
+                <update on="$@" at='content' with=' ' />
                 <update on="$@" to="append" with="$realCardBody" />
             </choose>
         </observe>
