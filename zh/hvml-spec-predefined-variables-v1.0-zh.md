@@ -5496,18 +5496,56 @@ $STR.substr_replace(
 **示例**
 
 ```js
-$STR.substr_replace('Hello, world!', 'HVML', 0, 5)
-    // string: 'HVML, world!'
-$STR.substr_replace('Hello, world!', 'HVML', -6, 5)
-    // string: 'Hello, HVML!'
-$STR.substr_replace('Hello, world!', 'HVML', 0, 0)
-    // string: 'HVMLHello, world!'
-$STR.substr_replace('Hello, world!', 'HVML', -6, 0)
-    // string: 'Hello, HVMLworld!'
-$STR.substr_replace('Hello, world!', 'HVML', 0, -1)
-    // string: 'Hello, worldHVML'
-$STR.substr_replace('Hello, world!', 'HVML', -6, -1)
-    // string: 'Hello, worldHV'
+$STR.substr_replace('', '', 0)
+    // ''
+
+$STR.substr_replace('HVML', 'PurC', 0)
+    // 'PurC'
+
+$STR.substr_replace('HVML', 'PurC', 1)
+    // 'HPurC'
+
+$STR.substr_replace('HVML', 'PurC', -1)
+    // 'HVMPurC'
+
+$STR.substr_replace('HVML', 'PurC', 0, 2)
+    // 'PurCML'
+
+$STR.substr_replace('HVML', 'PurC', 1, 2)
+    // 'HPurCL'
+
+$STR.substr_replace('HVML', 'PurC', -2, 1)
+    // 'HVPurCL'
+
+$STR.substr_replace('HVML', 'PurC', 2, -1)
+    // 'HVPurCL'
+
+$STR.substr_replace('HVML', 'PurC', 1, 0)
+    // 'HPurCVML'
+
+$STR.substr_replace(['HVML', 'xGUI'], 'PurC', 0)
+    [// ['PurC', 'PurC']
+
+$STR.substr_replace(['HVML', 'xGUI'], ['PurC', 'Pro'], 0)
+    [// ['PurC', 'Pro']
+
+$STR.substr_replace(['HVML', 'xGUI'], ['PurC', 'Pro'], [0, 1])
+    [// ['PurC', 'xPro']
+
+$STR.substr_replace(['HVML', 'xGUI'], ['PurC', 'Pro'], 0, [2, 3])
+    [// ['PurCML', 'ProI']
+
+$STR.substr_replace('中华人民共和国', '伟大的', 2)
+    // '中华伟大的'
+
+$STR.substr_replace('中华人民共和国', '伟大的', -2)
+    // '中华人民共伟大的'
+
+$STR.substr_replace('中华人民共和国', '伟大的', 2, 3)
+    // '中华伟大的和国'
+
+$STR.substr_replace('中华人民共和国', '伟大的', -3, 2)
+    // '中华人民伟大的国'
 ```
 
 **参见**
