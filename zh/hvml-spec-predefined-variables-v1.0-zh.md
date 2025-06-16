@@ -2277,10 +2277,11 @@ $DOC.query(
 
 #### 3.4.4) `serialize` 方法
 
-该方法串行化文档对象。该方法有两种形式。
+该方法串行化文档对象。
 
 ```js
 $DOC.serialize(
+    [ < native/stream $output: `The output stream to which the method writes the serialized document.` >, ]
     [, < 'compact | loose' $method = `compact`:
         - 'compact':    `Serialize the document compactly.`
         - 'loose':      `Serialize the document loosely with line-breaks and indents.`
@@ -2289,11 +2290,8 @@ $DOC.serialize(
 ) string | false: `The serialized document, such as '<html><body></body></html>'`
 ```
 
-这一形式串行化目标文档，以字符串形式返回，如 `<html><body></body></html>`。
-
 ```js
 $DOC.serialize(
-    < stream $stream: `The stream to write the serialized document to.` >
     [, < 'compact | loose' $method = `compact`:
         - 'compact':    `Serialize the document compactly.`
         - 'loose':      `Serialize the document loosely with line-breaks and indents.`
@@ -2302,7 +2300,7 @@ $DOC.serialize(
 ) boolean
 ```
 
-这一形式串行化目标文档，并将结果写入指定的流中。
+当第一个参数为流时，该方法串行化目标文档，并将内容写入指定的流中；若第一个参数不是流，则以字符串形式返回，如 `<html><body></body></html>`。
 
 **异常**
 
@@ -2323,7 +2321,7 @@ $DOC.serialize(
 $DOC.serialize
     // '<html><body></body></html>'
 
-$DOC.serailize($STREAM.stdout, 'loose')
+$DOC.serialize($STREAM.stdout, 'loose')
     // true
 
 $DOC.serialize($STREAM.stdout)
@@ -3062,29 +3060,30 @@ $DATA.stringify(123)
 
 ```js
 $DATA.serialize(
-        <any $data>
-        [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape' $options = `real-json runtime-string plain bseq-hex-string no-slash-escape`:
-            - 'real-json':          `Use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
-            - 'real-ejson':         `Use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
-            - 'runtime-null':       `Treat all HVML-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
-            - 'runtime-string':     `Use string placehodlers for HVML-specific runtime types: "<undefined>", "<dynamic>", and "<native>".`
-            - 'plain':              `Do not use any extra formatting characters (whitespace, newline, or tab).`
-            - 'spaced':             `Use minimal space characters to format the output.`
-            - 'pretty':             `Use two-space to beautify the output.`
-            - 'pretty-tab':         `Use tab instead of two-space to beautify the output.`
-            - 'bseq-hex-string':    `Serialize binary sequence as hexadecimal string, e.g. "A0B0C0567890".`
-            - 'bseq-hex':           `Use hexadecimal form to serialize binary sequence.`
-            - 'bseq-bin':           `Use binary form to serialize binary sequence.`
-            - 'bseq-bin-dots':      `Use binary form to serialize binary sequence and use dots to seperate the binary digits per four digits. e.g., b1100.1010.`
-            - 'bseq-base64':        `Use Base64 to serialize binary sequence.`
-            - 'no-trailing-zero':   `Drop trailing zero for float values.`
-            - 'no-slash-escape':    `Do not escape the forward slashes ('/').`
-           >
-        ]
-) string
+    [ < native/stream $output: `The optional output stream` >, ]
+    < any $data >
+    [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape' $options = `real-json runtime-string plain bseq-hex-string no-slash-escape`:
+        - 'real-json':          `Use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
+        - 'real-ejson':         `Use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
+        - 'runtime-null':       `Treat all HVML-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
+        - 'runtime-string':     `Use string placehodlers for HVML-specific runtime types: "<undefined>", "<dynamic>", and "<native>".`
+        - 'plain':              `Do not use any extra formatting characters (whitespace, newline, or tab).`
+        - 'spaced':             `Use minimal space characters to format the output.`
+        - 'pretty':             `Use two-space to beautify the output.`
+        - 'pretty-tab':         `Use tab instead of two-space to beautify the output.`
+        - 'bseq-hex-string':    `Serialize binary sequence as hexadecimal string, e.g. "A0B0C0567890".`
+        - 'bseq-hex':           `Use hexadecimal form to serialize binary sequence.`
+        - 'bseq-bin':           `Use binary form to serialize binary sequence.`
+        - 'bseq-bin-dots':      `Use binary form to serialize binary sequence and use dots to seperate the binary digits per four digits. e.g., b1100.1010.`
+        - 'bseq-base64':        `Use Base64 to serialize binary sequence.`
+        - 'no-trailing-zero':   `Drop trailing zero for float values.`
+        - 'no-slash-escape':    `Do not escape the forward slashes ('/').`
+       >
+    ]
+) string | true | false
 ```
 
-该方法对给定的数据做序列化处理，返回字符串。未指定数据时，按 `undefined` 以及默认的格式化要求处理。
+该方法对给定的数据做序列化处理，返回字符串或写入指定的输出流。未指定数据时，按 `undefined` 以及默认的格式化要求处理。
 
 **异常**
 
@@ -3105,6 +3104,9 @@ $DATA.serialize("123")
     // string: '"123"'
 
 $DATA.serialize([1, 2])
+    // string: '[1,2]'
+
+$DATA.serialize($STREAM.stdout, [1, 2])
     // string: '[1,2]'
 ```
 
@@ -4993,79 +4995,93 @@ $STR.replace("%body%", "black", "<body text=%BODY%>", true);
 - PHP `str_replace()` 函数：<https://www.php.net/manual/en/function.str-replace.php>
 - PHP `str_ireplace()` 函数：<https://www.php.net/manual/en/function.str-ireplace.php>
 
-#### 3.10.8) `format_c` 方法
+#### 3.10.8) `printf` 方法
 
 格式化数值及字符串数据，格式字符串使用类似 C 语言的修饰符（specifier）。
 
 **描述**
 
 ```js
-$STR.format_c(
-        <string $format: `C format string.`>
-        [, <boolean | number | longint | ulongint | longdouble | string $data>
+$STR.printf(
+        [ < native/stream $output: `The output stream` >, ]
+        < string $format: `C format string.` >
+        [, < boolean | number | longint | ulongint | longdouble | string $data >
             [, ...]
         ]
-) string
+) string | true | false
 ```
 
-该方法使用指定的 C 语言格式化字符串格式化传入的单个或者多个数据。
+该方法使用指定的 C 语言格式化字符串格式化传入的单个或者多个数据，并将结果写入可通过第一个参数指定的输出流。若未指定输出流，则返回格式化的字符串。
 
 ```js
-$STR.format_c(
-        <string $format: `C format string.`>,
-        <array $data>
+$STR.printf(
+        [ < native/stream $output: `The output stream` >, ]
+        < string $format: `C format string.` >,
+        < array $data >
 ) string
 ```
 
-该方法使用指定的 C 语言格式化字符串格式化传入的数组中的数据。
+该方法使用指定的 C 语言格式化字符串格式化传入的数组中的数据，并将结果写入可通过第一个参数指定的输出流。若未指定输出流，则返回格式化的字符串。
 
 **示例**
 
 ```js
-$STR.format_c('Tom is %d years old, while Jerry is %d years old.', 9, 7)
+$STR.printf('Tom is %d years old, while Jerry is %d years old.', 9, 7)
     // string: 'Tom is 9 years old, while Jerry is 7 years old.'
 
-$STR.format_c('Tom is 0x%02A years old, while Jerry is 0x%02X years old.', [10, 15])
+$STR.printf('Tom is 0x%02A years old, while Jerry is 0x%02X years old.', [10, 15])
     // string: 'Tom is 0x0A years old, while Jerry is 0x0F years old.'
+
+$STR.printf($STREAM.stdout, 'Tom is 0x%02A years old, while Jerry is 0x%02X years old.', [10, 15])
+    // boolean: true
 ```
 
 **参见**
 
-- PHP `sprintf()` 函数：<https://www.php.net/manual/en/function.sprintf.php>
+- C99 `fprintf(3)` 或 `sprintf(3)` 函数。
 
-#### 3.10.9) `scan_c` 方法
+#### 3.10.9) `scanf` 方法
 
 根据给定的格式解析指定的字符串，格式字符串使用类似 C 语言的修饰符（specifier）。
 
 ```js
-$STR.scan_c(
-        <string $string: `The input string being parsed.`>,
-        <string $format: `The interpreted format for string`>
-) array
+$STR.scanf(
+        < string | bsequence | stream $input: `The input data: a string, a byte sequence, or a readable stream.` >,
+        < string $format: `The format string.` >
+) array | false
 ```
 
 **示例**
 
 ```js
-$STR.scan_c('Tom is 9 years old, while Jerry is 7 years old.',
+$STR.scanf('Tom is 9 years old, while Jerry is 7 years old.',
         'Tom is %d years old, while Jerry is %d years old.')
+    // array: [9L, 7L]
+
+$STR.scanf($STREAM.stdin, 'Tom is 0x%02A years old, while Jerry is 0x%02X years old.')
     // array: [9L, 7L]
 ```
 
 **参见**
 
-- PHP `sscanf()` 函数：<https://www.php.net/manual/en/function.sscanf.php>
+- C99 `fscanf(3)` 或 `sscanf(3)` 函数。
 
-#### 3.10.10) `format_p` 方法
+#### 3.10.10) `printp` 方法
 
-使用占位符格式化任意数据，对非字符串数据，使用序列化后的字符串。
+使用占位符格式化任意数据，按照 eJSON 格式序列化各项数据。
 
 ```js
-$STR.format_p(
-        <string $format: `string contains placeholders.`>,
-        <array | object $data>
-) string
+$STR.printp(
+        [ < native/stream $output: `The optional output stream` >, ]
+        < string $format: `The format string contains placeholders.` >,
+        < array | object | any $data0: `The data to serialize.` >
+        [,
+            <any $data1: `The data to serialize.` >, ...
+        ]
+) string | true | false
 ```
+
+该方法根据格式化字符串格式化传入的数据，并将结果写入可通过第一个参数指定的输出流。若未指定输出流，则返回格式化的字符串。
 
 使用数组表达要格式化的数据时，占位符用 `[0]`、`[1]` 等表示。
 
@@ -5073,53 +5089,70 @@ $STR.format_p(
 
 要使用多个参数表达要格式化的数据时，占位符用 `#0`、`#1` 等表示。
 
-前置 `\` 符号表示转义。
+前置于 `[`、`{`、`#`、`\` 等字符的 `\` 符号表示对该字符执行转义。
 
 **示例**
 
 ```js
-$STR.format_p('There are two boys: [0] and [1]', ['Tom', 'Jerry'])
-    // string: There are two boys: "Tom" and "Jerry"'
+$STR.printp('There are two boys: [0] and [1]', ['Tom', 'Jerry'])
+    // string: 'There are two boys: "Tom" and "Jerry"'
 
-$STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom', name1: 'Jerry' })
-    // string: There are two boys: "Tom" and "Jerry"'
+$STR.printp('There are two boys: {name0} and {name1}', { name0: 'Tom Bean', name1: 'Jerry Right' })
+    // string: 'There are two boys: "Tom Bean" and "Jerry Right"'
 
-$STR.format_p('There are two boys: #0 and #1', 'Tom', 'Jerry')
-    // string: There are two boys: "Tom" and "Jerry"'
+$STR.printp('There are two boys: #0 and #1', 'Tom', 'Jerry')
+    // string: 'There are two boys: "Tom" and "Jerry"'
+
+$STR.printp('The object is #0', { foo: 'bar', bar: 'baz'})
+    // string: 'The object is {"foo":"bar","bar":"baz"}'
+
+$STR.printp('There are two boys: {name0} and {name1}; the object serialized: #0', { name0: 'Tom', name1: 'Jerry' })
+    // string: 'There are two boys: "Tom" and "Jerry"; the object serialized: {"name0":"Tom","name1":"Jerry"}'
+
+$STR.printp($STREAM.stdout, '#0', ['Tom', 'Jerry'])
+    // boolean: true
 ```
 
-#### 3.10.11) `scan_p` 方法
+#### 3.10.11) `scanp` 方法
 
-根据给定的格式解析指定的字符串，格式字符串使用占位符。
+扫描指定的字符串，使用 eJSON 格式解析格式化字符串标记出的占位部分并返回对应的数据。
 
 ```js
-$STR.scan_p(
-        <string $string: `The input string being parsed.`>,
-        <string $format: `The string contains placeholders.`>,
-) array | object | any
+$STR.scanp(
+        < string | bsequence | native/stream $input: `The input data: a string, a byte sequence, or a readable stream.` >,
+        < string $format: `The string contains placeholders.` >,
+) array | object | any | false
 ```
 
-要返回数组，占位符用 `[0]`、`[1]` 等表示。
+要返回数组，占位符用 `[...]` 表示：
+   - `[]` 表示将解析后的数据追加到结果数组。
+   - `[N]` 表示将解析后的数据设置为结果数组的第 `N` 个元素。若超过当前数组尺寸，尚未设置的元素将被置为 `null`。
 
 要返回对象，占位符用 `{name}`、`{id}` 等表示。
 
 要返回单个数据，占位符用 `#?` 表示。
 
-前置 `\` 符号表示转义。
+前置于 `[`、`{`、`#`、`\` 等字符的 `\` 符号表示对该字符执行转义。
 
 **示例**
 
 ```js
-$STR.scan_p('There are two boys: "Tom" and "Jerry"',
+$STR.scanp('There are two boys: "Tom Bean" and "Jerry Right"',
         'There are two boys: [0] and [1]')
-    // array: ['Tom', 'Jerry']
+    // array: ['Tom Bean', 'Jerry Right']
 
-$STR.scan_p('There are two boys: "Tom" and "Jerry"',
+$STR.scanp('There are two boys: "Tom Bean" and "Jerry Right"',
         'There are two boys: {name0} and {name1}')
-    // object: { name0: 'Tom', name1: 'Jerry' }
+    // object: { name0: 'Tom Bean', name1: 'Jerry Right' }
 
-$STR.scan_p('My name is "Tom"', 'My name is #?')
+$STR.scanp('My name is "Tom"', 'My name is #?')
     // string: 'Tom'
+
+$STR.scanp('The object is { foo: 'bar', bar: 'baz'}', 'The object is #?')
+    // object: { foo: 'bar', bar: 'baz'}
+
+$STR.scanp($STREAM.stdin, 'My name is #?')
+    // string: "Tom"
 ```
 
 #### 3.10.12) `join` 方法
@@ -5496,18 +5529,56 @@ $STR.substr_replace(
 **示例**
 
 ```js
-$STR.substr_replace('Hello, world!', 'HVML', 0, 5)
-    // string: 'HVML, world!'
-$STR.substr_replace('Hello, world!', 'HVML', -6, 5)
-    // string: 'Hello, HVML!'
-$STR.substr_replace('Hello, world!', 'HVML', 0, 0)
-    // string: 'HVMLHello, world!'
-$STR.substr_replace('Hello, world!', 'HVML', -6, 0)
-    // string: 'Hello, HVMLworld!'
-$STR.substr_replace('Hello, world!', 'HVML', 0, -1)
-    // string: 'Hello, worldHVML'
-$STR.substr_replace('Hello, world!', 'HVML', -6, -1)
-    // string: 'Hello, worldHV'
+$STR.substr_replace('', '', 0)
+    // ''
+
+$STR.substr_replace('HVML', 'PurC', 0)
+    // 'PurC'
+
+$STR.substr_replace('HVML', 'PurC', 1)
+    // 'HPurC'
+
+$STR.substr_replace('HVML', 'PurC', -1)
+    // 'HVMPurC'
+
+$STR.substr_replace('HVML', 'PurC', 0, 2)
+    // 'PurCML'
+
+$STR.substr_replace('HVML', 'PurC', 1, 2)
+    // 'HPurCL'
+
+$STR.substr_replace('HVML', 'PurC', -2, 1)
+    // 'HVPurCL'
+
+$STR.substr_replace('HVML', 'PurC', 2, -1)
+    // 'HVPurCL'
+
+$STR.substr_replace('HVML', 'PurC', 1, 0)
+    // 'HPurCVML'
+
+$STR.substr_replace(['HVML', 'xGUI'], 'PurC', 0)
+    [// ['PurC', 'PurC']
+
+$STR.substr_replace(['HVML', 'xGUI'], ['PurC', 'Pro'], 0)
+    [// ['PurC', 'Pro']
+
+$STR.substr_replace(['HVML', 'xGUI'], ['PurC', 'Pro'], [0, 1])
+    [// ['PurC', 'xPro']
+
+$STR.substr_replace(['HVML', 'xGUI'], ['PurC', 'Pro'], 0, [2, 3])
+    [// ['PurCML', 'ProI']
+
+$STR.substr_replace('中华人民共和国', '伟大的', 2)
+    // '中华伟大的'
+
+$STR.substr_replace('中华人民共和国', '伟大的', -2)
+    // '中华人民共伟大的'
+
+$STR.substr_replace('中华人民共和国', '伟大的', 2, 3)
+    // '中华伟大的和国'
+
+$STR.substr_replace('中华人民共和国', '伟大的', -3, 2)
+    // '中华人民伟大的国'
 ```
 
 **参见**
@@ -6462,9 +6533,9 @@ $URL.parse_query('foo=bar&foo=baz', 'rfc1738 array', '&')
 $URL.parse(
     < string $url: `The URL to parse.` >,
     [,
-        < 'all | [scheme || host || port || user || password || path || query || fragment]' $components = 'all': `The components want to parse.` >
+        < 'all | [scheme || hostname || port || username || password || path || query || fragment]' $components = 'all': `The components want to parse.` >
     ]
-) object | string | false
+) object | string | null | false
 ```
 
 **参数**
@@ -6474,7 +6545,7 @@ $URL.parse(
 
 **返回值**
 
-解析后的 URL 组件对象。当仅解析单个 URL 组件时，返回字符串。
+解析后的 URL 组件对象。当仅解析单个 URL 组件时，返回字符串或 `null`。
 
 **异常**
 
@@ -6485,10 +6556,10 @@ $URL.parse(
 
 ```js
 $URL.parse('https://www.hvml.org/zh/')
-    // object: {'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/'}
+    // object: {'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/'}
 $URL.parse('https://www.hvml.org/zh/', 'scheme')
     // string: 'https'
-$URL.parse('https://www.hvml.org/zh/', 'host')
+$URL.parse('https://www.hvml.org/zh/', 'hostname')
     // string: 'www.hvml.org'
 $URL.parse('https://www.hvml.org/zh/', 'path')
     // string: '/zh/'
@@ -6502,14 +6573,14 @@ $URL.parse('https://www.hvml.org/zh/', 'fragment')
 
 - PHP `parse_url()` 函数：<https://www.php.net/manual/en/function.parse-url.php>
 
-#### 3.11.6) `assemble` 方法
+#### 3.11.6) `assembly` 方法
 
 根据分解 URL 对象组装一个完整的 URL。
 
 **描述**
 
 ```js
-$URL.assemble(
+$URL.assembly(
     < object $broken_down_url: `The broken-down URL object.` >
 ) string | false
 ```
@@ -6518,7 +6589,20 @@ $URL.assemble(
 
 **参数**
 
-- `$broken_down_url`：分解 URL 对象。
+- `$broken_down_url`：分解 URL 对象，可包含如下键值对：
+
+```js
+{
+    'scheme':       < string: `The URL scheme.` >,
+    'hostname':     < string: `The host name.` >,
+    'username':     < string: `The user name.` >,
+    'password':     < string: `The password.` >,
+    'port':         < number: `The port value.` >,
+    'path':         < string: `The path.` >,
+    'query':        < string: `The query string.` >,
+    'fragment':     < string: `The fragment identifier.` >,
+}
+```
 
 **返回值**
 
@@ -6532,13 +6616,13 @@ $URL.assemble(
 **示例**
 
 ```js
-$URL.assemble({'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/'})
+$URL.assembly({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/'})
     // string: 'https://www.hvml.org/zh/'
-$URL.assemble({'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar'})
+$URL.assembly({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar'})
     // string: 'https://www.hvml.org/zh/?foo=bar'
-$URL.assemble({'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/', 'fragment': 'foo'})
+$URL.assembly({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'fragment': 'foo'})
     // string: 'https://www.hvml.org/zh/#foo'
-$URL.assemble({'scheme': 'https', 'host': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar', 'fragment': 'foo'})
+$URL.assembly({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar', 'fragment': 'foo'})
     // string: 'https://www.hvml.org/zh/?foo=bar#foo'
 ```
 
@@ -6750,7 +6834,7 @@ $STREAM.open("file://abc.md", "read write")
 
 ```js
 $STREAM.close(
-        < stream $stream: `The stream entity to close.` >
+        < native/stream $stream: `The stream entity to close.` >
 ) boolean
 ```
 
@@ -10789,6 +10873,10 @@ $sqliteCursor.connection
 1. 使用 `$STR.base64` 获取器和设置器分别用于编码和解码。
 1. 移除 `$STR.nl2br()` 方法。
 1. 调整了 `$URL.build_query()` 和 `$URL.parse_query()` 方法的参数顺序。
+1. 重命名 `$URL.assemble()` 为 `$URL.assembly()`。
+1. 调整了 `$STR.printf()`、`$STR.scanf()`、`$STR.printp()`、`$STR.scanp()` 接口，使之支持输入流或者输出流。
+1. 调整了 `$DOC.serialize()` 的接口，使之支持输出流。
+1. 调整了 `$DATA.serialize()` 的接口，使之支持输出流。
 
 #### OR0) 250428
 
@@ -10927,8 +11015,8 @@ $sqliteCursor.connection
    - `$SYS.sleep`
    - `$DATA.pack`
    - `$DATA.unpack`
-   - `$STR.scan_c`
-   - `$STR.scan_p`
+   - `$STR.scanf`
+   - `$STR.scanp`
 1. 新增方法
    - `$CRTN.target`
 
