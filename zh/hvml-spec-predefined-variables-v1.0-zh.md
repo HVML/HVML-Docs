@@ -4995,14 +4995,14 @@ $STR.replace("%body%", "black", "<body text=%BODY%>", true);
 - PHP `str_replace()` 函数：<https://www.php.net/manual/en/function.str-replace.php>
 - PHP `str_ireplace()` 函数：<https://www.php.net/manual/en/function.str-ireplace.php>
 
-#### 3.10.8) `format_c` 方法
+#### 3.10.8) `printf` 方法
 
 格式化数值及字符串数据，格式字符串使用类似 C 语言的修饰符（specifier）。
 
 **描述**
 
 ```js
-$STR.format_c(
+$STR.printf(
         [ < native/stream $output: `The output stream` >, ]
         < string $format: `C format string.` >
         [, < boolean | number | longint | ulongint | longdouble | string $data >
@@ -5014,7 +5014,7 @@ $STR.format_c(
 该方法使用指定的 C 语言格式化字符串格式化传入的单个或者多个数据，并将结果写入可通过第一个参数指定的输出流。若未指定输出流，则返回格式化的字符串。
 
 ```js
-$STR.format_c(
+$STR.printf(
         [ < native/stream $output: `The output stream` >, ]
         < string $format: `C format string.` >,
         < array $data >
@@ -5026,13 +5026,13 @@ $STR.format_c(
 **示例**
 
 ```js
-$STR.format_c('Tom is %d years old, while Jerry is %d years old.', 9, 7)
+$STR.printf('Tom is %d years old, while Jerry is %d years old.', 9, 7)
     // string: 'Tom is 9 years old, while Jerry is 7 years old.'
 
-$STR.format_c('Tom is 0x%02A years old, while Jerry is 0x%02X years old.', [10, 15])
+$STR.printf('Tom is 0x%02A years old, while Jerry is 0x%02X years old.', [10, 15])
     // string: 'Tom is 0x0A years old, while Jerry is 0x0F years old.'
 
-$STR.format_c($STREAM.stdout, 'Tom is 0x%02A years old, while Jerry is 0x%02X years old.', [10, 15])
+$STR.printf($STREAM.stdout, 'Tom is 0x%02A years old, while Jerry is 0x%02X years old.', [10, 15])
     // boolean: true
 ```
 
@@ -5040,12 +5040,12 @@ $STR.format_c($STREAM.stdout, 'Tom is 0x%02A years old, while Jerry is 0x%02X ye
 
 - C99 `fprintf(3)` 或 `sprintf(3)` 函数。
 
-#### 3.10.9) `scan_c` 方法
+#### 3.10.9) `scanf` 方法
 
 根据给定的格式解析指定的字符串，格式字符串使用类似 C 语言的修饰符（specifier）。
 
 ```js
-$STR.scan_c(
+$STR.scanf(
         < string | bsequence | stream $input: `The input data: a string, a byte sequence, or a readable stream.` >,
         < string $format: `The format string.` >
 ) array | false
@@ -5054,11 +5054,11 @@ $STR.scan_c(
 **示例**
 
 ```js
-$STR.scan_c('Tom is 9 years old, while Jerry is 7 years old.',
+$STR.scanf('Tom is 9 years old, while Jerry is 7 years old.',
         'Tom is %d years old, while Jerry is %d years old.')
     // array: [9L, 7L]
 
-$STR.scan_c($STREAM.stdin, 'Tom is 0x%02A years old, while Jerry is 0x%02X years old.')
+$STR.scanf($STREAM.stdin, 'Tom is 0x%02A years old, while Jerry is 0x%02X years old.')
     // array: [9L, 7L]
 ```
 
@@ -5066,12 +5066,12 @@ $STR.scan_c($STREAM.stdin, 'Tom is 0x%02A years old, while Jerry is 0x%02X years
 
 - C99 `fscanf(3)` 或 `sscanf(3)` 函数。
 
-#### 3.10.10) `format_p` 方法
+#### 3.10.10) `printp` 方法
 
 使用占位符格式化任意数据，按照 eJSON 格式序列化各项数据。
 
 ```js
-$STR.format_p(
+$STR.printp(
         [ < native/stream $output: `The optional output stream` >, ]
         < string $format: `The format string contains placeholders.` >,
         < array | object | any $data0: `The data to serialize.` >
@@ -5094,31 +5094,31 @@ $STR.format_p(
 **示例**
 
 ```js
-$STR.format_p('There are two boys: [0] and [1]', ['Tom', 'Jerry'])
+$STR.printp('There are two boys: [0] and [1]', ['Tom', 'Jerry'])
     // string: 'There are two boys: "Tom" and "Jerry"'
 
-$STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom Bean', name1: 'Jerry Right' })
+$STR.printp('There are two boys: {name0} and {name1}', { name0: 'Tom Bean', name1: 'Jerry Right' })
     // string: 'There are two boys: "Tom Bean" and "Jerry Right"'
 
-$STR.format_p('There are two boys: #0 and #1', 'Tom', 'Jerry')
+$STR.printp('There are two boys: #0 and #1', 'Tom', 'Jerry')
     // string: 'There are two boys: "Tom" and "Jerry"'
 
-$STR.format_p('The object is #0', { foo: 'bar', bar: 'baz'})
+$STR.printp('The object is #0', { foo: 'bar', bar: 'baz'})
     // string: 'The object is {"foo":"bar","bar":"baz"}'
 
-$STR.format_p('There are two boys: {name0} and {name1}; the object serialized: #0', { name0: 'Tom', name1: 'Jerry' })
+$STR.printp('There are two boys: {name0} and {name1}; the object serialized: #0', { name0: 'Tom', name1: 'Jerry' })
     // string: 'There are two boys: "Tom" and "Jerry"; the object serialized: {"name0":"Tom","name1":"Jerry"}'
 
-$STR.format_p($STREAM.stdout, '#0', ['Tom', 'Jerry'])
+$STR.printp($STREAM.stdout, '#0', ['Tom', 'Jerry'])
     // boolean: true
 ```
 
-#### 3.10.11) `scan_p` 方法
+#### 3.10.11) `scanp` 方法
 
 扫描指定的字符串，使用 eJSON 格式解析格式化字符串标记出的占位部分并返回对应的数据。
 
 ```js
-$STR.scan_p(
+$STR.scanp(
         < string | bsequence | native/stream $input: `The input data: a string, a byte sequence, or a readable stream.` >,
         < string $format: `The string contains placeholders.` >,
 ) array | object | any | false
@@ -5137,21 +5137,21 @@ $STR.scan_p(
 **示例**
 
 ```js
-$STR.scan_p('There are two boys: "Tom Bean" and "Jerry Right"',
+$STR.scanp('There are two boys: "Tom Bean" and "Jerry Right"',
         'There are two boys: [0] and [1]')
     // array: ['Tom Bean', 'Jerry Right']
 
-$STR.scan_p('There are two boys: "Tom Bean" and "Jerry Right"',
+$STR.scanp('There are two boys: "Tom Bean" and "Jerry Right"',
         'There are two boys: {name0} and {name1}')
     // object: { name0: 'Tom Bean', name1: 'Jerry Right' }
 
-$STR.scan_p('My name is "Tom"', 'My name is #?')
+$STR.scanp('My name is "Tom"', 'My name is #?')
     // string: 'Tom'
 
-$STR.scan_p('The object is { foo: 'bar', bar: 'baz'}', 'The object is #?')
+$STR.scanp('The object is { foo: 'bar', bar: 'baz'}', 'The object is #?')
     // object: { foo: 'bar', bar: 'baz'}
 
-$STR.scan_p($STREAM.stdin, 'My name is #?')
+$STR.scanp($STREAM.stdin, 'My name is #?')
     // string: "Tom"
 ```
 
@@ -10874,7 +10874,7 @@ $sqliteCursor.connection
 1. 移除 `$STR.nl2br()` 方法。
 1. 调整了 `$URL.build_query()` 和 `$URL.parse_query()` 方法的参数顺序。
 1. 重命名 `$URL.assemble()` 为 `$URL.assembly()`。
-1. 调整了 `$STR.format_c()`、`$STR.scan_c()`、`$STR.format_p()`、`$STR.scan_p()` 接口，使之支持输入流或者输出流。
+1. 调整了 `$STR.printf()`、`$STR.scanf()`、`$STR.printp()`、`$STR.scanp()` 接口，使之支持输入流或者输出流。
 1. 调整了 `$DOC.serialize()` 的接口，使之支持输出流。
 1. 调整了 `$DATA.serialize()` 的接口，使之支持输出流。
 
@@ -11015,8 +11015,8 @@ $sqliteCursor.connection
    - `$SYS.sleep`
    - `$DATA.pack`
    - `$DATA.unpack`
-   - `$STR.scan_c`
-   - `$STR.scan_p`
+   - `$STR.scanf`
+   - `$STR.scanp`
 1. 新增方法
    - `$CRTN.target`
 
