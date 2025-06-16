@@ -5089,22 +5089,22 @@ $STR.format_p(
 
 要使用多个参数表达要格式化的数据时，占位符用 `#0`、`#1` 等表示。
 
-前置 `\` 符号表示对 `[`、`{`、`#` 等字符执行转义。
+前置于 `[`、`{`、`#`、`\` 等字符的 `\` 符号表示对该字符执行转义。
 
 **示例**
 
 ```js
 $STR.format_p('There are two boys: [0] and [1]', ['Tom', 'Jerry'])
-    // string: There are two boys: "Tom" and "Jerry"'
+    // string: 'There are two boys: "Tom" and "Jerry"'
 
 $STR.format_p('There are two boys: {name0} and {name1}', { name0: 'Tom Bean', name1: 'Jerry Right' })
-    // string: There are two boys: "Tom Bean" and "Jerry Right"'
+    // string: 'There are two boys: "Tom Bean" and "Jerry Right"'
 
 $STR.format_p('There are two boys: #0 and #1', 'Tom', 'Jerry')
-    // string: There are two boys: "Tom" and "Jerry"'
+    // string: 'There are two boys: "Tom" and "Jerry"'
 
-$STR.scan_p('The object is #0', { foo: 'bar', bar: 'baz'})
-    // string: "The object is { foo: 'bar', bar: 'baz'}"
+$STR.format_p('The object is #0', { foo: 'bar', bar: 'baz'})
+    // string: 'The object is {"foo":"bar","bar":"baz"}'
 
 $STR.format_p('There are two boys: {name0} and {name1}; the object serialized: #0', { name0: 'Tom', name1: 'Jerry' })
     // string: 'There are two boys: "Tom" and "Jerry"; the object serialized: {"name0":"Tom","name1":"Jerry"}'
@@ -5124,13 +5124,15 @@ $STR.scan_p(
 ) array | object | any | false
 ```
 
-要返回数组，占位符用 `[...]` 表示，`[]` 内的字符将被忽略。
+要返回数组，占位符用 `[...]` 表示：
+   - `[]` 表示将解析后的数据追加到结果数组。
+   - `[N]` 表示将解析后的数据设置为结果数组的第 `N` 个元素。若超过当前数组尺寸，尚未设置的元素将被置为 `null`。
 
 要返回对象，占位符用 `{name}`、`{id}` 等表示。
 
 要返回单个数据，占位符用 `#?` 表示。
 
-前置 `\` 符号表示对 `[`、`{`、`#` 等字符执行转义。
+前置于 `[`、`{`、`#`、`\` 等字符的 `\` 符号表示对该字符执行转义。
 
 **示例**
 
@@ -5150,8 +5152,7 @@ $STR.scan_p('The object is { foo: 'bar', bar: 'baz'}', 'The object is #?')
     // object: { foo: 'bar', bar: 'baz'}
 
 $STR.scan_p($STREAM.stdin, 'My name is #?')
-    // string: 'Tom'
-
+    // string: "Tom"
 ```
 
 #### 3.10.12) `join` 方法
@@ -6833,7 +6834,7 @@ $STREAM.open("file://abc.md", "read write")
 
 ```js
 $STREAM.close(
-        < stream $stream: `The stream entity to close.` >
+        < native/stream $stream: `The stream entity to close.` >
 ) boolean
 ```
 
