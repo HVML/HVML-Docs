@@ -5067,7 +5067,7 @@ $STR.format_p(
         [,
             <any $data1: `The data to serialize.` >, ...
         ]
-) string
+) string | false
 ```
 
 使用数组表达要格式化的数据时，占位符用 `[0]`、`[1]` 等表示。
