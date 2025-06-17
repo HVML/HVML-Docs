@@ -3,7 +3,7 @@
     <head>
         <base href=$CRTN.base(! "file://$SYS.cwd" ) />
 
-        <update on="$T.map" from="assets/{$SYS.locale}.json" to="merge" />
+        <update on="$T.map" from="assets/{$SYS.locale}.json" to="merge" silently />
 
         <init as="buttons" from="assets/buttons.json" />
 
