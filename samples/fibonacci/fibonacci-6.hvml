@@ -23,7 +23,7 @@
             }}
         </inherit>
 
-        <iterate on 1 onlyif=$L.lt($0<, 2000) with=$MATH.add($0<, $last_one)>
+        <iterate on 1 onlyif=$L.lt($0<, 2000) with=$MATH.add($0<, $last_one) nosetotail>
             <init as="last_one" at="2" with="$last_two" temp />
             <init as="last_two" at="2" with="$?" temp />
 
