@@ -2286,6 +2286,9 @@ $DOC.serialize(
         - 'compact':    `Serialize the document compactly.`
         - 'loose':      `Serialize the document loosely with line-breaks and indents.`
        >
+       [,
+            <string $selector: `The CSS selector specifying the fragments of the document to serialize.` >
+       ]
     ]
 ) string | false: `The serialized document, such as '<html><body></body></html>'`
 ```
@@ -3060,9 +3063,8 @@ $DATA.stringify(123)
 
 ```js
 $DATA.serialize(
-    [ < native/stream $output: `The optional output stream` >, ]
     < any $data >
-    [, < '[real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape' $options = `real-json runtime-string plain bseq-hex-string no-slash-escape`:
+    [, < '[ [real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape] | default' $options = `'default'`:
         - 'real-json':          `Use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
         - 'real-ejson':         `Use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
         - 'runtime-null':       `Treat all HVML-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
@@ -3078,12 +3080,16 @@ $DATA.serialize(
         - 'bseq-base64':        `Use Base64 to serialize binary sequence.`
         - 'no-trailing-zero':   `Drop trailing zero for float values.`
         - 'no-slash-escape':    `Do not escape the forward slashes ('/').`
+        - 'default':            `Equivalent to 'real-json runtime-string plain bseq-hex-string no-slash-escape'`
        >
+        [,
+            < native/stream $output: `The optional output stream` >
+        ]
     ]
-) string | true | false
+) string | ulongint | false
 ```
 
-该方法对给定的数据做序列化处理，返回字符串或写入指定的输出流。未指定数据时，按 `undefined` 以及默认的格式化要求处理。
+该方法对给定的数据做序列化处理，返回字符串或写入指定的输出流。
 
 **异常**
 
@@ -3094,8 +3100,8 @@ $DATA.serialize(
 **示例**
 
 ```js
-$DATA.serialize
-    // string: 'null'
+$DATA.serialize(undefined)
+    // string: 'undefined'
 
 $DATA.serialize(undefined, 'runtime-string')
     // string: '"<undefined>"'
@@ -3106,7 +3112,7 @@ $DATA.serialize("123")
 $DATA.serialize([1, 2])
     // string: '[1,2]'
 
-$DATA.serialize($STREAM.stdout, [1, 2])
+$DATA.serialize([1, 2], 'default', $STREAM.stdout)
     // string: '[1,2]'
 ```
 
@@ -5008,20 +5014,20 @@ $STR.printf(
         [, < boolean | number | longint | ulongint | longdouble | string $data >
             [, ...]
         ]
-) string | true | false
+) string | ulongint | false
 ```
 
-该方法使用指定的 C 语言格式化字符串格式化传入的单个或者多个数据，并将结果写入可通过第一个参数指定的输出流。若未指定输出流，则返回格式化的字符串。
+该方法使用指定的 C 语言格式化字符串格式化传入的单个或者多个数据，并将结果写入可通过第一个参数指定的输出流。若未指定输出流，则返回格式化的字符串；若指定输出流，则返回写入流的字节数。
 
 ```js
 $STR.printf(
-        [ < native/stream $output: `The output stream` >, ]
-        < string $format: `C format string.` >,
-        < array $data >
+    [ < native/stream $output: `The output stream` >, ]
+    < string $format: `C format string.` >,
+    < array $data >
 ) string
 ```
 
-该方法使用指定的 C 语言格式化字符串格式化传入的数组中的数据，并将结果写入可通过第一个参数指定的输出流。若未指定输出流，则返回格式化的字符串。
+该方法使用指定的 C 语言格式化字符串格式化传入的数组中的数据，并将结果写入可通过第一个参数指定的输出流。若未指定输出流，则返回格式化的字符串；若指定输出流，则返回写入流的字节数。
 
 **示例**
 
@@ -5033,7 +5039,7 @@ $STR.printf('Tom is 0x%02A years old, while Jerry is 0x%02X years old.', [10, 15
     // string: 'Tom is 0x0A years old, while Jerry is 0x0F years old.'
 
 $STR.printf($STREAM.stdout, 'Tom is 0x%02A years old, while Jerry is 0x%02X years old.', [10, 15])
-    // boolean: true
+    // ulongint: 53UL
 ```
 
 **参见**
@@ -5078,7 +5084,7 @@ $STR.printp(
         [,
             <any $data1: `The data to serialize.` >, ...
         ]
-) string | true | false
+) string | ulongint | false
 ```
 
 该方法根据格式化字符串格式化传入的数据，并将结果写入可通过第一个参数指定的输出流。若未指定输出流，则返回格式化的字符串。
