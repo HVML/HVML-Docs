@@ -1,0 +1,156 @@
+<!DOCTYPE html "dfkaotkdsaotkadd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/hv1ml;charset=utf-8" />
+	</head>
+	<body>
+		<h2>Monarch Tokenizer For HVML Sample</h2>
+		<div id="container" style="width: 800px; height: 600px; border: 1px solid grey"></div>
+
+		<script src="../node_modules/monaco-editor/min/vs/loader.js"></script>
+		<script src="../hvml.js"></script>
+		<script>
+			require.config({ paths: { vs: '../node_modules/monaco-editor/min/vs' } });
+
+			require(['vs/editor/editor.main'], function () {
+				monaco.languages.register({
+					id: hvml.language
+				});
+				monaco.languages.setMonarchTokensProvider(hvml.language, hvml.setMonarchTokensProvider);
+
+				// Define a new theme that constains only rules that match this language
+				monaco.editor.defineTheme('myDarkTheme', hvml.defineTheme);
+
+				monaco.languages.registerCompletionItemProvider(hvml.language, hvml.registerCompletionItemProvider);
+
+				// 设置语言配置（自动补全）
+				monaco.languages.setLanguageConfiguration(hvml.language, hvml.setLanguageConfiguration);
+
+
+				var editor = monaco.editor.create(document.getElementById('container'), {
+					theme: hvml.theme,
+					value: getCode(),
+					language: hvml.language
+				});
+			});
+
+			function getCode() {
+				return [
+					
+"<!DOCTYPE hvml SYSTEM \"f: MATH\">",
+"<hvml target=\"hvml\" lang=\"$STR.substr($SYS.locale, 0, 2)\">",
+"    <head>",
+"    </head>",
+"    <body>",
+"        <init as=\"global\">",
+"            { \"locale\" : \"zh_CN\" }",
+"        </init>",
+"        <init as=\"users\">",
+"            [",
+"                { \"id\": \"1\", \"avatar\": \"/img/avatars/1.png\", \"name\": \"Tom\", \"region\": \"en_US\", \"age\": 2 },",
+"                { \"id\": \"2\", \"avatar\": \"/img/avatars/2.png\", \"name\": \"Jerry\", \"region\": \"zh_CN\", \"age\": 3 }",
+"            ]",
+"        </init>",
+"        <init as=\"databus\" with=$STREAM.open('unix:///var/tmp/hbdbus.sock','default','hbdbus') />",
+"        <archetype name=\"user_item\">",
+"            <li class=\"user-item\" id=\"user-$?.id\" data-value=\"$?.id\" data-region=\"$?.region\">",
+"                <img class=\"avatar\" src=\"$?.avatar\" />",
+"                <span>$?.name</span>",
+"            </li>",
+"        </archetype>",
+"        <archedata name=\"item_user\">",
+"            {",
+"                \"id\": \"$?.attr[data-value]\", \"avatar\": \"$?.content[0].attr.src\",",
+"                \"name\": \"$?.children[1].textContent\", \"region\": \"$?.attr[data-region]\"",
+"            },",
+"        </archedata>",
+"        <header id=\"theStatusBar\">",
+"            <img class=\"mobile-status\" src=\"\" />",
+"            <span class=\"mobile-operator\"></span>",
+"            <img class=\"wifi-status\" src=\"\" />",
+"            <span class=\"local-time\">12:00</span>",
+"            <img class=\"battery-status\" />",
+"        </header>",
+"        <ul class=\"user-list\">",
+"            <iterate on=\"$users\" by=\"CLASS: IUser\">",
+"                <update on=\"$@\" to=\"append\" with=\"$user_item\" />",
+"                <except type=`NoData`>",
+"                    <img src=\"wait.png\" />",
+"                </except>",
+"                <except type=`NotIterable`>",
+"                    <p>Bad user data!</p>",
+"                </except>",
+"            </iterate>",
+"        </ul>",
+"        <archetype name=\"footer_cn\">",
+"            <p><a href=\"http://www.baidu.com\">Baidu</a></p>",
+"        </archetype>",
+"        <archetype name=\"footer_tw\">",
+"            <p><a href=\"http://www.bing.com\">Bing</a></p>",
+"        </archetype>",
+"        <archetype name=\"footer_def\">",
+"            <p><a href=\"http://www.google.com\">Google</a></p>",
+"        </archetype>",
+"        <footer id=\"the-footer\">",
+"            <test on=\"$global.locale\" in='the-footer'>",
+"                <match for=\"AS 'zh_CN'\" exclusively>",
+"                    <update on=\"$@\" to=\"displace\" with=\"$footer_cn\" />",
+"                </match>",
+"                <match for=\"AS 'zh_TW'\" exclusively>",
+"                    <update on=\"$@\" to=\"displace\" with=\"$footer_tw\" />",
+"                </match>",
+"                <match for=\"ANY\">",
+"                    <update on=\"$@\" with=\"$footer_def\" />",
+"                </match>",
+"                <except type=`NoData` raw>",
+"                    <p>You forget to define the $global variable!</p>",
+"                </except>",
+"                <except type=`NoSuchKey`>",
+"                    <p>Bad global data!</p>",
+"                </except>",
+"                <except type=`IdentifierError`>",
+"                    <p>Bad archetype data!</p>",
+"                </except>",
+"            </test>",
+"        </footer>",
+"        <define as=\"onBatteryChanged\">",
+"            <test on=\"$?.level\">",
+"                <match for=\"GE 100\" exclusively>",
+"                    <update on=\"> img.mobile-status\" at=\"attr.src\" with=\"/battery-level-full.png\" />",
+"                </match>",
+"                <match for=\"GT 90\" exclusively>",
+"                    <update on=\"> img.mobile-status\" at=\"attr.src\" with=\"/battery-level-90.png\" />",
+"                </match>",
+"                <match for=\"GT 70\" exclusively>",
+"                    <update on=\"> img.mobile-status\" at=\"attr.src\" with=\"/battery-level-70.png\" />",
+"                </match>",
+"                <match for=\"GT 50\" exclusively>",
+"                    <update on=\"> img.mobile-status\" at=\"attr.src\" with=\"/battery-level-50.png\" />",
+"                </match>",
+"                <match for=\"GT 30\" exclusively>",
+"                    <update on=\"> img.mobile-status\" at=\"attr.src\" with=\"/battery-level-30.png\" />",
+"                </match>",
+"                <match for=\"GT 10\" exclusively>",
+"                    <update on=\"> img.mobile-status\" at=\"attr.src\" with=\"/battery-level-10.png\" />",
+"                </match>",
+"                <match for=\"ANY\">",
+"                    <update on=\"> img.mobile-status\" at=\"attr.src\" with=\"/battery-level-low.png\" />",
+"                </match>",
+"            </test>",
+"        </define>",
+"        <choose on $databus.subscribe('edpt://localhost/cn.fmsoft.hybridos.settings/powerd/', 'BatteryChanged')>",
+"            <observe on $databus for 'event:BatteryChanged' in '#theStatusBar' with '$onBatteryChanged' />",
+"        </choose>",
+"        <observe on=\".avatar\" for=\"click\">",
+"            <load from=\"user.hvml\" as=\"userProfile\" onto=\"user\" async />",
+"                {'id': $@.attr[data-value]}",
+"            </load>",
+"        </observe>",
+"    </body>",
+"</hvml>"
+
+				].join('\n');
+			}
+		</script>
+	</body>
+</html>
