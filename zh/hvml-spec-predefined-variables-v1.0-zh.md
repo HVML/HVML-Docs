@@ -1,11 +1,11 @@
 # HVML 预定义变量
 
 Subject: HVML Predefined Variables  
-Version: 1.0-OR0  
+Version: 1.0-OR1  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: Nov. 1, 2021  
-Last Modified Date: Apr. 28, 2025  
+Last Modified Date: Jun. 30, 2025  
 Status: Official Release  
 Release Name: 丑牛  
 Language: Chinese

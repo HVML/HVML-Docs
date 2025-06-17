@@ -5,7 +5,7 @@ Version: 1.0-OR1
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Apr. 30, 2025  
+Last Modified Date: Jun. 30, 2025  
 Status: Release Candidate  
 Release Name: 丑牛  
 Language: Chinese
@@ -4173,12 +4173,12 @@ Content-Type: text/plain
 ```hvml
     <choose on $FS.opendir($REQ.dir) >
         <except raw>
-            <li>Exception when calling '$FS.opendir($REQ.dir)'</li>
+            <li>Exception when calling 'FS.opendir(REQ.dir)'</li>
         </except>
 
         <!-- no directory entry if $?.read() returns false -->
         <iterate with $?.read() >
-            <li>$?.type: $?.name</li>
+            <li>$?</li>
         </iterate>
     </choose>
 ```
@@ -5052,10 +5052,10 @@ Content-Type: text/plain
                         <return with=false />
                     </catch>
 
-                    <update on="$allEntries" to="append" with="$3?/$1?.name" />
+                    <update on="$allEntries" to="append" with="$3?/$1?" />
 
                     <test with=$L.streq($?.type,'dir')>
-                        <call on="$collectAllDirEntries" with="$4?/$2?.name" />
+                        <call on="$collectAllDirEntries" with="$4?/$2?" />
                     </test>
                 </iterate>
 
@@ -5191,10 +5191,10 @@ Content-Type: text/plain
                                 <return with=false />
                             </catch>
 
-                            <update on="$allEntries" to="append" with="$3?/$1?.name" />
+                            <update on="$allEntries" to="append" with="$3?/$1?" />
 
                             <test with=$L.streq($?.type,'dir')>
-                                <call on="$collectAllDirEntries" with="$4?/$2?.name" />
+                                <call on="$collectAllDirEntries" with="$4?/$2?" />
                             </test>
                         </iterate>
 
@@ -5443,7 +5443,7 @@ Content-Type: text/plain
         <choose on=$FS.opendir($REQ.dir) >
             <catch for `ANY`>
                 <back to="3">
-                    "Exception when calling '$FS.opendir($REQ.dir)': $?"
+                    "Exception when calling 'FS.opendir(REQ.dir)': $?"
                 </back>
             </catch>
 
@@ -5454,7 +5454,7 @@ Content-Type: text/plain
                         "Exception when calling '$FS.opendir($REQ.dir).read($REQ.dir)': $?"
                     </back>
                 </catch>
-                <li>$?.type: $?.name</li>
+                <li>$?</li>
             </iterate>
         </choose>
 
