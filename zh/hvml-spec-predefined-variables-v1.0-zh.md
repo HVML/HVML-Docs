@@ -110,7 +110,7 @@ Language: Chinese
 不同类型的表示方法：
 
 | 类型              | 表示方法              | 备注                                                                      | 举例                  |
-| --------          | ------------------    | --------------------------------------------                              | -----------------     |
+| --------         | ------------------    | --------------------------------------------                              | -----------------     |
 | 数值类型          | 类型 + 大/小头        | 如不标大、小头，则跟随当前架构                                            | u16、u32be、u64le     |
 | 连续数值类型      | 类型 + 大/小头 + 个数 | 如不标大、小头，则跟随当前架构，个数指该类数值的数值，必须大于零          | u16:10、u32be:10      |
 | 字节序列          | 类型 + 长度           |                                                                           | bytes:234             |
@@ -467,12 +467,12 @@ $SYS.time(!
 ) true | false
 ```
 
-该方法设置系统时间，整数部分表示自 Epoch 以来的秒数，小数部分表示微秒数。成功时返回 `true`，失败时抛出 `AccessDenied` 异常，静默求值时返回 `false`。
+该方法设置系统时间，整数部分表示自 Epoch 以来的秒数，小数部分表示微秒数。成功时返回 `true`。
 
 **异常**
 
-- `InvalidValue`：传入无效参数，如负值或者大于 100,000 或小于 0 的微秒值。
-- `AccessDenied`：当前行者的所有者没有权限设置系统时间时，将抛出该异常。
+- `InvalidValue`：传入无效参数，如负值或者大于 100,000 或小于 0 的微秒值；静默求值时返回 `false`。
+- `AccessDenied`：当前行者的所有者没有权限设置系统时间时，将抛出该异常；静默求值时返回 `false`。
 
 **备注**
 
@@ -515,7 +515,7 @@ $SYS.time_us(
         - 'usec': < longint: `microseconds` >
 ```
 
-该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为 longdouble 数值或包含 `sec` 和 `usec` 两个属性的对象。
+该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为 `longdouble` 数值或包含 `sec` 和 `usec` 两个属性的对象。
 
 ```js
 $SYS.time_us(!
@@ -523,7 +523,7 @@ $SYS.time_us(!
 ) true | false
 ```
 
-该方法用一个实数（整数部分表示自 Epoch 以来的秒数，小数部分表示微秒数）设置系统时间。成功时返回 `true`，失败时抛出异常，静默求值时返回 `false`。
+该方法用一个实数（整数部分表示自 Epoch 以来的秒数，小数部分表示微秒数）设置系统时间。成功时返回 `true`。
 
 ```js
 $SYS.time_us(!
@@ -535,8 +535,8 @@ $SYS.time_us(!
 
 **异常**
 
-- `InvalidValue`：获取器被调用时，传入错误参数时（如错误的返回类型），将抛出该异常；静默求值时，返回 `longdouble` 类型的当前事件。设置器被调用时，传入无效参数时（如负值或者大于 100,000 或小于 0 的微秒值）时，将抛出该异常。
-- `AccessDenied`：设置器被调用时，当运行解释器的所有者没有权限设置系统时间时，将抛出该异常。
+- `InvalidValue`：获取器被调用时，传入错误参数时（如错误的返回类型），将抛出该异常；静默求值时，返回 `longdouble` 类型的当前时间。设置器被调用时，传入无效参数时（如负值或者大于 100,000 或小于 0 的微秒值）时，将抛出该异常；静默求值时返回 `false`。
+- `AccessDenied`：设置器被调用时，当运行解释器的所有者没有权限设置系统时间时，将抛出该异常；静默求值时返回 `false`。
 
 **备注**
 
@@ -5053,7 +5053,9 @@ $STR.printf($STREAM.stdout, 'Tom is 0x%02A years old, while Jerry is 0x%02X year
 
 #### 3.10.9) `scanf` 方法
 
-根据给定的格式解析指定的字符串，格式字符串使用类似 C 语言的转换指示符（coversion specifier）。
+根据给定的格式解析指定的字符串、字节序列或者输入流，格式字符串使用类似 C 语言的转换指示符（coversion specifier）。
+
+**描述**
 
 ```js
 $STR.scanf(
@@ -5061,6 +5063,8 @@ $STR.scanf(
         < string $format: `The format string.` >
 ) array | false
 ```
+
+该方法返回一个数组，数组中的元素是根据格式字符串解析输入的数据得到的。
 
 **注意**
 
@@ -6606,6 +6610,14 @@ $URL.parse('https://www.hvml.org/zh/', 'fragment')
 ```js
 $URL.assembly(
     < object $broken_down_url: `The broken-down URL object.` >
+    [,
+        < 'hostname || path || query || fragment' $encode_parts = '':
+            - 'hostname': `Use Punycode to encode hostname if it contains non-ASCII characters.`
+            - 'path':     `Encode path according to RFC 3986.`
+            - 'query':    `Encode query according to RFC 3986.`
+            - 'fragment': `Encode fragment according to RFC 3986.`
+        >
+    ]
 ) string | false
 ```
 
