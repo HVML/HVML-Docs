@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HVML Highlighting Test</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/vs2015.min.css"
+    />
+    <style>
+      :root {
+        --bg-color: #1e1e2e;
+        --card-bg: #27293d;
+        --text-color: #cdd6f4;
+        --accent-color: #89b4fa;
+        --keyword-color: #cba6f7;
+        --string-color: #a6e3a1;
+        --number-color: #fab387;
+        --comment-color: #6c7086;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Fira Code", monospace;
+        background: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        padding: 30px 0;
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        color: var(--accent-color);
+        margin-bottom: 10px;
+      }
+
+      .subtitle {
+        font-size: 1.1rem;
+        color: var(--comment-color);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        margin-bottom: 30px;
+      }
+
+      .card-header {
+        background: rgba(137, 180, 250, 0.1);
+        padding: 15px 20px;
+        font-size: 1.2rem;
+        border-bottom: 1px solid rgba(108, 112, 134, 0.5);
+      }
+
+      .card-content {
+        padding: 20px;
+      }
+
+      .editor-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      .editor-section {
+        flex: 1;
+        min-width: 300px;
+      }
+
+      .section-title {
+        margin-bottom: 10px;
+        color: var(--accent-color);
+        font-size: 1.1rem;
+      }
+
+      textarea {
+        width: 100%;
+        height: 400px;
+        padding: 15px;
+        font-family: "Fira Code", monospace;
+        font-size: 14px;
+        background: rgba(0, 0, 0, 0.2);
+        color: var(--text-color);
+        border: 1px solid rgba(108, 112, 134, 0.5);
+        border-radius: 6px;
+        resize: vertical;
+        line-height: 1.5;
+      }
+
+      .preview {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
+        padding: 15px;
+        min-height: 400px;
+        overflow: auto;
+      }
+
+      .hljs {
+        background: transparent;
+        padding: 0;
+      }
+
+      .controls {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .btn {
+        padding: 8px 15px;
+        background: rgba(137, 180, 250, 0.2);
+        color: var(--accent-color);
+        border: 1px solid var(--accent-color);
+        border-radius: 4px;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .btn:hover {
+        background: rgba(137, 180, 250, 0.3);
+      }
+
+      .theme-selector {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(108, 112, 134, 0.3);
+      }
+
+      .theme-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .theme-btn {
+        padding: 6px 12px;
+        background: rgba(108, 112, 134, 0.2);
+        border: 1px solid rgba(108, 112, 134, 0.5);
+        border-radius: 4px;
+        color: var(--text-color);
+        cursor: pointer;
+      }
+
+      .theme-btn.active {
+        background: rgba(137, 180, 250, 0.3);
+        border-color: var(--accent-color);
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 40px;
+        padding: 20px;
+        color: var(--comment-color);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .editor-container {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>HVML Highlighting</h1>
+        <p class="subtitle">
+          Highlight.js language development environment for HVML
+        </p>
+      </header>
+
+      <div class="card">
+        <div class="card-header">Interactive Editor</div>
+        <div class="card-content">
+          <div class="editor-container">
+            <div class="editor-section">
+              <h3 class="section-title">Edit HVML Code</h3>
+              <textarea id="code-input" spellcheck="false"></textarea>
+              <div class="controls">
+                <button class="btn" id="highlight-btn">
+                  Apply Highlighting
+                </button>
+                <button class="btn" id="reset-btn">Reset Sample</button>
+              </div>
+            </div>
+            <div class="editor-section">
+              <h3 class="section-title">Syntax Highlighting Preview</h3>
+              <input type="file" id="fileInput" accept=".txt" />
+              <div class="preview">
+                <pre><code class="language-hvml" id="highlight-output"></code></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="theme-selector">
+            <h3 class="section-title">Select Highlight Theme</h3>
+            <div class="theme-options" id="theme-container">
+              <!-- Theme buttons will be added dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>
+          Highlight.js Custom Syntax Development Environment | Created for
+          VSCode
+        </p>
+      </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="../src/hvml.js"></script>
+    <script src="../src/hvml-sample.txt"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const codeInput = document.getElementById("code-input");
+        const output = document.getElementById("highlight-output");
+        const highlightBtn = document.getElementById("highlight-btn");
+        const resetBtn = document.getElementById("reset-btn");
+        const themeContainer = document.getElementById("theme-container");
+
+        document
+          .getElementById("fileInput")
+          .addEventListener("change", function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              codeInput.value = e.target.result;
+              output.innerHTML = hljs.highlight(e.target.result, {
+                language: "hvml",
+              }).value;
+            };
+            reader.onerror = function () {
+              alert("文件读取失败");
+            };
+            reader.readAsText(file);
+          });
+
+        // 按钮事件
+        highlightBtn.addEventListener("click", function () {
+          output.innerHTML = hljs.highlight(codeInput.value, {
+            language: "hvml",
+          }).value;
+        });
+
+        resetBtn.addEventListener("click", function () {
+          fetch("src/hvml-sample.txt")
+            .then((response) => response.text())
+            .then((data) => {
+              codeInput.value = data;
+              output.innerHTML = hljs.highlight(data, {
+                language: "hvml",
+              }).value;
+            });
+        });
+
+        // 输入时实时更新
+        codeInput.addEventListener("input", function () {
+          output.innerHTML = hljs.highlight(codeInput.value, {
+            language: "hvml",
+          }).value;
+        });
+
+        // 主题选择器
+        const themes = [
+          "github-dark",
+          "atom-one-dark",
+          "dracula",
+          "monokai",
+          "nord",
+          "solarized-dark",
+          "tomorrow-night",
+          "vs2015",
+        ];
+
+        themes.forEach((theme) => {
+          const btn = document.createElement("button");
+          btn.className = "theme-btn";
+          btn.textContent = theme.replace(/-/g, " ");
+          btn.addEventListener("click", function () {
+            // 移除现有样式
+            document
+              .querySelectorAll("link[data-theme]")
+              .forEach((link) => link.remove());
+
+            // 添加新主题
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/${theme}.min.css`;
+            link.dataset.theme = theme;
+            document.head.appendChild(link);
+
+            // 更新活动按钮
+            document
+              .querySelectorAll(".theme-btn")
+              .forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+          });
+          themeContainer.appendChild(btn);
+        });
+
+        // 激活第一个主题
+        if (themeContainer.firstChild) {
+          themeContainer.firstChild.click();
+        }
+      });
+    </script>
+  </body>
+</html>
