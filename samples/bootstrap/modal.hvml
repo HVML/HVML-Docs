@@ -9,7 +9,7 @@
 
         <base href=$CRTN.base(! "file://$SYS.cwd" ) />
 
-        <update on="$T.map" from="assets/messages-{$SYS.locale}.json" to="merge" />
+        <update on="$T.map" from="assets/messages-{$SYS.locale}.json" to="merge" silently />
 
         <!-- CSS file of Bootstrap -->
         <link href="$assetURLPrefix/css/bootstrap.min.css" rel="stylesheet" />
