@@ -6562,6 +6562,14 @@ $URL.parse(
     < string $url: `The URL to parse.` >,
     [,
         < 'all | [scheme || hostname || port || username || password || path || query || fragment]' $components = 'all': `The components want to parse.` >
+        [,
+            < 'hostname || path || query || fragment' $decode_parts = '':
+                - 'hostname': `Decode hostname in Punycode.`
+                - 'path':     `Decode path according to RFC 3986.`
+                - 'query':    `Decode query according to RFC 3986.`
+                - 'fragment': `Decode fragment according to RFC 3986.`
+            >
+        ]
     ]
 ) object | string | null | false
 ```
@@ -6570,6 +6578,7 @@ $URL.parse(
 
 - `$url`：要解析的 URL 字符串。
 - `$components`：要解析的 URL 组件。
+- `$decode_parts`：要解码的 URL 组件。
 
 **返回值**
 
@@ -6639,6 +6648,8 @@ $URL.assembly(
     'fragment':     < string: `The fragment identifier.` >,
 }
 ```
+
+- `$encode_parts`：要执行相应编码的 URL 组件。
 
 **返回值**
 
