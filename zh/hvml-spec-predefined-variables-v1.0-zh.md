@@ -6563,11 +6563,13 @@ $URL.parse(
     [,
         < 'all | [scheme || hostname || port || username || password || path || query || fragment]' $components = 'all': `The components want to parse.` >
         [,
-            < 'hostname || path || query || fragment' $decode_parts = '':
+            < '[hostname || path || query || fragment] | none | all' $decode_components = 'none':
                 - 'hostname': `Decode hostname in Punycode.`
                 - 'path':     `Decode path according to RFC 3986.`
                 - 'query':    `Decode query according to RFC 3986.`
                 - 'fragment': `Decode fragment according to RFC 3986.`
+                - 'none':     `Decode nothing.`
+                - 'all':      `Decode all components.`
             >
         ]
     ]
@@ -6578,7 +6580,7 @@ $URL.parse(
 
 - `$url`：要解析的 URL 字符串。
 - `$components`：要解析的 URL 组件。
-- `$decode_parts`：要解码的 URL 组件。
+- `$decode_components`：要解码的 URL 组件。
 
 **返回值**
 
@@ -6620,11 +6622,13 @@ $URL.parse('https://www.hvml.org/zh/', 'fragment')
 $URL.assembly(
     < object $broken_down_url: `The broken-down URL object.` >
     [,
-        < 'hostname || path || query || fragment' $encode_parts = '':
+        < '[hostname || path || query || fragment] | none | all' $encode_components = 'none':
             - 'hostname': `Use Punycode to encode hostname if it contains non-ASCII characters.`
             - 'path':     `Encode path according to RFC 3986.`
             - 'query':    `Encode query according to RFC 3986.`
             - 'fragment': `Encode fragment according to RFC 3986.`
+            - 'none':     `Encode nothing.`
+            - 'all':      `Encode all components.`
         >
     ]
 ) string | false
@@ -6649,7 +6653,7 @@ $URL.assembly(
 }
 ```
 
-- `$encode_parts`：要执行相应编码的 URL 组件。
+- `$encode_components`：要执行相应编码的 URL 组件。
 
 **返回值**
 
