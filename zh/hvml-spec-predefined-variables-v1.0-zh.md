@@ -3100,10 +3100,10 @@ $DATA.serialize(
 **示例**
 
 ```js
-$DATA.serialize(undefined)
-    // string: 'undefined'
+$DATA.serialize
+    // string: '"<undefined>"'
 
-$DATA.serialize(undefined, 'runtime-string')
+$DATA.serialize(undefined, 'plain')
     // string: '"<undefined>"'
 
 $DATA.serialize("123")
@@ -3113,7 +3113,7 @@ $DATA.serialize([1, 2])
     // string: '[1,2]'
 
 $DATA.serialize([1, 2], 'default', $STREAM.stdout)
-    // string: '[1,2]'
+    // 5UL
 ```
 
 #### 3.7.11) `sort` 方法
