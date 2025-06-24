@@ -6755,13 +6755,13 @@ $URL.assembly({ "scheme": "http", "hostname": "测试.网站.中国", "path": "/
 
 #### 3.12.1) `from` 方法
 
-基于一个已有的文件描述符创建流实体。
+基于一个已有的字符串、字节序列或者文件描述符创建流实体。
 
 **描述**
 
 ```php
 $STREAM.from(
-        < longint $fd: `The file descriptor.` >
+        < string | bsequence | longint $fd: `The read-only memory buffer or the file descriptor.` >
         [, <'[append || nonblock || cloexec] | keep' $flags = 'keep':
                - 'append':      `Set the file descriptor in append mode.`
                - 'nonblock':    `Set the file descriptor in nonblocking mode.`
@@ -6781,7 +6781,7 @@ $STREAM.from(
 ) native/stream | undefined
 ```
 
-该方法基于一个已有的文件描述符创建一个流实体，返回一个代表流的原生实体值。
+该方法基于一个已有的字符串、字节序列或者文件描述符创建一个流实体，返回一个代表流的原生实体值。当使用字符串或者字节序列时，将忽略 `$flags` 和 `$ext_protocol` 参数并创建只读流实体。
 
 我们可以通过第三个可选参数指定流数据的更高层应用协议，通过扩展流实体提供的方法来方便程序的使用，比如：
 
@@ -6807,7 +6807,41 @@ $STREAM.from(
 $STREAM.from(5, 'keep', 'websocket', ...)
 ```
 
-#### 3.12.2) `open` 方法
+#### 3.12.2) `from_buffer` 方法
+
+创建基于内存缓冲区的可读写流实体。
+
+**描述**
+
+```php
+$STREAM.from_buffer(
+        < ulongint $init_size: `The initial size of the buffer.` >,
+        [,
+            < ulongint $max_size = 0: `The maximum size of the buffer; 0 means no limitation.`>
+        ]
+) native/stream | undefined
+```
+
+该方法基于一个可自动扩展的内存缓冲区创建一个可读可写的流实体。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `undefined`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `undefined`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `undefined`。
+
+**备注**
+
+1. 流的关闭将在最终释放对应的原生实体值时自动进行，也可以提前调用 `$STREAM.close()` 方法释放流实体占用的系统资源。
+
+**示例**
+
+```php
+$STREAM.from_buffer(16)
+```
+
+#### 3.12.3) `open` 方法
 
 打开流，返回一个代表流的原生实体值。这个原生实体可以被观察。
 
@@ -6890,7 +6924,7 @@ $STREAM.open(
 $STREAM.open("file://abc.md", "read write")
 ```
 
-#### 3.12.3) `close` 方法
+#### 3.12.4) `close` 方法
 
 关闭流。
 
@@ -6919,11 +6953,11 @@ $STREAM.close(
 $STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
 ```
 
-#### 3.12.4) `stdin` 静态属性
+#### 3.12.5) `stdin` 静态属性
 
 这是一个静态属性，对应一个流实体，其值可用于流式读写的读取接口，是 C 语言标准输入流的封装。
 
-#### 3.12.5) `stdout` 静态属性
+#### 3.12.6) `stdout` 静态属性
 
 这是一个静态属性，对应一个流实体，其值可用于流式读写的写入接口，是 C 语言标准输出流的封装。
 
@@ -6934,11 +6968,11 @@ $STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
 $STREAM.stdout.writelines($SYS.uname_prt('kernel-name'))
 ```
 
-#### 3.12.6) `stderr` 静态属性
+#### 3.12.7) `stderr` 静态属性
 
 这是一个静态属性，其对应一个流实体，值可用于流式读写的写入接口，是 C 语言标准错误流的封装。
 
-#### 3.12.7) `listener` 属性
+#### 3.12.8) `listener` 属性
 
 该属性反应的是流实体事件的监听者（协程）。默认情况下，流实体的监听者为创建流实体的协程。通过该属性的设置器，可修改监听者为新的协程。注意，作为新监听者的协程，必须必须和原监听者属于同一行者。
 
@@ -6956,9 +6990,9 @@ $STREAM.listener(!
 ) ulongint | null | false: `The old listener of the current listener`.
 ```
 
-#### 3.12.8) 流实体
+#### 3.12.9) 流实体
 
-##### 3.12.8.1) `readstruct` 方法
+##### 3.12.9.1) `readstruct` 方法
 
 从流中读取一个二进制结构，并转换为适当的数据。
 
@@ -6998,7 +7032,7 @@ $stream.readstruct('i16le i32le')
     // array: [10, 10]
 ```
 
-##### 3.12.8.2) `writestruct` 方法
+##### 3.12.9.2) `writestruct` 方法
 
 将多个数据按照指定的结构格式写入流。
 
@@ -7052,7 +7086,7 @@ $stream.writestruct("i16le:2 i32le", [10, 15], 255)
 // 写入文件(16进制)：0x0a 0x00 0x0f 0x00 0xff 0x00 0x00 0x00
 ```
 
-##### 3.12.8.3) `readlines` 方法
+##### 3.12.9.3) `readlines` 方法
 
 从流中读取给定行数，返回字符串数组。
 
@@ -7097,7 +7131,7 @@ $stream.readlines(10)
     // array: ["This is the string to write", "Second line"]
 ```
 
-##### 3.12.8.4) `writelines` 方法
+##### 3.12.9.4) `writelines` 方法
 
 将字符串写入流中。
 
@@ -7139,7 +7173,7 @@ $STREAM.stdout.writelines(["This is the string to write", "Second line"])
     // Second line
 ```
 
-##### 3.12.8.5) `readbytes` 方法
+##### 3.12.9.5) `readbytes` 方法
 
 从流中读取一个字节序列，返回一个字节序列。
 
@@ -7180,7 +7214,7 @@ $STREAM.stdin.readbytes(10)
     // bsequence: bx77726974652073747269
 ```
 
-##### 3.12.8.6) `readbytes2buffer` 方法
+##### 3.12.9.6) `readbytes2buffer` 方法
 
 从流中读取数据并将其追加到用作缓冲区的字节序列中。
 
@@ -7209,7 +7243,7 @@ $stream.readbytes2bufer(
 - `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时 `false`。
 - `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `false`。
 
-##### 3.12.8.7) `writebytes` 方法
+##### 3.12.9.7) `writebytes` 方法
 
 将一个字节序列写入流。
 
@@ -7248,7 +7282,7 @@ $STREAM.stdout.writebytes("write string")
 
 注意：字符串作为字节序列写入时，应该写入结尾的空字符。
 
-##### 3.12.8.8) `seek` 方法
+##### 3.12.9.8) `seek` 方法
 
 在流中执行定位操作。
 
@@ -7290,7 +7324,7 @@ $stream.seek(10, 'set')
     // ulongint: 10L
 ```
 
-##### 3.12.8.9) `getuc` 方法
+##### 3.12.9.9) `getuc` 方法
 
 从流中读取一个 Unicode 字符。
 
@@ -7333,7 +7367,7 @@ $stream.getuc('utf8', 'codepoint')
     // ulongint: 20UL
 ```
 
-##### 3.12.8.10) `putuc` 方法
+##### 3.12.9.10) `putuc` 方法
 
 向流中写入一个 Unicode 字符。
 
@@ -7371,7 +7405,7 @@ $stream.putuc(20UL, 'utf8')
     // ulongint: 1UL
 ```
 
-##### 3.12.8.11) `ungetuc` 方法
+##### 3.12.9.11) `ungetuc` 方法
 
 向流中放入一个 Unicode 字符，放回流的字符将会在下次从流中读取时以相反的顺序返回。该方法常用于解析器。
 
@@ -7409,7 +7443,7 @@ $stream.ungetuc(20UL)
     // ulongint: 1UL
 ```
 
-##### 3.12.8.12) `fd` 属性
+##### 3.12.9.12) `fd` 属性
 
 获取流对应的文件描述符（仅针对 POSIX 系统）。
 
@@ -7432,7 +7466,7 @@ $STREAM.stdin.fd
     // 0L
 ```
 
-##### 3.12.8.13) `peerAddr` 属性
+##### 3.12.9.13) `peerAddr` 属性
 
 获取套接字流对应的对端地址，如 UNIX 套接字另一端的套接字文件路径，网络套接字另一端的 IP 地址等。
 
@@ -7455,7 +7489,7 @@ $stream.peerAddr()
     // 0L
 ```
 
-##### 3.12.8.14) `peerPort` 属性
+##### 3.12.9.14) `peerPort` 属性
 
 获取 INET 套接字流对应的对端端口。
 
@@ -7478,7 +7512,7 @@ $stream.peerPort()
     // 0L
 ```
 
-#### 3.12.9) `pipe` 流实体
+#### 3.12.10) `pipe` 流实体
 
 **查询参数**
 
@@ -11050,8 +11084,10 @@ $sqliteCursor.connection
 
 #### OR1) 250630
 
-1. 新增 `$stream.getuc()`、`$stream.putuc()` 和 `$stream.ungetuc()` 接口。
-1. 新增 `$STR.codepoints(!)` 获取器。
+1. 新增 `$STREAM.from_buffer()` 方法。
+1. 扩展 `$STREAM.from()` 方法支持基于字符串或字节序列创建只读流实体。
+1. 新增 `$stream.getuc()`、`$stream.putuc()` 和 `$stream.ungetuc()` 方法。
+1. 新增 `$STR.codepoints(!)` 设置器。
 1. 新增 `$DATA.is_container()` 方法。
 1. 新增 `$DATA.is_linear_container()` 方法。
 1. 使用 `$STR.htmlentities` 获取器和设置器分别用于编码和解码。
@@ -11059,9 +11095,12 @@ $sqliteCursor.connection
 1. 移除 `$STR.nl2br()` 方法。
 1. 调整了 `$URL.build_query()` 和 `$URL.parse_query()` 方法的参数顺序。
 1. 重命名 `$URL.assemble()` 为 `$URL.assembly()`。
+1. 重命名 `$STR.format_c()` 为 `$STR.printf()`。
+1. 重命名 `$STR.format_p()` 为 `$STR.printp()`。
+1. 重命名 `$STR.scan_p()` 为 `$STR.scanp()`。
 1. 调整了 `$STR.printf()`、`$STR.scanf()`、`$STR.printp()`、`$STR.scanp()` 接口，使之支持输入流或者输出流。
-1. 调整了 `$DOC.serialize()` 的接口，使之支持输出流。
-1. 调整了 `$DATA.serialize()` 的接口，使之支持输出流。
+1. 调整了 `$DATA.serialize()` 接口，使之支持输出流。
+1. 调整了 `$DOC.serialize()` 接口，使之支持输出流。
 
 #### OR0) 250428
 
