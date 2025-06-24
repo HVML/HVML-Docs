@@ -6606,6 +6606,10 @@ $URL.parse('https://www.hvml.org/zh/', 'query')
     // string: ''
 $URL.parse('https://www.hvml.org/zh/', 'fragment')
     // string: ''
+$URL.parse('https://xn--0zwm56d.xn--5tzm5g.xn--fiqs8s/%E8%B7%AF%E5%BE%84?%E5%85%B3%E9%94%AE%E5%AD%97=%E6%B5%8B%E8%AF%95#%E7%89%87%E6%AE%B5', 'all', 'hostname path query fragment')
+    // object: { 'scheme': 'https', 'hostname': '测试.网站.中国', 'port': null, 'username': null, 'password': null, 'path': '/路径', 'query': '关键字=测试', 'fragment': '片段' }
+$URL.parse('https://xn--0zwm56d.xn--5tzm5g.xn--fiqs8s/%E8%B7%AF%E5%BE%84?%E5%85%B3%E9%94%AE%E5%AD%97=%E6%B5%8B%E8%AF%95#%E7%89%87%E6%AE%B5', 'query', 'query')
+    // string: '关键字=测试'
 ```
 
 **参见**
@@ -6621,16 +6625,6 @@ $URL.parse('https://www.hvml.org/zh/', 'fragment')
 ```js
 $URL.assembly(
     < object $broken_down_url: `The broken-down URL object.` >
-    [,
-        < '[hostname || path || query || fragment] | none | all' $encode_components = 'none':
-            - 'hostname': `Use Punycode to encode hostname if it contains non-ASCII characters.`
-            - 'path':     `Encode path according to RFC 3986.`
-            - 'query':    `Encode query according to RFC 3986.`
-            - 'fragment': `Encode fragment according to RFC 3986.`
-            - 'none':     `Encode nothing.`
-            - 'all':      `Encode all components.`
-        >
-    ]
 ) string | false
 ```
 
@@ -6653,8 +6647,6 @@ $URL.assembly(
 }
 ```
 
-- `$encode_components`：要执行相应编码的 URL 组件。
-
 **返回值**
 
 返回组装后的 URL（字符串）。
@@ -6675,6 +6667,9 @@ $URL.assembly({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'f
     // string: 'https://www.hvml.org/zh/#foo'
 $URL.assembly({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar', 'fragment': 'foo'})
     // string: 'https://www.hvml.org/zh/?foo=bar#foo'
+$URL.assembly({ "scheme": "http", "hostname": "测试.网站.中国", "path": "/路径", "query": "关键词1=值&关键词2=值", "fragment": "片段" })
+    // string: 'http://xn--0zwm56d.xn--5tzm5g.xn--fiqs8s\/%C3%A8%C2%B7%C2%AF%C3%A5%C2%BE%C2%84?%C3%A5%C2%85%C2%B3%C3%A9%C2%94%C2%AE%C3%A8%C2%AF%C2%8D1=%C3%A5%C2%80%C2%BC&%C3%A5%C2%85%C2%B3%C3%A9%C2%94%C2%AE%C3%A8%C2%AF%C2%8D2=%C3%A5%C2%80%C2%BC#%C3%A7%C2%89%C2%87%C3%A6%C2%AE%C2%B5'
+
 ```
 
 **参见**
