@@ -6326,7 +6326,7 @@ $STR.codepoints(
 ```php
 $STR.codepoints(!
     < 'array | tuple' $codepoints: `The linear container consist of codepoints of Unicode characters.` >
-) string | false: `The array or tuple contains all Unicode codepoints of the string.`
+) string | false: `The converted string in UTF-8 encoding.`
 ```
 
 该设置器将 `$codepoints` 中的码点转换为 UTF-8 编码并按顺序串接为一个字符串。
@@ -7306,9 +7306,9 @@ $stream.getuc(
             - 'utf32le':  `The character is encoded in UTF-32 little endian.`
             - 'utf32be':  `The character is encoded in UTF-32 big endian.` >
         [,
-            < 'codepoint | utf8' $format = 'codepoint':
-                - 'codepoint': `The character is returned as a codepoint.`
-                - 'utf8':      `The character is returned as a UTF-8 string.` >
+            < 'utf8 | codepoint' $format = 'codepoint':
+                - 'utf8':      `The character is returned as a UTF-8 string.`
+                - 'codepoint': `The character is returned as a codepoint.` >
         ]
     ]
 ) ulongint | string | false
