@@ -1,7 +1,3 @@
-Use tools in `markdown/` of:
+The tools in this directory are written in HVML.
 
-<https://gitlab.fmsoft.cn/VincentWei/my-favorite-tools>
-
-or
-
-<https://github.com/VincentWei/my-favorite-tools>
+- `markdown-to-html.hvml`: This tool generates HTML files based on a document file in Markdown and a template HTML file.

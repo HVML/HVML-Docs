@@ -160,7 +160,7 @@ Language: Chinese
 
 用于描述一个定时器对象的属性如下：
 
-```js
+```php
 {
     'id': <string: `The timer identifier, the key with unique restriction.`>,
     'interval': <string: `The interval of the timer in milliseconds.`>,
@@ -252,7 +252,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
 **描述**
 
-```js
+```php
 $SYS.const(
         <string $name: `The constant name.`>
 ) any : `The constant value.`
@@ -276,7 +276,7 @@ $SYS.const(
 
 **示例**
 
-```js
+```php
 // 获取常量 `HVML_SPEC_VER` 的值
 $SYS.const('HVML_SPEC_VERSION')
     // string: '1.0'
@@ -288,7 +288,7 @@ $SYS.const('HVML_SPEC_VERSION')
 
 **描述**
 
-```js
+```php
 $SYS.uname object :
     `An object contains the following properties:`
         - 'kernel-name':        < string: `The kernel name (e.g., 'Linux').` >
@@ -309,7 +309,7 @@ $SYS.uname object :
 
 **示例**
 
-```js
+```php
 $SYS.uname
     // object: {
             'kernel-name':      'Linux',
@@ -329,13 +329,13 @@ $SYS.uname
 
 **描述**
 
-```js
+```php
 $SYS.uname_prt string: `The kernel name.`
 ```
 
 该方法获取内核名称，返回字符串。
 
-```js
+```php
 $SYS.uname_prt(
         <'[kernel-name || kernel-release || kernel-version || nodename || machine || processor || hardware-platform || operating-system] | all | default' $which = 'default':
             - 'kernel-name':        `Include kernel name (e.g., 'Linux').`
@@ -360,7 +360,7 @@ $SYS.uname_prt(
 
 **示例**
 
-```js
+```php
 // 获取内核名称
 $SYS.uname_prt
     // string: 'Linux'
@@ -376,13 +376,13 @@ $SYS.uname_prt('kernel-name kernel-release kernel-version')
 
 **描述**
 
-```js
+```php
 $SYS.locale string : `The locale for the messages category.`
 ```
 
 该方法获得消息分类（messages category）的区域，返回字符串。
 
-```js
+```php
 $SYS.locale(
         < 'ctype | numeric | time | collate | monetary | messages | paper | name | address | telephone | measurement | identification' $category = 'messages':
             - 'ctype':          `Character classification`
@@ -403,7 +403,7 @@ $SYS.locale(
 
 该方法获取指定分类的区域，返回字符串。某些平台可能不支持特定的区域分类，比如姓名（`name`）分类。对不支持的区域分类，该函数将抛出 `Unsupported` 异常，或静默求值时返回 `undefined`。
 
-```js
+```php
 $SYS.locale(!
         < '[ctype || numeric || time || collate || monetary || messages || paper || name || address || telephone || measurement || identification] | all' $categories:
             - 'ctype':          `Character classification`
@@ -438,7 +438,7 @@ $SYS.locale(!
 
 **示例**
 
-```js
+```php
 $SYS.locale
     // string: "en_US"
 
@@ -455,13 +455,13 @@ $SYS.locale
 
 **描述**
 
-```js
+```php
 $SYS.time longint: `The calendar time (seconds since Epoch)`
 ```
 
 该方法获取当前日历时间（自 Epoch 以来的秒数），返回值类型为 `longint`。
 
-```js
+```php
 $SYS.time(!
         <real $seconds: `seconds since Epoch`>
 ) true | false
@@ -480,7 +480,7 @@ $SYS.time(!
 
 **示例**
 
-```js
+```php
 $SYS.time
     // longint: 123456789L
 ```
@@ -498,14 +498,14 @@ $SYS.time
 
 **描述**
 
-```js
+```php
 $SYS.time_us longdouble :
     `A long double number representing the number of seconds (integral part) and microseconds (fractional part) since Epoch.`
 ```
 
 该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值 longdouble 数值，小数部分为微秒值。
 
-```js
+```php
 $SYS.time_us(
         [
             < 'longdouble | object' $return_type = 'longdouble': `Indicate the return type: a long double number or an object.`>
@@ -517,7 +517,7 @@ $SYS.time_us(
 
 该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为 `longdouble` 数值或包含 `sec` 和 `usec` 两个属性的对象。
 
-```js
+```php
 $SYS.time_us(!
         <real $sec_us: `Seconds with microseconds since Epoch`>
 ) true | false
@@ -525,7 +525,7 @@ $SYS.time_us(!
 
 该方法用一个实数（整数部分表示自 Epoch 以来的秒数，小数部分表示微秒数）设置系统时间。成功时返回 `true`。
 
-```js
+```php
 $SYS.time_us(!
         <object $time_with_us: `An object representing the number of seconds and microseconds since Epoch`>
 ) true | false
@@ -544,7 +544,7 @@ $SYS.time_us(!
 
 **示例**
 
-```js
+```php
 $SYS.time_us
     // longdouble: 123456789.456789
 ```
@@ -562,7 +562,7 @@ $SYS.time_us
 
 **描述**
 
-```js
+```php
 $SYS.sleep(
         real $delay_time: `The delay time in seconds; a double or long double number representing the number of seconds (integral part) and microseconds/nanoseconds (fractional part) to delay.`
 ) real | false
@@ -579,7 +579,7 @@ $SYS.sleep(
 
 **示例**
 
-```js
+```php
 $SYS.sleep(1UL)
     // ulongint: 0UL
 
@@ -597,13 +597,13 @@ $SYS.sleep(0.3)
 
 **描述**
 
-```js
+```php
 $SYS.timezone : string | false
 ```
 
 该方法返回当前时区。
 
-```js
+```php
 $SYS.timezone(!
         <string $timezone: `The new timezone`>
         [,
@@ -636,7 +636,7 @@ HVML 推荐使用类似 `Asia/Shanghai` 这样的字符串来表示时区。实�
 
 **示例**
 
-```js
+```php
 $SYS.timezone
     // string: "Asia/Shanghai"
 
@@ -658,13 +658,13 @@ $SYS.timezone
 
 **描述**
 
-```js
+```php
 $SYS.cwd string | false: `Return the current working directory on success, or @false on failure.`
 ```
 
 该方法获取当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
 
-```js
+```php
 $SYS.cwd(!
         <string $dir: `The new path for the current working directory.`>
 ) boolean: `Return @true on success or @false on failure.`
@@ -698,7 +698,7 @@ $SYS.cwd(!
 
 **描述**
 
-```js
+```php
 $SYS.env(
         <string: `The environment variable name`>
 ) string | undefined
@@ -706,7 +706,7 @@ $SYS.env(
 
 该方法获取指定环境变量的值（字符串）；未设置时抛出 `NoSuchKey` 异常，静默求值时返回 `undefined`。
 
-```js
+```php
 $SYS.env(!
         <string: `The environment variable name`>,
         <string | undefined: `The value`>
@@ -730,7 +730,7 @@ $SYS.env(!
 
 **示例**
 
-```js
+```php
 // 设置环境变量 `LOGNAME` 的值
 $SYS.env(! 'LOGNAME', 'tom' )
     // boolean: true
@@ -742,7 +742,7 @@ $SYS.env(! 'LOGNAME', 'tom' )
 
 **描述**
 
-```js
+```php
 $SYS.random_sequence(
         <number $length: `The length of the random byte sequence`>
 ) bsequence | false
@@ -757,7 +757,7 @@ $SYS.random_sequence(
 
 **示例**
 
-```js
+```php
 // 从内核获得随机数据用于当前行者的随机数发生器种子。
 $SYS.random(! $DATA.fetchreal($SYS.random_sequence(4), 'u32') )
     // boolean: true
@@ -773,13 +773,13 @@ $SYS.random(! $DATA.fetchreal($SYS.random_sequence(4), 'u32') )
 
 **描述**
 
-```js
+```php
 $SYS.random longint: `A random between 0 and RAND_MAX.`
 ```
 
 该方法获取 0 到 C 标准函数库定义的 `RAND_MAX`（至少 `32767`）之间的一个随机值（`longint`）。
 
-```js
+```php
 $SYS.random(
         <real $max: `The max value`>
 ) real | false: `A random real number between 0 and $max. The type of return value will be same as the type of $max.`
@@ -787,7 +787,7 @@ $SYS.random(
 
 该方法获取 0 到指定的最大值之间的一个随机值。返回值的类型同参数 `$max` 的类型。
 
-```js
+```php
 $SYS.random(!
         <real $seed: `The random seed`>
         [, <number $complexity: `A number equal or greater than 8 to indicates how sophisticated the random number generator it should use - the larger, the better the random numbers will be.>
@@ -803,7 +803,7 @@ $SYS.random(!
 
 **示例**
 
-```js
+```php
 // 使用当前系统日历时间设置随机数种子。
 $SYS.random(! $SYS.time )
     // true
@@ -837,7 +837,7 @@ $SYS.random(-10FL)
 
 **描述**
 
-```js
+```php
 $SYS.remove(
         <string $path: `The path of a file or an empty directory.`>
 ) true | false
@@ -855,7 +855,7 @@ $SYS.remove(
 
 **描述**
 
-```js
+```php
 $SYS.spawn(
     <string $prog_path: `The path or the filename of the executable program.`>
     <array | tuple $file_actions: `A linear container which speicifies the file-related actions to be performed in the child between the fork(2) and exec(3) steps.`>
@@ -873,7 +873,7 @@ $SYS.spawn(
 
 用于指定子进程在执行程序之前要完成的文件操作 `$file_actions` 由一个个对象构成：
 
-```js
+```php
 {
     'action':   < '[open | close | dup2 ]': `The file action to be performed.` >
     'fd':       < longint : `The file descriptor.` >
@@ -894,7 +894,7 @@ $SYS.spawn(
 
 **描述**
 
-```js
+```php
 $SYS.waitpid(
     <longint $pid: `The process identifier.`>
     [, < ['none || nohang || untraced || continued'] $options = 'none': `The options, can be one or more of the following keywords:`
@@ -922,7 +922,7 @@ $SYS.waitpid(
 
 **描述**
 
-```js
+```php
 $SYS.kill(
     <longint $pid: `The process identifier.`>
     [, < ['HUP | INT | QUIT | ABRT | KILL | ALRM | TERM'] $signal = 'TERM': `The signal to send.`
@@ -947,7 +947,7 @@ $SYS.kill(
 
 **描述**
 
-```js
+```php
 $SYS.access(
     < string $path: `The path to the file or the directory.` >
     [, < '[read || write || execute || existence]' $mode = 'existence': `Indicate the access permissions to test: `
@@ -969,7 +969,7 @@ $SYS.access(
 
 **描述**
 
-```js
+```php
 $SYS.pipe(
     [ < '[cloexec || nonblock] | default | none' $flags = 'default': `The flags on the new file descriptors.`:
        - 'nonblock':    `Set the file descriptor in nonblocking mode.`
@@ -990,7 +990,7 @@ $SYS.pipe(
 
 **描述**
 
-```js
+```php
 $SYS.socketpair(
     [ < 'local | unix ' $domain = 'local': `The domain in which to create the sockets.`
        - 'local':    `Host-internal protocols.`
@@ -1011,7 +1011,7 @@ $SYS.socketpair(
 
 - 获取器：
 
-```js
+```php
 $SYS.fdflags(
     <longint $fd: `The file descriptor.`>,
     <'cloexec | append | nonblock' $flags:
@@ -1024,7 +1024,7 @@ $SYS.fdflags(
 
 - 设置器：
 
-```js
+```php
 $SYS.fdflags(!
     <longint $fd: `The file descriptor.`>,
     <'cloexec || append || nonblock' $flags:
@@ -1047,7 +1047,7 @@ $SYS.fdflags(!
 
 - 获取器
 
-```js
+```php
 $SYS.sockopt(
     <longint $fd: `The file descriptor.`>,
     <'type | nread | nwrite | recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
@@ -1067,7 +1067,7 @@ $SYS.sockopt(
 
 - 设置器
 
-```js
+```php
 $SYS.sockopt(!
     <longint $fd: `The file descriptor.`>,
     <'recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
@@ -1097,7 +1097,7 @@ $SYS.sockopt(!
 
 **示例**
 
-```js
+```php
 // 设置套接字流的超时时间为 1 秒。
 $SYS.sockopt($stream.fd, 'recv-timeout', 1.0)
     // true
@@ -1109,7 +1109,7 @@ $SYS.sockopt($stream.fd, 'recv-timeout', 1.0)
 
 **描述**
 
-```js
+```php
 $SYS.open(
     <string $file_path: `The path of the file to open.`>
     [,
@@ -1140,7 +1140,7 @@ $SYS.open(
 
 **描述**
 
-```js
+```php
 $SYS.seek(
     <ulongint $fd: `The file descriptor.`>
     <longint $offset: `New offset.`>
@@ -1172,7 +1172,7 @@ $SYS.seek(
 
 **描述**
 
-```js
+```php
 $SYS.close(
     <longint $fd: `The file descriptor to be closed.`>
 ) true | false
@@ -1188,7 +1188,7 @@ $SYS.close(
 
 **描述**
 
-```js
+```php
 $SYS.sendfile(
     <longint $out_fd: `The output file descriptor.`>,
     <longint $in_fd: `The input file descriptor.`>
@@ -1211,7 +1211,7 @@ $SYS.sendfile(
 
 **描述**
 
-```js
+```php
 $SYS.openpty(
     < '[noctty || rdwr] | default | none' $flags: `The flags when opening the new pseudoterminal device:`
        - 'noctty':      `Do not make this device the controlling terminal for the process.`
@@ -1249,7 +1249,7 @@ $SYS.openpty(
 
 **描述**
 
-```js
+```php
 $RUNNER.appName
     string : `The app name of current runner.`
 ```
@@ -1262,7 +1262,7 @@ $RUNNER.appName
 
 **示例**
 
-```js
+```php
 $RUNNER.appName
     // string: 'cn.fmsoft.hvml.sample'
 ```
@@ -1273,7 +1273,7 @@ $RUNNER.appName
 
 **描述**
 
-```js
+```php
 $RUNNER.runName
     string : `The runner name of current runner.`
 ```
@@ -1286,7 +1286,7 @@ $RUNNER.runName
 
 **示例**
 
-```js
+```php
 $RUNNER.runName
     // string: 'hello'
 ```
@@ -1297,7 +1297,7 @@ $RUNNER.runName
 
 **描述**
 
-```js
+```php
 $RUNNER.rid
     ulongint : `The identifier of the current runner.`
 ```
@@ -1310,7 +1310,7 @@ $RUNNER.rid
 
 **示例**
 
-```js
+```php
 $RUNNER.sid
     // ulongint: 3UL
 ```
@@ -1321,7 +1321,7 @@ $RUNNER.sid
 
 **描述**
 
-```js
+```php
 $RUNNER.uri
     string : `The URI of the current runner.`
 ```
@@ -1334,7 +1334,7 @@ $RUNNER.uri
 
 **示例**
 
-```js
+```php
 $RUNNER.uri
     // string: 'edpt://localhost/cn.fmsoft.hvml.caculator/main'
 ```
@@ -1345,14 +1345,14 @@ $RUNNER.uri
 
 **描述**
 
-```js
+```php
 $RUNNER.autoSwitchingRdr
     boolean : `if auto switching renderer is enabled.`
 ```
 
 获取当前行者的 `autoSwitchingRdr` 属性值。
 
-```js
+```php
 $RUNNER.autoSwitchingRdr(!
         <boolean $enable: ``>,
 ) boolean : `Return the current value of 'autoSwitchingRdr' property.`
@@ -1366,7 +1366,7 @@ $RUNNER.autoSwitchingRdr(!
 
 **示例**
 
-```js
+```php
 $RUNNER.autoSwitchingRdr
     // true
 $RUNNER.autoSwitchingRdr(! false )
@@ -1408,7 +1408,7 @@ $RUNNER.autoSwitchingRdr(! false )
 
 **描述**
 
-```js
+```php
 $RUNNER.user(
         <string $key: `The user defined key name`>
 ) any | undefined : `The variant value corresponding to the key name $key.`
@@ -1416,7 +1416,7 @@ $RUNNER.user(
 
 该方法获取指定键名对应的键值。当指定的键名未被设置时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `undefined`。
 
-```js
+```php
 $RUNNER.user(!
         <string $key: `The user defined key name`>,
         <any | undefined $value: `The new variant value`>
@@ -1435,7 +1435,7 @@ _注意_，`user` 的获取器和设置器本质上访问的是 `$RUNNER` 的 `m
 
 **示例**
 
-```js
+```php
 // 移除 `userId` 键值对
 $RUNNER.user(! 'userId', undefined )
     // false (assumed that `userId` was not set)
@@ -1463,7 +1463,7 @@ $RUNNER.user(! 'userId', undefined )
 
 **描述**
 
-```js
+```php
 $RUNNER.enablelog(
     <'[ emerg || alert || crit || error || warning || notice || info || debug ] | all | default' $levels:
            - 'emerg':      `Enable the emergency messages.`
@@ -1498,7 +1498,7 @@ $RUNNER.enablelog(
 
 **示例**
 
-```js
+```php
 $RUNNER.enablelog('all', 'stderr')
     // true
 ```
@@ -1509,7 +1509,7 @@ $RUNNER.enablelog('all', 'stderr')
 
 **描述**
 
-```js
+```php
 $RUNNER.logmsg(
     < string $msg: `The message to log.` >,
     [, <'emerg | alert | crit | error | warning | notice | info | debug' $level = 'info':
@@ -1539,7 +1539,7 @@ $RUNNER.logmsg(
 
 **示例**
 
-```js
+```php
 $RUNNER.logmsg('This is a log')
     // true
 ```
@@ -1550,7 +1550,7 @@ $RUNNER.logmsg('This is a log')
 
 **描述**
 
-```js
+```php
 $RUNNER.chan(
         <string $name: `The user defined channel name`>
 ) native/channel | undefined : `The native entity representing the channel or undefined if not found.`
@@ -1561,7 +1561,7 @@ $RUNNER.chan(
 - `$channel.send()`：发送一个数据到通道；当通道满时，该调用将阻塞当前协程，直到数据被读取或者超时。
 - `$channel.recv()`：从通道中读取数据；当通道空时，该调用将阻塞当前协程，直到有数据或者超时。
 
-```js
+```php
 $RUNNER.chan(!
         <string $name: `The user defined channel name`>
         [,
@@ -1587,7 +1587,7 @@ $RUNNER.chan(!
 
 **示例**
 
-```js
+```php
 // 创建 `channel0` 通道
 $RUNNER.chan(! 'channel0', 10 )
     // true (assumed that `channel0` was not created)
@@ -1615,7 +1615,7 @@ $RUNNER.chan( 'channel0' )
 
 **描述**
 
-```js
+```php
 $channel.send(
         <any: data>
 ) boolean
@@ -1638,7 +1638,7 @@ $channel.send(
 
 **描述**
 
-```js
+```php
 $channel.recv() any | undefined
 ```
 
@@ -1657,7 +1657,7 @@ $channel.recv() any | undefined
 
 **描述**
 
-```js
+```php
 $channel.cap ulongint | false
 ```
 
@@ -1675,7 +1675,7 @@ $channel.cap ulongint | false
 
 **描述**
 
-```js
+```php
 $channel.len ulongint | false
 ```
 
@@ -1701,7 +1701,7 @@ $channel.len ulongint | false
 
 **描述**
 
-```js
+```php
 $RUNNER.mktempchan(
     [
         <ulongint $cap = 1: `The capability of the channel.`>
@@ -1720,7 +1720,7 @@ $RUNNER.mktempchan(
 
 **示例**
 
-```js
+```php
 // 创建一个临时通道
 $RUNNER.mktempchan( 10 )
     // '_htc45ECF7'
@@ -1755,7 +1755,7 @@ $RUNNER.chan( '_htc45ECF7' )
 
 **描述**
 
-```js
+```php
 $CRTN.target string: `The target document type such as 'html'`
 ```
 
@@ -1767,7 +1767,7 @@ $CRTN.target string: `The target document type such as 'html'`
 
 **示例**
 
-```js
+```php
 $CRTN.target
     // string: 'html'
 ```
@@ -1776,13 +1776,13 @@ $CRTN.target
 
 可通过该属性获取或设置 HVML 协程的基础 URL。
 
-```js
+```php
 $CRTN.base string: `The base URL.`
 ```
 
 该属性获取器返回当前的基础 URL，如 `file:///app/com.example.foo/hvml`。
 
-```js
+```php
 $CRTN.base(!
         <string $new_url: `The new base URL`>
 ) string | false: `The new base URL normalized from $new_url or `false` for invalid $new_url.`
@@ -1802,7 +1802,7 @@ $CRTN.base(!
 
 **示例**
 
-```js
+```php
 $CRTN.base(! "https://foo.example.com//app/hvml/" )
     // string: 'https://foo.example.com/app/hvml'
 ```
@@ -1815,13 +1815,13 @@ $CRTN.base(! "https://foo.example.com//app/hvml/" )
 
 **描述**
 
-```js
+```php
 $CRTN.maxIterationCount ulongint: `The current maximal iteration count.`
 ```
 
 该属性获取器返回当前的最大迭代次数值。
 
-```js
+```php
 $CRTN.maxIterationCount(!
         <real $new_value: `The new maximal interation count`>
 ) ulongint | false : `The new maximal iteration count.`
@@ -1841,7 +1841,7 @@ $CRTN.maxIterationCount(!
 
 **示例**
 
-```js
+```php
 $CRTN.maxIterationCount(! 10000UL )
 ```
 
@@ -1853,13 +1853,13 @@ $CRTN.maxIterationCount(! 10000UL )
 
 **描述**
 
-```js
+```php
 $CRTN.maxRecursionDepth ulongint: `The current maximal recursion depth value.`
 ```
 
 该属性获取器返回当前的最大递归深度值。
 
-```js
+```php
 $CRTN.maxRecursionDepth(!
         <real $new_value: `new maximal recursion depth`>
 ) ulongint | false: `The new maximal recursion depth value.`
@@ -1879,7 +1879,7 @@ $CRTN.maxRecursionDepth(!
 
 **示例**
 
-```js
+```php
 $CRTN.maxRecursionDepth(! 10000UL )
 ```
 
@@ -1891,13 +1891,13 @@ $CRTN.maxRecursionDepth(! 10000UL )
 
 **描述**
 
-```js
+```php
 $CRTN.maxEmbeddedLevels ulongint: `The current maximal embedded levels.`
 ```
 
 该属性获取器返回当前的最大容器数据嵌套层级。
 
-```js
+```php
 $CRTN.maxEmbeddedLevels(!
         <real $new_value: `new maximal embedded levels`>
 ) ulongint | false: `The new maximal embedded levels.`
@@ -1917,7 +1917,7 @@ $CRTN.maxEmbeddedLevels(!
 
 **示例**
 
-```js
+```php
 $CRTN.maxEmbeddedLevels(! 64UL )
 ```
 
@@ -1929,13 +1929,13 @@ $CRTN.maxEmbeddedLevels(! 64UL )
 
 **描述**
 
-```js
+```php
 $CRTN.timeout number : `The current timeout value (in seconds)`
 ```
 
 该属性获取器返回当前超时值。
 
-```js
+```php
 $CRTN.timeout(!
         <number $new_timeout: `The new timeout value (in seconds)`>
 ) number | false: `The new timeout value`
@@ -1955,7 +1955,7 @@ $CRTN.timeout(!
 
 **示例**
 
-```js
+```php
 // 设置超时值为 3.5 秒。
 $CRTN.timeout(! 3.5 )
     // number: 3.5
@@ -1967,7 +1967,7 @@ $CRTN.timeout(! 3.5 )
 
 **描述**
 
-```js
+```php
 $CRTN.cid ulongint : `The corontine identifier`
 ```
 
@@ -1977,7 +1977,7 @@ $CRTN.cid ulongint : `The corontine identifier`
 
 **示例**
 
-```js
+```php
 $CRTN.cid
     // ulongint: 10UL
 ```
@@ -1988,13 +1988,13 @@ $CRTN.cid
 
 **描述**
 
-```js
+```php
 $CRTN.token string : `The corontine token`
 ```
 
 该方法获取当前 HVML 协程的令牌（token），形如 `3cd5`。
 
-```js
+```php
 $CRTN.token(!
         <string $new_token: `The new token for the coroutine`>
 ) string | false: `The new token`
@@ -2014,7 +2014,7 @@ $CRTN.token(!
 
 **示例**
 
-```js
+```php
 $CRTN.token
     // string: `7`
 
@@ -2031,7 +2031,7 @@ $CRTN.token
 
 **描述**
 
-```js
+```php
 $CRTN.uri string : `The corontine URI`
 ```
 
@@ -2043,7 +2043,7 @@ $CRTN.uri string : `The corontine URI`
 
 **示例**
 
-```js
+```php
 $CRTN.uri
     // string: `//localhost/cn.fmsoft.hvml.calculator/main/CRTN/7`
 ```
@@ -2054,7 +2054,7 @@ $CRTN.uri
 
 **描述**
 
-```js
+```php
 $CRTN.curator ulongint : `The corontine identifier of the curator of the current coroutine`
 ```
 
@@ -2066,7 +2066,7 @@ $CRTN.curator ulongint : `The corontine identifier of the curator of the current
 
 **示例**
 
-```js
+```php
 $CRTN.curator
     // ulongint: 5UL
 ```
@@ -2077,7 +2077,7 @@ $CRTN.curator
 
 **描述**
 
-```js
+```php
 $CRTN.native_crtn(
     ulongint $cid: `The corontine identifier of one child coroutine`
 ) native/crtn | undefined
@@ -2095,7 +2095,7 @@ $CRTN.native_crtn(
 
 **示例**
 
-```js
+```php
 $CRTN.native_crtn
     // native/crtn
 ```
@@ -2106,7 +2106,7 @@ $CRTN.native_crtn
 
 **描述**
 
-```js
+```php
 $CRTN.static.<variable>(
     [,
         < string | ulongint $namspace = 1L: `The name space of the variable`.
@@ -2116,7 +2116,7 @@ $CRTN.static.<variable>(
 
 该属性获取器获取指定变量的值。`variable` 是变量名称；`namespace` 用于指定变量的名字空间，默认取 1L。
 
-```js
+```php
 $CRTN.static.<variable>(!
     < any $value: `The new value.` >,
     [,
@@ -2143,7 +2143,7 @@ $CRTN.static.<variable>(!
 
 **示例**
 
-```js
+```php
 $CRTN.static.x('_root')
     // undefined
 
@@ -2163,7 +2163,7 @@ $CRTN.static.x
 
 **描述**
 
-```js
+```php
 $CRTN.temp.<variable>(
     [,
         < string | ulongint $namspace = 1L: `The name space of the variable`.
@@ -2173,7 +2173,7 @@ $CRTN.temp.<variable>(
 
 通过上述属性获取器获取指定临时变量的值。`variable` 是变量名称；`namespace` 用于指定变量的名字空间，默认取 1L。
 
-```js
+```php
 $CRTN.temp.<variable>(!
     < any $value: `The new value.` >,
     [,
@@ -2200,7 +2200,7 @@ $CRTN.temp.<variable>(!
 
 **示例**
 
-```js
+```php
 $CRTN.temp.x('_topmost')
     // undefined
 
@@ -2224,7 +2224,7 @@ $CRTN.temp.x
 
 该方法返回文档类型，字符串。
 
-```js
+```php
 $DOC.doctype string : `The target DOCTYPE, such as 'html'`
 ```
 
@@ -2232,7 +2232,7 @@ $DOC.doctype string : `The target DOCTYPE, such as 'html'`
 
 **示例**
 
-```js
+```php
 $DOC.doctype
     // html
 ```
@@ -2241,7 +2241,7 @@ $DOC.doctype
 
 根据元素的标识符（id）、类名、标签名称、名称属性值选择元素并生成对应的元素汇集（collection）。
 
-```js
+```php
 $DOC.select(
         < string $string: `The identifier, the class name(s), the tag name, or the value of name attribute of the element(s) to select.` >
         [, < 'id | class | tag | name' $type = `id`:
@@ -2264,7 +2264,7 @@ $DOC.select(
 
 使用 CSS 选择器查询目标文档上的元素汇集（collection）。
 
-```js
+```php
 $DOC.query(
     < string $selector: `The CSS selector.` >
 ) native/elementCollection
@@ -2279,7 +2279,7 @@ $DOC.query(
 
 该方法串行化文档对象。
 
-```js
+```php
 $DOC.serialize(
     [ < native/stream $output: `The output stream to which the method writes the serialized document.` >, ]
     [, < 'compact | loose' $method = `compact`:
@@ -2293,7 +2293,7 @@ $DOC.serialize(
 ) string | false: `The serialized document, such as '<html><body></body></html>'`
 ```
 
-```js
+```php
 $DOC.serialize(
     [, < 'compact | loose' $method = `compact`:
         - 'compact':    `Serialize the document compactly.`
@@ -2320,7 +2320,7 @@ $DOC.serialize(
 
 **示例**
 
-```js
+```php
 $DOC.serialize
     // '<html><body></body></html>'
 
@@ -2372,7 +2372,7 @@ $DOC.serialize($STREAM.stdout)
 
 通常在这些键名上会设定有相应的获取器或设置器函数，于是即可实现 HVML 规范中要求的表达式：
 
-```js
+```php
 // <div id="foo" bar="baz">
 
 // 获取 id 为 foo 的元素上的属性 `bar` 的值：
@@ -2392,7 +2392,7 @@ $DOC.query("#foo").attr(! "bar", "qux")
 
 该属性的获取器返回当前的渲染器信息对象。该属性不提供设置器。
 
-```js
+```php
 $RDR.info object : `An object describing the information of the renderer:`
         - 'name':           < string: `The name of the renderer.` >
         - 'version':        < string: `The version of the renderer.` >
@@ -2407,7 +2407,7 @@ $RDR.info object : `An object describing the information of the renderer:`
 
 **示例**
 
-```js
+```php
 $RDR.info
     // { 'name': 'Chrome', 'version': '5.0', 'locale': 'zh_CN', 'html': '5.3', 'vendor': 'FMSoft'}
 ```
@@ -2416,7 +2416,7 @@ $RDR.info
 
 该属性的获取器返回当前的渲染器状态对象。该属性不提供设置器。
 
-```js
+```php
 $RDR.state object : `An object describing the current state of the renderer:`
         - 'comm':               < string: `The communication method; an empty string if not connected.` >
         - 'prot':               < string: `The protocol name, such as "PURCMC".` >
@@ -2431,7 +2431,7 @@ $RDR.state object : `An object describing the current state of the renderer:`
 
 **示例**
 
-```js
+```php
 $RDR.state
     // { 'comm': 'socket', 'prot': 'PURCMC', 'prot-version': '110', 'prot-ver-code': 110UL, 'uri': 'unix:///var/tmp/purcmc.sock'}
 ```
@@ -2440,7 +2440,7 @@ $RDR.state
 
 该属性的获取器返回解释器和渲染器之间的通讯统计信息。该属性不提供设置器。
 
-```js
+```php
 $RDR.stats object | null: `An object describing the statistics of the communication between the interpreter and the renderer:`
         - 'nrRequestsSent':         < ulongint: `The number of requests sent to the renderer.` >
         - 'nrRequestsRecv':         < ulongint: `The number of requests received from the renderer.` >
@@ -2459,7 +2459,7 @@ $RDR.stats object | null: `An object describing the statistics of the communicat
 
 **示例**
 
-```js
+```php
 $RDR.stats
     // { 'nrRequestsSent': 5UL, 'nrResponsesRecv': 5UL, 'nrRequestsRecv': 0, 'nrResponsesSent': 0, 'nrEventsSent': 0, 'nrEventsRecv': 10UL, 'bytesSent': 2368UL, 'bytesRecv': 468UL, 'durationSeconds': 10UL }
 ```
@@ -2468,7 +2468,7 @@ $RDR.stats
 
 该方法断开当前的渲染器并连接到指定的渲染器。
 
-```js
+```php
 $RDR.connect( string : `A string prepresenting the communication method of the renderer`
         <'headless | thread | socket | websocket ' $comm = 'headless' >,
         [, <string $uri: `URI of the target renderer.` > ]
@@ -2485,7 +2485,7 @@ $RDR.connect( string : `A string prepresenting the communication method of the r
 
 **示例**
 
-```js
+```php
 $RDR.connect('socket', 'unix:///var/tmp/purcmc.sock')
     // true
 ```
@@ -2494,7 +2494,7 @@ $RDR.connect('socket', 'unix:///var/tmp/purcmc.sock')
 
 该方法断开当前的渲染器。
 
-```js
+```php
 $RDR.disconn(
 ) true | false
 ```
@@ -2508,7 +2508,7 @@ $RDR.disconn(
 
 **示例**
 
-```js
+```php
 $RDR.disconn()
     // true
 ```
@@ -2521,7 +2521,7 @@ $RDR.disconn()
 
 **描述**
 
-```js
+```php
 $DATETIME.time_prt(
         <'atom | cookie | iso8601 | rfc822 | rfc850 | rfc1036 | rfc1036 | rfc1123 | rfc7231 | rfc2822 | rfc3339 | rfc3339-ex | rss | w3c' $format = 'iso8601':
             - 'atom':       `Atom (example: 2005-08-15T15:52:01+00:00)`
@@ -2556,7 +2556,7 @@ $DATETIME.time_prt(
 
 **示例**
 
-```js
+```php
 $DATETIME.time_prt
     // string: '2020-06-24T11:27:05+08:00'
 
@@ -2588,13 +2588,13 @@ $DATETIME.time_prt('rfc822', null, 'Asia/Shanghai')
 
 **描述**
 
-```js
+```php
 $DATETIME.utctime object : `An object representing the current broken-down time in UTC.`
 ```
 
 获取当前日历时间的 UTC（协调世界时）分解时间（broken-down time），返回类型为对象。
 
-```js
+```php
 $DATETIME.utctime(
         <null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for the current calendar time.`>
 ) object
@@ -2604,7 +2604,7 @@ $DATETIME.utctime(
 
 上述方法返回的分解时间对象包含如下属性：
 
-```js
+```php
 {
    'usec':  <number: `The number of microseconds after the second, in the range 0 to 999,999.`>
    'sec':   <number: `The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.`>
@@ -2622,7 +2622,7 @@ $DATETIME.utctime(
 
 **示例**
 
-```js
+```php
 // 获取当前时间在当前时区的分解时间
 $DATETIME.utctime
     // object
@@ -2642,14 +2642,14 @@ $DATETIME.utctime($MATH.sub($SYS.time, 3600))
 
 **描述**
 
-```js
+```php
 $DATETIME.localtime object : `An object representing the current broken-down time in the current timezone.`
 ```
 
 获得当前时间在当前时区的分解时间（broken-down time），返回类型为对象。
 
 
-```js
+```php
 $DATETIME.localtime(
         [, <null | number | longint | ulongint | longdouble $seconds: `seconds since Epoch; @null for the current calendar time.`>
             [, <string $timezone>
@@ -2662,7 +2662,7 @@ $DATETIME.localtime(
 
 上述方法返回的分解时间对象包含如下属性：
 
-```js
+```php
 {
    'usec':  <number: `The number of microseconds after the second, in the range 0 to 999,999.`>
    'sec':   <number: `The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.`>
@@ -2680,7 +2680,7 @@ $DATETIME.localtime(
 
 **示例**
 
-```js
+```php
 // 获取当前时间在当前时区的分解时间
 $DATETIME.localtime
     // object
@@ -2699,7 +2699,7 @@ $DATETIME.localtime($MATH.sub($SYS.time, 3600), 'Asia/Shanghai')
 
 **描述**
 
-```js
+```php
 $DATETIME.mktime(
         <object $tm>
 ) longdouble : `seconds (including microseconds) since Epoch.`
@@ -2719,7 +2719,7 @@ $DATETIME.mktime(
 
 **描述**
 
-```js
+```php
 $DATETIME.fmttime(
         <string $format: `The format string`>
         [, <null | number | longint | ulongint | longdouble: `The calendar time (seconds since Epoch); @null for the current calendar time.`>
@@ -2741,7 +2741,7 @@ $DATETIME.fmttime(
 
 **示例**
 
-```js
+```php
 // 获得类似 `11:27` 的时间字符串
 $DATETIME.fmttime("It is %H:%M now")
     // string: 'It is 11:27 now'
@@ -2761,7 +2761,7 @@ $DATETIME.fmttime("现在是中国标准时间 %H:%M", null, 'Asia/Shanghai')
 
 **描述**
 
-```js
+```php
 $DATETIME.fmtbdtime(
         <string $format: `The format string`>,
         <null | object $bdtime: `The broken-down time object returned by utctime() or localtime(); @null for the current calendar time in current timzone.`
@@ -2772,7 +2772,7 @@ $DATETIME.fmtbdtime(
 
 **示例**
 
-```js
+```php
 // 获得类似 `08:55` 的时间字符串
 $DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MATH.sub($SYS.time, 3600), 'Asia/Shanghai'))
     // string: 'It is 08:55 now in Asia/Shanghai'
@@ -2792,7 +2792,7 @@ $DATETIME.fmtbdtime("It is %H:%M now in Asia/Shanghai", $DATETIME.localtime($MAT
 
 **描述**
 
-```js
+```php
 $DATA.type(
         [ <any $data> ]
 ) string
@@ -2806,7 +2806,7 @@ $DATA.type(
 
 **示例**
 
-```js
+```php
 $DATA.type
     // string: `undefined`
 
@@ -2820,7 +2820,7 @@ $DATA.type( 3.5 )
 
 **描述**
 
-```js
+```php
 $DATA.is_container(
         [ <any $data> ]
 ) string
@@ -2834,7 +2834,7 @@ $DATA.is_container(
 
 **示例**
 
-```js
+```php
 $DATA.is_container
     // boolean: false
 
@@ -2854,7 +2854,7 @@ $DATA.is_container( {} )
 
 **描述**
 
-```js
+```php
 $DATA.is_linear_container(
         [ <any $data> ]
 ) string
@@ -2868,7 +2868,7 @@ $DATA.is_linear_container(
 
 **示例**
 
-```js
+```php
 $DATA.is_linear_container
     // boolean: false
 
@@ -2885,7 +2885,7 @@ $DATA.is_linear_container( [!] )
 
 **描述**
 
-```js
+```php
 $DATA.memsize(
         [ <any $data> ]
 ) ulongint
@@ -2901,7 +2901,7 @@ $DATA.memsize(
 
 **示例**
 
-```js
+```php
 $DATA.memsize
     // ulongint: 32UL
 
@@ -2915,7 +2915,7 @@ $DATA.memsize( "HVML" )
 
 **描述**
 
-```js
+```php
 $DATA.count(
         [ <any $data> ]
 ) ulongint
@@ -2929,7 +2929,7 @@ $DATA.count(
 
 **示例**
 
-```js
+```php
 $DATA.count
     // ulongint: 0
 
@@ -2946,7 +2946,7 @@ $DATA.count( [ 1.0, 2.0 ] )
 
 **描述**
 
-```js
+```php
 $DATA.nr_children(
         [ <any $data> ]
 ) ulongint
@@ -2960,7 +2960,7 @@ $DATA.nr_children(
 
 **示例**
 
-```js
+```php
 $DATA.nr_children
     // ulongint: 0
 
@@ -2977,7 +2977,7 @@ $DATA.nr_children( [ 1.0, 2.0 ] )
 
 **描述**
 
-```js
+```php
 $DATA.numerify(
         [ <any $data> ]
 ) number
@@ -2991,7 +2991,7 @@ $DATA.numerify(
 
 **示例**
 
-```js
+```php
 $DATA.numerify( "1.0" )
     // number: 1.0
 
@@ -3005,7 +3005,7 @@ $DATA.numerify
 
 **描述**
 
-```js
+```php
 $DATA.booleanize(
         [ <any $data> ]
 ) boolean
@@ -3019,7 +3019,7 @@ $DATA.booleanize(
 
 **示例**
 
-```js
+```php
 $DATA.booleanize
     // boolean: false
 ```
@@ -3030,7 +3030,7 @@ $DATA.booleanize
 
 **描述**
 
-```js
+```php
 $DATA.stringify(
         <any $data>
 ) string
@@ -3047,7 +3047,7 @@ $DATA.stringify(
 
 **示例**
 
-```js
+```php
 $DATA.stringify
     // string: 'undefined'
 
@@ -3061,7 +3061,7 @@ $DATA.stringify(123)
 
 **描述**
 
-```js
+```php
 $DATA.serialize(
     < any $data >
     [, < '[ [real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape] | default' $options = `'default'`:
@@ -3099,7 +3099,7 @@ $DATA.serialize(
 
 **示例**
 
-```js
+```php
 $DATA.serialize
     // string: '"<undefined>"'
 
@@ -3122,7 +3122,7 @@ $DATA.serialize([1, 2], 'default', $STREAM.stdout)
 
 **描述**
 
-```js
+```php
 $DATA.sort(
         < array | set $data: `An array or set to sort.` >,
         < 'asc | desc' $method = 'asc': `Indicate sorting ascendingly or descendingly.` >
@@ -3147,7 +3147,7 @@ $DATA.sort(
 
 **示例**
 
-```js
+```php
 $DATA.sort([3, 4, 1, 0], 'asc')
     // array: [0, 1, 3, 4]
 ```
@@ -3158,7 +3158,7 @@ $DATA.sort([3, 4, 1, 0], 'asc')
 
 **描述**
 
-```js
+```php
 $DATA.shuffle(
         < array | set $data: `An array or set to shuffle.` >
 ) $data | false
@@ -3175,7 +3175,7 @@ $DATA.shuffle(
 
 **示例**
 
-```js
+```php
 $DATA.shuffle([1, 2, 3, 4, 5])
     // array: [4, 3, 2, 5, 1]
 ```
@@ -3186,7 +3186,7 @@ $DATA.shuffle([1, 2, 3, 4, 5])
 
 **描述**
 
-```js
+```php
 $DATA.compare(
         < any: `The first data.` >,
         < any: `The second data.` >
@@ -3215,7 +3215,7 @@ $DATA.compare(
 
 **示例**
 
-```js
+```php
 $DATA.compare(1, "1")
     // number: 0
 ```
@@ -3226,7 +3226,7 @@ $DATA.compare(1, "1")
 
 **描述**
 
-```js
+```php
 $DATA.parse(
         < string: $string: `The JSON/EJSON string to be parsed.` >
 ) any | undefined
@@ -3243,7 +3243,7 @@ $DATA.parse(
 
 **示例**
 
-```js
+```php
 #DATA.parse("false")
     // boolean: false
 
@@ -3257,7 +3257,7 @@ $DATA.parse(
 
 **描述**
 
-```js
+```php
 $DATA.isequal(
         < any: `The first data.` >,
         < any: `The second data.` >
@@ -3274,7 +3274,7 @@ $DATA.isequal(
 
 **示例**
 
-```js
+```php
 #DATA.isequal(false, 0)
     // boolean: false
 
@@ -3288,7 +3288,7 @@ $DATA.isequal(
 
 **描述**
 
-```js
+```php
 $DATA.fetchstr( < bsequece $bytes: `The byte squence to fetch string.` >,
         < 'utf8 | utf16 | utf32 | utf16le | utf32le | utf16be | utf32be' $encoding: `The encoding; see Binary Format Notation.` >
         [, < null | real $length = null: `The length to decode in bytes.` >
@@ -3321,7 +3321,7 @@ $DATA.fetchstr( < bsequece $bytes: `The byte squence to fetch string.` >,
 
 **示例**
 
-```js
+```php
 // UTF8: 北京上海
 $DATA.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8', 6, -6 )
     // string: "上海"
@@ -3335,7 +3335,7 @@ $DATA.fetchstr( bxE58C97E4BAACE4B88AE6B5B7, 'utf8:6' )
 
 该方法在给定的二进制序列的指定位置，按指定的实数类型（以及大小头顺序）提取实数，返回相应的实数类型。
 
-```js
+```php
 $DATA.fetchreal(
         < bsequece $bytes: `The byte sequence to fetcher a real number.` >,
         <'i8 | i16 | i32 | i64 | u8 | u16 | u32 | u64 | f16 | f32 | f64 | f96 | f128 ...' $binary_format: `The binary format and/or endianness; see Binary Format Notation`>
@@ -3358,7 +3358,7 @@ $DATA.fetchreal(
 
 **示例**
 
-```js
+```php
 $DATA.fetchreal( bx0a00, 'i16le', 0 )
     // longint: 10L
 
@@ -3372,7 +3372,7 @@ $DATA.fetchreal( bx0a00, 'i8:2', 0 )
 
 **描述**
 
-```js
+```php
 $DATA.crc32(
         < any $data: `The data.`>
         < 'CRC-32 | CRC-32/BZIP2 | CRC-32/MPEG-2 | CRC-32/POSIX | CRC-32/XFER | CRC-32/ISCSI | CRC-32C | CRC-32/BASE91-D | CRC-32D | CRC-32/JAMCRC | CRC-32/AIXM | CRC-32Q' $algo = 'CRC-32': `The name of CRC32 algorithm; use @null for default algorithm.`>
@@ -3395,7 +3395,7 @@ $DATA.crc32(
 
 **示例**
 
-```js
+```php
 $DATA.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
     // string: '7AD1CDE5'
 ```
@@ -3412,7 +3412,7 @@ $DATA.crc32('HVML', 'CRC-32/POSIX', 'uppercase')
 
 **描述**
 
-```js
+```php
 $DATA.md5(
         < any $data >
         < 'binary | uppercase | lowercase' $type = 'binary': `The type of return data:`
@@ -3437,7 +3437,7 @@ $DATA.md5(
 
 **描述**
 
-```js
+```php
 $DATA.sha1(
         < any $data >
         < 'binary | uppercase | lowercase' $type = 'binary': `The type of return data:`
@@ -3462,7 +3462,7 @@ $DATA.sha1(
 
 **描述**
 
-```js
+```php
 $DATA.pack(
         <string $format: `The format string; see Binary Format Notation.` >,
         <real | string | bsequence | array $first: `The first data.` >
@@ -3476,7 +3476,7 @@ $DATA.pack(
 
 该函数将传入的多个实数、实数数组、字符串或字节序列按照 `$format` 指定的二进制格式打包为字节序列。
 
-```js
+```php
 $DATA.pack(
         < string $format: `The format string; see Binary Format Notation.` >,
         < array $data >
@@ -3500,7 +3500,7 @@ $DATA.pack(
 
 **示例**
 
-```js
+```php
 $DATA.pack( "i16le i32le", 10, 10)
     // bsequence: bx0a000a000000
 
@@ -3521,7 +3521,7 @@ $DATA.pack( "i16le:2 i32le", [10, 15], 255)
 
 **描述**
 
-```js
+```php
 $DATA.unpack(
         <string $format: `The format string; see Binary Format Notation.` >,
         <bsequence $data: `The data.`>
@@ -3541,7 +3541,7 @@ $DATA.unpack(
 
 **示例**
 
-```js
+```php
 $DATA.unpack( "i16le i32le", bx0a000a000000)
     // array: [10L, 10L]
 
@@ -3559,7 +3559,7 @@ $DATA.unpack( "i16le", bx0a000a000000)
 
 **描述**
 
-```js
+```php
 $DATA.bin2hex(
         <string | bsequence $data>
         [, < 'lowercase | uppercase' $options = 'lowercase':
@@ -3581,7 +3581,7 @@ $DATA.bin2hex(
 
 **示例**
 
-```js
+```php
 $DATA.bin2hex( bb0000.1111.1111.0000, 'uppercase')
     // string: '0FF0'
 ```
@@ -3596,7 +3596,7 @@ $DATA.bin2hex( bb0000.1111.1111.0000, 'uppercase')
 
 **描述**
 
-```js
+```php
 $DATA.hex2bin(
         < string $data >
 ) bsequence
@@ -3614,7 +3614,7 @@ $DATA.hex2bin(
 
 **示例**
 
-```js
+```php
 $DATA.hex2bin( '0FF0' )
     // bsequence: bb0000.1111.1111.0000
 ```
@@ -3629,7 +3629,7 @@ $DATA.hex2bin( '0FF0' )
 
 **描述**
 
-```js
+```php
 $DATA.base64(
         < string | bsequence $data >
 ) string
@@ -3637,7 +3637,7 @@ $DATA.base64(
 
 该函数将给定的字符串或者二进制序列 `data` 按照 Base64 进行编码。
 
-```js
+```php
 $DATA.base64(!
         <string $data>,
 ) bsequence
@@ -3660,7 +3660,7 @@ $DATA.base64(!
 
 **示例**
 
-```js
+```php
 $DATA.base64( bx48564D4C )
     // string: 'SFZNTA=='
 
@@ -3683,7 +3683,7 @@ $DATA.base64(! 'SFZNTA==' )
 
 **描述**
 
-```js
+```php
 $DATA.arith(
         <' + | - | * | / | % | ^ ' $arithmetic_operation>,
         <any $data1>,
@@ -3703,7 +3703,7 @@ $DATA.arith(
 
 **示例**
 
-```js
+```php
 $DATA.arith( '+', 3, 2 )
     // longint: 5L
 ```
@@ -3714,7 +3714,7 @@ $DATA.arith( '+', 3, 2 )
 
 **描述**
 
-```js
+```php
 $DATA.bitwise(
         <' & | "|" | ~ | ^ | < | > ' $bitwise_operation>,
         <any $data1>
@@ -3734,7 +3734,7 @@ $DATA.bitwise(
 
 **示例**
 
-```js
+```php
 $DATA.bitwise( '|', 0, 15 )
     // ulongint: 15UL
 ```
@@ -3745,7 +3745,7 @@ $DATA.bitwise( '|', 0, 15 )
 
 **描述**
 
-```js
+```php
 $DATA.isdivisible(
         < any $dividend: `The number as dividend >,
         < any $divisor: `The number as divisor >
@@ -3764,7 +3764,7 @@ $DATA.isdivisible(
 
 **示例**
 
-```js
+```php
 #DATA.isdivisiable(6, 3)
     // boolean: true
 
@@ -3778,7 +3778,7 @@ $DATA.isdivisible(
 
 **描述**
 
-```js
+```php
 $DATA.match_members(
         <linctnr $haystack: `The linear container to search in.` >,
         <any | string $needle: `The variant to search for in the haystack.` >
@@ -3819,7 +3819,7 @@ $DATA.match_members(
 
 **示例**
 
-```js
+```php
 $DATA.match_members([1, 2, 3, 4, 3], 3)
     // [2, 4]
 
@@ -3851,7 +3851,7 @@ $DATA.match_members(['zh_CN', 'zh_TW', 'zh_HK', 'zh_MO'], '^zh', 'regexp values'
 
 **描述**
 
-```js
+```php
 $DATA.match_properties(
         <object $haystack: `The object to search in.` >,
         <string $needle: `The key to search for in the haystack.` >
@@ -3892,7 +3892,7 @@ $DATA.match_properties(
 
 **示例**
 
-```js
+```php
 $DATA.match_properties({ "a": 1, "b": 2, "c": 3}, "a")
     // ['a']
 
@@ -3912,7 +3912,7 @@ $DATA.match_properties({ "a": 1, "b": 2, "A": 3}, "a", 'caseless kv-pairs')
 
 **描述**
 
-```js
+```php
 $DATA.makebytesbuffer(
         < ulongint $size: `The size of the bufer in bytes. >
 ) bsequence | undefined
@@ -3930,7 +3930,7 @@ $DATA.makebytesbuffer(
 
 **示例**
 
-```js
+```php
 #DATA.makebytesbuffer(16)
     // bsequence
 ```
@@ -3941,7 +3941,7 @@ $DATA.makebytesbuffer(
 
 **描述**
 
-```js
+```php
 $DATA.append2bytesbuffer(
         < bsequence $buf: `The buffer.` >,
         < bsequence | string $bytes: `The bytes will be append to the buffer.` >
@@ -3971,7 +3971,7 @@ $DATA.append2bytesbuffer(
 
 **示例**
 
-```js
+```php
 $DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011223344)
     // 5UL
 ```
@@ -3982,7 +3982,7 @@ $DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011223344)
 
 **描述**
 
-```js
+```php
 $DATA.rollbytesbuffer(
         < bsequence $buf: `The buffer.` >,
         [, < longint $offset = 0: `The offset to copy the left bytes to the buffer head.`>
@@ -4004,7 +4004,7 @@ $DATA.rollbytesbuffer(
 
 **示例**
 
-```js
+```php
 $DATA.rollbytesbuffer($DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011223344))
     // 0L
 ```
@@ -4015,7 +4015,7 @@ $DATA.rollbytesbuffer($DATA.append2bytesbuffer($DATA.makebytesbuffer(16), bx0011
 
 **描述**
 
-```js
+```php
 $DATA.key(
         < any $data: `The data.` >
 ) ulongint
@@ -4029,7 +4029,7 @@ $DATA.key(
 
 **示例**
 
-```js
+```php
 $DATA.key
     // 453456UL
 $DATA.key('')
@@ -4048,7 +4048,7 @@ $DATA.key('')
 
 **描述**
 
-```js
+```php
 $L.not(<any>)
 ```
 
@@ -4060,7 +4060,7 @@ $L.not(<any>)
 
 **示例**
 
-```js
+```php
 $L.not
     // boolean: true
 
@@ -4074,7 +4074,7 @@ $L.not( false )
 
 **描述**
 
-```js
+```php
 $L.and(<any>, <any>[, <any>[, ...]])
 ```
 
@@ -4086,7 +4086,7 @@ $L.and(<any>, <any>[, <any>[, ...]])
 
 **示例**
 
-```js
+```php
 $L.and
     // boolean: false
 
@@ -4106,7 +4106,7 @@ $L.and( 1, 2, 3 )
 
 **描述**
 
-```js
+```php
 $L.or(<any>, <any>[, <any>[, ...]])
 ```
 
@@ -4118,7 +4118,7 @@ $L.or(<any>, <any>[, <any>[, ...]])
 
 **示例**
 
-```js
+```php
 $L.or
     // boolean: false
 
@@ -4135,7 +4135,7 @@ $L.or( false, true )
 
 **描述**
 
-```js
+```php
 $L.xor(<any>, <any>)
 ```
 
@@ -4147,7 +4147,7 @@ $L.xor(<any>, <any>)
 
 **示例**
 
-```js
+```php
 $L.xor
     // boolean: false
 
@@ -4164,7 +4164,7 @@ $L.xor( false, true )
 
 **描述**
 
-```js
+```php
 $L.eq(<any>, <any>)
 ```
 
@@ -4176,7 +4176,7 @@ $L.eq(<any>, <any>)
 
 **示例**
 
-```js
+```php
 $L.eq
     // boolean: true
 
@@ -4193,7 +4193,7 @@ $L.eq("1", 1)
 
 **描述**
 
-```js
+```php
 $L.ne(<any>, <any>)
 ```
 
@@ -4205,7 +4205,7 @@ $L.ne(<any>, <any>)
 
 **示例**
 
-```js
+```php
 $L.ne
     // boolean: false
 
@@ -4222,7 +4222,7 @@ $L.ne("1", 2)
 
 **描述**
 
-```js
+```php
 $L.gt(<any>, <any>)
 ```
 
@@ -4234,7 +4234,7 @@ $L.gt(<any>, <any>)
 
 **示例**
 
-```js
+```php
 $L.gt
     // boolean: false
 
@@ -4251,7 +4251,7 @@ $L.gt("2", 1)
 
 **描述**
 
-```js
+```php
 $L.ge(<any>, <any>)
 ```
 
@@ -4263,7 +4263,7 @@ $L.ge(<any>, <any>)
 
 **示例**
 
-```js
+```php
 $L.ge
     // boolean: true
 
@@ -4283,7 +4283,7 @@ $L.ge("2", 2)
 
 **描述**
 
-```js
+```php
 $L.lt(<any>, <any>)
 ```
 
@@ -4295,7 +4295,7 @@ $L.lt(<any>, <any>)
 
 **示例**
 
-```js
+```php
 $L.lt
     // boolean: false
 
@@ -4312,7 +4312,7 @@ $L.lt("2", 1)
 
 **描述**
 
-```js
+```php
 $L.le(<any>, <any>)
 ```
 
@@ -4324,7 +4324,7 @@ $L.le(<any>, <any>)
 
 **示例**
 
-```js
+```php
 $L.le
     // boolean: true
 
@@ -4344,7 +4344,7 @@ $L.le("1", 2)
 
 **描述**
 
-```js
+```php
 $L.streq("case | caseless | wildcard | regexp",
         <any>,
         <any>
@@ -4367,7 +4367,7 @@ $L.streq("case | caseless | wildcard | regexp",
 
 **示例**
 
-```js
+```php
 $L.streq("case", "zh_cn", "zh_CN")
     // boolean: false
 
@@ -4384,7 +4384,7 @@ $L.streq("regexp", "^zh", "zh_CN")
 
 **描述**
 
-```js
+```php
 $L.strne("case | caseless | wildcard | regexp",
         <any>,
         <any>
@@ -4407,7 +4407,7 @@ $L.strne("case | caseless | wildcard | regexp",
 
 **示例**
 
-```js
+```php
 $L.strne("case", "zh_cn", "zh_CN")
     // boolean: true
 
@@ -4424,7 +4424,7 @@ $L.strne("regexp", "^zh", "zh_CN")
 
 **描述**
 
-```js
+```php
 $L.strgt("case | caseless",
         <any>,
         <any>
@@ -4458,7 +4458,7 @@ $L.strgt("case", 'A', 'Z')
 
 **描述**
 
-```js
+```php
 $L.strge("case | caseless",
         <any>,
         <any>
@@ -4481,7 +4481,7 @@ $L.strge("case | caseless",
 
 **示例**
 
-```js
+```php
 $L.strge("case", 'A', 'A')
     // boolean: true
 ```
@@ -4493,7 +4493,7 @@ $L.strge("case", 'A', 'A')
 
 **描述**
 
-```js
+```php
 $L.strlt("case | caseless",
         <any>,
         <any>
@@ -4516,7 +4516,7 @@ $L.strlt("case | caseless",
 
 **示例**
 
-```js
+```php
 $L.strlt("case", 'A', 'Z')
     // boolean: true
 ```
@@ -4527,7 +4527,7 @@ $L.strlt("case", 'A', 'Z')
 
 **描述**
 
-```js
+```php
 $L.strle("case | caseless",
         <any>,
         <any>
@@ -4550,7 +4550,7 @@ $L.strle("case | caseless",
 
 **示例**
 
-```js
+```php
 $L.strle("case", 'A', 'Z')
     // boolean: true
 ```
@@ -4561,7 +4561,7 @@ $L.strle("case", 'A', 'Z')
 
 **描述**
 
-```js
+```php
 $L.eval(
         <string: `logical expression`>
         [, <object: `The parameter map`> ]
@@ -4572,7 +4572,7 @@ $L.eval(
 
 **示例**
 
-```js
+```php
 $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) })
     // boolean: true
 ```
@@ -4612,7 +4612,7 @@ $L.eval("x > y && y > z || b", { x: 2, y: 1, z: 0, b: $L.streq("case", $a, $b) }
 
 **描述**
 
-```js
+```php
 $T.get(
         <string $text: `The original text.` >
 ) string : `The translated text.`
@@ -4627,7 +4627,7 @@ $T.get(
 
 **示例**
 
-```js
+```php
 $T.get('Hello, world!')
     // string: '世界，您好！'
 ```
@@ -4648,7 +4648,7 @@ $T.get('Hello, world!')
 
 **描述**
 
-```js
+```php
 $STR.contains(
         <string $haystack: `The string to search in.` >,
         <string $needle: `The substring to search for in the haystack.` >
@@ -4681,7 +4681,7 @@ $STR.contains(
 
 **示例**
 
-```js
+```php
 $STR.contains('Hello, world!', 'world')
     // boolean: true
 
@@ -4699,7 +4699,7 @@ $STR.contains('Hello, world!', '')
 
 **描述**
 
-```js
+```php
 $STR.starts_with(
         <string $haystack: `The string to search in.`>,
         <string $needle: `The substring to search for in the haystack.`>
@@ -4732,7 +4732,7 @@ $STR.starts_with(
 
 **示例**
 
-```js
+```php
 $STR.starts_with('Hello, world', 'hello', true)
     // boolean: true
 
@@ -4748,7 +4748,7 @@ $STR.starts_with('Hello, world', '')
 
 用于判断一个字符串是否以给定的字符串结尾。
 
-```js
+```php
 $STR.ends_with(
         <string $haystack: `The string to search in.`>,
         <string $needle: `The substring to search for in the haystack.`>
@@ -4779,7 +4779,7 @@ $STR.ends_with(
 
 **示例**
 
-```js
+```php
 $STR.ends_with('Hello, world', 'World', true)
     // boolean: true
 
@@ -4797,7 +4797,7 @@ $STR.ends_with('Hello, world', '')
 
 **描述**
 
-```js
+```php
 $STR.explode(
         <string $string: `The input string to explode.`>
         [, <string $separator = '': `The boundary string.`>
@@ -4832,7 +4832,7 @@ $STR.explode(
 
 **示例**
 
-```js
+```php
 $STR.explode('beijing:shanghai:guangzhou', ':')
     // array: ['beijing', 'shanghai', 'guangzhou']
 
@@ -4859,7 +4859,7 @@ $STR.explode(';aaa;;bbb;', ';')
 
 **描述**
 
-```js
+```php
 $STR.implode(
         <array $pieces: `The array to implode.`>
         [, <string $separator = '': `The boundary string.`>]
@@ -4886,7 +4886,7 @@ $STR.implode(
 
 **示例**
 
-```js
+```php
 $STR.implode(['beijing', 'shanghai', 'guangzhou'], ', ')
     // string: 'beijing, shanghai, guangzhou'
 
@@ -4910,7 +4910,7 @@ $STR.implode(['汉', '字'])
 
 **描述**
 
-```js
+```php
 $STR.shuffle(
         <string $string: `The input string to shuffle.`>
 ) string
@@ -4934,7 +4934,7 @@ $STR.shuffle(
 
 **示例**
 
-```js
+```php
 $STR.shuffle('beijing') // string: 'jbienig'
 ```
 
@@ -4948,7 +4948,7 @@ $STR.shuffle('beijing') // string: 'jbienig'
 
 **描述**
 
-```js
+```php
 $STR.replace(
         <string | array $subject: `The subject to operate.`>
         <string | array $search: `The substring to search.`>,
@@ -4988,7 +4988,7 @@ $STR.replace(
 
 **示例**
 
-```js
+```php
 $STR.replace("%BODY%", "black", "<body text=%BODY%>");
     // string: '<body text=black>'
 
@@ -5007,7 +5007,7 @@ $STR.replace("%body%", "black", "<body text=%BODY%>", true);
 
 **描述**
 
-```js
+```php
 $STR.printf(
         [ < native/stream $output: `The output stream` >, ]
         < string $format: `C format string.` >
@@ -5019,7 +5019,7 @@ $STR.printf(
 
 该方法使用包含有 C 语言转换指示符的格式化字符串格式化传入的单个或者多个数据，并将结果写入可通过第一个参数指定的输出流。若未指定输出流，则返回格式化的字符串；若指定输出流，则返回写入流的字节数。
 
-```js
+```php
 $STR.printf(
     [ < native/stream $output: `The output stream` >, ]
     < string $format: `C format string.` >,
@@ -5036,7 +5036,7 @@ $STR.printf(
 
 **示例**
 
-```js
+```php
 $STR.printf('Tom is %d years old, while Jerry is %d years old.', 9, 7)
     // string: 'Tom is 9 years old, while Jerry is 7 years old.'
 
@@ -5057,7 +5057,7 @@ $STR.printf($STREAM.stdout, 'Tom is 0x%02A years old, while Jerry is 0x%02X year
 
 **描述**
 
-```js
+```php
 $STR.scanf(
         < string | bsequence | stream $input: `The input data: a string, a byte sequence, or a readable stream.` >,
         < string $format: `The format string.` >
@@ -5081,7 +5081,7 @@ $STR.scanf(
 
 **示例**
 
-```js
+```php
 $STR.scanf('Tom is 9 years old, while Jerry is 7 years old.',
         'Tom is %d years old, while Jerry is %d years old.')
     // array: [9L, 7L]
@@ -5098,7 +5098,7 @@ $STR.scanf($STREAM.stdin, 'Tom is 0x%02A years old, while Jerry is 0x%02X years 
 
 使用占位符格式化任意数据，按照 eJSON 格式序列化各项数据。
 
-```js
+```php
 $STR.printp(
         [ < native/stream $output: `The optional output stream` >, ]
         < string $format: `The format string contains placeholders.` >,
@@ -5121,7 +5121,7 @@ $STR.printp(
 
 **示例**
 
-```js
+```php
 $STR.printp('There are two boys: [0] and [1]', ['Tom', 'Jerry'])
     // string: 'There are two boys: "Tom" and "Jerry"'
 
@@ -5145,7 +5145,7 @@ $STR.printp($STREAM.stdout, '#0', ['Tom', 'Jerry'])
 
 扫描指定的字符串，使用 eJSON 格式解析格式化字符串标记出的占位部分并返回对应的数据。
 
-```js
+```php
 $STR.scanp(
         < string | bsequence | native/stream $input: `The input data: a string, a byte sequence, or a readable stream.` >,
         < string $format: `The string contains placeholders.` >,
@@ -5164,7 +5164,7 @@ $STR.scanp(
 
 **示例**
 
-```js
+```php
 $STR.scanp('There are two boys: "Tom Bean" and "Jerry Right"',
         'There are two boys: [0] and [1]')
     // array: ['Tom Bean', 'Jerry Right']
@@ -5189,7 +5189,7 @@ $STR.scanp($STREAM.stdin, 'My name is #?')
 
 **描述**
 
-```js
+```php
 $STR.join(
         <any $data1: `The first data to join.`>,
         <any $data2: `The second data to join.`>
@@ -5216,7 +5216,7 @@ $STR.join(
 
 **示例**
 
-```js
+```php
 $STR.join('hello', ' ', 'world')
     // string: 'hello world'
 
@@ -5230,7 +5230,7 @@ $STR.join(1, ', ', 2, ', ', 3)
 
 **描述**
 
-```js
+```php
 $STR.nr_bytes(
         <string | bsequence $data: `The string or byte sequence to count.`>
         [,
@@ -5248,7 +5248,7 @@ $STR.nr_bytes(
 
 **示例**
 
-```js
+```php
 $STR.nr_bytes( "" )
     // ulongint: 1
 
@@ -5268,7 +5268,7 @@ $STR.nr_bytes( "HVML", false )
 
 **描述**
 
-```js
+```php
 $STR.nr_chars(
         <string $string: `The string to count.`>
 ) ulongint | false
@@ -5292,7 +5292,7 @@ $STR.nr_chars(
 
 **示例**
 
-```js
+```php
 // 获得字符串 `中国` 的长度
 $STR.nr_chars('中国')
     // ulongint: 2
@@ -5306,7 +5306,7 @@ $STR.nr_chars('中国')
 
 **描述**
 
-```js
+```php
 $STR.tolower(
         <string $string: `The input string.`>
 ) string
@@ -5325,7 +5325,7 @@ $STR.tolower(
 
 **示例**
 
-```js
+```php
 $STR.tolower('Hello, world')
     // string: 'hello, world'
 ```
@@ -5340,7 +5340,7 @@ $STR.tolower('Hello, world')
 
 **描述**
 
-```js
+```php
 $STR.toupper(
         <string $string: `The input string.`>
 ) string
@@ -5359,7 +5359,7 @@ $STR.toupper(
 
 **示例**
 
-```js
+```php
 $STR.toupper('Hello, world')
     // string: 'HELLO, WORLD'
 ```
@@ -5374,7 +5374,7 @@ $STR.toupper('Hello, world')
 
 **描述**
 
-```js
+```php
 $STR.substr(
         <string $string: `The input string.`>,
         <real $offset: `The offset of the desired substring in the input string.`>
@@ -5404,7 +5404,7 @@ $STR.substr(
 
 **示例**
 
-```js
+```php
 // 返回字符串 `abcdef` 从第 `0` 个字符开始，最多包含 `10` 个字符的子字符串
 $STR.substr('abcdef', 0, 10)
     // string: 'abcdef'
@@ -5432,7 +5432,7 @@ $STR.substr('abcdef', -3, -1)
 
 **描述**
 
-```js
+```php
 $STR.substr_compare(
     <string $haystack>,
     <string $needle>,
@@ -5462,7 +5462,7 @@ $STR.substr_compare(
 
 **示例**
 
-```js
+```php
 // 比较两个字符串的子串
 $STR.substr_compare('abc', 'def', 0)
     // number: -3
@@ -5486,7 +5486,7 @@ $STR.substr_compare('abcdef', 'BCD', 1, 2, true)
 
 **描述**
 
-```js
+```php
 $STR.substr_count(
     <string $haystack: `The input string.`>,
     <string $needle: `The substring to search.`>
@@ -5509,7 +5509,7 @@ $STR.substr_count(
 
 **示例**
 
-```js
+```php
 // 计算子字符串 "abc" 在字符串 "abcdefabc" 中出现的次数
 $STR.substr_count('abcdefabc', 'abc')
     // ulongint: 2
@@ -5532,7 +5532,7 @@ $STR.substr_count('abcdefabc', 'abc', 3, 3)
 
 **描述**
 
-```js
+```php
 $STR.substr_replace(
     < array | string $string: `The input string or the array which is consist of input strings.` >,
     < array | string $replace: `The replacement string.` >,
@@ -5556,7 +5556,7 @@ $STR.substr_replace(
 
 **示例**
 
-```js
+```php
 $STR.substr_replace('', '', 0)
     // ''
 
@@ -5619,7 +5619,7 @@ $STR.substr_replace('中华人民共和国', '伟大的', -3, 2)
 
 **描述**
 
-```js
+```php
 $STR.strstr(
         <string $haystack: `The string in which to find the substring $needle.`>,
         <string $needle: `The substring to find in $haystack.`>
@@ -5649,7 +5649,7 @@ $STR.strstr(
 
 **示例**
 
-```js
+```php
 // 查找字符串 "Hello, world!" 中 "world" 第一次出现的位置
 $STR.strstr('Hello, world!', 'world')
     // string: 'world!'
@@ -5669,7 +5669,7 @@ $STR.strstr('Hello, world!', 'world', true)
 
 **描述**
 
-```js
+```php
 $STR.strpos(
         <string $haystack: `The string in which to find the substring $needle.`>,
         <string $needle: `The substring to find in $haystack.`>
@@ -5696,7 +5696,7 @@ $STR.strpos(
 
 **示例**
 
-```js
+```php
 // 在字符串 "Hello, World!" 中查找子字符串 "World" 的位置
 $STR.strpos("Hello, World!", "World")
     // ulongint: 7UL
@@ -5728,7 +5728,7 @@ $STR.strpos("Hello, World!", "World", -1, true)
 
 **描述**
 
-```js
+```php
 $STR.strpbrk(
         <string $string: `The string.`>,
         <string $characters: `The characters to search in the string.`>
@@ -5755,7 +5755,7 @@ $STR.strpbrk(
 
 **示例**
 
-```js
+```php
 $STR.strpbrk('Hello, world!', 'o')
     // string: 'o, world!'
 $STR.strpbrk('Hello, world!', 'O', true)
@@ -5780,7 +5780,7 @@ $STR.strpbrk('ａｂｃ', 'Ａ', true)
 
 **描述**
 
-```js
+```php
 $STR.split(
         <string $string: `The original string to split.`>
         [, <real $length = 1: `The length of one substring.`> ]
@@ -5798,7 +5798,7 @@ $STR.split(
 
 **示例**
 
-```js
+```php
 $STR.split('abcdefghijklmnopqrstuvwxyz', 3)
     // array: [ 'abc', 'def', 'ghi', 'jkl', 'mno', 'pqr', 'stu', 'vwx', 'yz' ]
 ```
@@ -5812,7 +5812,7 @@ $STR.split('abcdefghijklmnopqrstuvwxyz', 3)
 
 **描述**
 
-```js
+```php
 $STR.chunk_split(
         <string $string: `The original string to split.`>
         [, <real $length = 76: `The length of a chunk.`>
@@ -5833,7 +5833,7 @@ $STR.chunk_split(
 
 **示例**
 
-```js
+```php
 $STR.chunk_split('abcdefghijklmnopqrstuvwxyz', 5)
     // string: 'abcde\r\nfghij\r\nklmno\r\npqrst\r\nuvwxy\r\nz'
 $STR.chunk_split('abcdefghijklmnopqrstuvwxyz', 5, ' ')
@@ -5850,7 +5850,7 @@ $STR.chunk_split('abcdefghijklmnopqrstuvwxyz', 5, ' ')
 
 **描述**
 
-```js
+```php
 $STR.trim(
         <string $string: `The orignal string to trim.`>
         [, < 'left | right | both' $position  = 'both': `The trimming position.`>
@@ -5869,7 +5869,7 @@ $STR.trim(
 
 **示例**
 
-```js
+```php
 $STR.trim('   Hello World!  ')
     // string: 'Hello World!'
 $STR.trim('---HVML***', '-*')
@@ -5888,7 +5888,7 @@ $STR.trim('---HVML***', '-*')
 
 **描述**
 
-```js
+```php
 $STR.pad(
     <string $string: `The original string.`>,
     <real $length: `The length of the new string after padded.`>,
@@ -5911,7 +5911,7 @@ $STR.pad(
 
 **示例**
 
-```js
+```php
 $STR.pad('HVML', 8)
     // string: 'HVML    '
 $STR.pad('42', 5, '0', 'left')
@@ -5930,7 +5930,7 @@ $STR.pad('目录', 10, '─', 'both')
 
 **描述**
 
-```js
+```php
 $STR.repeat(
         <string $string: `The string to repeat.`>,
         <real $times: `The number of times to repeat the string.`>
@@ -5949,7 +5949,7 @@ $STR.repeat(
 
 **示例**
 
-```js
+```php
 $STR.repeat('HVML', 3)
     // string: 'HVMLHVMLHVML'
 $STR.repeat('HVML', 0)
@@ -5970,7 +5970,7 @@ $STR.repeat('HVML', 2.5)
 
 **描述**
 
-```js
+```php
 $STR.reverse(
         <string $string: `The string to reverse.`>
 ) string | false
@@ -5987,7 +5987,7 @@ $STR.reverse(
 
 **示例**
 
-```js
+```php
 $STR.reverse('HVML')
     // string: 'LMVH'
 $STR.reverse('你好世界')
@@ -6006,7 +6006,7 @@ $STR.reverse('A-B-C')
 
 **描述**
 
-```js
+```php
 $STR.tokenize(
     <string $string: `The string to break.`>
     [,
@@ -6027,7 +6027,7 @@ $STR.tokenize(
 
 **示例**
 
-```js
+```php
 $STR.tokenize('Hello, HVML!', ', ')
     // array: [ 'Hello', 'HVML!' ]
 $STR.tokenize('apple,banana,orange', ',')
@@ -6044,7 +6044,7 @@ $STR.tokenize('apple,banana,orange', ',')
 
 **描述**
 
-```js
+```php
 $STR.translate(
     <string $string: `The string being translated.`>,
     <string $from: `The characters being translated to.`>,
@@ -6071,7 +6071,7 @@ $STR.translate(
 
 **示例**
 
-```js
+```php
 $STR.translate('abcd', 'abc', 'xyz')
     // string: 'xyzd'
 
@@ -6095,7 +6095,7 @@ $STR.translate('hi all, I said hello', { "h": "-", "hello": "hi", "hi": "hello"}
 
 该属性的获取器将转换给定字符串中的字符为 HTML 实体：
 
-```js
+```php
 $STR.htmlentities(
     <string $string: `The input string.`>
     [,
@@ -6115,7 +6115,7 @@ $STR.htmlentities(
 
 该属性的设置器将转换给定字符串中的 HTML 实体为对应的 Unicode 字符：
 
-```js
+```php
 $STR.htmlentities(!
     <string $string: `The input string.`>
     [,
@@ -6158,7 +6158,7 @@ $STR.htmlentities(!
 
 **描述**
 
-```js
+```php
 $STR.rot13(
         <string $string: `The string to convert.`>
 ) string | false
@@ -6174,7 +6174,7 @@ $STR.rot13(
 
 **示例**
 
-```js
+```php
 $STR.rot13('Hello, HVML!')
     // string: 'Uryyb, JBEYQ!'
 $STR.rot13('Uryyb, JBEYQ!')
@@ -6190,7 +6190,7 @@ $STR.rot13('Uryyb, JBEYQ!')
 
 **描述**
 
-```js
+```php
 $STR.count_chars(
         < string $string: `The examined string.` >
         [,
@@ -6217,7 +6217,7 @@ $STR.count_chars(
 
 **示例**
 
-```js
+```php
 $STR.count_chars('中国中国', 'object')
     // object: {'中': 2UL, '国': 2UL}
 
@@ -6241,7 +6241,7 @@ $STR.count_chars('A中B国A中B国', 'string')
 
 **描述**
 
-```js
+```php
 $STR.count_bytes(
         < string | bsequence $data: `The examined data.` >
         [, < 'tuple-all | object-all | object-appeared | object-not-appeared | bytes-appeared | bytes-not-appeared' $mode = 'tuple-all':
@@ -6276,7 +6276,7 @@ $STR.count_bytes(
 
 **示例**
 
-```js
+```php
 $STR.count_bytes('')
     // tuple: [!1UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL,0UL]
 
@@ -6300,24 +6300,36 @@ $STR.count_bytes(bx2302, 'bytes-appeared')
 
 - PHP `count_chars()` 函数：<https://www.php.net/manual/en/function.count-chars.php>
 
-#### 3.10.36) `codepoints` 方法
+#### 3.10.36) `codepoints` 属性
 
-将字符串中的字符转换为 Unicode 码点（codepoint）构成的数组或元组。
+该属性的获取器和设置器可用于 UTF-8 字符串和 Unicode 码点之间的互相转换。
 
 **描述**
 
-```js
+该属性的获取器将字符串中的字符转换为 Unicode 码点（codepoint）构成的数组或元组。
+
+```php
 $STR.codepoints(
-        < string $the_string: `The string to convert.` >
-        [, < 'array | tuple' $return_type = 'array':
-            - 'array': `Return an array of codepoints.`
-            - 'tuple': `Return a tuple of codepoints.`
-            >
-        ]
+    < string $the_string: `The string to convert.` >
+    [, < 'array | tuple' $return_type = 'array':
+        - 'array': `Return an array of codepoints.`
+        - 'tuple': `Return a tuple of codepoints.`
+        >
+    ]
 ) array | tuple: `The array or tuple contains all Unicode codepoints of the string.`
 ```
 
-该方法将给定的字符串中的各个字符转换为 Unicode 码点（codepoint），并返回由各码点构成的数组或者元组。码点值的类型为 `number`。
+该获取器将给定的字符串中的各个字符转换为 Unicode 码点（codepoint），并返回由各码点构成的数组或者元组。码点值的类型为 `number`。
+
+该属性的设置器将线性容器中的 Unicode 码点（codepoint）转换为 UTF-8 编码并串接为一个字符串。
+
+```php
+$STR.codepoints(!
+    < 'array | tuple' $codepoints: `The linear container consist of codepoints of Unicode characters.` >
+) string | false: `The array or tuple contains all Unicode codepoints of the string.`
+```
+
+该设置器将 `$codepoints` 中的码点转换为 UTF-8 编码并按顺序串接为一个字符串。
 
 **异常**
 
@@ -6326,15 +6338,19 @@ $STR.codepoints(
 - `MemoryFailure`：内存分配失败；不可忽略异常。
 - `ArgumentMissed`：未指定必要参数；可忽略异常，静默求值时返回空数组。
 - `WrongDataType`：传入了不正确的数据类型；可忽略异常，静默求值时返回空数组。
+- `InvalidValue`：非法的 Unicode 码点值；可忽略异常，静默求值时将停止转换并返回已经转换的字符串。
 
 **示例**
 
-```js
+```php
 $STR.codepoints('HVML的昵称是呼噜猫')
     // array: [ 72, 86, 77, 76, 30340, 26165, 31216, 26159, 21628, 22108, 29483 ]
 
 $STR.codepoints('HVML的昵称是呼噜猫', 'tuple')
     // tuple: [! 72, 86, 77, 76, 30340, 26165, 31216, 26159, 21628, 22108, 29483 ]
+
+$STR.codepoints(! [ 72, 86, 77, 76 ])
+    // 'HVML'
 ```
 
 ### 3.11) `URL`
@@ -6345,7 +6361,7 @@ $STR.codepoints('HVML的昵称是呼噜猫', 'tuple')
 
 **描述**
 
-```js
+```php
 $URL.encode(
         <string |bsequence $data: `The string or the byte sequence to be encoded.` >
         [, <'rfc1738 | rfc3986' $enc_type = 'rfc1738':
@@ -6371,7 +6387,7 @@ URL 编码以字节为单位字节处理字符串或者字节序列中的字符�
 
 **示例**
 
-```js
+```php
 $URL.encode('HVML: 全球首款可编程标记语言!')
     // string: 'HVML%3A+%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21'
 
@@ -6393,7 +6409,7 @@ $URL.encode('HVML: 全球首款可编程标记语言!', 'rfc3986')
 
 **描述**
 
-```js
+```php
 $URL.decode(
         <string $str: `The string to be decoded.` >
         [, < 'binary | string' $type = 'string': `The type of return data:`
@@ -6422,7 +6438,7 @@ URL 编码以字节为单位字节处理字符串或者字节序列中的字符�
 
 **示例**
 
-```js
+```php
 $URL.decode('HVML%3A+%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21')
     // string: 'HVML: 全球首款可编程标记语言!'
 
@@ -6444,7 +6460,7 @@ $URL.decode('HVML%3A%20%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7
 
 **描述**
 
-```js
+```php
 $URL.build_query(
     < object | array $query_data >
     [, < string $numeric_prefix = '': `The numeric prefix for the argument names if $query_data is an array.` >
@@ -6480,7 +6496,7 @@ $URL.build_query(
 
 **示例**
 
-```js
+```php
 $URL.build_query( {'foo': 'bar', 'text': 'HVML 是全球首款可编程标记语言！'} )
     // string: 'foo=bar&text=HVML%E6%98%AF%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21'
 $URL.build_query( ['foo', 'bar'])
@@ -6505,7 +6521,7 @@ $URL.build_query( ['foo bar', 'baz'], 'arg', 'rfc3986', '^' )
 
 **描述**
 
-```js
+```php
 $URL.parse_query(
     < string $query_string >
     [, <'[array | object] || [string | binary | auto] || [rfc1738 | rfc3986]' $opts = 'object auto rfc1738':
@@ -6531,7 +6547,7 @@ $URL.parse_query(
 
 **示例**
 
-```js
+```php
 $URL.parse_query('foo=bar&text=HVML%E6%98%AF%E5%85%A8%E7%90%83%E9%A6%96%E6%AC%BE%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%A0%87%E8%AE%B0%E8%AF%AD%E8%A8%80%21')
 // object: {'foo': 'bar', 'text': 'HVML 是全球首款可编程标记语言！'}
 $URL.parse_query('')
@@ -6557,7 +6573,7 @@ $URL.parse_query('foo=bar&foo=baz', 'rfc1738 array', '&')
 
 **描述**
 
-```js
+```php
 $URL.parse(
     < string $url: `The URL to parse.` >,
     [,
@@ -6593,7 +6609,7 @@ $URL.parse(
 
 **示例**
 
-```js
+```php
 $URL.parse('https://www.hvml.org/zh/')
     // object: {'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/'}
 $URL.parse('https://www.hvml.org/zh/', 'scheme')
@@ -6622,7 +6638,7 @@ $URL.parse('https://xn--0zwm56d.xn--5tzm5g.xn--fiqs8s/%E8%B7%AF%E5%BE%84?%E5%85%
 
 **描述**
 
-```js
+```php
 $URL.assembly(
     < object $broken_down_url: `The broken-down URL object.` >
 ) string | false
@@ -6634,7 +6650,7 @@ $URL.assembly(
 
 - `$broken_down_url`：分解 URL 对象，可包含如下键值对：
 
-```js
+```php
 {
     'scheme':       < string: `The URL scheme.` >,
     'hostname':     < string: `The host name.` >,
@@ -6658,7 +6674,7 @@ $URL.assembly(
 
 **示例**
 
-```js
+```php
 $URL.assembly({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/'})
     // string: 'https://www.hvml.org/zh/'
 $URL.assembly({'scheme': 'https', 'hostname': 'www.hvml.org', 'path': '/zh/', 'query': 'foo=bar'})
@@ -6706,6 +6722,8 @@ $URL.assembly({ "scheme": "http", "hostname": "测试.网站.中国", "path": "/
 - `readstruct` 和 `writestruct` 方法：读写二进制数据结构。
 - `readlines` 和 `writelines` 方法：读写文本行。
 - `seek` 方法：在可定位流中重新定位流的读写位置。
+- `getuc` 和 `putuc` 方法：读写一个 Unicode 字符。
+- `ungetuc` 方法：将指定的 Unicode 字符或字节放回流，放回的字符将通过流上的后续读取返回（按相反顺序）。
 - `stream:readable` 事件：有可读数据。
 - `stream:writable` 事件：可写入数据。
 - `stream:hangup` 事件：被挂起；通常针对管道和套接字，表明连接的对端已断开。
@@ -6741,7 +6759,7 @@ $URL.assembly({ "scheme": "http", "hostname": "测试.网站.中国", "path": "/
 
 **描述**
 
-```js
+```php
 $STREAM.from(
         < longint $fd: `The file descriptor.` >
         [, <'[append || nonblock || cloexec] | keep' $flags = 'keep':
@@ -6785,7 +6803,7 @@ $STREAM.from(
 
 **示例**
 
-```js
+```php
 $STREAM.from(5, 'keep', 'websocket', ...)
 ```
 
@@ -6795,7 +6813,7 @@ $STREAM.from(5, 'keep', 'websocket', ...)
 
 **描述**
 
-```js
+```php
 $STREAM.open(
         < string $uri: `The URI of the stream.` >
         [, <'[read || write || append || create || truncate || nonblock || cloexec || nameless] | default' $opt = 'default':
@@ -6868,7 +6886,7 @@ $STREAM.open(
 
 **示例**
 
-```js
+```php
 $STREAM.open("file://abc.md", "read write")
 ```
 
@@ -6878,7 +6896,7 @@ $STREAM.open("file://abc.md", "read write")
 
 **描述**
 
-```js
+```php
 $STREAM.close(
         < native/stream $stream: `The stream entity to close.` >
 ) boolean
@@ -6896,7 +6914,7 @@ $STREAM.close(
 
 **示例**
 
-```js
+```php
 // 创建并清空
 $STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
 ```
@@ -6911,7 +6929,7 @@ $STREAM.close($STREAM.open("file://abc.md", "read write create truncate"))
 
 **示例**
 
-```js
+```php
 // 将内核名称（如 `Linux`）输出到标准输出。
 $STREAM.stdout.writelines($SYS.uname_prt('kernel-name'))
 ```
@@ -6928,11 +6946,11 @@ $STREAM.stdout.writelines($SYS.uname_prt('kernel-name'))
 
 **描述**
 
-```js
+```php
 $STREAM.listener ulongint | null: `The corouting identifier of the current listener`.
 ```
 
-```js
+```php
 $STREAM.listener(!
         <ulongint $cid: `The new listener of the stream entity`.>
 ) ulongint | null | false: `The old listener of the current listener`.
@@ -6944,7 +6962,7 @@ $STREAM.listener(!
 
 从流中读取一个二进制结构，并转换为适当的数据。
 
-```js
+```php
 $stream.readstruct(
         < string $format: `The format of the struct`>
 ) array | real | string | bsequence | null
@@ -6975,7 +6993,7 @@ bx0a000a000000
 
 读取一个结构：
 
-```js
+```php
 $stream.readstruct('i16le i32le')
     // array: [10, 10]
 ```
@@ -6984,7 +7002,7 @@ $stream.readstruct('i16le i32le')
 
 将多个数据按照指定的结构格式写入流。
 
-```js
+```php
 $stream.writestruct(
         <string $format: `The format string; see Binary Format Notation.` >,
         <real | string | bsequence | array $first: `The first data.` >
@@ -6998,7 +7016,7 @@ $stream.writestruct(
 
 该方法将传入的多个实数、实数数组、字符串或字节序列按照 `$format` 指定的二进制格式写入流实体（`$stream`）。
 
-```js
+```php
 $stream.writestruct(
         < string $format: `The format string; see Binary Format Notation.` >,
         < array $data >
@@ -7023,7 +7041,7 @@ $stream.writestruct(
 
 **示例**
 
-```js
+```php
 $stream.writestruct("i16le i32le", 10, 10)
 // 写入文件(16进制)：0x0a 0x00 0x0a 0x00 0x00 0x00
 
@@ -7040,7 +7058,7 @@ $stream.writestruct("i16le:2 i32le", [10, 15], 255)
 
 **描述**
 
-```js
+```php
 $stream.readlines(
         < real $lines: `The number of lines to read; 0 means reading all lines available.`>
         [,
@@ -7074,7 +7092,7 @@ Second line
 
 读取 10 行：
 
-```js
+```php
 $stream.readlines(10)
     // array: ["This is the string to write", "Second line"]
 ```
@@ -7085,7 +7103,7 @@ $stream.readlines(10)
 
 **描述**
 
-```js
+```php
 $stream.writelines(
         < string | array $lines: `The data to be written.`>
         [,
@@ -7110,7 +7128,7 @@ $stream.writelines(
 
 **示例**
 
-```js
+```php
 $STREAM.stdout.writelines("This is the string to write")
     // 将在 STDOUT 上输出：
     // This is the string to write
@@ -7127,7 +7145,7 @@ $STREAM.stdout.writelines(["This is the string to write", "Second line"])
 
 **描述**
 
-```js
+```php
 $stream.readbytes(
         < real $length: `The length to read in bytes`>
 ) bsequence | null
@@ -7157,7 +7175,7 @@ write string
 
 读取 10 个字节：
 
-```js
+```php
 $STREAM.stdin.readbytes(10)
     // bsequence: bx77726974652073747269
 ```
@@ -7168,7 +7186,7 @@ $STREAM.stdin.readbytes(10)
 
 **描述**
 
-```js
+```php
 $stream.readbytes2bufer(
         < bsequence $buffer: `The byte seqence as a buffer.`>
         [,
@@ -7197,7 +7215,7 @@ $stream.readbytes2bufer(
 
 **描述**
 
-```js
+```php
 $stream.writebytes(
         < 'string | bsequence' $data: `The data to be written.`>
 ) longint | false
@@ -7218,7 +7236,7 @@ $stream.writebytes(
 
 **示例**
 
-```js
+```php
 // 写入字节序列
 $STREAM.stdout.writebytes(bx48564d4c3A202d5f2e)
     // ulongint: 9L
@@ -7236,7 +7254,7 @@ $STREAM.stdout.writebytes("write string")
 
 **描述**
 
-```js
+```php
 $stream.seek(
         < number $offset: `The offset to be set`>,
         [, <'set | current | end | default' $whence = 'default':
@@ -7266,10 +7284,129 @@ $stream.seek(
 
 **示例**
 
-```js
+```php
 // 示例：定位到第10个字节的位置
 $stream.seek(10, 'set')
     // ulongint: 10L
+```
+
+##### 3.12.8.10) `getuc` 方法
+
+从流中读取一个 Unicode 字符。
+
+**描述**
+
+```php
+$stream.getuc(
+    [
+        < 'utf8 | utf16le | utf16be | utf32le | utf32be' $encoding = 'utf8':
+            - 'utf8':     `The character is encoded in UTF-8.`
+            - 'utf16le':  `The character is encoded in UTF-16 little endian.`
+            - 'utf16be':  `The character is encoded in UTF-16 big endian.`
+            - 'utf32le':  `The character is encoded in UTF-32 little endian.`
+            - 'utf32be':  `The character is encoded in UTF-32 big endian.` >
+        [,
+            < 'codepoint | utf8' $format = 'codepoint':
+                - 'codepoint': `The character is returned as a codepoint.`
+                - 'utf8':      `The character is returned as a UTF-8 string.` >
+        ]
+    ]
+) ulongint | string | false
+```
+
+该方法从流中读取一个 Unicode 字符。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据; 可忽略异常，静默求值时返回 `false`。
+- `BadEncoding`：传入错误的编码; 可忽略异常，静默求值时返回 `false`。
+- `NoData`：已到达文件尾部，无数据可读入; 可忽略异常，静默求值时返回 `false`。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `false`。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```php
+$stream.getuc('utf8', 'codepoint')
+    // ulongint: 20UL
+```
+
+##### 3.12.8.10) `putuc` 方法
+
+向流中写入一个 Unicode 字符。
+
+**描述**
+
+```php
+$stream.putuc(
+    < string | ulongint $char: `The character to be written.` >
+    [,
+        < 'utf8 | utf16le | utf16be | utf32le | utf32be' $encoding = 'utf8':
+            - 'utf8':     `The character will be encoded in UTF-8 before writing.`
+            - 'utf16le':  `The character will be encoded in UTF-16 little endian before writing.`
+            - 'utf16be':  `The character will be encoded in UTF-16 big endian before writing.`
+            - 'utf32le':  `The character will be encoded in UTF-32 little endian before writing.`
+            - 'utf32be':  `The character will be encoded in UTF-32 big endian before writing.` >
+    ]
+) ulongint | false
+```
+
+该方法向流中写入一个 Unicode 字符，返回写入的字节数。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据，如超出字符编码范围; 可忽略异常，静默求值时返回 `false`。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `false`。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```php
+$stream.putuc(20UL, 'utf8')
+    // ulongint: 1UL
+```
+
+##### 3.12.8.10) `ungetuc` 方法
+
+向流中放入一个 Unicode 字符，放回流的字符将会在下次从流中读取时以相反的顺序返回。该方法常用于解析器。
+
+**描述**
+
+```php
+$stream.ungetuc(
+    < string | ulongint $char: `The character to be put back.` >
+    [,
+        < 'utf8 | utf16le | utf16be | utf32le | utf32be' $encoding = 'utf8':
+            - 'utf8':     `The character will be encoded in UTF-8 before putting back.`
+            - 'utf16le':  `The character will be encoded in UTF-16 little endian before putting back.`
+            - 'utf16be':  `The character will be encoded in UTF-16 big endian before putting back.`
+            - 'utf32le':  `The character will be encoded in UTF-32 little endian before putting back.`
+            - 'utf32be':  `The character will be encoded in UTF-32 big endian before putting back.` >
+    ]
+) ulonging | false
+```
+
+该方法向流中放回一个 Unicode 字符，返回放入的字节数。放回流的字符将会在下次从流中读取时以相反的顺序返回。
+
+**异常**
+
+- `MemoryFailure`：内存分配失败；不可忽略异常。
+- `ArgumentMissed`：缺少必要参数；可忽略异常，静默求值时返回 `false`。
+- `WrongDataType`：不正确的参数类型；可忽略异常，静默求值时返回 `false`。
+- `InvalidValue`：传入无效数据，如超出字符编码范围的值; 可忽略异常，静默求值时返回 `false`。
+- `BrokenPipe`：管道或套接字的另一端已关闭; 可忽略异常，静默求值时返回 `false`。
+- `IOFailure`：输入输出错误；可忽略异常，静默求值时返回 `false`。
+
+**示例**
+
+```php
+$stream.ungetuc(20UL)
+    // ulongint: 1UL
 ```
 
 ##### 3.12.8.9) `fd` 属性
@@ -7278,7 +7415,7 @@ $stream.seek(10, 'set')
 
 **描述**
 
-```js
+```php
 $stream.fd longint | false
 ```
 
@@ -7290,7 +7427,7 @@ $stream.fd longint | false
 
 **示例**
 
-```js
+```php
 $STREAM.stdin.fd
     // 0L
 ```
@@ -7301,7 +7438,7 @@ $STREAM.stdin.fd
 
 **描述**
 
-```js
+```php
 $stream.peerAddr string | null
 ```
 
@@ -7313,7 +7450,7 @@ $stream.peerAddr string | null
 
 **示例**
 
-```js
+```php
 $stream.peerAddr()
     // 0L
 ```
@@ -7324,7 +7461,7 @@ $stream.peerAddr()
 
 **描述**
 
-```js
+```php
 $stream.peerPort string | null
 ```
 
@@ -7336,7 +7473,7 @@ $stream.peerPort string | null
 
 **示例**
 
-```js
+```php
 $stream.peerPort()
     // 0L
 ```
@@ -7418,7 +7555,7 @@ du -BM hvml-spec-v1.0-zh.md
 
 **描述**
 
-```js
+```php
 $SOCKET.stream(
         < string $uri: `The URI of the stream socket.` >
         [, <'[global || nonblock || cloexec] | default | none' $opt = 'default':
@@ -7464,7 +7601,7 @@ $SOCKET.stream(
 
 **示例**
 
-```js
+```php
 $SOCKET.stream("local://var/run/myapp.sock")
 ```
 
@@ -7474,7 +7611,7 @@ $SOCKET.stream("local://var/run/myapp.sock")
 
 **描述**
 
-```js
+```php
 $SOCKET.dgram(
         < string $uri: `The URI of the dgram socket.` >
         [, <'[global || nameless || nonblock || cloexec] | default | none' $opt = 'default':
@@ -7512,7 +7649,7 @@ $SOCKET.dgram(
 
 **示例**
 
-```js
+```php
 $SOCKET.dgram("local://var/run/myapp.sock")
 ```
 
@@ -7522,7 +7659,7 @@ $SOCKET.dgram("local://var/run/myapp.sock")
 
 **描述**
 
-```js
+```php
 $SOCKET.close( streamSocket | dgramSocket $entity )
     true | false
 ```
@@ -7540,7 +7677,7 @@ $SOCKET.close( streamSocket | dgramSocket $entity )
 
 **示例**
 
-```js
+```php
 $SOCKET.close($streamSocket)
 ```
 
@@ -7552,7 +7689,7 @@ $SOCKET.close($streamSocket)
 
 接受来自客户端的连接请求，并创建对应的流实体。
 
-```js
+```php
 $streamSocket.accept(
     <'[nonblock || cloexec] | default | none' $flags:
            - 'nonblock':    `Set the file descriptor in nonblocking mode.`
@@ -7585,7 +7722,7 @@ $streamSocket.accept(
 
 **示例**
 
-```js
+```php
 $streamSocket.accept('default', 'websocket', ...)
     // native/stream
 ```
@@ -7596,7 +7733,7 @@ $streamSocket.accept('default', 'websocket', ...)
 
 **描述**
 
-```js
+```php
 $streamSocket.fd()
     longint
 ```
@@ -7609,7 +7746,7 @@ $streamSocket.fd()
 
 **示例**
 
-```js
+```php
 $streamSocket.fd()
     // 3L
 ```
@@ -7620,7 +7757,7 @@ $streamSocket.fd()
 
 **描述**
 
-```js
+```php
 $streamSocket.close()
     true | false
 ```
@@ -7637,7 +7774,7 @@ $streamSocket.close()
 
 **示例**
 
-```js
+```php
 $streamSocket.close()
     // true
 ```
@@ -7648,7 +7785,7 @@ $streamSocket.close()
 
 通过该方法发送消息。
 
-```js
+```php
 $dgramSocket.sendto(
     < string $dest: `The URI of the destination address.` >,
     < '[dontwait || confirm] | default' $flags:
@@ -7683,7 +7820,7 @@ $dgramSocket.sendto(
 
 通过该方法接收一条消息。
 
-```js
+```php
 $dgramSocket.recvfrom(
     <'[ dontwait || nosource || trunc] | default' $flags:
            - 'dontwait':    `Enable a nonblocking operation.`
@@ -7717,7 +7854,7 @@ $dgramSocket.recvfrom(
 
 **描述**
 
-```js
+```php
 $dgramSocket.fd()
     longint
 ```
@@ -7730,7 +7867,7 @@ $dgramSocket.fd()
 
 **示例**
 
-```js
+```php
 $dgramSocket.fd()
     // 3L
 ```
@@ -7741,7 +7878,7 @@ $dgramSocket.fd()
 
 **描述**
 
-```js
+```php
 $dgramSocket.close()
     true | false
 ```
@@ -7758,7 +7895,7 @@ $dgramSocket.close()
 
 **示例**
 
-```js
+```php
 $dgramSocket.close()
     // true
 ```
@@ -7776,7 +7913,7 @@ $dgramSocket.close()
 
 当使用 `message` 扩展协议时，可指定如下协议选项：
 
-```js
+```php
 {
     /* Some configuration properties. */
     'maxframepayloadsize': < ulongint | undefined: `The maximum size of a message allowed; use the default value (4K) if not defined.` >
@@ -7801,7 +7938,7 @@ $dgramSocket.close()
 
 当使用 `websocket` 扩展协议时，可指定如下协议选项：
 
-```js
+```php
 {
     /* The following properties are client-only. */
     'path':         < string: `The path for GET method.` >,
@@ -7884,7 +8021,7 @@ $dgramSocket.close()
 
 该方法用于获得给定精度的 PI 值：
 
-```js
+```php
 // 原型
 // 始终返回 3.14159265358979323846
 $MATH.pi
@@ -7898,7 +8035,7 @@ $MATH.pi_l
 
 该方法用于获得给定精度的 e（自然常数，欧拉数）值：
 
-```js
+```php
 // 原型
 // 始终返回 2.718281828459045
 $MATH.e
@@ -7912,7 +8049,7 @@ $MATH.e_l
 
 这两个方法的获取器用于获得预定义和自定义数学常数：
 
-```js
+```php
 // 原型
 // 根据传入的关键词或自定义常数名称返回指定常数，返回类型为 `number`
 $MATH.const( <'e | log2e | log10e | ln2 | ln10 | pi | pi/2 | pi/4 | 1/pi | 2/pi | sqrt(2) | 2/sqrt(pi) | 1/sqrt(2)'] > <string: a user-defined const name>) number
@@ -7932,7 +8069,7 @@ $MATH.const_l('1/sqrt(2)')
 
 这两个方法的设置器用于设置自定义的数学常数：
 
-```js
+```php
 // 原型
 // 设置自定义常数
 $MATH.const(!
@@ -7959,7 +8096,7 @@ $MATH.const(! 'G0', 6.67e-11)
 
 求两个实数的和。
 
-```js
+```php
 // 原型：求两个实数的和，返回指定类型的数值；默认为 `number`
 $MATH.add(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
@@ -7974,7 +8111,7 @@ $MATH.add(1.4, 0.7, 'longint')
 
 求两个实数的差。
 
-```js
+```php
 // 原型：求两个实数的差，返回指定类型的数值；默认为 `number`
 $MATH.sub(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
@@ -7989,7 +8126,7 @@ $MATH.sub(1.4, 0.7, 'longint')
 
 求两个实数的积。
 
-```js
+```php
 // 原型：求两个实数的积，返回指定类型的数值；默认为 `number`
 $MATH.mul(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
@@ -8004,7 +8141,7 @@ $MATH.mul(1.4, 0.7, 'longint')
 
 求两个实数的商。
 
-```js
+```php
 // 原型：求两个实数的商，返回指定类型的数值；默认为 `number`
 $MATH.div(<real>, <real>[, 'number | longint | ulongint | longdouble']) number | longint | ulongint | longdouble
 
@@ -8094,7 +8231,7 @@ $MATH.div(1.4, 0.7, 'longint')
 - `random()`： 返回一个 0 到 1 之间的伪随机数。
 - `sign(x)`： 返回一个数的符号，得知一个数是正数、负数还是 0。
 
-```js
+```php
 // 原型
 $MATH.eval(<string: a parameterized arithmetic expressions>[, <object: parameter map>]) number
 
@@ -8121,7 +8258,7 @@ $MATH.eval_l(<string: a parameterized arithmetic expressions>[, <object: paramet
 
 用于计算角度的正弦值。原型如下：
 
-```js
+```php
 // 原型：求角度的正弦值，角度为弧度值；返回值为 `number` 类型
 $MATH.sin(<number | longint | ulongint | longdouble>) number
 
@@ -8139,7 +8276,7 @@ $MATH.sin_l($MATH.const('pi/4'))
 
 用于计算角度的余弦值。原型如下：
 
-```js
+```php
 // 原型：求角度的余弦值，角度为弧度值；返回值为 `number` 类型
 $MATH.cos(<number | longint | ulongint | longdouble>) number
 
@@ -8157,7 +8294,7 @@ $MATH.cos_l($MATH.const('pi/4'))
 
 用于计算角度的正切值。原型如下：
 
-```js
+```php
 // 原型：求角度的正切值，角度为弧度值；返回值为 `number` 类型
 $MATH.tan(<number | longint | ulongint | longdouble>) number
 
@@ -8175,7 +8312,7 @@ $MATH.tan_l($MATH.const('pi/4'))
 
 用于计算数值的双曲正弦值。原型如下：
 
-```js
+```php
 // 原型：求数值的双曲正弦值；返回值为 `number` 类型
 $MATH.sinh(<number | longint | ulongint | longdouble>) number
 
@@ -8193,7 +8330,7 @@ $MATH.sinh_l(1.0)
 
 用于计算数值的双曲余弦值。原型如下：
 
-```js
+```php
 // 原型：求数值的双曲余弦值；返回值为 `number` 类型
 $MATH.cosh(<number | longint | ulongint | longdouble>) number
 
@@ -8211,7 +8348,7 @@ $MATH.cosh_l(1.0)
 
 用于计算数值的双曲正切值。原型如下：
 
-```js
+```php
 // 原型：求数值的双曲正切值；返回值为 `number` 类型
 $MATH.tanh(<number | longint | ulongint | longdouble>) number
 
@@ -8229,7 +8366,7 @@ $MATH.tan_l(1.0)
 
 用于计算数值的反正弦值。原型如下：
 
-```js
+```php
 // 原型：求数值的反正弦值，获得对应角度的弧度值；返回值为 `number` 类型
 $MATH.asin(<number | longint | ulongint | longdouble>) number
 
@@ -8247,7 +8384,7 @@ $MATH.asin_l(0.707107)
 
 用于计算数值的反余弦值。原型如下：
 
-```js
+```php
 // 原型：求数值的反余弦值，获得对应角度的弧度值；返回值为 `number` 类型
 $MATH.acos(<number | longint | ulongint | longdouble>) number
 
@@ -8265,7 +8402,7 @@ $MATH.acos_l(0.707107)
 
 用于计算数值的反正切值。原型如下：
 
-```js
+```php
 // 原型：求数值的反正切值，获得对应角度的弧度值；返回值为 `number` 类型
 $MATH.atan(<number | longint | ulongint | longdouble>) number
 
@@ -8283,7 +8420,7 @@ $MATH.atan_l(1.0)
 
 用于计算数值的反双曲正弦值。原型如下：
 
-```js
+```php
 // 原型：求数值的反双曲正弦值；返回值为 `number` 类型
 $MATH.asinh(<number | longint | ulongint | longdouble>) number
 
@@ -8301,7 +8438,7 @@ $MATH.asin_l(1.0)
 
 用于计算数值的反双曲余弦值。原型如下：
 
-```js
+```php
 // 原型：求数值的反双曲余弦值；返回值为 `number` 类型
 $MATH.acosh(<number | longint | ulongint | longdouble>) number
 
@@ -8319,7 +8456,7 @@ $MATH.acos_l(1.0)
 
 用于计算数值的反双曲正切值。原型如下：
 
-```js
+```php
 // 原型：求数值的反双曲正切值；返回值为 `number` 类型
 $MATH.atanh(<number | longint | ulongint | longdouble>) number
 
@@ -8337,7 +8474,7 @@ $MATH.atanh_l(0.5)
 
 用于计算两值相除的余数。原型如下：
 
-```js
+```php
 // 原型：求两值相除的余数；返回值为 `number` 类型
 $MATH.fmod(<number | longint | ulongint | longdouble>, <number | longint | ulongint | longdouble>) number
 
@@ -8355,7 +8492,7 @@ $MATH.fmod_l(4.5, 2.0)
 
 用于计算数值的绝对值。原型如下：
 
-```js
+```php
 // 原型：求数值的绝对值；返回值类型为传入参数值类型
 $MATH.fabs(<number | longint | ulongint | longdouble>) number | longint | ulongint | longdouble
 
@@ -8368,7 +8505,7 @@ $MATH.fabs(-2.5L)
 
 用于计算数值的自然对数。原型如下：
 
-```js
+```php
 // 原型：求数值的自然对数；返回值为 `number` 类型
 $MATH.log(<number | longint | ulongint | longdouble>) number
 
@@ -8386,7 +8523,7 @@ $MATH.log_l($MATH.const('e'))
 
 用于计算数值以 `10` 为底的对数。原型如下：
 
-```js
+```php
 // 原型：求数值以 `10` 为底的对数；返回值为 `number` 类型
 $MATH.log10(<number | longint | ulongint | longdouble>) number
 
@@ -8404,7 +8541,7 @@ $MATH.log10i_l(10.0)
 
 用于计算 `x` 的 `y` 次幂。原型如下：
 
-```js
+```php
 // 原型：求 `x` 的 `y` 次幂；返回值为 `number` 类型
 $MATH.pow(<number | longint | ulongint | longdouble> x, <number | longint | ulongint | longdouble> y) number
 
@@ -8422,7 +8559,7 @@ $MATH.pow_l(3.0, 2.0)
 
 用于计算 `e` 的 `x` 次幂。原型如下：
 
-```js
+```php
 // 原型：求 `e` 的 `x` 次幂；返回值为 `number` 类型
 $MATH.exp(<number | longint | ulongint | longdouble> x) number
 
@@ -8440,7 +8577,7 @@ $MATH.exp_l(1.0)
 
 用于计算数值的向下取整数值。原型如下：
 
-```js
+```php
 // 原型：计算向下取整的数值；返回值为 `number` 类型
 $MATH.floor(<number | longint | ulongint | longdouble>) number
 
@@ -8458,7 +8595,7 @@ $MATH.floor_l(-2.3)
 
 用于计算数值的向上取整数值。原型如下：
 
-```js
+```php
 // 原型：计算向上取整的数值；返回值为 `number` 类型
 $MATH.ceil(<number | longint | ulongint | longdouble>) number
 
@@ -8476,7 +8613,7 @@ $MATH.ceil_l(-2.3)
 
 用于计算数值的平方根。原型如下：
 
-```js
+```php
 // 原型：计算数值的平方根；返回值为 `number` 类型
 $MATH.sqrt(<number | longint | ulongint | longdouble>) number
 
@@ -8516,7 +8653,7 @@ $MATH.sqrt_l(9.0)
 
 该方法用于列出指定路径下的目录项，返回对象数组。原型及主要用法如下：
 
-```js
+```php
 // 原型
 $FS.list(
         [ <string $path: `The path to list`>
@@ -8527,7 +8664,7 @@ $FS.list(
 
 每个目录项的信息由如下对象表达：
 
-```js
+```php
 {
     'name': <string: `The name of the file (directory entry')`>,
     'dev_major': <ulongint: `The major ID of device containing file`>,
@@ -8555,7 +8692,7 @@ $FS.list(
 
 **示例**
 
-```js
+```php
 // 列出当前工作目录下所有目录项
 $FS.list
     // array
@@ -8573,7 +8710,7 @@ $FS.list('/etc', "*.txt; *.md")
 
 该方法用于列出指定路径下的目录项信息，返回经过格式化的字符串数组。原型及主要用法如下：
 
-```js
+```php
 // 原型
 $FS.list_prt(<string: path>[, <string: `The list of semicolon separated name filters>[, '[mode || nlink || uid || gid || size || blksize || atime || ctime || mtime || name] | all | default']])
 
@@ -8595,7 +8732,7 @@ $FS.list_prt($path, "*.txt; *.md", "mode nlink uid gid size blksize atime ctime 
 
 **描述**
 
-```js
+```php
 $FS.basename(
         <string $path: `The path to the file`. >
         [,
@@ -8620,7 +8757,7 @@ $FS.basename(
 
 **描述**
 
-```js
+```php
 $FS.chgrp(
         <string $filename: `path to the file.`>,
         <string | number $group: `A group name or a group identifier.`>
@@ -8643,7 +8780,7 @@ $FS.chgrp(
 
 **描述**
 
-```js
+```php
 $FS.chmod(
         <string $filename: `The path to the file.`>,
         <string $permissions: `The permission string like '0644' or 'u+rwx,go+rx'.`>
@@ -8666,7 +8803,7 @@ $FS.chmod(
 
 **描述**
 
-```js
+```php
 $FS.chown(
         <string $filename: `The path to the file`.>,
         <string | number $user: `A user name or a user identifier.`>
@@ -8689,7 +8826,7 @@ $FS.chown(
 
 **描述**
 
-```js
+```php
 $FS.copy(
         <string $from: `path to the source file.`>,
         <string $to: `The destination path.`>
@@ -8712,7 +8849,7 @@ $FS.copy(
 
 **描述**
 
-```js
+```php
 $FS.dirname(
         <string $path: `A path.`>
         [,
@@ -8737,7 +8874,7 @@ $FS.dirname(
 
 **描述**
 
-```js
+```php
 $FS.disk_usage(
         <string $directory: `A directory of the filesystem or disk partition.`>
 ) object
@@ -8749,7 +8886,7 @@ $FS.disk_usage(
 
 返回值为如下所示对象：
 
-```js
+```php
 {
     'free_blocks': <ulongint: `The number of free blocks`>,
     'free_inodes': <ulongint: `The number of free inodes`>,
@@ -8776,7 +8913,7 @@ $FS.disk_usage(
 
 **描述**
 
-```js
+```php
 $FS.file_exists(
         <string $filename: `path to the file or directory.`>
 ) boolean
@@ -8798,7 +8935,7 @@ $FS.file_exists(
 
 **描述**
 
-```js
+```php
 $FS.file_is(
         <string $filename: `The path to a file or directory.`>
         <'[ dir | regular | symlink | socket | pipe | block | char ] || [ executable | exe ] || [readable | read] || [writable write]' $which = 'regular readable':
@@ -8837,7 +8974,7 @@ $FS.file_is(
 
 **描述**
 
-```js
+```php
 $FS.lchgrp(
         <string $filename: `The path to the symlink.`>,
         <string | number $group: `A group name or a group identifier.`>
@@ -8860,7 +8997,7 @@ $FS.lchgrp(
 
 **描述**
 
-```js
+```php
 $FS.lchown(
         <string $filename: `The path to the symlink.`>,
         <string | number $user: `A user name or a user identifier.`>
@@ -8883,7 +9020,7 @@ $FS.lchown(
 
 **描述**
 
-```js
+```php
 $FS.linkinfo(
         <string $path: 'The path to the link.`>
 ) number | false
@@ -8905,7 +9042,7 @@ $FS.linkinfo(
 
 **描述**
 
-```js
+```php
 $FS.lstat(
         <string $filename: `The path to the file or directory.`>
         [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
@@ -8937,7 +9074,7 @@ $FS.lstat(
 
 结果由如下对象或其部分表达：
 
-```js
+```php
 {
     'dev_major': <ulongint: `The major ID of device containing file`>,
     'dev_minor': <ulongint: `The minor ID of device containing file`>,
@@ -8974,7 +9111,7 @@ $FS.lstat(
 
 **描述**
 
-```js
+```php
 $FS.link(
         < string $target: `Target of the link.` >,
         < string $link: `The link name.` >
@@ -8997,7 +9134,7 @@ $FS.link(
 
 **描述**
 
-```js
+```php
 $FS.mkdir(
         < string $directory: `The directory path.` >
         [, < string $permissions = '0777': `The permissions are '0777' by default, which means the widest possible access.` >
@@ -9023,7 +9160,7 @@ $FS.mkdir(
 
 **描述**
 
-```js
+```php
 $FS.pathinfo(
         < string $path: `The path to be parsed.` >
         [,
@@ -9049,7 +9186,7 @@ $FS.pathinfo(
 
 **描述**
 
-```js
+```php
 $FS.readlink(
         < string $path: `The symbolic link path.` >
 ) string | false
@@ -9071,7 +9208,7 @@ $FS.readlink(
 
 **描述**
 
-```js
+```php
 $FS.realpath(
         < string $path: `The path being checked.` >
 ) string | false
@@ -9093,7 +9230,7 @@ $FS.realpath(
 
 **描述**
 
-```js
+```php
 $FS.rename(
         < string $from: `The old name.` >
         < string $to: `The new name.` >
@@ -9116,7 +9253,7 @@ $FS.rename(
 
 **描述**
 
-```js
+```php
 $FS.rmdir(
         < string $directory: `The directory path.` >
 ) boolean
@@ -9138,7 +9275,7 @@ $FS.rmdir(
 
 **描述**
 
-```js
+```php
 $FS.stat(
         <string $filename: `The path to the file or directory.`>
         [, < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
@@ -9170,7 +9307,7 @@ $FS.stat(
 
 结果由如下对象或其部分表达：
 
-```js
+```php
 {
     'dev_major': < ulongint: `The major ID of device containing file.` >,
     'dev_minor': < ulongint: `The minor ID of device containing file.` >,
@@ -9207,7 +9344,7 @@ $FS.stat(
 
 **描述**
 
-```js
+```php
 $FS.link(
         < string $target: `Target of the link.` >,
         < string $link: `The link name.` >
@@ -9230,7 +9367,7 @@ $FS.link(
 
 **描述**
 
-```js
+```php
 $FS.tempname(
         < string $directory: `The directory where the temporary filename will be created.` >
         < string $prefix: `The prefix of the generated temporary filename.` >
@@ -9254,7 +9391,7 @@ $FS.tempname(
 
 **描述**
 
-```js
+```php
 $FS.touch(
         < string $filename: `The path to the file.` >
         [, <real $mtime = 0: `The modification time, if it is 0 or negative, use the current system time.` >
@@ -9279,7 +9416,7 @@ $FS.touch(
 
 **描述**
 
-```js
+```php
 $FS.umask(
         [ string $mask = '': `The new umask.` ]
 ) string
@@ -9301,7 +9438,7 @@ $FS.umask(
 
 **描述**
 
-```js
+```php
 $FS.unlink(
         < string $filename: `Path to the file.` >
 ) boolean
@@ -9323,7 +9460,7 @@ $FS.unlink(
 
 **描述**
 
-```js
+```php
 $FS.file_contents(
         < string $filename: `Path to the file.` >
         < '[binary | string] || [strict | silent]' $flags:
@@ -9338,7 +9475,7 @@ $FS.file_contents(
 ) string | bsequence | false
 ```
 
-```js
+```php
 $FS.file_contents(!
         < string $filename: `Path to the file.` >
         < string | bsequenc $data: `The data to write, can be either a string or a byte sequence.`
@@ -9366,7 +9503,7 @@ $FS.file_contents(!
 
 **描述**
 
-```js
+```php
 $FS.opendir(
         < string $pathname: `Path to the directory.` >
 ) native/dirStream | false
@@ -9395,7 +9532,7 @@ $FS.opendir(
 
 **描述**
 
-```js
+```php
 $dirStream.stat(
         < '[dev || inode || type || mode_digits || mode_alphas || nlink || uid || gid || size || rdev || blksize || blocks || atime || ctime || mtime] | all | default' $flags = 'default':
             - 'dev':            `Return ID of device containing the file.`
@@ -9423,7 +9560,7 @@ $dirStream.stat(
 
 返回打开的目录对应的文件统计信息（对象）。
 
-```js
+```php
 {
     dev_major:      <ulongint: `The major ID of device containing the directory entry.` >,
     dev_minor:      <ulongint: `The minor ID of device containing the directory entry.` >,
@@ -9460,7 +9597,7 @@ $dirStream.stat(
 
 **描述**
 
-```js
+```php
 $dirStream.read string | false
 ```
 
@@ -9480,7 +9617,7 @@ $dirStream.read string | false
 
 **描述**
 
-```js
+```php
 $dirStream.rewind boolean
 ```
 
@@ -9496,7 +9633,7 @@ $dirStream.rewind boolean
 
 **描述**
 
-```js
+```php
 $FS.closedir(
         < dirStream $dir_stream: `The dirStream entity to close.` >
 ) boolean
@@ -9535,7 +9672,7 @@ $FS.closedir(
 
 该方法读取文本文件的前几行，并返回一个字符串数组。
 
-```js
+```php
 // 原型
 $FILE.txt.head(<string: file name>[, <number: number of lines>])
 
@@ -9553,7 +9690,7 @@ $FILE.txt.head($file, -5)
 
 该方法读取文本文件的后几行，并返回一个字符串数组。
 
-```js
+```php
 // 原型
 $FILE.txt.tail(<string: file name>[, <number: number of lines>])
 
@@ -9573,7 +9710,7 @@ $FILE.txt.tail($file, -5)
 
 该方法读取二进制文件的前几字节，并返回一个字节序列。
 
-```js
+```php
 // 原型
 $FILE.bin.head(<string: file name>[, <number: number of bytes>])
 
@@ -9591,7 +9728,7 @@ $FILE.bin.head($file, -5)
 
 该方法读取二进制文件的后几字节，并返回一个字节序列。
 
-```js
+```php
 // 原型
 $FILE.bin.tail(<string: file name>[, <number: number of bytes>])
 
@@ -9622,7 +9759,7 @@ $FILE.bin.tail($file, -5)
 
 **描述**
 
-```js
+```php
 $PY.impl object:
     `an object contains the following properties:`
         - 'vendor':         < string: `The vendor name of this dynamic object, e.g., "HVML Community"` >
@@ -9640,7 +9777,7 @@ $PY.impl object:
 
 **示例**
 
-```js
+```php
 $PY.impl
     /* object:
        {
@@ -9659,7 +9796,7 @@ $PY.impl
 
 **描述**
 
-```js
+```php
 $PY.info object:
     `an object contains the following properties:`
         - 'version':        < string: `The version of this Python interpreter.` >
@@ -9677,7 +9814,7 @@ $PY.info object:
 
 **示例**
 
-```js
+```php
 $PY.info
     /* object:
        {
@@ -9696,20 +9833,20 @@ $PY.info
 
 **描述**
 
-```js
+```php
 $PY.global()
     object : `The global variables of the current __main__ module in the Python interpreter.`
 ```
 
 该属性获取器返回当前 Python 解释器 `__main__` 模块的全部全局变量及其值。注意，键名具有 `__` 前缀和 `__` 后缀的键值对将被忽略。
 
-```js
+```php
 $PY.global(<string $name: `The global variable name`>) any | undefined
 ```
 
 该属性获取器返回当前 Python 解释器 `__main__` 模块的指定全局变量的值。
 
-```js
+```php
 $PY.global(!
         <object $globals: `The object defined new global variables`>
 ) true | false
@@ -9717,7 +9854,7 @@ $PY.global(!
 
 该属性设置器将使用给定的对象设置当前 Python 解释器 `__main__` 模块的全局变量，已有的变量可能会被覆盖。
 
-```js
+```php
 $PY.global(!
         <string $name: `The global variable name`>,
         <any $value: `The value`>
@@ -9746,7 +9883,7 @@ $PY.global(!
 
 **示例**
 
-```js
+```php
 $PY.global()
     // object: { }
 
@@ -9772,14 +9909,14 @@ $PY.global.x
 
 **描述**
 
-```js
+```php
 $PY.local()
     object : `The local variables used when executing $PY.run().`
 ```
 
 该属性获取器返回当前的局部变量及其值。
 
-```js
+```php
 $PY.local(
         <string $name: `The local variable name`>
 ) any | undefined
@@ -9787,7 +9924,7 @@ $PY.local(
 
 该属性获取器返回指定局部变量的值。
 
-```js
+```php
 $PY.local(!
         <object $local: `The object defined new local variables`>
 ) true | false
@@ -9795,7 +9932,7 @@ $PY.local(!
 
 该属性设置器将使用给定的对象设置局部变量，已有的变量可能会被覆盖。
 
-```js
+```php
 $PY.local(!
         <string $name: `The local variable name`>,
         <any $value: `The value`>
@@ -9824,7 +9961,7 @@ $PY.local(!
 
 **示例**
 
-```js
+```php
 $PY.local()
     // object: { }
 
@@ -9841,7 +9978,7 @@ $PY.local('x')
 
 **描述**
 
-```js
+```php
 $PY.except
     null | string : `The last exception name reported by CPython.`
 ```
@@ -9854,7 +9991,7 @@ $PY.except
 
 **示例**
 
-```js
+```php
 $PY.except
     // null
 {{ $PY.run('2 / 0'); $PY.except }}
@@ -9867,7 +10004,7 @@ $PY.except
 
 **描述**
 
-```js
+```php
 $PY.pythonize(
     <string | object | array | tuple | set: $hvml_data: `An HVML string, object, array, tuple, or generic set`>
 ) native/pyObject::any | undefined
@@ -9879,21 +10016,21 @@ $PY.pythonize(
 
 使用空数组构造一个 CPython 原生实体：
 
-```js
+```php
 $PY.pythonize([])
     // native/pyObject::list
 ```
 
 使用空数组构造一个 CPython 原生实体，并在其上执行默认获取器，将获得一个 HVML 的空数组。
 
-```js
+```php
 $PY.pythonize([])()
     // array: []
 ```
 
 使用 HVML 数组构造一个 CPython 原生实体，并在其上执行 `reverse()` 方法，之后在其上执行默认获取器，将获得一个反转的 HVML 数组。
 
-```js
+```php
 $PY.pythonize([1, 2, 3]).reverse()()
     // array: [3, 2, 1]
 ```
@@ -9911,7 +10048,7 @@ $PY.pythonize([1, 2, 3]).reverse()()
 
 **示例**
 
-```js
+```php
 $PY.pythonize([])
     // native/pyObject::list
 
@@ -9931,7 +10068,7 @@ $PY.pythonize('Hello, World!').upper()()
 
 **描述**
 
-```js
+```php
 $PY.run(
     <string $cmd_mod_file: `An isolated expressions, a single statement, an arbitrarily long Python source code, a module name, or a file name`>
         [, < '[command | statement | source | module | file] || skip-first-line || dont-write-byte-code' $options = 'command':
@@ -9965,7 +10102,7 @@ $PY.run(
 
 **示例**
 
-```js
+```php
 $PY.run('print("Hello from Python")')
     // null
 
@@ -9979,7 +10116,7 @@ $PY.run('pow(2,3)')
 
 **描述**
 
-```js
+```php
 $PY.import(
     <string $name: `The Python module name`>
     [,
@@ -10008,7 +10145,7 @@ $PY.import(
 
 **示例**
 
-```js
+```php
 $PY.import("math")
     // boolean: true
 $PY.math.pow(2, 2)
@@ -10029,7 +10166,7 @@ $PY.power(2, 2)
 
 **描述**
 
-```js
+```php
 $PY.stringify(
     string $py_code: `A native entity with name prefix "pyObject::"`
 ) string | false
@@ -10046,7 +10183,7 @@ $PY.stringify(
 
 **示例**
 
-```js
+```php
 $PY.stringify({{ $PY.import('math'); $PY.math.pi }})
     // string: '3.1415926535897931'
 ```
@@ -10057,7 +10194,7 @@ $PY.stringify({{ $PY.import('math'); $PY.math.pi }})
 
 **描述**
 
-```js
+```php
 $PY.compile(
     string $py_code: `The Python code`
 ) native/pyCodeObject | undefined
@@ -10075,7 +10212,7 @@ $PY.compile(
 
 **示例**
 
-```js
+```php
 $PY.compile('c = 4 + 2')
     // pyCodeObject
 ```
@@ -10086,7 +10223,7 @@ $PY.compile('c = 4 + 2')
 
 **描述**
 
-```js
+```php
 $pyCodeObject.entity
     native/pyObject::code : `The pyObject::code entity of this pyCodeObject.`
 ```
@@ -10099,7 +10236,7 @@ $pyCodeObject.entity
 
 **示例**
 
-```js
+```php
 $pyCodeObject.entity
     // native/pyObject::code
 ```
@@ -10110,14 +10247,14 @@ $pyCodeObject.entity
 
 **描述**
 
-```js
+```php
 $pyCodeObject.local
     object : `The local variables used when executing $pyCodeObject.eval().`
 ```
 
 该属性获取器返回 `$pyCodeObject` 的局部变量及其值。
 
-```js
+```php
 $pyCodeObject.local(
         <string $name: `The local variable name`>
 ) any | undefined
@@ -10125,7 +10262,7 @@ $pyCodeObject.local(
 
 该属性获取器返回 `$pyCodeObject` 的指定局部变量的值。
 
-```js
+```php
 $pyCodeObject.local(!
         <object $local: `The object defined new local variables`>
 ) true | false
@@ -10133,7 +10270,7 @@ $pyCodeObject.local(!
 
 该属性设置器将使用给定的对象设置 `$pyCodeObject` 的局部变量，已有的变量可能会被覆盖。
 
-```js
+```php
 $pyCodeObject.local(!
         <string $name: `The local variable name`>,
         <any $value: `The value`>
@@ -10162,7 +10299,7 @@ $pyCodeObject.local(!
 
 **示例**
 
-```js
+```php
 $pyCodeObject.local
     // object: { }
 
@@ -10179,7 +10316,7 @@ $pyCodeObject.local('x')
 
 **描述**
 
-```js
+```php
 $pyCodeObject.eval(
     [
         <object $globals = null: `The global variables defined by an object`>,
@@ -10200,7 +10337,7 @@ $pyCodeObject.eval(
 
 **示例**
 
-```js
+```php
 $PY.compile('4 + 2').eval()
     // 6
 
@@ -10289,7 +10426,7 @@ $PY.compile('math.pow(x, y)').eval( null, { x: 2, y: 3 } )
 
 **描述**
 
-```js
+```php
 $SQLITE.impl object:
     `An object contains the following properties:`
         - 'vendor':         < string: `The vendor name of this dynamic object, e.g., "HVML Community"` >
@@ -10307,7 +10444,7 @@ $SQLITE.impl object:
 
 **示例**
 
-```js
+```php
 $SQLITE.impl
     // object: {
             'vendor':       'HVML Community',
@@ -10324,7 +10461,7 @@ $SQLITE.impl
 
 **描述**
 
-```js
+```php
 $SQLITE.info object:
     `An object contains the following properties:`
         - 'version':        < string: `The version of this sqlite library.` >
@@ -10340,7 +10477,7 @@ $SQLITE.info object:
 
 **示例**
 
-```js
+```php
 $SQLITE.info
     // object: {
             'version':      '3.10.9',
@@ -10356,7 +10493,7 @@ $SQLITE.info
 
 **描述**
 
-```js
+```php
 $SQLITE.connect(
     string $dbname: `The database name.`
 ) native/SQLiteConnect | undefined
@@ -10375,7 +10512,7 @@ $SQLITE.connect(
 
 **示例**
 
-```js
+```php
 $SQLITE.connect(':memory:')
     // native/SQLiteConnect
 
@@ -10396,7 +10533,7 @@ $SQLITE.connect('file:///tmp/test_uri.db')
 
 **描述**
 
-```js
+```php
 $sqliteConn.cursor(
 ) SQLiteCursor | undefined
 ```
@@ -10411,7 +10548,7 @@ $sqliteConn.cursor(
 
 **示例**
 
-```js
+```php
 $sqliteConn.cursor()
     // SQLiteCursor
 ```
@@ -10422,7 +10559,7 @@ $sqliteConn.cursor()
 
 **描述**
 
-```js
+```php
 $sqliteConn.commit() boolean
 ```
 
@@ -10436,7 +10573,7 @@ $sqliteConn.commit() boolean
 
 **示例**
 
-```js
+```php
 $sqliteConn.commit()
   // true
 ```
@@ -10447,7 +10584,7 @@ $sqliteConn.commit()
 
 **描述**
 
-```js
+```php
 $sqliteConn.rollback() boolean
 ```
 回滚自上一次调用 commit() 以来对数据库所做的更改。
@@ -10460,7 +10597,7 @@ $sqliteConn.rollback() boolean
 
 **示例**
 
-```js
+```php
 $sqliteConn.rollback()
     // true
 ```
@@ -10471,7 +10608,7 @@ $sqliteConn.rollback()
 
 **描述**
 
-```js
+```php
 $sqliteConn.close() boolean
 ```
 
@@ -10483,7 +10620,7 @@ $sqliteConn.close() boolean
 
 **示例**
 
-```js
+```php
 $sqliteConn.close()
     // true
 ```
@@ -10494,7 +10631,7 @@ $sqliteConn.close()
 
 **描述**
 
-```js
+```php
 $sqliteConn.execute(
         < string $sql: `The sql.` >
         [, <array $parameters: `The sql parameters> ]
@@ -10511,7 +10648,7 @@ $sqliteConn.execute(
 
 **示例**
 
-```js
+```php
 $sqliteConn.execute('select * from users')
 ```
 
@@ -10521,7 +10658,7 @@ $sqliteConn.execute('select * from users')
 
 **描述**
 
-```js
+```php
 $sqliteConn.executemany(
         <string $sql: `The sql.` >,
         <array $parameters: `The sql parameters>
@@ -10539,7 +10676,7 @@ $parameters 是一个包含多个数组的数组，每个子数组对应 sql 语
 
 **示例**
 
-```js
+```php
 $sqliteConn.executemany('insert into user values(?, ?, ?)', [[1, 'zhang san', 15], [2, 'li si', 20]])
 ```
 
@@ -10554,7 +10691,7 @@ SQLiteCursor 对象表示数据库游标，用于执行 SQL 语句并管理获�
 
 **描述**
 
-```js
+```php
 $sqliteCursor.execute(
         < string $sql: `The sql.` >
         [, <array $parameters: `The sql parameters> ]
@@ -10571,7 +10708,7 @@ $sqliteCursor.execute(
 
 **示例**
 
-```js
+```php
 $sqliteCursor.execute('select * from users')
 ```
 
@@ -10581,7 +10718,7 @@ $sqliteCursor.execute('select * from users')
 
 **描述**
 
-```js
+```php
 $sqliteCursor.executemany(
         < string $sql: `The SQL.` >,
         < array $parameters: `The SQL parameters.` >
@@ -10599,7 +10736,7 @@ $parameters 是一个包含多个数组的数组，每个子数组对应 sql 语
 
 **示例**
 
-```js
+```php
 $sqliteCursor.executemany('insert into user values(?, ?, ?)', [[1, 'zhang san', 15], [2, 'li si', 20]])
 ```
 
@@ -10609,7 +10746,7 @@ $sqliteCursor.executemany('insert into user values(?, ?, ?)', [[1, 'zhang san', 
 
 **描述**
 
-```js
+```php
 $sqliteCursor.fetchone(
         [
             <'tuple | object' $result_type = 'tuple':
@@ -10641,7 +10778,7 @@ $sqliteCursor.fetchone(
 
 **示例**
 
-```js
+```php
 $sqliteCursor.fetchone()
     // tuple: [! 1, 'zhang san', 15 ]
 
@@ -10661,7 +10798,7 @@ $sqliteCursor.fetchone('object', null, {'age':'unsigned int'} )
 
 **描述**
 
-```js
+```php
 $sqliteCursor.fetchmany(
     < ulongint $size: `The number of rows to fetch.` >
     [,
@@ -10696,7 +10833,7 @@ $sqliteCursor.fetchmany(
 
 **示例**
 
-```js
+```php
 $sqliteCursor.fethmany(2L)
     // [[! 1, 'zhang san', 15 ], [!2, 'li si', 20]]
 
@@ -10716,7 +10853,7 @@ $sqliteCursor.fethmany(2L, 'object', null, {'age':'unsigned int'} )
 
 **描述**
 
-```js
+```php
 $sqliteCursor.fetchall(
     [
         <'tuple | object' $result_row_type = 'tuple':
@@ -10748,7 +10885,7 @@ $sqliteCursor.fetchall(
 
 **示例**
 
-```js
+```php
 $sqliteCursor.fethall()
     // [[! 1, 'zhang san', 15 ], [!2, 'li si', 20]]
 
@@ -10768,7 +10905,7 @@ $sqliteCursor.fetchall('object', null, {'age':'unsigned int'} )
 
 **描述**
 
-```js
+```php
 $sqliteCursor.close() boolean
 ```
 
@@ -10780,7 +10917,7 @@ $sqliteCursor.close() boolean
 
 **示例**
 
-```js
+```php
 $sqliteCursor.close()
     // true
 ```
@@ -10791,7 +10928,7 @@ $sqliteCursor.close()
 
 **描述**
 
-```js
+```php
 $sqliteCursor.rowcount longint:
 ```
 
@@ -10803,7 +10940,7 @@ $sqliteCursor.rowcount longint:
 
 **示例**
 
-```js
+```php
 $sqliteCursor.rowcount
     /* longint:
         10
@@ -10816,7 +10953,7 @@ $sqliteCursor.rowcount
 
 **描述**
 
-```js
+```php
 $sqliteCursor.lastrowid longint | null:
 ```
 
@@ -10830,7 +10967,7 @@ $sqliteCursor.lastrowid longint | null:
 
 **示例**
 
-```js
+```php
 $sqliteCursor.lastrowid
     /* null
     */
@@ -10842,7 +10979,7 @@ $sqliteCursor.lastrowid
 
 **描述**
 
-```js
+```php
 $sqliteCursor.description tuple | null:
 ```
 
@@ -10857,7 +10994,7 @@ $sqliteCursor.description tuple | null:
 
 **示例**
 
-```js
+```php
 $sqliteCursor.description
     /* tuple: [!'id', 'name', 'age']
     */
@@ -10869,7 +11006,7 @@ $sqliteCursor.description
 
 **描述**
 
-```js
+```php
 $sqliteCursor.connection SQLiteConnect:
 ```
 
@@ -10882,7 +11019,7 @@ $sqliteCursor.connection SQLiteConnect:
 
 **示例**
 
-```js
+```php
 $sqliteCursor.connection
     // SQLiteConnect
 ```
@@ -10913,6 +11050,8 @@ $sqliteCursor.connection
 
 #### OR1) 250630
 
+1. 新增 `$stream.getuc()`、`$stream.putuc()` 和 `$stream.ungetuc()` 接口。
+1. 新增 `$STR.codepoints(!)` 获取器。
 1. 新增 `$DATA.is_container()` 方法。
 1. 新增 `$DATA.is_linear_container()` 方法。
 1. 使用 `$STR.htmlentities` 获取器和设置器分别用于编码和解码。
@@ -10958,7 +11097,6 @@ $sqliteCursor.connection
 #### RCh) 240131
 
 1. 新增 `$STR.codepoints` 方法。
-1. 图爱总额灰姑娘 `$STR.codepoints` 方法。
 
 #### RCg) 231130
 
