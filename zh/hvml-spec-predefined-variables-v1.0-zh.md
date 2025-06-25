@@ -6761,7 +6761,7 @@ $URL.assembly({ "scheme": "http", "hostname": "测试.网站.中国", "path": "/
 
 ```php
 $STREAM.from(
-        < string | bsequence | longint $fd: `The read-only memory buffer or the file descriptor.` >
+        < string | bsequence | longint $source: `A string, a byte sequence, or a file descriptor.` >
         [, <'[append || nonblock || cloexec] | keep' $flags = 'keep':
                - 'append':      `Set the file descriptor in append mode.`
                - 'nonblock':    `Set the file descriptor in nonblocking mode.`
@@ -7321,7 +7321,7 @@ $stream.seek(
 ```php
 // 示例：定位到第10个字节的位置
 $stream.seek(10, 'set')
-    // ulongint: 10L
+    // ulongint: 10UL
 ```
 
 ##### 3.12.9.9) `getuc` 方法
@@ -7363,8 +7363,8 @@ $stream.getuc(
 **示例**
 
 ```php
-$stream.getuc('utf8', 'codepoint')
-    // ulongint: 20UL
+$STREAM.from('HVML').getuc('utf8', 'codepoint')
+    // ulongint: 72UL
 ```
 
 ##### 3.12.9.10) `putuc` 方法
@@ -7401,7 +7401,7 @@ $stream.putuc(
 **示例**
 
 ```php
-$stream.putuc(20UL, 'utf8')
+$STREAM.stdout.putuc(32UL, 'utf8')
     // ulongint: 1UL
 ```
 
@@ -7439,7 +7439,7 @@ $stream.ungetuc(
 **示例**
 
 ```php
-$stream.ungetuc(20UL)
+$STREAM.stdin.ungetuc(32UL)
     // ulongint: 1UL
 ```
 
