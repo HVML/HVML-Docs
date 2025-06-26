@@ -1,40 +1,82 @@
-# HVML Documents
+# Welcome to the HVML Community
 
-Articles and documents about HVML.
+**[中文版](README-zh.md)**
 
-This repository contains some articles, guides, and documents about HVML.
+## Introduction
 
-## Documents in English
+During the development of [HybridOS], [Vincent Wei] proposed and designed a new-style and easy-to-learn programming language called `HVML`.
+HVML is the acronym for `Hybrid Virtual Markup Language`.
 
-To quickly learn how to program with HVML, please refer to the tutorial (80% complete):
+The original design goal of HVML is to allow developers who are familiar with C/C++, Python,
+    or other programming languages to easily develop GUI applications by using Web front-end technologies (such as HTML/SVG, DOM and CSS),
+    instead of using JavaScript programming language in a web browser or Node.js.
 
-- [Learn HVML Programming in 30 Minutes](en/learn-hvml-programming-in-30-minutes-en.md)
+We have achieved this design goal and also designed HVML as a general-purpose programming language.
+Now, we can not only use HVML as a programming language to rapidly develop GUI applications based on Web front-end technologies in the C/C++ runtime environment,
+    but also use HVML as a general-purpose programming language to write scripting tools, and even the gateway of a Web server.
 
-For an detailed introduction to HVML, please refer to the article (10% complete):
+Vincent Wei and his team has released the specification documents that define the programming language, an open source HVML interpreter called `PurC`,
+        and an HVML renderer `xGUI Pro` based on WebKit.
 
-- [HVML, a Programable Markup Language](en/an-introduction-to-hvml-en.md)
+Although we have basically achieved the initial goal, there is still a lot of work to do.
+It will be a long-term project, and it could not be achieved with only a few people or companies.
+The initiators and the designer of HVML, Vincent Wei, decided to unite others to jointly develop HVML in an open source collaboration.
 
-## 中文文档
+Hence the HVML community is here.
+[Write to us](mailto:hvml@fmsoft.cn) and join HVML Community now,
+    or refer to <https://www.hvml.org> for more information.
 
-### 入门
+## Recent Updates
 
-- [30 分钟学会 HVML 编程](zh/learn-hvml-programming-in-30-minutes-zh.md)
-- [用 HVML 写一个计算器](zh/writing-a-calculator-by-using-hvml-step-by-step.md)
-- [漫谈 HVML：它的由来和未来](zh/brief-introduction-to-hvml-zh.md)
+- On Apr. 30, 2025, FMSoft announces the availability of xGUI 0.9.22 (proprietary software).
+- On Apr. 25, 2025, HVML Community announces the availability of PurC 0.9.22, xGUI Pro 0.9.22, and HVML-FPM 0.0.4.
+- On Dec. 07, 2023, HVML Community announces the availability of PurC 0.9.18 and xGUI Pro 0.9.0.
+- On Mar. 31, 2023, HVML Community announces the availability of PurC 0.9.8.
+- On Mar. 31, 2023, HVML Community announces the availability of xGUI Pro 0.6.4.
 
-### 规范
+## Main Developers and Contributors
 
-当前版本：
+- Main Developers:
+   - Vincent Wei: The architect; one of the maintainers of PurC and xGUI Pro.
+   - XUE Shuming: One of maintainers of PurC and PurC Fetcher.
+   - LIU Xin: The developer and maintainer of extenal DVObj `FS` and `FILE` of PurC.
+   - XU Xiaohong: He was involved in the development of PurC prior to v0.8.0.
+   - GENG Yue: He was involved in the development of PurC prior to v0.2.0.
+- Main Contributors:
+   - LIU Ken（刘垦）: The evangelist of HVML community.
+   - Gavin Guo: The visual designer of HVML logo.
+   - DAI Zhenan (戴哲楠): The visual designer of HVML logo.
+   - TIAN Siyuan (田思源): The original designer of HVML logo.
+- [Complete developers and contributors list](https://hvml.fmsoft.cn/community#developers).
 
-- [HVML 规范（V1.0）](zh/hvml-spec-v1.0-zh.md)
-- [HVML 预定义变量（V1.0）](zh/hvml-spec-predefined-variables-v1.0-zh.md)
+## Resources
 
-老的版本：
+Here are links to the open source repositories:
 
-- [HVML 规范（V0.9）](zh/hvml-spec-v0.9-zh.md)
+- [HVML Documents](https://github.com/HVML/HVML-Docs): the specifications of HVML.
+- [PurC](https://github.com/HVML/PurC): the Prime hVml inteRpreter for C/C++ language.
+- [xGUI Pro](https://github.com/HVML/xGUI-Pro): an advanced HVML renderer based on WebKit.
+- [HVML FPM](https://github.com/HVML/HVML-FPM): The FastCGI Process Manager for HVML.
 
-### 设计
+Some articles about HVML:
 
-- [HVML 解释器的设计：一种数据驱动的动态标记语言的解释器实现](interpreter/zh.md)
-- [基于 HVML 的远程应用：一种支持远程应用的方法及装置](cloudapp/zh.md)
+- [HVML, a Programable Markup Language](https://github.com/HVML/hvml-docs/blob/master/en/an-introduction-to-hvml-en.md)
+- [Learn HVML Programming in 30 Minutes](https://github.com/HVML/hvml-docs/blob/master/en/learn-hvml-programming-in-30-minutes-en.md)
+- [Embedding Python in HVML](https://github.com/HVML/HVML-Docs/blob/master/en/embed-python-in-hvml-program-en.md)
+- [HVML Specifiction V1.0](https://github.com/HVML/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md)
+- [HVML Specifiction of Predefined Variables V1.0](https://github.com/HVML/hvml-docs/blob/master/zh/hvml-spec-predefined-variables-v1.0-zh.md)
+
+---
+
+[Beijing FMSoft Technologies Co., Ltd.]: https://www.fmsoft.cn
+[FMSoft Technologies]: https://www.fmsoft.cn
+[FMSoft]: https://www.fmsoft.cn
+[HybridOS]: https://hybridos.fmsoft.cn
+
+[HVML]: https://github.com/HVML
+[HVML Website]: https://hvml.fmsoft.cn
+[MiniGUI]: http:/www.minigui.com
+[WebKit]: https://webkit.org
+
+[Vincent Wei]: https://github.com/VincentWei
 
