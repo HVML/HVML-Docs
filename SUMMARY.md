@@ -14,7 +14,7 @@
 
 ## Documents in English
 
-- [Introductions or Tutorials](en/INTRODUCTIONS.md)
+- [Introduction or Tutorials](en/INTRODUCTIONS.md)
     - [Embedding Python in HVML](en/embed-python-in-hvml-program-en.md)
     - [Learn HVML Programming in 30 Minutes](en/learn-hvml-programming-in-30-minutes-en.md)
     - [HVML, a Programable Markup Language](en/a-brief-introduction-to-hvml-en.md)
