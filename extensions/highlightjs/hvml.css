@@ -1,0 +1,73 @@
+/* 覆盖代码块容器样式 */
+.hljs {
+  background: #2d2d2d !important; /* 深色背景 */
+  border-radius: 8px !important;
+  padding: 1.2em !important;
+}
+
+/* 覆盖关键字样式 */
+.hljs-keyword {
+  color: #cc99ff !important; /* 紫色 */
+  font-weight: bold !important;
+}
+
+/* 覆盖字符串样式 */
+.hljs-string {
+  color: #ce9178 !important;
+}
+
+/* 覆盖注释样式 */
+.hljs-comment {
+  color: #60aa4e !important;
+  font-style: italic !important;
+}
+
+/* 覆盖行号样式（需启用lineNumbers插件） */
+.hljs-ln-numbers {
+  color: #666 !important;
+  padding-right: 12px !important;
+}
+.hljs-number {
+  color: #ced875;
+}
+/*自定义部分*/
+
+.hljs-string2 {
+  color: #f49b00 !important;
+}
+.hljs-doctype {
+  color: #c586c0 !important;
+}
+.hljs-adverb {
+  color: #00f4a6 !important;
+}
+.hljs-tag {
+  color: #569cd6 !important;
+}
+.hljs-active-tag {
+  color: #9a6edd !important;
+}
+.hljs-attribute {
+  color: #9cdcfe !important;
+}
+.hljs-variable-simple {
+  color: #008bfd !important;
+}
+.hljs-variable-expression {
+  color: #1efeb0 !important;
+}
+.hljs-attribute2 {
+  color: #c586c0 !important;
+}
+.hljs-brace-level-1 {
+  color: #ff00ff !important;
+} /* 第一层红色 */
+.hljs-brace-level-2 {
+  color: #ffff00 !important;
+} /* 第二层青色 */
+.hljs-brace-level-3 {
+  color: #009fff !important;
+} /* 第三层黄色 */
+.hljs-build-in {
+  color: #e8e000 !important;
+}
