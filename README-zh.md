@@ -1,6 +1,4 @@
-# 欢迎来到 HVML 社区
-
-**[English Version](/profile/README.md)**
+# 欢迎来到 HVML 文档
 
 ## 介绍
 
@@ -24,6 +22,7 @@ HVML 的最初设计目标是，在 C/C++、Python 等编程语言的运行时�
 
 ## 最近更新
 
+- 2025 年 06 月 30 日，HVML 社区发布了 HVML 开源解释器 PurC 0.9.24、HVML 开源渲染器 xGUI Pro 0.9.24 以及 HVML FastCGI 进程管理器 HVML-FPM 0.0.6。
 - 2025 年 04 月 30 日，FMSoft 发布了跨平台 HVML 渲染器 xGUI 0.9.22（专有软件）。
 - 2025 年 04 月 25 日，HVML 社区发布了 HVML 开源解释器 PurC 0.9.22、HVML 开源渲染器 xGUI Pro 0.9.22 以及 HVML FastCGI 进程管理器 HVML-FPM 0.0.4。
 - 2023 年 12 月 08 日，HVML 社区发布了 HVML 开源解释器 PurC 0.9.18 和 HVML 开源渲染器 xGUI Pro 0.9.0。
@@ -49,18 +48,9 @@ HVML 的最初设计目标是，在 C/C++、Python 等编程语言的运行时�
 
 下面是 HVML 相关开源仓库的链接：
 
-- [HVML Documents](https://github.com/HVML/HVML-Docs): HVML 规范文档。
 - [PurC](https://github.com/HVML/PurC)：首个针对 C/C++ 语言的 HVML 解释器（the Prime hVml inteRpreter for C/C++ language）。
 - [xGUI Pro](https://github.com/HVML/xGUI-Pro)：一款基于 WebKit 实现的 HVML 渲染器。
 - [HVML FPM](https://github.com/HVML/HVML-FPM): HVML 的 FastCGI 进程管理器。
-
-如下是一些介绍 HVML 的文章、教程或者规范文档的链接：
-
-- [漫谈 HVML，它的由来和未来](https://github.com/HVML/hvml-docs/blob/master/zh/brief-introduction-to-hvml-zh.md)
-- [30 分钟学会 HVML 编程](https://github.com/HVML/hvml-docs/blob/master/zh/learn-hvml-programming-in-30-minutes-zh.md)
-- [在 HVML 中嵌入 Python](https://github.com/HVML/HVML-Docs/blob/master/zh/embed-python-in-hvml-program-zh.md)
-- [HVML 规范 V1.0](https://github.com/HVML/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md)
-- [HVML 预定义变量规范 V1.0](https://github.com/HVML/hvml-docs/blob/master/zh/hvml-spec-predefined-variables-v1.0-zh.md)
 
 ---
 

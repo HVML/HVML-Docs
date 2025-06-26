@@ -1,7 +1,5 @@
 # Welcome to the HVML Community
 
-**[中文版](README-zh.md)**
-
 ## Introduction
 
 During the development of [HybridOS], [Vincent Wei] proposed and designed a new-style and easy-to-learn programming language called `HVML`.
@@ -28,6 +26,7 @@ Hence the HVML community is here.
 
 ## Recent Updates
 
+- On Jun. 30, 2025, HVML Community announces the availability of PurC 0.9.24, xGUI Pro 0.9.24, and HVML-FPM 0.0.6.
 - On Apr. 30, 2025, FMSoft announces the availability of xGUI 0.9.22 (proprietary software).
 - On Apr. 25, 2025, HVML Community announces the availability of PurC 0.9.22, xGUI Pro 0.9.22, and HVML-FPM 0.0.4.
 - On Dec. 07, 2023, HVML Community announces the availability of PurC 0.9.18 and xGUI Pro 0.9.0.
@@ -51,20 +50,11 @@ Hence the HVML community is here.
 
 ## Resources
 
-Here are links to the open source repositories:
+Here are links to the open source repositories about HVML:
 
-- [HVML Documents](https://github.com/HVML/HVML-Docs): the specifications of HVML.
 - [PurC](https://github.com/HVML/PurC): the Prime hVml inteRpreter for C/C++ language.
 - [xGUI Pro](https://github.com/HVML/xGUI-Pro): an advanced HVML renderer based on WebKit.
 - [HVML FPM](https://github.com/HVML/HVML-FPM): The FastCGI Process Manager for HVML.
-
-Some articles about HVML:
-
-- [HVML, a Programable Markup Language](https://github.com/HVML/hvml-docs/blob/master/en/an-introduction-to-hvml-en.md)
-- [Learn HVML Programming in 30 Minutes](https://github.com/HVML/hvml-docs/blob/master/en/learn-hvml-programming-in-30-minutes-en.md)
-- [Embedding Python in HVML](https://github.com/HVML/HVML-Docs/blob/master/en/embed-python-in-hvml-program-en.md)
-- [HVML Specifiction V1.0](https://github.com/HVML/hvml-docs/blob/master/zh/hvml-spec-v1.0-zh.md)
-- [HVML Specifiction of Predefined Variables V1.0](https://github.com/HVML/hvml-docs/blob/master/zh/hvml-spec-predefined-variables-v1.0-zh.md)
 
 ---
 
