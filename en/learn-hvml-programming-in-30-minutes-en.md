@@ -2,34 +2,7 @@
 
 -- Vincent Wei
 
-**Table of Contents**
-
-[//]:# (START OF TOC)
-
-- [Introduction](#introduction)
-- [Fundamental Principles](#fundamental-principles)
-- [Preparation](#preparation)
-- [Target Document Types and Expressions](#target-document-types-and-expressions)
-- [Control Flow](#control-flow)
-   + [Alternative branching and preposition attributes](#alternative-branching-and-preposition-attributes)
-   + [Multiple branching and adverb attributes](#multiple-branching-and-adverb-attributes)
-   + [Looping and Context Variables](#looping-and-context-variables)
-- [Data/Event Driven Programming](#dataevent-driven-programming)
-- [Templates and Substitutions](#templates-and-substitutions)
-- [Variables and Closures](#variables-and-closures)
-   + [Static variables vs. temporary variables](#static-variables-vs-temporary-variables)
-   + [Set](#set)
-   + [Variable Scope](#variable-scope)
-   + [Executing in place or calling](#executing-in-place-or-calling)
-- [Coroutines and Concurrency](#coroutines-and-concurrency)
-- [Asynchronous Operations](#asynchronous-operations)
-- [Connecting to Renderer](#connecting-to-renderer)
-- [Two Comprehensive Examples](#two-comprehensive-examples)
-   + [Arbitrary Precision Calculator](#arbitrary-precision-calculator)
-   + [Planetary Resonance](#planetary-resonance)
-- [Summary](#summary)
-
-[//]:# (END OF TOC)
+[TOC]
 
 ## Introduction
 

@@ -3,19 +3,7 @@
 - Author: Vincent Wei
 - Date: March 2023
 
-**Table of contents**
-
-[//]:# (START OF TOC)
-
-- [Preparation](#preparation)
-- [Quickly understand HVML](#quickly-understand-hvml)
-- [Loadable Dynamic Object PY](#loadable-dynamic-object-py)
-- [Sample Program: Finding Prime Numbers](#sample-program-finding-prime-numbers)
-- [Sample Program: 3D Random Walk](#sample-program-3d-random-walk)
-- [Conclusion](#conclusion)
-
-[//]:# (END OF TOC)
-
+[TOC]
 
 In March 2023, the HVML community released version 0.9.8 of the HVML open source interpreter PurC, which added support for Python.
 
