@@ -723,9 +723,9 @@ HVML 还定义有如下两种特殊数据类型：
 
 更进一步，我们还可以将某个特定的属性当作函数使用，通过传递参数来获得不同的返回值，或者对该属性设置特定的值。比如在 `$SYS` 对象上，如果我们要获取当前操作系统的内核名称以及发布版本号，则可以使用 `$SYS.uname_prt('kernel-name kernel-release')`，这时，我们将获得类似 `Linux 5.4.0-107-generic` 的字符串。
 
-除了使用 `( )` 这种类似函数调用的方式之外，我们还可以使用 `(! )`，后者用于设置某个属性。比如，使用 `$SYS.cwd` 可以获得当前工作目录，而使用 `$SYS.cwd(! '/tmp' )` 可设置当前工作目录。
+除了使用 `( )` 这种类似函数调用的方式之外，我们还可以使用 `!( )`，后者用于设置某个属性。比如，使用 `$SYS.cwd` 可以获得当前工作目录，而使用 `$SYS.cwd!( '/tmp' )` 可设置当前工作目录。
 
-这里，我们引入了两种运算符：`( )` 和 `(! )`。本质上，前者对应于动态属性的获取器方法，后者对应于动态属性的设置器方法。
+这里，我们引入了两种运算符：`( )` 和 `!( )`。本质上，前者对应于动态属性的获取器方法，后者对应于动态属性的设置器方法。
 
 除了内置的 `$SYS` 动态对象或者通过 `DOCTYPE` 预先装载的动态对象之外，我们也可以通过外部程序模块实现自定义的动态对象，并通过 `init` 标签将这个动态对象和某个变量绑定在一起，如：
 
@@ -1009,7 +1009,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
     <body>
 
         <!-- open a channel named `myChannel` -->
-        <init as chan with $RUNNER.chan(! 'myChannel' ) />
+        <init as chan with $RUNNER.chan!( 'myChannel' ) />
 
         <!-- start the writer coroutine asynchronously -->
         <load from "#writer" asynchronously />
@@ -1033,7 +1033,7 @@ hvml.load ("a.hvml", { "nrUsers" : 10 })
 
         <!-- close the channel -->
         <inherit>
-            $RUNNER.chan(! 'myChannel', 0)
+            $RUNNER.chan!( 'myChannel', 0)
         </inherit>
 
     </body>
@@ -1469,18 +1469,18 @@ HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并
 {{
     // 调用 $SYS.cwd 将当前工作路径切换到 `/etc` 目录下，然后调用 $FS.list
     // 获得所有目录项对象数组。
-    $SYS.cwd(! '/etc'); $FS.list
+    $SYS.cwd!( '/etc'); $FS.list
 }}
 
 {{
     // 尝试改变工作路径到 `/root` 目录下
-    $SYS.cwd(! '/root') &&
+    $SYS.cwd!( '/root') &&
         // 如果成功则调用 $FS.list 获得该目录下的所有目录项对象数组
         $FS.list ||
             // 否则向标准输出（$STREAM.stdout）打印提示信息
             $STREAM.stdout.writelines('Cannot change directory to "/root"');
             // 并改变工作路径到 `/` 下
-            $SYS.cwd(! '/' ) &&
+            $SYS.cwd!( '/' ) &&
                 // 若成功，则获得该目录下所有目录项对象数组
                 $FS.list ||
                     // 否则将 `false` 作为该 CHEE 的最终求值结果
@@ -1492,7 +1492,7 @@ HVML 为集合类数据提供了若干抽象的数据操作方法，比如求并
 # 所有目录项清单（字符串），否则返回提示信息。最终将目录项清单或者错误信息
 # 输出到标准输出。
     $STREAM.stdout.writelines({{
-                $SYS.cwd(! '/root') && $FS.list_prt ||
+                $SYS.cwd!( '/root') && $FS.list_prt ||
                     'Cannot change directory to "/root"'
             }})
 }}
@@ -1554,7 +1554,7 @@ HVML 允许使用 `bind` 标签将一个求值表达式（或参数化数据）�
 再如出现在函数调用参数列表中时：
 
 ```hvml
-    <test with $SYS.cwd(! (SYS.cwd + '/..') ) >
+    <test with $SYS.cwd!( (SYS.cwd + '/..') ) >
         ...
     </test>
 ```
@@ -1885,7 +1885,7 @@ HVML 定义的异常如下：
 1. 执行动作元素对应的操作时遇到的异常，比如非法的属性值，数据一致性错误等。
 1. 其他情形，如分配栈帧、创建新协程失败等。
 
-通常，当某个动作元素、框架元素或模板元素被设置有 `silently` 副词属性，或者外部元素设置有 `hvml:silently` 属性时，在对其属性值或内容求值时，或调用执行器时，若遇到可忽略的异常，应返回一个合理的返回值，而不抛出异常。比如调用 `$SYS.time(! <number $seconds: seconds since Epoch> )` 设置系统时间时，如果当前用户没有权限修改系统时间，通常应该产生 `AccessDenied` 异常。但如果在调用该方法的元素中，设置有 `silently` 副词属性，则不会产生异常，而是返回 `false` 表明执行错误。
+通常，当某个动作元素、框架元素或模板元素被设置有 `silently` 副词属性，或者外部元素设置有 `hvml:silently` 属性时，在对其属性值或内容求值时，或调用执行器时，若遇到可忽略的异常，应返回一个合理的返回值，而不抛出异常。比如调用 `$SYS.time!( <number $seconds: seconds since Epoch> )` 设置系统时间时，如果当前用户没有权限修改系统时间，通常应该产生 `AccessDenied` 异常。但如果在调用该方法的元素中，设置有 `silently` 副词属性，则不会产生异常，而是返回 `false` 表明执行错误。
 
 `silently` 属性主要作用于以上所指的前两种情形；哪些异常可忽略，哪些异常不可忽略，通常由解释器的实现者确定。第三种情形下产生的异常，会被认为是致命的而不能被忽略，也就是说，`silently` 属性对第三种情形无效，比如因为分配栈帧失败而导致的 `MemoryFailure` 异常。
 
@@ -2481,7 +2481,7 @@ hvml://<host_name>[:<port>]/<app_name>/<runner_name>/<page_group_name>/<path_to_
 
     <hybrid_addressing_expression>:
        '.'<literal_key_name>'(' [ws] <hybrid_expression>[<',' [ws] <hybrid_expression> [ws]>, ...] [ws] ')': 用于在动态对象上调用特定键名的获取器方法。
-       '.'<literal_key_name>'(!' [ws] <hybrid_expression>[<',' [ws] <hybrid_expression> [ws]>, ...] [ws] ')': 用于在动态对象上调用特定键名的设置器方法。
+       '.'<literal_key_name>'!(' [ws] <hybrid_expression>[<',' [ws] <hybrid_expression> [ws]>, ...] [ws] ')': 用于在动态对象上调用特定键名的设置器方法。
        '.'<literal_key_name>: 用于引用一个对象的键值。
        '[' [ws] <hybrid_evaluation_expression> | <quoted_key_name> | <literal_integer> [ws] ']': 用于引用一个数组、元组的特定单元或者用于引用一个对象的键值，尤其当对应的键名不符合上面所说的变量名规则时。
 
@@ -4308,7 +4308,7 @@ Content-Type: text/plain
 ```hvml
 <hvml target="html" lang="en">
     <head>
-        <base href="$CRTN.base(! 'file:///' )" />
+        <base href="$CRTN.base!( 'file:///' )" />
 
         <iterate on=$FS.list_prt('/module/$CRTN.target/','*.hvml','name') by="RANGE: 0">
             <define as="ops$FS.basename($?,'hvml')" from="/module/$CRTN.target/$?">
@@ -4340,7 +4340,7 @@ Content-Type: text/plain
 ```hvml
 <hvml target="html" lang="en">
     <head>
-        <base href="$CRTN.base(! 'file:///' )" />
+        <base href="$CRTN.base!( 'file:///' )" />
     </head>
 
     <body>
@@ -7679,7 +7679,8 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 ##### OR1.5) 新增运算符表达式
 
-- 支持常见运算符的表达式
+- 支持常见运算符的表达式。
+- 调整属性设置器的调用语法为 `!(`。
 
 相关章节：
 

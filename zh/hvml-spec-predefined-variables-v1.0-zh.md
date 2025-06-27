@@ -22,13 +22,11 @@ Language: Chinese
 
 本文提及的版权所有人相关注册商标或商标之详细列表，请查阅文档末尾。
 
-**目录**
-
 [TOC]
 
 ## 1) 介绍
 
-本文档是 HVML 规范的一部分，用于详细定义 HVML 解释器必须支持或者可选支持的预定义变量。
+本文档是 HVML 规范的一部分，用于详细定义 HVML 解释器必须支持或者可选支持的预定义变量及其接口。
 
 ### 1.1) 规范及术语
 
@@ -404,7 +402,7 @@ $SYS.locale(
 该方法获取指定分类的区域，返回字符串。某些平台可能不支持特定的区域分类，比如姓名（`name`）分类。对不支持的区域分类，该函数将抛出 `Unsupported` 异常，或静默求值时返回 `undefined`。
 
 ```php
-$SYS.locale(!
+$SYS.locale!(
         < '[ctype || numeric || time || collate || monetary || messages || paper || name || address || telephone || measurement || identification] | all' $categories:
             - 'ctype':          `Character classification`
             - 'numeric':        `Formatting of nonmonetary numeric values`
@@ -442,7 +440,7 @@ $SYS.locale(!
 $SYS.locale
     // string: "en_US"
 
-$SYS.locale(! 'all', 'zh_CN')
+$SYS.locale!( 'all', 'zh_CN')
     // boolean: true
 
 $SYS.locale
@@ -462,7 +460,7 @@ $SYS.time longint: `The calendar time (seconds since Epoch)`
 该方法获取当前日历时间（自 Epoch 以来的秒数），返回值类型为 `longint`。
 
 ```php
-$SYS.time(!
+$SYS.time!(
         <real $seconds: `seconds since Epoch`>
 ) true | false
 ```
@@ -518,7 +516,7 @@ $SYS.time_us(
 该方法获取当前系统时间，包括自 Epoch 以来的秒数以及微秒数，返回值类型为 `longdouble` 数值或包含 `sec` 和 `usec` 两个属性的对象。
 
 ```php
-$SYS.time_us(!
+$SYS.time_us!(
         <real $sec_us: `Seconds with microseconds since Epoch`>
 ) true | false
 ```
@@ -526,7 +524,7 @@ $SYS.time_us(!
 该方法用一个实数（整数部分表示自 Epoch 以来的秒数，小数部分表示微秒数）设置系统时间。成功时返回 `true`。
 
 ```php
-$SYS.time_us(!
+$SYS.time_us!(
         <object $time_with_us: `An object representing the number of seconds and microseconds since Epoch`>
 ) true | false
 ```
@@ -604,7 +602,7 @@ $SYS.timezone : string | false
 该方法返回当前时区。
 
 ```php
-$SYS.timezone(!
+$SYS.timezone!(
         <string $timezone: `The new timezone`>
         [,
             < 'local | global' $permanently = 'local': `Change timezone permanently/globally or temporarily/locally.`>
@@ -640,7 +638,7 @@ HVML 推荐使用类似 `Asia/Shanghai` 这样的字符串来表示时区。实�
 $SYS.timezone
     // string: "Asia/Shanghai"
 
-$SYS.timezone(! 'America/New_York' )
+$SYS.timezone!( 'America/New_York' )
     // true
 
 $SYS.timezone
@@ -665,7 +663,7 @@ $SYS.cwd string | false: `Return the current working directory on success, or @f
 该方法获取当前工作路径。成功时返回 `true`，失败时抛出异常；在静默求值时，对可忽略异常返回 `false`。
 
 ```php
-$SYS.cwd(!
+$SYS.cwd!(
         <string $dir: `The new path for the current working directory.`>
 ) boolean: `Return @true on success or @false on failure.`
 ```
@@ -707,7 +705,7 @@ $SYS.env(
 该方法获取指定环境变量的值（字符串）；未设置时抛出 `NoSuchKey` 异常，静默求值时返回 `undefined`。
 
 ```php
-$SYS.env(!
+$SYS.env!(
         <string: `The environment variable name`>,
         <string | undefined: `The value`>
 ) true | false: `Return @true on success, otherwise @false if evaluated silently.`
@@ -732,7 +730,7 @@ $SYS.env(!
 
 ```php
 // 设置环境变量 `LOGNAME` 的值
-$SYS.env(! 'LOGNAME', 'tom' )
+$SYS.env!( 'LOGNAME', 'tom' )
     // boolean: true
 ```
 
@@ -759,7 +757,7 @@ $SYS.random_sequence(
 
 ```php
 // 从内核获得随机数据用于当前行者的随机数发生器种子。
-$SYS.random(! $DATA.fetchreal($SYS.random_sequence(4), 'u32') )
+$SYS.random!( $DATA.fetchreal($SYS.random_sequence(4), 'u32') )
     // boolean: true
 ```
 
@@ -788,7 +786,7 @@ $SYS.random(
 该方法获取 0 到指定的最大值之间的一个随机值。返回值的类型同参数 `$max` 的类型。
 
 ```php
-$SYS.random(!
+$SYS.random!(
         <real $seed: `The random seed`>
         [, <number $complexity: `A number equal or greater than 8 to indicates how sophisticated the random number generator it should use - the larger, the better the random numbers will be.>
         ]
@@ -805,11 +803,11 @@ $SYS.random(!
 
 ```php
 // 使用当前系统日历时间设置随机数种子。
-$SYS.random(! $SYS.time )
+$SYS.random!( $SYS.time )
     // true
 
 // 使用当前系统日历时间设置随机数种子，并设置随机数发生器的复杂度为最高。
-$SYS.random(! $SYS.time, 256 )
+$SYS.random!( $SYS.time, 256 )
     // true
 
 $SYS.random
@@ -1025,7 +1023,7 @@ $SYS.fdflags(
 - 设置器：
 
 ```php
-$SYS.fdflags(!
+$SYS.fdflags!(
     <longint $fd: `The file descriptor.`>,
     <'cloexec || append || nonblock' $flags:
        - 'cloexec':     `Set the file descriptor flag close-on-exec.`
@@ -1068,7 +1066,7 @@ $SYS.sockopt(
 - 设置器
 
 ```php
-$SYS.sockopt(!
+$SYS.sockopt!(
     <longint $fd: `The file descriptor.`>,
     <'recv-timeout | send-timeout | recv-buffer | send-buffer' $option:
         - 'recv-timeout':   `The timeout value for input.`
@@ -1353,7 +1351,7 @@ $RUNNER.autoSwitchingRdr
 获取当前行者的 `autoSwitchingRdr` 属性值。
 
 ```php
-$RUNNER.autoSwitchingRdr(!
+$RUNNER.autoSwitchingRdr!(
         <boolean $enable: ``>,
 ) boolean : `Return the current value of 'autoSwitchingRdr' property.`
 ```
@@ -1369,7 +1367,7 @@ $RUNNER.autoSwitchingRdr(!
 ```php
 $RUNNER.autoSwitchingRdr
     // true
-$RUNNER.autoSwitchingRdr(! false )
+$RUNNER.autoSwitchingRdr!( false )
     // false
 ```
 
@@ -1417,7 +1415,7 @@ $RUNNER.user(
 该方法获取指定键名对应的键值。当指定的键名未被设置时，将抛出 `NoSuchKey` 异常，或在静默求值时，返回 `undefined`。
 
 ```php
-$RUNNER.user(!
+$RUNNER.user!(
         <string $key: `The user defined key name`>,
         <any | undefined $value: `The new variant value`>
 ) boolean : `Return @true when the old value was overridden or @false when a new key-value pair was created.`
@@ -1437,11 +1435,11 @@ _注意_，`user` 的获取器和设置器本质上访问的是 `$RUNNER` 的 `m
 
 ```php
 // 移除 `userId` 键值对
-$RUNNER.user(! 'userId', undefined )
+$RUNNER.user!( 'userId', undefined )
     // false (assumed that `userId` was not set)
 
 // 设置 `userId` 为 `20211104`
-$RUNNER.user(! 'userId', '20211104' )
+$RUNNER.user!( 'userId', '20211104' )
     // false
 
 // 获取 `userId` 对应的键值
@@ -1449,11 +1447,11 @@ $RUNNER.user('userId')
     // string: '20211104-01'
 
 // 重置 `userId` 为 `20220213`
-$RUNNER.user(! 'userId', '20220213' )
+$RUNNER.user!( 'userId', '20220213' )
     // true
 
 // 移除 `userId` 键值对
-$RUNNER.user(! 'userId', undefined )
+$RUNNER.user!( 'userId', undefined )
     // true
 ```
 
@@ -1562,7 +1560,7 @@ $RUNNER.chan(
 - `$channel.recv()`：从通道中读取数据；当通道空时，该调用将阻塞当前协程，直到有数据或者超时。
 
 ```php
-$RUNNER.chan(!
+$RUNNER.chan!(
         <string $name: `The user defined channel name`>
         [,
             <ulongint $cap = 1: `The capability of the channel.`>
@@ -1589,11 +1587,11 @@ $RUNNER.chan(!
 
 ```php
 // 创建 `channel0` 通道
-$RUNNER.chan(! 'channel0', 10 )
+$RUNNER.chan!( 'channel0', 10 )
     // true (assumed that `channel0` was not created)
 
 // 改变 `channel0` 通道的容量到 20
-$RUNNER.chan(! 'channel0', 20 )
+$RUNNER.chan!( 'channel0', 20 )
     // true
 
 // 获取 `chan10` 通道
@@ -1601,7 +1599,7 @@ $RUNNER.chan( 'channel0' )
     // native/channel
 
 // 通过设置通道容量为 0 而关闭 `channel0` 通道
-$RUNNER.chan(! 'channel0', 0 )
+$RUNNER.chan!( 'channel0', 0 )
     // true
 
 // 获取 `channel0` 通道
@@ -1730,7 +1728,7 @@ $RUNNER.chan( '_htc45ECF7' )
     // native/channel
 
 // 通过设置通道容量为 0 从而关闭临时通道
-$RUNNER.chan(! '_htc45ECF7', 0 )
+$RUNNER.chan!( '_htc45ECF7', 0 )
     // true
 
 // 获取 `_htc45ECF7` 通道
@@ -1783,7 +1781,7 @@ $CRTN.base string: `The base URL.`
 该属性获取器返回当前的基础 URL，如 `file:///app/com.example.foo/hvml`。
 
 ```php
-$CRTN.base(!
+$CRTN.base!(
         <string $new_url: `The new base URL`>
 ) string | false: `The new base URL normalized from $new_url or `false` for invalid $new_url.`
 ```
@@ -1803,7 +1801,7 @@ $CRTN.base(!
 **示例**
 
 ```php
-$CRTN.base(! "https://foo.example.com//app/hvml/" )
+$CRTN.base!( "https://foo.example.com//app/hvml/" )
     // string: 'https://foo.example.com/app/hvml'
 ```
 
@@ -1822,7 +1820,7 @@ $CRTN.maxIterationCount ulongint: `The current maximal iteration count.`
 该属性获取器返回当前的最大迭代次数值。
 
 ```php
-$CRTN.maxIterationCount(!
+$CRTN.maxIterationCount!(
         <real $new_value: `The new maximal interation count`>
 ) ulongint | false : `The new maximal iteration count.`
 ```
@@ -1842,7 +1840,7 @@ $CRTN.maxIterationCount(!
 **示例**
 
 ```php
-$CRTN.maxIterationCount(! 10000UL )
+$CRTN.maxIterationCount!( 10000UL )
 ```
 
 #### 3.3.4) `maxRecursionDepth` 属性
@@ -1860,7 +1858,7 @@ $CRTN.maxRecursionDepth ulongint: `The current maximal recursion depth value.`
 该属性获取器返回当前的最大递归深度值。
 
 ```php
-$CRTN.maxRecursionDepth(!
+$CRTN.maxRecursionDepth!(
         <real $new_value: `new maximal recursion depth`>
 ) ulongint | false: `The new maximal recursion depth value.`
 ```
@@ -1880,7 +1878,7 @@ $CRTN.maxRecursionDepth(!
 **示例**
 
 ```php
-$CRTN.maxRecursionDepth(! 10000UL )
+$CRTN.maxRecursionDepth!( 10000UL )
 ```
 
 #### 3.3.5) `maxEmbeddedLevels` 属性
@@ -1898,7 +1896,7 @@ $CRTN.maxEmbeddedLevels ulongint: `The current maximal embedded levels.`
 该属性获取器返回当前的最大容器数据嵌套层级。
 
 ```php
-$CRTN.maxEmbeddedLevels(!
+$CRTN.maxEmbeddedLevels!(
         <real $new_value: `new maximal embedded levels`>
 ) ulongint | false: `The new maximal embedded levels.`
 ```
@@ -1918,7 +1916,7 @@ $CRTN.maxEmbeddedLevels(!
 **示例**
 
 ```php
-$CRTN.maxEmbeddedLevels(! 64UL )
+$CRTN.maxEmbeddedLevels!( 64UL )
 ```
 
 #### 3.3.6) `timeout` 属性
@@ -1936,7 +1934,7 @@ $CRTN.timeout number : `The current timeout value (in seconds)`
 该属性获取器返回当前超时值。
 
 ```php
-$CRTN.timeout(!
+$CRTN.timeout!(
         <number $new_timeout: `The new timeout value (in seconds)`>
 ) number | false: `The new timeout value`
 ```
@@ -1957,7 +1955,7 @@ $CRTN.timeout(!
 
 ```php
 // 设置超时值为 3.5 秒。
-$CRTN.timeout(! 3.5 )
+$CRTN.timeout!( 3.5 )
     // number: 3.5
 ```
 
@@ -1995,7 +1993,7 @@ $CRTN.token string : `The corontine token`
 该方法获取当前 HVML 协程的令牌（token），形如 `3cd5`。
 
 ```php
-$CRTN.token(!
+$CRTN.token!(
         <string $new_token: `The new token for the coroutine`>
 ) string | false: `The new token`
 ```
@@ -2018,7 +2016,7 @@ $CRTN.token(!
 $CRTN.token
     // string: `7`
 
-$CRTN.token(! 'myTask' )
+$CRTN.token!( 'myTask' )
     // string: `myTask`
 
 $CRTN.token
@@ -2117,7 +2115,7 @@ $CRTN.static.<variable>(
 该属性获取器获取指定变量的值。`variable` 是变量名称；`namespace` 用于指定变量的名字空间，默认取 1L。
 
 ```php
-$CRTN.static.<variable>(!
+$CRTN.static.<variable>!(
     < any $value: `The new value.` >,
     [,
         < string | ulongint $namspace = 1L: `The name space of the variable`.
@@ -2147,7 +2145,7 @@ $CRTN.static.<variable>(!
 $CRTN.static.x('_root')
     // undefined
 
-$CRTN.static.x(![0, 1, 2], '_root')
+$CRTN.static.x!([0, 1, 2], '_root')
     // true
 
 $CRTN.static.x('_root')
@@ -2174,7 +2172,7 @@ $CRTN.temp.<variable>(
 通过上述属性获取器获取指定临时变量的值。`variable` 是变量名称；`namespace` 用于指定变量的名字空间，默认取 1L。
 
 ```php
-$CRTN.temp.<variable>(!
+$CRTN.temp.<variable>!(
     < any $value: `The new value.` >,
     [,
         < string | ulongint $namspace = 1L: `The name space of the variable`.
@@ -2204,7 +2202,7 @@ $CRTN.temp.<variable>(!
 $CRTN.temp.x('_topmost')
     // undefined
 
-$CRTN.temp.x(! [0, 1, 2], '_topmost')
+$CRTN.temp.x!( [0, 1, 2], '_topmost')
     // true
 
 $CRTN.temp.x('_topmost')
@@ -2346,17 +2344,17 @@ $DOC.serialize($STREAM.stdout)
 
 在元素汇集实体上，我们可以就如下键名获得对应的设置器：
 
-1. `.attr(! <string: attributeName>, <string: value> )`：设置元素汇集中所有元素的属性值。
-1. `.attr(! <object: attributes> )`：使用对象信息设置元素汇集中所有元素的多个属性值。
-1. `.contents(! <string: content> )`：设置元素汇集中所有元素的内容。
-1. `.textContent(! <string: content> )`：设置元素汇集中所有元素的文本内容，将移除可能的子元素。
-1. `.dataContent(! <any: content> )`：设置元素汇集中所有元素的数据内容，将移除可能的子元素。
-1. `.addClass(! <string: className> )`：为元素汇集中所有的元素添加指定的类名。
-1. `.addClass(! <array: classNames> )`：为元素汇集中所有的元素添加数组中指定的所有类名。
-1. `.removeAttr(! <string: attributeName> )`：移除元素汇集中所有元素的指定属性。
-1. `.removeClass(! )`：移除元素汇集中所有元素的所有类名。
-1. `.removeClass(! <string: className> )`：移除元素汇集中所有元素的指定类名。
-1. `.removeClass(! <array: classNames> )`：移除元素汇集中所有元素在数组中的所有类名。
+1. `.attr!( <string: attributeName>, <string: value> )`：设置元素汇集中所有元素的属性值。
+1. `.attr!( <object: attributes> )`：使用对象信息设置元素汇集中所有元素的多个属性值。
+1. `.contents!( <string: content> )`：设置元素汇集中所有元素的内容。
+1. `.textContent!( <string: content> )`：设置元素汇集中所有元素的文本内容，将移除可能的子元素。
+1. `.dataContent!( <any: content> )`：设置元素汇集中所有元素的数据内容，将移除可能的子元素。
+1. `.addClass!( <string: className> )`：为元素汇集中所有的元素添加指定的类名。
+1. `.addClass!( <array: classNames> )`：为元素汇集中所有的元素添加数组中指定的所有类名。
+1. `.removeAttr!( <string: attributeName> )`：移除元素汇集中所有元素的指定属性。
+1. `.removeClass!( )`：移除元素汇集中所有元素的所有类名。
+1. `.removeClass!( <string: className> )`：移除元素汇集中所有元素的指定类名。
+1. `.removeClass!( <array: classNames> )`：移除元素汇集中所有元素在数组中的所有类名。
 
 在以上接口支持下，HVML 动作元素中通过 CSS 选择器引用元素时，如：
 
@@ -2379,7 +2377,7 @@ $DOC.serialize($STREAM.stdout)
 $DOC.query("#foo").attr('bar')
 
 // 设置 id 为 foo 的元素上的属性 `bar` 的值：
-$DOC.query("#foo").attr(! "bar", "qux")
+$DOC.query("#foo").attr!( "bar", "qux")
 ```
 
 参阅：<https://api.jquery.com/category/attributes/>
@@ -3638,7 +3636,7 @@ $DATA.base64(
 该函数将给定的字符串或者二进制序列 `data` 按照 Base64 进行编码。
 
 ```php
-$DATA.base64(!
+$DATA.base64!(
         <string $data>,
 ) bsequence
 ```
@@ -3667,7 +3665,7 @@ $DATA.base64( bx48564D4C )
 $DATA.base64('HVML 是全球首款可编程标记语言')
     // string: 'SFZNTCDmmK/lhajnkIPpppbmrL7lj6/nvJbnqIvmoIforrDor63oqIA='
 
-$DATA.base64(! 'SFZNTA==' )
+$DATA.base64!( 'SFZNTA==' )
     // bsequence: bx48564D4C
 ```
 
@@ -6116,7 +6114,7 @@ $STR.htmlentities(
 该属性的设置器将转换给定字符串中的 HTML 实体为对应的 Unicode 字符：
 
 ```php
-$STR.htmlentities(!
+$STR.htmlentities!(
     <string $string: `The input string.`>
     [,
         <'keep-double-quotes || keep-single-quotes || substitute-invalid ]' $decode_flags = 'substitute-invalid':
@@ -6324,7 +6322,7 @@ $STR.codepoints(
 该属性的设置器将线性容器中的 Unicode 码点（codepoint）转换为 UTF-8 编码并串接为一个字符串。
 
 ```php
-$STR.codepoints(!
+$STR.codepoints!(
     < 'array | tuple' $codepoints: `The linear container consist of codepoints of Unicode characters.` >
 ) string | false: `The converted string in UTF-8 encoding.`
 ```
@@ -6349,7 +6347,7 @@ $STR.codepoints('HVML的昵称是呼噜猫')
 $STR.codepoints('HVML的昵称是呼噜猫', 'tuple')
     // tuple: [! 72, 86, 77, 76, 30340, 26165, 31216, 26159, 21628, 22108, 29483 ]
 
-$STR.codepoints(! [ 72, 86, 77, 76 ])
+$STR.codepoints!( [ 72, 86, 77, 76 ])
     // 'HVML'
 ```
 
@@ -6985,7 +6983,7 @@ $STREAM.listener ulongint | null: `The corouting identifier of the current liste
 ```
 
 ```php
-$STREAM.listener(!
+$STREAM.listener!(
         <ulongint $cid: `The new listener of the stream entity`.>
 ) ulongint | null | false: `The old listener of the current listener`.
 ```
@@ -8106,17 +8104,17 @@ $MATH.const_l('1/sqrt(2)')
 ```php
 // 原型
 // 设置自定义常数
-$MATH.const(!
+$MATH.const!(
         <string: `A user-defined const name`>,
         <number: `The constant>
         [, <longdouble: `The constant>]
 ) boolean
 
 // 示例：设置 c（真空光速）为 299792458
-$MATH.const(! 'c', 299792458)
+$MATH.const!( 'c', 299792458)
 
 // 示例：设置 G0（引力常数）为 6.67e-11
-$MATH.const(! 'G0', 6.67e-11)
+$MATH.const!( 'G0', 6.67e-11)
 ```
 
 实现要求：
@@ -9510,7 +9508,7 @@ $FS.file_contents(
 ```
 
 ```php
-$FS.file_contents(!
+$FS.file_contents!(
         < string $filename: `Path to the file.` >
         < string | bsequenc $data: `The data to write, can be either a string or a byte sequence.`
         < 'append || lock': $flags:
@@ -9881,7 +9879,7 @@ $PY.global(<string $name: `The global variable name`>) any | undefined
 该属性获取器返回当前 Python 解释器 `__main__` 模块的指定全局变量的值。
 
 ```php
-$PY.global(!
+$PY.global!(
         <object $globals: `The object defined new global variables`>
 ) true | false
 ```
@@ -9889,7 +9887,7 @@ $PY.global(!
 该属性设置器将使用给定的对象设置当前 Python 解释器 `__main__` 模块的全局变量，已有的变量可能会被覆盖。
 
 ```php
-$PY.global(!
+$PY.global!(
         <string $name: `The global variable name`>,
         <any $value: `The value`>
 ) true | false
@@ -9897,7 +9895,7 @@ $PY.global(!
 
 该属性设置器设置当前 Python 解释器 `__main__` 模块的指定全局变量的值；当 `$value` 为 `undefined` 时，将删除该全局变量。
 
-该属性应被实现为原生实体，从而可通过 `$PY.global.x` 来获取全局变量 `x` 的值，或者使用 `$PY.global.x(! ... )` 来设置全局变量的值。
+该属性应被实现为原生实体，从而可通过 `$PY.global.x` 来获取全局变量 `x` 的值，或者使用 `$PY.global.x!( ... )` 来设置全局变量的值。
 
 **异常**
 
@@ -9921,7 +9919,7 @@ $PY.global(!
 $PY.global()
     // object: { }
 
-$PY.global(! 'x', 'zh_CN')
+$PY.global!( 'x', 'zh_CN')
     // boolean: true
 
 $PY.global('x')
@@ -9930,7 +9928,7 @@ $PY.global('x')
 $PY.global.x
     // string: 'zh_CN'
 
-$PY.global.x(! undefined )
+$PY.global.x!( undefined )
     // boolean: 'true'
 
 $PY.global.x
@@ -9959,7 +9957,7 @@ $PY.local(
 该属性获取器返回指定局部变量的值。
 
 ```php
-$PY.local(!
+$PY.local!(
         <object $local: `The object defined new local variables`>
 ) true | false
 ```
@@ -9967,7 +9965,7 @@ $PY.local(!
 该属性设置器将使用给定的对象设置局部变量，已有的变量可能会被覆盖。
 
 ```php
-$PY.local(!
+$PY.local!(
         <string $name: `The local variable name`>,
         <any $value: `The value`>
 ) true | false
@@ -9975,7 +9973,7 @@ $PY.local(!
 
 该属性设置器设置指定的局部变量的值；当 `$value` 为 `undefined` 时，将删除该局部变量。
 
-该属性应被实现为原生实体，从而可通过 `$PY.local.x` 来获取局部变量 `x` 的值，或者使用 `$PY.local.x(! ... )` 来设置局部变量的值。
+该属性应被实现为原生实体，从而可通过 `$PY.local.x` 来获取局部变量 `x` 的值，或者使用 `$PY.local.x!( ... )` 来设置局部变量的值。
 
 **异常**
 
@@ -9999,7 +9997,7 @@ $PY.local(!
 $PY.local()
     // object: { }
 
-$PY.local(! 'x', 'zh_CN')
+$PY.local!( 'x', 'zh_CN')
     // boolean: true
 
 $PY.local('x')
@@ -10184,8 +10182,8 @@ $PY.import("math")
     // boolean: true
 $PY.math.pow(2, 2)
     // number: 4
-// 使用 (! ) 以键值对形式传递函数参数。
-$PY.math.pow(! { x: 2, y: 3 } )
+// 使用 !( ) 以键值对形式传递函数参数。
+$PY.math.pow!( { x: 2, y: 3 } )
     // number: 8
 
 $PY.import('math', ['pow:power'])
@@ -10297,7 +10295,7 @@ $pyCodeObject.local(
 该属性获取器返回 `$pyCodeObject` 的指定局部变量的值。
 
 ```php
-$pyCodeObject.local(!
+$pyCodeObject.local!(
         <object $local: `The object defined new local variables`>
 ) true | false
 ```
@@ -10305,7 +10303,7 @@ $pyCodeObject.local(!
 该属性设置器将使用给定的对象设置 `$pyCodeObject` 的局部变量，已有的变量可能会被覆盖。
 
 ```php
-$pyCodeObject.local(!
+$pyCodeObject.local!(
         <string $name: `The local variable name`>,
         <any $value: `The value`>
 ) true | false
@@ -10313,7 +10311,7 @@ $pyCodeObject.local(!
 
 该属性设置器设置指定的局部变量的值；当 `$value` 为 `undefined` 时，将删除该局部变量。
 
-该属性应被实现为原生实体，从而可通过 `$pyCodeObject.local.x` 来获取局部变量 `x` 的值，或者使用 `$pyCodeObject.local.x(! ... )` 来设置局部变量的值。
+该属性应被实现为原生实体，从而可通过 `$pyCodeObject.local.x` 来获取局部变量 `x` 的值，或者使用 `$pyCodeObject.local.x!( ... )` 来设置局部变量的值。
 
 **异常**
 
@@ -10337,7 +10335,7 @@ $pyCodeObject.local(!
 $pyCodeObject.local
     // object: { }
 
-$pyCodeObject.local(! 'x', 'zh_CN')
+$pyCodeObject.local!( 'x', 'zh_CN')
     // boolean: true
 
 $pyCodeObject.local('x')
@@ -11087,7 +11085,7 @@ $sqliteCursor.connection
 1. 新增 `$STREAM.from_buffer()` 方法。
 1. 扩展 `$STREAM.from()` 方法支持基于字符串或字节序列创建只读流实体。
 1. 新增 `$stream.getuc()`、`$stream.putuc()` 和 `$stream.ungetuc()` 方法。
-1. 新增 `$STR.codepoints(!)` 设置器。
+1. 新增 `$STR.codepoints!()` 设置器。
 1. 新增 `$DATA.is_container()` 方法。
 1. 新增 `$DATA.is_linear_container()` 方法。
 1. 使用 `$STR.htmlentities` 获取器和设置器分别用于编码和解码。
