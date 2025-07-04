@@ -1,11 +1,11 @@
 # HVML 规范
 
 Subject: HVML Specification  
-Version: 1.0-OR1  
+Version: 1.0-OR2  
 Author: Vincent Wei  
 Category: Language Specification  
 Creation Date: July, 2020  
-Last Modified Date: Jun. 30, 2025  
+Last Modified Date: Oct. 31, 2025  
 Status: Release Candidate  
 Release Name: 丑牛  
 Language: Chinese
@@ -700,6 +700,7 @@ HVML 定义如下基本容器（basic container）类型：
 - 有符号长整数（longint），应实现为 64 位有符号整数。
 - 无符号长整数（ulongint），应实现为 64 位无符号整数。
 - 长浮点数（longdouble），对应 C 语言 long double 类型。
+- 大整数（bigint），任意精度整数类型。
 - 字节序列（bsequence）。
 - 元组（tuple），可使用索引引用的多个数据项，一旦创建，其容量不可变，其成员不可移除，仅可置空。
 - 集合（set），特殊的数组，其中的成员可根据其值或者对象数组上的唯一性键值确保唯一性。
@@ -873,8 +874,6 @@ id:1,name:Tom,age:2,male:true,;id:2,name:Jerry,age:3,male:true,
 - 空值（null）。
 - 真值（true）。
 - 假值（false）。
-- 字符串（string）。
-- 字节序列（byte sequence）。
 - 动态值（dynamic value）。
 - 原生实体（native entity）。
 
@@ -882,7 +881,9 @@ id:1,name:Tom,age:2,male:true,;id:2,name:Jerry,age:3,male:true,
 
 我们将如下数据类型称为可变数据（mutable data）：
 
-- 数值类（number、longint、ulongint、double、longdouble）。
+- 数值类（number、longint、ulongint、double、longdouble、bigint）。
+- 字符串（string）。
+- 字节序列（byte sequence）。
 - 数组（array）。
 - 元组（tuple）。
 - 对象（object）。
@@ -2000,7 +2001,7 @@ HVML 定义的异常如下：
     <update on="$DOC.query('#the-user-list > li')" at="attr.class" with="text-info" />
 ```
 
-由于 `update` 标签的 `on` 属性值不允许使用字符串、字节序列等不可变数据，而 `observe` 标签的 `on` 属性值只能为可观察的原生实体或容器数据，因此，我们也可以在 `update` 和 `observe` 标签的 `on` 属性值中直接使用 CSS 选择器（字符串）。比如：
+由于 `update` 标签的 `on` 属性值不允许使用字符串、字节序列数据，而 `observe` 标签的 `on` 属性值只能为可观察的原生实体或容器数据，因此，我们也可以在 `update` 和 `observe` 标签的 `on` 属性值中直接使用 CSS 选择器（字符串）。比如：
 
 ```hvml
     <update on="#the-user-list > li" at="attr.class" with="text-info" />
@@ -2712,17 +2713,19 @@ $DATA.numerify(
 
 ```javascript
 [
-        { age: 10, weight: 30, height: 150, },
-        { age: 11, weight: 32, height: 145, },
+    { age: 10, weight: 30, height: 150, },
+    { age: 11, weight: 32, height: 145, },
 ]
 ```
 
 4) 使用如下后缀来明确表示数值（number）的类型：
-   - 有符号长整型（64 位）：1234567890L
-   - 无符号长整型（64 位）：1234567890UL
-   - 可使用 `0x` 前缀表示十六进制表达的有符号长整型，此时可忽略 `L` 后缀：0x1122AABBCCDDEEFF
-   - 可使用 `0x` 前缀表示十六进制表达的有符号长整型，此时可忽略 `L` 后缀：0x8899AABBCCDDEEFFU
-   - 长双精度浮点数：1234567890FL
+   - `L` 后缀表示有符号长整型（64 位）：`1234567890L`。
+   - `UL` 后缀表示无符号长整型（64 位）：`1234567890UL`。
+   - 可使用 `0x` 前缀或 `0` 前缀表示十六进制或八进制表达的有符号长整型，此时可忽略 `L` 后缀，如 `0x1122AABBCCDDEEFF`。
+   - 可使用 `0x` 前缀或 `0` 前缀表示十六进制或八进制表达的无符号长整型，此时可忽略 `L` 后缀：`0x8899AABBCCDDEEFFU`，但必须保留 `U` 后缀。
+   - `n` 后缀表示大整数，如 `1234567890n`；可使用 `0x` 或 `0` 前缀表示大整数的十六进制或八进制表达，但不可忽略其后的 `n`。
+   - `F` 后缀表示浮点数：如双精度浮点数 `1234567890F`；添加 `L` 后缀表示长双精度浮点数，如 `1234567890FL`。
+   - 在解析时，解析器对以上前缀或后缀的大小写不敏感，但序列化时需要使用规定的大小写形式。
 
 未显式指定类型的数值，全部视作双精度浮点数处理。
 
@@ -7627,6 +7630,7 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 
 发布历史：
 
+- 2025 年 08 月 31 日：发布 V1.0 OR2，标记为 'v1.0-or2-250831'。
 - 2025 年 06 月 30 日：发布 V1.0 OR1，标记为 'v1.0-or1-250630'。
 - 2025 年 04 月 28 日：发布 V1.0 OR0，标记为 'v1.0-or0-250428'。
 - 2024 年 11 月 30 日：发布 V1.0 RCh，标记为 'v1.0-rch-241130'。
@@ -7646,6 +7650,24 @@ HVML 的潜力绝对不止上述示例所说的那样。在未来，我们甚至
 - 2022 年 05 月 01 日：发布 V1.0 RC3，标记为 'v1.0-rc3-220501'。
 - 2022 年 04 月 01 日：发布 V1.0 RC2，标记为 'v1.0-rc2-220401'。
 - 2022 年 02 月 09 日：发布 V1.0 RC1，标记为 'v1.0-rc1-220209'。
+
+#### OR2) 250831
+
+##### OR2.1) 新增大整数类型
+
+- 新增大整数（bigint）类型，用于支持高精度整数运算；其字面值使用 `n` 后缀，支持使用 `0x` 或 `0` 做为其字面值的十六进制和八进制前缀。
+
+相关章节：
+
+- [2.2.5) eJSON 语法](#225-ejson-语法)
+
+##### OR2.2) 调整可变数据和不可变数据
+
+- 将字符串和字节序列调整为可变数据。
+
+相关章节：
+
+- [2.1.5) 可变数据和不可变数据](#215-可变数据和不可变数据)
 
 #### OR1) 250630
 
