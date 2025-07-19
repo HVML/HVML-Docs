@@ -4042,7 +4042,7 @@ $DATA.key('')
 
 ```php
 $DATA.longint(
-        < any $data: `The data.` >
+    [ < any $data: `The data.` > ]
 ) longint
 ```
 
@@ -4073,7 +4073,7 @@ $DATA.key(123)
 
 ```php
 $DATA.ulongint(
-        < any $data: `The data.` >
+    [ < any $data: `The data.` > ]
 ) ulongint
 ```
 
@@ -4106,7 +4106,7 @@ $DATA.ulongint(-123L)
 
 ```php
 $DATA.bigint(
-        < any $data: `The data.` >
+    [ < any $data: `The data.` > ]
 ) bigint
 ```
 
@@ -4141,7 +4141,7 @@ $DATA.bigint(-123L)
 
 ```php
 $DATA.double(
-        < any $data: `The data.` >
+    [ < any $data: `The data.` > ]
 ) number
 ```
 
@@ -4172,7 +4172,7 @@ $DATA.double(-123L)
 
 ```php
 $DATA.longdouble(
-        < any $data: `The data.` >
+    [ < any $data: `The data.` > ]
 ) longdouble
 ```
 
