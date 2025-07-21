@@ -4207,20 +4207,22 @@ $DATA.abs(
 ) real
 ```
 
-该方法返回传入数据的绝对值；若传入数据为 `null`、`true` 或 `false`，则转换为 `number` 类型后返回。
+该方法返回传入数据的绝对值；若传入数据为非数值类型，则先进行数值化然后再返回其绝对值。
 
 **异常**
 
-该方法不产生异常。
+该方法产生如下异常：
+
+- `ArgumentMissed`：未传入参数。
 
 **示例**
 
 ```php
 $DATA.abs(null)
-    // 0.
+    // 0
 $DATA.abs(false)
     // 0
-$DATA.abs(123)
+$DATA.abs("123")
     // 123
 $DATA.abs(-123L)
     // 123L
@@ -11280,6 +11282,7 @@ $sqliteCursor.connection
 1. 新增 `$DATA.bigint()` 方法。
 1. 新增 `$DATA.double()` 方法。
 1. 新增 `$DATA.longdouble()` 方法。
+1. 新增 `$DATA.abs()` 方法。
 
 #### OR1) 250630
 
