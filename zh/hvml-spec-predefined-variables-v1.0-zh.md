@@ -3062,9 +3062,9 @@ $DATA.stringify(123)
 ```php
 $DATA.serialize(
     < any $data >
-    [, < '[ [real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] || no-trailing-zero || no-slash-escape] | default' $options = `'default'`:
-        - 'real-json':          `Use JSON notation for real numbers, i.e., treat all real numbers (number, longint, ulongint, and longdouble) as JSON numbers.`
-        - 'real-ejson':         `Use eJSON notation for longint, ulongint, and longdouble, e.g., 100L, 999UL, and 100FL.`
+    [, < '[ [real-json | real-ejson] || [ runtime-null | runtime-string ] || plain || spaced || pretty || pretty_tab || [bseq-hex-string | bseq-hex | bseq-bin | bseq-bin-dots | bseq-base64] bigint-hex || no-trailing-zero || no-slash-escape] | default' $options = `'default'`:
+        - 'real-json':          `Use JSON notation for real numbers, i.e., treat longint, ulongint, number, and longdouble as JSON number, while bigint as string.`
+        - 'real-ejson':         `Use eJSON notation for longint, ulongint, bigint, and longdouble, e.g., 100L, 999UL, 999N, and 100FL.`
         - 'runtime-null':       `Treat all HVML-specific runtime types as null, i.e., undefined, dynamic, and native values will be serialized as null.`
         - 'runtime-string':     `Use string placehodlers for HVML-specific runtime types: "<undefined>", "<dynamic>", and "<native>".`
         - 'plain':              `Do not use any extra formatting characters (whitespace, newline, or tab).`
@@ -3076,6 +3076,7 @@ $DATA.serialize(
         - 'bseq-bin':           `Use binary form to serialize binary sequence.`
         - 'bseq-bin-dots':      `Use binary form to serialize binary sequence and use dots to seperate the binary digits per four digits. e.g., b1100.1010.`
         - 'bseq-base64':        `Use Base64 to serialize binary sequence.`
+        - 'bigint-hex':         `Use hexadecimal form to serialize bigint.`
         - 'no-trailing-zero':   `Drop trailing zero for float values.`
         - 'no-slash-escape':    `Do not escape the forward slashes ('/').`
         - 'default':            `Equivalent to 'real-json runtime-string plain bseq-hex-string no-slash-escape'`
