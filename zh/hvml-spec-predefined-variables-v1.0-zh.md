@@ -11251,6 +11251,33 @@ $sqliteCursor.connection
     // SQLiteConnect
 ```
 
+### 4.6) `JS`
+
+`JS` 是一个内嵌的动态对象，默认绑定为协程级变量。该对象基于 [QuickJS](https://github.com/bellard/quickjs) 实现。每个 HVML 行者对应一个 QuickJS 运行时（runtime），而每个HVML 协程会在行者对应的 QuickJS 运行时中创建自己的 QuickJS 上下文（context）。也就是说，`$JS` 变量对应一个 QuickJS 上下文。
+
+`$JS` 主要提供如下功能：
+
+1. `$JS.import`：装载指定的 JavaScript 模块并可在其上调用（或访问）已装载模块提供的子模块、函数及属性。
+1. `$JS.include`：装载单个或者一组 JavaScript 脚本文件。
+1. `$JS.compile`：编译一段 JavaScript 代码、一个 JavaScript 脚本或者一个指定的模块，并返回编译后的 QuickJS 二进制字节码实体。
+1. `$JS.eval`：执行一段 JavaScript 代码、一个 JavaScript 脚本或者一个指定的模块，并返回执行结果。
+
+#### 4.6.1) `impl` 属性
+
+通过该属性获取 `$JS` 变量实现者的信息，包括开发商、作者、许可证等。
+
+#### 4.6.2) `runtime` 属性
+
+通过该属性获取 `$JS` 变量所在的运行时实体。
+
+#### 4.6.3) `import` 方法
+
+#### 4.6.4) `include` 方法
+
+#### 4.6.5) `compile` 方法
+
+#### 4.6.5) `eval` 方法
+
 ## 附录
 
 ### 附.1) 修订记录
@@ -11278,6 +11305,7 @@ $sqliteCursor.connection
 
 #### OR2) 250831
 
+1. 新增 `$JS` 可选动态对象。
 1. 新增 `$DATA.longint()` 方法。
 1. 新增 `$DATA.ulongint()` 方法。
 1. 新增 `$DATA.bigint()` 方法。
