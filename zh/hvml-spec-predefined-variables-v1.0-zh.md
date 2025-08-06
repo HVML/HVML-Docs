@@ -11255,12 +11255,12 @@ $sqliteCursor.connection
 
 `JS` 是一个内嵌的动态对象，默认绑定为协程级变量。该对象基于 [QuickJS](https://github.com/bellard/quickjs) 实现。每个 HVML 行者对应一个 QuickJS 运行时（runtime），而每个HVML 协程会在行者对应的 QuickJS 运行时中创建自己的 QuickJS 上下文（context）。也就是说，`$JS` 变量对应一个 QuickJS 上下文。
 
-`$JS` 主要提供如下功能：
+`$JS` 主要提供如下接口：
 
 1. `$JS.args`：通过该属性的设置器设置脚本参数。
-1. `$JS.load`：装载指定的 JavaScript 模块或脚本。
-1. `$JS.eval`：执行一段 JavaScript 代码，并返回执行结果。
-1. `$JS.compile`：编译一段 JavaScript 代码、一个 JavaScript 脚本或者一个指定的模块，并返回编译后的 QuickJS 二进制字节码实体。
+1. `$JS.runtime`：通过该属性获取 JSRuntime 实体。
+1. `$JS.load()`：装载指定的 JavaScript 模块或脚本。
+1. `$JS.eval()`：执行一段 JavaScript 代码，并返回执行结果。
 
 #### 4.6.1) `args` 属性
 
@@ -11268,13 +11268,95 @@ $sqliteCursor.connection
 
 #### 4.6.2) `runtime` 属性
 
-通过该属性获取 `$JS` 变量所在的运行时实体。
+通过该属性获取 `$JS` 变量所在的 JSRuntime 实体，获取或设置 JSRuntime 的相关参数。
 
 #### 4.6.3) `load` 方法
 
+装载指定的 JavaScript 模块或脚本。
+
+**描述**
+
+```php
+$JS.load(
+    < string | array $filename: `The filename to load or an array for multiple files to load.`>
+    [, <'[module | script | autodetect' $type = 'autodetect':
+        - 'module':      `Load file as a ES6 module.`
+        - 'script':      `Load file as a script.`
+        - 'autodetect':  `Auto-detect the file type.` >
+    ]
+): boolean
+```
+
+**参数**
+
+- `$filename`：指定的 JavaScript 模块或脚本文件名。可以是一个字符串，也可以是一个字符串数组。注：当指定的文件名为 `std` 时，将装载标准模块。
+- `$type`：指定的文件类型。可以取 'module'、'script' 或 'autodetect' 之一。
+
+**返回值**
+
+- `boolean`：成功返回 `true`，失败返回 `false`。
+
+**异常**
+
+该方法可产生如下异常，静默求值时返回 `false`。
+
+- `ArgumentMissed`：未给出必要参数。
+- `WrongDataType`：如果 `$filename` 参数不是字符串或字符串数组，则抛出该异常。
+- `InvalidValue`：如果 `$type` 参数不是 'module'、'script' 或 'autodetect'，则抛出该异常。
+- `EntityNotFound`：如果指定的文件不存在，则抛出该异常。
+
+**示例**
+
+```php
+$JS.load('std')
+    /* true */
+```
+
 #### 4.6.4) `eval` 方法
 
-#### 4.6.5) `compile` 方法
+执行一段 JavaScript 代码，并返回执行结果。
+
+**描述**
+
+```php
+$JS.eval(
+    < string $expression: `The JavaScript expression to evaluate.`>
+    [, <'string | json' $obj_type = 'json':
+        - 'string':  `Return the result as a string if the result is an object.`
+        - 'json':    `Return the result as a JSON string if the reesult is an object.`
+    ]
+): any
+```
+
+**参数**
+
+- `$expression`：指定的 JavaScript 表达式。
+- `$obj_type`：指定针对 JavaScript 对象的返回类型，可以取 'string' 或 'json' 之一。
+
+**返回值**
+
+- 返回 JavaScript 表达式的求值结果。
+
+**异常**
+
+该方法可产生如下异常，静默求值时返回 `undefined`。
+
+- `ArgumentMissed`：未给出必要参数。
+- `WrongDataType`：如果 `$expression` 参数不是字符串，则抛出该异常。
+- `InvalidValue`：如果 `$obj_type` 参数不是 'string' 或 'json'，则抛出该异常。
+
+**示例**
+
+```php
+$JS.eval('1 + 2')
+    /* 3 */
+$JS.eval('[]', 'json')
+    /* '[]' */
+$JS.eval('const bar = {a: 1}; bar', 'string')
+    /* '[object Object]' */
+$JS.eval('const foo = {a: 1}; foo', 'json')
+    /* '{"a":1}' */
+```
 
 ## 附录
 
