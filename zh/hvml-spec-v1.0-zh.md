@@ -1842,7 +1842,8 @@ HVML 定义的异常如下：
    - `DuplicateName`：重复名称，当要初始化的变量名称已经被占用时。
    - `DuplicateKey`：重复键，通常发生在合并对象或集合时。
    - `eDOMFailure`：表示在构建 eDOM 时遇到问题。
-   - `InternalFailure`：解释器内部错误。
+   - `InternalFailure`：内部解释器错误。
+   - `ExternalFailure`：外部解释器（如解释器使用的外部 JavaScript 引擎）错误。
    - `InvalidValue`：表示错误的、无法接受的值。通常发生在传入了不可接受的数值时。
    - `LostRenderer`：丢失到渲染器的连接。
    - `MaxIterationCount`：表示达到最大迭代次数。

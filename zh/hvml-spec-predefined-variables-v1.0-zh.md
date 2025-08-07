@@ -11257,18 +11257,120 @@ $sqliteCursor.connection
 
 `$JS` 主要提供如下接口：
 
+1. `$JS.runtime`：通过该属性获取或设置 JSRuntime 的运行时参数。
 1. `$JS.args`：通过该属性的设置器设置脚本参数。
-1. `$JS.runtime`：通过该属性获取 JSRuntime 实体。
 1. `$JS.load()`：装载指定的 JavaScript 模块或脚本。
 1. `$JS.eval()`：执行一段 JavaScript 代码，并返回执行结果。
 
-#### 4.6.1) `args` 属性
+#### 4.6.1) `runtime` 属性
+
+通过该属性可获取或设置 `$JS` 变量所在的 JSRuntime 的一些运行时参数，如内存限制、栈大小等。
+
+**描述**
+
+使用该属性的获取器可获得指定运行时参数的当前值：
+
+```php
+$JS.runtime(
+    < string $name: `The name of the runtime parameter, can be one of the following values:`
+        - 'memory-limit': `The memory limit in bytes.`
+        - 'max-stack-size': `The maximum stack size in bytes.`
+        - 'gc-threshold': `The GC threshold in bytes.`
+        - 'dump-unhandled-rejection': `Dump unhandled promise rejections.`
+        - 'strip-debug': `Strip all debug info including source code.`
+        - 'strip-source': `Strip the source code.`
+    >
+) ulongint | boolean
+```
+
+使用该属性的设置器可获得指定运行时参数的当前值：
+
+```php
+$JS.runtime!(
+    < string $name: `The name of the runtime parameter, can be one of the following values:`
+        - 'memory-limit': `The memory limit in bytes.`
+        - 'max-stack-size': `The maximum stack size in bytes.`
+        - 'gc-threshold': `The GC threshold in bytes.`
+        - 'dump-unhandled-rejection': `Dump unhandled promise rejections.`
+        - 'strip-debug': `Strip all debug info including source code.`
+        - 'strip-source': `Strip the source code.`
+    >,
+    < ulongint | boolean $value: `The value of the specified runtime parameter.` >
+) boolean
+```
+
+**异常**
+
+- `ArgumentMissed`：缺少必要参数。
+- `WrongDataType`：如果 `$name` 参数不是字符串，则抛出该异常。
+- `InvalidValue`：如果 `$name` 参数不是 `'memory-limit'`、`'max-stack-size'`、`'ignore-unhandled-rejection'`、`'strip-debug'` 或 `'strip-source'` 之一，则抛出该异常。
+- `InvalidValue`：如果 `$value` 参数不是整数或布尔值，则抛出该异常。
+
+**示例**
+
+```php
+$JS.runtime!('memory-limit', 1073741824UL)
+    // true
+$JS.runtime!('max-stack-size', 1048576UL)
+    // true
+$JS.runtime!('dump-unhandled-rejection', true)
+    // true
+$JS.runtime!('strip-debug', true)
+    // true
+$JS.runtime!('strip-source', true)
+    // true
+$JS.runtime('memory-limit')
+    // 1073741824UL
+$JS.runtime('max-stack-size')
+    // 1048576UL
+$JS.runtime('dump-unhandled-rejection')
+    // false
+$JS.runtime('strip-debug')
+    // false
+$JS.runtime('strip-source')
+    // false
+```
+
+#### 4.6.2) `args` 属性
 
 通过该属性的设置器设置脚本参数（`scriptArgs`）。
 
-#### 4.6.2) `runtime` 属性
+**描述**
 
-通过该属性获取 `$JS` 变量所在的 JSRuntime 实体，获取或设置 JSRuntime 的相关参数。
+```php
+$JS.args() null
+```
+
+该属性的获取器始终返回 `null`。
+
+```php
+$JS.args!(
+    <array $args: `The script arguments.`>
+) boolean
+```
+
+通过该属性的设置器，可设置 JavaScript 脚本参数，亦即 `scriptArgs` 全局变量的值。
+
+**参数**
+
+- `$args`：脚本参数数组，必须为字符串。
+
+**异常**
+
+访问该属性的设置器将产生如下异常，静默求值时返回 `false`：
+
+- `ArgumentMissed`：缺少必要参数。
+- `WrongDataType`：如果 `$args` 参数不是数组（或元组等线性容器），则抛出该异常。
+- `InvalidValue`：如果 `$args` 中的元素不是字符串，则抛出该异常。
+
+**示例**
+
+```php
+$JS.args
+    // null
+$JS.args!(['pi', '100'])
+    // true
+```
 
 #### 4.6.3) `load` 方法
 
@@ -11284,7 +11386,7 @@ $JS.load(
         - 'script':      `Load file as a script.`
         - 'autodetect':  `Auto-detect the file type.` >
     ]
-): boolean
+) boolean
 ```
 
 **参数**
@@ -11304,6 +11406,7 @@ $JS.load(
 - `WrongDataType`：如果 `$filename` 参数不是字符串或字符串数组，则抛出该异常。
 - `InvalidValue`：如果 `$type` 参数不是 'module'、'script' 或 'autodetect'，则抛出该异常。
 - `EntityNotFound`：如果指定的文件不存在，则抛出该异常。
+- `ExternalFailure`：如果执行过程中发生 JavaScript 运行时错误，则抛出该异常。
 
 **示例**
 
@@ -11314,7 +11417,7 @@ $JS.load('std')
 
 #### 4.6.4) `eval` 方法
 
-执行一段 JavaScript 代码，并返回执行结果。
+执行一个 JavaScript 表达式或者一段 JavaScript 代码，并返回执行结果。
 
 **描述**
 
@@ -11325,17 +11428,17 @@ $JS.eval(
         - 'string':  `Return the result as a string if the result is an object.`
         - 'json':    `Return the result as a JSON string if the reesult is an object.`
     ]
-): any
+) any
 ```
 
-**参数**
+该方法在当前 JavaScript 上下文中执行一个 JavaScript 表达式或者一段 JavaScript 代码，并返回执行结果。
 
-- `$expression`：指定的 JavaScript 表达式。
+- `$expression`：指定的 JavaScript 表达式或 JavaScript 代码片段。
 - `$obj_type`：指定针对 JavaScript 对象的返回类型，可以取 'string' 或 'json' 之一。
 
 **返回值**
 
-- 返回 JavaScript 表达式的求值结果。
+该函数返回指定 JavaScript 代码在当前上下文中的求值结果。若结果为 JavaScript 简单值（primitive value），如 `null`、`bool`、`true`、`false`、`number`、`bigint`、`string`，该方法将直接将其转为对应的 HVML 类型并返回。对其他复杂值（JavaScript 对象），如数组，默认返回其 JSON 表达。
 
 **异常**
 
@@ -11344,6 +11447,8 @@ $JS.eval(
 - `ArgumentMissed`：未给出必要参数。
 - `WrongDataType`：如果 `$expression` 参数不是字符串，则抛出该异常。
 - `InvalidValue`：如果 `$obj_type` 参数不是 'string' 或 'json'，则抛出该异常。
+- `ExternalFailure`：如果执行过程中发生 JavaScript 运行时错误，则抛出该异常。
+
 
 **示例**
 
@@ -11356,6 +11461,62 @@ $JS.eval('const bar = {a: 1}; bar', 'string')
     /* '[object Object]' */
 $JS.eval('const foo = {a: 1}; foo', 'json')
     /* '{"a":1}' */
+```
+
+#### 4.6.5) `execPending` 方法
+
+执行所有挂起的 JavaScript 任务。
+
+**描述**
+
+```php
+$JS.execPending() boolean
+```
+
+该方法执行所有挂起的 JavaScript 任务。在 HVML 程序中，应考虑在协程的空闲（idle）事件处理中调用该方法，以确保所有挂起的 JavaScript 任务都能被及时执行。
+
+**返回值**
+
+- `boolean`：成功返回 `true`，失败返回 `false`。
+
+**异常**
+
+该方法可产生如下异常，静默求值时返回 `false`。
+
+- `ExternalFailure`：如果执行过程中发生 JavaScript 运行时错误，则抛出该异常。
+
+**示例**
+
+```php
+$JS.execPending()
+    /* true */
+```
+
+#### 4.6.6) `lastError` 方法
+
+获取 JavaScript 错误信息。
+
+**描述**
+
+```php
+$JS.lastError() null | string
+```
+
+该方法获取最后一个 JavaScript 错误信息。如果没有错误发生，则返回 `null`。
+
+**返回值**
+
+- `string`：最后一个 JavaScript 错误信息。
+
+**异常**
+
+该方法无异常。
+
+**示例**
+
+```php
+{{ $JS.eval('foo + 2'); $JS.lastError() }}
+    /* 'ReferenceError: foo is not defined' */
 ```
 
 ## 附录
