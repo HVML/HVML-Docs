@@ -11502,11 +11502,11 @@ $JS.execPending()
 $JS.lastError() null | string
 ```
 
-该方法获取最后一个 JavaScript 错误信息。如果没有错误发生，则返回 `null`。
+该方法获取最后的 JavaScript 错误信息。如果没有错误发生，则返回 `null`。
 
 **返回值**
 
-- `string`：最后一个 JavaScript 错误信息。
+- `string`：最后的 JavaScript 错误信息。
 
 **异常**
 
@@ -11515,8 +11515,8 @@ $JS.lastError() null | string
 **示例**
 
 ```php
-{{ $JS.eval('foo + 2'); $JS.lastError() }}
-    /* 'ReferenceError: foo is not defined' */
+{{ $JS.eval('foo + 2'); $STR.explode($JS.lastError(), '\n')[0] }}
+    /* 'ReferenceError: 'foo' is not defined' */
 ```
 
 ## 附录
