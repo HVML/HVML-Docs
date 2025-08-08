@@ -11253,12 +11253,12 @@ $sqliteCursor.connection
 
 ### 4.6) `JS`
 
-`JS` 是一个内嵌的动态对象，默认绑定为协程级变量。该对象基于 [QuickJS](https://github.com/bellard/quickjs) 实现。每个 HVML 行者对应一个 QuickJS 运行时（runtime），而每个HVML 协程会在行者对应的 QuickJS 运行时中创建自己的 QuickJS 上下文（context）。也就是说，`$JS` 变量对应一个 QuickJS 上下文。
+`JS` 是一个内嵌的动态对象，默认绑定为协程级变量。该对象基于 [QuickJS](https://github.com/bellard/quickjs) 实现。每个 HVML 行者对应一个 JSRuntime（运行时），而每个 HVML 协程会在所属行者对应的 JSRuntime 中创建自己的 JSContext（上下文）。也就是说，`$JS` 变量对应一个 JSContext。
 
-`$JS` 主要提供如下接口：
+`$JS` 变量主要提供如下接口：
 
 1. `$JS.runtime`：通过该属性获取或设置 JSRuntime 的运行时参数。
-1. `$JS.args`：通过该属性的设置器设置脚本参数。
+1. `$JS.args`：通过该属性的设置器设置 JavaScript 脚本参数。
 1. `$JS.load()`：装载指定的 JavaScript 模块或脚本。
 1. `$JS.eval()`：执行一段 JavaScript 代码，并返回执行结果。
 
@@ -11303,7 +11303,7 @@ $JS.runtime!(
 
 - `ArgumentMissed`：缺少必要参数。
 - `WrongDataType`：如果 `$name` 参数不是字符串，则抛出该异常。
-- `InvalidValue`：如果 `$name` 参数不是 `'memory-limit'`、`'max-stack-size'`、`'ignore-unhandled-rejection'`、`'strip-debug'` 或 `'strip-source'` 之一，则抛出该异常。
+- `InvalidValue`：如果 `$name` 不是可选的运行时参数名称，则抛出该异常。
 - `InvalidValue`：如果 `$value` 参数不是整数或布尔值，则抛出该异常。
 
 **示例**
@@ -11353,7 +11353,7 @@ $JS.args!(
 
 **参数**
 
-- `$args`：脚本参数数组，必须为字符串。
+- `$args`：脚本参数数组，其中的所有元素必须为字符串。
 
 **异常**
 
@@ -11391,7 +11391,7 @@ $JS.load(
 
 **参数**
 
-- `$filename`：指定的 JavaScript 模块或脚本文件名。可以是一个字符串，也可以是一个字符串数组。注：当指定的文件名为 `std` 时，将装载标准模块。
+- `$filename`：指定的 JavaScript 模块或脚本文件名。可以是一个字符串，也可以是一个字符串数组。注：当指定的文件名为 `std` 时，将装载 QuickJS 定义的标准模块。
 - `$type`：指定的文件类型。可以取 'module'、'script' 或 'autodetect' 之一。
 
 **返回值**
