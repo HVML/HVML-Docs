@@ -11261,6 +11261,50 @@ $sqliteCursor.connection
 1. `$JS.args`：通过该属性的设置器设置 JavaScript 脚本参数。
 1. `$JS.load()`：装载指定的 JavaScript 模块或脚本。
 1. `$JS.eval()`：执行一段 JavaScript 代码，并返回执行结果。
+1. `$JS.execPending()`：执行所有挂起的 JavaScript 任务，如定时器、异步任务等。
+
+另外，在 JavaScript 代码中，可通过 `hvml` 对象上的 `fire` 方法向 HVML `$JS` 变量发送事件，从而可在 HVML 程序通过观察相应事件来获取异步执行的 JavaScript 代码之结果。如下面的示例代码所示：
+
+```hvml
+# RESULT: [!'one message from JavaScript', 1000]
+
+<hvml target="void">
+    <head>
+        <inherit on $RUNNER.enablelog('all', 'stderr') />
+        <define as 'logMsg'>
+            <inherit>
+                $RUNNER.logmsg($?)
+            </inherit>
+        </define>
+    </head>
+
+    <body>
+
+        <init as js with 'os.setTimeout(() => { console.log("time expired in JS"); hvml.fire("timeout", "one message from JavaScript", 1000); }, 1000);' />
+
+        <inherit on $JS.load('std') />
+        <inherit on $JS.eval($js) >
+            <catch for `ANY`>
+                <execute with $logMsg on $JS.lastError() />
+            </catch>
+        </inherit>
+
+        <observe on $CRTN for 'idle'>
+            <execute with $logMsg on 'On idle' />
+            <test with $JS.execPending() >
+                <differ>
+                    <forget on $CRTN for 'idle' />
+                </differ>
+            </test>
+        </observe>
+
+        <observe on $JS for 'timeout'>
+            <exit with $? />
+        </observe>
+
+    </body>
+</hvml>
+```
 
 #### 4.6.1) `runtime` 属性
 
