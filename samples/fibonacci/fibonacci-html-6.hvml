@@ -1,0 +1,40 @@
+<!DOCTYPE hvml SYSTEM 'v: MATH'>
+<hvml target="html" lang="en">
+    <head>
+        <title>Fibonacci Numbers</title>
+    </head>
+
+    <body>
+        <header>
+            <h1>Fibonacci Numbers</h1>
+            <p hvml:raw>Using temporary variables and onlyif/with attributes</p>
+        </header>
+
+        <init as 'count' with 2 temp />
+
+        <section>
+            <dl>
+                <init as 'last_one' with 0 temp />
+                <init as 'last_two' with 1 temp />
+                <dt>1</dt>
+                <dd>0</dd>
+                <dt>2</dt>
+                <dd>1</dd>
+
+                <iterate on 1 onlyif (_usr[3].count < 200) with (_ipt[0] + $!.last_one) nosetotail>
+                    <init as 'last_one' at '2' with $2!.last_two temp />
+                    <init as 'last_two' at '2' with $? temp />
+
+                    <update on $4! at '.count' to 'displace' with += 1 />
+                    <dt>$4!.count</dt>
+                    <dd>$?</dd>
+                </iterate>
+            </dl>
+        </section>
+
+        <footer>
+            <p>Totally $2!.count numbers.</p>
+        </footer>
+    </body>
+
+</hvml>
