@@ -1,7 +1,7 @@
 <!DOCTYPE hvml SYSTEM 'f: MATH'>
 <hvml target="html" lang="en">
     <head>
-        <base href=$CRTN.base(! "file://$SYS.cwd" ) />
+        <base href=$CRTN.base!( "file://$SYS.cwd" ) />
 
         <update on="$T.map" from="assets/{$SYS.locale}\.json" to="merge" />
 
