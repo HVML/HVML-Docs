@@ -7,33 +7,32 @@
     <body>
         <header>
             <h1>Fibonacci Numbers</h1>
-            <p hvml:raw>Using temporary variables and onlyif/with attributes</p>
+            <p hvml:raw>Using bigint variables</p>
         </header>
 
-        <init as 'count' with 2 temp />
+        <inherit on (count = 2) />
 
         <section>
-            <dl>
-                <init as 'last_one' with 0 temp />
-                <init as 'last_two' with 1 temp />
-                <dt>1</dt>
-                <dd>0</dd>
-                <dt>2</dt>
-                <dd>1</dd>
+            <ul>
+                <inherit on (last_one = 0n) />
+                <inherit on (last_two = 1n) />
 
-                <iterate on 1 onlyif (_usr[3].count < 200) with (_ipt[0] + $!.last_one) nosetotail>
-                    <init as 'last_one' at '2' with $2!.last_two temp />
-                    <init as 'last_two' at '2' with $? temp />
+                <li>0N</li>
+                <li>1N</li>
 
-                    <update on $4! at '.count' to 'displace' with += 1 />
-                    <dt>$4!.count</dt>
-                    <dd>$?</dd>
+                <iterate with (count < 100) nosetotail>
+                    <inherit on (val = last_one) />
+                    <inherit on (val += last_two) />
+                    <inherit on (last_one = last_two) />
+                    <inherit on (last_two = $val) />
+                    <inherit on (count += 1) />
+                    <li>$val</li>
                 </iterate>
-            </dl>
+            </ul>
         </section>
 
         <footer>
-            <p>Totally $2!.count numbers.</p>
+            <p>Totally $count numbers.</p>
         </footer>
     </body>
 
