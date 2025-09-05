@@ -14,19 +14,19 @@
 
         <section>
             <ul>
-                <inherit on (last_one = 0n) />
-                <inherit on (last_two = 1n) />
+                <inherit on (last_one = 0N) />
+                <inherit on (last_two = 1N) />
 
-                <li>0N</li>
-                <li>1N</li>
+                <li>$DATA.serialize($last_one, 'real-ejson')</li>
+                <li>$DATA.serialize($last_two, 'real-ejson')</li>
 
-                <iterate with (count < 100) nosetotail>
+                <iterate with (count < 100) >
                     <inherit on (val = last_one) />
                     <inherit on (val += last_two) />
                     <inherit on (last_one = last_two) />
-                    <inherit on (last_two = $val) />
+                    <inherit on (last_two = val) />
                     <inherit on (count += 1) />
-                    <li>$val</li>
+                    <li>$DATA.serialize($val, 'real-ejson')</li>
                 </iterate>
             </ul>
         </section>
