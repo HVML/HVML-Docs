@@ -1,4 +1,4 @@
-<!DOCTYPE hvml SYSTEM 'v: MATH'>
+<!DOCTYPE hvml>
 <hvml target="html" lang="en">
     <head>
         <title>Fibonacci Numbers</title>
@@ -14,15 +14,19 @@
 
         <section>
             <ul>
-                <inherit on (last_one = 0N) />
-                <inherit on (last_two = 1N) />
+                <inherit on (last_one = 0N, last_two = 1N) />
 
                 <li>$DATA.serialize($last_one, 'real-ejson')</li>
                 <li>$DATA.serialize($last_two, 'real-ejson')</li>
 
                 <iterate with (count < 100) >
-                    <inherit on (val = last_one + last_two) />
-                    <inherit on (last_one = last_two, last_two = val, count += 1) />
+                    <inherit>
+                        (
+                            val = last_one + last_two,
+                            last_one = last_two,
+                            last_two = val, count += 1
+                        )
+                    </inherit>
 
                     <li>$DATA.serialize($val, 'real-ejson')</li>
                 </iterate>
