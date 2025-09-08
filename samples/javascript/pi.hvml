@@ -15,7 +15,7 @@
         <inherit on $JS.load(['std', 'assets/pi_bigint.js']) />
         <init as pi with $JS.eval('pi()')>
             <catch for `ExternalFailure`>
-                <execute with $logMsg on 'JS failed' />
+                <execute with $logMsg on 'JS runtime failure' />
             </catch>
         </init>
 
