@@ -1,10 +1,7 @@
 #!/usr/bin/purc
 
-# RESULT: '3.14159265358979323846264338327950288419716939937510'
-
-<hvml target="void">
+<hvml target="html">
     <head>
-        <inherit on $RUNNER.enablelog('all', 'stderr') />
         <define as 'logMsg'>
             <inherit>
                 $RUNNER.logmsg($?)
@@ -14,7 +11,7 @@
 
     <body>
 
-        <inherit on $JS.args!(['pi', '50']) />
+        <inherit on $JS.args!(['pi', '100']) />
         <inherit on $JS.load(['std', 'assets/pi_bigint.js']) />
         <init as pi with $JS.eval('pi()')>
             <catch for `ExternalFailure`>
@@ -22,7 +19,8 @@
             </catch>
         </init>
 
-        <exit with $pi />
+        <h1>The value of PI with 100 decimal places</h1>
+        <p>$pi</p>
     </body>
 </hvml>
 
