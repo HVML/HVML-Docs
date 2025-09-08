@@ -7,11 +7,10 @@
     <body>
         <header>
             <h1>Fibonacci Numbers</h1>
-            <p hvml:raw>Using bigint variables</p>
+            <p>Using bigint variables</p>
         </header>
 
         <inherit on (count = 2) />
-
         <section>
             <ul>
                 <inherit on (last_one = 0N, last_two = 1N) />
@@ -24,7 +23,8 @@
                         (
                             val = last_one + last_two,
                             last_one = last_two,
-                            last_two = val, count += 1
+                            last_two = val,
+                            count++
                         )
                     </inherit>
 
