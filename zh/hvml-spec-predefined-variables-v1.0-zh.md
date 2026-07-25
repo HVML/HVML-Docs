@@ -4229,6 +4229,26 @@ $DATA.abs(-123L)
     // 123L
 ```
 
+#### 3.7.41) `imgdiff` 方法
+
+比较两图像文件中的像素，计算图像的相似度。
+
+**描述**
+
+```php
+$DATA.imgdiff(
+    <string: `the first image file name` >,
+    <string: `the second image file name` >
+) integer;
+```
+该方法返回0～10000的整数，0为不相关，10000为完全相同。
+
+**示列**
+
+```php
+$DATA.imgdiff("test_image1.png", "/tmp/test_image2.png")
+```
+
 ### 3.8) `L`
 
 该变量是一个行者级内置变量，主要用于逻辑运算。
