@@ -264,7 +264,7 @@ from datetime import datetime as dt, timedelta as td
 
 ```hee
 {{
-    $PY.local.x(! [1, 2, 2, 3] );
+    $PY.local.x!( [1, 2, 2, 3] );
     $PY.local.x.reverse();
     $PY.local.x()()
 }}
@@ -555,7 +555,7 @@ ax.set(zlim3d=(0, 1), zlabel='Z')
         -->
         <inherit>
             {{
-                 $PY.global(! 'myseed', $SYS.time );
+                 $PY.global!( 'myseed', $SYS.time );
                  $PY.run($pyCode, 'source');
                  $PY.global.fig.canvas.draw_idle();
                  $PY.global.fig.savefig("frame-orig.svg");

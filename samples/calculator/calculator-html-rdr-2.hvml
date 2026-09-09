@@ -73,7 +73,7 @@
                         </match>
 
                         <match for="AS '←'" exclusively>
-                            <choose on="$DOC.query('#expression').attr.value">
+                            <choose on="$DOC.query('#expression').attr('value')">
                                 <update on="#expression" at="attr.value" with="$STR.substr($?, 0, -1)" />
                             </choose>
                         </match>

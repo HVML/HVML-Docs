@@ -20,7 +20,7 @@
 
         <title>$T.get('Sample - Bootstrap')</title>
 
-        <init at="assetURLPrefix" with=undefined />
+        <init as="assetURLPrefix" with=undefined />
     </head>
 
     <body>
@@ -44,7 +44,7 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">$T.get('Close')</button>
-                    <button id="btnReadDetails" hvml:events="click" type="button" class="btn btn-primary">$T.get('Read Details…')</button>
+                    <button id="btnReadDetails" hvml-events="click" type="button" class="btn btn-primary">$T.get('Read Details…')</button>
                   </div>
                 </div>
             </div>
@@ -55,7 +55,7 @@
             </div>
 
             <!-- Button trigger modal -->
-            <button id="btnShowModal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" disabled>
+            <button id="btnShowModal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" disabled>
                 $T.get('Show the Breaking News!')
             </button>
         </section>
@@ -70,7 +70,7 @@
             }
         </init>
 
-        <observe against="breakingNews" for="change:attached" in="#exampleModal">
+        <observe against="breakingNews" for="change:displaced" in="#exampleModal">
             <choose on $breakingNews>
                 <update on="#exampleModal" to="displace" with="$newsModal" />
             </choose>
