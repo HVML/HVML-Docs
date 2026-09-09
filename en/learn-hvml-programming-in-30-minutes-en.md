@@ -76,7 +76,7 @@ HVML introduces about 20 tags for different operations:
 
 - `hvml`, `head`, and `body` are called `frame tags`; they are used to define the frame of an HVML program.
 - `archetype`, `achedata`, `error`, and `except` are called `template tags`; they are used to define parameterized templates.
-- `init`, `test`, `iterate`, `define`, `call`, `include`, `load`, `exit`, `return`, `update`, `back`, and other tags use verbs are called `verb tags`,
+- `init`, `test`, `iterate`, `define`, `call`, `execute`, `load`, `exit`, `return`, `update`, `back`, and other tags use verbs are called `verb tags`,
     they are used to define an action to manipulate a data, update the target document, or control the virtual machine.
 
 Tags other than the above tags are called `foreign tags`.
@@ -236,16 +236,16 @@ Executing HVML program from `file:///srv/devel/hvml/purc/build/hvml/hello-world-
 null
 ```
 
-Moreover, if you run the HVML program without the flag `-b`, you will get nothing:
+Moreover, if you run the HVML program without the flag `-v`, you will get nothing:
 
 ```
 $ purc hello-world.hvml
 $
 ```
 
-The flag `-b` (or the corresponding long option `--verbose`) tells the interpreter to print verbose information when executing a program.
+The flag `-v` (or the corresponding long option `--verbose`) tells the interpreter to print verbose information when executing a program.
 The HVML program generates an HTML document, but does not do anything to output information to your terminal.
-Therefore, if you run `purc` without the `-b` flag, you will see nothing.
+Therefore, if you run `purc` without the `-v` flag, you will see nothing.
 
 So, if you want to print some text to the terminal, how to program in HVML?
 
@@ -273,7 +273,7 @@ Hello, world!
 
 Obviously, the newly added statement `$STREAM.stdout.writelines('Hello, world!')` outputs `Hello, world!` to your terminal.
 
-Furthermore, if you execute the HVML program with the flag `-b`:
+Furthermore, if you execute the HVML program with the flag `-v`:
 
 ```
 $ purc -v hello-world.hvml
@@ -388,14 +388,14 @@ Just like you execute multiple commands in one shell command line,
      you can use a compound hybrid evaluating expression to implement a simple `if-then-else` logical control.
 
 For example, the following compound expression tries to change the current working directory to `/root`.
-If it succeeded, it will call `$FS.list_ptr` to get the directory entry list (a string array) in `/root`.
+If it succeeded, it will call `$FS.list_prt` to get the directory entry list (a string array) in `/root`.
 If it failed, it returns a failure prompt.
 Regardless of success or failure, the expression calls `$STREAM.stdout.writelines` to print the entry list or the failure prompt ultimately.
 
 ```hvml
 {{
     $STREAM.stdout.writelines({{
-                $SYS.cwd(! '/root') && $FS.list_prt ||
+                $SYS.cwd!( '/root') && $FS.list_prt ||
                     'Cannot change directory to "/root"'
             }})
 }}
@@ -576,7 +576,7 @@ Note that, we can use regular expression or wildcard characters for the attribut
 For example:
 
 ```hvml
-    <test on $SYS.locale, 0, 2 >
+    <test on $SYS.locale >
         <match for 'LIKE /^zh/' exclusively>
             ...
         </match>
@@ -1425,7 +1425,7 @@ For example, the `observe` tag mentioned earlier defines an operation group,
     which will be executed after the interpreter got the specified event.
 You can use the verb tag `define` to define a named operation group.
 Again, you can easily guess that you use the `as` attribute to name the group of operations.
-Moreover, HVML provides two methods to use a named operation group: `include` or `call`.
+Moreover, HVML provides two methods to use a named operation group: `execute` or `call`.
 
 The following HVML program (Greatest Common Divisor) gives a sample,
     which defines a group of operation to calculate the greatest common divisor of two positive integers:
@@ -1507,16 +1507,16 @@ For example:
         </inherit>
     </define>
 
-    <!-- use `include` element to execute one of the above operation groups
+    <!-- use `execute` element to execute one of the above operation groups
         in place, according to the target document type of
         the current HVML coroutine -->
-    <include with ${output_$CRTN.target} on 'Hello, world!' />
+    <execute with ${output_$CRTN.target} on 'Hello, world!' />
 ```
 
-Here, the `include` element uses the operation group `output_html` or `output_void` according to the evaluated reseult of the expression `${output_$CRTN.target}`.
+Here, the `execute` element uses the operation group `output_html` or `output_void` according to the evaluated reseult of the expression `${output_$CRTN.target}`.
 
 If the target document type of this HVML program is `html`,
-   the above `include` element is equivalent to the following elements:
+   the above `execute` element is equivalent to the following elements:
 
 ```hvml
     <choose on 'Hello, world!' >
@@ -1526,7 +1526,7 @@ If the target document type of this HVML program is `html`,
 ```
 
 If the target document type of this HVML program is `void`,
-   the above `include` element is equivalent to the following elements:
+   the above `execute` element is equivalent to the following elements:
 
 ```hvml
     <choose on 'Hello, world!' >
@@ -1570,7 +1570,7 @@ See the following HVML code fragment and the comments:
 
             <!-- The operation group $fillDirEntries will use the template defined
                  by the sibling `archetype` -->
-            <include with $fillDirEntries on "/home" in "#entries" />
+            <execute with $fillDirEntries on "/home" in "#entries" />
         </listbox>
 
         <observe on "#goRoot" for "click">
@@ -1578,7 +1578,7 @@ See the following HVML code fragment and the comments:
 
             <!-- The operation group $fillDirEntries will use the template defined
                  by the first `archetype` element in this fragment -->
-            <include with $fillDirEntries on "/" in "#entries" />
+            <execute with $fillDirEntries on "/" in "#entries" />
         </observe>
 ```
 
@@ -1989,7 +1989,7 @@ If you run this program by using `purc` without any option,
 This renderer will record the messages received from any HVML interpreter instance to a local file:
 It is `/dev/null` by default on Linux.
 Because this HVML program did not use `$STREM.stdout` any more, you will see nothing on your terminal.
-But you can use the option `-b` to show the HTML contents generated by the HVML program in your terminal as before.
+But you can use the option `-v` to show the HTML contents generated by the HVML program in your terminal as before.
 
 You can also direct `purc` to connect to a `PURCMC` renderer, for example, `xGUI Pro`.
 For this purpose, please refer to <https://github.com/HVML/xGUI-Pro> for detailed instructions to install xGUI Pro.

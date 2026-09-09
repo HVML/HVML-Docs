@@ -360,7 +360,7 @@
 <!DOCTYPE hvml SYSTEM 'f: MATH'>
 <hvml target="html" lang="en">
     <head>
-        <base href="$CRTN.base(! 'http://files.fmsoft.cn/calculator/' )" />
+        <base href="$CRTN.base!( 'http://files.fmsoft.cn/calculator/' )" />
 
         <update on="$T.map" from="assets/{$SYS.locale}.json" to="merge" />
 

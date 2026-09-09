@@ -57,7 +57,7 @@ HVML 为不同的操作引入了大约 20 个标签：
 
 - `hvml`, `head` 和 `body` 被称为 `框架标签（frame tag）`; 它们用于定义 HVML 程序的框架或者整体结构。
 - `archetype`, `achedata`, `error` 和 `except` 被称为 `模板标签（template tag）`; 它们用于定义参数化模板。
-- `init`, `test`, `iterate`, `define`, `call`, `include`, `load`, `exit`, `return`, `update`, `back` 和其他使用动词的标签被称为 `动词标签（verb tag）`，它们用于定义操作数据、更新目标文档或控制虚拟机的动作。
+- `init`, `test`, `iterate`, `define`, `call`, `execute`, `load`, `exit`, `return`, `update`, `back` 和其他使用动词的标签被称为 `动词标签（verb tag）`，它们用于定义操作数据、更新目标文档或控制虚拟机的动作。
 
 上述标签以外的标签称为 `外部标签（foreign tag）`。对于由外部标签定义的元素，HVML 赋予一个默认且统一的操作：对属性值和内容求值，然后将它们复制到目标文档。
 
@@ -328,7 +328,7 @@ $MATH.eval('PI * r * r', { r: 3 })
 ```
 {{
     $STREAM.stdout.writelines({{
-                $SYS.cwd(! '/root') && $FS.list_prt ||
+                $SYS.cwd!( '/root') && $FS.list_prt ||
                     'Cannot change directory to "/root"'
             }})
 }}
@@ -1232,7 +1232,7 @@ HVML 也提供对集合的支持，但比其他语言有更多的特性。在 HV
 
 ### 就地执行或调用
 
-与其他编程语言一样，HVML 也支持调用函数之类的操作。但是，在 HVML 中，我们从不使用 `函数（function）` 这个术语，而是使用术语 `操作组（operation group）`。在 HVML 中，我们可以引用 DOM 树中的任何子树当作操作组。比如稍早前提到的 `observe` 标签定义了一个操作组，它将在解释器得到指定的事件后执行。您可以使用动词标签 `define` 来定义一个已命名的操作组。同样，您可以使用该 `as` 属性来命名操作组。此外，HVML 提供了两种使用已命名操作组的方法： `include` 或 `call`。
+与其他编程语言一样，HVML 也支持调用函数之类的操作。但是，在 HVML 中，我们从不使用 `函数（function）` 这个术语，而是使用术语 `操作组（operation group）`。在 HVML 中，我们可以引用 DOM 树中的任何子树当作操作组。比如稍早前提到的 `observe` 标签定义了一个操作组，它将在解释器得到指定的事件后执行。您可以使用动词标签 `define` 来定义一个已命名的操作组。同样，您可以使用该 `as` 属性来命名操作组。此外，HVML 提供了两种使用已命名操作组的方法： `execute` 或 `call`。
 
 下面的 HVML 程序（最大公约数）给出了一个示例，它定义了一组运算来计算两个正整数的最大公约数：
 
@@ -1303,13 +1303,13 @@ HVML 也提供对集合的支持，但比其他语言有更多的特性。在 HV
     </define>
 
     <!-- 根据当前 HVML 协程的目标文档类型，
-        使用 `include` 元素就地执行上述操作组之一 -->
-<include with ${output_$CRTN.target} on 'Hello, world!' />
+        使用 `execute` 元素就地执行上述操作组之一 -->
+<execute with ${output_$CRTN.target} on 'Hello, world!' />
 ```
 
-这里，根据表达式 `${output_$CRTN.target}` 的求值结果，`include` 元素使用操作组 `output_html` 或 `output_void`。
+这里，根据表达式 `${output_$CRTN.target}` 的求值结果，`execute` 元素使用操作组 `output_html` 或 `output_void`。
 
-如果这个 HVML 程序的目标文档类型为 `html`，则上面的 `include` 元素等价于以下元素：
+如果这个 HVML 程序的目标文档类型为 `html`，则上面的 `execute` 元素等价于以下元素：
 
 ```hvml
     <choose on 'Hello, world!' >
@@ -1318,7 +1318,7 @@ HVML 也提供对集合的支持，但比其他语言有更多的特性。在 HV
     </choose>
 ```
 
-如果此 HVML 程序的目标文档类型为 `void`，则上述 `include` 元素等价于以下元素：
+如果此 HVML 程序的目标文档类型为 `void`，则上述 `execute` 元素等价于以下元素：
 
 ```hvml
     <choose on 'Hello, world!' >
@@ -1358,7 +1358,7 @@ HVML 也提供对集合的支持，但比其他语言有更多的特性。在 HV
             </archetype>
 
             <!-- 操作组 $fillDirEntries 将使用兄弟 `archetype` 定义的模板 -->
-            <include with $fillDirEntries on "/home" in "#entries" />
+            <execute with $fillDirEntries on "/home" in "#entries" />
         </listbox>
 
         <observe on "#goRoot" for "click">
@@ -1366,7 +1366,7 @@ HVML 也提供对集合的支持，但比其他语言有更多的特性。在 HV
 
             <!-- 操作组 $fillDirEntries 将使用此片段中
                  第一个 `archetype` 元素定义的模板 -->
-            <include with $fillDirEntries on "/" in "#entries" />
+            <execute with $fillDirEntries on "/" in "#entries" />
         </observe>
 ```
 

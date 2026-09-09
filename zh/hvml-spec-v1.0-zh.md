@@ -5170,13 +5170,13 @@ Content-Type: text/plain
 
 ```hvml
     <init as="evenNumbers" with=[0,] >
-        <iterate on=$?[0] with=$MATH.add($0<,2) nosetotail>
+        <iterate on=2 with=$MATH.add($0<,2) nosetotail>
             <test on=$?>
-                <match with=$L.gt($?,100) exclusively>
+                <match with=$L.ge($?,100) exclusively>
                     <back to="3" />
                 </match>
                 <match>
-                    <update on="$evenNumbers" to="append" with="$?">
+                    <update on="$evenNumbers" to="append" with="$?" />
                 </match>
             </test>
         </iterate>
@@ -5190,7 +5190,7 @@ Content-Type: text/plain
     </init>
 ```
 
-以上的代码，当计算出来的偶数大于 `100` 时，将回退到第四个栈帧（总共回退 3 个栈帧），到达 `init` 元素对应的栈帧，然后从该栈帧对应元素的下个子动作元素开始执行，亦即 `ol` 外部元素定义的动作。
+以上的代码，当计算出来的偶数大于或等于 `100` 时，将回退到第四个栈帧（总共回退 3 个栈帧），到达 `init` 元素对应的栈帧，然后从该栈帧对应元素的下个子动作元素开始执行，亦即 `ol` 外部元素定义的动作。
 
 `back` 元素使用 `silently` 副词属性时，将不产生任何异常，按如下规则处理：
 

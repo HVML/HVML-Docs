@@ -60,8 +60,7 @@
         </choose>
         <observe against="breakingNews" for="change:displaced" in="#breaking-news">
             <choose on $breakingNews>
-                <update on="$@" at='content' with=' ' />
-                <update on="$@" to="append" with="$realCardBody" />
+                <update on="$@" to="displace" with="$realCardBody" />
             </choose>
         </observe>
 

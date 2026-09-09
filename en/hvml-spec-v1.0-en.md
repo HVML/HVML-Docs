@@ -10,6 +10,8 @@ Status: Release Candidate
 Release Name: 硕鼠  
 Language: Chinese
 
+> Compatibility update (2026-09-09): the examples and syntax descriptions use the current `execute` tag and `!(...)` setter notation. The original translation metadata above is retained; this is not a complete translation of the latest Chinese specification. See the [current Chinese specification](../zh/hvml-spec-v1.0-zh.md).
+
 *Copyright Notice*
 
 Copyright &copy; 2021, 2022, 2023 Vincent Wei 
@@ -343,7 +345,7 @@ For example, the following HVML code snippet demonstrates the ability to perform
 </define>
 
 <!-- This element performs different groups of operations in-place based on the value of the `target` attribute of the current `hvml` element. -->
-<include with ${output_$CRTN.target} on $T.get('Hello, world!') />
+<execute with ${output_$CRTN.target} on $T.get('Hello, world!') />
 ```
 
 The sixth is built-in event-driven.
@@ -723,9 +725,9 @@ As another feature of dynamic properties, we can treat a specific attribute as a
 
 Furthermore, we can also use a specific attribute as a function, pass parameters to obtain different return values, or set a specific value for the attribute. For example, on `$SYS` object, if we want to get the kernel name and release version number of the current operating system, we can use `$SYS.uname_prt('kernel-name kernel-release')`, at this time, we will get A string like `Linux 5.4.0-107-generic`.
 
-In addition to using `( )`, which is similar to a function call, we can also use `(! )`, which is used to set a attribute. For example, use `$SYS.cwd` to get the current working directory, and use `$SYS.cwd(! '/tmp' )` to set the current working directory.
+In addition to using `( )`, which is similar to a function call, we can also use `!( )`, which is used to set a attribute. For example, use `$SYS.cwd` to get the current working directory, and use `$SYS.cwd!( '/tmp' )` to set the current working directory.
 
-Here, we introduce two operators: `( )` and `(! )`. Essentially, the former corresponds to getter methods for dynamic properties, and the latter corresponds to setter methods for dynamic properties.
+Here, we introduce two operators: `( )` and `!( )`. Essentially, the former corresponds to getter methods for dynamic properties, and the latter corresponds to setter methods for dynamic properties.
 
 In addition to the built-in `$SYS` dynamic object or the dynamic object preloaded through `DOCTYPE`, we can also implement a custom dynamic object through an external program module, and pass this dynamic object and a variable through the `init` tag Bind together like:
 
@@ -1007,7 +1009,7 @@ The operation mechanism of the channel is very simple: When a coroutine wants to
      <body>
 
          <!-- open a channel named `myChannel` -->
-         <init as chan with $RUNNER. chan(! 'myChannel' ) />
+         <init as chan with $RUNNER. chan!( 'myChannel' ) />
 
          <!-- start the writer coroutine asynchronously -->
          <load from "#writer" asynchronously />
@@ -1031,7 +1033,7 @@ The operation mechanism of the channel is very simple: When a coroutine wants to
 
          <!-- close the channel -->
          <inherit>
-             $RUNNER.chan(! 'myChannel', 0)
+             $RUNNER.chan!( 'myChannel', 0)
          </inherit>
 
      </body>
@@ -1425,18 +1427,18 @@ Compound hybrid evaluation expressions (CHEE for short) are an important feature
 {{
      // Call $SYS.cwd to switch the current working path to the `/etc` directory, and then call $FS.list
      // Get an array of all directory entry objects.
-     $SYS.cwd(! '/etc'); $FS.list
+     $SYS.cwd!( '/etc'); $FS.list
 }}
 
 {{
      // Try changing the working path to the `/root` directory
-     $SYS.cwd(! '/root') &&
+     $SYS.cwd!( '/root') &&
          // If successful, call $FS.list to get an array of all directory entry objects in this directory
          $FS.list ||
              // Otherwise, print prompt information to standard output ($STREAM.stdout)
              $STREAM.stdout.writelines('Cannot change directory to "/root"');
              // and change the working path to `/`
-             $SYS.cwd(! '/' ) &&
+             $SYS.cwd!( '/' ) &&
                  // If successful, get an array of all directory item objects in the directory
                  $FS.list ||
                      // otherwise use `false` as the final evaluation result of this CHEE
@@ -1448,7 +1450,7 @@ Compound hybrid evaluation expressions (CHEE for short) are an important feature
 # List of all directory items (string), otherwise return a prompt message. Eventually the list of directory items or error messages
 # Output to standard output.
      $STREAM.stdout.writelines({{
-                 $SYS.cwd(! '/root') && $FS.list_prt ||
+                 $SYS.cwd!( '/root') && $FS.list_prt ||
                      'Cannot change directory to "/root"'
              }})
 }}
@@ -1642,7 +1644,7 @@ The following action elements are used to manipulate the virtual machine, includ
 - `define` element is used to define a reusable group of operations.
 - `return` element is used to define the return value of an operation group.
 - `back` element is used to pop the stack frame to the specified execution stack position, which is equivalent to breaking the default execution path.
-- `include` element is used to execute a group of operations in place.
+- `execute` element is used to execute a group of operations in place.
 - `call` element is used to call an operation group.
 - `catch` element is used to catch an exception.
 
@@ -1761,7 +1763,7 @@ Exceptions and errors usually occur in the following situations:
 1. The exception encountered when executing the operation corresponding to the action element, such as illegal attribute value, data consistency error, etc.
 1. Other situations, such as allocation of stack frames, failure to create new coroutines, etc.
 
-Typically, when an action element, frame element, or template element is set with `silently` adverb attribute, or an external element is set with `hvml:silently` attribute, when evaluating its attribute value or content, or calling the executor , if an ignorable exception is encountered, a reasonable return value should be returned instead of throwing an exception. For example, when calling `$SYS.time(! <number $seconds: seconds since Epoch> )` to set the system time, if the current user does not have permission to modify the system time, an `AccessDenied` exception should usually be generated. However, if the `silently` adverb attribute is set on the element calling this method, no exception will be raised, but `false` will be returned to indicate an execution error.
+Typically, when an action element, frame element, or template element is set with `silently` adverb attribute, or an external element is set with `hvml:silently` attribute, when evaluating its attribute value or content, or calling the executor , if an ignorable exception is encountered, a reasonable return value should be returned instead of throwing an exception. For example, when calling `$SYS.time!( <number $seconds: seconds since Epoch> )` to set the system time, if the current user does not have permission to modify the system time, an `AccessDenied` exception should usually be generated. However, if the `silently` adverb attribute is set on the element calling this method, no exception will be raised, but `false` will be returned to indicate an execution error.
 
 `silently` attribute mainly applies to the first two cases referred to above; which exceptions can be ignored and which exceptions cannot be ignored are usually determined by the interpreter implementer. The exception generated in the third case will be considered fatal and cannot be ignored, that is, `silently` attribute is invalid for the third case, such as `MemoryFailure` exception caused by a failure to allocate a stack frame.
 
@@ -1814,7 +1816,7 @@ For action tags, HVML defines the following prepositions (such as `on`, `in`, `t
 - `for`: In `observe`, `forget` tags, used to define the event name corresponding to the observe (observe) or unobserve (forget) operation; in `match` tag, used to define the matching conditions.
 - `as`: It is define variable names in `init`, `define`, `bind`, `load`, etc. elements.
 - `at`: When used in conjunction with `as` attribute, it is used for the scope of the variable name; specify the target position on the target data in `update` element.
-- `with`: In `init`, `update`, `define`, `load` and other elements that support external resources, when used with `from` attribute, it is used to define request parameters; defined in `request` element Request parameters; in `iterate` element define the evaluation expression for the iteration result when no executor is used; in the `include` element define the operation group to be referenced; in the `test` element define the test condition.
+- `with`: In `init`, `update`, `define`, `load` and other elements that support external resources, when used with `from` attribute, it is used to define request parameters; defined in `request` element Request parameters; in `iterate` element define the evaluation expression for the iteration result when no executor is used; in the `execute` element define the operation group to be referenced; in the `test` element define the test condition.
 - `to`: Define specific update actions in `update` tag, such as `append` for appending, `displace` for replacement, etc.; define the stack frame to fall back to in the `back` tag.
 - `by`: It is used to define selectors, iterators or reducers when performing test, selection, iteration, and reduction operations, collectively referred to as executors. HVML allows interpreters to support built-in executors. For simple data processing, the built-in executor can be used directly, and in complex data processing situations, classes or functions defined by external programs can be used. In HVML, we use the following prefixes to denote different actuator types:
     - `CLASS:` It means to use the class defined by the external program as the executor.
@@ -2321,7 +2323,7 @@ A legal evaluation expression (`hybrid_evaluation_expression`) needs to conform 
 
      <hybrid_addressing_expression>:
         '.'<literal_key_name>'(' [ws] <hybrid_expression>[<',' [ws] <hybrid_expression> [ws]>, ...] [ws] ')': used to call specific Getter method for the key name.
-        '.'<literal_key_name>'(!' [ws] <hybrid_expression>[<',' [ws] <hybrid_expression> [ws]>, ...] [ws] ')': for calling on dynamic objects A setter method for a specific key name.
+        '.'<literal_key_name>'!(' [ws] <hybrid_expression>[<',' [ws] <hybrid_expression> [ws]>, ...] [ws] ')': for calling on dynamic objects A setter method for a specific key name.
         '.'<literal_key_name>: used to refer to the key value of an object.
         '[' [ws] <hybrid_evaluation_expression> | <quoted_key_name> | <literal_integer> [ws] ']': used to refer to a specific element of an array, tuple or to refer to a key value of an object, especially when the corresponding key When the name does not conform to the variable name rules mentioned above.
 
@@ -3412,12 +3414,12 @@ As far as the above sample code is concerned, assuming that the `locale` of the 
 
 It should be noted that `test` action always determines an action result, which will become the value of the context variable `$?` of the child element, which is generally a string or a number. When the `by` attribute is used, the built-in executor or external executor specified by this attribute can be used to obtain a matching data from the data specified by `on`. In this case, the working method of the executor is the same as that of `choose` The elements are the same.
 
-For matching conditions, we can use `on` preposition attribute in `match` element to define an expression, and judge whether it matches by booleanizing the result of evaluating the expression, or use `for` preposition attribute Defines a matching condition based on the execution result of `test` element, either, but `for` attribute has higher priority.
+For matching conditions, we can use `with` preposition attribute in `match` element to define an expression, and judge whether it matches by booleanizing the result of evaluating the expression, or use `for` preposition attribute Defines a matching condition based on the execution result of `test` element, either, but `for` attribute has higher priority.
 
-When using `on` preposition attribute, we can use an evaluation expression to determine the matching condition; when the evaluation result is Booleanized, if the result is `true`, it is considered a match, otherwise it is regarded as a mismatch. For example, `match` element that matches `zh_CN` in the above HVML code can be written as follows:
+When using `with` preposition attribute, we can use an evaluation expression to determine the matching condition; when the evaluation result is Booleanized, if the result is `true`, it is considered a match, otherwise it is regarded as a mismatch. For example, `match` element that matches `zh_CN` in the above HVML code can be written as follows:
 
 ```hvml
-         <match on="$L. streq('case', 'zh_CN', $?)" exclusively>
+         <match with="$L.streq('case', 'zh_CN', $?)" exclusively>
              <update on="$@" to="displace" with="$footer_cn" />
          </match>
 ```
@@ -3842,11 +3844,11 @@ Essentially, the above HVML code is the same as the following using `choose` fol
 
 When we do not use an external executor, `on` attribute or the built-in executor specified by `by` attribute must provide an array for sorting. When using an external executor, `on` attribute specified The data type is determined by the external executor. For example, we can perform a sort operation on a string, and the result of the execution may be to arrange all the words in the string in lexicographical order.
 
-#### 2.5.10) `define` and `include` Tags
+#### 2.5.10) `define` and `execute` Tags
 
-`define` tag is used to define a set of reusable groups of operations. We can define a set of operations through `define`, and then include this set of operations through `include` tag elsewhere in the code, or call this set of operations through `call` tag and expect to return a result. In HVML, we refer to a group of operations defined by `define` tag as an operation group for short.
+`define` tag is used to define a set of reusable groups of operations. We can define a set of operations through `define`, and then include this set of operations through `execute` tag elsewhere in the code, or call this set of operations through `call` tag and expect to return a result. In HVML, we refer to a group of operations defined by `define` tag as an operation group for short.
 
-`define` element defines the name of the action group through `as` attribute, which contains a set of child elements defined by the action tag. `include` element will switch the execution context to the operation group specified by the `with` attribute. The parameters passed in by `on` attribute will be used as the result data (ie the value of `$?` variable) for the operation group, and `include` The data defined by the element through its content will become the value of the `$^` variable. For example:
+`define` element defines the name of the action group through `as` attribute, which contains a set of child elements defined by the action tag. `execute` element will switch the execution context to the operation group specified by the `with` attribute. The parameters passed in by `on` attribute will be used as the result data (ie the value of `$?` variable) for the operation group, and `execute` The data defined by the element through its content will become the value of the `$^` variable. For example:
 
 ```hvml
         <archetype name="dir_entry">
@@ -3862,7 +3864,7 @@ When we do not use an external executor, `on` attribute or the built-in executor
         </define>
 
         <listbox id="entries">
-            <include with="$fillDirEntries" on="/home" in="#entries" />
+            <execute with="$fillDirEntries" on="/home" in="#entries" />
         </listbox>
 
         <button id="goRoot">
@@ -3875,18 +3877,18 @@ When we do not use an external executor, `on` attribute or the built-in executor
 
         <observe on="#goRoot" for="click">
             <clear on="#entries" />
-            <include with="$fillDirEntries" on="/" in="#entries" />
+            <execute with="$fillDirEntries" on="/" in="#entries" />
         </observe>
 
         <observe on="#goHome" for="click">
             <clear on="#entries" />
-            <include with="$fillDirEntries" on="/home" in="#entries" />
+            <execute with="$fillDirEntries" on="/home" in="#entries" />
         </observe>
 ```
 
-The above HVML code uses the action group defined by `$fillDirEntries` when `listbox` is initialized, and when the user clicks `#goRoot` or `#goHome` button. Note that in the three places where `include` tag is used, different parameters are passed in through `on` attribute, and the target document location is specified using `in` attribute.
+The above HVML code uses the action group defined by `$fillDirEntries` when `listbox` is initialized, and when the user clicks `#goRoot` or `#goHome` button. Note that in the three places where `execute` tag is used, different parameters are passed in through `on` attribute, and the target document location is specified using `in` attribute.
 
-Essentially, the work done by `include` element is equivalent to copying the specified operation group to the current location for execution, which we call execute in place. For example, if the above code does not use `define` and `include`, it is equivalent to:
+Essentially, the work done by `execute` element is equivalent to copying the specified operation group to the current location for execution, which we call execute in place. For example, if the above code does not use `define` and `execute`, it is equivalent to:
 
 ```hvml
         <archetype name="dir_entry">
@@ -3934,7 +3936,7 @@ Essentially, the work done by `include` element is equivalent to copying the spe
         </observe>
 ```
 
-`include` performs groups of operations in-place similarly to closures in other programming languages. For example, `dir_entry` template is used in the above `fillDirEntries` operation group, and this template is only defined once. But with a little modification, you can override the default `dir_entry` template by defining a new one called `dir_entry` before including the action group. Note the note in it:
+`execute` performs groups of operations in-place similarly to closures in other programming languages. For example, `dir_entry` template is used in the above `fillDirEntries` operation group, and this template is only defined once. But with a little modification, you can override the default `dir_entry` template by defining a new one called `dir_entry` before including the action group. Note the note in it:
 
 ```hvml
          <archetype name="dir_entry">
@@ -3956,7 +3958,7 @@ Essentially, the work done by `include` element is equivalent to copying the spe
              </archetype>
 
              <!-- `fillDirEntries` action group will use the new `dir_entry` template above -->
-             <include with="$fillDirEntries" on="/home" in="#entries" />
+             <execute with="$fillDirEntries" on="/home" in="#entries" />
          </listbox>
 
          <button id="goRoot">
@@ -3969,12 +3971,12 @@ Essentially, the work done by `include` element is equivalent to copying the spe
 
          <observe on="#goRoot" for="click">
              <clear on="#entries" />
-             <include with="$fillDirEntries" on="/" in="#entries" />
+             <execute with="$fillDirEntries" on="/" in="#entries" />
          </observe>
 
          <observe on="#goHome" for="click">
              <clear on="#entries" />
-             <include with="$fillDirEntries" on="/home" in="#entries" />
+             <execute with="$fillDirEntries" on="/home" in="#entries" />
          </observe>
 ```
 
@@ -3999,7 +4001,7 @@ And the default operator group writes the array members to the standard output s
          </inherit>
      </define>
 
-     <include with="$listitems" on=['Line #1', 'Line #2'] />
+     <execute with="$listitems" on=['Line #1', 'Line #2'] />
 ```
 
 In the above code, when the loading or parsing of the HVML fragment specified by `from` attribute of `define` element fails, the program can still run normally, but the actual operation effect is different. This capability gives us a very flexible feature:
@@ -4023,7 +4025,7 @@ The following code loads multiple HVML fragments via the `iterate` action elemen
 ```hvml
 <hvml target="html" lang="en">
      <head>
-         <base href="$CRTN. base(! 'file:///' )" />
+         <base href="$CRTN. base!( 'file:///' )" />
 
          <iterate on=$FS.list_prt('/module/$CRTN.target/','*.hvml','name') by="RANGE: 0">
              <define as="ops$FS.basename($?,'hvml')" from="/module/$CRTN.target/$?">
@@ -4041,7 +4043,7 @@ The following code loads multiple HVML fragments via the `iterate` action elemen
 </hvml>
 ```
 
-For the above code, if there are two HVML fragment files in  `/module/html/` directory: `A.hvml` and `B.hvml`, two operation groups will be created: `opsA` and `opsB`, respectively Points to two separate vDOM fragment trees. When we use `include`, `call` or `observe` to refer to `opsA` and `opsB` in an HVML program, the corresponding vDOM fragment tree will be executed instead of the original default value operation group.
+For the above code, if there are two HVML fragment files in  `/module/html/` directory: `A.hvml` and `B.hvml`, two operation groups will be created: `opsA` and `opsB`, respectively Points to two separate vDOM fragment trees. When we use `execute`, `call` or `observe` to refer to `opsA` and `opsB` in an HVML program, the corresponding vDOM fragment tree will be executed instead of the original default value operation group.
 
 Similar to `init`, the `define` defined in `head` element will create a globally visible operation group, that is, the operation groups of `opsA` and `opsB` defined in the above code are globally visible. Using `define` in `body` will bind the action group name on its parent element by default, thus making the action group visible in the vDOM subtree rooted at the parent element. But we can use the `at` attribute to specify the name space of the operation group:
 
@@ -4055,7 +4057,7 @@ According to the above rules, the above method of defining multiple operation gr
 ```hvml
 <hvml target="html" lang="en">
      <head>
-         <base href="$CRTN. base(! 'file:///' )" />
+         <base href="$CRTN. base!( 'file:///' )" />
      </head>
 
      <body>
@@ -4073,9 +4075,9 @@ According to the above rules, the above method of defining multiple operation gr
 </hvml>
 ```
 
-If the operation group defined by `define` is empty, `NoData` exception should be thrown when using the `include` or `call` element to refer to the operation group.
+If the operation group defined by `define` is empty, `NoData` exception should be thrown when using the `execute` or `call` element to refer to the operation group.
 
-The value defined by `on` attribute of `include` element will become the result data of the stack frame corresponding to `define`; similarly, the value defined by `with` attribute of `call` element will become the result data of the stack frame corresponding to `define` fruit data. For the convenience of writing, when the data passed to the operation group is `object`, the interpreter should conform to the attributes of the HVML `literal_variable_token` lexical unit for all key names in the object, and set it to `define` to correspond to the temporary named variable in the stack frame , so as to obtain the effect similar to the function parameter. For example, the following code calculates the greatest common divisor of two positive integers:
+The value defined by `on` attribute of `execute` element will become the result data of the stack frame corresponding to `define`; similarly, the value defined by `with` attribute of `call` element will become the result data of the stack frame corresponding to `define` fruit data. For the convenience of writing, when the data passed to the operation group is `object`, the interpreter should conform to the attributes of the HVML `literal_variable_token` lexical unit for all key names in the object, and set it to `define` to correspond to the temporary named variable in the stack frame , so as to obtain the effect similar to the function parameter. For example, the following code calculates the greatest common divisor of two positive integers:
 
 ```hvml
     <define as "calcGreatestCommonDivisor">
@@ -4105,16 +4107,16 @@ The value defined by `on` attribute of `include` element will become the result 
 
     </define>
 
-    <include with $calcGreatestCommonDivisor on {x: 3, y: 6} >
+    <execute with $calcGreatestCommonDivisor on {x: 3, y: 6} >
 
         $STREAM.stdout.writelines($STR.format_c("GCD of 3 and 6 is %d", $?))
 
-    </include>
+    </execute>
 ```
 
-In addition, we can use `in` attribute in `include` element or `call` element to define the location of the target document, so the attribute value will affect the behavior of the operation group.
+In addition, we can use `in` attribute in `execute` element or `call` element to define the location of the target document, so the attribute value will affect the behavior of the operation group.
 
-We can define sub-elements in `include` element, and these sub-elements will be executed after the operation group defined by `define` has been executed.
+We can define sub-elements in `execute` element, and these sub-elements will be executed after the operation group defined by `define` has been executed.
 
 #### 2.5.11) `observe`, `forget` and `fire` Tags
 
@@ -4164,7 +4166,7 @@ When the event observed by `observe` arrives, the interpreter should switch to t
 - `$!`: In user data, two temporary variables are predefined to represent the complete event name and event source, named `_eventName` and `_eventSource` respectively.
 - `$@`: The target document location defined by the `in` attribute of `observe`, or the target document location from which `observe` inherits.
 
-When we use `with` attribute in `observe` element to define the operation group to be referenced, the execution effect of the HVML program is equivalent to the effect of `include` action element, that is, it should be executed in place instead of called by ` The group of operations specified by the with` attribute.
+When we use `with` attribute in `observe` element to define the operation group to be referenced, the execution effect of the HVML program is equivalent to the effect of `execute` action element, that is, it should be executed in place instead of called by ` The group of operations specified by the with` attribute.
 
 When we observe a piece of data, we can obtain the events produced by the data or changes in the data itself. For example, we can monitor events from long connections, the return value of asynchronous requests, or obtain the results returned after calling remote procedures on long connections, and can also be used to monitor events generated by some internal data, such as those generated by `$TIMERS` data Timer expiration events, etc.
 
@@ -4425,7 +4427,7 @@ Finally, `observe` supports `once` adverb attribute. And the observation with th
 
 #### 2.5.12) `call` and `return` Labels
 
-The work done by `include` element is equivalent to copying the specified operation group to the current location for execution (execute in place). So it is different from the function call in traditional programming languages. To achieve the same effect as a function call, use `call` and `return` labels:
+The work done by `execute` element is equivalent to copying the specified operation group to the current location for execution (execute in place). So it is different from the function call in traditional programming languages. To achieve the same effect as a function call, use `call` and `return` labels:
 
 ```hvml
         <define as="fillDirEntries">
@@ -4462,12 +4464,12 @@ The work done by `include` element is equivalent to copying the specified operat
 
 In the above HVML code, `fillDirEntries` uses the `with` attribute of the `return` element to return the number of directory entries, turning it from an operation group into a function with a return value. When using this function, use `call` tag to define an action element that performs the call operation in order to obtain the result data.
 
-`call` element differs from `include` element as follows:
+`call` element differs from `execute` element as follows:
 
 - The result data in the stack frame corresponding to `call` element can be overwritten by `return` element in the operation group or `back` element in the operation group. If there is no `return` or `back` element in the operation group to modify the result data, the result data in the stack frame corresponding to the `call` element will remain `undefined` unchanged.
-- In the stack frame corresponding to `include` element, the initial result data is determined by its own `on` attribute value or content, which can be overwritten by `back` element in the operation group. And `return` element in the operation group   is only used to fall back to the stack frame where the last `include` is located,without modifying the result data in the stack frame corresponding to `include`.
+- In the stack frame corresponding to `execute` element, the initial result data is determined by its own `on` attribute value or content, which can be overwritten by `back` element in the operation group. And `return` element in the operation group   is only used to fall back to the stack frame where the last `execute` is located,without modifying the result data in the stack frame corresponding to `execute`.
 
-That is, the main difference between `call` and `include` is how to handle the return value defined by `return` element in the operation group: The former cares about the return value, and the latter does not. In practice, `include` is generally used to manipulate the target document, and `call` is generally used to obtain a result data.
+That is, the main difference between `call` and `execute` is how to handle the return value defined by `return` element in the operation group: The former cares about the return value, and the latter does not. In practice, `execute` is generally used to manipulate the target document, and `call` is generally used to obtain a result data.
 
 We can use `within` attribute on `call` element to specify a different name than the current walker. At this point, we can perform the specified group of operations in another walker. Since each HVML walker has its own virtual machine instance, and different virtual machine instances usually run in different threads or different processes of the operating system. In this way, we can achieve concurrent processing based on thread or process. When we use `concurrently` attribute on the current worker, a new coroutine will be created in the current virtual machine instance to execute the specified operation group. We call the above two calling behaviors `call concurrently`. At this point, if `asynchronously` adverb attribute is used, `call` element will return immediately after creating the new coroutine (and possibly a new virtual machine instance), then use `observe` to observe its result. Otherwise it will wait for the concurrent call The result is returned. For example:
 
@@ -4840,13 +4842,13 @@ For example, when we use `iterate` to generate an even number column less than 1
 
 ```hvml
     <init as="evenNumbers" with=[0,] >
-        <iterate on=$?[0] with=$MATH.add($0<,2) nosetotail>
+        <iterate on=2 with=$MATH.add($0<,2) nosetotail>
             <test on=$?>
-                <match on=$L.gt($?,100) exclusively>
-                    <back to="3" >
+                <match with=$L.ge($?,100) exclusively>
+                    <back to="3" />
                 </match>
                 <match>
-                    <update on="$evenNumbers" to="append" with="$?">
+                    <update on="$evenNumbers" to="append" with="$?" />
                 </match>
             </test>
         </iterate>
@@ -4860,7 +4862,7 @@ For example, when we use `iterate` to generate an even number column less than 1
     </init>
 ```
 
-The above code, when the calculated even number is greater than `100`, it will fall back to the fourth stack frame and reach the stack frame corresponding to `init` element, and then start execution from the next sub-action element of the element corresponding to the stack frame, That is, the actions defined by `ol` outer element.
+The above code, when the calculated even number is greater than or equal to `100`, it will fall back to the fourth stack frame and reach the stack frame corresponding to `init` element, and then start execution from the next sub-action element of the element corresponding to the stack frame, That is, the actions defined by `ol` outer element.
 
 When `back` element uses `silently` adverb attribute, no exception will be generated. And it will be processed according to the following rules:
 
@@ -5296,7 +5298,7 @@ Usually, we use `inherit` element to separate code with different logical functi
         according to the value of `target` attribute of `hvml` element,
         and pass the result returned by `$T.get('Hello, world!')`.
     -->
-    <include with=${output_$CRTN.target} on="$T.get('Hello, world!')" />
+    <execute with=${output_$CRTN.target} on="$T.get('Hello, world!')" />
 
     <inherit>
         $STREAM.stdout.writelines("End of 'Hello, world!'");
@@ -6444,7 +6446,7 @@ HVML elements other than frame elements are called normal elements. Common eleme
     1. Data operation elements
        `init` and `update` elements. Its content must be a valid parameterized data.
     1. Ordinary operation elements
-        `erase`, `clear`, `test`, `match`, `choose`, `iterate`, `reduce`, `observe`, `fire`, `load`, `back`, `define`, `include` `, `call`, `return` and `catch` elements.
+        `erase`, `clear`, `test`, `match`, `choose`, `iterate`, `reduce`, `observe`, `fire`, `load`, `back`, `define`, `execute` `, `call`, `return` and `catch` elements.
     1. Fragment template elements
        `archetype`, `error` and `except` elements. The content of a fragment template element is typically a document fragment written in the target markup language. Referred to as template elements (template elements).
     1. Data template elements
@@ -7481,7 +7483,7 @@ The main revisions are as follows:
 
 Related chapters:
 
-- [2.5.10) `define` and `include` tags] (#2510-define-and-include-tags)
+- [2.5.10) `define` and `execute` tags](#2510-define-and-execute-tags)
 
 ##### RC5.2) Adjust `request` Tag
 
@@ -7583,7 +7585,7 @@ Related chapters:
 - [2.5.1) `init` tag] (#251-init-tag)
 - [2.5.7.2) don't use iterative executor] (#2572 - don't use iterative executor)
 - [2.4.1) `archetype` tag] (#241-archetype-tag)
-- [2.5.10) `define` and `include` tags] (#2510-define-and-include-tags)
+- [2.5.10) `define` and `execute` tags](#2510-define-and-execute-tags)
 - [2.2.2) Syntax of evaluated expressions] (#222 - Syntax of evaluated expressions)
 - [3.1.1) DOCTYPE] (#311-doctype)
 
@@ -7707,7 +7709,7 @@ Adjuste the description order of action tags.
 
 Related chapters:
 
-- [2.5.10) `define` and `include` tags] (#2510-define-and-include-tags)
+- [2.5.10) `define` and `execute` tags](#2510-define-and-execute-tags)
 - [2.5.11) `observe`, `forget` and `fire` labels] (#2511-observe-forget-and-fire-labels)
 - [2.5.15) `back` tag] (#2515-back-tag)
 - [2.5.16) `request` tag] (#2516-request-tag)

@@ -186,7 +186,7 @@ Please read the code below and the comments carefully:
         according to the value of `target` attribute of `hvml` element,
         and pass the result returned by `$T.get('Hello, world!')`.
     -->
-    <include with ${output_$HVML.target} on $T.get('Hello, world!') />
+    <execute with ${output_$CRTN.target} on $T.get('Hello, world!') />
 
   </body>
 </hvml>

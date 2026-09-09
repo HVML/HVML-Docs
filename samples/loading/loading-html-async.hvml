@@ -55,16 +55,19 @@
             </div>
         </archetype>
 
-        <init as="breakingNews" from="assets/breaking-news-{$SYS.locale}.json" async />
+        <!-- Keep the initial value undefined so successful loading emits change:attached. -->
+        <init as="breakingNews" from="assets/breaking-news-{$SYS.locale}.json" async>
+            undefined
+        </init>
 
-        <observe against="breakingNews" for="change:displaced" in="#breaking-news">
+        <observe against="breakingNews" for="change:attached" in="#breaking-news">
             <choose on $breakingNews>
-                <update on="$@" to="append" with="$realCardBody" />
+                <update on="$@" to="displace" with="$realCardBody" />
             </choose>
         </observe>
 
         <observe against="breakingNews" for="except:*" in="#breaking-news">
-            <update on="#breaking-news > p" at="textContent" with=$T.get('Failed to load content!') />
+            <update on="#breaking-news" at="textContent" with=$T.get('Failed to load content!') />
         </observe>
 
         <footer>
